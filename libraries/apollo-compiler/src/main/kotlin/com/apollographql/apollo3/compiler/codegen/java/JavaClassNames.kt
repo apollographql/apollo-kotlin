@@ -29,7 +29,7 @@ internal object JavaClassNames {
   val DataAdapter = ClassNames.DataAdapter.toJavaPoetClassName()
   val VariablesAdapter = ClassNames.VariablesAdapter.toJavaPoetClassName()
   val SerializeVariablesContext = ClassNames.SerializeVariablesContext.toJavaPoetClassName()
-  val AdapterToDataAdapter = ClassNames.AdapterToDataAdapter.toJavaPoetClassName()
+  val ScalarAdapterToDataAdapter = ClassNames.ScalarAdapterToDataAdapter.toJavaPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toJavaPoetClassName()
   val CompiledType = ClassNames.CompiledType.toJavaPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toJavaPoetClassName()

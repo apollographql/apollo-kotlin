@@ -5,7 +5,6 @@
 //
 package com.example.input_object_type.type.adapter;
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
 import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.DataAdapters;
@@ -13,6 +12,7 @@ import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_type.type.ColorInput;
@@ -42,7 +42,7 @@ public enum ReviewInput_InputAdapter implements DataAdapter<ReviewInput> {
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.commentary, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.commentary, context);
     }
     writer.name("favoriteColor");
     new ObjectDataAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).serializeData(writer, value.favoriteColor, context);
@@ -76,10 +76,10 @@ public enum ReviewInput_InputAdapter implements DataAdapter<ReviewInput> {
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfString, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfString, context);
     }
     writer.name("listOfStringNonOptional");
-    new ListDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.listOfStringNonOptional, context);
+    new ListDataAdapter<>(new NullableDataAdapter<>(new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.listOfStringNonOptional, context);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
       new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).serializeData(writer, value.listOfInputTypes, context);
@@ -94,7 +94,7 @@ public enum ReviewInput_InputAdapter implements DataAdapter<ReviewInput> {
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfListOfString, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>(new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfListOfString, context);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
@@ -110,7 +110,7 @@ public enum ReviewInput_InputAdapter implements DataAdapter<ReviewInput> {
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.CapitalizedField, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.CapitalizedField, context);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");

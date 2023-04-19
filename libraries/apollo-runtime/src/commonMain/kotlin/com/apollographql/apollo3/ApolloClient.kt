@@ -2,7 +2,6 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -11,6 +10,7 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.Subscription
@@ -393,20 +393,20 @@ private constructor(
     }
 
     /**
-     * Registers the given [adapter]
+     * Registers the given [scalarAdapter]
      *
      * @param scalarType a generated [ScalarType]. Every GraphQL custom scalar has a
      * generated class with a static `type` property. For an example, for a `Date` custom scalar,
      * you can use `com.example.Date.type`
-     * @param adapter the [Adapter] to use for this custom scalar
+     * @param scalarAdapter the [ScalarAdapter] to use for this custom scalar
      */
-    fun <T> addScalarAdapter(scalarType: ScalarType, adapter: Adapter<T>) = apply {
-      scalarAdaptersBuilder.add(scalarType, adapter)
+    fun <T> addScalarAdapter(scalarType: ScalarType, scalarAdapter: ScalarAdapter<T>) = apply {
+      scalarAdaptersBuilder.add(scalarType, scalarAdapter)
     }
 
     @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, customScalarAdapter)"))
     @ApolloDeprecatedSince(v4_0_0)
-    fun <T> addCustomScalarAdapter(customScalarType: ScalarType, customScalarAdapter: Adapter<T>) = apply {
+    fun <T> addCustomScalarAdapter(customScalarType: ScalarType, customScalarAdapter: ScalarAdapter<T>) = apply {
       addScalarAdapter(customScalarType, customScalarAdapter)
     }
 

@@ -1,14 +1,14 @@
-import com.apollographql.apollo3.adapter.DateAdapter
-import com.apollographql.apollo3.adapter.JavaInstantAdapter
-import com.apollographql.apollo3.adapter.JavaLocalDateAdapter
-import com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter
-import com.apollographql.apollo3.adapter.JavaLocalTimeAdapter
-import com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter
-import com.apollographql.apollo3.adapter.KotlinxInstantAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.adapter.DateScalarAdapter
+import com.apollographql.apollo3.adapter.JavaInstantScalarAdapter
+import com.apollographql.apollo3.adapter.JavaLocalDateScalarAdapter
+import com.apollographql.apollo3.adapter.JavaLocalDateTimeScalarAdapter
+import com.apollographql.apollo3.adapter.JavaLocalTimeScalarAdapter
+import com.apollographql.apollo3.adapter.JavaOffsetDateTimeScalarAdapter
+import com.apollographql.apollo3.adapter.KotlinxInstantScalarAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateScalarAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeScalarAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalTimeScalarAdapter
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonString
 import kotlinx.datetime.TimeZone
@@ -23,11 +23,11 @@ import kotlin.test.assertEquals
 class JavaTimeAdaptersTest {
   private fun String.jsonReader() = BufferedSourceJsonReader(Buffer().writeUtf8("\"${this}\""))
 
-  private fun <T> Adapter<T>.fromJson(string: String): T {
+  private fun <T> ScalarAdapter<T>.fromJson(string: String): T {
     return fromJson(string.jsonReader())
   }
 
-  private fun <T> Adapter<T>.toJson(value: T): String {
+  private fun <T> ScalarAdapter<T>.toJson(value: T): String {
     return buildJsonString {
       toJson(this, value)
     }.removePrefix("\"")
@@ -36,96 +36,96 @@ class JavaTimeAdaptersTest {
 
   @Test
   fun instant() {
-    var instant = JavaInstantAdapter.fromJson("2010-06-01T22:19:44.475Z")
+    var instant = JavaInstantScalarAdapter.fromJson("2010-06-01T22:19:44.475Z")
     assertEquals(1275430784475, instant.toEpochMilli())
-    assertEquals("2010-06-01T22:19:44.475Z", JavaInstantAdapter.toJson(instant))
+    assertEquals("2010-06-01T22:19:44.475Z", JavaInstantScalarAdapter.toJson(instant))
 
-    instant = JavaInstantAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
+    instant = JavaInstantScalarAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
     assertEquals(1275430784475, instant.toEpochMilli())
     // Time zone is lost
-    assertEquals("2010-06-01T22:19:44.475Z", JavaInstantAdapter.toJson(instant))
+    assertEquals("2010-06-01T22:19:44.475Z", JavaInstantScalarAdapter.toJson(instant))
   }
 
   @Test
   fun offsetDateTime() {
-    var offsetDateTime = JavaOffsetDateTimeAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
+    var offsetDateTime = JavaOffsetDateTimeScalarAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
     assertEquals(1275430784475, offsetDateTime.toInstant().toEpochMilli())
     // Offset is retained
-    assertEquals("2010-06-01T23:19:44.475+01:00", JavaOffsetDateTimeAdapter.toJson(offsetDateTime))
+    assertEquals("2010-06-01T23:19:44.475+01:00", JavaOffsetDateTimeScalarAdapter.toJson(offsetDateTime))
 
-    offsetDateTime = JavaOffsetDateTimeAdapter.fromJson("2010-06-01T22:19:44.475Z")
+    offsetDateTime = JavaOffsetDateTimeScalarAdapter.fromJson("2010-06-01T22:19:44.475Z")
     assertEquals(1275430784475, offsetDateTime.toInstant().toEpochMilli())
-    assertEquals("2010-06-01T22:19:44.475Z", JavaOffsetDateTimeAdapter.toJson(offsetDateTime))
+    assertEquals("2010-06-01T22:19:44.475Z", JavaOffsetDateTimeScalarAdapter.toJson(offsetDateTime))
   }
 
   @Test
   fun date() {
-    var date = DateAdapter.fromJson("2010-06-01T22:19:44.475Z")
+    var date = DateScalarAdapter.fromJson("2010-06-01T22:19:44.475Z")
     assertEquals(1275430784475, date.time)
-    assertEquals("2010-06-01T22:19:44.475Z", DateAdapter.toJson(date))
+    assertEquals("2010-06-01T22:19:44.475Z", DateScalarAdapter.toJson(date))
 
-    date = DateAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
+    date = DateScalarAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
     assertEquals(1275430784475, date.time)
     // Time zone is lost
-    assertEquals("2010-06-01T22:19:44.475Z", DateAdapter.toJson(date))
+    assertEquals("2010-06-01T22:19:44.475Z", DateScalarAdapter.toJson(date))
   }
 
   @Test
   fun localDateTime() {
-    val localDateTime = JavaLocalDateTimeAdapter.fromJson("2010-06-01T22:19:44.475")
+    val localDateTime = JavaLocalDateTimeScalarAdapter.fromJson("2010-06-01T22:19:44.475")
     assertEquals(1275430784, localDateTime.toEpochSecond(ZoneOffset.UTC))
-    assertEquals("2010-06-01T22:19:44.475", JavaLocalDateTimeAdapter.toJson(localDateTime))
+    assertEquals("2010-06-01T22:19:44.475", JavaLocalDateTimeScalarAdapter.toJson(localDateTime))
   }
 
   @Test
   fun localDate() {
-    val localDate = JavaLocalDateAdapter.fromJson("2010-06-01")
+    val localDate = JavaLocalDateScalarAdapter.fromJson("2010-06-01")
     assertEquals(1275430784, localDate.atTime(LocalTime.parse("22:19:44.475")).toEpochSecond(ZoneOffset.UTC))
-    assertEquals("2010-06-01", JavaLocalDateAdapter.toJson(localDate))
+    assertEquals("2010-06-01", JavaLocalDateScalarAdapter.toJson(localDate))
   }
 
   @Test
   fun localTime() {
-    val localTime = JavaLocalTimeAdapter.fromJson("14:35:20")
+    val localTime = JavaLocalTimeScalarAdapter.fromJson("14:35:20")
     assertEquals(14, localTime.hour)
     assertEquals(35, localTime.minute)
     assertEquals(20, localTime.second)
-    assertEquals("14:35:20", JavaLocalTimeAdapter.toJson(localTime))
+    assertEquals("14:35:20", JavaLocalTimeScalarAdapter.toJson(localTime))
   }
 
   @Test
   fun kotlinxInstant() {
-    var instant = KotlinxInstantAdapter.fromJson("2010-06-01T22:19:44.475Z")
+    var instant = KotlinxInstantScalarAdapter.fromJson("2010-06-01T22:19:44.475Z")
     assertEquals(1275430784475, instant.toEpochMilliseconds())
-    assertEquals("2010-06-01T22:19:44.475Z", KotlinxInstantAdapter.toJson(instant))
+    assertEquals("2010-06-01T22:19:44.475Z", KotlinxInstantScalarAdapter.toJson(instant))
 
-    instant = KotlinxInstantAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
+    instant = KotlinxInstantScalarAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
     assertEquals(1275430784475, instant.toEpochMilliseconds())
     // Time zone is lost
-    assertEquals("2010-06-01T22:19:44.475Z", KotlinxInstantAdapter.toJson(instant))
+    assertEquals("2010-06-01T22:19:44.475Z", KotlinxInstantScalarAdapter.toJson(instant))
   }
 
   @Test
   fun kotlinxLocalDateTime() {
-    val localDateTime = KotlinxLocalDateTimeAdapter.fromJson("2010-06-01T22:19:44.475")
+    val localDateTime = KotlinxLocalDateTimeScalarAdapter.fromJson("2010-06-01T22:19:44.475")
     assertEquals(1275430784, localDateTime.toInstant(TimeZone.UTC).epochSeconds)
-    assertEquals("2010-06-01T22:19:44.475", KotlinxLocalDateTimeAdapter.toJson(localDateTime))
+    assertEquals("2010-06-01T22:19:44.475", KotlinxLocalDateTimeScalarAdapter.toJson(localDateTime))
   }
 
   @Test
   fun kotlinxLocalDate() {
-    val localDate = KotlinxLocalDateAdapter.fromJson("2010-06-01")
+    val localDate = KotlinxLocalDateScalarAdapter.fromJson("2010-06-01")
     assertEquals(1275430784, localDate.atTime(22, 19, 44).toInstant(TimeZone.UTC).epochSeconds)
-    assertEquals("2010-06-01", KotlinxLocalDateAdapter.toJson(localDate))
+    assertEquals("2010-06-01", KotlinxLocalDateScalarAdapter.toJson(localDate))
   }
 
   @Test
   fun kotlinxLocalTime() {
-    val localTime = KotlinxLocalTimeAdapter.fromJson("14:35:20")
+    val localTime = KotlinxLocalTimeScalarAdapter.fromJson("14:35:20")
     assertEquals(14, localTime.hour)
     assertEquals(35, localTime.minute)
     assertEquals(20, localTime.second)
-    assertEquals("14:35:20", KotlinxLocalTimeAdapter.toJson(localTime))
+    assertEquals("14:35:20", KotlinxLocalTimeScalarAdapter.toJson(localTime))
   }
 
 }

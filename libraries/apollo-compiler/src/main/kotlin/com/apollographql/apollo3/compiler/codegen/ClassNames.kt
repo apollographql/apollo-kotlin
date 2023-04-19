@@ -30,7 +30,7 @@ internal object ClassNames {
   val DataAdapter = ResolverClassName(apolloApiPackageName, "DataAdapter")
   val VariablesAdapter = ResolverClassName(apolloApiPackageName, "VariablesAdapter")
   val SerializeVariablesContext = ResolverClassName(apolloApiPackageName, "VariablesAdapter", "SerializeVariablesContext")
-  val AdapterToDataAdapter = ResolverClassName(apolloApiPackageName, "AdapterToDataAdapter")
+  val ScalarAdapterToDataAdapter = ResolverClassName(apolloApiPackageName, "ScalarAdapterToDataAdapter")
   val CompiledSelection = ResolverClassName(apolloApiPackageName, "CompiledSelection")
   val CompiledType = ResolverClassName(apolloApiPackageName, "CompiledType")
   val CompiledNamedType = ResolverClassName(apolloApiPackageName, "CompiledNamedType")

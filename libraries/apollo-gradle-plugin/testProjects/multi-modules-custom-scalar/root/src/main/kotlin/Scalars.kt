@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.*
 
 class MyID(val id: String)
 
-class MyIDAdapter() : Adapter<MyID> {
+class MyIDAdapter() : ScalarAdapter<MyID> {
   override fun fromJson(reader: JsonReader): MyID {
     return MyID(reader.nextString()!!)
   }

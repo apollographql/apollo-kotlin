@@ -29,7 +29,7 @@ apollo {
     mapScalar(
         "Decimal",
         "com.apollographql.apollo3.adapter.BigDecimal",
-        "com.apollographql.apollo3.adapter.BigDecimalAdapter"
+        "com.apollographql.apollo3.adapter.BigDecimalScalarAdapter"
     )
   }
 }

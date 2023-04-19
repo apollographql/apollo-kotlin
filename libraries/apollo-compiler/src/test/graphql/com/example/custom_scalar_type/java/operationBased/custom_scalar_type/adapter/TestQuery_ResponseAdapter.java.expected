@@ -5,13 +5,13 @@
 //
 package com.example.custom_scalar_type.adapter;
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.custom_scalar_type.TestQuery;
@@ -77,12 +77,12 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = (context.scalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).deserializeData(reader, context); break;
-          case 1: _name = new AdapterToDataAdapter<>(new com.example.MyStringAdapter()).deserializeData(reader, context); break;
+          case 1: _name = new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()).deserializeData(reader, context); break;
           case 2: _birthDate = (context.scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).deserializeData(reader, context); break;
           case 3: _appearanceDates = new ListDataAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).deserializeData(reader, context); break;
           case 4: _fieldWithUnsupportedType = DataAdapters.AnyDataAdapter.deserializeData(reader, context); break;
-          case 5: _profileLink = new AdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE).deserializeData(reader, context); break;
-          case 6: _links = new ListDataAdapter<>(new AdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE)).deserializeData(reader, context); break;
+          case 5: _profileLink = new ScalarAdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE).deserializeData(reader, context); break;
+          case 6: _links = new ListDataAdapter<>(new ScalarAdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -113,7 +113,7 @@ public class TestQuery_ResponseAdapter {
       (context.scalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).serializeData(writer, value.id, context);
 
       writer.name("name");
-      new AdapterToDataAdapter<>(new com.example.MyStringAdapter()).serializeData(writer, value.name, context);
+      new ScalarAdapterToDataAdapter<>(new com.example.MyStringAdapter()).serializeData(writer, value.name, context);
 
       writer.name("birthDate");
       (context.scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).serializeData(writer, value.birthDate, context);
@@ -125,10 +125,10 @@ public class TestQuery_ResponseAdapter {
       DataAdapters.AnyDataAdapter.serializeData(writer, value.fieldWithUnsupportedType, context);
 
       writer.name("profileLink");
-      new AdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE).serializeData(writer, value.profileLink, context);
+      new ScalarAdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE).serializeData(writer, value.profileLink, context);
 
       writer.name("links");
-      new ListDataAdapter<>(new AdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE)).serializeData(writer, value.links, context);
+      new ListDataAdapter<>(new ScalarAdapterToDataAdapter<>(com.example.UrlAdapter.INSTANCE)).serializeData(writer, value.links, context);
     }
   }
 }

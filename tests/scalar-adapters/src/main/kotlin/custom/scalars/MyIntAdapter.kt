@@ -1,12 +1,12 @@
 package custom.scalars
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
 class MyInt(val value: Int)
 
-class MyIntAdapter : Adapter<MyInt> {
+class MyIntAdapter : ScalarAdapter<MyInt> {
   override fun fromJson(reader: JsonReader): MyInt {
     return MyInt(reader.nextInt())
   }

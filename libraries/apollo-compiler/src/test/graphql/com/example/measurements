@@ -2,8 +2,8 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  189424
-aggregate-kotlin-responseBased                                                                  59123
+aggregate-all                                                                                  189427
+aggregate-kotlin-responseBased                                                                  59126
 aggregate-kotlin-operationBased                                                                 40059
 aggregate-kotlin-compat                                                                             0
 aggregate-java-operationBased                                                                   90242
@@ -27,7 +27,7 @@ java-operationBased-mutation_create_review_semantic_naming                      
 java-operationBased-root_query_fragment_with_nested_fragments                                    1557
 java-operationBased-simple_fragment                                                              1461
 java-operationBased-named_fragment_delegate                                                      1460
-kotlin-responseBased-mutation_create_review                                                      1379
+kotlin-responseBased-mutation_create_review                                                      1382
 java-operationBased-named_fragment_with_variables                                                1362
 kotlin-responseBased-named_fragment_delegate                                                     1332
 kotlin-responseBased-unique_type_name                                                            1318

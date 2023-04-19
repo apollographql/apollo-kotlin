@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
 /**
- * An [Adapter] is responsible for adapting scalars between their Json and Kotlin representations.
+ * A [ScalarAdapter] is responsible for adapting scalars between their Json and Kotlin representations.
  *
  * It is used to
  * - deserialize network responses
@@ -13,9 +13,9 @@ import okio.IOException
  * - normalize models into records that can be stored in cache
  * - deserialize records
  *
- * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
+ * **Note**: [ScalarAdapter]s are called from multiple threads and implementations must be thread safe.
  */
-interface Adapter<T> {
+interface ScalarAdapter<T> {
   /**
    * Deserializes the given Json to the expected Kotlin type.
    *
@@ -29,7 +29,7 @@ interface Adapter<T> {
    * }
    * ```
    *
-   * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
+   * Alternatively, you can use the built-in [AnyScalarAdapter] to simplify the parsing loop:
    * ```
    * override fun fromJson(reader: JsonReader): GeoPoint {
    *   val map = AnyAdapter.fromJson(reader) as Map<String, Double>
@@ -51,7 +51,7 @@ interface Adapter<T> {
    * }
    * ```
    *
-   * Alternatively, you can use the built-in [AnyAdapter]:
+   * Alternatively, you can use the built-in [AnyScalarAdapter]:
    * ```
    * override fun toJson(writer: JsonWriter, value: GeoPoint) {
    *   val map = mapOf("lat" to value.lat, "lon" to value.lon)

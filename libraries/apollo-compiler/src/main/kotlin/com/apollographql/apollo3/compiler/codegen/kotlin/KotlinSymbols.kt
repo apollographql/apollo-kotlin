@@ -35,7 +35,7 @@ internal object KotlinSymbols {
   val DataAdapter = ClassNames.DataAdapter.toKotlinPoetClassName()
   val VariablesAdapter = ClassNames.VariablesAdapter.toKotlinPoetClassName()
   val SerializeVariablesContext = ClassNames.SerializeVariablesContext.toKotlinPoetClassName()
-  val AdapterToDataAdapter = ClassNames.AdapterToDataAdapter.toKotlinPoetClassName()
+  val ScalarAdapterToDataAdapter = ClassNames.ScalarAdapterToDataAdapter.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
   val CompiledType = ClassNames.CompiledType.toKotlinPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toKotlinPoetClassName()

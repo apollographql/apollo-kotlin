@@ -2,10 +2,10 @@ package test;
 
 import com.apollographql.apollo3.ApolloCall;
 import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Executable;
+import com.apollographql.apollo3.api.ScalarAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.apollographql.apollo3.cache.http.HttpCache;
@@ -160,7 +160,7 @@ public class ClientTest {
       }
     }
 
-    Adapter<GeoPoint> geoPointAdapter = new Adapter<GeoPoint>() {
+    ScalarAdapter<GeoPoint> geoPointAdapter = new ScalarAdapter<GeoPoint>() {
       @Override public GeoPoint fromJson(@NotNull JsonReader reader) throws IOException {
         Double latitude = null;
         Double longitude = null;

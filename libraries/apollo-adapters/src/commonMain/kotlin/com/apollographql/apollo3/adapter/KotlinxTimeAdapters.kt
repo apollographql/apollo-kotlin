@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlinx.datetime.Instant
@@ -9,12 +9,12 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
 /**
- * An [Adapter] that converts an ISO 8601 String like "2010-06-01T22:19:44.475Z" to/from
+ * A [ScalarAdapter] that converts an ISO 8601 String like "2010-06-01T22:19:44.475Z" to/from
  * a [kotlinx.datetime.Instant]
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object KotlinxInstantAdapter : Adapter<Instant> {
+object KotlinxInstantScalarAdapter : ScalarAdapter<Instant> {
   override fun fromJson(reader: JsonReader): Instant {
     return Instant.parse(reader.nextString()!!)
   }
@@ -25,12 +25,12 @@ object KotlinxInstantAdapter : Adapter<Instant> {
 }
 
 /**
- * An [Adapter] that converts an ISO 8601 String without time zone information like "2010-06-01T22:19:44.475" to/from
+ * A [ScalarAdapter] that converts an ISO 8601 String without time zone information like "2010-06-01T22:19:44.475" to/from
  * a [kotlinx.datetime.LocalDateTime]
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object KotlinxLocalDateTimeAdapter : Adapter<LocalDateTime> {
+object KotlinxLocalDateTimeScalarAdapter : ScalarAdapter<LocalDateTime> {
   override fun fromJson(reader: JsonReader): LocalDateTime {
     return LocalDateTime.parse(reader.nextString()!!)
   }
@@ -41,12 +41,12 @@ object KotlinxLocalDateTimeAdapter : Adapter<LocalDateTime> {
 }
 
 /**
- * An [Adapter] that converts an ISO 8601 String like "2010-06-01" to/from
+ * A [ScalarAdapter] that converts an ISO 8601 String like "2010-06-01" to/from
  * a [kotlinx.datetime.LocalDate]
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object KotlinxLocalDateAdapter : Adapter<LocalDate> {
+object KotlinxLocalDateScalarAdapter : ScalarAdapter<LocalDate> {
   override fun fromJson(reader: JsonReader): LocalDate {
     return LocalDate.parse(reader.nextString()!!)
   }
@@ -57,12 +57,12 @@ object KotlinxLocalDateAdapter : Adapter<LocalDate> {
 }
 
 /**
- * An [Adapter] that converts an ISO 8601 String like "14:35:00" to/from
+ * A [ScalarAdapter] that converts an ISO 8601 String like "14:35:00" to/from
  * a [kotlinx.datetime.LocalDate]
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object KotlinxLocalTimeAdapter : Adapter<LocalTime> {
+object KotlinxLocalTimeScalarAdapter : ScalarAdapter<LocalTime> {
   override fun fromJson(reader: JsonReader): LocalTime {
     return LocalTime.parse(reader.nextString()!!)
   }

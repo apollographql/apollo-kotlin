@@ -225,7 +225,7 @@ internal class KotlinResolver(
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of("%T(%L)",
-            KotlinSymbols.AdapterToDataAdapter,
+            KotlinSymbols.ScalarAdapterToDataAdapter,
             adapterInitializer.expression
         )
       }

@@ -1,26 +1,15 @@
-public abstract interface class com/apollographql/apollo3/api/Adapter {
-	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
-	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
-}
-
-public final class com/apollographql/apollo3/api/AdapterToDataAdapter : com/apollographql/apollo3/api/DataAdapter {
-	public fun <init> (Lcom/apollographql/apollo3/api/Adapter;)V
-	public fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Ljava/lang/Object;
-	public fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
-}
-
 public final class com/apollographql/apollo3/api/Adapters {
-	public static final field AnyAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field BooleanAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field DoubleAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field FloatAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field IntAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field LongAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field StringAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final field UploadAdapter Lcom/apollographql/apollo3/api/Adapter;
-	public static final fun -toJson (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;)Ljava/lang/String;
-	public static final fun -toJson (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;
-	public static synthetic fun -toJson$default (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+	public static final field AnyScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field BooleanScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field DoubleScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field FloatScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field IntScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field LongScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field StringScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final field UploadScalarAdapter Lcom/apollographql/apollo3/api/ScalarAdapter;
+	public static final fun -toJson (Lcom/apollographql/apollo3/api/ScalarAdapter;Ljava/lang/Object;)Ljava/lang/String;
+	public static final fun -toJson (Lcom/apollographql/apollo3/api/ScalarAdapter;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun -toJson$default (Lcom/apollographql/apollo3/api/ScalarAdapter;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/ApolloOptionalDataAdapter : com/apollographql/apollo3/api/DataAdapter {
@@ -801,6 +790,17 @@ public abstract interface class com/apollographql/apollo3/api/Query : com/apollo
 public abstract interface class com/apollographql/apollo3/api/Query$Data : com/apollographql/apollo3/api/Operation$Data {
 }
 
+public abstract interface class com/apollographql/apollo3/api/ScalarAdapter {
+	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/api/ScalarAdapterToDataAdapter : com/apollographql/apollo3/api/DataAdapter {
+	public fun <init> (Lcom/apollographql/apollo3/api/ScalarAdapter;)V
+	public fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Ljava/lang/Object;
+	public fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
+}
+
 public final class com/apollographql/apollo3/api/ScalarAdapters : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo3/api/ScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/ScalarAdapters$Key;
@@ -817,7 +817,7 @@ public final class com/apollographql/apollo3/api/ScalarAdapters : com/apollograp
 
 public final class com/apollographql/apollo3/api/ScalarAdapters$Builder {
 	public fun <init> ()V
-	public final fun add (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public final fun add (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/ScalarAdapter;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
 	public final fun addAll (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/ScalarAdapters;
 	public final fun clear ()V

@@ -89,9 +89,9 @@ class ScalarAdapters private constructor(
 
     fun <T> add(
         scalarType: ScalarType,
-        adapter: Adapter<T>,
+        scalarAdapter: ScalarAdapter<T>,
     ) = apply {
-      adaptersMap[scalarType.name] = AdapterToDataAdapter(adapter)
+      adaptersMap[scalarType.name] = ScalarAdapterToDataAdapter(scalarAdapter)
     }
 
     fun addAll(scalarAdapters: ScalarAdapters) = apply {

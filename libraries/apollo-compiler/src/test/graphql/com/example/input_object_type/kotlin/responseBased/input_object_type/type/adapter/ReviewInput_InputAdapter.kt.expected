@@ -5,12 +5,12 @@
 //
 package com.example.input_object_type.type.adapter
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter
 import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.IntDataAdapter
 import com.apollographql.apollo3.api.NullableBooleanDataAdapter
 import com.apollographql.apollo3.api.NullableIntDataAdapter
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -41,7 +41,7 @@ public object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
+      ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
           value.commentary, context)
     }
     writer.name("favoriteColor")
@@ -83,11 +83,11 @@ public object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().nullable().present().serializeData(writer,
+      ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().nullable().present().serializeData(writer,
           value.listOfString, context)
     }
     writer.name("listOfStringNonOptional")
-    AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().serializeData(writer,
+    ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().serializeData(writer,
         value.listOfStringNonOptional, context)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
@@ -105,7 +105,7 @@ public object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable().present().serializeData(writer,
+      ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable().present().serializeData(writer,
           value.listOfListOfString, context)
     }
     if (value.listOfListOfEnum is Optional.Present) {
@@ -125,7 +125,7 @@ public object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
+      ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
           value.CapitalizedField, context)
     }
     if (value.CapitalizedInt is Optional.Present) {

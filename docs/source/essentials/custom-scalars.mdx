@@ -32,8 +32,8 @@ Here's an adapter for a `GeoPoint` custom scalar:
 ```kotlin
 class GeoPoint(val latitude: Double, val longitude: Double)
 
-val geoPointAdapter = object : Adapter<GeoPoint> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+val geoPointAdapter = object : ScalarAdapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader): GeoPoint {
     var latitude: Double? = null
     var longitude: Double? = null
     reader.beginObject()
@@ -51,7 +51,7 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
   }
 
   // If you do not expect your scalar to be used as input, you can leave this method as TODO()
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+  override fun toJson(writer: JsonWriter, value: GeoPoint) {
     writer.beginObject()
     writer.name("latitude").value(value.latitude)
     writer.name("longitude").value(value.longitude)
@@ -60,21 +60,21 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
 }
 ```
 
-If you prefer working with `Map`s, Apollo Kotlin comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
+If you prefer working with `Map`s, Apollo Kotlin comes with `AnyScalarAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
 
 ```kotlin
-val geoPointAdapter = object : Adapter<GeoPoint> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
-    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+val geoPointAdapter = object : ScalarAdapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader): GeoPoint {
+    val map = AnyScalarAdapter.fromJson(reader) as Map<String, Double>
     return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+  override fun toJson(writer: JsonWriter, value: GeoPoint) {
     val map = mapOf(
         "latitude" to value.latitude,
         "longitude" to value.longitude
     )
-    AnyAdapter.toJson(writer, map)
+    AnyScalarAdapter.toJson(writer, map)
   }
 }
 ```
@@ -107,11 +107,11 @@ Make sure you pass the full class name including the package, because imports ar
 
 ### At runtime
 
-You can also register adapters on your `ApolloClient` instance by calling `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
+You can also register adapters on your `ApolloClient` instance by calling `ApolloClient.Builder.addScalarAdapter` once for each adapter:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder().serverUrl("https://")
-    .addCustomScalarAdapter(GeoPoint.type, geoPointAdapter)
+    .addScalarAdapter(GeoPoint.type, geoPointAdapter)
     .build()
 ```
 
@@ -123,30 +123,30 @@ This method takes a type-safe generated class from `Types`, along with its corre
 
 The following built-in adapters can be used with common custom scalar types:
 
-| Adapter                                      | Description                                       |
-|----------------------------------------------|---------------------------------------------------|
-| `com.apollographql.apollo3.api.FloatAdapter` | Converts from/to `kotlin.Float`/`java.lang.Float` |
-| `com.apollographql.apollo3.api.LongAdapter`  | Converts from/to `kotlin.Long`/`java.lang.Long`   |
+| Adapter                                            | Description                                       |
+|----------------------------------------------------|---------------------------------------------------|
+| `com.apollographql.apollo3.api.FloatScalarAdapter` | Converts from/to `kotlin.Float`/`java.lang.Float` |
+| `com.apollographql.apollo3.api.LongScalarAdapter`  | Converts from/to `kotlin.Long`/`java.lang.Long`   |
 
 In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides these adapters:
 
-| Adapter                                                         | Description                                                                                         |
-|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `com.apollographql.apollo3.adapter.KotlinxInstantAdapter`       | For `kotlinx.datetime.Instant` ISO8601 dates                                                        |
-| `com.apollographql.apollo3.adapter.JavaInstantAdapter`          | For `java.time.Instant` ISO8601 dates                                                               |
-| `com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter`     | For `kotlinx.datetime.LocalDate` ISO8601 dates                                                      |
-| `com.apollographql.apollo3.adapter.JavaLocalDateAdapter`        | For `java.time.LocalDate` ISO8601 dates                                                             |
-| `com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter` | For `kotlinx.datetime.LocalDateTime` ISO8601 dates                                                  |
-| `com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter`    | For `java.time.LocalDateTime` ISO8601 dates                                                         |
-| `com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter`     | For `kotlinx.datetime.LocalTime` ISO8601 dates                                                      |
-| `com.apollographql.apollo3.adapter.JavaLocalTimeAdapter`        | For `java.time.LocalTime` ISO8601 dates                                                         |
-| `com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter`   | For `java.time.OffsetDateTime` ISO8601 dates                                                        |
-| `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
-| `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
+| Adapter                                                               | Description                                                                                         |
+|-----------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `com.apollographql.apollo3.adapter.KotlinxInstantScalarAdapter`       | For `kotlinx.datetime.Instant` ISO8601 dates                                                        |
+| `com.apollographql.apollo3.adapter.JavaInstantScalarAdapter`          | For `java.time.Instant` ISO8601 dates                                                               |
+| `com.apollographql.apollo3.adapter.KotlinxLocalDateScalarAdapter`     | For `kotlinx.datetime.LocalDate` ISO8601 dates                                                      |
+| `com.apollographql.apollo3.adapter.JavaLocalDateScalarAdapter`        | For `java.time.LocalDate` ISO8601 dates                                                             |
+| `com.apollographql.apollo3.adapter.KotlinxLocalDateTimeScalarAdapter` | For `kotlinx.datetime.LocalDateTime` ISO8601 dates                                                  |
+| `com.apollographql.apollo3.adapter.JavaLocalDateTimeScalarAdapter`    | For `java.time.LocalDateTime` ISO8601 dates                                                         |
+| `com.apollographql.apollo3.adapter.KotlinxLocalTimeScalarAdapter`     | For `kotlinx.datetime.LocalTime` ISO8601 dates                                                      |
+| `com.apollographql.apollo3.adapter.JavaLocalTimeScalarAdapter`        | For `java.time.LocalTime` ISO8601 dates                                                         |
+| `com.apollographql.apollo3.adapter.JavaOffsetDateTimeScalarAdapter`   | For `java.time.OffsetDateTime` ISO8601 dates                                                        |
+| `com.apollographql.apollo3.adapter.DateScalarAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
+| `com.apollographql.apollo3.adapter.BigDecimalScalarAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
 
 > **Note:** Because some adapters use `kotlinx.datetime` (which itself uses `java.time`), you need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
 
-For example, to use `DateAdapter`, configure your Gradle scripts like so:
+For example, to use `DateScalarAdapter`, configure your Gradle scripts like so:
 
 ```kotlin title="build.gradle[.kts]"
 dependencies {
@@ -155,7 +155,7 @@ dependencies {
 
 apollo {
   service("service") {
-    mapScalar("Date", "java.util.Date", "com.apollographql.apollo3.adapter.DateAdapter")
+    mapScalar("Date", "java.util.Date", "com.apollographql.apollo3.adapter.DateScalarAdapter")
   }
 }
 ```

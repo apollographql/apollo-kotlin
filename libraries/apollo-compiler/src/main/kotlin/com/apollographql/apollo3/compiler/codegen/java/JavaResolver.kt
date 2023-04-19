@@ -251,7 +251,7 @@ internal class JavaResolver(
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(
             "new $T<>($L)",
-            JavaClassNames.AdapterToDataAdapter,
+            JavaClassNames.ScalarAdapterToDataAdapter,
             CodeBlock.of(adapterInitializer.expression)
         )
       }
@@ -298,7 +298,7 @@ internal class JavaResolver(
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
       JavaNullable.APOLLO_OPTIONAL -> {
-        // Ex: DataAdapters.ApolloOptionalStringAdapter
+        // Ex: DataAdapters.ApolloOptionalStringDataAdapter
         className = JavaClassNames.DataAdapters
         adapterNamePrefix = "ApolloOptional"
       }

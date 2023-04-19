@@ -5,9 +5,9 @@
 //
 package com.example.custom_scalar_type.adapter
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter
 import com.apollographql.apollo3.api.AnyDataAdapter
 import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -69,16 +69,16 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _id = context.scalarAdapters.responseAdapterFor<Long>(GraphQLID.type).deserializeData(reader,
                 context)
-            1 -> _name = AdapterToDataAdapter(com.example.MyStringAdapter()).deserializeData(reader,
+            1 -> _name = ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).deserializeData(reader,
                 context)
             2 -> _birthDate = context.scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).deserializeData(reader,
                 context)
             3 -> _appearanceDates = context.scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().deserializeData(reader,
                 context)
             4 -> _fieldWithUnsupportedType = AnyDataAdapter.deserializeData(reader, context)
-            5 -> _profileLink = AdapterToDataAdapter(com.example.UrlAdapter).deserializeData(reader,
+            5 -> _profileLink = ScalarAdapterToDataAdapter(com.example.UrlAdapter).deserializeData(reader,
                 context)
-            6 -> _links = AdapterToDataAdapter(com.example.UrlAdapter).list().deserializeData(reader,
+            6 -> _links = ScalarAdapterToDataAdapter(com.example.UrlAdapter).list().deserializeData(reader,
                 context)
             else -> break
           }
@@ -105,7 +105,7 @@ public object TestQuery_ResponseAdapter {
             value.id, context)
 
         writer.name("name")
-        AdapterToDataAdapter(com.example.MyStringAdapter()).serializeData(writer, value.name,
+        ScalarAdapterToDataAdapter(com.example.MyStringAdapter()).serializeData(writer, value.name,
             context)
 
         writer.name("birthDate")
@@ -120,11 +120,11 @@ public object TestQuery_ResponseAdapter {
         AnyDataAdapter.serializeData(writer, value.fieldWithUnsupportedType, context)
 
         writer.name("profileLink")
-        AdapterToDataAdapter(com.example.UrlAdapter).serializeData(writer, value.profileLink,
+        ScalarAdapterToDataAdapter(com.example.UrlAdapter).serializeData(writer, value.profileLink,
             context)
 
         writer.name("links")
-        AdapterToDataAdapter(com.example.UrlAdapter).list().serializeData(writer, value.links,
+        ScalarAdapterToDataAdapter(com.example.UrlAdapter).list().serializeData(writer, value.links,
             context)
       }
     }

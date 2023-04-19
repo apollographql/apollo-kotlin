@@ -1,4 +1,4 @@
-@file:JvmName("Adapters")
+@file:JvmName("StandardScalarAdapters")
 
 package com.apollographql.apollo3.api
 
@@ -12,15 +12,15 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
 /**
- * This file contains a list of [Adapter] for standard types
+ * This file contains a list of [ScalarAdapter] for standard types
  *
  * They are mostly used from the generated code but could be useful in any other situations that requires adapting from
  * GraphQL to Kotlin.
- * In particular, [AnyAdapter] can be used to read/write a Kotlin representation from/to Json.
+ * In particular, [AnyScalarAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
 
 @JvmField
-val StringAdapter = object : Adapter<String> {
+val StringScalarAdapter = object : ScalarAdapter<String> {
   override fun fromJson(reader: JsonReader): String {
     return reader.nextString()!!
   }
@@ -31,7 +31,7 @@ val StringAdapter = object : Adapter<String> {
 }
 
 @JvmField
-val IntAdapter = object : Adapter<Int> {
+val IntScalarAdapter = object : ScalarAdapter<Int> {
   override fun fromJson(reader: JsonReader): Int {
     return reader.nextInt()
   }
@@ -42,7 +42,7 @@ val IntAdapter = object : Adapter<Int> {
 }
 
 @JvmField
-val DoubleAdapter = object : Adapter<Double> {
+val DoubleScalarAdapter = object : ScalarAdapter<Double> {
   override fun fromJson(reader: JsonReader): Double {
     return reader.nextDouble()
   }
@@ -53,11 +53,11 @@ val DoubleAdapter = object : Adapter<Double> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Float]
+ * A [ScalarAdapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
-val FloatAdapter = object : Adapter<Float> {
+val FloatScalarAdapter = object : ScalarAdapter<Float> {
   override fun fromJson(reader: JsonReader): Float {
     return reader.nextDouble().toFloat()
   }
@@ -68,13 +68,13 @@ val FloatAdapter = object : Adapter<Float> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Long]
+ * A [ScalarAdapter] that converts to/from a [Long]
  * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
 @JvmField
-val LongAdapter = object : Adapter<Long> {
+val LongScalarAdapter = object : ScalarAdapter<Long> {
   override fun fromJson(reader: JsonReader): Long {
     return reader.nextLong()
   }
@@ -85,7 +85,7 @@ val LongAdapter = object : Adapter<Long> {
 }
 
 @JvmField
-val BooleanAdapter = object : Adapter<Boolean> {
+val BooleanScalarAdapter = object : ScalarAdapter<Boolean> {
   override fun fromJson(reader: JsonReader): Boolean {
     return reader.nextBoolean()
   }
@@ -96,7 +96,7 @@ val BooleanAdapter = object : Adapter<Boolean> {
 }
 
 @JvmField
-val AnyAdapter = object : Adapter<Any> {
+val AnyScalarAdapter = object : ScalarAdapter<Any> {
   override fun fromJson(reader: JsonReader): Any {
     return reader.readAny()!!
   }
@@ -107,7 +107,7 @@ val AnyAdapter = object : Adapter<Any> {
 }
 
 @JvmField
-val UploadAdapter = object : Adapter<Upload> {
+val UploadScalarAdapter = object : ScalarAdapter<Upload> {
   override fun fromJson(reader: JsonReader): Upload {
     error("File Upload used in output position")
   }
@@ -120,7 +120,7 @@ val UploadAdapter = object : Adapter<Upload> {
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> Adapter<T>.toJsonString(
+fun <T> ScalarAdapter<T>.toJsonString(
     value: T,
     indent: String? = null,
 ): String = buildJsonString(indent) {
