@@ -5,47 +5,47 @@
 //
 package com.example.data_builders.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import java.lang.String;
 
 public class BuilderFactory {
-  public static BuilderFactory DEFAULT = new BuilderFactory(CustomScalarAdapters.PassThrough);
+  public static BuilderFactory DEFAULT = new BuilderFactory(ScalarAdapters.PassThrough);
 
-  CustomScalarAdapters customScalarAdapters;
+  ScalarAdapters scalarAdapters;
 
-  public BuilderFactory(CustomScalarAdapters customScalarAdapters) {
-    this.customScalarAdapters = customScalarAdapters;
+  public BuilderFactory(ScalarAdapters scalarAdapters) {
+    this.scalarAdapters = scalarAdapters;
   }
 
   public QueryBuilder buildQuery() {
-    return new QueryBuilder(customScalarAdapters);
+    return new QueryBuilder(scalarAdapters);
   }
 
   public CatBuilder buildCat() {
-    return new CatBuilder(customScalarAdapters);
+    return new CatBuilder(scalarAdapters);
   }
 
   public DogBuilder buildDog() {
-    return new DogBuilder(customScalarAdapters);
+    return new DogBuilder(scalarAdapters);
   }
 
   public HumanBuilder buildHuman() {
-    return new HumanBuilder(customScalarAdapters);
+    return new HumanBuilder(scalarAdapters);
   }
 
   public DroidBuilder buildDroid() {
-    return new DroidBuilder(customScalarAdapters);
+    return new DroidBuilder(scalarAdapters);
   }
 
   public OtherCharacterBuilder buildOtherCharacter(String __typename) {
-    return new OtherCharacterBuilder(__typename, customScalarAdapters);
+    return new OtherCharacterBuilder(__typename, scalarAdapters);
   }
 
   public OtherNodeBuilder buildOtherNode(String __typename) {
-    return new OtherNodeBuilder(__typename, customScalarAdapters);
+    return new OtherNodeBuilder(__typename, scalarAdapters);
   }
 
   public OtherAnimalBuilder buildOtherAnimal(String __typename) {
-    return new OtherAnimalBuilder(__typename, customScalarAdapters);
+    return new OtherAnimalBuilder(__typename, scalarAdapters);
   }
 }

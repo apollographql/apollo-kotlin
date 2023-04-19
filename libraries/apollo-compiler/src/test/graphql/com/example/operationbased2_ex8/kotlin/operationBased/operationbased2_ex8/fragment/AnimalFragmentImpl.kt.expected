@@ -5,10 +5,10 @@
 //
 package com.example.operationbased2_ex8.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.operationbased2_ex8.fragment.selections.AnimalFragmentSelections
@@ -24,11 +24,11 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<AnimalFragment> =
+  public override fun adapter(): DataAdapter<AnimalFragment> =
       AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

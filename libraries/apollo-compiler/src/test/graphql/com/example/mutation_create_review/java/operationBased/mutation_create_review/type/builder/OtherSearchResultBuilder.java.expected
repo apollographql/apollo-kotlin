@@ -5,19 +5,19 @@
 //
 package com.example.mutation_create_review.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import java.lang.Object;
 import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OtherSearchResultBuilder {
-  CustomScalarAdapters customScalarAdapters;
+  ScalarAdapters scalarAdapters;
 
   Map<String, Object> __fields = new HashMap<>();
 
-  public OtherSearchResultBuilder(String __typename, CustomScalarAdapters customScalarAdapters) {
-    this.customScalarAdapters = customScalarAdapters;
+  public OtherSearchResultBuilder(String __typename, ScalarAdapters scalarAdapters) {
+    this.scalarAdapters = scalarAdapters;
     __fields.put("__typename", __typename);
   }
 

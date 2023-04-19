@@ -5,11 +5,11 @@
 //
 package com.example.inline_fragment_merge_fields.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ScalarType;
 
 /**
  * URL for testing
  */
 public class URL {
-  public static CustomScalarType type = new CustomScalarType("URL", "java.lang.Object");
+  public static ScalarType type = new ScalarType("URL", "java.lang.Object");
 }

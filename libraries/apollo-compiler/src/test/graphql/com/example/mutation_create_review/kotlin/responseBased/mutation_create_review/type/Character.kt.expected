@@ -8,9 +8,10 @@ package com.example.mutation_create_review.type
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectBuilder
+import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -23,17 +24,18 @@ internal class Character {
   public companion object : BuilderFactory<OtherCharacterBuilder> {
     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
-        OtherCharacterBuilder = OtherCharacterBuilder(customScalarAdapters)
+    public override fun newBuilder(scalarAdapters: ScalarAdapters): OtherCharacterBuilder =
+        OtherCharacterBuilder(scalarAdapters)
   }
 }
 
 internal interface CharacterMap : Map<String, Any?>
 
 internal class OtherCharacterBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<OtherCharacterMap>(customScalarAdapters) {
-  public var name: String by BuilderProperty(com.example.MyStringAdapter())
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder<OtherCharacterMap>(scalarAdapters) {
+  public var name: String by
+      BuilderProperty(ScalarAdapterToDataAdapter(com.example.MyStringAdapter()))
 
   public override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
@@ -44,4 +46,4 @@ internal class OtherCharacterMap(
 
 internal fun BuilderScope.buildOtherCharacter(typename: String,
     block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap =
-    OtherCharacterBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()
+    OtherCharacterBuilder(scalarAdapters).apply(block).apply { __typename = typename }.build()
