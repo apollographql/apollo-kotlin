@@ -6,9 +6,9 @@
 package com.example.data_builders.schema;
 
 import com.apollographql.apollo3.api.CompiledNamedType;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectType;
 import com.apollographql.apollo3.api.PossibleTypes;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.example.data_builders.type.Animal;
 import com.example.data_builders.type.Cat;
 import com.example.data_builders.type.Character;
@@ -24,7 +24,7 @@ import java.util.List;
  * A Schema object containing all the composite types and a possibleTypes helper function
  */
 public class __Schema {
-  public static ScalarAdapters scalarAdapters = new ScalarAdapters.Builder()
+  public static CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters.Builder()
     .build();
 
   public static List<CompiledNamedType> types = Arrays.asList(

@@ -5,28 +5,35 @@
 //
 package com.example.hero_name_query_long_name.adapter;
 
-import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
 import com.example.hero_name_query_long_name.type.adapter.Episode_ResponseAdapter;
 import java.io.IOException;
+import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter implements VariablesAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> {
+public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter implements Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> {
   INSTANCE;
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName value,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
+  public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName fromJson(
+      JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    throw new IllegalStateException("Input type used in output position");
+  }
+
+  @Override
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName value)
+      throws IOException {
     if (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName instanceof Optional.Present) {
       writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, serializeDataContext);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
     }
   }
 }

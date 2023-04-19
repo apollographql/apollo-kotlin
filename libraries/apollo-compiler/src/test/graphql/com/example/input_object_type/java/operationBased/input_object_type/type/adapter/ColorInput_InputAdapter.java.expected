@@ -5,11 +5,12 @@
 //
 package com.example.input_object_type.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -19,37 +20,37 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ColorInput_InputAdapter implements DataAdapter<ColorInput> {
+public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
   INSTANCE;
 
   @Override
-  public ColorInput deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
-      throws IOException {
+  public ColorInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void serializeData(JsonWriter writer, ColorInput value,
-      DataAdapter.SerializeDataContext context) throws IOException {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, ColorInput value)
+      throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.red, context);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.red);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
-      new ApolloOptionalDataAdapter<>(DataAdapters.NullableDoubleDataAdapter).serializeData(writer, value.green, context);
+      new ApolloOptionalAdapter<>(Adapters.NullableDoubleAdapter).toJson(writer, customScalarAdapters, value.green);
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new ApolloOptionalDataAdapter<>(DataAdapters.DoubleDataAdapter).serializeData(writer, value.blue, context);
+      new ApolloOptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, customScalarAdapters, value.blue);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.enumWithDefaultValue, context);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.enumWithDefaultValue);
     }
     if (value.reviewRefInput instanceof Optional.Present) {
       writer.name("reviewRefInput");
-      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).serializeData(writer, value.reviewRefInput, context);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.reviewRefInput);
     }
   }
 }

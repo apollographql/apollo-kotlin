@@ -5,9 +5,10 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -17,20 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OtherDroidDetailsImpl_ResponseAdapter {
-  public enum OtherDroidDetails implements DataAdapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails> {
+  public enum OtherDroidDetails implements Adapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -43,11 +44,11 @@ public class OtherDroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails value) throws
+        IOException {
       writer.name("id");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }
   }
 }

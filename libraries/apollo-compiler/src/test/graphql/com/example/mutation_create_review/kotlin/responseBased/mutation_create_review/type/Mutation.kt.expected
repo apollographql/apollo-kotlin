@@ -7,9 +7,9 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -22,14 +22,14 @@ internal class Mutation {
   public companion object : BuilderFactory<MutationBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
 
-    public override fun newBuilder(scalarAdapters: ScalarAdapters): MutationBuilder =
-        MutationBuilder(scalarAdapters)
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder =
+        MutationBuilder(customScalarAdapters)
   }
 }
 
 internal class MutationBuilder(
-  scalarAdapters: ScalarAdapters,
-) : ObjectBuilder<MutationMap>(scalarAdapters) {
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder<MutationMap>(customScalarAdapters) {
   public var createReview: ReviewMap? by __fields
 
   init {
@@ -43,4 +43,4 @@ internal class MutationMap(
 ) : Map<String, Any?> by __fields
 
 internal fun BuilderScope.buildMutation(block: MutationBuilder.() -> Unit): MutationMap =
-    MutationBuilder(scalarAdapters).apply(block).build()
+    MutationBuilder(customScalarAdapters).apply(block).build()

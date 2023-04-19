@@ -5,11 +5,12 @@
 //
 package com.example.java_java_optionals.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -22,13 +23,13 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object MyQuery_ResponseAdapter {
-  public object Data : DataAdapter<MyQuery.Data> {
+  public object Data : Adapter<MyQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
         "nullableMyType", "nonNullableMyType", "nullableListOfNullableString",
         "nullableListOfNonNullableString")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): MyQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        MyQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
       var _nullableMyType: MyQuery.Data.NullableMyType? = null
@@ -38,14 +39,15 @@ public object MyQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nullableInt = NullableIntDataAdapter.deserializeData(reader, context)
-          1 -> _nonNullableInt = IntDataAdapter.deserializeData(reader, context)
-          2 -> _nullableMyType = NullableMyType.obj().nullable().deserializeData(reader, context)
-          3 -> _nonNullableMyType = NonNullableMyType.obj().deserializeData(reader, context)
-          4 -> _nullableListOfNullableString = NullableStringDataAdapter.list().nullable().deserializeData(reader,
-              context)
-          5 -> _nullableListOfNonNullableString = StringDataAdapter.list().nullable().deserializeData(reader,
-              context)
+          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader,
+              customScalarAdapters)
+          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, customScalarAdapters)
+          4 -> _nullableListOfNullableString = NullableStringAdapter.list().nullable().fromJson(reader,
+              customScalarAdapters)
+          5 -> _nullableListOfNonNullableString = StringAdapter.list().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -60,44 +62,44 @@ public object MyQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: MyQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("nullableInt")
-      NullableIntDataAdapter.serializeData(writer, value.nullableInt, context)
+      NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
       writer.name("nonNullableInt")
-      IntDataAdapter.serializeData(writer, value.nonNullableInt, context)
+      IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
 
       writer.name("nullableMyType")
-      NullableMyType.obj().nullable().serializeData(writer, value.nullableMyType, context)
+      NullableMyType.obj().nullable().toJson(writer, customScalarAdapters, value.nullableMyType)
 
       writer.name("nonNullableMyType")
-      NonNullableMyType.obj().serializeData(writer, value.nonNullableMyType, context)
+      NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
 
       writer.name("nullableListOfNullableString")
-      NullableStringDataAdapter.list().nullable().serializeData(writer,
-          value.nullableListOfNullableString, context)
+      NullableStringAdapter.list().nullable().toJson(writer, customScalarAdapters,
+          value.nullableListOfNullableString)
 
       writer.name("nullableListOfNonNullableString")
-      StringDataAdapter.list().nullable().serializeData(writer,
-          value.nullableListOfNonNullableString, context)
+      StringAdapter.list().nullable().toJson(writer, customScalarAdapters,
+          value.nullableListOfNonNullableString)
     }
 
-    private object NullableMyType : DataAdapter<MyQuery.Data.NullableMyType> {
+    private object NullableMyType : Adapter<MyQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): MyQuery.Data.NullableMyType {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          MyQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntDataAdapter.deserializeData(reader, context)
-            1 -> _nonNullableInt = IntDataAdapter.deserializeData(reader, context)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -108,31 +110,31 @@ public object MyQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: MyQuery.Data.NullableMyType,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntDataAdapter.serializeData(writer, value.nullableInt, context)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntDataAdapter.serializeData(writer, value.nonNullableInt, context)
+        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
       }
     }
 
-    private object NonNullableMyType : DataAdapter<MyQuery.Data.NonNullableMyType> {
+    private object NonNullableMyType : Adapter<MyQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): MyQuery.Data.NonNullableMyType {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          MyQuery.Data.NonNullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntDataAdapter.deserializeData(reader, context)
-            1 -> _nonNullableInt = IntDataAdapter.deserializeData(reader, context)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -143,16 +145,16 @@ public object MyQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: MyQuery.Data.NonNullableMyType,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntDataAdapter.serializeData(writer, value.nullableInt, context)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntDataAdapter.serializeData(writer, value.nonNullableInt, context)
+        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
       }
     }
   }

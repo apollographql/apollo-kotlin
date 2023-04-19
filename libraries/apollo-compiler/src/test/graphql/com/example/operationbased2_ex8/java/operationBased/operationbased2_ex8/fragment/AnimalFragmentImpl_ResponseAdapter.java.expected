@@ -5,14 +5,15 @@
 //
 package com.example.operationbased2_ex8.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -23,22 +24,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalFragmentImpl_ResponseAdapter {
-  public enum AnimalFragment implements DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
+  public enum AnimalFragment implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("species", "parent");
 
     @Override
-    public com.example.operationbased2_ex8.fragment.AnimalFragment deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.operationbased2_ex8.fragment.AnimalFragment fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _species = null;
       com.example.operationbased2_ex8.fragment.AnimalFragment.Parent _parent = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _parent = new ObjectDataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).deserializeData(reader, context); break;
+          case 0: _species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _parent = new ObjectAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -53,48 +54,47 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.operationbased2_ex8.fragment.AnimalFragment value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.operationbased2_ex8.fragment.AnimalFragment value) throws IOException {
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.species);
 
       writer.name("parent");
-      new ObjectDataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).serializeData(writer, value.parent, context);
+      new ObjectAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).toJson(writer, customScalarAdapters, value.parent);
     }
   }
 
-  public enum Parent implements DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
+  public enum Parent implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
 
     @Override
-    public com.example.operationbased2_ex8.fragment.AnimalFragment.Parent deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.operationbased2_ex8.fragment.AnimalFragment.Parent fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String _species = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion _onLion = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.deserializeData(reader, context);
+        _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat _onCat = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.deserializeData(reader, context);
+        _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_species, "species");
@@ -108,39 +108,38 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.operationbased2_ex8.fragment.AnimalFragment.Parent value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.operationbased2_ex8.fragment.AnimalFragment.Parent value) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.species);
 
       if (value.onLion != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.serializeData(writer, value.onLion, context);
+        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.toJson(writer, customScalarAdapters, value.onLion);
       }
 
       if (value.onCat != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.serializeData(writer, value.onCat, context);
+        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.toJson(writer, customScalarAdapters, value.onCat);
       }
     }
   }
 
-  public enum OnLion implements DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion> {
+  public enum OnLion implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("temperature");
 
     @Override
-    public com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _temperature = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -153,28 +152,27 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion value) throws IOException {
       writer.name("temperature");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.temperature, context);
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.temperature);
     }
   }
 
-  public enum OnCat implements DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat> {
+  public enum OnCat implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -187,11 +185,10 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat value) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 }

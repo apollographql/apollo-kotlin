@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -15,18 +16,16 @@ import kotlin.collections.List
 
 public object CharacterDetailsImpl_ResponseAdapter {
   public object CharacterDetails :
-      DataAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails>
-      {
+      Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails {
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringDataAdapter.deserializeData(reader, context)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -36,13 +35,13 @@ public object CharacterDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

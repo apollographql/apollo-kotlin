@@ -5,8 +5,9 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -15,19 +16,18 @@ import com.example.target_name.type.renamedInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object renamedInput_InputAdapter : DataAdapter<renamedInput> {
-  public override fun deserializeData(reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext): renamedInput = throw
-      IllegalStateException("Input type used in output position")
+public object renamedInput_InputAdapter : Adapter<renamedInput> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      renamedInput = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeData(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: renamedInput,
-    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")
-      NullableStringDataAdapter.present().serializeData(writer, value.`field`, context)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.`field`)
     }
   }
 }

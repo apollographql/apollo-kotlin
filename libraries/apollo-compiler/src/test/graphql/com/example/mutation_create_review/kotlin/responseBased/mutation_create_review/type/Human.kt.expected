@@ -8,10 +8,9 @@ package com.example.mutation_create_review.type
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapterToDataAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -25,16 +24,15 @@ internal class Human {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
 
-    public override fun newBuilder(scalarAdapters: ScalarAdapters): HumanBuilder =
-        HumanBuilder(scalarAdapters)
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder =
+        HumanBuilder(customScalarAdapters)
   }
 }
 
 internal class HumanBuilder(
-  scalarAdapters: ScalarAdapters,
-) : ObjectBuilder<HumanMap>(scalarAdapters) {
-  public var name: String by
-      BuilderProperty(ScalarAdapterToDataAdapter(com.example.MyStringAdapter()))
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder<HumanMap>(customScalarAdapters) {
+  public var name: String by BuilderProperty(com.example.MyStringAdapter())
 
   init {
     __typename = "Human"}
@@ -47,4 +45,4 @@ internal class HumanMap(
 ) : CharacterMap, SearchResultMap, Map<String, Any?> by __fields
 
 internal fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap =
-    HumanBuilder(scalarAdapters).apply(block).build()
+    HumanBuilder(customScalarAdapters).apply(block).build()

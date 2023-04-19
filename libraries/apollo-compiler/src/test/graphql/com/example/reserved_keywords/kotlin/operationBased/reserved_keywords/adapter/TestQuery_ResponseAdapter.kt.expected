@@ -5,8 +5,9 @@
 //
 package com.example.reserved_keywords.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,19 +21,19 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("yield", "objects")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _yield: TestQuery.Data.Yield? = null
       var _objects: List<TestQuery.Data.Object?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _yield = Yield.obj().nullable().deserializeData(reader, context)
-          1 -> _objects = Object.obj(true).nullable().list().nullable().deserializeData(reader,
-              context)
+          0 -> _yield = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _objects = Object.obj(true).nullable().list().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -43,30 +44,31 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("yield")
-      Yield.obj().nullable().serializeData(writer, value.`yield`, context)
+      Yield.obj().nullable().toJson(writer, customScalarAdapters, value.`yield`)
 
       writer.name("objects")
-      Object.obj(true).nullable().list().nullable().serializeData(writer, value.objects, context)
+      Object.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
+          value.objects)
     }
 
-    private object Yield : DataAdapter<TestQuery.Data.Yield> {
+    private object Yield : Adapter<TestQuery.Data.Yield> {
       public val RESPONSE_NAMES: List<String> = listOf("while", "it")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Yield {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Yield {
         var _while: String? = null
         var _it: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _while = StringDataAdapter.deserializeData(reader, context)
-            1 -> _it = StringDataAdapter.deserializeData(reader, context)
+            0 -> _while = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _it = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -77,29 +79,29 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Yield,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("while")
-        StringDataAdapter.serializeData(writer, value.`while`, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.`while`)
 
         writer.name("it")
-        StringDataAdapter.serializeData(writer, value.it, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.it)
       }
     }
 
-    private object Object : DataAdapter<TestQuery.Data.Object> {
+    private object Object : Adapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Object {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Object {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -109,10 +111,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onCharacter: TestQuery.Data.Object.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.deserializeData(reader,
-              context)
+          _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Object(
@@ -121,30 +123,30 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Object,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onCharacter != null) {
-          com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.serializeData(writer,
-              value.onCharacter, context)
+          com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.toJson(writer,
+              customScalarAdapters, value.onCharacter)
         }
       }
 
-      private object OnCharacter : DataAdapter<TestQuery.Data.Object.OnCharacter> {
+      private object OnCharacter : Adapter<TestQuery.Data.Object.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Object.OnCharacter {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Object.OnCharacter {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -154,13 +156,13 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Object.OnCharacter,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }

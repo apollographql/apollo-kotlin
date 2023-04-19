@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_delegate.type;
 
-import com.apollographql.apollo3.api.ScalarType;
+import com.apollographql.apollo3.api.CustomScalarType;
 
 /**
  * URL for testing
  */
 public class URL {
-  public static ScalarType type = new ScalarType("URL", "java.lang.Object");
+  public static CustomScalarType type = new CustomScalarType("URL", "java.lang.Object");
 }

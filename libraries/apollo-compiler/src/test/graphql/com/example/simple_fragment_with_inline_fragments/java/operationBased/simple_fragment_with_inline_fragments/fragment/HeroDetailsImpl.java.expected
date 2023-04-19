@@ -5,11 +5,11 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_fragment_with_inline_fragments.fragment.selections.HeroDetailsSelections;
 import com.example.simple_fragment_with_inline_fragments.type.Character;
@@ -60,14 +60,14 @@ public class HeroDetailsImpl implements Fragment<HeroDetails> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public DataAdapter<HeroDetails> adapter() {
-    return new ObjectDataAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, false);
+  public Adapter<HeroDetails> adapter() {
+    return new ObjectAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, false);
   }
 
   @Override
