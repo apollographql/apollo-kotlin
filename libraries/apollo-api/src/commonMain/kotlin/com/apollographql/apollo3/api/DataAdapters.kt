@@ -234,6 +234,9 @@ internal class PassThroughDataAdapter<T> : DataAdapter<T> {
 }
 
 class ScalarAdapterToDataAdapter<T>(private val wrappedScalarAdapter: ScalarAdapter<T>) : DataAdapter<T> {
+  @Suppress("DEPRECATION")
+  constructor(wrappedAdapter: Adapter<T>) : this(AdapterToScalarAdapter(wrappedAdapter))
+
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
     return wrappedScalarAdapter.fromJson(reader)
   }

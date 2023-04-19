@@ -334,9 +334,9 @@ fun <T> buildData(
     resolver: FakeResolver,
     scalarAdapters: ScalarAdapters,
 ): T {
-  return adapter.obj(false).deserializeData(
+  return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, scalarAdapters)),
-      DataAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
+      ScalarAdapters.PassThrough
   )
 }
 

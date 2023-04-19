@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.jvm.JvmField
-
-@Deprecated("Use ScalarAdapters instead", ReplaceWith("ScalarAdapters"))
-typealias CustomScalarAdapters = ScalarAdapters
 
 /**
  * A wrapper around a Map<String, [DataAdapter]> used to retrieve scalar adapters at runtime
@@ -61,6 +61,30 @@ class ScalarAdapters private constructor(
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
     } as DataAdapter<T>
   }
+
+  @ApolloInternal
+  @Suppress("DEPRECATION")
+  fun toCustomScalarAdapters(): CustomScalarAdapters {
+    return CustomScalarAdapters.Builder()
+        .apply {
+          for ((name, adapter) in adaptersMap) {
+            add(ScalarType(name, ""), DataAdapterToAdapter(adapter))
+          }
+        }
+        .build()
+  }
+
+  @Suppress("DEPRECATION")
+  private class DataAdapterToAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : Adapter<T> {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+      return wrappedAdapter.fromJson(reader, Empty)
+    }
+
+    override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+      wrappedAdapter.toJson(writer, Empty, value)
+    }
+  }
+
 
   override val key: ExecutionContext.Key<*>
     get() = Key

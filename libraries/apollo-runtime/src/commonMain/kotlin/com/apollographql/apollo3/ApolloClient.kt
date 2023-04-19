@@ -180,8 +180,9 @@ private constructor(
 
   @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters"))
   @ApolloDeprecatedSince(v4_0_0)
-  val customScalarAdapters: ScalarAdapters
-    get() = scalarAdapters
+  @Suppress("DEPRECATION")
+  val customScalarAdapters: com.apollographql.apollo3.api.CustomScalarAdapters
+    get() = scalarAdapters.toCustomScalarAdapters()
 
   /**
    * A Builder used to create instances of [ApolloClient]
@@ -386,10 +387,10 @@ private constructor(
       scalarAdaptersBuilder.addAll(scalarAdapters)
     }
 
-    @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters(customScalarAdapters)"))
+    @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters(customScalarAdapters.toScalarAdapters())"))
     @ApolloDeprecatedSince(v4_0_0)
-    fun customScalarAdapters(customScalarAdapters: ScalarAdapters) = apply {
-      scalarAdapters(customScalarAdapters)
+    fun customScalarAdapters(@Suppress("DEPRECATION") customScalarAdapters: com.apollographql.apollo3.api.CustomScalarAdapters) = apply {
+      scalarAdapters(customScalarAdapters.toScalarAdapters())
     }
 
     /**
@@ -404,10 +405,14 @@ private constructor(
       scalarAdaptersBuilder.add(scalarType, scalarAdapter)
     }
 
-    @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, customScalarAdapter)"))
+    @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, AdapterToScalarDataAdapter(customScalarAdapter))"))
     @ApolloDeprecatedSince(v4_0_0)
-    fun <T> addCustomScalarAdapter(customScalarType: ScalarType, customScalarAdapter: ScalarAdapter<T>) = apply {
-      addScalarAdapter(customScalarType, customScalarAdapter)
+    fun <T> addCustomScalarAdapter(
+        customScalarType: ScalarType,
+        @Suppress("DEPRECATION") customScalarAdapter: com.apollographql.apollo3.api.Adapter<T>,
+    ) = apply {
+      @Suppress("DEPRECATION")
+      addScalarAdapter(customScalarType, com.apollographql.apollo3.api.AdapterToScalarAdapter(customScalarAdapter))
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
