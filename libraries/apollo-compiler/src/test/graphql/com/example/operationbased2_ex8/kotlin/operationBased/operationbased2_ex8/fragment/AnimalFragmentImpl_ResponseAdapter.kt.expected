@@ -5,10 +5,9 @@
 //
 package com.example.operationbased2_ex8.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,18 +19,20 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
-  public object AnimalFragment : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
+  public object AnimalFragment :
+      DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.operationbased2_ex8.fragment.AnimalFragment {
       var _species: String? = null
       var _parent: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _parent = Parent.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _species = StringDataAdapter.deserializeData(reader, context)
+          1 -> _parent = Parent.obj(true).deserializeData(reader, context)
           else -> break
         }
       }
@@ -42,31 +43,32 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.operationbased2_ex8.fragment.AnimalFragment,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("species")
-      StringAdapter.toJson(writer, customScalarAdapters, value.species)
+      StringDataAdapter.serializeData(writer, value.species, context)
 
       writer.name("parent")
-      Parent.obj(true).toJson(writer, customScalarAdapters, value.parent)
+      Parent.obj(true).serializeData(writer, value.parent, context)
     }
 
-    private object Parent : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>
-        {
+    private object Parent :
+        DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext):
           com.example.operationbased2_ex8.fragment.AnimalFragment.Parent {
         var __typename: String? = null
         var _species: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _species = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -76,17 +78,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
-        if (possibleTypes("Lion").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Lion").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
-              customScalarAdapters)
+          _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.deserializeData(reader,
+              context)
         }
 
         var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Cat").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
-              customScalarAdapters)
+          _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.deserializeData(reader,
+              context)
         }
 
         return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent(
@@ -97,40 +99,40 @@ public object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("species")
-        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+        StringDataAdapter.serializeData(writer, value.species, context)
 
         if (value.onLion != null) {
-          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
-              customScalarAdapters, value.onLion)
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.serializeData(writer,
+              value.onLion, context)
         }
 
         if (value.onCat != null) {
-          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
-              customScalarAdapters, value.onCat)
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.serializeData(writer,
+              value.onCat, context)
         }
       }
 
       private object OnLion :
-          Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion> {
+          DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion> {
         public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion {
           var _temperature: Int? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _temperature = IntDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -140,28 +142,28 @@ public object AnimalFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("temperature")
-          IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
+          IntDataAdapter.serializeData(writer, value.temperature, context)
         }
       }
 
       private object OnCat :
-          Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat> {
+          DataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -171,13 +173,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
         }
       }
     }

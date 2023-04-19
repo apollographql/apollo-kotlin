@@ -5,25 +5,21 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.subscriptions.TestSubscription
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestSubscription_VariablesAdapter : Adapter<TestSubscription> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      TestSubscription = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object TestSubscription_VariablesAdapter : VariablesAdapter<TestSubscription> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: TestSubscription,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("repo")
-    StringAdapter.toJson(writer, customScalarAdapters, value.repo)
+    StringDataAdapter.serializeData(writer, value.repo, serializeDataContext)
   }
 }

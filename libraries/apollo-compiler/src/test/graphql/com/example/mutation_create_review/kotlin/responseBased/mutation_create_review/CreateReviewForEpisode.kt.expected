@@ -6,12 +6,12 @@
 package com.example.mutation_create_review
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -22,7 +22,7 @@ import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelec
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.MutationBuilder
 import com.example.mutation_create_review.type.ReviewInput
-import com.example.mutation_create_review.type.__CustomScalarAdapters
+import com.example.mutation_create_review.type.__ScalarAdapters
 import java.util.Date
 import kotlin.Int
 import kotlin.String
@@ -40,11 +40,12 @@ internal data class CreateReviewForEpisode(
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    CreateReviewForEpisode_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
+    CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
-  public override fun adapter(): Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
+  public override fun adapter(): DataAdapter<Data> =
+      CreateReviewForEpisode_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -127,7 +128,7 @@ internal data class CreateReviewForEpisode(
       CreateReviewForEpisodeSelections.__root,
       "Mutation",
       resolver,
-      __CustomScalarAdapters,
+      __ScalarAdapters,
     )
   }
 }

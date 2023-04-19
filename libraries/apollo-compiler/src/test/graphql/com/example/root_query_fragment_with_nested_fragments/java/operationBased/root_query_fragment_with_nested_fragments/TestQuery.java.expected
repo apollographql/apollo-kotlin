@@ -5,11 +5,11 @@
 //
 package com.example.root_query_fragment_with_nested_fragments;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter;
 import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment;
@@ -123,14 +123,14 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This operation doesn't have any variable
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, true);
+  public DataAdapter<Data> adapter() {
+    return new ObjectDataAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, true);
   }
 
   @Override

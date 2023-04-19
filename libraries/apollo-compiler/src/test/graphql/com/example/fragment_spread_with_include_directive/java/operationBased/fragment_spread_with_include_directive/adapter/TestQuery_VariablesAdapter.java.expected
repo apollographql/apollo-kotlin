@@ -5,53 +5,46 @@
 //
 package com.example.fragment_spread_with_include_directive.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.TestQuery;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements VariablesAdapter<TestQuery> {
   INSTANCE;
 
   @Override
-  public TestQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
-      IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, TestQuery value)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, TestQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     writer.name("withDetails");
-    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.withDetails);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.withDetails, serializeDataContext);
     writer.name("skipHumanDetails");
-    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.skipHumanDetails);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.skipHumanDetails, serializeDataContext);
     if (value.optionalWithDefaultFalse instanceof Optional.Present) {
       writer.name("optionalWithDefaultFalse");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, value.optionalWithDefaultFalse);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.optionalWithDefaultFalse, serializeDataContext);
     }
-    else if (customScalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues()) {
+    else if (context.withDefaultBooleanValues) {
       writer.name("optionalWithDefaultFalse");
-      Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, false);
+      DataAdapters.BooleanDataAdapter.serializeData(writer, false, serializeDataContext);
     }
     if (value.optionalWithDefaultTrue instanceof Optional.Present) {
       writer.name("optionalWithDefaultTrue");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, value.optionalWithDefaultTrue);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.optionalWithDefaultTrue, serializeDataContext);
     }
-    else if (customScalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues()) {
+    else if (context.withDefaultBooleanValues) {
       writer.name("optionalWithDefaultTrue");
-      Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, true);
+      DataAdapters.BooleanDataAdapter.serializeData(writer, true, serializeDataContext);
     }
     if (value.optionalWithNoDefault instanceof Optional.Present) {
       writer.name("optionalWithNoDefault");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, value.optionalWithNoDefault);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.optionalWithNoDefault, serializeDataContext);
     }
   }
 }

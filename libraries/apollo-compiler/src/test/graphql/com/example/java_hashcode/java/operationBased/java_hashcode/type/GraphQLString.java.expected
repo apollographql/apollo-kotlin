@@ -5,11 +5,11 @@
 //
 package com.example.java_hashcode.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ScalarType;
 
 /**
  * The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
  */
 public class GraphQLString {
-  public static CustomScalarType type = new CustomScalarType("String", "java.lang.String");
+  public static ScalarType type = new ScalarType("String", "java.lang.String");
 }

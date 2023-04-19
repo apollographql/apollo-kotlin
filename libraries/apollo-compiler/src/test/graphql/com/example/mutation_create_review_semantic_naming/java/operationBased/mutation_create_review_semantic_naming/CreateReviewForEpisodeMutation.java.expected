@@ -5,11 +5,11 @@
 //
 package com.example.mutation_create_review_semantic_naming;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Mutation;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter;
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_VariablesAdapter;
@@ -113,14 +113,14 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    CreateReviewForEpisodeMutation_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    CreateReviewForEpisodeMutation_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(CreateReviewForEpisodeMutation_ResponseAdapter.Data.INSTANCE, false);
+  public DataAdapter<Data> adapter() {
+    return new ObjectDataAdapter<Data>(CreateReviewForEpisodeMutation_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

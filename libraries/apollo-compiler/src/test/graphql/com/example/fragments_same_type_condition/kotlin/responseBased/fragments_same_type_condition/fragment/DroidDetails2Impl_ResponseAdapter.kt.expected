@@ -5,9 +5,8 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -15,16 +14,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetails2Impl_ResponseAdapter {
-  public object Data : Adapter<DroidDetails2Impl.Data> {
+  public object Data : DataAdapter<DroidDetails2Impl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DroidDetails2Impl.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): DroidDetails2Impl.Data {
       var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
@@ -34,13 +33,13 @@ public object DroidDetails2Impl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: DroidDetails2Impl.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
     }
   }
 }

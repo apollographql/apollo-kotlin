@@ -5,10 +5,9 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,21 +18,20 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<DroidDetailsImpl.Data> {
+  public object Data : DataAdapter<DroidDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DroidDetailsImpl.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): DroidDetailsImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
       var _friends: List<DroidDetailsImpl.Data.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
-              customScalarAdapters)
+          0 -> _name = StringDataAdapter.deserializeData(reader, context)
+          1 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
+          2 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -45,31 +43,31 @@ public object DroidDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: DroidDetailsImpl.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      Friend.obj().nullable().list().nullable().serializeData(writer, value.friends, context)
     }
 
-    private object Friend : Adapter<DroidDetailsImpl.Data.Friend> {
+    private object Friend : DataAdapter<DroidDetailsImpl.Data.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          DroidDetailsImpl.Data.Friend {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): DroidDetailsImpl.Data.Friend {
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -79,13 +77,13 @@ public object DroidDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: DroidDetailsImpl.Data.Friend,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringDataAdapter.serializeData(writer, value.name, context)
       }
     }
   }

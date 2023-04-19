@@ -5,17 +5,16 @@
 //
 package com.example.reserved_keywords.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.reserved_keywords.TestQuery;
@@ -26,22 +25,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("yield", "objects");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.Yield _yield = null;
       List<TestQuery.Object> _objects = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _yield = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: _objects = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _yield = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).deserializeData(reader, context); break;
+          case 1: _objects = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, true)))).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -53,32 +52,32 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("yield");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, customScalarAdapters, value.yield);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).serializeData(writer, value.yield, context);
 
       writer.name("objects");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.objects);
+      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, true)))).serializeData(writer, value.objects, context);
     }
   }
 
-  public enum Yield implements Adapter<TestQuery.Yield> {
+  public enum Yield implements DataAdapter<TestQuery.Yield> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("while", "it");
 
     @Override
-    public TestQuery.Yield fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Yield deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _while = null;
       String _it = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _while = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _it = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _while = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _it = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -93,39 +92,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Yield value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Yield value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("while");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.while_);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.while_, context);
 
       writer.name("it");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.it);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.it, context);
     }
   }
 
-  public enum Object implements Adapter<TestQuery.Object> {
+  public enum Object implements DataAdapter<TestQuery.Object> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Object fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Object deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnCharacter _onCharacter = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.deserializeData(reader, context);
       }
 
       return new TestQuery.Object(
@@ -135,31 +134,31 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Object value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Object value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.onCharacter != null) {
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.serializeData(writer, value.onCharacter, context);
       }
     }
   }
 
-  public enum OnCharacter implements Adapter<TestQuery.OnCharacter> {
+  public enum OnCharacter implements DataAdapter<TestQuery.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.OnCharacter fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.OnCharacter deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -172,10 +171,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnCharacter value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.OnCharacter value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

@@ -6,7 +6,7 @@
 package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectBuilder
 import kotlin.Any
@@ -22,8 +22,8 @@ public class Character {
 }
 
 public class OtherCharacterBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder(scalarAdapters) {
   public var id: String by __fields
 
   public var name: String by __fields
@@ -39,7 +39,7 @@ public class OtherCharacterMap(
 
 public fun BuilderScope.buildOtherCharacter(__typename: String,
     block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap {
-  val builder = OtherCharacterBuilder(customScalarAdapters)
+  val builder = OtherCharacterBuilder(scalarAdapters)
   builder.__typename = __typename
   builder.block()
   return builder.build()

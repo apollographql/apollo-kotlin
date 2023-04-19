@@ -5,7 +5,7 @@
 //
 package com.example.interface_always_nested.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.ScalarType
 
 /**
  * The `Float` scalar type represents signed double-precision fractional values as specified by
@@ -13,6 +13,6 @@ import com.apollographql.apollo3.api.CustomScalarType
  */
 public class GraphQLFloat {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("Float", "kotlin.Float")
+    public val type: ScalarType = ScalarType("Float", "kotlin.Float")
   }
 }
