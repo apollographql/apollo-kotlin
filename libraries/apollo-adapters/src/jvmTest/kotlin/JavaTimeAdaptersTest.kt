@@ -9,6 +9,7 @@ import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonString
 import kotlinx.datetime.TimeZone
@@ -24,12 +25,12 @@ class JavaTimeAdaptersTest {
   private fun String.jsonReader() = BufferedSourceJsonReader(Buffer().writeUtf8("\"${this}\""))
 
   private fun <T> Adapter<T>.fromJson(string: String): T {
-    return fromJson(string.jsonReader())
+    return fromJson(string.jsonReader(), ScalarAdapters.Empty)
   }
 
   private fun <T> Adapter<T>.toJson(value: T): String {
     return buildJsonString {
-      toJson(this, value)
+      toJson(this, ScalarAdapters.Empty, value)
     }.removePrefix("\"")
         .removeSuffix("\"")
   }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.adapter
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
@@ -9,11 +10,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * An [Adapter] that converts to/from [BigDecimal]
  */
 object BigDecimalAdapter : Adapter<BigDecimal> {
-  override fun fromJson(reader: JsonReader): BigDecimal {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): BigDecimal {
     return BigDecimal(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, value: BigDecimal) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: BigDecimal) {
     writer.value(value.toString())
   }
 }
