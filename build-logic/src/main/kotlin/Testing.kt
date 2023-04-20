@@ -11,10 +11,15 @@ fun Project.configureTesting() {
     systemProperty("testFilter", System.getProperty("testFilter"))
     systemProperty("codegenModels", System.getProperty("codegenModels"))
 
-    retry {
-      if (System.getenv().containsKey("CI")) {
-        maxRetries.set(3)
-        failOnPassedAfterRetry.set(true)
+  }
+  
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+    tasks.withType(Test::class.java) {
+      retry {
+        if (System.getenv().containsKey("CI")) {
+          maxRetries.set(3)
+          failOnPassedAfterRetry.set(true)
+        }
       }
     }
   }
