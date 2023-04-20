@@ -143,7 +143,7 @@ class GradleToolingModelService(
 
       // We're only interested in projects that apply the Apollo plugin - and thus have the codegen task registered
       val allApolloGradleProjects: List<GradleProject> = (rootGradleProject.children + rootGradleProject)
-          .filter { it.tasks.any { it.name == CODEGEN_GRADLE_TASK_NAME } }
+          .filter { gradleProject -> gradleProject.tasks.any { task -> task.name == CODEGEN_GRADLE_TASK_NAME } }
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
       indicator.isIndeterminate = false
       val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
@@ -194,7 +194,7 @@ class GradleToolingModelService(
       return projectServiceToGraphQLProjectFiles.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
-        val dependenciesProjectFiles = toolingModel.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
+        val dependenciesProjectFiles = serviceInfo.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
         GraphQLProjectFiles(
             name = key,
             schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
