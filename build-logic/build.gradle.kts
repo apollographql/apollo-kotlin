@@ -19,6 +19,7 @@ golatac.init(file("../gradle/libraries.toml"))
 
 dependencies {
   compileOnly(gradleApi())
+  compileOnly(golatac.lib("gegp"))
 
   implementation(golatac.lib("okhttp"))
 
