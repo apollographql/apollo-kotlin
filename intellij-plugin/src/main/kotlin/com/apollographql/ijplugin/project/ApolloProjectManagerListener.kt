@@ -22,6 +22,8 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       project.service<GradleToolingModelService>()
       project.service<SettingsService>()
       project.service<GraphQLConfigService>()
+
+      project.apolloProjectService.isInitialized = true
     }
   }
 }

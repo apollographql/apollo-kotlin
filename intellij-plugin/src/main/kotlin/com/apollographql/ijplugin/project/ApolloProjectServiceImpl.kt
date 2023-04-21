@@ -15,6 +15,7 @@ class ApolloProjectServiceImpl(
 
   override var isApolloAndroid2Project: Boolean = false
   override var isApolloKotlin3Project: Boolean = false
+  override var isInitialized: Boolean = false
 
   init {
     logd("project=${project.name}")
