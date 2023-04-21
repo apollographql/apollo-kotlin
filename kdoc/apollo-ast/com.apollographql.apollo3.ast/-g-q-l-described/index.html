@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>GQLDescribed</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -27,7 +19,6 @@
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../images/apollo.svg">
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
@@ -38,12 +29,9 @@
     <div class="library-name">
 <a href="../../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-dev.3-SNAPSHOT
+    <div>3.8.2-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-ast:dokkaHtmlPartial/main">jvm</button>
-        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -53,31 +41,64 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo3.ast/GQLDescribed///PointingToDeclaration//520587716">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.ast</a><span class="delimiter">/</span><span class="current">GQLDescribed</span></div>
+<div class="main-content" id="content" pageids="apollo-ast::com.apollographql.apollo3.ast/GQLDescribed///PointingToDeclaration//520587716">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.ast</a><span class="delimiter">/</span><a href="index.html">GQLDescribed</a></div>
   <div class="cover ">
     <h1 class="cover"><span><span>GQLDescribed</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">GQLDescribed</a></div><p class="paragraph">A <a href="../-g-q-l-node/index.html">GQLNode</a> that has a description</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-g-q-l-operation-definition/index.html">GQLOperationDefinition</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-g-q-l-fragment-definition/index.html">GQLFragmentDefinition</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a></div></span></div><div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">GQLDescribed</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="../-g-q-l-node/index.html">GQLNode</a> that has a description</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="1170245313%2FProperties%2F520587716" anchor-label="description" id="1170245313%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="description.html"><span><span>description</span></span></a></div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="1170245313%2FProperties%2F520587716" anchor-label="description" id="1170245313%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="description.html"><span><span>description</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1170245313%2FProperties%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="description.html">description</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><a data-name="1170245313%2FProperties%2F520587716" anchor-label="description" id="1170245313%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="description.html">description</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inheritors</h2>
+      <div class="table" data-togglable="Inheritors"><a data-name="-22027775%2FInheritors%2F520587716" anchor-label="GQLOperationDefinition" id="-22027775%2FInheritors%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-g-q-l-operation-definition/index.html">GQLOperationDefinition</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-22027775%2FInheritors%2F520587716"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1973718500%2FInheritors%2F520587716" anchor-label="GQLFragmentDefinition" id="1973718500%2FInheritors%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-g-q-l-fragment-definition/index.html">GQLFragmentDefinition</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1973718500%2FInheritors%2F520587716"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="511009722%2FInheritors%2F520587716" anchor-label="GQLTypeDefinition" id="511009722%2FInheritors%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="511009722%2FInheritors%2F520587716"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
           </div>
         </div>
       </div>
@@ -89,6 +110,6 @@
       </div>
     </div>
 </div>
-</body>
-</html>
+
+</body></html>
 
