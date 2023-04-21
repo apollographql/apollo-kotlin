@@ -58,12 +58,12 @@ import okio.use
  */
 class WebSocketNetworkTransport
 private constructor(
-    private val serverUrl: String,
+    private val serverUrl: (suspend () -> String),
     private val headers: List<HttpHeader>,
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?,
+    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?
 ) : NetworkTransport {
 
   /**
@@ -187,7 +187,7 @@ private constructor(
 
             val webSocketConnection = try {
               webSocketEngine.open(
-                  url = serverUrl,
+                  url = serverUrl(),
                   headers = if (headers.any { it.name == "Sec-WebSocket-Protocol" }) {
                     headers
                   } else {
@@ -335,7 +335,7 @@ private constructor(
   }
 
   class Builder {
-    private var serverUrl: String? = null
+    private var serverUrl: (suspend () -> String)? = null
     private var headers: MutableList<HttpHeader> = mutableListOf()
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
@@ -343,6 +343,19 @@ private constructor(
     private var reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
+      this.serverUrl = { serverUrl }
+    }
+
+    /**
+     * Configure the server URL dynamically.
+     *
+     * @param serverUrl a function returning the new server URL.
+     * This function will be called every time a WebSocket is opened. For example, you can use it to update your
+     * auth credentials in case of an unauthorized error.
+     *
+     * It is a suspending function, so it can be used to introduce delay before setting the new serverUrl.
+     */
+    fun serverUrl(serverUrl: (suspend () -> String)?) = apply {
       this.serverUrl = serverUrl
     }
 
@@ -396,14 +409,13 @@ private constructor(
     }
 
     fun build(): WebSocketNetworkTransport {
-      @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
-          serverUrl ?: error("No serverUrl specified"),
-          headers,
-          webSocketEngine ?: DefaultWebSocketEngine(),
-          idleTimeoutMillis ?: 60_000,
-          protocolFactory ?: SubscriptionWsProtocol.Factory(),
-          reopenWhen
+          serverUrl = serverUrl ?: error("No serverUrl specified"),
+          headers = headers,
+          webSocketEngine = webSocketEngine ?: DefaultWebSocketEngine(),
+          idleTimeoutMillis = idleTimeoutMillis ?: 60_000,
+          protocolFactory = protocolFactory ?: SubscriptionWsProtocol.Factory(),
+          reopenWhen = reopenWhen
       )
     }
   }
