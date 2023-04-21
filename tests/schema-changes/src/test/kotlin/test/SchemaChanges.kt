@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
@@ -38,11 +38,12 @@ class SchemaChangesTest {
 
     val data = operation.adapter().fromJson(
         Buffer().writeUtf8(v2Data).jsonReader(),
-        ScalarAdapters.Empty
+        CustomScalarAdapters.Empty
     )
 
-    operation.normalize(data,
-        scalarAdapters = ScalarAdapters.Empty,
+    operation.normalize(
+        data,
+        customScalarAdapters = CustomScalarAdapters.Empty,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
     )
   }

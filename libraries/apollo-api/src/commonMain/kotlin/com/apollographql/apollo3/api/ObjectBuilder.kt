@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
-abstract class ObjectBuilder<out T : Map<String, Any?>>(override val scalarAdapters: ScalarAdapters) : BuilderScope {
+abstract class ObjectBuilder<out T : Map<String, Any?>>(val customScalarAdapters: CustomScalarAdapters) : BuilderScope {
   val __fields = mutableMapOf<String, Any?>()
 
   var __typename: String by __fields
@@ -17,23 +17,23 @@ abstract class ObjectBuilder<out T : Map<String, Any?>>(override val scalarAdapt
 }
 
 interface BuilderScope {
-  val scalarAdapters: ScalarAdapters
+  val scalarAdapters: CustomScalarAdapters
 }
 
 interface BuilderFactory<out T> {
-  fun newBuilder(scalarAdapters: ScalarAdapters): T
+  fun newBuilder(customScalarAdapters: CustomScalarAdapters): T
 }
 
-fun Builder(scalarAdapters: ScalarAdapters): BuilderScope {
+fun Builder(customScalarAdapters: CustomScalarAdapters): BuilderScope {
   return object : BuilderScope {
-    override val scalarAdapters: ScalarAdapters
-      get() = scalarAdapters
+    val customScalarAdapters: CustomScalarAdapters
+      get() = customScalarAdapters
   }
 }
 
 val GlobalBuilder = object : BuilderScope {
-  override val scalarAdapters: ScalarAdapters
-    get() = ScalarAdapters.PassThrough
+  val customScalarAdapters: CustomScalarAdapters
+    get() = CustomScalarAdapters.PassThrough
 }
 
 /**
@@ -45,19 +45,19 @@ class BuilderProperty<T>(val adapter: DataAdapter<T>) {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.deserializeData(MapJsonReader(data), DataAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+    return adapter.deserializeData(MapJsonReader(data), DataAdapter.DeserializeDataContext(customScalarAdapters = CustomScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
     thisRef.__fields[property.name] = MapJsonWriter().apply {
-      adapter.toJson(this, ScalarAdapters.Empty, value)
+      adapter.toJson(this, CustomScalarAdapters.Empty, value)
     }.root()
   }
 }
 
 fun <T> adaptValue(adapter: DataAdapter<T>, value: T): Any? {
   return MapJsonWriter().apply {
-    adapter.toJson(this, ScalarAdapters.Empty, value)
+    adapter.toJson(this, CustomScalarAdapters.Empty, value)
   }.root()
 }
 

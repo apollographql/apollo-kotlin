@@ -10,7 +10,7 @@ interface VariablesAdapter<T> {
 
   class SerializeVariablesContext(
       @JvmField
-      val scalarAdapters: ScalarAdapters,
+      val customScalarAdapters: CustomScalarAdapters,
 
       @JvmField
       val withDefaultBooleanValues: Boolean,

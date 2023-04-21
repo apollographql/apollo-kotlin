@@ -1,7 +1,7 @@
 package test.nonnull
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import nonnull.NonNullField1Query
@@ -27,7 +27,7 @@ class NonNullTest {
     """.trimIndent()
 
   private fun <D: Operation.Data> Operation<D>.parseData(string: String) = adapter()
-      .fromJson(Buffer().writeUtf8(string).jsonReader(), ScalarAdapters.Empty)
+      .fromJson(Buffer().writeUtf8(string).jsonReader(), CustomScalarAdapters.Empty)
 
   @Test
   fun failsWithAnnotationInQuery() {

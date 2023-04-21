@@ -30,7 +30,7 @@ import kotlin.jvm.JvmOverloads
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     jsonWriter: JsonWriter,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ) {
   jsonWriter.writeObject {
     name("operationName")
@@ -38,7 +38,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 
     name("variables")
     writeObject {
-      serializeVariables(this, SerializeVariablesContext(scalarAdapters, withDefaultBooleanValues = false))
+      serializeVariables(this, SerializeVariablesContext(customScalarAdapters, withDefaultBooleanValues = false))
     }
 
     name("query")
@@ -65,15 +65,15 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  val variables = booleanVariables(scalarAdapters)
+  val variables = booleanVariables(customScalarAdapters)
   return ResponseParser.parse(
       jsonReader,
       this,
       DataAdapter.DeserializeDataContext(
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           falseBooleanVariables = variables,
           mergedDeferredFragmentIds = mergedDeferredFragmentIds,
       )
@@ -84,9 +84,9 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 @ApolloExperimental
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     json: String,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
-  return parseJsonResponse(Buffer().writeUtf8(json).jsonReader(), scalarAdapters)
+  return parseJsonResponse(Buffer().writeUtf8(json).jsonReader(), customScalarAdapters)
 }
 
 /**
@@ -98,12 +98,12 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 fun <D : Operation.Data> Operation<D>.composeJsonResponse(
     jsonWriter: JsonWriter,
     data: D,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ) {
   jsonWriter.use {
     it.writeObject {
       name("data")
-      adapter().toJson(this, scalarAdapters, data)
+      adapter().toJson(this, customScalarAdapters, data)
     }
   }
 }

@@ -1,8 +1,8 @@
 package test;
 
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -33,7 +33,7 @@ public class ApolloOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(ScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -73,7 +73,7 @@ public class ApolloOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(ScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -99,7 +99,7 @@ public class ApolloOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(ScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -141,7 +141,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -178,7 +178,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.present(0),
@@ -221,7 +221,7 @@ public class ApolloOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),

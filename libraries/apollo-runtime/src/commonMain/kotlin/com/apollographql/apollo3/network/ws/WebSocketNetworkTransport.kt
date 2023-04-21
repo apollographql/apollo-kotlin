@@ -2,8 +2,8 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -305,14 +305,14 @@ private constructor(
       when (response) {
         is OperationResponse -> {
           val responsePayload = response.payload
-          val requestScalarAdapters = request.executionContext[ScalarAdapters]!!
+          val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
           val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
             deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.mergedFragmentIds
           } else {
             responsePayload to null
           }
           val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(jsonReader = payload.jsonReader(), scalarAdapters = requestScalarAdapters, mergedDeferredFragmentIds = mergedFragmentIds)
+              .parseJsonResponse(jsonReader = payload.jsonReader(), customScalarAdapters = requestCustomScalarAdapters, mergedDeferredFragmentIds = mergedFragmentIds)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()

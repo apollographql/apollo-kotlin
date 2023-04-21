@@ -26,12 +26,12 @@ interface DataAdapter<T> {
 
   class SerializeDataContext(
       @JvmField
-      val scalarAdapters: ScalarAdapters,
+      val customScalarAdapters: CustomScalarAdapters,
   )
 
   class DeserializeDataContext(
       @JvmField
-      val scalarAdapters: ScalarAdapters,
+      val customScalarAdapters: CustomScalarAdapters,
 
       @JvmField
       val falseBooleanVariables: Set<String>,
@@ -49,10 +49,10 @@ interface DataAdapter<T> {
   }
 }
 
-fun <T> DataAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
-  serializeData(writer, value, SerializeDataContext(scalarAdapters))
+fun <T> DataAdapter<T>.toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+  serializeData(writer, value, SerializeDataContext(customScalarAdapters))
 }
 
-fun <T> DataAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
-  return deserializeData(reader, DeserializeDataContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+fun <T> DataAdapter<T>.fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+  return deserializeData(reader, DeserializeDataContext(customScalarAdapters = customScalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
 }

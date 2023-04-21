@@ -3,13 +3,10 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
-@Deprecated("Use ScalarAdapters instead", ReplaceWith("ScalarAdapters"))
-typealias CustomScalarAdapters = ScalarAdapters
-
 /**
  * A wrapper around a Map<String, [DataAdapter]> used to retrieve scalar adapters at runtime
  */
-class ScalarAdapters private constructor(
+class CustomScalarAdapters private constructor(
     scalarAdapters: Map<String, DataAdapter<*>>,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
@@ -65,15 +62,15 @@ class ScalarAdapters private constructor(
   override val key: ExecutionContext.Key<*>
     get() = Key
 
-  companion object Key : ExecutionContext.Key<ScalarAdapters> {
+  companion object Key : ExecutionContext.Key<CustomScalarAdapters> {
     /**
-     * An empty [ScalarAdapters]. If the models were generated with some custom scalars, parsing will fail
+     * An empty [CustomScalarAdapters]. If the models were generated with some custom scalars, parsing will fail
      */
     @JvmField
     val Empty = Builder().build()
 
     /**
-     * Unsafe [ScalarAdapters]. They can only be used with `MapJsonReader` and `MapJsonWriter`. It will passthrough the values using
+     * Unsafe [CustomScalarAdapters]. They can only be used with `MapJsonReader` and `MapJsonWriter`. It will passthrough the values using
      * `MapJsonReader.nextValue` and `MapJsonWriter.value()`
      */
     @JvmField
@@ -94,8 +91,8 @@ class ScalarAdapters private constructor(
       adaptersMap[scalarType.name] = AdapterToDataAdapter(adapter)
     }
 
-    fun addAll(scalarAdapters: ScalarAdapters) = apply {
-      this.adaptersMap.putAll(scalarAdapters.adaptersMap)
+    fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {
+      this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
 
     @ApolloExperimental
@@ -107,6 +104,6 @@ class ScalarAdapters private constructor(
       adaptersMap.clear()
     }
 
-    fun build() = ScalarAdapters(adaptersMap, unsafe)
+    fun build() = CustomScalarAdapters(adaptersMap, unsafe)
   }
 }

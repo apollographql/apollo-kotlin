@@ -23,14 +23,14 @@ private fun Operation.Data.adapter(): DataAdapter<Operation.Data> {
   return adapter.obj()
 }
 
-actual fun Operation.Data.toJson(jsonWriter: JsonWriter, scalarAdapters: ScalarAdapters) {
-  adapter().toJson(jsonWriter, scalarAdapters, this)
+actual fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  adapter().toJson(jsonWriter, customScalarAdapters, this)
 }
 
 @ApolloExperimental
-fun Operation.Data.toJsonString(scalarAdapters: ScalarAdapters = ScalarAdapters.Empty, indent: String? = null): String {
+fun Operation.Data.toJsonString(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String {
   return buildJsonString(indent) {
-    toJson(this, scalarAdapters)
+    toJson(this, customScalarAdapters)
   }
 }
 

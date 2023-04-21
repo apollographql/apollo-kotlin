@@ -2,7 +2,7 @@ package com.apollographql.apollo3.runtime.java.network.ws;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
 import com.apollographql.apollo3.api.http.HttpHeader;
@@ -138,10 +138,10 @@ public class WebSocketNetworkTransport implements NetworkTransport {
       SubscriptionInfo subscriptionInfo = activeSubscriptions.get(id);
       if (subscriptionInfo == null) return;
       ApolloRequest<?> request = subscriptionInfo.request;
-      ScalarAdapters scalarAdapters = request.getExecutionContext().get(ScalarAdapters.Key);
+      CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
       JsonReader jsonReader = new MapJsonReader(payload);
       //noinspection rawtypes
-      ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, scalarAdapters).newBuilder().requestUuid(request.getRequestUuid()).build();
+      ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters).newBuilder().requestUuid(request.getRequestUuid()).build();
       //noinspection unchecked
       subscriptionInfo.callback.onResponse(apolloResponse);
     }

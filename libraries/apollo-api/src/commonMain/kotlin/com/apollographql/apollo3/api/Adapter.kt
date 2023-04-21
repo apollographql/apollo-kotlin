@@ -39,7 +39,7 @@ interface Adapter<T> {
    * ```
    */
   @Throws(IOException::class)
-  fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): T
+  fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T
 
   /**
    * Serializes a Kotlin type into its equivalent Json representation.
@@ -60,5 +60,5 @@ interface Adapter<T> {
    * ```
    */
   @Throws(IOException::class)
-  fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: T)
+  fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T)
 }

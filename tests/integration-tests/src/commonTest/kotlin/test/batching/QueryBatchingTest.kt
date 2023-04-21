@@ -4,8 +4,8 @@ import batching.GetLaunch2Query
 import batching.GetLaunchQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
@@ -81,7 +81,7 @@ class QueryBatchingTest {
     assertEquals("84", result2.await().data?.launch?.id)
 
     val request = mockServer.takeRequest()
-    val requests = AnyDataAdapter.fromJson(Buffer().write(request.body).jsonReader(), ScalarAdapters.Empty)
+    val requests = AnyDataAdapter.fromJson(Buffer().write(request.body).jsonReader(), CustomScalarAdapters.Empty)
 
     assertIs<List<Map<String, Any?>>>(requests)
     assertEquals(2, requests.size)
@@ -182,7 +182,7 @@ class QueryBatchingTest {
     assertEquals("84", result2.await().data?.launch?.id)
 
     val request = mockServer.takeRequest()
-    val requests = AnyDataAdapter.fromJson(Buffer().write(request.body).jsonReader(), ScalarAdapters.Empty)
+    val requests = AnyDataAdapter.fromJson(Buffer().write(request.body).jsonReader(), CustomScalarAdapters.Empty)
 
     assertIs<List<Map<String, Any?>>>(requests)
     assertEquals(2, requests.size)
