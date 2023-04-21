@@ -1,16 +1,28 @@
 package com.apollographql.ijplugin.gradle
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
+import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
+import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.dispose
+import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFileManager
 import org.gradle.tooling.CancellationTokenSource
@@ -21,32 +33,74 @@ import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
-import java.util.concurrent.Executors
 
 class GradleToolingModelService(
     private val project: Project,
 ) : Disposable {
+  private var gradleHasSyncedDisposable: CheckedDisposable? = null
+
   private var gradleCancellation: CancellationTokenSource? = null
   private var abortRequested: Boolean = false
-  private val gradleExecutorService = Executors.newSingleThreadExecutor()
+
+  var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
 
   init {
     logd("project=${project.name}")
-    startObserveGradleHasSynced()
+    startObserveApolloProject()
+    startOrStopObserveGradleHasSynced()
+    startOrAbortFetchToolingModels()
+  }
+
+  private fun startObserveApolloProject() {
+    logd()
+    project.messageBus.connect(this).subscribe(ApolloProjectListener.TOPIC, object : ApolloProjectListener {
+      override fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean) {
+        logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
+        startOrStopObserveGradleHasSynced()
+        startOrAbortFetchToolingModels()
+      }
+    })
+  }
+
+  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project
+
+  private fun startOrStopObserveGradleHasSynced() {
+    logd()
+    if (shouldFetchToolingModels()) {
+      startObserveGradleHasSynced()
+    } else {
+      stopObserveGradleHasSynced()
+    }
   }
 
   private fun startObserveGradleHasSynced() {
     logd()
-    project.messageBus.connect(this).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
+    if (gradleHasSyncedDisposable.isNotDisposed()) {
+      logd("Already observing")
+      return
+    }
+    val disposable = newDisposable()
+    gradleHasSyncedDisposable = disposable
+    project.messageBus.connect(disposable).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
       override fun gradleHasSynced() {
         logd()
-        abortFetchToolingModels()
-
-        if (project.apolloProjectService.isApolloKotlin3Project) {
-          fetchToolingModels()
-        }
+        startOrAbortFetchToolingModels()
       }
     })
+  }
+
+  private fun stopObserveGradleHasSynced() {
+    logd()
+    dispose(gradleHasSyncedDisposable)
+    gradleHasSyncedDisposable = null
+  }
+
+  private fun startOrAbortFetchToolingModels() {
+    logd()
+    abortFetchToolingModels()
+    if (shouldFetchToolingModels()) {
+      fetchToolingModels()
+    }
   }
 
   private fun fetchToolingModels() {
@@ -57,8 +111,17 @@ class GradleToolingModelService(
       return
     }
 
-    val rootProjectPath = project.getGradleRootPath() ?: return
-    gradleExecutorService.submit {
+    FetchToolingModelsTask().queue()
+  }
+
+  private inner class FetchToolingModelsTask : Task.Backgroundable(
+      project,
+      @Suppress("DialogTitleCapitalization")
+      ApolloBundle.message("GradleToolingModelService.fetchToolingModels.progress"),
+      true,
+  ) {
+    override fun run(indicator: ProgressIndicator) {
+      val rootProjectPath = project.getGradleRootPath() ?: return
       abortRequested = false
       val gradleExecutionHelper = GradleExecutionHelper()
       val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
@@ -76,17 +139,26 @@ class GradleToolingModelService(
         } finally {
           gradleCancellation = null
         }
-      } ?: return@submit
+      } ?: return
 
       // We're only interested in projects that apply the Apollo plugin - and thus have the codegen task registered
       val allApolloGradleProjects: List<GradleProject> = (rootGradleProject.children + rootGradleProject)
-          .filter { it.tasks.any { it.name == CODEGEN_GRADLE_TASK_NAME } }
+          .filter { gradleProject -> gradleProject.tasks.any { task -> task.name == CODEGEN_GRADLE_TASK_NAME } }
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
-      val allToolingModels = allApolloGradleProjects.mapNotNull { gradleProject ->
+      indicator.isIndeterminate = false
+      val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
         if (abortRequested) {
           logd("Aborted")
-          return@submit
+          return@run
         }
+        try {
+          ProgressManager.checkCanceled()
+        } catch (e: ProcessCanceledException) {
+          logd("Canceled by user")
+          return@run
+        }
+
+        indicator.fraction = (index + 1).toDouble() / allApolloGradleProjects.size
         gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
           gradleCancellation = GradleConnector.newCancellationTokenSource()
           logd("Fetch tooling model for :${gradleProject.name}")
@@ -107,38 +179,51 @@ class GradleToolingModelService(
       logd("allToolingModels=$allToolingModels")
       computeGraphQLProjectFiles(allToolingModels)
     }
+
+    override fun onCancel() {
+      logd()
+      abortFetchToolingModels()
+    }
   }
 
   private fun computeGraphQLProjectFiles(toolingModels: List<ApolloGradleToolingModel>) {
-    val projectServiceToDirs = mutableMapOf<String, Set<File>>()
-    fun getAllDirsForProjectService(projectName: String, serviceName: String): Set<File> {
+    // Compute the GraphQLProjectFiles, taking into account the dependencies between projects
+    val projectServiceToGraphQLProjectFiles = mutableMapOf<String, GraphQLProjectFiles>()
+    fun getGraphQLProjectFiles(projectName: String, serviceName: String): GraphQLProjectFiles {
       val key = "$projectName/$serviceName"
-      return projectServiceToDirs.getOrPut(key) {
+      return projectServiceToGraphQLProjectFiles.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
-        serviceInfo.graphqlSrcDirs +
-            serviceInfo.schemaFiles +
-            serviceInfo.upstreamProjects.flatMap { getAllDirsForProjectService(it, serviceName) }
-      }
-    }
-
-    val projectDir = project.guessProjectDir() ?: return
-    val graphQLProjectFiles = mutableListOf<GraphQLProjectFiles>()
-    for (toolingModel in toolingModels) {
-      for (serviceInfo in toolingModel.serviceInfos) {
-        graphQLProjectFiles += GraphQLProjectFiles(
-            name = "${toolingModel.projectName}/${serviceInfo.name}",
-            includedPaths = getAllDirsForProjectService(toolingModel.projectName, serviceInfo.name).mapNotNull {
-              val virtualFile = VirtualFileManager.getInstance().findFileByNioPath(it.toPath()) ?: return@mapNotNull null
-              val relativePath = VfsUtilCore.getRelativeLocation(virtualFile, projectDir) ?: return@mapNotNull null
-              if (it.isDirectory) "$relativePath/*" else relativePath
-            }.toSet(),
+        val dependenciesProjectFiles = serviceInfo.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
+        GraphQLProjectFiles(
+            name = key,
+            schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
+                dependenciesProjectFiles.flatMap { it.schemaPaths })
+                .distinct(),
+            operationPaths = (serviceInfo.graphqlSrcDirs.mapNotNull { it.toProjectLocalPathOrNull() } +
+                dependenciesProjectFiles.flatMap { it.operationPaths })
+                .distinct(),
         )
       }
     }
 
-    // TODO expose this to the GraphQL plugin
+    val graphQLProjectFiles = mutableListOf<GraphQLProjectFiles>()
+    for (toolingModel in toolingModels) {
+      for (serviceInfo in toolingModel.serviceInfos) {
+        graphQLProjectFiles += getGraphQLProjectFiles(toolingModel.projectName, serviceInfo.name)
+      }
+    }
+    this.graphQLProjectFiles = graphQLProjectFiles
     logd("graphQLProjectFiles=$graphQLProjectFiles")
+
+    // Project files are available, notify interested parties
+    project.messageBus.syncPublisher(GraphQLProjectFilesListener.TOPIC).projectFilesAvailable()
+  }
+
+  private fun File.toProjectLocalPathOrNull(): String? {
+    val projectDir = project.guessProjectDir() ?: return null
+    val virtualFile = VirtualFileManager.getInstance().findFileByNioPath(toPath()) ?: return null
+    return VfsUtilCore.getRelativeLocation(virtualFile, projectDir)
   }
 
   private fun abortFetchToolingModels() {
@@ -151,11 +236,5 @@ class GradleToolingModelService(
   override fun dispose() {
     logd("project=${project.name}")
     abortFetchToolingModels()
-    gradleExecutorService.shutdown()
   }
 }
-
-data class GraphQLProjectFiles(
-    val name: String,
-    val includedPaths: Set<String>,
-)
