@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Platform</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../images/apollo.svg">
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
@@ -29,7 +38,7 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>3.8.2-SNAPSHOT
+    <div>4.0.0-dev.3-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -44,101 +53,127 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-mpp-utils::com.apollographql.apollo3.mpp/Platform///PointingToDeclaration//-432422496">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-mpp-utils</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.mpp</a><span class="delimiter">/</span><a href="index.html">Platform</a></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-mpp-utils::com.apollographql.apollo3.mpp/Platform///PointingToDeclaration//-432422496">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-mpp-utils</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.mpp</a><span class="delimiter">/</span><span class="current">Platform</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Platform</span></span></h1>
-    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="index.html">Platform</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Platform</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>    </div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="index.html">Platform</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Platform</a><span class="token operator">&gt; </span></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Entries">Entries</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button><button class="section-tab" data-togglable="ENTRY">Entries</button></div>
     <div class="tabs-section-body">
-      <h2 class="tabbedcontent">Entries</h2>
-      <div class="table" data-togglable="Entries"><a data-name="-2146016185%2FClasslikes%2F-432422496" anchor-label="Jvm" id="-2146016185%2FClasslikes%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-jvm/index.html">Jvm</a></div>
+      <div data-togglable="ENTRY">
+        <h2 class="">Entries</h2>
+        <div class="table"><a data-name="-2146016185%2FClasslikes%2F-432422496" anchor-label="Jvm" id="-2146016185%2FClasslikes%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="ENTRY" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jvm/index.html">Jvm</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2146016185%2FClasslikes%2F-432422496"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-jvm/index.html">Jvm</a></div><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-jvm/index.html">Jvm</a></div></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-784929703%2FClasslikes%2F-432422496" anchor-label="Native" id="-784929703%2FClasslikes%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-native/index.html">Native</a></div>
+          <div class="table-row" data-togglable="ENTRY" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-native/index.html">Native</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-784929703%2FClasslikes%2F-432422496"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-native/index.html">Native</a></div><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-native/index.html">Native</a></div></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="951309579%2FClasslikes%2F-432422496" anchor-label="Js" id="951309579%2FClasslikes%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-js/index.html">Js</a></div>
+          <div class="table-row" data-togglable="ENTRY" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-js/index.html">Js</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="951309579%2FClasslikes%2F-432422496"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-js/index.html">Js</a></div><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="-js/index.html">Js</a></div></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-372974862%2FProperties%2F-432422496" anchor-label="name" id="-372974862%2FProperties%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-js/index.html#-372974862%2FProperties%2F-432422496"><span><span>name</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-372974862%2FProperties%2F-432422496"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><a data-name="-372974862%2FProperties%2F-432422496" anchor-label="name" id="-372974862%2FProperties%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-js/index.html#-372974862%2FProperties%2F-432422496">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-443909088%2FFunctions%2F-432422496" anchor-label="valueOf" id="-443909088%2FFunctions%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="value-of.html"><span>value</span><wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-443909088%2FFunctions%2F-432422496"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="value-of.html"><span class="token function">valueOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Platform</a></div><div class="brief "><p class="paragraph">Returns the enum constant of this type with the specified name. The string must match exactly an identifier used to declare an enum constant in this type. (Extraneous whitespace characters are not permitted.)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1597374764%2FFunctions%2F-432422496" anchor-label="values" id="1597374764%2FFunctions%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="values.html"><span><span>values</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1597374764%2FFunctions%2F-432422496"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="values.html"><span class="token function">values</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Platform</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns an array containing the constants of this enum type, in the order they're declared.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-372974862%2FProperties%2F-432422496" anchor-label="name" id="-372974862%2FProperties%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-js/index.html#-372974862%2FProperties%2F-432422496"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-372974862%2FProperties%2F-432422496"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-js/index.html#-372974862%2FProperties%2F-432422496">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-739389684%2FProperties%2F-432422496" anchor-label="ordinal" id="-739389684%2FProperties%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-js/index.html#-739389684%2FProperties%2F-432422496"><span><span>ordinal</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-js/index.html#-739389684%2FProperties%2F-432422496"><span><span>ordinal</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-739389684%2FProperties%2F-432422496"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-mpp-utils:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><a data-name="-739389684%2FProperties%2F-432422496" anchor-label="ordinal" id="-739389684%2FProperties%2F-432422496" data-filterable-set=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-js/index.html#-739389684%2FProperties%2F-432422496">ordinal</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-mpp-utils:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-js/index.html#-739389684%2FProperties%2F-432422496">ordinal</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -152,6 +187,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
