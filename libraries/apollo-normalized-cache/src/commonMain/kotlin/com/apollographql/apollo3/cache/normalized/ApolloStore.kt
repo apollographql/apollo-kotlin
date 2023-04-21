@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -39,7 +39,7 @@ interface ApolloStore {
    */
   suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): D
 
@@ -58,7 +58,7 @@ interface ApolloStore {
   suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-      scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): D
 
@@ -75,7 +75,7 @@ interface ApolloStore {
   suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
-      scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true,
   ): Set<String>
@@ -95,7 +95,7 @@ interface ApolloStore {
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
-      scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true,
   ): Set<String>
@@ -112,7 +112,7 @@ interface ApolloStore {
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
-      scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       publish: Boolean = true,
   ): Set<String>
 
@@ -158,7 +158,7 @@ interface ApolloStore {
   fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
   ): Map<String, Record>
 
   /**

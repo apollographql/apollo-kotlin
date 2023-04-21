@@ -2,7 +2,7 @@ package com.apollographql.apollo3.runtime.java.network.http;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
 import com.apollographql.apollo3.api.http.HttpRequest;
@@ -63,8 +63,8 @@ public class HttpNetworkTransport implements NetworkTransport {
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.getBody());
           try {
-            ScalarAdapters scalarAdapters = request.getExecutionContext().get(ScalarAdapters.Key);
-            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, scalarAdapters);
+            CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
+            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
             callback.onResponse(getExceptionResponse(request, new ApolloParseException("Cannot parse response", e)));

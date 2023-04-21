@@ -1,5 +1,5 @@
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
@@ -160,7 +160,7 @@ class IncludeTest {
       }
     }
 
-    val normalized = operation.normalize(data, ScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    val normalized = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
     assertNull((normalized["animal"] as Map<*, *>)["species"])
   }
 
@@ -203,7 +203,7 @@ class IncludeTest {
       }
     }
 
-    val normalized = operation.normalize(data, ScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    val normalized = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
     assertNull((normalized["animal"] as Map<*, *>)["barf"])
   }
 }

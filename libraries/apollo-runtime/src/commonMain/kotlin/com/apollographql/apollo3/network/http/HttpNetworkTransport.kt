@@ -2,8 +2,8 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -46,16 +46,16 @@ private constructor(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val scalarAdapters = request.executionContext[ScalarAdapters]!!
+    val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
     val httpRequest = httpRequestComposer.compose(request)
 
-    return execute(request, httpRequest, scalarAdapters)
+    return execute(request, httpRequest, customScalarAdapters)
   }
 
   fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       httpRequest: HttpRequest,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
   ): Flow<ApolloResponse<D>> {
     return flow {
       val millisStart = currentTimeMillis()
@@ -82,11 +82,11 @@ private constructor(
         // When using @defer, the response contains multiple parts, using the multipart content type.
         // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
         httpResponse.isMultipart -> {
-          multipleResponses(request.operation, scalarAdapters, httpResponse)
+          multipleResponses(request.operation, customScalarAdapters, httpResponse)
         }
 
         else -> {
-          singleResponse(request.operation, scalarAdapters, httpResponse)
+          singleResponse(request.operation, customScalarAdapters, httpResponse)
         }
       }
           .map {
@@ -135,13 +135,13 @@ private constructor(
 
   private fun <D : Operation.Data> singleResponse(
       operation: Operation<D>,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
     val response = try {
       operation.parseJsonResponse(
           jsonReader = httpResponse.body!!.jsonReader(),
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           mergedDeferredFragmentIds = null,
       )
     } catch (e: Exception) {
@@ -153,7 +153,7 @@ private constructor(
 
   private fun <D : Operation.Data> multipleResponses(
       operation: Operation<D>,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
     var jsonMerger: DeferredJsonMerger? = null
@@ -197,7 +197,7 @@ private constructor(
                 // TODO: make parseJsonResponse not close the jsonReader
                 operation.parseJsonResponse(
                     jsonReader = reader,
-                    scalarAdapters = scalarAdapters,
+                    customScalarAdapters = customScalarAdapters,
                     mergedDeferredFragmentIds = null,
                 )
               }
@@ -222,7 +222,7 @@ private constructor(
             } else {
               operation.parseJsonResponse(
                   jsonReader = merged.jsonReader(),
-                  scalarAdapters = scalarAdapters,
+                  customScalarAdapters = customScalarAdapters,
                   mergedDeferredFragmentIds = deferredFragmentIds,
               ).newBuilder().isLast(isLast).build()
             }

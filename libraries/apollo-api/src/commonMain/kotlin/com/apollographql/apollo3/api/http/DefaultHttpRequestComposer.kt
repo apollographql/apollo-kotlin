@@ -2,8 +2,8 @@ package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
@@ -36,7 +36,7 @@ class DefaultHttpRequestComposer(
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val operation = apolloRequest.operation
-    val scalarAdapters = apolloRequest.executionContext[ScalarAdapters] ?: ScalarAdapters.Empty
+    val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
       add(HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()))
@@ -58,7 +58,7 @@ class DefaultHttpRequestComposer(
       HttpMethod.Get -> {
         HttpRequest.Builder(
             method = HttpMethod.Get,
-            url = buildGetUrl(serverUrl, operation, scalarAdapters, sendApqExtensions, sendDocument),
+            url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
         ).addHeaders(requestHeaders)
             .build()
       }
@@ -69,7 +69,7 @@ class DefaultHttpRequestComposer(
             method = HttpMethod.Post,
             url = serverUrl,
         ).addHeaders(requestHeaders)
-            .body(buildPostBody(operation, scalarAdapters, sendApqExtensions, query))
+            .body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
             .build()
       }
     }
@@ -100,19 +100,19 @@ class DefaultHttpRequestComposer(
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
         operation: Operation<D>,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         sendApqExtensions: Boolean,
         sendDocument: Boolean,
     ): String {
       return serverUrl.appendQueryParameters(
-          composeGetParams(operation, scalarAdapters, sendApqExtensions, sendDocument)
+          composeGetParams(operation, customScalarAdapters, sendApqExtensions, sendDocument)
       )
     }
 
     private fun <D : Operation.Data> composePostParams(
         writer: JsonWriter,
         operation: Operation<D>,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         sendApqExtensions: Boolean,
         query: String?,
     ): Map<String, Upload> {
@@ -124,7 +124,7 @@ class DefaultHttpRequestComposer(
         name("variables")
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = false))
+          operation.serializeVariables(this, SerializeVariablesContext(customScalarAdapters = customScalarAdapters, withDefaultBooleanValues = false))
         }
         uploads = uploadAwareWriter.collectedUploads()
 
@@ -155,7 +155,7 @@ class DefaultHttpRequestComposer(
      */
     private fun <D : Operation.Data> composeGetParams(
         operation: Operation<D>,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): Map<String, String> {
@@ -166,7 +166,7 @@ class DefaultHttpRequestComposer(
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = false))
+          operation.serializeVariables(this, SerializeVariablesContext(customScalarAdapters = customScalarAdapters, withDefaultBooleanValues = false))
         }
         check(uploadAwareWriter.collectedUploads().isEmpty()) {
           "FileUpload and Http GET are not supported at the same time"
@@ -216,7 +216,7 @@ class DefaultHttpRequestComposer(
 
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         query: String?,
     ): HttpBody {
@@ -226,7 +226,7 @@ class DefaultHttpRequestComposer(
         uploads = composePostParams(
             this,
             operation,
-            scalarAdapters,
+            customScalarAdapters,
             autoPersistQueries,
             query
         )
@@ -248,13 +248,13 @@ class DefaultHttpRequestComposer(
 
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString {
       return buildJsonByteString {
         val query = if (sendDocument) operation.document() else null
-        composePostParams(this, operation, scalarAdapters, autoPersistQueries, query)
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
       }
     }
 
@@ -265,11 +265,11 @@ class DefaultHttpRequestComposer(
       val operation = apolloRequest.operation
       val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
       val sendDocument = apolloRequest.sendDocument ?: true
-      val scalarAdapters = apolloRequest.executionContext[ScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
+      val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
       val query = if (sendDocument) operation.document() else null
       return buildJsonMap {
-        composePostParams(this, operation, scalarAdapters, sendApqExtensions, query)
+        composePostParams(this, operation, customScalarAdapters, sendApqExtensions, query)
       } as Map<String, Any?>
     }
   }

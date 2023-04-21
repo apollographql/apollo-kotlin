@@ -5,13 +5,13 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -46,7 +46,7 @@ import kotlin.jvm.JvmOverloads
 class ApolloClient
 private constructor(
     val networkTransport: NetworkTransport,
-    val scalarAdapters: ScalarAdapters,
+    val scalarAdapters: CustomScalarAdapters,
     val subscriptionNetworkTransport: NetworkTransport,
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
@@ -180,7 +180,7 @@ private constructor(
 
   @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters"))
   @ApolloDeprecatedSince(v4_0_0)
-  val customScalarAdapters: ScalarAdapters
+  val customScalarAdapters: CustomScalarAdapters
     get() = scalarAdapters
 
   /**
@@ -189,7 +189,7 @@ private constructor(
   class Builder : MutableExecutionOptions<Builder> {
     private var _networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
-    private val scalarAdaptersBuilder = ScalarAdapters.Builder()
+    private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
     val interceptors: List<ApolloInterceptor> = _interceptors
     private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
@@ -381,14 +381,14 @@ private constructor(
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
-    fun scalarAdapters(scalarAdapters: ScalarAdapters) = apply {
-      scalarAdaptersBuilder.clear()
-      scalarAdaptersBuilder.addAll(scalarAdapters)
+    fun scalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
+      customScalarAdaptersBuilder.clear()
+      customScalarAdaptersBuilder.addAll(customScalarAdapters)
     }
 
     @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters(customScalarAdapters)"))
     @ApolloDeprecatedSince(v4_0_0)
-    fun customScalarAdapters(customScalarAdapters: ScalarAdapters) = apply {
+    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
       scalarAdapters(customScalarAdapters)
     }
 
@@ -401,7 +401,7 @@ private constructor(
      * @param adapter the [Adapter] to use for this custom scalar
      */
     fun <T> addScalarAdapter(scalarType: ScalarType, adapter: Adapter<T>) = apply {
-      scalarAdaptersBuilder.add(scalarType, adapter)
+      customScalarAdaptersBuilder.add(scalarType, adapter)
     }
 
     @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, customScalarAdapter)"))
@@ -577,7 +577,7 @@ private constructor(
       return ApolloClient(
           networkTransport = networkTransport,
           subscriptionNetworkTransport = subscriptionNetworkTransport,
-          scalarAdapters = scalarAdaptersBuilder.build(),
+          scalarAdapters = customScalarAdaptersBuilder.build(),
           interceptors = _interceptors,
           dispatcher = dispatcher,
           executionContext = executionContext,
@@ -598,7 +598,7 @@ private constructor(
     fun copy(): Builder {
       @Suppress("DEPRECATION")
       val builder = Builder()
-          .scalarAdapters(scalarAdaptersBuilder.build())
+          .scalarAdapters(customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)

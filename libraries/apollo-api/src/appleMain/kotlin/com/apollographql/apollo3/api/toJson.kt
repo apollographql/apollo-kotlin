@@ -11,10 +11,10 @@ import kotlin.reflect.findAssociatedObject
 @OptIn(ExperimentalAssociatedObjects::class)
 actual fun Operation.Data.toJson(
     jsonWriter: JsonWriter,
-    scalarAdapters: ScalarAdapters,
+    customScalarAdapters: CustomScalarAdapters,
 ) {
   @Suppress("UNCHECKED_CAST")
   val adapter = this::class.findAssociatedObject<ApolloAdaptableWith>() as DataAdapter<Any>
 
-  adapter.obj(false).toJson(jsonWriter, scalarAdapters, this)
+  adapter.obj(false).toJson(jsonWriter, customScalarAdapters, this)
 }

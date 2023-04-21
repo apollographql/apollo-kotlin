@@ -235,11 +235,11 @@ internal class PassThroughDataAdapter<T> : DataAdapter<T> {
 
 class AdapterToDataAdapter<T>(private val wrappedAdapter: Adapter<T>) : DataAdapter<T> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
-    return wrappedAdapter.fromJson(reader, ScalarAdapters.Empty)
+    return wrappedAdapter.fromJson(reader, CustomScalarAdapters.Empty)
   }
 
   override fun serializeData(writer: JsonWriter, value: T, context: SerializeDataContext) {
-    wrappedAdapter.toJson(writer, ScalarAdapters.Empty, value)
+    wrappedAdapter.toJson(writer, CustomScalarAdapters.Empty, value)
   }
 }
 
@@ -350,7 +350,7 @@ fun <T> DataAdapter<T>.present() = PresentDataAdapter(this)
 @JvmOverloads
 fun <T> DataAdapter<T>.toJsonString(
     value: T,
-    context: SerializeDataContext = SerializeDataContext(scalarAdapters = ScalarAdapters.Empty),
+    context: SerializeDataContext = SerializeDataContext(customScalarAdapters = CustomScalarAdapters.Empty),
     indent: String? = null,
 ): String = buildJsonString(indent) {
   this@toJsonString.serializeData(this, value, context)

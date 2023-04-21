@@ -1,7 +1,7 @@
 package test.declarativecache
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -37,7 +37,7 @@ class DeclarativeCacheTest {
     store.writeOperation(otherOperation, otherData)
 
     // Get the "promo" book again, the title must be updated
-    val data = store.readOperation(promoOperation, ScalarAdapters.Empty)
+    val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
     assertEquals("Other", data.promoBook?.title)
   }
@@ -57,7 +57,7 @@ class DeclarativeCacheTest {
     store.writeOperation(otherOperation, otherData)
 
     // Get the "promo" library again, the address must be updated
-    val data = store.readOperation(promoOperation, ScalarAdapters.Empty)
+    val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
     assertEquals("OtherAddress", data.promoLibrary?.address)
   }
@@ -71,7 +71,7 @@ class DeclarativeCacheTest {
     store.writeOperation(bookQuery1, bookData1)
 
     val bookQuery2 = GetBookQuery("42")
-    val bookData2 = store.readOperation(bookQuery2, ScalarAdapters.Empty)
+    val bookData2 = store.readOperation(bookQuery2, CustomScalarAdapters.Empty)
 
     assertEquals("Promo", bookData2.book?.title)
 
@@ -87,7 +87,7 @@ class DeclarativeCacheTest {
     store.writeOperation(authorQuery1, authorData1)
 
     val authorQuery2 = GetAuthorQuery("Pierre", "Bordage")
-    val authorData2 = store.readOperation(authorQuery2, ScalarAdapters.Empty)
+    val authorData2 = store.readOperation(authorQuery2, CustomScalarAdapters.Empty)
 
     assertEquals("Pierre", authorData2.author?.firstName)
     assertEquals("Bordage", authorData2.author?.lastName)
@@ -117,13 +117,13 @@ class DeclarativeCacheTest {
     store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title4", "4", "Book")))
 
     var operation = GetBooksQuery(listOf("4", "1"))
-    var data = store.readOperation(operation, ScalarAdapters.Empty)
+    var data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
     assertEquals("Title4", data.books.get(0).title)
     assertEquals("Title1", data.books.get(1).title)
 
     operation = GetBooksQuery(listOf("3"))
-    data = store.readOperation(operation, ScalarAdapters.Empty)
+    data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
     assertEquals("Title3", data.books.get(0).title)
   }

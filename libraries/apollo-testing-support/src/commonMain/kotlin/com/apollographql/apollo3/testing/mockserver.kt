@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
@@ -13,24 +13,24 @@ import com.apollographql.apollo3.mockserver.enqueue
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
-    delayMs: Long = 0
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    delayMs: Long = 0,
 ) {
   val json = buildJsonString {
-    operation.composeJsonResponse(jsonWriter = this, data = data, scalarAdapters = scalarAdapters)
+    operation.composeJsonResponse(jsonWriter = this, data = data, customScalarAdapters = customScalarAdapters)
   }
   enqueue(json, delayMs)
 }
 
 fun MockServer.enqueueData(
     data: Map<String, Any?>,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     delayMs: Long = 0,
-    statusCode: Int = 200
+    statusCode: Int = 200,
 ) {
 
   val response = buildJsonString {
-    AnyDataAdapter.toJson(this, scalarAdapters, mapOf("data" to data))
+    AnyDataAdapter.toJson(this, customScalarAdapters, mapOf("data" to data))
   }
 
   enqueue(MockResponse.Builder()
@@ -43,14 +43,14 @@ fun MockServer.enqueueData(
 
 fun MockServer.enqueueData(
     data: Operation.Data,
-    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     delayMs: Long = 0,
-    statusCode: Int = 200
+    statusCode: Int = 200,
 ) {
   val response = buildJsonString {
     beginObject()
     name("data")
-    data.toJson(this, scalarAdapters)
+    data.toJson(this, customScalarAdapters)
     endObject()
   }
   enqueue(MockResponse.Builder()

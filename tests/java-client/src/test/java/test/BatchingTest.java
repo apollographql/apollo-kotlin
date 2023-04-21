@@ -3,8 +3,8 @@ package test;
 import batching.GetLaunch2Query;
 import batching.GetLaunchQuery;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.mockserver.MockRequest;
@@ -96,7 +96,7 @@ public class BatchingTest {
     Truth.assertThat(items).containsExactly("83", "84");
 
     MockRequest request = mockServer.takeRequest();
-    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
 
     Truth.assertThat(requests).hasSize(2);
     Truth.assertThat(requests.get(0).get("operationName")).isEqualTo("GetLaunch");
@@ -237,7 +237,7 @@ public class BatchingTest {
     Truth.assertThat(items).containsExactly("83", "84");
 
     MockRequest request = mockServer.takeRequest();
-    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
 
     Truth.assertThat(requests).hasSize(2);
     Truth.assertThat(requests.get(0).get("operationName")).isEqualTo("GetLaunch");

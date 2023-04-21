@@ -2,7 +2,7 @@ package test.fragment_normalizer
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.normalize
@@ -64,14 +64,14 @@ class FragmentNormalizerTest{
         ConversationFragmentImpl(),
         CacheKey(fragment1.id),
         fragment1Read,
-        ScalarAdapters.Empty
+        CustomScalarAdapters.Empty
     )
 
     apolloClient.apolloStore.writeFragment(
         ConversationFragmentImpl(),
         CacheKey(fragment2.id),
         fragment2Read,
-        ScalarAdapters.Empty
+        CustomScalarAdapters.Empty
     )
 
     fragment1 = apolloClient.apolloStore.readFragment(
@@ -94,7 +94,7 @@ class FragmentNormalizerTest{
 
     val records = ConversationFragmentImpl().normalize(
         fragment,
-        ScalarAdapters.Empty,
+        CustomScalarAdapters.Empty,
         IdCacheKeyGenerator,
         "1",
     )

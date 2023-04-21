@@ -1,7 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
@@ -49,7 +49,7 @@ class CookiesTest {
         .build()
 
     val json = buildJsonString {
-      HeroNameQuery().adapter().toJson(this, ScalarAdapters.Empty, HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))
+      HeroNameQuery().adapter().toJson(this, CustomScalarAdapters.Empty, HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))
     }
 
     mockServer.enqueue(MockResponse.Builder().body(json).addHeader("Set-Cookie", "yummy_cookie=choco").build())

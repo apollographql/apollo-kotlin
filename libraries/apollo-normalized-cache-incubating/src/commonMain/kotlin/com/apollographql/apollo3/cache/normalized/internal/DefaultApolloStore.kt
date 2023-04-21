@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -92,11 +92,11 @@ internal class DefaultApolloStore(
   override fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
   ): Map<String, Record> {
     return operation.normalize(
         data = data,
-        scalarAdapters = scalarAdapters,
+        customScalarAdapters = customScalarAdapters,
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
     )
@@ -104,12 +104,12 @@ internal class DefaultApolloStore(
 
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
     return lock.read {
       operation.readDataFromCacheInternal(
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
@@ -121,12 +121,12 @@ internal class DefaultApolloStore(
   override suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
     return lock.read {
       fragment.readDataFromCacheInternal(
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
@@ -146,7 +146,7 @@ internal class DefaultApolloStore(
   override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
@@ -155,7 +155,7 @@ internal class DefaultApolloStore(
         operationData = operationData,
         cacheHeaders = cacheHeaders,
         publish = publish,
-        scalarAdapters = scalarAdapters
+        customScalarAdapters = customScalarAdapters
     ).second
   }
 
@@ -163,14 +163,14 @@ internal class DefaultApolloStore(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
     val changedKeys = lock.write {
       val records = fragment.normalize(
           data = fragmentData,
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
           rootKey = cacheKey.key
@@ -191,12 +191,12 @@ internal class DefaultApolloStore(
       operationData: D,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
     val (records, changedKeys) = lock.write {
       val records = operation.normalize(
           data = operationData,
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
       )
@@ -215,13 +215,13 @@ internal class DefaultApolloStore(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
     val changedKeys = lock.write {
       val records = operation.normalize(
           data = operationData,
-          scalarAdapters = scalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
       ).values.map { record ->
@@ -277,7 +277,7 @@ internal class DefaultApolloStore(
   companion object {
     private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
         cacheKey: CacheKey,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         cache: ReadOnlyNormalizedCache,
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
@@ -285,7 +285,7 @@ internal class DefaultApolloStore(
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCache(
             cacheKey,
-            scalarAdapters,
+            customScalarAdapters,
             cache,
             cacheResolver,
             cacheHeaders
@@ -293,7 +293,7 @@ internal class DefaultApolloStore(
 
         is ApolloResolver -> readDataFromCache(
             cacheKey,
-            scalarAdapters,
+            customScalarAdapters,
             cache,
             cacheResolver,
             cacheHeaders

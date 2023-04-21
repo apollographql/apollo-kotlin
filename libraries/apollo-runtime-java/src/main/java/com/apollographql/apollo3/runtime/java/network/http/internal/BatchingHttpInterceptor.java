@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.runtime.java.network.http.internal;
 
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpBody;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpKt;
@@ -185,7 +185,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
 
           Object fromJson;
           try {
-            fromJson = AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(responseBody), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+            fromJson = AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(responseBody), new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
           } catch (IOException e) {
             throw new ApolloNetworkException("failed to parse batched response JSON", e);
           }
@@ -230,7 +230,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      AnyDataAdapter.serializeData(writer, o, new SerializeDataContext(ScalarAdapters.Empty));
+      AnyDataAdapter.serializeData(writer, o, new SerializeDataContext(CustomScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();

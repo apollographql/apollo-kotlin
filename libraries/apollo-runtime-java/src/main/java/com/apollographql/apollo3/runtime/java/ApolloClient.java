@@ -2,6 +2,7 @@ package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.ExecutionContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
@@ -9,7 +10,6 @@ import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.ScalarType;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
@@ -48,7 +48,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 public class ApolloClient implements Closeable {
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
-  private ScalarAdapters scalarAdapters;
+  private CustomScalarAdapters customScalarAdapters;
   private NetworkInterceptor networkInterceptor;
   private HttpMethod httpMethod;
   private List<HttpHeader> httpHeaders;
@@ -62,7 +62,7 @@ public class ApolloClient implements Closeable {
       NetworkTransport httpNetworkTransport,
       NetworkTransport subscriptionNetworkTransport,
       List<ApolloInterceptor> interceptors,
-      ScalarAdapters scalarAdapters,
+      CustomScalarAdapters customScalarAdapters,
       HttpMethod httpMethod,
       List<HttpHeader> httpHeaders,
       Boolean sendApqExtensions,
@@ -72,7 +72,7 @@ public class ApolloClient implements Closeable {
   ) {
     this.executor = executor;
     this.interceptors = interceptors;
-    this.scalarAdapters = scalarAdapters;
+    this.customScalarAdapters = customScalarAdapters;
     this.httpMethod = httpMethod;
     this.httpHeaders = httpHeaders;
     this.sendApqExtensions = sendApqExtensions;
@@ -100,7 +100,7 @@ public class ApolloClient implements Closeable {
 
   public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> apolloRequest, @NotNull ApolloCallback<D> callback) {
     ApolloRequest.Builder<D> requestBuilder = new ApolloRequest.Builder<>(apolloRequest.getOperation())
-        .addExecutionContext(scalarAdapters)
+        .addExecutionContext(customScalarAdapters)
         .addExecutionContext(apolloRequest.getExecutionContext())
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
@@ -151,8 +151,8 @@ public class ApolloClient implements Closeable {
     }
   }
 
-  public ScalarAdapters getScalarAdapters() {
-    return scalarAdapters;
+  public CustomScalarAdapters getScalarAdapters() {
+    return customScalarAdapters;
   }
 
   public void close() {
@@ -177,7 +177,7 @@ public class ApolloClient implements Closeable {
     private List<HttpHeader> wsHeaders = new ArrayList<>();
     private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
     private Long wsIdleTimeoutMillis;
-    private final ScalarAdapters.Builder scalarAdaptersBuilder = new ScalarAdapters.Builder();
+    private final CustomScalarAdapters.Builder scalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
     private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
@@ -286,9 +286,9 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder scalarAdapters(@NotNull ScalarAdapters scalarAdapters) {
+    public Builder scalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
       this.scalarAdaptersBuilder.clear();
-      this.scalarAdaptersBuilder.addAll(scalarAdapters);
+      this.scalarAdaptersBuilder.addAll(customScalarAdapters);
       return this;
     }
 

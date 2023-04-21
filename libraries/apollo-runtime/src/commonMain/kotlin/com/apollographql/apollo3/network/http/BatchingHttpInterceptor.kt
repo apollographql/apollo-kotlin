@@ -3,9 +3,9 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -183,7 +183,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       val responseBody = response.body ?: throw DefaultApolloException("null body when executing batched query")
 
       // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
-      val list = AnyDataAdapter.fromJson(BufferedSourceJsonReader(responseBody), ScalarAdapters.Empty)
+      val list = AnyDataAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
       if (list !is List<*>) throw DefaultApolloException("batched query response is not a list when executing batched query")
 
       if (list.size != pending.size) {
@@ -195,7 +195,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
           throw DefaultApolloException("batched query response contains a null item")
         }
         (buildJsonByteString {
-          AnyDataAdapter.toJson(this, ScalarAdapters.Empty, it)
+          AnyDataAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         })
       }
     } catch (e: Exception) {

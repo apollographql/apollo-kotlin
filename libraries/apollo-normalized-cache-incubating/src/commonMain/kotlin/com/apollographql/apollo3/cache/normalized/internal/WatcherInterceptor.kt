@@ -2,7 +2,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -25,10 +25,10 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
       "It's impossible to watch a mutation or subscription"
     }
 
-    val scalarAdapters = request.executionContext[ScalarAdapters]!!
+    val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
 
     @Suppress("UNCHECKED_CAST")
-    var watchedKeys: Set<String>? = watchContext.data?.let { store.normalize(request.operation, it as D, scalarAdapters).values.dependentKeys() }
+    var watchedKeys: Set<String>? = watchContext.data?.let { store.normalize(request.operation, it as D, customScalarAdapters).values.dependentKeys() }
 
     return store.changedKeys
         .filter { changedKeys ->
@@ -37,7 +37,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
           chain.proceed(request.newBuilder().build())
               .onEach { response ->
                 if (response.data != null) {
-                  watchedKeys = store.normalize(request.operation, response.data!!, scalarAdapters).values.dependentKeys()
+                  watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
                 }
               }
         }
