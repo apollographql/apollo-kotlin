@@ -197,6 +197,7 @@ private constructor(
     private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
     private var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
+    private var webSocketReopenServerUrl: (suspend () -> String)? = null
 
     init {
       failOnNativeIfLegacyMemoryManager()
@@ -316,11 +317,26 @@ private constructor(
 
     /**
      * The url of the GraphQL server used for WebSockets
+     * Use this function or webSocketServerUrl((suspend () -> String)) but not both.
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
     fun webSocketServerUrl(webSocketServerUrl: String) = apply {
       this.webSocketServerUrl = webSocketServerUrl
+    }
+
+    /**
+     * Configure dynamically the url of the GraphQL server used for WebSockets.
+     * Use this function or webSocketServerUrl(String) but not both.
+     *
+     * @param webSocketServerUrl a function returning the new server URL.
+     * This function will be called every time a WebSocket is opened. For example, you can use it to update your
+     * auth credentials in case of an unauthorized error.
+     *
+     * It is a suspending function, so it can be used to introduce delay before setting the new server URL.
+     */
+    fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)) = apply {
+      this.webSocketReopenServerUrl = webSocketServerUrl
     }
 
     /**
@@ -527,6 +543,9 @@ private constructor(
         check(webSocketReopenWhen == null) {
           "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set"
         }
+        check(webSocketReopenServerUrl == null) {
+          "Apollo: 'webSocketReopenServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+        }
         subscriptionNetworkTransport!!
       } else {
         val url = webSocketServerUrl ?: httpServerUrl
@@ -549,6 +568,9 @@ private constructor(
                 }
                 if (webSocketReopenWhen != null) {
                   reopenWhen(webSocketReopenWhen)
+                }
+                if (webSocketReopenServerUrl != null) {
+                  serverUrl(webSocketReopenServerUrl)
                 }
               }
               .build()
@@ -599,6 +621,7 @@ private constructor(
       }
       subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
       webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
+      webSocketReopenServerUrl?.let { builder.webSocketServerUrl(it) }
       webSocketEngine?.let { builder.webSocketEngine(it) }
       webSocketReopenWhen?.let { builder.webSocketReopenWhen(it) }
       webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
