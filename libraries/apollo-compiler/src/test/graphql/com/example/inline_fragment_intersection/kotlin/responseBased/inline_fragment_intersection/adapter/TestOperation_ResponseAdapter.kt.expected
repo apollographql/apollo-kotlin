@@ -5,12 +5,11 @@
 //
 package com.example.inline_fragment_intersection.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableBooleanAdapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableBooleanDataAdapter
+import com.apollographql.apollo3.api.NullableDoubleDataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -26,16 +25,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : Adapter<TestOperation.Data> {
+  public object Data : DataAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _random = Random.obj().fromJson(reader, customScalarAdapters)
+          0 -> _random = Random.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -45,41 +44,40 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("random")
-      Random.obj().toJson(writer, customScalarAdapters, value.random)
+      Random.obj().serializeData(writer, value.random, context)
     }
 
-    private object Random : Adapter<TestOperation.Data.Random> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Random {
+    private object Random : DataAdapter<TestOperation.Data.Random> {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestOperation.Data.Random {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> BeingHumanRandom.fromJson(reader, customScalarAdapters, __typename)
+          -> BeingHumanRandom.deserializeData(reader, context, __typename)
           "Wookie",
-          -> BeingWookieRandom.fromJson(reader, customScalarAdapters, __typename)
+          -> BeingWookieRandom.deserializeData(reader, context, __typename)
           else
-          -> OtherRandom.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherRandom.deserializeData(reader, context, __typename)
         }
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Random,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
-          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherRandom -> OtherRandom.toJson(writer, customScalarAdapters,
-              value)
+          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.serializeData(writer, value,
+              context)
+          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.serializeData(writer, value,
+              context)
+          is TestOperation.Data.OtherRandom -> OtherRandom.serializeData(writer, value, context)
         }
       }
     }
@@ -88,9 +86,9 @@ public object TestOperation_ResponseAdapter {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends",
           "profilePictureUrl")
 
-      public fun fromJson(
+      public fun deserializeData(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.BeingHumanRandom {
         var __typename: String? = typename
@@ -100,10 +98,10 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
-            3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            2 -> _friends = Friend.obj().list().deserializeData(reader, context)
+            3 -> _profilePictureUrl = NullableStringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -116,47 +114,47 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.BeingHumanRandom,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringDataAdapter.serializeData(writer, value.name, context)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
+        Friend.obj().list().serializeData(writer, value.friends, context)
 
         writer.name("profilePictureUrl")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
+        NullableStringDataAdapter.serializeData(writer, value.profilePictureUrl, context)
       }
 
-      private object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+      private object Friend : DataAdapter<TestOperation.Data.BeingHumanRandom.Friend> {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             TestOperation.Data.BeingHumanRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
-            -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)
+            -> WookieFriend.deserializeData(reader, context, __typename)
             else
-            -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
+            -> OtherFriend.deserializeData(reader, context, __typename)
           }
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.Friend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           when(value) {
-            is TestOperation.Data.BeingHumanRandom.WookieFriend -> WookieFriend.toJson(writer,
-                customScalarAdapters, value)
-            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.toJson(writer,
-                customScalarAdapters, value)
+            is TestOperation.Data.BeingHumanRandom.WookieFriend ->
+                WookieFriend.serializeData(writer, value, context)
+            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.serializeData(writer,
+                value, context)
           }
         }
       }
@@ -165,9 +163,9 @@ public object TestOperation_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy",
             "isFamous", "race")
 
-        public fun fromJson(
+        public fun deserializeData(
           reader: JsonReader,
-          customScalarAdapters: CustomScalarAdapters,
+          context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.WookieFriend {
           var __typename: String? = typename
@@ -178,11 +176,11 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-              3 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
-              4 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              2 -> _lifeExpectancy = NullableDoubleDataAdapter.deserializeData(reader, context)
+              3 -> _isFamous = NullableBooleanDataAdapter.deserializeData(reader, context)
+              4 -> _race = Race_ResponseAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -196,34 +194,34 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public fun toJson(
+        public fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.WookieFriend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context)
 
           writer.name("isFamous")
-          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
+          NullableBooleanDataAdapter.serializeData(writer, value.isFamous, context)
 
           writer.name("race")
-          Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
+          Race_ResponseAdapter.serializeData(writer, value.race, context)
         }
       }
 
       public object OtherFriend {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous")
 
-        public fun fromJson(
+        public fun deserializeData(
           reader: JsonReader,
-          customScalarAdapters: CustomScalarAdapters,
+          context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.OtherFriend {
           var __typename: String? = typename
@@ -232,9 +230,9 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              2 -> _isFamous = NullableBooleanDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -246,19 +244,19 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public fun toJson(
+        public fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.OtherFriend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
 
           writer.name("isFamous")
-          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
+          NullableBooleanDataAdapter.serializeData(writer, value.isFamous, context)
         }
       }
     }
@@ -266,9 +264,9 @@ public object TestOperation_ResponseAdapter {
     public object BeingWookieRandom {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends", "race")
 
-      public fun fromJson(
+      public fun deserializeData(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.BeingWookieRandom {
         var __typename: String? = typename
@@ -278,10 +276,10 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
-            3 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            2 -> _friends = Friend.obj().list().deserializeData(reader, context)
+            3 -> _race = Race_ResponseAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -294,47 +292,47 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.BeingWookieRandom,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringDataAdapter.serializeData(writer, value.name, context)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
+        Friend.obj().list().serializeData(writer, value.friends, context)
 
         writer.name("race")
-        Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
+        Race_ResponseAdapter.serializeData(writer, value.race, context)
       }
 
-      private object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+      private object Friend : DataAdapter<TestOperation.Data.BeingWookieRandom.Friend> {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             TestOperation.Data.BeingWookieRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
-            -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)
+            -> WookieFriend.deserializeData(reader, context, __typename)
             else
-            -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
+            -> OtherFriend.deserializeData(reader, context, __typename)
           }
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.Friend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           when(value) {
-            is TestOperation.Data.BeingWookieRandom.WookieFriend -> WookieFriend.toJson(writer,
-                customScalarAdapters, value)
-            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.toJson(writer,
-                customScalarAdapters, value)
+            is TestOperation.Data.BeingWookieRandom.WookieFriend ->
+                WookieFriend.serializeData(writer, value, context)
+            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.serializeData(writer,
+                value, context)
           }
         }
       }
@@ -342,9 +340,9 @@ public object TestOperation_ResponseAdapter {
       public object WookieFriend {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy")
 
-        public fun fromJson(
+        public fun deserializeData(
           reader: JsonReader,
-          customScalarAdapters: CustomScalarAdapters,
+          context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.WookieFriend {
           var __typename: String? = typename
@@ -353,9 +351,9 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              2 -> _lifeExpectancy = NullableDoubleDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -367,28 +365,28 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public fun toJson(
+        public fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.WookieFriend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context)
         }
       }
 
       public object OtherFriend {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy")
 
-        public fun fromJson(
+        public fun deserializeData(
           reader: JsonReader,
-          customScalarAdapters: CustomScalarAdapters,
+          context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.OtherFriend {
           var __typename: String? = typename
@@ -397,9 +395,9 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              2 -> _lifeExpectancy = NullableDoubleDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -411,19 +409,19 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public fun toJson(
+        public fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.OtherFriend,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context)
         }
       }
     }
@@ -431,16 +429,16 @@ public object TestOperation_ResponseAdapter {
     public object OtherRandom {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun fromJson(
+      public fun deserializeData(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.OtherRandom {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -450,13 +448,13 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherRandom,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
       }
     }
   }

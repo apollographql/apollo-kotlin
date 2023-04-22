@@ -5,51 +5,49 @@
 //
 package com.example.java_primitive_types.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.NullableIntDataAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.java_primitive_types.JavaPrimitiveQuery
 import com.example.java_primitive_types.type.adapter.MyInput_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object JavaPrimitiveQuery_VariablesAdapter : Adapter<JavaPrimitiveQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      JavaPrimitiveQuery = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object JavaPrimitiveQuery_VariablesAdapter : VariablesAdapter<JavaPrimitiveQuery> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: JavaPrimitiveQuery,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntDataAdapter.present().serializeData(writer, value.nullableInt,
+          serializeDataContext)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+    IntDataAdapter.serializeData(writer, value.nonNullableInt, serializeDataContext)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+      IntDataAdapter.present().serializeData(writer, value.nonNullableIntWithDefault,
+          serializeDataContext)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
-      MyInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.nullableInput)
+      MyInput_InputAdapter.obj().nullable().present().serializeData(writer, value.nullableInput,
+          serializeDataContext)
     }
     writer.name("nonNullableInput")
-    MyInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.nonNullableInput)
+    MyInput_InputAdapter.obj().serializeData(writer, value.nonNullableInput, serializeDataContext)
     if (value.nonNullableInputWithDefault is Optional.Present) {
       writer.name("nonNullableInputWithDefault")
-      MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters,
-          value.nonNullableInputWithDefault)
+      MyInput_InputAdapter.obj().present().serializeData(writer, value.nonNullableInputWithDefault,
+          serializeDataContext)
     }
   }
 }

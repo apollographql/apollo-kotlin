@@ -5,12 +5,12 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -30,11 +30,11 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DogFragment> =
+  public override fun adapter(): DataAdapter<DogFragment> =
       DogFragmentImpl_ResponseAdapter.DogFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

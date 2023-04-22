@@ -5,32 +5,28 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object QueryFragmentImpl_VariablesAdapter : Adapter<QueryFragmentImpl> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      QueryFragmentImpl = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object QueryFragmentImpl_VariablesAdapter : VariablesAdapter<QueryFragmentImpl> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: QueryFragmentImpl,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     writer.name("organizationId")
-    StringAdapter.toJson(writer, customScalarAdapters, value.organizationId)
+    StringDataAdapter.serializeData(writer, value.organizationId, serializeDataContext)
     writer.name("query")
-    UserQuery_InputAdapter.obj().toJson(writer, customScalarAdapters, value.query)
+    UserQuery_InputAdapter.obj().serializeData(writer, value.query, serializeDataContext)
     writer.name("size")
-    IntAdapter.toJson(writer, customScalarAdapters, value.size)
+    IntDataAdapter.serializeData(writer, value.size, serializeDataContext)
   }
 }

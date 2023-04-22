@@ -5,13 +5,13 @@
 //
 package com.example.inline_fragment_with_include_directive.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.ScalarType
 
 /**
  * The `Boolean` scalar type represents `true` or `false`.
  */
 public class GraphQLBoolean {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("Boolean", "kotlin.Boolean")
+    public val type: ScalarType = ScalarType("Boolean", "kotlin.Boolean")
   }
 }

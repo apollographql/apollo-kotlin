@@ -5,11 +5,10 @@
 //
 package com.example.antlr_tokens.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.antlr_tokens.TestQuery;
@@ -20,20 +19,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("typeWithGraphQLKeywords");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.TypeWithGraphQLKeywords _typeWithGraphQLKeywords = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _typeWithGraphQLKeywords = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -44,21 +43,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("typeWithGraphQLKeywords");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, customScalarAdapters, value.typeWithGraphQLKeywords);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).serializeData(writer, value.typeWithGraphQLKeywords, context);
     }
   }
 
-  public enum TypeWithGraphQLKeywords implements Adapter<TestQuery.TypeWithGraphQLKeywords> {
+  public enum TypeWithGraphQLKeywords implements DataAdapter<TestQuery.TypeWithGraphQLKeywords> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("on", "null", "alias");
 
     @Override
-    public TestQuery.TypeWithGraphQLKeywords fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.TypeWithGraphQLKeywords deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _on = null;
       String _null = null;
       String _alias = null;
@@ -66,9 +65,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _on = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _null = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _alias = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _on = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 1: _null = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 2: _alias = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -81,16 +80,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.TypeWithGraphQLKeywords value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.TypeWithGraphQLKeywords value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("on");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.on);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.on, context);
 
       writer.name("null");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.null_);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.null_, context);
 
       writer.name("alias");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.alias);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.alias, context);
     }
   }
 }

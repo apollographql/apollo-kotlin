@@ -5,9 +5,8 @@
 //
 package com.example.multiple_fragments.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _a: TestQuery.Data.A? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = A.obj(true).nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -37,32 +36,32 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("a")
-      A.obj(true).nullable().toJson(writer, customScalarAdapters, value.a)
+      A.obj(true).nullable().serializeData(writer, value.a, context)
     }
 
-    private object A : Adapter<TestQuery.Data.A> {
+    private object A : DataAdapter<TestQuery.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.A {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.A {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
-        val _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
-            customScalarAdapters)
+        val _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.deserializeData(reader,
+            context)
 
         return TestQuery.Data.A(
           __typename = __typename!!,
@@ -70,16 +69,16 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.A,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
-        com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
-            customScalarAdapters, value.aFragment)
+        com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.serializeData(writer,
+            value.aFragment, context)
       }
     }
   }

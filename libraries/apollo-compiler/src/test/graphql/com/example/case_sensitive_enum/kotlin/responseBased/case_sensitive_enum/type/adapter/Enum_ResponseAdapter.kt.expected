@@ -5,24 +5,23 @@
 //
 package com.example.case_sensitive_enum.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.case_sensitive_enum.type.Enum
 import kotlin.Unit
 
-public object Enum_ResponseAdapter : Adapter<Enum> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      Enum {
+public object Enum_ResponseAdapter : DataAdapter<Enum> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): Enum {
     val rawValue = reader.nextString()!!
     return Enum.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: Enum,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.value(value.rawValue)
   }

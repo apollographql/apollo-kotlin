@@ -5,24 +5,23 @@
 //
 package com.example.suppressed_warnings.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.suppressed_warnings.type.Direction
 import kotlin.Unit
 
-public object Direction_ResponseAdapter : Adapter<Direction> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      Direction {
+public object Direction_ResponseAdapter : DataAdapter<Direction> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): Direction {
     val rawValue = reader.nextString()!!
     return Direction.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: Direction,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.value(value.rawValue)
   }

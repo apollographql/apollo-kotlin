@@ -5,11 +5,10 @@
 //
 package com.example.named_fragment_with_variables.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableBooleanAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableBooleanDataAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -17,20 +16,21 @@ import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object UserQuery_InputAdapter : Adapter<UserQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      UserQuery = throw IllegalStateException("Input type used in output position")
+public object UserQuery_InputAdapter : DataAdapter<UserQuery> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): UserQuery = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: UserQuery,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.name("name")
-    StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    StringDataAdapter.serializeData(writer, value.name, context)
     if (value.isAdmin is Optional.Present) {
       writer.name("isAdmin")
-      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters, value.isAdmin)
+      NullableBooleanDataAdapter.present().serializeData(writer, value.isAdmin, context)
     }
   }
 }

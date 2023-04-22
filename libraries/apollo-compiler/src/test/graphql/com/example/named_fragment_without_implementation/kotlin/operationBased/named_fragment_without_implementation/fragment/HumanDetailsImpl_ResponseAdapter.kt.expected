@@ -5,9 +5,8 @@
 //
 package com.example.named_fragment_without_implementation.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableDoubleDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.Double
@@ -17,16 +16,17 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails :
-      Adapter<com.example.named_fragment_without_implementation.fragment.HumanDetails> {
+      DataAdapter<com.example.named_fragment_without_implementation.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("height")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.named_fragment_without_implementation.fragment.HumanDetails {
       var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _height = NullableDoubleDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
@@ -36,13 +36,13 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_without_implementation.fragment.HumanDetails,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("height")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+      NullableDoubleDataAdapter.serializeData(writer, value.height, context)
     }
   }
 }

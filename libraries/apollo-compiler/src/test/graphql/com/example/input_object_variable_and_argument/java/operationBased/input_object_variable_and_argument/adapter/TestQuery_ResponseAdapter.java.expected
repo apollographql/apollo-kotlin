@@ -5,12 +5,11 @@
 //
 package com.example.input_object_variable_and_argument.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_variable_and_argument.TestQuery;
@@ -22,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("heroWithReview");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.HeroWithReview _heroWithReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _heroWithReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _heroWithReview = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -46,29 +45,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("heroWithReview");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.heroWithReview);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).serializeData(writer, value.heroWithReview, context);
     }
   }
 
-  public enum HeroWithReview implements Adapter<TestQuery.HeroWithReview> {
+  public enum HeroWithReview implements DataAdapter<TestQuery.HeroWithReview> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "height");
 
     @Override
-    public TestQuery.HeroWithReview fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.HeroWithReview deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _height = DataAdapters.NullableDoubleDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -82,13 +81,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.HeroWithReview value) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.HeroWithReview value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("height");
-      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
+      DataAdapters.NullableDoubleDataAdapter.serializeData(writer, value.height, context);
     }
   }
 }

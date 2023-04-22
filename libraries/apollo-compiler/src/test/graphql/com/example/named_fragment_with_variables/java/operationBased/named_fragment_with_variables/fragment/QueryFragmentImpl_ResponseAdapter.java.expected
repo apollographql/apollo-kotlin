@@ -5,13 +5,12 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -21,20 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentImpl_ResponseAdapter {
-  public enum QueryFragment implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+  public enum QueryFragment implements DataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("organization");
 
     @Override
-    public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_with_variables.fragment.QueryFragment deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       com.example.named_fragment_with_variables.fragment.QueryFragment.Organization _organization = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _organization = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -45,29 +44,30 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment value) throws IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("organization");
-      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, customScalarAdapters, value.organization);
+      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).serializeData(writer, value.organization, context);
     }
   }
 
-  public enum Organization implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+  public enum Organization implements DataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "user");
 
     @Override
-    public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _id = null;
       List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> _user = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _user = new ListDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -82,37 +82,37 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) throws
-        IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
 
       writer.name("user");
-      new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, customScalarAdapters, value.user);
+      new ListDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).serializeData(writer, value.user, context);
     }
   }
 
-  public enum User implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
+  public enum User implements DataAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_with_variables.fragment.QueryFragment.User deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.deserializeData(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -123,13 +123,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.User value) throws
-        IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.User value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
-      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, customScalarAdapters, value.userFragment);
+      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.serializeData(writer, value.userFragment, context);
     }
   }
 }

@@ -5,13 +5,13 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.ScalarType
 
 /**
  * The `Date` scalar type represents date format.
  */
 internal class Date {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("Date", "java.util.Date")
+    public val type: ScalarType = ScalarType("Date", "java.util.Date")
   }
 }
