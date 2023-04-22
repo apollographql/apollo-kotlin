@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -11,9 +10,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.ExternalModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -101,7 +97,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type.
-   * The adapter must be configured at runtime via [com.apollographql.apollo3.ApolloClient.Builder.addScalarAdapter].
+   * The adapter must be configured at runtime via [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
@@ -112,7 +108,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
-   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo3.ApolloClient.Builder.addScalarAdapter].
+   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to

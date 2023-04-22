@@ -85,10 +85,10 @@ class CustomScalarAdapters private constructor(
     private var unsafe = false
 
     fun <T> add(
-        scalarType: ScalarType,
-        adapter: Adapter<T>,
+        customScalarType: ScalarType,
+        customScalarAdapter: Adapter<T>,
     ) = apply {
-      adaptersMap[scalarType.name] = AdapterToDataAdapter(adapter)
+      adaptersMap[customScalarType.name] = AdapterToDataAdapter(customScalarAdapter)
     }
 
     fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {

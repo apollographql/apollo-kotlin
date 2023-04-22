@@ -313,7 +313,7 @@ sealed interface AdapterInitializer
 class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 
 /**
- * The adapter instance will be looked up in the [com.apollographql.apollo3.api.ScalarAdapters] provided at runtime.
+ * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
  */
 @Serializable
 @SerialName("runtime")

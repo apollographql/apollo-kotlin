@@ -1,7 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -46,7 +44,7 @@ import kotlin.jvm.JvmOverloads
 class ApolloClient
 private constructor(
     val networkTransport: NetworkTransport,
-    val scalarAdapters: CustomScalarAdapters,
+    val customScalarAdapters: CustomScalarAdapters,
     val subscriptionNetworkTransport: NetworkTransport,
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
@@ -119,11 +117,11 @@ private constructor(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
   ): Flow<ApolloResponse<D>> {
-    val executionContext = concurrencyInfo + scalarAdapters + executionContext + apolloRequest.executionContext
+    val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
     val request = ApolloRequest.Builder(apolloRequest.operation)
         .addExecutionContext(concurrencyInfo)
-        .addExecutionContext(scalarAdapters)
+        .addExecutionContext(customScalarAdapters)
         .addExecutionContext(executionContext)
         .addExecutionContext(apolloRequest.executionContext)
         .httpMethod(httpMethod)
@@ -177,11 +175,6 @@ private constructor(
           }
         }
   }
-
-  @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters"))
-  @ApolloDeprecatedSince(v4_0_0)
-  val customScalarAdapters: CustomScalarAdapters
-    get() = scalarAdapters
 
   /**
    * A Builder used to create instances of [ApolloClient]
@@ -381,33 +374,21 @@ private constructor(
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
-    fun scalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
+    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
       customScalarAdaptersBuilder.clear()
       customScalarAdaptersBuilder.addAll(customScalarAdapters)
     }
 
-    @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters(customScalarAdapters)"))
-    @ApolloDeprecatedSince(v4_0_0)
-    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
-      scalarAdapters(customScalarAdapters)
-    }
-
     /**
-     * Registers the given [adapter]
+     * Registers the given [customScalarAdapter]
      *
-     * @param scalarType a generated [ScalarType]. Every GraphQL custom scalar has a
+     * @param customScalarType a generated [ScalarType]. Every GraphQL custom scalar has a
      * generated class with a static `type` property. For an example, for a `Date` custom scalar,
      * you can use `com.example.Date.type`
-     * @param adapter the [Adapter] to use for this custom scalar
+     * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
-    fun <T> addScalarAdapter(scalarType: ScalarType, adapter: Adapter<T>) = apply {
-      customScalarAdaptersBuilder.add(scalarType, adapter)
-    }
-
-    @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, customScalarAdapter)"))
-    @ApolloDeprecatedSince(v4_0_0)
     fun <T> addCustomScalarAdapter(customScalarType: ScalarType, customScalarAdapter: Adapter<T>) = apply {
-      addScalarAdapter(customScalarType, customScalarAdapter)
+      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
@@ -577,7 +558,7 @@ private constructor(
       return ApolloClient(
           networkTransport = networkTransport,
           subscriptionNetworkTransport = subscriptionNetworkTransport,
-          scalarAdapters = customScalarAdaptersBuilder.build(),
+          customScalarAdapters = customScalarAdaptersBuilder.build(),
           interceptors = _interceptors,
           dispatcher = dispatcher,
           executionContext = executionContext,
@@ -598,7 +579,7 @@ private constructor(
     fun copy(): Builder {
       @Suppress("DEPRECATION")
       val builder = Builder()
-          .scalarAdapters(customScalarAdaptersBuilder.build())
+          .customScalarAdapters(customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)

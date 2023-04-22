@@ -3,7 +3,7 @@ package com.apollographql.apollo3.benchmark
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -69,7 +69,7 @@ class CacheIncubatingTests {
         null,
         query,
         data,
-        ScalarAdapters.Empty,
+        CustomScalarAdapters.Empty,
         TypePolicyCacheKeyGenerator,
     ) as Map<String, Record>
 
@@ -84,7 +84,7 @@ class CacheIncubatingTests {
       val data2 = readDataFromCacheMethod.invoke(
           null,
           query,
-          ScalarAdapters.Empty,
+          CustomScalarAdapters.Empty,
           cache,
           FieldPolicyCacheResolver,
           CacheHeaders.NONE
@@ -104,14 +104,14 @@ class CacheIncubatingTests {
         "normalize",
         Operation::class.java,
         Operation.Data::class.java,
-        ScalarAdapters::class.java,
+        CustomScalarAdapters::class.java,
         CacheKeyGenerator::class.java
     )
 
     private val readDataFromCacheMethod: Method = clazz.getMethod(
         "readDataFromCache",
         Executable::class.java,
-        ScalarAdapters::class.java,
+        CustomScalarAdapters::class.java,
         ReadOnlyNormalizedCache::class.java,
         CacheResolver::class.java,
         CacheHeaders::class.java

@@ -117,10 +117,10 @@ internal class ApolloCacheInterceptor(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
   ): Flow<ApolloResponse<D>> {
-    val scalarAdapters = request.customScalarAdapters
+    val customScalarAdapters = request.customScalarAdapters
 
     return chain.proceed(request).onEach {
-      maybeWriteToCache(request, it, scalarAdapters)
+      maybeWriteToCache(request, it, customScalarAdapters)
     }
   }
 
@@ -131,7 +131,7 @@ internal class ApolloCacheInterceptor(
    * Mutations always go to the network and support optimistic data
    */
   private fun <D : Mutation.Data> interceptMutation(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val scalarAdapters = request.customScalarAdapters
+    val customScalarAdapters = request.customScalarAdapters
 
     return flow {
       val optimisticData = request.optimisticData
@@ -141,7 +141,7 @@ internal class ApolloCacheInterceptor(
             operation = request.operation,
             operationData = optimisticData as D,
             mutationId = request.requestUuid,
-            customScalarAdapters = scalarAdapters,
+            customScalarAdapters = customScalarAdapters,
             publish = true
         )
       }
@@ -169,7 +169,7 @@ internal class ApolloCacheInterceptor(
           emptySet()
         }
 
-        maybeWriteToCache(request, response, scalarAdapters, optimisticKeys!!)
+        maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys!!)
         emit(response)
       }
 
@@ -186,14 +186,14 @@ internal class ApolloCacheInterceptor(
   }
 
   private fun <D : Query.Data> interceptQuery(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val scalarAdapters = request.customScalarAdapters
+    val customScalarAdapters = request.customScalarAdapters
     val fetchFromCache = request.fetchFromCache
 
     return flow {
       if (fetchFromCache) {
-        emit(readFromCache(request, scalarAdapters))
+        emit(readFromCache(request, customScalarAdapters))
       } else {
-        emitAll(readFromNetwork(request, chain, scalarAdapters))
+        emitAll(readFromNetwork(request, chain, customScalarAdapters))
       }
     }
   }
