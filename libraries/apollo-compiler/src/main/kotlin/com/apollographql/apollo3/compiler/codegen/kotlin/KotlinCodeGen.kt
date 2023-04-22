@@ -7,8 +7,7 @@ import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarAdaptersBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
@@ -26,6 +25,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseA
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
@@ -119,7 +119,7 @@ internal object KotlinCodeGen {
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
         builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
-        builders.add(ScalarAdaptersBuilder(context, scalarMapping))
+        builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
       }
 
       if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {

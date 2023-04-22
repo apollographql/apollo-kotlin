@@ -10,16 +10,16 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
 
-internal class ScalarAdaptersBuilder(
+internal class CustomScalarAdaptersBuilder(
     private val context: KotlinContext,
     private val scalarMapping: Map<String, ScalarInfo>,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = "__ScalarAdapters"
+  private val simpleName = "__CustomScalarAdapters"
 
   override fun prepare() {
-    context.resolver.registerScalarAdapters(ClassName(packageName, simpleName))
+    context.resolver.registerCustomScalarAdapters(ClassName(packageName, simpleName))
   }
 
   override fun build(): CgFile {
@@ -31,10 +31,10 @@ internal class ScalarAdaptersBuilder(
   }
 
   private fun propertySpec(): PropertySpec {
-    return PropertySpec.builder(simpleName, KotlinSymbols.ScalarAdapters)
+    return PropertySpec.builder(simpleName, KotlinSymbols.CustomScalarAdapters)
         .initializer(
             CodeBlock.builder()
-                .add("%T()\n", KotlinSymbols.ScalarAdaptersBuilder)
+                .add("%T()\n", KotlinSymbols.CustomScalarAdaptersBuilder)
                 .indent()
                 .apply {
                   scalarMapping.entries.forEach {
@@ -47,7 +47,7 @@ internal class ScalarAdaptersBuilder(
                 .add(".build()\n")
                 .build()
         )
-        .addKdoc("A [ScalarAdapters] instance containing all the adapters known at build time")
+        .addKdoc("A [CustomScalarAdapters] instance containing all the adapters known at build time")
         .build()
   }
 }

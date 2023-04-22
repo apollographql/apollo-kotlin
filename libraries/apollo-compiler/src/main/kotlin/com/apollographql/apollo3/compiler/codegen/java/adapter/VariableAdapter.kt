@@ -61,7 +61,7 @@ private fun List<NamedType>.writeToResponseMethodSpec(
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("$T $serializeDataContext = new $T(${Identifier.context}.${Identifier.scalarAdapters})", JavaClassNames.SerializeDataContext, JavaClassNames.SerializeDataContext)
+  builder.addStatement("$T $serializeDataContext = new $T(${Identifier.context}.${Identifier.customScalarAdapters})", JavaClassNames.SerializeDataContext, JavaClassNames.SerializeDataContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }

@@ -43,7 +43,7 @@ enum class ResolverKeyKind {
   BuilderType,
   BuilderFun,
   Schema,
-  ScalarAdapters,
+  CustomScalarAdapters,
   Pagination
 }
 

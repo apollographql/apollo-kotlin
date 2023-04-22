@@ -18,11 +18,11 @@ internal object JavaClassNames {
 
   val JsonReader = ClassNames.JsonReader.toJavaPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()
-  val ScalarAdapters = ClassNames.ScalarAdapters.toJavaPoetClassName()
+  val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toJavaPoetClassName()
   val SerializeDataContext = ClassNames.SerializeDataContext.toJavaPoetClassName()
   val DeserializeDataContext = ClassNames.DeserializeDataContext.toJavaPoetClassName()
   val Input = ClassNames.Input.toJavaPoetClassName()
-  val ScalarAdaptersBuilder = ClassNames.ScalarAdaptersBuilder.toJavaPoetClassName()
+  val CustomScalarAdaptersBuilder = ClassNames.CustomScalarAdaptersBuilder.toJavaPoetClassName()
   val Optional = ClassNames.Optional.toJavaPoetClassName()
   val Absent = ClassNames.Absent.toJavaPoetClassName()
   val Present = ClassNames.Present.toJavaPoetClassName()
