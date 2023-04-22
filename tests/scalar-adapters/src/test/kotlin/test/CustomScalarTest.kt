@@ -151,7 +151,7 @@ class CustomScalarTest {
     }
     val data = ApolloClient.Builder()
         .serverUrl(serverUrl = server.url())
-        .addScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
+        .addCustomScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
         .build()
         .query(AddressQuery())
         .execute()

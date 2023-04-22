@@ -39,12 +39,12 @@ class ScalarAdapterTest {
   }
 
   @Test
-  fun regularScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun regularCustomScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .addScalarAdapter(Date.type, MyDateAdapter)
+        .addCustomScalarAdapter(Date.type, MyDateAdapter)
         .build()
 
     val response = apolloClient.query(LaunchDetailsByDateQuery(MyDate(2001, 6, 23))).execute()

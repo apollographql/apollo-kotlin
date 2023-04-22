@@ -2,7 +2,7 @@ package com.apollographql.apollo3.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -59,7 +59,7 @@ class CacheTests {
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
     val records = query.normalize(
         data = data,
-        scalarAdapters = ScalarAdapters.Empty,
+        customScalarAdapters = CustomScalarAdapters.Empty,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
     )
 
@@ -73,7 +73,7 @@ class CacheTests {
 
     benchmarkRule.measureRepeated {
       val data2 = query.readDataFromCache(
-          ScalarAdapters.Empty,
+          CustomScalarAdapters.Empty,
           cache,
           FieldPolicyCacheResolver,
           CacheHeaders.NONE

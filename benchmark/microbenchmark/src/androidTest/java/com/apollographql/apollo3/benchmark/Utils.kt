@@ -3,7 +3,7 @@ package com.apollographql.apollo3.benchmark
 import androidx.benchmark.Outputs
 import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.calendar.operation.ItemsQuery
 import com.apollographql.apollo3.calendar.response.ItemsQuery.Data.Items.Edge.Node.Companion.itemFragment
@@ -55,7 +55,7 @@ object Utils {
     Outputs.writeFile("extraMetrics.json", "extraMetrics", true) {
       it.writeText(
           buildJsonString {
-            AnyAdapter.toJson(this, ScalarAdapters.Empty, extraMetrics)
+            AnyAdapter.toJson(this, CustomScalarAdapters.Empty, extraMetrics)
           }
       )
     }

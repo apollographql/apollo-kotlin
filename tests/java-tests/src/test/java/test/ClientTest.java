@@ -193,7 +193,7 @@ public class ClientTest {
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl("https://localhost")
-        .addScalarAdapter(javatest.type.GeoPoint.type, geoPointAdapter)
+        .addCustomScalarAdapter(javatest.type.GeoPoint.type, geoPointAdapter)
         .build();
   }
 

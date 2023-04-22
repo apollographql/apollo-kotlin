@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
-abstract class ObjectBuilder<out T : Map<String, Any?>>(val customScalarAdapters: CustomScalarAdapters) : BuilderScope {
+abstract class ObjectBuilder<out T : Map<String, Any?>>(override val customScalarAdapters: CustomScalarAdapters) : BuilderScope {
   val __fields = mutableMapOf<String, Any?>()
 
   var __typename: String by __fields
@@ -17,7 +17,7 @@ abstract class ObjectBuilder<out T : Map<String, Any?>>(val customScalarAdapters
 }
 
 interface BuilderScope {
-  val scalarAdapters: CustomScalarAdapters
+  val customScalarAdapters: CustomScalarAdapters
 }
 
 interface BuilderFactory<out T> {
@@ -26,13 +26,13 @@ interface BuilderFactory<out T> {
 
 fun Builder(customScalarAdapters: CustomScalarAdapters): BuilderScope {
   return object : BuilderScope {
-    val customScalarAdapters: CustomScalarAdapters
+    override val customScalarAdapters: CustomScalarAdapters
       get() = customScalarAdapters
   }
 }
 
 val GlobalBuilder = object : BuilderScope {
-  val customScalarAdapters: CustomScalarAdapters
+  override val customScalarAdapters: CustomScalarAdapters
     get() = CustomScalarAdapters.PassThrough
 }
 

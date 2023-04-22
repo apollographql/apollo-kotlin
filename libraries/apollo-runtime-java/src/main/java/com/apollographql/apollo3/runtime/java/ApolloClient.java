@@ -3,7 +3,6 @@ package com.apollographql.apollo3.runtime.java;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.ExecutionContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.MutableExecutionOptions;
@@ -151,7 +150,7 @@ public class ApolloClient implements Closeable {
     }
   }
 
-  public CustomScalarAdapters getScalarAdapters() {
+  public CustomScalarAdapters getCustomScalarAdapters() {
     return customScalarAdapters;
   }
 
@@ -177,7 +176,7 @@ public class ApolloClient implements Closeable {
     private List<HttpHeader> wsHeaders = new ArrayList<>();
     private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
     private Long wsIdleTimeoutMillis;
-    private final CustomScalarAdapters.Builder scalarAdaptersBuilder = new CustomScalarAdapters.Builder();
+    private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
     private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
@@ -286,21 +285,21 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder scalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
-      this.scalarAdaptersBuilder.clear();
-      this.scalarAdaptersBuilder.addAll(customScalarAdapters);
+    public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
+      this.customScalarAdaptersBuilder.clear();
+      this.customScalarAdaptersBuilder.addAll(customScalarAdapters);
       return this;
     }
 
     /**
      * Registers the given customScalarAdapter.
      *
-     * @param scalarType a generated {@link ScalarType}. Every GraphQL custom scalar has a generated class with a static `type` property.
-     * For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
-     * @param customScalarAdapter the {@link DataAdapter} to use for this custom scalar
+     * @param customScalarType a generated {@link ScalarType}. Every GraphQL custom scalar has a generated class with a static `type`
+     * property. For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
+     * @param customScalarAdapter the {@link Adapter} to use for this custom scalar
      */
-    public <T> Builder addScalarAdapter(@NotNull ScalarType scalarType, @NotNull Adapter<T> customScalarAdapter) {
-      scalarAdaptersBuilder.add(scalarType, customScalarAdapter);
+    public <T> Builder addCustomScalarAdapter(@NotNull ScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
+      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter);
       return this;
     }
 
@@ -436,7 +435,7 @@ public class ApolloClient implements Closeable {
           networkTransport,
           subscriptionNetworkTransport,
           interceptors,
-          scalarAdaptersBuilder.build(),
+          customScalarAdaptersBuilder.build(),
           httpMethod,
           httpHeaders,
           sendApqExtensions,
