@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
@@ -217,7 +217,7 @@ internal class JavaResolver(
       }
 
       is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$scalarAdapters")
+        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$customScalarAdapters")
       }
 
       is IrEnumType -> {
@@ -393,7 +393,7 @@ internal class JavaResolver(
       is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter()
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          nonNullableScalarAdapterInitializer(IrScalarType(type.name), scalarAdapters)
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name), customScalarAdapters)
         } else {
           null
         }

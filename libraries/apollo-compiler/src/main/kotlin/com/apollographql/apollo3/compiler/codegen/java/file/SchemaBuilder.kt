@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.Identifier.types
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
@@ -68,17 +68,17 @@ internal class SchemaBuilder(
     return TypeSpec.classBuilder(generatedSchemaName)
         .addJavadoc(L, "A Schema object containing all the composite types and a possibleTypes helper function")
         .addModifiers(Modifier.PUBLIC)
-        .addField(scalarAdaptersFieldSpec())
+        .addField(customScalarAdaptersFieldSpec())
         .addField(typesFieldSpec())
         .addMethod(possibleTypesFunSpec())
         .build()
   }
 
-  private fun scalarAdaptersFieldSpec(): FieldSpec {
-    return FieldSpec.builder(JavaClassNames.ScalarAdapters, scalarAdapters)
+  private fun customScalarAdaptersFieldSpec(): FieldSpec {
+    return FieldSpec.builder(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
         .initializer(
             CodeBlock.builder()
-                .add("new $T()\n", JavaClassNames.ScalarAdaptersBuilder)
+                .add("new $T()\n", JavaClassNames.CustomScalarAdaptersBuilder)
                 .indent()
                 .apply {
                   scalarMapping.entries.forEach {

@@ -4,7 +4,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeDataContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
@@ -61,7 +61,7 @@ private fun List<NamedType>.serializeVariablesFunSpec(
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("val $serializeDataContext = %T(${Identifier.context}.$scalarAdapters)", KotlinSymbols.SerializeDataContext)
+  builder.addStatement("val $serializeDataContext = %T(${Identifier.context}.$customScalarAdapters)", KotlinSymbols.SerializeDataContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }

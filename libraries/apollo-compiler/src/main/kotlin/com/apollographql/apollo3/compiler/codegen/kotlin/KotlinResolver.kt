@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
@@ -171,7 +171,7 @@ internal class KotlinResolver(
       is IrListType2 -> adapterInitializer2(type.ofType, jsExport)?.list(jsExport)
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          nonNullableScalarAdapterInitializer(IrScalarType(type.name), scalarAdapters)
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name), customScalarAdapters)
         } else {
           null
         }
@@ -220,7 +220,7 @@ internal class KotlinResolver(
       }
 
       type is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$scalarAdapters")
+        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$customScalarAdapters")
       }
 
       type is IrEnumType -> {
@@ -356,9 +356,9 @@ internal class KotlinResolver(
 
   fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
 
-  fun registerScalarAdapters(className: ClassName) {
-    register(ResolverKeyKind.ScalarAdapters, "", className)
+  fun registerCustomScalarAdapters(className: ClassName) {
+    register(ResolverKeyKind.CustomScalarAdapters, "", className)
   }
 
-  fun resolveScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.ScalarAdapters, "")
+  fun resolveCustomScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.CustomScalarAdapters, "")
 }

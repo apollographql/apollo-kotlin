@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.newBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
+import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -93,8 +93,8 @@ internal fun newBuilderFunSpec(returnedClassName: ClassName): FunSpec {
   return FunSpec.builder(newBuilder)
       .returns(returnedClassName)
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder(scalarAdapters, KotlinSymbols.ScalarAdapters).build())
-      .addCode("return·%T($scalarAdapters)", returnedClassName)
+      .addParameter(ParameterSpec.builder(customScalarAdapters, KotlinSymbols.CustomScalarAdapters).build())
+      .addCode("return·%T($customScalarAdapters)", returnedClassName)
       .build()
 }
 internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpec {
