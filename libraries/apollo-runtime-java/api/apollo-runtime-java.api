@@ -9,7 +9,7 @@ public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCal
 public class com/apollographql/apollo3/runtime/java/ApolloClient : java/io/Closeable {
 	public fun close ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
-	public fun getScalarAdapters ()Lcom/apollographql/apollo3/api/ScalarAdapters;
+	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
 	public fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
 	public fun subscription (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
@@ -17,6 +17,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient : java/io/Close
 
 public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/apollographql/apollo3/api/MutableExecutionOptions {
 	public fun <init> ()V
+	public fun addCustomScalarAdapter (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
 	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -25,7 +26,6 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun addHttpInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun addScalarAdapter (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addWsHeader (Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addWsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun autoPersistedQueries ()Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -36,6 +36,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun callFactory (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun dispatcher (Ljava/util/concurrent/Executor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
@@ -58,7 +59,6 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun networkTransport (Lcom/apollographql/apollo3/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun scalarAdapters (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;

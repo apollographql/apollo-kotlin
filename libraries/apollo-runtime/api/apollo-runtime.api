@@ -32,18 +32,17 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/ExecutionOptions, java/io/Closeable {
 	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/ScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
-	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/ScalarAdapters;
+	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
-	public final fun getScalarAdapters ()Lcom/apollographql/apollo3/api/ScalarAdapters;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
@@ -63,7 +62,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun addHttpInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun addScalarAdapter (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -73,7 +71,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun copy ()Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun dispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
@@ -100,7 +98,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun scalarAdapters (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -285,7 +282,7 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport :
 	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public final fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
+	public final fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 }
