@@ -5,11 +5,11 @@
 //
 package com.example.data_builders.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.data_builders.fragment.selections.CatFragmentSelections;
 import com.example.data_builders.type.Cat;
@@ -60,14 +60,14 @@ public class CatFragmentImpl implements Fragment<CatFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public DataAdapter<CatFragment> adapter() {
-    return new ObjectDataAdapter<CatFragment>(CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE, false);
+  public Adapter<CatFragment> adapter() {
+    return new ObjectAdapter<CatFragment>(CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE, false);
   }
 
   @Override

@@ -5,9 +5,10 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,18 +18,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object PilotFragmentImpl_ResponseAdapter {
-  public object Data : DataAdapter<PilotFragmentImpl.Data> {
+  public object Data : Adapter<PilotFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): PilotFragmentImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        PilotFragmentImpl.Data {
       var _name: String? = null
       var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = NullableStringDataAdapter.deserializeData(reader, context)
-          1 -> _homeworld = Homeworld.obj().nullable().deserializeData(reader, context)
+          0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,30 +40,30 @@ public object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: PilotFragmentImpl.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("name")
-      NullableStringDataAdapter.serializeData(writer, value.name, context)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("homeworld")
-      Homeworld.obj().nullable().serializeData(writer, value.homeworld, context)
+      Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
     }
 
-    private object Homeworld : DataAdapter<PilotFragmentImpl.Data.Homeworld> {
+    private object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): PilotFragmentImpl.Data.Homeworld {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = NullableStringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -73,16 +74,16 @@ public object PilotFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: PilotFragmentImpl.Data.Homeworld,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("name")
-        NullableStringDataAdapter.serializeData(writer, value.name, context)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

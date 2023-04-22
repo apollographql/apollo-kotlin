@@ -5,9 +5,10 @@
 //
 package com.example.arguments_hardcoded.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -20,18 +21,19 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _reviews: List<TestQuery.Data.Review?>? = null
       var _testNullableArguments: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _reviews = Review.obj().nullable().list().nullable().deserializeData(reader, context)
-          1 -> _testNullableArguments = IntDataAdapter.deserializeData(reader, context)
+          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader,
+              customScalarAdapters)
+          1 -> _testNullableArguments = IntAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,30 +44,30 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("reviews")
-      Review.obj().nullable().list().nullable().serializeData(writer, value.reviews, context)
+      Review.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.reviews)
 
       writer.name("testNullableArguments")
-      IntDataAdapter.serializeData(writer, value.testNullableArguments, context)
+      IntAdapter.toJson(writer, customScalarAdapters, value.testNullableArguments)
     }
 
-    private object Review : DataAdapter<TestQuery.Data.Review> {
+    private object Review : Adapter<TestQuery.Data.Review> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Review {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Review {
         var _stars: Int? = null
         var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntDataAdapter.deserializeData(reader, context)
-            1 -> _commentary = NullableStringDataAdapter.deserializeData(reader, context)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -76,16 +78,16 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Review,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("stars")
-        IntDataAdapter.serializeData(writer, value.stars, context)
+        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringDataAdapter.serializeData(writer, value.commentary, context)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
       }
     }
   }

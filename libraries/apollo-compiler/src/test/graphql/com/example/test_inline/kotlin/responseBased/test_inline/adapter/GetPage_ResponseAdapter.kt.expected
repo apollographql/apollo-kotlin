@@ -5,8 +5,9 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -18,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetPage_ResponseAdapter {
-  public object Data : DataAdapter<GetPage.Data> {
+  public object Data : Adapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): GetPage.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj().deserializeData(reader, context)
+          0 -> _collection = Collection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,36 +38,37 @@ public object GetPage_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: GetPage.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("collection")
-      Collection.obj().serializeData(writer, value.collection, context)
+      Collection.obj().toJson(writer, customScalarAdapters, value.collection)
     }
 
-    private object Collection : DataAdapter<GetPage.Data.Collection> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): GetPage.Data.Collection {
+    private object Collection : Adapter<GetPage.Data.Collection> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          GetPage.Data.Collection {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ParticularCollection",
-          -> ParticularCollectionCollection.deserializeData(reader, context, __typename)
+          -> ParticularCollectionCollection.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherCollection.deserializeData(reader, context, __typename)
+          -> OtherCollection.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetPage.Data.Collection,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
-              ParticularCollectionCollection.serializeData(writer, value, context)
-          is GetPage.Data.OtherCollection -> OtherCollection.serializeData(writer, value, context)
+              ParticularCollectionCollection.toJson(writer, customScalarAdapters, value)
+          is GetPage.Data.OtherCollection -> OtherCollection.toJson(writer, customScalarAdapters,
+              value)
         }
       }
     }
@@ -74,9 +76,9 @@ public object GetPage_ResponseAdapter {
     public object ParticularCollectionCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
@@ -84,8 +86,8 @@ public object GetPage_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _items = Item.obj().list().deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -96,41 +98,41 @@ public object GetPage_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetPage.Data.ParticularCollectionCollection,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().serializeData(writer, value.items, context)
+        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      private object Item : DataAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+      private object Item : Adapter<GetPage.Data.ParticularCollectionCollection.Item> {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.ParticularCollectionCollection.Item {
           val __typename = reader.readTypename()
           return when(__typename) {
             "ParticularItem",
-            -> ParticularItemItem.deserializeData(reader, context, __typename)
+            -> ParticularItemItem.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherItem.deserializeData(reader, context, __typename)
+            -> OtherItem.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.Item,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
-                ParticularItemItem.serializeData(writer, value, context)
-            is GetPage.Data.ParticularCollectionCollection.OtherItem ->
-                OtherItem.serializeData(writer, value, context)
+                ParticularItemItem.toJson(writer, customScalarAdapters, value)
+            is GetPage.Data.ParticularCollectionCollection.OtherItem -> OtherItem.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -138,9 +140,9 @@ public object GetPage_ResponseAdapter {
       public object ParticularItemItem {
         public val RESPONSE_NAMES: List<String> = listOf("title", "__typename", "image")
 
-        public fun deserializeData(
+        public fun fromJson(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var _title: String? = null
@@ -149,9 +151,9 @@ public object GetPage_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringDataAdapter.deserializeData(reader, context)
-              1 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              2 -> _image = StringDataAdapter.deserializeData(reader, context)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -163,28 +165,28 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public fun serializeData(
+        public fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("title")
-          StringDataAdapter.serializeData(writer, value.title, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
 
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("image")
-          StringDataAdapter.serializeData(writer, value.image, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.image)
         }
       }
 
       public object OtherItem {
         public val RESPONSE_NAMES: List<String> = listOf("title", "__typename")
 
-        public fun deserializeData(
+        public fun fromJson(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var _title: String? = null
@@ -192,8 +194,8 @@ public object GetPage_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringDataAdapter.deserializeData(reader, context)
-              1 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -204,16 +206,16 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public fun serializeData(
+        public fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.OtherItem,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("title")
-          StringDataAdapter.serializeData(writer, value.title, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
 
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         }
       }
     }
@@ -221,9 +223,9 @@ public object GetPage_ResponseAdapter {
     public object OtherCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
@@ -231,8 +233,8 @@ public object GetPage_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _items = Item.obj().list().deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -243,28 +245,28 @@ public object GetPage_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetPage.Data.OtherCollection,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().serializeData(writer, value.items, context)
+        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      private object Item : DataAdapter<GetPage.Data.OtherCollection.Item> {
+      private object Item : Adapter<GetPage.Data.OtherCollection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext): GetPage.Data.OtherCollection.Item {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): GetPage.Data.OtherCollection.Item {
           var _title: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringDataAdapter.deserializeData(reader, context)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -274,13 +276,13 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.OtherCollection.Item,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("title")
-          StringDataAdapter.serializeData(writer, value.title, context)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
         }
       }
     }

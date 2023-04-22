@@ -5,10 +5,11 @@
 //
 package com.example.field_with_include_directive.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.field_with_include_directive.TestQuery;
@@ -20,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,29 +45,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("hero");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).serializeData(writer, value.hero, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
-  public enum Hero implements DataAdapter<TestQuery.Hero> {
+  public enum Hero implements Adapter<TestQuery.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
-    public TestQuery.Hero deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _name = null;
       TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
-          case 1: _friendsConnection = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friendsConnection = new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -78,30 +79,30 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Hero value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Hero value) throws IOException {
       writer.name("name");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friendsConnection");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).serializeData(writer, value.friendsConnection, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friendsConnection);
     }
   }
 
-  public enum FriendsConnection implements DataAdapter<TestQuery.FriendsConnection> {
+  public enum FriendsConnection implements Adapter<TestQuery.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount");
 
     @Override
-    public TestQuery.FriendsConnection deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.FriendsConnection fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _totalCount = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -112,10 +113,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.FriendsConnection value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.FriendsConnection value) throws IOException {
       writer.name("totalCount");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
+      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
     }
   }
 }

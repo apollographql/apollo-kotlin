@@ -7,7 +7,7 @@ package com.example.java_apollo_optionals.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,8 +28,8 @@ public data class MyFragmentImpl(
   public val nonNullableInputWithDefault: MyInput,
 ) : Fragment<MyFragment> {
   public override fun serializeVariables(writer: JsonWriter,
-      scalarAdapters: ScalarAdapters): Unit {
-    MyFragmentImpl_VariablesAdapter.toJson(writer, scalarAdapters, this)
+      customScalarAdapters: CustomScalarAdapters): Unit {
+    MyFragmentImpl_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
   public override fun adapter(): Adapter<MyFragment> =

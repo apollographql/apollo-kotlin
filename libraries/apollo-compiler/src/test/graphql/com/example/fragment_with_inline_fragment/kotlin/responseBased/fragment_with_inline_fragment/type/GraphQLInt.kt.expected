@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.type
 
-import com.apollographql.apollo3.api.ScalarType
+import com.apollographql.apollo3.api.CustomScalarType
 
 /**
  * The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent
@@ -13,6 +13,6 @@ import com.apollographql.apollo3.api.ScalarType
  */
 public class GraphQLInt {
   public companion object {
-    public val type: ScalarType = ScalarType("Int", "kotlin.Int")
+    public val type: CustomScalarType = CustomScalarType("Int", "kotlin.Int")
   }
 }
