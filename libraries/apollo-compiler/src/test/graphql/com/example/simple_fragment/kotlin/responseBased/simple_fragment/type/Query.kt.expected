@@ -7,9 +7,9 @@ package com.example.simple_fragment.type
 
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -22,14 +22,14 @@ internal class Query {
   public companion object : BuilderFactory<QueryBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
 
-    public override fun newBuilder(scalarAdapters: ScalarAdapters): QueryBuilder =
-        QueryBuilder(scalarAdapters)
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): QueryBuilder =
+        QueryBuilder(customScalarAdapters)
   }
 }
 
 internal class QueryBuilder(
-  scalarAdapters: ScalarAdapters,
-) : ObjectBuilder<QueryMap>(scalarAdapters) {
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder<QueryMap>(customScalarAdapters) {
   public var hero: CharacterMap? by __fields
 
   init {
@@ -43,4 +43,4 @@ internal class QueryMap(
 ) : Map<String, Any?> by __fields
 
 internal fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap =
-    QueryBuilder(scalarAdapters).apply(block).build()
+    QueryBuilder(customScalarAdapters).apply(block).build()

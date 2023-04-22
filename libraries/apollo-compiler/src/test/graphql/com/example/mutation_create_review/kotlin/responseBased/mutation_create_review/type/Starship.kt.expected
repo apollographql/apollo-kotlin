@@ -7,9 +7,9 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -19,14 +19,14 @@ internal class Starship {
   public companion object : BuilderFactory<StarshipBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Starship").build()
 
-    public override fun newBuilder(scalarAdapters: ScalarAdapters): StarshipBuilder =
-        StarshipBuilder(scalarAdapters)
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): StarshipBuilder =
+        StarshipBuilder(customScalarAdapters)
   }
 }
 
 internal class StarshipBuilder(
-  scalarAdapters: ScalarAdapters,
-) : ObjectBuilder<StarshipMap>(scalarAdapters) {
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder<StarshipMap>(customScalarAdapters) {
   init {
     __typename = "Starship"}
 
@@ -38,4 +38,4 @@ internal class StarshipMap(
 ) : SearchResultMap, Map<String, Any?> by __fields
 
 internal fun BuilderScope.buildStarship(block: StarshipBuilder.() -> Unit): StarshipMap =
-    StarshipBuilder(scalarAdapters).apply(block).build()
+    StarshipBuilder(customScalarAdapters).apply(block).build()

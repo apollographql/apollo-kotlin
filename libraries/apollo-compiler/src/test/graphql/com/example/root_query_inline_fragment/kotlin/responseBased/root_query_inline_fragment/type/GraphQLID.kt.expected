@@ -5,7 +5,7 @@
 //
 package com.example.root_query_inline_fragment.type
 
-import com.apollographql.apollo3.api.ScalarType
+import com.apollographql.apollo3.api.CustomScalarType
 
 /**
  * The `ID` scalar type represents a unique identifier, often used to refetch an object or as key
@@ -15,6 +15,6 @@ import com.apollographql.apollo3.api.ScalarType
  */
 public class GraphQLID {
   public companion object {
-    public val type: ScalarType = ScalarType("ID", "kotlin.String")
+    public val type: CustomScalarType = CustomScalarType("ID", "kotlin.String")
   }
 }

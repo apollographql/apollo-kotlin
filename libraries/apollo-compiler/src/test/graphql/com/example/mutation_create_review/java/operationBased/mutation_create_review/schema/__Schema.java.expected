@@ -6,9 +6,9 @@
 package com.example.mutation_create_review.schema;
 
 import com.apollographql.apollo3.api.CompiledNamedType;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectType;
 import com.apollographql.apollo3.api.PossibleTypes;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.example.mutation_create_review.type.Character;
 import com.example.mutation_create_review.type.Droid;
 import com.example.mutation_create_review.type.Episode;
@@ -26,7 +26,7 @@ import java.util.List;
  * A Schema object containing all the composite types and a possibleTypes helper function
  */
 public class __Schema {
-  public static ScalarAdapters scalarAdapters = new ScalarAdapters.Builder()
+  public static CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters.Builder()
     .add(URL.type, com.example.UrlAdapter.INSTANCE)
     .add(GraphQLString.type, new com.example.MyStringAdapter())
     .build();

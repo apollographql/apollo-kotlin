@@ -5,25 +5,29 @@
 //
 package com.example.input_object_type.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.VariablesAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.TestQuery
 import com.example.input_object_type.type.adapter.Episode_ResponseAdapter
 import com.example.input_object_type.type.adapter.ReviewInput_InputAdapter
+import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
-  public override fun serializeVariables(
+public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      TestQuery = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery,
-    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("ep")
-    Episode_ResponseAdapter.serializeData(writer, value.ep, serializeDataContext)
+    Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().serializeData(writer, value.review, serializeDataContext)
+    ReviewInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.review)
   }
 }

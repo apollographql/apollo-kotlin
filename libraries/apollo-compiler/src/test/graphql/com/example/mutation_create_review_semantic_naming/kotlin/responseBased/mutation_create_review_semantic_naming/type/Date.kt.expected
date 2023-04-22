@@ -5,13 +5,13 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
-import com.apollographql.apollo3.api.ScalarType
+import com.apollographql.apollo3.api.CustomScalarType
 
 /**
  * The `Date` scalar type represents date format.
  */
 public class Date {
   public companion object {
-    public val type: ScalarType = ScalarType("Date", "kotlin.Any")
+    public val type: CustomScalarType = CustomScalarType("Date", "kotlin.Any")
   }
 }

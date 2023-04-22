@@ -5,15 +5,16 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_field_with_multiple_fieldsets.TestQuery;
@@ -24,20 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface1");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface1 _iface1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface1 = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _iface1 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,39 +49,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("iface1");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).serializeData(writer, value.iface1, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface1);
     }
   }
 
-  public enum Iface1 implements DataAdapter<TestQuery.Iface1> {
+  public enum Iface1 implements Adapter<TestQuery.Iface1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Iface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl1 _onImpl1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.deserializeData(reader, context);
+        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Iface1(
@@ -91,33 +92,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Iface1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Iface1 value) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.serializeData(writer, value.onIface1, context);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.toJson(writer, customScalarAdapters, value.onIface1);
 
       if (value.onImpl1 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.serializeData(writer, value.onImpl1, context);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl1);
       }
     }
   }
 
-  public enum OnIface1 implements DataAdapter<TestQuery.OnIface1> {
+  public enum OnIface1 implements Adapter<TestQuery.OnIface1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnIface1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnIface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface2 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -128,39 +129,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnIface1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnIface1 value) throws IOException {
       writer.name("iface2");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).serializeData(writer, value.iface2, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
   }
 
-  public enum Iface2 implements DataAdapter<TestQuery.Iface2> {
+  public enum Iface2 implements Adapter<TestQuery.Iface2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Iface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl2 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.deserializeData(reader, context);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Iface2(
@@ -171,33 +172,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Iface2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Iface2 value) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.serializeData(writer, value.onIface2, context);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.toJson(writer, customScalarAdapters, value.onIface2);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.serializeData(writer, value.onImpl2, context);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl2);
       }
     }
   }
 
-  public enum OnIface2 implements DataAdapter<TestQuery.OnIface2> {
+  public enum OnIface2 implements Adapter<TestQuery.OnIface2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar1");
 
     @Override
-    public TestQuery.OnIface2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnIface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _scalar1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar1 = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _scalar1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -208,27 +209,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnIface2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnIface2 value) throws IOException {
       writer.name("scalar1");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.scalar1, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1);
     }
   }
 
-  public enum OnImpl2 implements DataAdapter<TestQuery.OnImpl2> {
+  public enum OnImpl2 implements Adapter<TestQuery.OnImpl2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar2");
 
     @Override
-    public TestQuery.OnImpl2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnImpl2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _scalar2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar2 = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _scalar2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -239,27 +240,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnImpl2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnImpl2 value) throws IOException {
       writer.name("scalar2");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.scalar2, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2);
     }
   }
 
-  public enum OnImpl1 implements DataAdapter<TestQuery.OnImpl1> {
+  public enum OnImpl1 implements Adapter<TestQuery.OnImpl1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnImpl1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnImpl1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface21 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -270,39 +271,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnImpl1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnImpl1 value) throws IOException {
       writer.name("iface2");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).serializeData(writer, value.iface2, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
   }
 
-  public enum Iface21 implements DataAdapter<TestQuery.Iface21> {
+  public enum Iface21 implements Adapter<TestQuery.Iface21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface21 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Iface21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl21 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.deserializeData(reader, context);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Iface21(
@@ -313,33 +314,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Iface21 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Iface21 value) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.serializeData(writer, value.onIface2, context);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.toJson(writer, customScalarAdapters, value.onIface2);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.serializeData(writer, value.onImpl2, context);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl2);
       }
     }
   }
 
-  public enum OnIface21 implements DataAdapter<TestQuery.OnIface21> {
+  public enum OnIface21 implements Adapter<TestQuery.OnIface21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar3");
 
     @Override
-    public TestQuery.OnIface21 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnIface21 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _scalar3 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar3 = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _scalar3 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -350,27 +351,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnIface21 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnIface21 value) throws IOException {
       writer.name("scalar3");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.scalar3, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3);
     }
   }
 
-  public enum OnImpl21 implements DataAdapter<TestQuery.OnImpl21> {
+  public enum OnImpl21 implements Adapter<TestQuery.OnImpl21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar4");
 
     @Override
-    public TestQuery.OnImpl21 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnImpl21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _scalar4 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar4 = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _scalar4 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -381,10 +382,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnImpl21 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnImpl21 value) throws IOException {
       writer.name("scalar4");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.scalar4, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4);
     }
   }
 }

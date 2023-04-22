@@ -5,22 +5,29 @@
 //
 package com.example.subscriptions.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
 import java.io.IOException;
+import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestSubscription_VariablesAdapter implements VariablesAdapter<TestSubscription> {
+public enum TestSubscription_VariablesAdapter implements Adapter<TestSubscription> {
   INSTANCE;
 
   @Override
-  public void serializeVariables(JsonWriter writer, TestSubscription value,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
+  public TestSubscription fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
+    throw new IllegalStateException("Input type used in output position");
+  }
+
+  @Override
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      TestSubscription value) throws IOException {
     writer.name("repo");
-    DataAdapters.StringDataAdapter.serializeData(writer, value.repo, serializeDataContext);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.repo);
   }
 }

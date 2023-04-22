@@ -5,10 +5,11 @@
 //
 package com.example.input_object_type.type.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.DoubleDataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableDoubleDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,37 +20,36 @@ import com.example.input_object_type.type.ColorInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object ColorInput_InputAdapter : DataAdapter<ColorInput> {
-  public override fun deserializeData(reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext): ColorInput = throw
-      IllegalStateException("Input type used in output position")
+public object ColorInput_InputAdapter : Adapter<ColorInput> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      ColorInput = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeData(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: ColorInput,
-    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.red is Optional.Present) {
       writer.name("red")
-      IntDataAdapter.present().serializeData(writer, value.red, context)
+      IntAdapter.present().toJson(writer, customScalarAdapters, value.red)
     }
     if (value.green is Optional.Present) {
       writer.name("green")
-      NullableDoubleDataAdapter.present().serializeData(writer, value.green, context)
+      NullableDoubleAdapter.present().toJson(writer, customScalarAdapters, value.green)
     }
     if (value.blue is Optional.Present) {
       writer.name("blue")
-      DoubleDataAdapter.present().serializeData(writer, value.blue, context)
+      DoubleAdapter.present().toJson(writer, customScalarAdapters, value.blue)
     }
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")
-      Episode_ResponseAdapter.nullable().present().serializeData(writer, value.enumWithDefaultValue,
-          context)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
+          value.enumWithDefaultValue)
     }
     if (value.reviewRefInput is Optional.Present) {
       writer.name("reviewRefInput")
-      ReviewRefInput_InputAdapter.obj().nullable().present().serializeData(writer,
-          value.reviewRefInput, context)
+      ReviewRefInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
+          value.reviewRefInput)
     }
   }
 }

@@ -5,11 +5,12 @@
 //
 package com.example.operationbased2_ex8.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.operationbased2_ex8.TestOperation;
@@ -21,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperation_ResponseAdapter {
-  public enum Data implements DataAdapter<TestOperation.Data> {
+  public enum Data implements Adapter<TestOperation.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public TestOperation.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestOperation.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new NullableDataAdapter<>(new ObjectDataAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,33 +46,33 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Data value) throws IOException {
       writer.name("animal");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).serializeData(writer, value.animal, context);
+      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, customScalarAdapters, value.animal);
     }
   }
 
-  public enum Animal implements DataAdapter<TestOperation.Animal> {
+  public enum Animal implements Adapter<TestOperation.Animal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Animal deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Animal fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      AnimalFragment _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.deserializeData(reader, context);
+      AnimalFragment _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -82,12 +83,12 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Animal value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Animal value) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.serializeData(writer, value.animalFragment, context);
+      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, customScalarAdapters, value.animalFragment);
     }
   }
 }
