@@ -5,8 +5,8 @@
 //
 package com.example.target_name.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ScalarType;
 
 public class renamedScalar {
-  public static CustomScalarType type = new CustomScalarType("ReservedScalar", "java.lang.Object");
+  public static ScalarType type = new ScalarType("ReservedScalar", "java.lang.Object");
 }

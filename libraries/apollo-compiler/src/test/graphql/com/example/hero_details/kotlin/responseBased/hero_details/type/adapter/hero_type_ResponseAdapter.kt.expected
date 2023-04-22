@@ -5,24 +5,23 @@
 //
 package com.example.hero_details.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.hero_details.type.Hero_type
 import kotlin.Unit
 
-public object Hero_type_ResponseAdapter : Adapter<Hero_type> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      Hero_type {
+public object Hero_type_ResponseAdapter : DataAdapter<Hero_type> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): Hero_type {
     val rawValue = reader.nextString()!!
     return Hero_type.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: Hero_type,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.value(value.rawValue)
   }

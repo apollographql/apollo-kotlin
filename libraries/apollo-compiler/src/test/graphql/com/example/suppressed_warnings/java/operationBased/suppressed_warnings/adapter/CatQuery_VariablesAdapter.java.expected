@@ -5,36 +5,29 @@
 //
 package com.example.suppressed_warnings.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.CatQuery;
 import com.example.suppressed_warnings.type.Filter;
 import com.example.suppressed_warnings.type.adapter.Filter_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum CatQuery_VariablesAdapter implements Adapter<CatQuery> {
+public enum CatQuery_VariablesAdapter implements VariablesAdapter<CatQuery> {
   INSTANCE;
 
   @Override
-  public CatQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
-      IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, CatQuery value)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, CatQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     if (value.filter instanceof Optional.Present) {
       writer.name("filter");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.filter);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).serializeData(writer, value.filter, serializeDataContext);
     }
   }
 }

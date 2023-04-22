@@ -5,8 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,19 +16,20 @@ import com.example.mutation_create_review_semantic_naming.type.ReviewRefInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      ReviewRefInput = throw IllegalStateException("Input type used in output position")
+public object ReviewRefInput_InputAdapter : DataAdapter<ReviewRefInput> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): ReviewRefInput = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: ReviewRefInput,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.reviewInput)
+      ReviewInput_InputAdapter.obj().nullable().present().serializeData(writer, value.reviewInput,
+          context)
     }
   }
 }

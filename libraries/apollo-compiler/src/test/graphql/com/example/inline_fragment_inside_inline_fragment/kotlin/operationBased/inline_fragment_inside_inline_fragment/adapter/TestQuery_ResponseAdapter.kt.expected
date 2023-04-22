@@ -5,10 +5,9 @@
 //
 package com.example.inline_fragment_inside_inline_fragment.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,17 +21,17 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader,
-              customScalarAdapters)
+          0 -> _search = Search.obj(true).nullable().list().nullable().deserializeData(reader,
+              context)
           else -> break
         }
       }
@@ -42,26 +41,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("search")
-      Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
-          value.search)
+      Search.obj(true).nullable().list().nullable().serializeData(writer, value.search, context)
     }
 
-    private object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : DataAdapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Search {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Search {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -71,10 +69,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid","Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
-              customScalarAdapters)
+          _onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.deserializeData(reader,
+              context)
         }
 
         return TestQuery.Data.Search(
@@ -83,32 +81,32 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Search,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         if (value.onCharacter != null) {
-          com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.toJson(writer,
-              customScalarAdapters, value.onCharacter)
+          com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.serializeData(writer,
+              value.onCharacter, context)
         }
       }
 
-      private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
+      private object OnCharacter : DataAdapter<TestQuery.Data.Search.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Search.OnCharacter {
           var __typename: String? = null
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _name = StringDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -118,17 +116,17 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.fromJson(reader,
-                customScalarAdapters)
+            _onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.deserializeData(reader,
+                context)
           }
 
           var _onDroid: TestQuery.Data.Search.OnCharacter.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.fromJson(reader,
-                customScalarAdapters)
+            _onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.deserializeData(reader,
+                context)
           }
 
           return TestQuery.Data.Search.OnCharacter(
@@ -139,39 +137,39 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Search.OnCharacter,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringDataAdapter.serializeData(writer, value.name, context)
 
           if (value.onHuman != null) {
-            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.toJson(writer,
-                customScalarAdapters, value.onHuman)
+            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.serializeData(writer,
+                value.onHuman, context)
           }
 
           if (value.onDroid != null) {
-            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.toJson(writer,
-                customScalarAdapters, value.onDroid)
+            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.serializeData(writer,
+                value.onDroid, context)
           }
         }
 
-        private object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.OnHuman> {
+        private object OnHuman : DataAdapter<TestQuery.Data.Search.OnCharacter.OnHuman> {
           public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               TestQuery.Data.Search.OnCharacter.OnHuman {
             var _homePlanet: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _homePlanet = NullableStringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -181,27 +179,27 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Search.OnCharacter.OnHuman,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("homePlanet")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+            NullableStringDataAdapter.serializeData(writer, value.homePlanet, context)
           }
         }
 
-        private object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.OnDroid> {
+        private object OnDroid : DataAdapter<TestQuery.Data.Search.OnCharacter.OnDroid> {
           public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               TestQuery.Data.Search.OnCharacter.OnDroid {
             var _primaryFunction: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -211,13 +209,13 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Search.OnCharacter.OnDroid,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("primaryFunction")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+            NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
           }
         }
       }

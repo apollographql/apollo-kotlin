@@ -5,10 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -18,20 +17,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CharacterDetailsImpl_ResponseAdapter {
-  public enum CharacterDetails implements Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails> {
+  public enum CharacterDetails implements DataAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -44,11 +43,11 @@ public class CharacterDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails value)
-        throws IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

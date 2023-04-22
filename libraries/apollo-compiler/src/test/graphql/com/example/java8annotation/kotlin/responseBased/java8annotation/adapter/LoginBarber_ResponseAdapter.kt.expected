@@ -5,9 +5,8 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -17,16 +16,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object LoginBarber_ResponseAdapter {
-  public object Data : Adapter<LoginBarber.Data> {
+  public object Data : DataAdapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        LoginBarber.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _login = Login.obj().fromJson(reader, customScalarAdapters)
+          0 -> _login = Login.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -36,25 +35,25 @@ public object LoginBarber_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: LoginBarber.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("login")
-      Login.obj().toJson(writer, customScalarAdapters, value.login)
+      Login.obj().serializeData(writer, value.login, context)
     }
 
-    private object Login : Adapter<LoginBarber.Data.Login> {
+    private object Login : DataAdapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          LoginBarber.Data.Login {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): LoginBarber.Data.Login {
         var _response: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _response = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _response = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -64,13 +63,13 @@ public object LoginBarber_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: LoginBarber.Data.Login,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("response")
-        StringAdapter.toJson(writer, customScalarAdapters, value.response)
+        StringDataAdapter.serializeData(writer, value.response, context)
       }
     }
   }
