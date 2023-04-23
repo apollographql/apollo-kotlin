@@ -188,13 +188,17 @@ class GradleToolingModelService(
 
   private fun computeGraphQLProjectFiles(toolingModels: List<ApolloGradleToolingModel>) {
     // Compute the GraphQLProjectFiles, taking into account the dependencies between projects
+    val allKnownProjectNames = toolingModels.map { it.projectName }
     val projectServiceToGraphQLProjectFiles = mutableMapOf<String, GraphQLProjectFiles>()
     fun getGraphQLProjectFiles(projectName: String, serviceName: String): GraphQLProjectFiles {
       val key = "$projectName/$serviceName"
       return projectServiceToGraphQLProjectFiles.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
-        val dependenciesProjectFiles = serviceInfo.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
+        val dependenciesProjectFiles = serviceInfo.upstreamProjects
+            // The tooling model for some upstream projects might not have been fetched successfully - filter them out
+            .filter { upstreamProject -> upstreamProject in allKnownProjectNames }
+            .map { getGraphQLProjectFiles(it, serviceName) }
         GraphQLProjectFiles(
             name = key,
             schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
