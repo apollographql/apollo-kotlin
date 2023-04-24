@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
@@ -113,6 +115,32 @@ configure<PublishingExtension> {
   }
 }
 
+tasks.register("wrapInitScripts") {
+  doLast {
+    val initDir = File(System.getenv("HOME")).resolve(".gradle/init.d/")
+
+    val buildCapture = initDir.resolve("build-result-capture.init.gradle")
+    if (!buildCapture.exists()) {
+      // Running on a local machine or wrapping is already done
+      println("~/.gradle/init.d/build-result-capture.init.gradle not found")
+      return@doLast
+    }
+    println("wrapping init scrips")
+
+    // Rename the script
+    buildCapture.renameTo(initDir.resolve("build-result-capture"))
+
+    initDir.resolve("wrapper.init.gradle.kts").writeText("""
+      if (System.getProperty("skipBuildCollection") == null) {
+          println("Init scripts: capturing builds")
+          apply(from = "build-result-capture")
+      } else {
+          println("Init scripts: skipping build capture")
+      }
+    """.trimIndent())
+  }
+}
+
 tasks.register("cleanStaleTestProjects") {
   doFirst {
     /**
@@ -136,6 +164,13 @@ tasks.withType<Test> {
   dependsOn(":apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
+  if (System.getenv("CI") != null) {
+    dependsOn("wrapInitScripts")
+  }
+  // Because we run the GradleRunner in process, this gets forwarded to invocation
+  systemProperty("skipBuildCollection", "true")
+
+  dependsOn("cleanStaleTestProjects")
 
   dependsOn("cleanStaleTestProjects")
 
