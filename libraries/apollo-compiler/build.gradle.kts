@@ -70,9 +70,9 @@ tasks.withType(KotlinCompile::class.java) {
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {
-  inputs.dir("src/test/graphql")
-  inputs.dir("src/test/sdl")
-  inputs.dir("src/test/typename")
-  inputs.dir("src/test/usedtypes")
-  inputs.dir("src/test/validation")
+  addRelativeInput("graphqlDir", "src/test/graphql")
+  addRelativeInput("sdlDir", "src/test/sdl")
+  addRelativeInput("typenameDir", "src/test/typename")
+  addRelativeInput("usedtypesDir","src/test/usedtypes")
+  addRelativeInput("validationDir", "src/test/validation")
 }
