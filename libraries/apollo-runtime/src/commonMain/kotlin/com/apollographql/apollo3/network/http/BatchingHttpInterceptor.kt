@@ -2,11 +2,10 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -16,7 +15,6 @@ import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
-import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.DefaultApolloException
@@ -183,7 +181,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       val responseBody = response.body ?: throw DefaultApolloException("null body when executing batched query")
 
       // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
-      val list = AnyDataAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
+      val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
       if (list !is List<*>) throw DefaultApolloException("batched query response is not a list when executing batched query")
 
       if (list.size != pending.size) {
@@ -195,7 +193,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
           throw DefaultApolloException("batched query response contains a null item")
         }
         (buildJsonByteString {
-          AnyDataAdapter.toJson(this, CustomScalarAdapters.Empty, it)
+          AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         })
       }
     } catch (e: Exception) {

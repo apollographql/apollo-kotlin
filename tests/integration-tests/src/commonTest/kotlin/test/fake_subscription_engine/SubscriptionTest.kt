@@ -1,12 +1,10 @@
 package test.fake_subscription_engine
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import fake_subscription_engine.RandomSubscription
@@ -66,7 +64,7 @@ class SubscriptionTest {
   }
 
   private fun Map<String, Any?>.toMessageString(): String = buildJsonString {
-    AnyDataAdapter.toJson(this, CustomScalarAdapters.Empty, this@toMessageString)
+    AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toMessageString)
   }
 
   private fun data(id: String, random: Int): String {
@@ -90,7 +88,7 @@ class SubscriptionTest {
 
   private fun String.toMessageMap(): Map<String, Any?>? = try {
     @Suppress("UNCHECKED_CAST")
-    AnyDataAdapter.fromJson(
+    AnyAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(this)),
         CustomScalarAdapters.Empty
     ) as? Map<String, Any?>
