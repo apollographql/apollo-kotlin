@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+# Version 3.8.1
+
+_2023-04-21_
+
+This patch release contains 2 bug fixes.
+
+## 👷‍ All changes
+
+* Add ignoreApolloClientHttpHeaders (#4838)
+* Download introspection: handle GraphQL errors (#4861)
+
 # Version 3.8.0
 
 _2023-03-28_
