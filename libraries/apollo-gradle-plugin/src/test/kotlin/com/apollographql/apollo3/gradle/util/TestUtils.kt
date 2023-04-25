@@ -172,12 +172,13 @@ object TestUtils {
     val output = blackholeSink().buffer().outputStream().writer()
     val error = blackholeSink().buffer().outputStream().writer()
 
+
     return GradleRunner.create()
         .forwardStdOutput(output)
         .forwardStdError(error)
         .withProjectDir(projectDir)
         .withDebug(true)
-        .withArguments("--stacktrace", *args)
+        .withArguments("-g", testKitHome().absolutePath, "--stacktrace", *args)
         .apply {
           if (gradleVersion != null) {
             withGradleVersion(gradleVersion)
@@ -193,6 +194,11 @@ object TestUtils {
   fun assertFileContains(projectDir: File, path: String, content: String) {
     val text = projectDir.generatedChild(path).readText()
     Truth.assertThat(text).contains(content)
+  }
+
+  fun testKitHome(): File {
+    val workerId = System.getProperty("org.gradle.test.worker")
+    return File(System.getProperty("user.dir"), "build/testKitHome/$workerId")
   }
 
   fun fixturesDirectory() = File(System.getProperty("user.dir"), "src/test/files")
