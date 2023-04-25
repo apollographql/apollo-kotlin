@@ -1,5 +1,6 @@
 import com.gradle.enterprise.gradleplugin.testretry.retry
 import org.gradle.api.Project
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -32,4 +33,9 @@ fun Project.configureTesting() {
       showStandardStreams = true
     }
   }
+}
+
+// See https://github.com/gradle/gradle/issues/23456
+fun Test.addRelativeInput(name: String, dirPath: Any) {
+  this.inputs.dir(dirPath).withPropertyName(name).withPathSensitivity(PathSensitivity.RELATIVE)
 }

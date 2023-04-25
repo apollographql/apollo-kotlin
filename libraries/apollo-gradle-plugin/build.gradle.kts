@@ -127,8 +127,8 @@ tasks.withType<Test> {
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
-  inputs.dir("src/test/files")
-  inputs.dir("testProjects")
+  addRelativeInput("testFiles", "src/test/files")
+  addRelativeInput("testProjects", "testProjects")
 
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
 
