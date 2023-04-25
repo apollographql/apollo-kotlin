@@ -20,8 +20,10 @@ internal object Identifier {
   const val serializeData = "serializeData"
   const val build = "build"
   const val deserializeData = "deserializeData"
+  const val fromJson = "fromJson"
   const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
+  const val toJson = "toJson"
   const val fields = "fields"
   const val rootField = "rootField"
 
@@ -49,6 +51,8 @@ internal object Identifier {
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"
   const val RESPONSE_NAMES = "RESPONSE_NAMES"
+
+  const val Empty = "Empty"
 
   /**
    * Only used by generated code

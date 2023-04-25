@@ -4,8 +4,10 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -17,6 +19,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -87,7 +90,11 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.${Identifier.serializeData}($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
+  if (type.isScalarOrWrappedScalar()) {
+    builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
+  } else {
+    builder.addStatement("$L.$serializeData($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
+  }
   if (type.isOptional()) {
     builder.endControlFlow()
   }

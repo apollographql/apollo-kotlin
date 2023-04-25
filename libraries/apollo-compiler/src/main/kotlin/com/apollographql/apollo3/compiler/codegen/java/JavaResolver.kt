@@ -28,6 +28,7 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
+import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -51,12 +52,25 @@ internal class JavaResolver(
   }
 
   private val optionalAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    else -> JavaClassNames.ApolloOptionalAdapter
+  }
+
+  private val optionalDataAdapterClassName: ClassName = when (nullableFieldStyle) {
     JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
     JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
     else -> JavaClassNames.ApolloOptionalDataAdapter
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    else -> JavaClassNames.NullableAdapter
+  }
+
+  private val optionalOrNullableDataAdapterClassName: ClassName = when (nullableFieldStyle) {
     JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalDataAdapter
     JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
     JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
@@ -188,11 +202,12 @@ internal class JavaResolver(
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Int")
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Double")
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          adapterCodeBlock("NullableAnyDataAdapter")
+          adapterCodeBlock("NullableAnyAdapter")
         }
 
         else -> {
-          CodeBlock.of("new $T<>($L)", optionalOrNullableAdapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
+          val adapterClassName = if (type.isScalarOrWrappedScalar()) optionalOrNullableAdapterClassName else optionalOrNullableDataAdapterClassName
+          CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
     }
@@ -213,7 +228,7 @@ internal class JavaResolver(
     return when (type) {
       is IrNonNullType -> error("")
       is IrListType -> {
-        adapterInitializer(type.ofType, requiresBuffering).listAdapter()
+        adapterInitializer(type.ofType, requiresBuffering).listAdapter(isScalar = type.ofType.isScalarOrWrappedScalar())
       }
 
       is IrScalarType -> {
@@ -241,25 +256,22 @@ internal class JavaResolver(
       }
 
       is IrOptionalType -> {
-        CodeBlock.of("new $T<>($L)", optionalAdapterClassName, adapterInitializer(type.ofType, requiresBuffering))
+        val adapterClassName = if (type.ofType.isScalarOrWrappedScalar()) optionalAdapterClassName else optionalDataAdapterClassName
+        CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
     }
   }
 
-  private fun nonNullableScalarAdapterInitializer(type: IrScalarType, scalarAdapters: String): CodeBlock {
+  private fun nonNullableScalarAdapterInitializer(type: IrScalarType, customScalarAdapters: String): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
-        CodeBlock.of(
-            "new $T<>($L)",
-            JavaClassNames.AdapterToDataAdapter,
-            CodeBlock.of(adapterInitializer.expression)
-        )
+        CodeBlock.of(adapterInitializer.expression)
       }
 
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
-            "($scalarAdapters.<$T>responseAdapterFor($L))",
+            "($customScalarAdapters.<$T>responseAdapterFor($L))",
             target,
             resolveCompiledType(type.name)
         )
@@ -267,18 +279,18 @@ internal class JavaResolver(
 
       else -> {
         when (type.name) {
-          "Boolean" -> adapterCodeBlock("BooleanDataAdapter")
-          "ID" -> adapterCodeBlock("StringDataAdapter")
-          "String" -> adapterCodeBlock("StringDataAdapter")
-          "Int" -> adapterCodeBlock("IntDataAdapter")
-          "Float" -> adapterCodeBlock("DoubleDataAdapter")
+          "Boolean" -> adapterCodeBlock("BooleanAdapter")
+          "ID" -> adapterCodeBlock("StringAdapter")
+          "String" -> adapterCodeBlock("StringAdapter")
+          "Int" -> adapterCodeBlock("IntAdapter")
+          "Float" -> adapterCodeBlock("DoubleAdapter")
           else -> {
             val target = resolveScalarTarget(type.name)
             if (target == null) {
-              adapterCodeBlock("AnyDataAdapter")
+              adapterCodeBlock("AnyAdapter")
             } else {
               CodeBlock.of(
-                  "($scalarAdapters.<$T>responseAdapterFor($L))",
+                  "($customScalarAdapters.<$T>responseAdapterFor($L))",
                   target,
                   resolveCompiledType(type.name)
               )
@@ -292,36 +304,36 @@ internal class JavaResolver(
   /**
    * Nullable adapters are @JvmField properties
    */
-  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.DataAdapters, name)
+  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
   private fun scalarAdapterCodeBlock(typeName: String): CodeBlock {
     val className: ClassName
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
       JavaNullable.APOLLO_OPTIONAL -> {
-        // Ex: DataAdapters.ApolloOptionalStringAdapter
-        className = JavaClassNames.DataAdapters
+        // Ex: Adapters.ApolloOptionalStringAdapter
+        className = JavaClassNames.Adapters
         adapterNamePrefix = "ApolloOptional"
       }
 
       JavaNullable.JAVA_OPTIONAL -> {
-        // Ex: JavaOptionalDataAdapters.JavaOptionalStringDataAdapter
-        className = JavaClassNames.JavaOptionalDataAdapters
+        // Ex: JavaOptionalAdapters.JavaOptionalStringAdapter
+        className = JavaClassNames.JavaOptionalAdapters
         adapterNamePrefix = "JavaOptional"
       }
 
       JavaNullable.GUAVA_OPTIONAL -> {
-        // Ex: GuavaOptionalDataAdapters.GuavaOptionalStringDataAdapter
-        className = JavaClassNames.GuavaOptionalDataAdapters
+        // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
+        className = JavaClassNames.GuavaOptionalAdapters
         adapterNamePrefix = "GuavaOptional"
       }
 
       else -> {
-        // Ex: DataAdapters.NullableStringDataAdapter
-        className = JavaClassNames.DataAdapters
+        // Ex: Adapters.NullableStringAdapter
+        className = JavaClassNames.Adapters
         adapterNamePrefix = "Nullable"
       }
     }
-    val adapterName = "$adapterNamePrefix${typeName}DataAdapter"
+    val adapterName = "$adapterNamePrefix${typeName}Adapter"
     return CodeBlock.of("$T.$L", className, adapterName)
   }
 
@@ -390,7 +402,7 @@ internal class JavaResolver(
   private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
     return when (type) {
       is IrNonNullType2 -> error("")
-      is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter()
+      is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isScalar = type.ofType.isScalarOrWrappedScalar())
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
           nonNullableScalarAdapterInitializer(IrScalarType(type.name), customScalarAdapters)
@@ -407,8 +419,16 @@ internal class JavaResolver(
     }
   }
 
-  private fun CodeBlock.listAdapter(): CodeBlock {
-    return CodeBlock.of("new $T<>($L)", JavaClassNames.ListDataAdapter, this)
+  private fun CodeBlock.listAdapter(isScalar: Boolean): CodeBlock {
+    return CodeBlock.of(
+        "new $T<>($L)",
+        if (isScalar) {
+          JavaClassNames.ListAdapter
+        } else {
+          JavaClassNames.ListDataAdapter
+        },
+        this
+    )
   }
 
   fun registerSchema(className: ClassName) = register(ResolverKeyKind.Schema, "", className)

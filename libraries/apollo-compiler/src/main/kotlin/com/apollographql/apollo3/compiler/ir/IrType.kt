@@ -151,3 +151,13 @@ internal fun GQLType.toIr(schema: Schema): IrType {
     }
   }
 }
+
+internal fun IrType.isScalarOrWrappedScalar(): Boolean {
+  return when (this) {
+    is IrScalarType -> true
+    is IrNonNullType -> ofType.isScalarOrWrappedScalar()
+    is IrListType -> ofType.isScalarOrWrappedScalar()
+    is IrOptionalType -> ofType.isScalarOrWrappedScalar()
+    else -> false
+  }
+}

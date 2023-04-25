@@ -75,8 +75,11 @@ internal object JavaClassNames {
   val BPossibleTypes = ClassName.get(apolloApiPackageName, "BPossibleTypes")
   val BLabel = ClassName.get(apolloApiPackageName, "BLabel")
   val ImmutableMapBuilder = ClassName.get(apolloApiPackageName, "ImmutableMapBuilder")
+  val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
   val NullableDataAdapter = ClassName.get(apolloApiPackageName, "NullableDataAdapter")
+  val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
   val ListDataAdapter = ClassName.get(apolloApiPackageName, "ListDataAdapter")
+  val ApolloOptionalAdapter = ClassName.get(apolloApiPackageName, "ApolloOptionalAdapter")
   val ApolloOptionalDataAdapter = ClassName.get(apolloApiPackageName, "ApolloOptionalDataAdapter")
 
   val IOException = ClassName.get("java.io", "IOException")
@@ -84,11 +87,14 @@ internal object JavaClassNames {
   /**
    * ClassNames for kotlin files turned into java classes
    */
+  val Adapters = ClassName.get(apolloApiPackageName, "Adapters")
   val DataAdapters = ClassName.get(apolloApiPackageName, "DataAdapters")
+  val JavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapter")
   val JavaOptionalDataAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalDataAdapter")
-  val JavaOptionalDataAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalDataAdapters")
+  val JavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapters")
+  val GuavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapter")
   val GuavaOptionalDataAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalDataAdapter")
-  val GuavaOptionalDataAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalDataAdapters")
+  val GuavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapters")
   val CompiledGraphQL = ClassName.get(apolloApiPackageName, "CompiledGraphQL")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")

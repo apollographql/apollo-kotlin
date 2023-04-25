@@ -6,13 +6,10 @@ import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
 import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
-import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
@@ -119,120 +116,6 @@ class ApolloOptionalDataAdapter<T>(private val wrappedAdapter: DataAdapter<T>) :
   }
 }
 
-@JvmField
-val StringDataAdapter = object : DataAdapter<String> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): String {
-    return reader.nextString()!!
-  }
-
-  override fun serializeData(writer: JsonWriter, value: String, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-@JvmField
-val IntDataAdapter = object : DataAdapter<Int> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Int {
-    return reader.nextInt()
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Int, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-@JvmField
-val DoubleDataAdapter = object : DataAdapter<Double> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Double {
-    return reader.nextDouble()
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Double, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-/**
- * A [DataAdapter] that converts to/from a [Float]
- * Floats are not part of the GraphQL spec but this can be used in custom scalars
- */
-@JvmField
-val FloatDataAdapter = object : DataAdapter<Float> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Float {
-    return reader.nextDouble().toFloat()
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Float, context: SerializeDataContext) {
-    writer.value(value.toDouble())
-  }
-}
-
-/**
- * A [DataAdapter] that converts to/from a [Long]
- * Longs are not part of the GraphQL spec but this can be used in custom scalars
- *
- * If the Json number does not fit in a [Long], an exception will be thrown
- */
-@JvmField
-val LongDataAdapter = object : DataAdapter<Long> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Long {
-    return reader.nextLong()
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Long, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-@JvmField
-val BooleanDataAdapter = object : DataAdapter<Boolean> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Boolean {
-    return reader.nextBoolean()
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Boolean, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-@JvmField
-val AnyDataAdapter = object : DataAdapter<Any> {
-  fun fromJson(reader: JsonReader): Any {
-    return reader.readAny()!!
-  }
-
-  fun toJson(writer: JsonWriter, value: Any) {
-    writer.writeAny(value)
-  }
-
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Any {
-    return fromJson(reader)
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Any, context: SerializeDataContext) {
-    toJson(writer, value)
-  }
-}
-
-internal class PassThroughDataAdapter<T> : DataAdapter<T> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
-    check(reader is MapJsonReader) {
-      "UnsafeAdapter only supports MapJsonReader"
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    return reader.nextValue() as T
-  }
-
-  override fun serializeData(writer: JsonWriter, value: T, context: SerializeDataContext) {
-    check(writer is MapJsonWriter) {
-      "UnsafeAdapter only supports MapJsonWriter"
-    }
-
-    writer.value(value)
-  }
-}
-
 class AdapterToDataAdapter<T>(private val wrappedAdapter: Adapter<T>) : DataAdapter<T> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
     return wrappedAdapter.fromJson(reader, CustomScalarAdapters.Empty)
@@ -242,54 +125,6 @@ class AdapterToDataAdapter<T>(private val wrappedAdapter: Adapter<T>) : DataAdap
     wrappedAdapter.toJson(writer, CustomScalarAdapters.Empty, value)
   }
 }
-
-@JvmField
-val UploadDataAdapter = object : DataAdapter<Upload> {
-  override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Upload {
-    error("File Upload used in output position")
-  }
-
-  override fun serializeData(writer: JsonWriter, value: Upload, context: SerializeDataContext) {
-    writer.value(value)
-  }
-}
-
-/*
- * Global instances of nullable adapters for built-in scalar types
- */
-@JvmField
-val NullableStringDataAdapter = StringDataAdapter.nullable()
-
-@JvmField
-val NullableDoubleDataAdapter = DoubleDataAdapter.nullable()
-
-@JvmField
-val NullableIntDataAdapter = IntDataAdapter.nullable()
-
-@JvmField
-val NullableBooleanDataAdapter = BooleanDataAdapter.nullable()
-
-@JvmField
-val NullableAnyDataAdapter = AnyDataAdapter.nullable()
-
-/*
- * Global instances of optional adapters for built-in scalar types
- */
-@JvmField
-val ApolloOptionalStringDataAdapter = ApolloOptionalDataAdapter(StringDataAdapter)
-
-@JvmField
-val ApolloOptionalDoubleDataAdapter = ApolloOptionalDataAdapter(DoubleDataAdapter)
-
-@JvmField
-val ApolloOptionalIntDataAdapter = ApolloOptionalDataAdapter(IntDataAdapter)
-
-@JvmField
-val ApolloOptionalBooleanDataAdapter = ApolloOptionalDataAdapter(BooleanDataAdapter)
-
-@JvmField
-val ApolloOptionalAnyDataAdapter = ApolloOptionalDataAdapter(AnyDataAdapter)
-
 
 class ObjectDataAdapter<T>(
     private val wrappedAdapter: DataAdapter<T>,

@@ -4,9 +4,11 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeDataContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -19,6 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalCont
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -78,13 +81,22 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   }
 
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.$serializeData($writer, $value.$propertyName, $serializeDataContext)", adapterInitializer)
+  if (type.isScalarOrWrappedScalar()) {
+    builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
+  } else {
+    builder.addStatement("$L.$serializeData($writer, $value.$propertyName, $serializeDataContext)", adapterInitializer)
+  }
   if (type.isOptional()) {
     builder.endControlFlow()
     if (defaultValue is IrBooleanValue) {
       builder.beginControlFlow("else if (${Identifier.context}.withDefaultBooleanValues)")
       builder.addStatement("$writer.name($S)", graphQlName)
-      builder.addStatement("$L.$serializeData($writer, $L, $serializeDataContext)", CodeBlock.of("$T.$L", JavaClassNames.DataAdapters, "BooleanDataAdapter"), defaultValue.value)
+      builder.addStatement(
+          "$L.$toJson($writer, $T.$Empty, $L)",
+          CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanAdapter"),
+          JavaClassNames.CustomScalarAdapters,
+          defaultValue.value,
+      )
       builder.endControlFlow()
     }
   }

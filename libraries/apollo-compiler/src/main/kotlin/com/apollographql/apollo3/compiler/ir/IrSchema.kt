@@ -310,3 +310,12 @@ private fun GQLInputValueDefinition.toIrInputField(schema: Schema): IrInputField
       defaultValue = coercedDefaultValue?.toIrValue(),
   )
 }
+
+internal fun IrType2.isScalarOrWrappedScalar(): Boolean {
+  return when (this) {
+    is IrScalarType2 -> true
+    is IrNonNullType2 -> ofType.isScalarOrWrappedScalar()
+    is IrListType2 -> ofType.isScalarOrWrappedScalar()
+    else -> false
+  }
+}

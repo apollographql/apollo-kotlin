@@ -90,18 +90,18 @@ internal object KotlinSymbols {
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")
 
   /**
-   * Data Adapters
+   * Adapters
    */
-  val AnyDataAdapter = MemberName(apolloApiPackageName, "AnyDataAdapter")
-  val BooleanDataAdapter = MemberName(apolloApiPackageName, "BooleanDataAdapter")
-  val DoubleDataAdapter = MemberName(apolloApiPackageName, "DoubleDataAdapter")
-  val IntDataAdapter = MemberName(apolloApiPackageName, "IntDataAdapter")
-  val StringDataAdapter = MemberName(apolloApiPackageName, "StringDataAdapter")
-  val NullableAnyDataAdapter = MemberName(apolloApiPackageName, "NullableAnyDataAdapter")
-  val NullableBooleanDataAdapter = MemberName(apolloApiPackageName, "NullableBooleanDataAdapter")
-  val NullableDoubleDataAdapter = MemberName(apolloApiPackageName, "NullableDoubleDataAdapter")
-  val NullableIntDataAdapter = MemberName(apolloApiPackageName, "NullableIntDataAdapter")
-  val NullableStringDataAdapter = MemberName(apolloApiPackageName, "NullableStringDataAdapter")
+  val AnyAdapter = MemberName(apolloApiPackageName, "AnyAdapter")
+  val BooleanAdapter = MemberName(apolloApiPackageName, "BooleanAdapter")
+  val DoubleAdapter = MemberName(apolloApiPackageName, "DoubleAdapter")
+  val IntAdapter = MemberName(apolloApiPackageName, "IntAdapter")
+  val StringAdapter = MemberName(apolloApiPackageName, "StringAdapter")
+  val NullableAnyAdapter = MemberName(apolloApiPackageName, "NullableAnyAdapter")
+  val NullableBooleanAdapter = MemberName(apolloApiPackageName, "NullableBooleanAdapter")
+  val NullableDoubleAdapter = MemberName(apolloApiPackageName, "NullableDoubleAdapter")
+  val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
+  val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 
 
   val BuilderScope = ClassName(apolloApiPackageName, "BuilderScope")

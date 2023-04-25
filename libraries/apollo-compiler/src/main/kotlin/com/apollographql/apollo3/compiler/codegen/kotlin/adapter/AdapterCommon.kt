@@ -2,10 +2,12 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
@@ -25,6 +27,7 @@ import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -68,16 +71,28 @@ internal fun readFromResponseCodeBlock(
    */
   val loop = if (regularProperties.isNotEmpty()) {
     CodeBlock.builder()
-        .beginControlFlow("while(true)")
+        .beginControlFlow("while·(true)")
         .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              CodeBlock.of(
-                  "%L·->·%N·=·%L.$deserializeData($reader, ${Identifier.context})",
-                  index,
-                  context.layout.variableName(property.info.responseName),
-                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
-              )
+              val variableName = context.layout.variableName(property.info.responseName)
+              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
+              if (property.info.type.isScalarOrWrappedScalar()) {
+                CodeBlock.of(
+                    "%L·->·%N·=·%L.$fromJson($reader,·%T.$Empty)",
+                    index,
+                    variableName,
+                    adapterInitializer,
+                    KotlinSymbols.CustomScalarAdapters,
+                )
+              } else {
+                CodeBlock.of(
+                    "%L·->·%N·=·%L.$deserializeData($reader,·${Identifier.context})",
+                    index,
+                    variableName,
+                    adapterInitializer,
+                )
+              }
             }.joinToCode(separator = "\n", suffix = "\n")
         )
         .addStatement("else -> break")
@@ -218,11 +233,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
-    builder.addStatement(
-        "%L.${Identifier.serializeData}($writer, $value.%N, ${Identifier.context})",
-        adapterInitializer,
-        propertyName,
-    )
+    builder.addSerializeStatement(info.type, adapterInitializer, propertyName)
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
 
@@ -243,6 +254,28 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   }
 
   return builder.build()
+}
+
+internal fun CodeBlock.Builder.addSerializeStatement(
+    type: IrType,
+    adapterInitializer: CodeBlock,
+    propertyName: String,
+    contextArgument: String = Identifier.context,
+) {
+  if (type.isScalarOrWrappedScalar()) {
+    addStatement(
+        "%L.toJson($writer, %T.$Empty, $value.%N)",
+        adapterInitializer,
+        KotlinSymbols.CustomScalarAdapters,
+        propertyName,
+    )
+  } else {
+    addStatement(
+        "%L.${Identifier.serializeData}($writer, $value.%N, $contextArgument)",
+        adapterInitializer,
+        propertyName,
+    )
+  }
 }
 
 

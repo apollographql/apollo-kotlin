@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrModel
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -95,7 +97,13 @@ internal class ImplementationAdapterBuilder(
     return FunSpec.builder(Identifier.deserializeData)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
+        .addParameter(
+            ParameterSpec.builder(Identifier.context, KotlinSymbols.DeserializeDataContext)
+                .applyIf(addTypenameArgument) {
+                  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+                }
+                .build()
+        )
         .apply {
           if (addTypenameArgument) {
             addParameter(
@@ -116,7 +124,13 @@ internal class ImplementationAdapterBuilder(
     return FunSpec.builder(Identifier.serializeData)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
         .addParameter(Identifier.value, adaptedClassName)
-        .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)
+        .addParameter(
+            ParameterSpec.builder(Identifier.context, KotlinSymbols.SerializeDataContext)
+                .applyIf(addTypenameArgument) {
+                  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+                }
+                .build()
+        )
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
           if (!addTypenameArgument) {

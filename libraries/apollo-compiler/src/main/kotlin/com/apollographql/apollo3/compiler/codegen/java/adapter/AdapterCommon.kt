@@ -2,13 +2,16 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -35,6 +38,7 @@ import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -105,12 +109,24 @@ internal fun readFromResponseCodeBlock(
         .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              CodeBlock.of(
-                  "case $L: $L = $L.$deserializeData($reader, ${Identifier.context}); break;",
-                  index,
-                  context.layout.variableName(property.info.responseName),
-                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
-              )
+              val variableName = context.layout.variableName(property.info.responseName)
+              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
+              if (property.info.type.isScalarOrWrappedScalar()) {
+                CodeBlock.of(
+                    "case $L: $L = $L.$fromJson($reader, $T.$Empty); break;",
+                    index,
+                    variableName,
+                    adapterInitializer,
+                    JavaClassNames.CustomScalarAdapters,
+                )
+              } else {
+                CodeBlock.of(
+                    "case $L: $L = $L.$deserializeData($reader, ${Identifier.context}); break;",
+                    index,
+                    variableName,
+                    adapterInitializer
+                )
+              }
             }.joinToCode(separator = "\n", suffix = "\n")
         )
         .addStatement("default: break loop")
@@ -254,10 +270,18 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name($S)", info.responseName)
-    builder.addStatement(
-        "$L.$serializeData($writer, $value.$propertyName, ${Identifier.context})",
-        adapterInitializer
-    )
+    if (info.type.isScalarOrWrappedScalar()) {
+      builder.addStatement(
+          "$L.$toJson($writer, $T.$Empty, $value.$propertyName)",
+          adapterInitializer,
+          JavaClassNames.CustomScalarAdapters,
+      )
+    } else {
+      builder.addStatement(
+          "$L.$serializeData($writer, $value.$propertyName, ${Identifier.context})",
+          adapterInitializer,
+      )
+    }
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
 

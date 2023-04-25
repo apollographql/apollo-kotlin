@@ -4,16 +4,16 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
 /**
- * A wrapper around a Map<String, [DataAdapter]> used to retrieve scalar adapters at runtime
+ * A wrapper around a Map<String, [Adapter]> used to retrieve scalar adapters at runtime
  */
 class CustomScalarAdapters private constructor(
-    scalarAdapters: Map<String, DataAdapter<*>>,
+    scalarAdapters: Map<String, Adapter<*>>,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
-  private val adaptersMap: Map<String, DataAdapter<*>> = scalarAdapters
+  private val adaptersMap: Map<String, Adapter<*>> = scalarAdapters
 
-  fun <T : Any> responseAdapterFor(scalar: ScalarType): DataAdapter<T> {
+  fun <T : Any> responseAdapterFor(scalar: ScalarType): Adapter<T> {
     @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[scalar.name] != null -> {
@@ -23,40 +23,40 @@ class CustomScalarAdapters private constructor(
        * Below are shortcuts to save the users a call to `registerScalarAdapter`
        */
       scalar.className == "com.apollographql.apollo3.api.Upload" -> {
-        UploadDataAdapter
+        UploadAdapter
       }
 
       scalar.className in listOf("kotlin.String", "java.lang.String") -> {
-        StringDataAdapter
+        StringAdapter
       }
 
       scalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
-        BooleanDataAdapter
+        BooleanAdapter
       }
 
       scalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
-        IntDataAdapter
+        IntAdapter
       }
 
       scalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
-        DoubleDataAdapter
+        DoubleAdapter
       }
 
       scalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
-        LongDataAdapter
+        LongAdapter
       }
 
       scalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
-        FloatDataAdapter
+        FloatAdapter
       }
 
       scalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
-        AnyDataAdapter
+        AnyAdapter
       }
 
-      unsafe -> PassThroughDataAdapter()
+      unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
-    } as DataAdapter<T>
+    } as Adapter<T>
   }
 
   override val key: ExecutionContext.Key<*>
@@ -81,14 +81,14 @@ class CustomScalarAdapters private constructor(
   fun newBuilder() = Builder().addAll(this)
 
   class Builder {
-    private val adaptersMap: MutableMap<String, DataAdapter<*>> = mutableMapOf()
+    private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
     private var unsafe = false
 
     fun <T> add(
         customScalarType: ScalarType,
         customScalarAdapter: Adapter<T>,
     ) = apply {
-      adaptersMap[customScalarType.name] = AdapterToDataAdapter(customScalarAdapter)
+      adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
     fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {

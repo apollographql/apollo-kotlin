@@ -84,11 +84,7 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("$writer.name(%S)", graphQlName)
-  builder.addStatement(
-      "%L.$serializeData($writer, $value.%N, ${Identifier.context})",
-      adapterInitializer,
-      propertyName,
-  )
+  builder.addSerializeStatement(type, adapterInitializer, propertyName)
   if (type.isOptional()) {
     builder.endControlFlow()
   }

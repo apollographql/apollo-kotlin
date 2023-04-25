@@ -96,7 +96,7 @@ internal class ObjectBuilderBuilder(
             CodeBlock.of(
                 "$T.adaptValue($L, $L)",
                 JavaClassNames.ObjectBuilderKt,
-                context.resolver.adapterInitializer2(type),
+                adapter,
                 context.layout.propertyName(name)
             )
           } else {

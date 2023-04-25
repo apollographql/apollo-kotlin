@@ -41,6 +41,8 @@ val GlobalBuilder = object : BuilderScope {
  * This is needed in Data Builders because the serializer only work from Json
  */
 class BuilderProperty<T>(val adapter: DataAdapter<T>) {
+  constructor(adapter: Adapter<T>) : this(AdapterToDataAdapter(adapter))
+
   operator fun getValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>): T {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
@@ -53,6 +55,12 @@ class BuilderProperty<T>(val adapter: DataAdapter<T>) {
       adapter.toJson(this, CustomScalarAdapters.Empty, value)
     }.root()
   }
+}
+
+fun <T> adaptValue(adapter: Adapter<T>, value: T): Any? {
+  return MapJsonWriter().apply {
+    adapter.toJson(this, CustomScalarAdapters.Empty, value)
+  }.root()
 }
 
 fun <T> adaptValue(adapter: DataAdapter<T>, value: T): Any? {
