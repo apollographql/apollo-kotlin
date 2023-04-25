@@ -5,9 +5,10 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -35,7 +36,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).deserializeData(reader, context); break;
           case 2: _droid = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).deserializeData(reader, context); break;
           case 3: _human = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).deserializeData(reader, context); break;
@@ -58,7 +59,7 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("hero");
       new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).serializeData(writer, value.hero, context);
@@ -84,7 +85,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -105,7 +106,7 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.serializeData(writer, value.heroFragment, context);
     }
@@ -124,7 +125,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -145,7 +146,7 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.serializeData(writer, value.droidFragment, context);
     }
@@ -164,7 +165,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -185,7 +186,7 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.serializeData(writer, value.onHuman, context);
     }
@@ -205,8 +206,8 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _homePlanet = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -224,10 +225,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("homePlanet");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.homePlanet, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet);
     }
   }
 }

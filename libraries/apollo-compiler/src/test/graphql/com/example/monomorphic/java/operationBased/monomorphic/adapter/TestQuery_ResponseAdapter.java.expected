@@ -5,9 +5,10 @@
 //
 package com.example.monomorphic.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -65,7 +66,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -85,7 +86,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Cat value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.serializeData(writer, value.onNode, context);
     }
@@ -104,7 +105,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -124,7 +125,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.OnNode value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.serializeData(writer, value.onAnimal, context);
     }
@@ -143,7 +144,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _species = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -159,7 +160,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.OnAnimal value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species);
     }
   }
 }

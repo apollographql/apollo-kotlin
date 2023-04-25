@@ -5,8 +5,9 @@
 //
 package com.example.operationbased2_ex8.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -24,7 +25,7 @@ public object TestOperation_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _animal = Animal.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -52,9 +53,9 @@ public object TestOperation_ResponseAdapter {
           context: DataAdapter.DeserializeDataContext): TestOperation.Data.Animal {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -75,7 +76,7 @@ public object TestOperation_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.serializeData(writer,
             value.animalFragment, context)

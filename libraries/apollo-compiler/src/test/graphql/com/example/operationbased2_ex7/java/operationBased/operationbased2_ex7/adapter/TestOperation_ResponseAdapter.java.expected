@@ -5,13 +5,14 @@
 //
 package com.example.operationbased2_ex7.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -69,7 +70,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -89,7 +90,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.Animal value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.serializeData(writer, value.onAnimal, context);
     }
@@ -109,8 +110,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _species = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -142,10 +143,10 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnAnimal value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species);
 
       if (value.onWarmBlooded != null) {
         com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.serializeData(writer, value.onWarmBlooded, context);
@@ -170,7 +171,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -186,7 +187,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnWarmBlooded value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("temperature");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.temperature, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature);
     }
   }
 
@@ -203,7 +204,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -219,7 +220,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnPet value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

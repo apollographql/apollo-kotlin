@@ -5,9 +5,10 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -27,9 +28,9 @@ public object QueryFragmentImpl_ResponseAdapter {
       var _droid: QueryFragmentImpl.Data.Droid? = null
       var _human: QueryFragmentImpl.Data.Human? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           1 -> _hero = Hero.obj().nullable().deserializeData(reader, context)
           2 -> _droid = Droid.obj().nullable().deserializeData(reader, context)
           3 -> _human = Human.obj().nullable().deserializeData(reader, context)
@@ -51,7 +52,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("hero")
       Hero.obj().nullable().serializeData(writer, value.hero, context)
@@ -71,10 +72,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         var __typename: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -91,10 +92,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
 
@@ -107,11 +108,11 @@ public object QueryFragmentImpl_ResponseAdapter {
         var _name: String? = null
         var _primaryFunction: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -129,13 +130,13 @@ public object QueryFragmentImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("primaryFunction")
-        NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
       }
     }
 
@@ -148,11 +149,11 @@ public object QueryFragmentImpl_ResponseAdapter {
         var _name: String? = null
         var _homePlanet: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _homePlanet = NullableStringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -170,13 +171,13 @@ public object QueryFragmentImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("homePlanet")
-        NullableStringDataAdapter.serializeData(writer, value.homePlanet, context)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
       }
     }
   }

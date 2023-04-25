@@ -5,10 +5,11 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableDoubleDataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -32,11 +33,10 @@ public object HeroDetailsImpl_ResponseAdapter {
       var _name: String? = null
       var _friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringDataAdapter.deserializeData(reader, context)
-          1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader,
-              context)
+          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -53,7 +53,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("friends")
       Friend.obj(true).nullable().list().nullable().serializeData(writer, value.friends, context)
@@ -69,10 +69,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         var __typename: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -109,10 +109,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         if (value.onHuman != null) {
           com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.serializeData(writer,
@@ -135,9 +135,9 @@ public object HeroDetailsImpl_ResponseAdapter {
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman {
           var _height: Double? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleDataAdapter.deserializeData(reader, context)
+              0 -> _height = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -153,7 +153,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("height")
-          NullableDoubleDataAdapter.serializeData(writer, value.height, context)
+          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
         }
       }
 
@@ -167,9 +167,9 @@ public object HeroDetailsImpl_ResponseAdapter {
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid {
           var _primaryFunction: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
+              0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -185,7 +185,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("primaryFunction")
-          NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
+          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
         }
       }
     }

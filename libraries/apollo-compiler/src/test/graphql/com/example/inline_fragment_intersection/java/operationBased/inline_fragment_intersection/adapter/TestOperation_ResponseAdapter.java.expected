@@ -5,13 +5,14 @@
 //
 package com.example.inline_fragment_intersection.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -74,7 +75,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -103,7 +104,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.Random value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onBeing != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.serializeData(writer, value.onBeing, context);
@@ -130,8 +131,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _friends = new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -159,10 +160,10 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnBeing value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friends");
       new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).serializeData(writer, value.friends, context);
@@ -187,8 +188,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -213,10 +214,10 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.Friend value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       if (value.onWookie != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.serializeData(writer, value.onWookie, context);
@@ -237,7 +238,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = DataAdapters.NullableDoubleDataAdapter.deserializeData(reader, context); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -251,7 +252,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnWookie value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("lifeExpectancy");
-      DataAdapters.NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context);
+      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy);
     }
   }
 
@@ -269,7 +270,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _profilePictureUrl = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _friends = new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -287,7 +288,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.OnHuman value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("profilePictureUrl");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.profilePictureUrl, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profilePictureUrl);
 
       writer.name("friends");
       new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).serializeData(writer, value.friends, context);
@@ -308,8 +309,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _isFamous = DataAdapters.NullableBooleanDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -332,10 +333,10 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.Friend1 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("isFamous");
-      DataAdapters.NullableBooleanDataAdapter.serializeData(writer, value.isFamous, context);
+      Adapters.NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous);
 
       if (value.onWookie != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.serializeData(writer, value.onWookie, context);
@@ -429,7 +430,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = DataAdapters.NullableDoubleDataAdapter.deserializeData(reader, context); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -443,7 +444,7 @@ public class TestOperation_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestOperation.Friend2 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("lifeExpectancy");
-      DataAdapters.NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context);
+      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy);
     }
   }
 }

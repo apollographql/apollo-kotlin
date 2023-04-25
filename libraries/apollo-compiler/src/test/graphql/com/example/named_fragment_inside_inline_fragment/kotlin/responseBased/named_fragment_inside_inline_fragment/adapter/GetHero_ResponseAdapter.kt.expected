@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_inside_inline_fragment.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -27,7 +28,7 @@ public object GetHero_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): GetHero.Data {
       var _hero: GetHero.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -57,12 +58,11 @@ public object GetHero_ResponseAdapter {
         var _name: String? = null
         var _appearsIn: List<Episode?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader,
-                context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader, context)
             else -> break
           }
         }
@@ -80,10 +80,10 @@ public object GetHero_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().serializeData(writer, value.appearsIn, context)

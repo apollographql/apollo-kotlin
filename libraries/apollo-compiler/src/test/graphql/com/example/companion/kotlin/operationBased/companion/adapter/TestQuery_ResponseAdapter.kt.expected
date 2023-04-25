@@ -5,8 +5,9 @@
 //
 package com.example.`companion`.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -25,7 +26,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _companion: TestQuery.Companion_? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _companion = Companion.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -54,9 +55,9 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Companion_ {
       var _foo: Int? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = IntDataAdapter.deserializeData(reader, context)
+          0 -> _foo = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -72,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("foo")
-      IntDataAdapter.serializeData(writer, value.foo, context)
+      IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.foo)
     }
   }
 }

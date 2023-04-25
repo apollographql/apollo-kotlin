@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf;
@@ -21,6 +22,6 @@ public enum SpreadMultipleWithDeferWithIf_VariablesAdapter implements VariablesA
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
     DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     writer.name("cond");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond);
   }
 }

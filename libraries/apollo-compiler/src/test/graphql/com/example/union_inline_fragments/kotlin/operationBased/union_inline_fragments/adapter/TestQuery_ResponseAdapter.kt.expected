@@ -5,9 +5,10 @@
 //
 package com.example.union_inline_fragments.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -30,10 +31,9 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().deserializeData(reader,
-              context)
+          0 -> _search = Search.obj(true).nullable().list().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -59,9 +59,9 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.DeserializeDataContext): TestQuery.Data.Search {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -97,7 +97,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.onCharacter != null) {
           com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.serializeData(writer,
@@ -119,12 +119,11 @@ public object TestQuery_ResponseAdapter {
           var _name: String? = null
           var _friends: List<TestQuery.Data.Search.OnCharacter.Friend?>? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
-              2 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader,
-                  context)
+              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              2 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -142,10 +141,10 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("id")
-          StringDataAdapter.serializeData(writer, value.id, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
           writer.name("friends")
           Friend.obj(true).nullable().list().nullable().serializeData(writer, value.friends,
@@ -160,9 +159,9 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -203,7 +202,7 @@ public object TestQuery_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringDataAdapter.serializeData(writer, value.__typename, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
             com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.serializeData(writer,
                 value.onCharacter, context)
@@ -228,9 +227,9 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Search.OnCharacter.Friend.OnCharacter {
               var _name: String? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                  0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                   else -> break
                 }
               }
@@ -246,7 +245,7 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("name")
-              StringDataAdapter.serializeData(writer, value.name, context)
+              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
             }
           }
 
@@ -259,11 +258,10 @@ public object TestQuery_ResponseAdapter {
               var _homePlanet: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _homePlanet = NullableStringDataAdapter.deserializeData(reader, context)
-                  1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader,
-                      context)
+                  0 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -280,7 +278,7 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("homePlanet")
-              NullableStringDataAdapter.serializeData(writer, value.homePlanet, context)
+              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
 
               writer.name("friends")
               Friend.obj(true).nullable().list().nullable().serializeData(writer, value.friends,
@@ -296,9 +294,9 @@ public object TestQuery_ResponseAdapter {
                   TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend {
                 var __typename: String? = null
 
-                while(true) {
+                while (true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+                    0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                     else -> break
                   }
                 }
@@ -319,7 +317,7 @@ public object TestQuery_ResponseAdapter {
                 context: DataAdapter.SerializeDataContext,
               ): Unit {
                 writer.name("__typename")
-                StringDataAdapter.serializeData(writer, value.__typename, context)
+                StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
                 com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.serializeData(writer,
                     value.onCharacter, context)
@@ -334,10 +332,9 @@ public object TestQuery_ResponseAdapter {
                     TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter {
                   var _firstAppearsIn: Episode? = null
 
-                  while(true) {
+                  while (true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> _firstAppearsIn = Episode_ResponseAdapter.deserializeData(reader,
-                          context)
+                      0 -> _firstAppearsIn = Episode_ResponseAdapter.deserializeData(reader, context)
                       else -> break
                     }
                   }
@@ -368,11 +365,10 @@ public object TestQuery_ResponseAdapter {
               var _primaryFunction: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
-                  1 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader,
-                      context)
+                  0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  1 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -389,7 +385,8 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("primaryFunction")
-              NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
+              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty,
+                  value.primaryFunction)
 
               writer.name("friends")
               Friend.obj().nullable().list().nullable().serializeData(writer, value.friends,
@@ -405,9 +402,9 @@ public object TestQuery_ResponseAdapter {
                   TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend {
                 var _id: String? = null
 
-                while(true) {
+                while (true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> _id = StringDataAdapter.deserializeData(reader, context)
+                    0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                     else -> break
                   }
                 }
@@ -423,7 +420,7 @@ public object TestQuery_ResponseAdapter {
                 context: DataAdapter.SerializeDataContext,
               ): Unit {
                 writer.name("id")
-                StringDataAdapter.serializeData(writer, value.id, context)
+                StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
               }
             }
           }
@@ -437,9 +434,9 @@ public object TestQuery_ResponseAdapter {
             context: DataAdapter.DeserializeDataContext): TestQuery.Data.Search.OnStarship {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -455,7 +452,7 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
     }

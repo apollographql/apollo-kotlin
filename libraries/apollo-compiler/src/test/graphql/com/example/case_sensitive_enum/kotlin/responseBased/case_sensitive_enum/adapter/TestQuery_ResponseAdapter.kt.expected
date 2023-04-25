@@ -24,7 +24,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _enum: Enum? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _enum = Enum_ResponseAdapter.nullable().deserializeData(reader, context)
           else -> break

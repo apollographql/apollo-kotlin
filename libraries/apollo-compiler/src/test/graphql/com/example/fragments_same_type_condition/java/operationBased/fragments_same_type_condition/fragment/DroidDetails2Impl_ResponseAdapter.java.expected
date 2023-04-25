@@ -5,8 +5,9 @@
 //
 package com.example.fragments_same_type_condition.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class DroidDetails2Impl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -44,7 +45,7 @@ public class DroidDetails2Impl_ResponseAdapter {
         com.example.fragments_same_type_condition.fragment.DroidDetails2 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("primaryFunction");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
     }
   }
 }

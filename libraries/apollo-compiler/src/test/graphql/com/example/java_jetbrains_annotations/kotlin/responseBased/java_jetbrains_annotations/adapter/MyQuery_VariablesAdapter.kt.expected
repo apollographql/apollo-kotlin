@@ -5,9 +5,10 @@
 //
 package com.example.java_jetbrains_annotations.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,15 +28,14 @@ public object MyQuery_VariablesAdapter : VariablesAdapter<MyQuery> {
     val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntDataAdapter.present().serializeData(writer, value.nullableInt,
-          serializeDataContext)
+      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntDataAdapter.serializeData(writer, value.nonNullableInt, serializeDataContext)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntDataAdapter.present().serializeData(writer, value.nonNullableIntWithDefault,
-          serializeDataContext)
+      IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.nonNullableIntWithDefault)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")

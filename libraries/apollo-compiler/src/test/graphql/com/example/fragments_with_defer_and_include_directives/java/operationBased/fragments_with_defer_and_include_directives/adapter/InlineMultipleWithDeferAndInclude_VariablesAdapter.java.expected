@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferAndInclude;
@@ -21,12 +22,12 @@ public enum InlineMultipleWithDeferAndInclude_VariablesAdapter implements Variab
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
     DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     writer.name("cond1");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond1, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond1);
     writer.name("cond2");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond2, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond2);
     writer.name("cond3");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond3, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond3);
     writer.name("cond4");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond4, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond4);
   }
 }

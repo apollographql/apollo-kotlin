@@ -5,8 +5,9 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _homePlanet = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -44,7 +45,7 @@ public class HumanDetailsImpl_ResponseAdapter {
         com.example.fragment_spread_with_include_directive.fragment.HumanDetails value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("homePlanet");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.homePlanet, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet);
     }
   }
 }

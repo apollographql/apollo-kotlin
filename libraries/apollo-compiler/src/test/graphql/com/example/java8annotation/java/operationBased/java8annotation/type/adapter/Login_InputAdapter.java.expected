@@ -5,8 +5,9 @@
 //
 package com.example.java8annotation.type.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.type.Login;
@@ -27,6 +28,6 @@ public enum Login_InputAdapter implements DataAdapter<Login> {
   public void serializeData(JsonWriter writer, Login value,
       DataAdapter.SerializeDataContext context) throws IOException {
     writer.name("email");
-    DataAdapters.StringDataAdapter.serializeData(writer, value.email, context);
+    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.email);
   }
 }

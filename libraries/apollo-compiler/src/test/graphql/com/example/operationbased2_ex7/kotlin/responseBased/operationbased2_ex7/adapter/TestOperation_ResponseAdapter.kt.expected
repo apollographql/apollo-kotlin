@@ -5,9 +5,10 @@
 //
 package com.example.operationbased2_ex7.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -16,6 +17,7 @@ import com.apollographql.apollo3.api.obj
 import com.example.operationbased2_ex7.TestOperation
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -27,7 +29,7 @@ public object TestOperation_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _animal = Animal.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -88,7 +90,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.PetWarmBloodedAnimal {
         var __typename: String? = typename
@@ -96,12 +98,12 @@ public object TestOperation_ResponseAdapter {
         var _temperature: Int? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _temperature = IntDataAdapter.deserializeData(reader, context)
-            3 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            3 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -117,19 +119,19 @@ public object TestOperation_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestOperation.Data.PetWarmBloodedAnimal,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
         writer.name("temperature")
-        IntDataAdapter.serializeData(writer, value.temperature, context)
+        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
 
@@ -138,16 +140,16 @@ public object TestOperation_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.OtherAnimal {
         var __typename: String? = typename
         var _species: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -161,13 +163,13 @@ public object TestOperation_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherAnimal,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
       }
     }
 
@@ -176,18 +178,18 @@ public object TestOperation_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.OtherWarmBloodedAnimal {
         var __typename: String? = typename
         var _species: String? = null
         var _temperature: Int? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _temperature = IntDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -202,16 +204,16 @@ public object TestOperation_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherWarmBloodedAnimal,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
         writer.name("temperature")
-        IntDataAdapter.serializeData(writer, value.temperature, context)
+        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
       }
     }
 
@@ -220,18 +222,18 @@ public object TestOperation_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestOperation.Data.OtherPetAnimal {
         var __typename: String? = typename
         var _species: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -246,16 +248,16 @@ public object TestOperation_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherPetAnimal,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
   }

@@ -5,9 +5,10 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -23,10 +24,10 @@ public object QueryFragmentImpl_VariablesAdapter : VariablesAdapter<QueryFragmen
   ): Unit {
     val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     writer.name("organizationId")
-    StringDataAdapter.serializeData(writer, value.organizationId, serializeDataContext)
+    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.organizationId)
     writer.name("query")
     UserQuery_InputAdapter.obj().serializeData(writer, value.query, serializeDataContext)
     writer.name("size")
-    IntDataAdapter.serializeData(writer, value.size, serializeDataContext)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size)
   }
 }

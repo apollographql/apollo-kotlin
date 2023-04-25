@@ -5,9 +5,10 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -32,9 +33,9 @@ public class UserFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _firstName = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _lastName = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 2: _avatar = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _firstName = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _lastName = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _avatar = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -55,13 +56,13 @@ public class UserFragmentImpl_ResponseAdapter {
         com.example.named_fragment_with_variables.fragment.UserFragment value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("firstName");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.firstName, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.firstName);
 
       writer.name("lastName");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.lastName, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lastName);
 
       writer.name("avatar");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.avatar, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.avatar);
     }
   }
 }

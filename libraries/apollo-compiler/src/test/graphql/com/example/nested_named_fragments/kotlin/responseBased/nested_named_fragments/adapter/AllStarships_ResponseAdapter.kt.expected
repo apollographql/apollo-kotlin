@@ -5,9 +5,10 @@
 //
 package com.example.nested_named_fragments.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -27,7 +28,7 @@ public object AllStarships_ResponseAdapter {
         com.example.nested_named_fragments.AllStarships.Data {
       var _allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _allStarships = AllStarships.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -57,7 +58,7 @@ public object AllStarships_ResponseAdapter {
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
         var _edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
@@ -87,7 +88,7 @@ public object AllStarships_ResponseAdapter {
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
           var _node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
@@ -122,13 +123,12 @@ public object AllStarships_ResponseAdapter {
             var _name: String? = null
             var _pilotConnection: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-                1 -> _id = StringDataAdapter.deserializeData(reader, context)
-                2 -> _name = NullableStringDataAdapter.deserializeData(reader, context)
-                3 -> _pilotConnection = PilotConnection.obj().nullable().deserializeData(reader,
-                    context)
+                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                2 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                3 -> _pilotConnection = PilotConnection.obj().nullable().deserializeData(reader, context)
                 else -> break
               }
             }
@@ -147,13 +147,13 @@ public object AllStarships_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringDataAdapter.serializeData(writer, value.__typename, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
             writer.name("id")
-            StringDataAdapter.serializeData(writer, value.id, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
             writer.name("name")
-            NullableStringDataAdapter.serializeData(writer, value.name, context)
+            NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
             writer.name("pilotConnection")
             PilotConnection.obj().nullable().serializeData(writer, value.pilotConnection, context)
@@ -169,10 +169,9 @@ public object AllStarships_ResponseAdapter {
                 com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection {
               var _edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge?>? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader,
-                      context)
+                  0 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -201,7 +200,7 @@ public object AllStarships_ResponseAdapter {
                   com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge {
                 var _node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node? = null
 
-                while(true) {
+                while (true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> _node = Node.obj().nullable().deserializeData(reader, context)
                     else -> break
@@ -234,10 +233,10 @@ public object AllStarships_ResponseAdapter {
                   var _name: String? = null
                   var _homeworld: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld? = null
 
-                  while(true) {
+                  while (true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-                      1 -> _name = NullableStringDataAdapter.deserializeData(reader, context)
+                      0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                      1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                       2 -> _homeworld = Homeworld.obj().nullable().deserializeData(reader, context)
                       else -> break
                     }
@@ -256,10 +255,10 @@ public object AllStarships_ResponseAdapter {
                   context: DataAdapter.SerializeDataContext,
                 ): Unit {
                   writer.name("__typename")
-                  StringDataAdapter.serializeData(writer, value.__typename, context)
+                  StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
                   writer.name("name")
-                  NullableStringDataAdapter.serializeData(writer, value.name, context)
+                  NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
                   writer.name("homeworld")
                   Homeworld.obj().nullable().serializeData(writer, value.homeworld, context)
@@ -276,10 +275,10 @@ public object AllStarships_ResponseAdapter {
                     var __typename: String? = null
                     var _name: String? = null
 
-                    while(true) {
+                    while (true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
-                        0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-                        1 -> _name = NullableStringDataAdapter.deserializeData(reader, context)
+                        0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                        1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                         else -> break
                       }
                     }
@@ -296,10 +295,10 @@ public object AllStarships_ResponseAdapter {
                     context: DataAdapter.SerializeDataContext,
                   ): Unit {
                     writer.name("__typename")
-                    StringDataAdapter.serializeData(writer, value.__typename, context)
+                    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
                     writer.name("name")
-                    NullableStringDataAdapter.serializeData(writer, value.name, context)
+                    NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
                   }
                 }
               }

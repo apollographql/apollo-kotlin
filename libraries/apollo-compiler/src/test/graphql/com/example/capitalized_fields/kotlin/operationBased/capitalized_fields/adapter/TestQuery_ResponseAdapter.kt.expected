@@ -5,9 +5,10 @@
 //
 package com.example.capitalized_fields.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -25,7 +26,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _Horse = Horse.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -55,10 +56,10 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var _Donkey: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-          1 -> _Donkey = NullableStringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _Donkey = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -80,10 +81,10 @@ public object TestQuery_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("Donkey")
-      NullableStringDataAdapter.serializeData(writer, value.Donkey, context)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.Donkey)
 
       com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.serializeData(writer,
           value.onHorse, context)
@@ -97,7 +98,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.OnHorse {
       var _Cow: TestQuery.Cow? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _Cow = Cow.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -126,9 +127,9 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Cow {
       var _Moo: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Moo = NullableStringDataAdapter.deserializeData(reader, context)
+          0 -> _Moo = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -144,7 +145,7 @@ public object TestQuery_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("Moo")
-      NullableStringDataAdapter.serializeData(writer, value.Moo, context)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.Moo)
     }
   }
 }

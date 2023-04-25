@@ -5,10 +5,11 @@
 //
 package com.example.named_fragment_with_variables.type.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableBooleanDataAdapter
+import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -27,10 +28,10 @@ public object UserQuery_InputAdapter : DataAdapter<UserQuery> {
     context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.name("name")
-    StringDataAdapter.serializeData(writer, value.name, context)
+    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
     if (value.isAdmin is Optional.Present) {
       writer.name("isAdmin")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.isAdmin, context)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.isAdmin)
     }
   }
 }

@@ -24,10 +24,9 @@ public object CharacterAppearsInImpl_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): CharacterAppearsInImpl.Data {
       var _appearsIn: List<Episode?>? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader,
-              context)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader, context)
           else -> break
         }
       }

@@ -5,9 +5,9 @@
 //
 package com.example.fragment_spread_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.BooleanDataAdapter
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableBooleanDataAdapter
+import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,33 +21,32 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     writer.name("withDetails")
-    BooleanDataAdapter.serializeData(writer, value.withDetails, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.withDetails)
     writer.name("skipHumanDetails")
-    BooleanDataAdapter.serializeData(writer, value.skipHumanDetails, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipHumanDetails)
     if (value.optionalWithDefaultFalse is Optional.Present) {
       writer.name("optionalWithDefaultFalse")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.optionalWithDefaultFalse,
-          serializeDataContext)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.optionalWithDefaultFalse)
     }
     else if (context.withDefaultBooleanValues) {
       writer.name("optionalWithDefaultFalse")
-      BooleanDataAdapter.serializeData(writer, false, serializeDataContext)
+      BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, false)
     }
     if (value.optionalWithDefaultTrue is Optional.Present) {
       writer.name("optionalWithDefaultTrue")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.optionalWithDefaultTrue,
-          serializeDataContext)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.optionalWithDefaultTrue)
     }
     else if (context.withDefaultBooleanValues) {
       writer.name("optionalWithDefaultTrue")
-      BooleanDataAdapter.serializeData(writer, true, serializeDataContext)
+      BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, true)
     }
     if (value.optionalWithNoDefault is Optional.Present) {
       writer.name("optionalWithNoDefault")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.optionalWithNoDefault,
-          serializeDataContext)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.optionalWithNoDefault)
     }
   }
 }

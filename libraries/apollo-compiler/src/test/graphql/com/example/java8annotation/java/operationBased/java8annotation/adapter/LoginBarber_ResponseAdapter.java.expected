@@ -5,9 +5,10 @@
 //
 package com.example.java8annotation.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -65,7 +66,7 @@ public class LoginBarber_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _response = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _response = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -81,7 +82,7 @@ public class LoginBarber_ResponseAdapter {
     public void serializeData(JsonWriter writer, LoginBarber.Login value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("response");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.response, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.response);
     }
   }
 }

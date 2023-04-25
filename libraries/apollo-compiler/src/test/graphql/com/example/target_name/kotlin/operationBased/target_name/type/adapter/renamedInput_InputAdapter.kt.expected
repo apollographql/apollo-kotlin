@@ -5,8 +5,9 @@
 //
 package com.example.target_name.type.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,7 +28,7 @@ public object renamedInput_InputAdapter : DataAdapter<renamedInput> {
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")
-      NullableStringDataAdapter.present().serializeData(writer, value.`field`, context)
+      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.`field`)
     }
   }
 }

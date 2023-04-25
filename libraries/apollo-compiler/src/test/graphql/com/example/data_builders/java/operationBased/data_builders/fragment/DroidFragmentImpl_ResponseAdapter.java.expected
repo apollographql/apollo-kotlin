@@ -5,9 +5,10 @@
 //
 package com.example.data_builders.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class DroidFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _primaryFunction = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -47,7 +48,7 @@ public class DroidFragmentImpl_ResponseAdapter {
         com.example.data_builders.fragment.DroidFragment value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("primaryFunction");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.primaryFunction, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
     }
   }
 }

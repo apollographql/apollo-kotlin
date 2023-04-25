@@ -5,8 +5,9 @@
 //
 package com.example.simple_union.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -21,9 +22,9 @@ public object CatFragmentImpl_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): CatFragmentImpl.Data {
       var _meow: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _meow = StringDataAdapter.deserializeData(reader, context)
+          0 -> _meow = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -39,7 +40,7 @@ public object CatFragmentImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("meow")
-      StringDataAdapter.serializeData(writer, value.meow, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.meow)
     }
   }
 }

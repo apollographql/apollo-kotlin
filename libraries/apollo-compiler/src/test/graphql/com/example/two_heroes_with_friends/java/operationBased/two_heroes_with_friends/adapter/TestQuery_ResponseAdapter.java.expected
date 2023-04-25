@@ -5,9 +5,10 @@
 //
 package com.example.two_heroes_with_friends.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -73,7 +74,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _friendsConnection = new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -92,7 +93,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.R2 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friendsConnection");
       new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeData(writer, value.friendsConnection, context);
@@ -113,7 +114,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _edges = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -129,7 +130,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.FriendsConnection value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("totalCount");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
 
       writer.name("edges");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).serializeData(writer, value.edges, context);
@@ -180,7 +181,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -196,7 +197,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Node value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
@@ -215,8 +216,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _friendsConnection = new ObjectDataAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -237,10 +238,10 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Luke value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("id");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friendsConnection");
       new ObjectDataAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).serializeData(writer, value.friendsConnection, context);
@@ -261,7 +262,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _edges = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -277,7 +278,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.FriendsConnection1 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("totalCount");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
 
       writer.name("edges");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).serializeData(writer, value.edges, context);
@@ -328,7 +329,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -344,7 +345,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Node1 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

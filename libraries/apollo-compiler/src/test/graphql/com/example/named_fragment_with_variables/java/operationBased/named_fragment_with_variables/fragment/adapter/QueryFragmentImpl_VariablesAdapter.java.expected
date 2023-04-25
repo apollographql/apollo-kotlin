@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -24,10 +25,10 @@ public enum QueryFragmentImpl_VariablesAdapter implements VariablesAdapter<Query
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
     DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     writer.name("organizationId");
-    DataAdapters.StringDataAdapter.serializeData(writer, value.organizationId, serializeDataContext);
+    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.organizationId);
     writer.name("query");
     new ObjectDataAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).serializeData(writer, value.query, serializeDataContext);
     writer.name("size");
-    DataAdapters.IntDataAdapter.serializeData(writer, value.size, serializeDataContext);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size);
   }
 }

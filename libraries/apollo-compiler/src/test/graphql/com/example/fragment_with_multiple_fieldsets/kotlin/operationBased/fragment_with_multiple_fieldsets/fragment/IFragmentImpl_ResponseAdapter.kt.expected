@@ -5,9 +5,10 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -26,9 +27,9 @@ public object IFragmentImpl_ResponseAdapter {
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
       var __typename: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -56,7 +57,7 @@ public object IFragmentImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       if (value.onA != null) {
         com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.serializeData(writer,
@@ -73,9 +74,9 @@ public object IFragmentImpl_ResponseAdapter {
           com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
         var _fieldA: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _fieldA = NullableStringDataAdapter.deserializeData(reader, context)
+            0 -> _fieldA = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -91,7 +92,7 @@ public object IFragmentImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("fieldA")
-        NullableStringDataAdapter.serializeData(writer, value.fieldA, context)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA)
       }
     }
   }

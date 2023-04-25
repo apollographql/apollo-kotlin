@@ -5,9 +5,10 @@
 //
 package com.example.optional.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -68,7 +69,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _appearsIn = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -86,7 +87,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Hero value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("appearsIn");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE))).serializeData(writer, value.appearsIn, context);

@@ -5,14 +5,16 @@
 //
 package com.example.monomorphic.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.obj
 import com.example.monomorphic.TestQuery
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -24,7 +26,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _cat: TestQuery.Data.Cat? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _cat = Cat.obj().deserializeData(reader, context)
           else -> break
@@ -74,16 +76,16 @@ public object TestQuery_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestQuery.Data.AnimalNodeCat {
         var __typename: String? = typename
         var _species: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -97,13 +99,13 @@ public object TestQuery_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.AnimalNodeCat,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
       }
     }
 
@@ -112,14 +114,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestQuery.Data.OtherCat {
         var __typename: String? = typename
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -132,10 +134,10 @@ public object TestQuery_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherCat,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }
     }
   }

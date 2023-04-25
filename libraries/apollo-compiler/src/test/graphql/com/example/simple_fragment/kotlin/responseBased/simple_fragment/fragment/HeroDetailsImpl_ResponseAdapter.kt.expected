@@ -5,12 +5,14 @@
 //
 package com.example.simple_fragment.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -44,16 +46,16 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun deserializeData(
       reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
       var _name: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -67,13 +69,13 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.HumanData,
-      context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
     }
   }
 
@@ -82,14 +84,14 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun deserializeData(
       reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -102,10 +104,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.OtherData,
-      context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
     }
   }
 }

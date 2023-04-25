@@ -5,9 +5,10 @@
 //
 package com.example.java_primitive_types.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -37,8 +38,8 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _nullableMyType = new NullableDataAdapter<>(new ObjectDataAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).deserializeData(reader, context); break;
           case 3: _nonNullableMyType = new ObjectDataAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
@@ -60,10 +61,10 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, JavaPrimitiveQuery.Data value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
 
       writer.name("nullableMyType");
       new NullableDataAdapter<>(new ObjectDataAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).serializeData(writer, value.nullableMyType, context);
@@ -87,8 +88,8 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -105,10 +106,10 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, JavaPrimitiveQuery.NullableMyType value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 
@@ -126,8 +127,8 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -144,10 +145,10 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, JavaPrimitiveQuery.NonNullableMyType value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 }

@@ -5,13 +5,14 @@
 //
 package com.example.target_name.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -46,7 +47,7 @@ public class TestQuery_ResponseAdapter {
           case 0: _object = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, false)).deserializeData(reader, context); break;
           case 1: _interface = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).deserializeData(reader, context); break;
           case 2: _union = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).deserializeData(reader, context); break;
-          case 3: _scalar = DataAdapters.NullableAnyDataAdapter.deserializeData(reader, context); break;
+          case 3: _scalar = Adapters.NullableAnyAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 4: _enum = new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -74,7 +75,7 @@ public class TestQuery_ResponseAdapter {
       new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).serializeData(writer, value.union, context);
 
       writer.name("scalar");
-      DataAdapters.NullableAnyDataAdapter.serializeData(writer, value.scalar, context);
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar);
 
       writer.name("enum");
       new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).serializeData(writer, value.enum_, context);
@@ -94,7 +95,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -108,7 +109,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Object value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 
@@ -125,7 +126,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -139,7 +140,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Interface value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 
@@ -156,7 +157,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -178,7 +179,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Union value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onReservedObject != null) {
         com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.serializeData(writer, value.onReservedObject, context);
@@ -199,7 +200,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -213,7 +214,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.OnReservedObject value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 }

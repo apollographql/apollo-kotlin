@@ -5,8 +5,9 @@
 //
 package com.example.multiple_fragments.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -26,7 +27,7 @@ public object AFragmentImpl_ResponseAdapter {
         com.example.multiple_fragments.fragment.AFragment {
       var _node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _node = Node.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -55,9 +56,9 @@ public object AFragmentImpl_ResponseAdapter {
           com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -93,7 +94,7 @@ public object AFragmentImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.fragment1 != null) {
           com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.serializeData(writer,

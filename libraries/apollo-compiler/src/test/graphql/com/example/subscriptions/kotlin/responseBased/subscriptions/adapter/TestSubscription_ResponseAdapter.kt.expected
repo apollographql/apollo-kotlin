@@ -5,9 +5,10 @@
 //
 package com.example.subscriptions.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -26,7 +27,7 @@ public object TestSubscription_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _commentAdded = CommentAdded.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -55,10 +56,10 @@ public object TestSubscription_ResponseAdapter {
         var _id: Int? = null
         var _content: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = IntDataAdapter.deserializeData(reader, context)
-            1 -> _content = StringDataAdapter.deserializeData(reader, context)
+            0 -> _id = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _content = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -75,10 +76,10 @@ public object TestSubscription_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("id")
-        IntDataAdapter.serializeData(writer, value.id, context)
+        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("content")
-        StringDataAdapter.serializeData(writer, value.content, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.content)
       }
     }
   }

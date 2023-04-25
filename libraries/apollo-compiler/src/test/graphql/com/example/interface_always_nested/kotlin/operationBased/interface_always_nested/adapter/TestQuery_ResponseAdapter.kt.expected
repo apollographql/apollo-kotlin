@@ -5,9 +5,10 @@
 //
 package com.example.interface_always_nested.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,7 +28,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _root: TestQuery.Data.Root? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _root = Root.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -55,9 +56,9 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.DeserializeDataContext): TestQuery.Data.Root {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -85,7 +86,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.onA != null) {
           com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.serializeData(writer,
@@ -101,10 +102,10 @@ public object TestQuery_ResponseAdapter {
           var __typename: String? = null
           var _fieldA1: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _fieldA1 = NullableStringDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -133,10 +134,10 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("fieldA1")
-          NullableStringDataAdapter.serializeData(writer, value.fieldA1, context)
+          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA1)
 
           if (value.onB != null) {
             com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.serializeData(writer,
@@ -151,9 +152,9 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.DeserializeDataContext): TestQuery.Data.Root.OnA.OnB {
             var _fieldB1: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _fieldB1 = NullableStringDataAdapter.deserializeData(reader, context)
+                0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -169,7 +170,7 @@ public object TestQuery_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("fieldB1")
-            NullableStringDataAdapter.serializeData(writer, value.fieldB1, context)
+            NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldB1)
           }
         }
       }

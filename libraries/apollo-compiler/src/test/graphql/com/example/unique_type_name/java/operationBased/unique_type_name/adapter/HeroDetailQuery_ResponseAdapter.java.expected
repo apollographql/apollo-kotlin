@@ -5,13 +5,14 @@
 //
 package com.example.unique_type_name.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -75,8 +76,8 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -104,10 +105,10 @@ public class HeroDetailQuery_ResponseAdapter {
         com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friends");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).serializeData(writer, value.friends, context);
@@ -131,7 +132,7 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -148,7 +149,7 @@ public class HeroDetailQuery_ResponseAdapter {
         com.example.unique_type_name.HeroDetailQuery.Friend value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
@@ -166,7 +167,7 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = DataAdapters.NullableDoubleDataAdapter.deserializeData(reader, context); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -183,7 +184,7 @@ public class HeroDetailQuery_ResponseAdapter {
         com.example.unique_type_name.HeroDetailQuery.OnHuman value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("height");
-      DataAdapters.NullableDoubleDataAdapter.serializeData(writer, value.height, context);
+      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height);
 
       writer.name("friends");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).serializeData(writer, value.friends, context);
@@ -243,7 +244,7 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -264,7 +265,7 @@ public class HeroDetailQuery_ResponseAdapter {
         com.example.unique_type_name.HeroDetailQuery.Friend2 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.serializeData(writer, value.heroDetails, context);
     }

@@ -5,11 +5,11 @@
 //
 package com.example.mutation_create_review.type.adapter
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableBooleanDataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableBooleanAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -33,16 +33,16 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.name("stars")
-    IntDataAdapter.serializeData(writer, value.stars, context)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue")
-      NullableIntDataAdapter.present().serializeData(writer, value.nullableIntFieldWithDefaultValue,
-          context)
+      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.nullableIntFieldWithDefaultValue)
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
-          value.commentary, context)
+      com.example.MyStringAdapter().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+          value.commentary)
     }
     writer.name("favoriteColor")
     ColorInput_InputAdapter.obj().serializeData(writer, value.favoriteColor, context)
@@ -63,13 +63,13 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.listOfCustomScalar is Optional.Present) {
       writer.name("listOfCustomScalar")
-      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).nullable().list().nullable().present().serializeData(writer,
-          value.listOfCustomScalar, context)
+      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).nullable().list().nullable().present().toJson(writer,
+          CustomScalarAdapters.Empty, value.listOfCustomScalar)
     }
     if (value.customScalar is Optional.Present) {
       writer.name("customScalar")
-      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).nullable().present().serializeData(writer,
-          value.customScalar, context)
+      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).nullable().present().toJson(writer,
+          CustomScalarAdapters.Empty, value.customScalar)
     }
     if (value.listOfEnums is Optional.Present) {
       writer.name("listOfEnums")
@@ -78,17 +78,17 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.listOfInt is Optional.Present) {
       writer.name("listOfInt")
-      NullableIntDataAdapter.list().nullable().present().serializeData(writer, value.listOfInt,
-          context)
+      NullableIntAdapter.list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+          value.listOfInt)
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().nullable().present().serializeData(writer,
-          value.listOfString, context)
+      com.example.MyStringAdapter().nullable().list().nullable().present().toJson(writer,
+          CustomScalarAdapters.Empty, value.listOfString)
     }
     writer.name("listOfStringNonOptional")
-    AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().list().serializeData(writer,
-        value.listOfStringNonOptional, context)
+    com.example.MyStringAdapter().nullable().list().toJson(writer, CustomScalarAdapters.Empty,
+        value.listOfStringNonOptional)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
       ColorInput_InputAdapter.obj().nullable().list().nullable().present().serializeData(writer,
@@ -96,17 +96,18 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.booleanWithDefaultValue is Optional.Present) {
       writer.name("booleanWithDefaultValue")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.booleanWithDefaultValue,
-          context)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.booleanWithDefaultValue)
     }
     if (value.booleanNonOptional is Optional.Present) {
       writer.name("booleanNonOptional")
-      NullableBooleanDataAdapter.present().serializeData(writer, value.booleanNonOptional, context)
+      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.booleanNonOptional)
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable().present().serializeData(writer,
-          value.listOfListOfString, context)
+      com.example.MyStringAdapter().list().list().nullable().present().toJson(writer,
+          CustomScalarAdapters.Empty, value.listOfListOfString)
     }
     if (value.listOfListOfEnum is Optional.Present) {
       writer.name("listOfListOfEnum")
@@ -115,8 +116,8 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.listOfListOfCustom is Optional.Present) {
       writer.name("listOfListOfCustom")
-      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().present().serializeData(writer,
-          value.listOfListOfCustom, context)
+      context.customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().present().toJson(writer,
+          CustomScalarAdapters.Empty, value.listOfListOfCustom)
     }
     if (value.listOfListOfObject is Optional.Present) {
       writer.name("listOfListOfObject")
@@ -125,12 +126,12 @@ internal object ReviewInput_InputAdapter : DataAdapter<ReviewInput> {
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().present().serializeData(writer,
-          value.CapitalizedField, context)
+      com.example.MyStringAdapter().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+          value.CapitalizedField)
     }
     if (value.CapitalizedInt is Optional.Present) {
       writer.name("CapitalizedInt")
-      NullableIntDataAdapter.present().serializeData(writer, value.CapitalizedInt, context)
+      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.CapitalizedInt)
     }
   }
 }

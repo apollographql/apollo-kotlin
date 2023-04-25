@@ -5,9 +5,10 @@
 //
 package com.example.nested_conditional_inline.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableDoubleDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -17,6 +18,7 @@ import com.apollographql.apollo3.api.obj
 import com.example.nested_conditional_inline.TestQuery
 import kotlin.Double
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -28,7 +30,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -81,19 +83,18 @@ public object TestQuery_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestQuery.Data.HumanHero {
         var __typename: String? = typename
         var _name: String? = null
         var _friends: List<TestQuery.Data.HumanHero.Friend?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader,
-                context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -108,13 +109,13 @@ public object TestQuery_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.HumanHero,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("friends")
         Friend.obj().nullable().list().nullable().serializeData(writer, value.friends, context)
@@ -151,18 +152,18 @@ public object TestQuery_ResponseAdapter {
 
         public fun deserializeData(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestQuery.Data.HumanHero.HumanFriend {
           var __typename: String? = typename
           var _name: String? = null
           var _height: Double? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
-              2 -> _height = NullableDoubleDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              2 -> _height = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -177,16 +178,16 @@ public object TestQuery_ResponseAdapter {
         public fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.HumanHero.HumanFriend,
-          context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
           writer.name("height")
-          NullableDoubleDataAdapter.serializeData(writer, value.height, context)
+          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
         }
       }
 
@@ -195,16 +196,16 @@ public object TestQuery_ResponseAdapter {
 
         public fun deserializeData(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestQuery.Data.HumanHero.OtherFriend {
           var __typename: String? = typename
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -218,13 +219,13 @@ public object TestQuery_ResponseAdapter {
         public fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.HumanHero.OtherFriend,
-          context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
     }
@@ -234,19 +235,18 @@ public object TestQuery_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestQuery.Data.DroidHero {
         var __typename: String? = typename
         var _name: String? = null
         var _friends: List<TestQuery.Data.DroidHero.Friend?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader,
-                context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -261,13 +261,13 @@ public object TestQuery_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.DroidHero,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("friends")
         Friend.obj().nullable().list().nullable().serializeData(writer, value.friends, context)
@@ -304,18 +304,18 @@ public object TestQuery_ResponseAdapter {
 
         public fun deserializeData(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestQuery.Data.DroidHero.HumanFriend {
           var __typename: String? = typename
           var _name: String? = null
           var _height: Double? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
-              2 -> _height = NullableDoubleDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              2 -> _height = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -330,16 +330,16 @@ public object TestQuery_ResponseAdapter {
         public fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.DroidHero.HumanFriend,
-          context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
           writer.name("height")
-          NullableDoubleDataAdapter.serializeData(writer, value.height, context)
+          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
         }
       }
 
@@ -348,16 +348,16 @@ public object TestQuery_ResponseAdapter {
 
         public fun deserializeData(
           reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
           typename: String,
         ): TestQuery.Data.DroidHero.OtherFriend {
           var __typename: String? = typename
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -371,13 +371,13 @@ public object TestQuery_ResponseAdapter {
         public fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.DroidHero.OtherFriend,
-          context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
     }
@@ -387,16 +387,16 @@ public object TestQuery_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -410,13 +410,13 @@ public object TestQuery_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherHero,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
   }

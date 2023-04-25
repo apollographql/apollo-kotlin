@@ -5,9 +5,10 @@
 //
 package com.example.input_object_variable_and_argument.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.DoubleDataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -30,8 +31,8 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
           serializeDataContext)
     }
     writer.name("stars")
-    IntDataAdapter.serializeData(writer, value.stars, serializeDataContext)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
     writer.name("greenValue")
-    DoubleDataAdapter.serializeData(writer, value.greenValue, serializeDataContext)
+    DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.greenValue)
   }
 }

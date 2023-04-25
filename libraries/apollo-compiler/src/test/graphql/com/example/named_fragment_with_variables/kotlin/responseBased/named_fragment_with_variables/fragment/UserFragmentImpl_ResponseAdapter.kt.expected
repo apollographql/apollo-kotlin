@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -23,11 +24,11 @@ public object UserFragmentImpl_ResponseAdapter {
       var _lastName: String? = null
       var _avatar: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _firstName = StringDataAdapter.deserializeData(reader, context)
-          1 -> _lastName = StringDataAdapter.deserializeData(reader, context)
-          2 -> _avatar = StringDataAdapter.deserializeData(reader, context)
+          0 -> _firstName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _lastName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          2 -> _avatar = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -45,13 +46,13 @@ public object UserFragmentImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("firstName")
-      StringDataAdapter.serializeData(writer, value.firstName, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.firstName)
 
       writer.name("lastName")
-      StringDataAdapter.serializeData(writer, value.lastName, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lastName)
 
       writer.name("avatar")
-      StringDataAdapter.serializeData(writer, value.avatar, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.avatar)
     }
   }
 }

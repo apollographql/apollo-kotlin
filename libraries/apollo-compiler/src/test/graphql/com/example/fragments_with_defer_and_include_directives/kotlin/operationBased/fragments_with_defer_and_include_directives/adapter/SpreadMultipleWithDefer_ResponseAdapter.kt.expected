@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -30,7 +31,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): SpreadMultipleWithDefer.Data {
       var _hero: SpreadMultipleWithDefer.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -59,9 +60,9 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -89,7 +90,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeData(writer,

@@ -5,9 +5,10 @@
 //
 package com.example.recursive_selection.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -67,7 +68,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _children = new ListDataAdapter<>(new ObjectDataAdapter<TestQuery.Child>(Child.INSTANCE, false)).deserializeData(reader, context); break;
           case 2: _parent = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
@@ -88,7 +89,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Tree value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("children");
       new ListDataAdapter<>(new ObjectDataAdapter<TestQuery.Child>(Child.INSTANCE, false)).serializeData(writer, value.children, context);
@@ -111,7 +112,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -127,7 +128,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Child value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
@@ -144,7 +145,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -160,7 +161,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Parent value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

@@ -5,9 +5,10 @@
 //
 package com.example.java_primitive_types.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -30,13 +31,13 @@ public enum MyInput_InputAdapter implements DataAdapter<MyInput> {
       DataAdapter.SerializeDataContext context) throws IOException {
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new ApolloOptionalDataAdapter<>(DataAdapters.NullableIntDataAdapter).serializeData(writer, value.nullableInt, context);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.nonNullableIntWithDefault, context);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
     }
   }
 }

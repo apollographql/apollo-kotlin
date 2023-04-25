@@ -5,8 +5,8 @@
 //
 package com.example.starships.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.starships.TestQuery
@@ -18,8 +18,7 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     writer.name("id")
-    StringDataAdapter.serializeData(writer, value.id, serializeDataContext)
+    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
   }
 }

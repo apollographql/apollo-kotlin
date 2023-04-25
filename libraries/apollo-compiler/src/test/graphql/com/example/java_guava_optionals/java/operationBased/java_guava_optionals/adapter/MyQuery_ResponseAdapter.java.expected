@@ -5,13 +5,15 @@
 //
 package com.example.java_guava_optionals.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
+import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalDataAdapter;
-import com.apollographql.apollo3.api.java.adapter.GuavaOptionalDataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_guava_optionals.MyQuery;
@@ -42,12 +44,12 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _nullableMyType = new GuavaOptionalDataAdapter<>(new ObjectDataAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).deserializeData(reader, context); break;
           case 3: _nonNullableMyType = new ObjectDataAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).deserializeData(reader, context); break;
-          case 4: _nullableListOfNullableString = new GuavaOptionalDataAdapter<>(new ListDataAdapter<>(GuavaOptionalDataAdapters.GuavaOptionalStringDataAdapter)).deserializeData(reader, context); break;
-          case 5: _nullableListOfNonNullableString = new GuavaOptionalDataAdapter<>(new ListDataAdapter<>(DataAdapters.StringDataAdapter)).deserializeData(reader, context); break;
+          case 4: _nullableListOfNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringAdapter)).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 5: _nullableListOfNonNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -69,10 +71,10 @@ public class MyQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, MyQuery.Data value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
 
       writer.name("nullableMyType");
       new GuavaOptionalDataAdapter<>(new ObjectDataAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).serializeData(writer, value.nullableMyType, context);
@@ -81,10 +83,10 @@ public class MyQuery_ResponseAdapter {
       new ObjectDataAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).serializeData(writer, value.nonNullableMyType, context);
 
       writer.name("nullableListOfNullableString");
-      new GuavaOptionalDataAdapter<>(new ListDataAdapter<>(GuavaOptionalDataAdapters.GuavaOptionalStringDataAdapter)).serializeData(writer, value.nullableListOfNullableString, context);
+      new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringAdapter)).toJson(writer, CustomScalarAdapters.Empty, value.nullableListOfNullableString);
 
       writer.name("nullableListOfNonNullableString");
-      new GuavaOptionalDataAdapter<>(new ListDataAdapter<>(DataAdapters.StringDataAdapter)).serializeData(writer, value.nullableListOfNonNullableString, context);
+      new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, CustomScalarAdapters.Empty, value.nullableListOfNonNullableString);
     }
   }
 
@@ -102,8 +104,8 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -120,10 +122,10 @@ public class MyQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, MyQuery.NullableMyType value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 
@@ -141,8 +143,8 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.deserializeData(reader, context); break;
-          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -159,10 +161,10 @@ public class MyQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, MyQuery.NonNullableMyType value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      GuavaOptionalDataAdapters.GuavaOptionalIntDataAdapter.serializeData(writer, value.nullableInt, context);
+      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 }

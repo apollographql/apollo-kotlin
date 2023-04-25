@@ -26,10 +26,9 @@ public object CharacterAppearsInImpl_ResponseAdapter {
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader,
-              context)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader, context)
           else -> break
         }
       }

@@ -5,9 +5,10 @@
 //
 package com.example.target_name.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -30,7 +31,7 @@ public enum renamedInput_InputAdapter implements DataAdapter<renamedInput> {
       DataAdapter.SerializeDataContext context) throws IOException {
     if (value.field instanceof Optional.Present) {
       writer.name("field");
-      new ApolloOptionalDataAdapter<>(DataAdapters.NullableStringDataAdapter).serializeData(writer, value.field, context);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 }

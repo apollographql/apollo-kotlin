@@ -5,9 +5,10 @@
 //
 package com.example.hero_details.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -71,7 +72,7 @@ public class HeroDetails_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _type = Hero_type_ResponseAdapter.INSTANCE.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _friendsConnection = new ObjectDataAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -95,7 +96,7 @@ public class HeroDetails_ResponseAdapter {
       Hero_type_ResponseAdapter.INSTANCE.serializeData(writer, value.type, context);
 
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friendsConnection");
       new ObjectDataAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeData(writer, value.friendsConnection, context);
@@ -116,7 +117,7 @@ public class HeroDetails_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _edges = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -132,7 +133,7 @@ public class HeroDetails_ResponseAdapter {
     public void serializeData(JsonWriter writer, HeroDetails.FriendsConnection value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("totalCount");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
 
       writer.name("edges");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).serializeData(writer, value.edges, context);
@@ -183,7 +184,7 @@ public class HeroDetails_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -199,7 +200,7 @@ public class HeroDetails_ResponseAdapter {
     public void serializeData(JsonWriter writer, HeroDetails.Node value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

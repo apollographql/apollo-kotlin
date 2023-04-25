@@ -5,14 +5,15 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -70,7 +71,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -104,7 +105,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void serializeData(JsonWriter writer, InlineMultipleWithDeferWithIf.Hero value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.serializeData(writer, value.onCharacter, context);
 
@@ -131,7 +132,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -147,7 +148,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void serializeData(JsonWriter writer, InlineMultipleWithDeferWithIf.OnCharacter value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("id");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
     }
   }
 
@@ -164,7 +165,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -181,7 +182,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
         InlineMultipleWithDeferWithIf.OnCharacterDeferF_second value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
@@ -198,7 +199,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -215,7 +216,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
         InlineMultipleWithDeferWithIf.OnCharacterDeferF_third value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

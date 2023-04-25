@@ -5,9 +5,11 @@
 //
 package com.example.java_android_annotations.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
@@ -28,13 +30,13 @@ public enum MyQuery_VariablesAdapter implements VariablesAdapter<MyQuery> {
     DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new ApolloOptionalDataAdapter<>(DataAdapters.NullableIntDataAdapter).serializeData(writer, value.nullableInt, serializeDataContext);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, serializeDataContext);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.nonNullableIntWithDefault, serializeDataContext);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
     }
     if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");

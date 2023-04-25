@@ -5,9 +5,10 @@
 //
 package com.example.java_jetbrains_annotations.type.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,13 +29,14 @@ public object MyInput_InputAdapter : DataAdapter<MyInput> {
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntDataAdapter.present().serializeData(writer, value.nullableInt, context)
+      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntDataAdapter.serializeData(writer, value.nonNullableInt, context)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntDataAdapter.present().serializeData(writer, value.nonNullableIntWithDefault, context)
+      IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.nonNullableIntWithDefault)
     }
   }
 }

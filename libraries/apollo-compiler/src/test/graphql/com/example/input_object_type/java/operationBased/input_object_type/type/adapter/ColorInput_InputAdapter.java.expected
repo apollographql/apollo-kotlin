@@ -5,9 +5,11 @@
 //
 package com.example.input_object_type.type.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
@@ -33,15 +35,15 @@ public enum ColorInput_InputAdapter implements DataAdapter<ColorInput> {
       DataAdapter.SerializeDataContext context) throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.red, context);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.red);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
-      new ApolloOptionalDataAdapter<>(DataAdapters.NullableDoubleDataAdapter).serializeData(writer, value.green, context);
+      new ApolloOptionalAdapter<>(Adapters.NullableDoubleAdapter).toJson(writer, CustomScalarAdapters.Empty, value.green);
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new ApolloOptionalDataAdapter<>(DataAdapters.DoubleDataAdapter).serializeData(writer, value.blue, context);
+      new ApolloOptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, CustomScalarAdapters.Empty, value.blue);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");

@@ -5,7 +5,6 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
@@ -33,7 +32,7 @@ internal class Human {
 internal class HumanBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<HumanMap>(customScalarAdapters) {
-  public var name: String by BuilderProperty(AdapterToDataAdapter(com.example.MyStringAdapter()))
+  public var name: String by BuilderProperty(com.example.MyStringAdapter())
 
   init {
     __typename = "Human"}

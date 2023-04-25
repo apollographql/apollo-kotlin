@@ -5,11 +5,12 @@
 //
 package com.example.inline_fragment_intersection.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableBooleanDataAdapter
-import com.apollographql.apollo3.api.NullableDoubleDataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableBooleanAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -33,7 +34,7 @@ public object TestOperation_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _random = Random.obj(true).deserializeData(reader, context)
           else -> break
@@ -61,9 +62,9 @@ public object TestOperation_ResponseAdapter {
           context: DataAdapter.DeserializeDataContext): TestOperation.Data.Random {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -99,7 +100,7 @@ public object TestOperation_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.onBeing != null) {
           com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.serializeData(writer,
@@ -121,10 +122,10 @@ public object TestOperation_ResponseAdapter {
           var _name: String? = null
           var _friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-              1 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               2 -> _friends = Friend.obj(true).list().deserializeData(reader, context)
               else -> break
             }
@@ -155,10 +156,10 @@ public object TestOperation_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringDataAdapter.serializeData(writer, value.__typename, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
           writer.name("friends")
           Friend.obj(true).list().serializeData(writer, value.friends, context)
@@ -178,10 +179,10 @@ public object TestOperation_ResponseAdapter {
             var __typename: String? = null
             var _name: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-                1 -> _name = StringDataAdapter.deserializeData(reader, context)
+                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -210,10 +211,10 @@ public object TestOperation_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringDataAdapter.serializeData(writer, value.__typename, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
             writer.name("name")
-            StringDataAdapter.serializeData(writer, value.name, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
             if (value.onWookie != null) {
               com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.serializeData(writer,
@@ -229,9 +230,9 @@ public object TestOperation_ResponseAdapter {
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var _lifeExpectancy: Double? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _lifeExpectancy = NullableDoubleDataAdapter.deserializeData(reader, context)
+                  0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                   else -> break
                 }
               }
@@ -247,7 +248,7 @@ public object TestOperation_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("lifeExpectancy")
-              NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context)
+              NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
             }
           }
         }
@@ -261,9 +262,9 @@ public object TestOperation_ResponseAdapter {
             var _profilePictureUrl: String? = null
             var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _profilePictureUrl = NullableStringDataAdapter.deserializeData(reader, context)
+                0 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 1 -> _friends = Friend.obj(true).list().deserializeData(reader, context)
                 else -> break
               }
@@ -281,7 +282,8 @@ public object TestOperation_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("profilePictureUrl")
-            NullableStringDataAdapter.serializeData(writer, value.profilePictureUrl, context)
+            NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty,
+                value.profilePictureUrl)
 
             writer.name("friends")
             Friend.obj(true).list().serializeData(writer, value.friends, context)
@@ -296,10 +298,10 @@ public object TestOperation_ResponseAdapter {
               var __typename: String? = null
               var _isFamous: Boolean? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-                  1 -> _isFamous = NullableBooleanDataAdapter.deserializeData(reader, context)
+                  0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  1 -> _isFamous = NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                   else -> break
                 }
               }
@@ -328,10 +330,10 @@ public object TestOperation_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("__typename")
-              StringDataAdapter.serializeData(writer, value.__typename, context)
+              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
               writer.name("isFamous")
-              NullableBooleanDataAdapter.serializeData(writer, value.isFamous, context)
+              NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous)
 
               if (value.onWookie != null) {
                 com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.serializeData(writer,
@@ -348,7 +350,7 @@ public object TestOperation_ResponseAdapter {
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var _race: Race? = null
 
-                while(true) {
+                while (true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> _race = Race_ResponseAdapter.deserializeData(reader, context)
                     else -> break
@@ -381,7 +383,7 @@ public object TestOperation_ResponseAdapter {
           var _race: Race? = null
           var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _race = Race_ResponseAdapter.deserializeData(reader, context)
               1 -> _friends = Friend.obj().list().deserializeData(reader, context)
@@ -415,9 +417,9 @@ public object TestOperation_ResponseAdapter {
               TestOperation.Data.Random.OnWookie.Friend {
             var _lifeExpectancy: Double? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _lifeExpectancy = NullableDoubleDataAdapter.deserializeData(reader, context)
+                0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -433,7 +435,7 @@ public object TestOperation_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("lifeExpectancy")
-            NullableDoubleDataAdapter.serializeData(writer, value.lifeExpectancy, context)
+            NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
           }
         }
       }

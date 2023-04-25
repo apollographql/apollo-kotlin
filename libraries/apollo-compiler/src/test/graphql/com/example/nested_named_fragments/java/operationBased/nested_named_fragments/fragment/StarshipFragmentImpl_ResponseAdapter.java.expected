@@ -5,9 +5,10 @@
 //
 package com.example.nested_named_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -35,8 +36,8 @@ public class StarshipFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _name = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _name = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _pilotConnection = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -56,10 +57,10 @@ public class StarshipFragmentImpl_ResponseAdapter {
         com.example.nested_named_fragments.fragment.StarshipFragment value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("id");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 
       writer.name("name");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("pilotConnection");
       new NullableDataAdapter<>(new ObjectDataAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).serializeData(writer, value.pilotConnection, context);
@@ -143,7 +144,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -164,7 +165,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
         com.example.nested_named_fragments.fragment.StarshipFragment.Node value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.serializeData(writer, value.pilotFragment, context);
     }

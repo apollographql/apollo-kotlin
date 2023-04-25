@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.BooleanDataAdapter
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferAndInclude
@@ -19,14 +19,13 @@ public object InlineMultipleWithDeferAndInclude_VariablesAdapter :
     `value`: InlineMultipleWithDeferAndInclude,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     writer.name("cond1")
-    BooleanDataAdapter.serializeData(writer, value.cond1, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond1)
     writer.name("cond2")
-    BooleanDataAdapter.serializeData(writer, value.cond2, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond2)
     writer.name("cond3")
-    BooleanDataAdapter.serializeData(writer, value.cond3, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond3)
     writer.name("cond4")
-    BooleanDataAdapter.serializeData(writer, value.cond4, serializeDataContext)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond4)
   }
 }

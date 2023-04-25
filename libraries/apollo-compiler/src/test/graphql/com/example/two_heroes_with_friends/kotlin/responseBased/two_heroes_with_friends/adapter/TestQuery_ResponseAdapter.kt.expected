@@ -5,9 +5,10 @@
 //
 package com.example.two_heroes_with_friends.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -28,7 +29,7 @@ public object TestQuery_ResponseAdapter {
       var _r2: TestQuery.Data.R2? = null
       var _luke: TestQuery.Data.Luke? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _r2 = R2.obj().nullable().deserializeData(reader, context)
           1 -> _luke = Luke.obj().nullable().deserializeData(reader, context)
@@ -62,9 +63,9 @@ public object TestQuery_ResponseAdapter {
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.R2.FriendsConnection? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             1 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
             else -> break
           }
@@ -82,7 +83,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("friendsConnection")
         FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
@@ -96,9 +97,9 @@ public object TestQuery_ResponseAdapter {
           var _totalCount: Int? = null
           var _edges: List<TestQuery.Data.R2.FriendsConnection.Edge?>? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+              0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
               else -> break
             }
@@ -116,7 +117,7 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("totalCount")
-          NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
+          NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
           writer.name("edges")
           Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
@@ -130,7 +131,7 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.R2.FriendsConnection.Edge {
             var _node: TestQuery.Data.R2.FriendsConnection.Edge.Node? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> _node = Node.obj().nullable().deserializeData(reader, context)
                 else -> break
@@ -159,9 +160,9 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.R2.FriendsConnection.Edge.Node {
               var _name: String? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                  0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                   else -> break
                 }
               }
@@ -177,7 +178,7 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("name")
-              StringDataAdapter.serializeData(writer, value.name, context)
+              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
             }
           }
         }
@@ -193,10 +194,10 @@ public object TestQuery_ResponseAdapter {
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.Luke.FriendsConnection? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             2 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
             else -> break
           }
@@ -215,10 +216,10 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("id")
-        StringDataAdapter.serializeData(writer, value.id, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("friendsConnection")
         FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
@@ -232,9 +233,9 @@ public object TestQuery_ResponseAdapter {
           var _totalCount: Int? = null
           var _edges: List<TestQuery.Data.Luke.FriendsConnection.Edge?>? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+              0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
               else -> break
             }
@@ -252,7 +253,7 @@ public object TestQuery_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("totalCount")
-          NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
+          NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
           writer.name("edges")
           Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
@@ -266,7 +267,7 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Luke.FriendsConnection.Edge {
             var _node: TestQuery.Data.Luke.FriendsConnection.Edge.Node? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> _node = Node.obj().nullable().deserializeData(reader, context)
                 else -> break
@@ -295,9 +296,9 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Luke.FriendsConnection.Edge.Node {
               var _name: String? = null
 
-              while(true) {
+              while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                  0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                   else -> break
                 }
               }
@@ -313,7 +314,7 @@ public object TestQuery_ResponseAdapter {
               context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("name")
-              StringDataAdapter.serializeData(writer, value.name, context)
+              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
             }
           }
         }

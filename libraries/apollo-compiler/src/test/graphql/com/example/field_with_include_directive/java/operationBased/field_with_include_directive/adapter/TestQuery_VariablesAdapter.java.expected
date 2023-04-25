@@ -5,8 +5,9 @@
 //
 package com.example.field_with_include_directive.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.field_with_include_directive.TestQuery;
@@ -21,8 +22,8 @@ public enum TestQuery_VariablesAdapter implements VariablesAdapter<TestQuery> {
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
     DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
     writer.name("includeName");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.includeName, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.includeName);
     writer.name("skipFriends");
-    DataAdapters.BooleanDataAdapter.serializeData(writer, value.skipFriends, serializeDataContext);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipFriends);
   }
 }

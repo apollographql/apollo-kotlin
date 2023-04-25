@@ -5,13 +5,14 @@
 //
 package com.example.test_inline.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -71,7 +72,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _items = new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item>(Item.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -97,7 +98,7 @@ public class GetPage_ResponseAdapter {
     public void serializeData(JsonWriter writer, GetPage.Collection value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("items");
       new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item>(Item.INSTANCE, false)).serializeData(writer, value.items, context);
@@ -121,7 +122,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _title = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _title = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -137,7 +138,7 @@ public class GetPage_ResponseAdapter {
     public void serializeData(JsonWriter writer, GetPage.Item value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("title");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.title, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title);
     }
   }
 
@@ -187,7 +188,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -209,7 +210,7 @@ public class GetPage_ResponseAdapter {
     public void serializeData(JsonWriter writer, GetPage.Item1 value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onParticularItem != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.serializeData(writer, value.onParticularItem, context);
@@ -230,7 +231,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _image = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _image = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -246,7 +247,7 @@ public class GetPage_ResponseAdapter {
     public void serializeData(JsonWriter writer, GetPage.OnParticularItem value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("image");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.image, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.image);
     }
   }
 }

@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_without_implementation.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = DataAdapters.NullableDoubleDataAdapter.deserializeData(reader, context); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -45,7 +46,7 @@ public class HumanDetailsImpl_ResponseAdapter {
         com.example.named_fragment_without_implementation.fragment.HumanDetails value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("height");
-      DataAdapters.NullableDoubleDataAdapter.serializeData(writer, value.height, context);
+      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,11 +20,9 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
     if (value.operation is Optional.Present) {
       writer.name("operation")
-      NullableStringDataAdapter.present().serializeData(writer, value.operation,
-          serializeDataContext)
+      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.operation)
     }
   }
 }

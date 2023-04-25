@@ -5,8 +5,9 @@
 //
 package com.example.target_name.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableAnyDataAdapter
+import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -32,7 +33,7 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
-      NullableAnyDataAdapter.present().serializeData(writer, value.scalar, serializeDataContext)
+      NullableAnyAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.scalar)
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")

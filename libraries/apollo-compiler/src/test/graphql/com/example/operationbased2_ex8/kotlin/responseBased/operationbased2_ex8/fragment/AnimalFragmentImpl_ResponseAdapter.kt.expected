@@ -5,15 +5,17 @@
 //
 package com.example.operationbased2_ex8.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -26,9 +28,9 @@ public object AnimalFragmentImpl_ResponseAdapter {
       var _species: String? = null
       var _parent: AnimalFragmentImpl.Data.Parent? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _species = StringDataAdapter.deserializeData(reader, context)
+          0 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           1 -> _parent = Parent.obj().deserializeData(reader, context)
           else -> break
         }
@@ -46,7 +48,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("species")
-      StringDataAdapter.serializeData(writer, value.species, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
       writer.name("parent")
       Parent.obj().serializeData(writer, value.parent, context)
@@ -85,18 +87,18 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): AnimalFragmentImpl.Data.LionParent {
         var __typename: String? = typename
         var _species: String? = null
         var _temperature: Int? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _temperature = IntDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -111,16 +113,16 @@ public object AnimalFragmentImpl_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.LionParent,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
         writer.name("temperature")
-        IntDataAdapter.serializeData(writer, value.temperature, context)
+        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
       }
     }
 
@@ -129,18 +131,18 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): AnimalFragmentImpl.Data.CatParent {
         var __typename: String? = typename
         var _species: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -155,16 +157,16 @@ public object AnimalFragmentImpl_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.CatParent,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
 
@@ -173,16 +175,16 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun deserializeData(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): AnimalFragmentImpl.Data.OtherParent {
         var __typename: String? = typename
         var _species: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -196,13 +198,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
       public fun serializeData(
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.OtherParent,
-        context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
       }
     }
   }

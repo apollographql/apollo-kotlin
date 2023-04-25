@@ -5,10 +5,11 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableIntDataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -17,6 +18,7 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -53,17 +55,17 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public fun deserializeData(
       reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.HumanData.FriendsConnection? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           2 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
@@ -79,13 +81,13 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.HumanData,
-      context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
@@ -100,9 +102,9 @@ public object HeroDetailsImpl_ResponseAdapter {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.HumanData.FriendsConnection.Edge?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
@@ -120,7 +122,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
+        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
@@ -134,7 +136,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             HeroDetailsImpl.HumanData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
@@ -163,9 +165,9 @@ public object HeroDetailsImpl_ResponseAdapter {
               HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -181,7 +183,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringDataAdapter.serializeData(writer, value.name, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }
         }
       }
@@ -194,7 +196,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public fun deserializeData(
       reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.DroidData {
       var __typename: String? = typename
@@ -202,11 +204,11 @@ public object HeroDetailsImpl_ResponseAdapter {
       var _primaryFunction: String? = null
       var _friendsConnection: HeroDetailsImpl.DroidData.FriendsConnection? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-          1 -> _name = StringDataAdapter.deserializeData(reader, context)
-          2 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           3 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
@@ -223,16 +225,16 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.DroidData,
-      context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("primaryFunction")
-      NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
@@ -247,9 +249,9 @@ public object HeroDetailsImpl_ResponseAdapter {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.DroidData.FriendsConnection.Edge?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
@@ -267,7 +269,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
+        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
@@ -281,7 +283,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             HeroDetailsImpl.DroidData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
@@ -310,9 +312,9 @@ public object HeroDetailsImpl_ResponseAdapter {
               HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -328,7 +330,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringDataAdapter.serializeData(writer, value.name, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }
         }
       }
@@ -340,17 +342,17 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public fun deserializeData(
       reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.OtherData.FriendsConnection? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           2 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
@@ -366,13 +368,13 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.OtherData,
-      context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringDataAdapter.serializeData(writer, value.__typename, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringDataAdapter.serializeData(writer, value.name, context)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
@@ -387,9 +389,9 @@ public object HeroDetailsImpl_ResponseAdapter {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.OtherData.FriendsConnection.Edge?>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
@@ -407,7 +409,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
+        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
@@ -421,7 +423,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             HeroDetailsImpl.OtherData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
@@ -450,9 +452,9 @@ public object HeroDetailsImpl_ResponseAdapter {
               HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringDataAdapter.deserializeData(reader, context)
+                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -468,7 +470,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringDataAdapter.serializeData(writer, value.name, context)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }
         }
       }

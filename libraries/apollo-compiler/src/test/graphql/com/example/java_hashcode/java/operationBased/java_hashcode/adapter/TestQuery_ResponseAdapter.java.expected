@@ -5,8 +5,9 @@
 //
 package com.example.java_hashcode.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_hashcode.TestQuery;
@@ -31,7 +32,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _h = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 0: _h = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -45,7 +46,7 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.Data value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("h");
-      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.h, context);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.h);
     }
   }
 }

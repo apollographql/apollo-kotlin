@@ -5,8 +5,9 @@
 //
 package com.example.decapitalized_fields.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -63,7 +64,7 @@ public class HorseFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -78,7 +79,7 @@ public class HorseFragmentImpl_ResponseAdapter {
         com.example.decapitalized_fields.fragment.HorseFragment.Cow value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Moo");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.moo, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo);
     }
   }
 }

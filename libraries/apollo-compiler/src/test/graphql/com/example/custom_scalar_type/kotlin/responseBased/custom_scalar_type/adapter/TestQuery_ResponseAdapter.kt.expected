@@ -5,8 +5,8 @@
 //
 package com.example.custom_scalar_type.adapter
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter
-import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -30,7 +30,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -65,21 +65,15 @@ public object TestQuery_ResponseAdapter {
         var _profileLink: String? = null
         var _links: List<String>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = context.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).deserializeData(reader,
-                context)
-            1 -> _name = AdapterToDataAdapter(com.example.MyStringAdapter()).deserializeData(reader,
-                context)
-            2 -> _birthDate = context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).deserializeData(reader,
-                context)
-            3 -> _appearanceDates = context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().deserializeData(reader,
-                context)
-            4 -> _fieldWithUnsupportedType = AnyDataAdapter.deserializeData(reader, context)
-            5 -> _profileLink = AdapterToDataAdapter(com.example.UrlAdapter).deserializeData(reader,
-                context)
-            6 -> _links = AdapterToDataAdapter(com.example.UrlAdapter).list().deserializeData(reader,
-                context)
+            0 -> _id = context.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = com.example.MyStringAdapter().fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _birthDate = context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader, CustomScalarAdapters.Empty)
+            3 -> _appearanceDates = context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader, CustomScalarAdapters.Empty)
+            4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            5 -> _profileLink = com.example.UrlAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            6 -> _links = com.example.UrlAdapter.list().fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -101,31 +95,28 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("id")
-        context.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).serializeData(writer,
-            value.id, context)
+        context.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer,
+            CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        AdapterToDataAdapter(com.example.MyStringAdapter()).serializeData(writer, value.name,
-            context)
+        com.example.MyStringAdapter().toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("birthDate")
-        context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).serializeData(writer,
-            value.birthDate, context)
+        context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,
+            CustomScalarAdapters.Empty, value.birthDate)
 
         writer.name("appearanceDates")
-        context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().serializeData(writer,
-            value.appearanceDates, context)
+        context.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().toJson(writer,
+            CustomScalarAdapters.Empty, value.appearanceDates)
 
         writer.name("fieldWithUnsupportedType")
-        AnyDataAdapter.serializeData(writer, value.fieldWithUnsupportedType, context)
+        AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldWithUnsupportedType)
 
         writer.name("profileLink")
-        AdapterToDataAdapter(com.example.UrlAdapter).serializeData(writer, value.profileLink,
-            context)
+        com.example.UrlAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profileLink)
 
         writer.name("links")
-        AdapterToDataAdapter(com.example.UrlAdapter).list().serializeData(writer, value.links,
-            context)
+        com.example.UrlAdapter.list().toJson(writer, CustomScalarAdapters.Empty, value.links)
       }
     }
   }

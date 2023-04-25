@@ -6,8 +6,9 @@
 package com.example.suppressed_warnings.type.adapter
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -32,15 +33,15 @@ public object Filter_InputAdapter : DataAdapter<Filter> {
   ): Unit {
     if (value.name is Optional.Present) {
       writer.name("name")
-      NullableStringDataAdapter.present().serializeData(writer, value.name, context)
+      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.name)
     }
     if (value.deprecated is Optional.Present) {
       writer.name("deprecated")
-      NullableStringDataAdapter.present().serializeData(writer, value.deprecated, context)
+      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.deprecated)
     }
     if (value.experimental is Optional.Present) {
       writer.name("experimental")
-      NullableStringDataAdapter.present().serializeData(writer, value.experimental, context)
+      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.experimental)
     }
   }
 }

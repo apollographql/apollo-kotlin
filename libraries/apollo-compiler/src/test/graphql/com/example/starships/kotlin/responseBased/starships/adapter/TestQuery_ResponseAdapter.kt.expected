@@ -5,9 +5,10 @@
 //
 package com.example.starships.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.DoubleDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -27,7 +28,7 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _starship: TestQuery.Data.Starship? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _starship = Starship.obj().nullable().deserializeData(reader, context)
           else -> break
@@ -57,12 +58,11 @@ public object TestQuery_ResponseAdapter {
         var _name: String? = null
         var _coordinates: List<List<Double>>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringDataAdapter.deserializeData(reader, context)
-            1 -> _name = StringDataAdapter.deserializeData(reader, context)
-            2 -> _coordinates = DoubleDataAdapter.list().list().nullable().deserializeData(reader,
-                context)
+            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _coordinates = DoubleAdapter.list().list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -80,13 +80,14 @@ public object TestQuery_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("id")
-        StringDataAdapter.serializeData(writer, value.id, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("coordinates")
-        DoubleDataAdapter.list().list().nullable().serializeData(writer, value.coordinates, context)
+        DoubleAdapter.list().list().nullable().toJson(writer, CustomScalarAdapters.Empty,
+            value.coordinates)
       }
     }
   }

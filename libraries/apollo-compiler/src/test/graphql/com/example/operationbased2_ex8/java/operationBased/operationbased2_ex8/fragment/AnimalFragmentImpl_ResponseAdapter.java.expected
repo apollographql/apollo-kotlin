@@ -5,13 +5,14 @@
 //
 package com.example.operationbased2_ex8.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -37,7 +38,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _species = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _parent = new ObjectDataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -57,7 +58,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.operationbased2_ex8.fragment.AnimalFragment value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species);
 
       writer.name("parent");
       new ObjectDataAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).serializeData(writer, value.parent, context);
@@ -78,8 +79,8 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _species = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -112,10 +113,10 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.operationbased2_ex8.fragment.AnimalFragment.Parent value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("species");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species);
 
       if (value.onLion != null) {
         com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.serializeData(writer, value.onLion, context);
@@ -140,7 +141,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -157,7 +158,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("temperature");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.temperature, context);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature);
     }
   }
 
@@ -174,7 +175,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -191,7 +192,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

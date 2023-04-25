@@ -5,8 +5,9 @@
 //
 package com.example.antlr_tokens.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -65,9 +66,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _on = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
-          case 1: _null = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
-          case 2: _alias = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _on = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _null = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _alias = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -83,13 +84,13 @@ public class TestQuery_ResponseAdapter {
     public void serializeData(JsonWriter writer, TestQuery.TypeWithGraphQLKeywords value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("on");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.on, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.on);
 
       writer.name("null");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.null_, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.null_);
 
       writer.name("alias");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.alias, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.alias);
     }
   }
 }

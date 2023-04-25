@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -30,7 +31,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         context: DataAdapter.DeserializeDataContext): InlineMultipleWithDeferAndInclude.Data {
       var _hero: InlineMultipleWithDeferAndInclude.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
           else -> break
@@ -60,9 +61,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -130,7 +131,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.onDroidIfCond1 != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.serializeData(writer,
@@ -172,9 +173,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1 {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -190,7 +191,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
 
@@ -203,9 +204,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2 {
           var _id: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringDataAdapter.deserializeData(reader, context)
+              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -221,7 +222,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("id")
-          StringDataAdapter.serializeData(writer, value.id, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
       }
 
@@ -234,9 +235,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -252,7 +253,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
 
@@ -265,9 +266,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second {
           var _id: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringDataAdapter.deserializeData(reader, context)
+              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -283,7 +284,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("id")
-          StringDataAdapter.serializeData(writer, value.id, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
       }
 
@@ -296,9 +297,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringDataAdapter.deserializeData(reader, context)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -314,7 +315,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringDataAdapter.serializeData(writer, value.name, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
 
@@ -327,9 +328,9 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth {
           var _id: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringDataAdapter.deserializeData(reader, context)
+              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -345,7 +346,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("id")
-          StringDataAdapter.serializeData(writer, value.id, context)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
       }
     }

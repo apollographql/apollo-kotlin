@@ -5,9 +5,10 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.ListDataAdapter;
 import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ObjectDataAdapter;
@@ -35,8 +36,8 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
-          case 1: _primaryFunction = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 2: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
@@ -56,10 +57,10 @@ public class DroidDetailsImpl_ResponseAdapter {
         com.example.named_fragment_delegate.fragment.DroidDetails value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("primaryFunction");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
 
       writer.name("friends");
       new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).serializeData(writer, value.friends, context);
@@ -79,7 +80,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -96,7 +97,7 @@ public class DroidDetailsImpl_ResponseAdapter {
         com.example.named_fragment_delegate.fragment.DroidDetails.Friend value,
         DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }
