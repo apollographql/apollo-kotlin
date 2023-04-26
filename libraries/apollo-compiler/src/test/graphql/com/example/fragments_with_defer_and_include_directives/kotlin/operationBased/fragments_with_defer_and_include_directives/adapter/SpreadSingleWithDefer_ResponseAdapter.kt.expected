@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
@@ -23,16 +23,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
-  public object Data : Adapter<SpreadSingleWithDefer.Data> {
+  public object Data : CompositeAdapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        SpreadSingleWithDefer.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): SpreadSingleWithDefer.Data {
       var _hero: SpreadSingleWithDefer.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -42,26 +42,26 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: SpreadSingleWithDefer.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().serializeComposite(writer, value.hero, context)
     }
 
-    private object Hero : Adapter<SpreadSingleWithDefer.Data.Hero> {
+    private object Hero : CompositeAdapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          SpreadSingleWithDefer.Data.Hero {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -71,10 +71,10 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.deserializeComposite(reader,
+              context)
         }
 
         return SpreadSingleWithDefer.Data.Hero(
@@ -83,17 +83,17 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadSingleWithDefer.Data.Hero,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeComposite(writer,
+              value.droidDetails, context)
         }
       }
     }

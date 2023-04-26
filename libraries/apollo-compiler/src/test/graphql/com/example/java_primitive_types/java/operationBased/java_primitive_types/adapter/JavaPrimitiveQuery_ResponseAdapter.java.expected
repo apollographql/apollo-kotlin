@@ -5,12 +5,12 @@
 //
 package com.example.java_primitive_types.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.JavaPrimitiveQuery;
@@ -22,14 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JavaPrimitiveQuery_ResponseAdapter {
-  public enum Data implements Adapter<JavaPrimitiveQuery.Data> {
+  public enum Data implements CompositeAdapter<JavaPrimitiveQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType");
 
     @Override
-    public JavaPrimitiveQuery.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public JavaPrimitiveQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
       JavaPrimitiveQuery.NullableMyType _nullableMyType = null;
@@ -38,10 +38,10 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _nullableMyType = new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 3: _nonNullableMyType = new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _nullableMyType = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 3: _nonNullableMyType = new ObjectCompositeAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -58,38 +58,38 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        JavaPrimitiveQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, JavaPrimitiveQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
 
       writer.name("nullableMyType");
-      new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nullableMyType);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).serializeComposite(writer, value.nullableMyType, context);
 
       writer.name("nonNullableMyType");
-      new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableMyType);
+      new ObjectCompositeAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).serializeComposite(writer, value.nonNullableMyType, context);
     }
   }
 
-  public enum NullableMyType implements Adapter<JavaPrimitiveQuery.NullableMyType> {
+  public enum NullableMyType implements CompositeAdapter<JavaPrimitiveQuery.NullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public JavaPrimitiveQuery.NullableMyType fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public JavaPrimitiveQuery.NullableMyType deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -103,32 +103,32 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        JavaPrimitiveQuery.NullableMyType value) throws IOException {
+    public void serializeComposite(JsonWriter writer, JavaPrimitiveQuery.NullableMyType value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 
-  public enum NonNullableMyType implements Adapter<JavaPrimitiveQuery.NonNullableMyType> {
+  public enum NonNullableMyType implements CompositeAdapter<JavaPrimitiveQuery.NonNullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public JavaPrimitiveQuery.NonNullableMyType fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public JavaPrimitiveQuery.NonNullableMyType deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -142,13 +142,13 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        JavaPrimitiveQuery.NonNullableMyType value) throws IOException {
+    public void serializeComposite(JsonWriter writer, JavaPrimitiveQuery.NonNullableMyType value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 }

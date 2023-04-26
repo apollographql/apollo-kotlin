@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_type_condition.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -22,18 +22,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var _r2: TestQuery.Data.R2? = null
       var _luke: TestQuery.Data.Luke? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _r2 = R2.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          1 -> _luke = Luke.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _r2 = R2.obj(true).nullable().deserializeComposite(reader, context)
+          1 -> _luke = Luke.obj(true).nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -44,28 +44,28 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("r2")
-      R2.obj(true).nullable().toJson(writer, customScalarAdapters, value.r2)
+      R2.obj(true).nullable().serializeComposite(writer, value.r2, context)
 
       writer.name("luke")
-      Luke.obj(true).nullable().toJson(writer, customScalarAdapters, value.luke)
+      Luke.obj(true).nullable().serializeComposite(writer, value.luke, context)
     }
 
-    private object R2 : Adapter<TestQuery.Data.R2> {
+    private object R2 : CompositeAdapter<TestQuery.Data.R2> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.R2 {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.R2 {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -75,17 +75,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              customScalarAdapters)
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeComposite(reader,
+              context)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.deserializeComposite(reader,
+              context)
         }
 
         return TestQuery.Data.R2(
@@ -95,36 +95,36 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.R2,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              customScalarAdapters, value.humanDetails)
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeComposite(writer,
+              value.humanDetails, context)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeComposite(writer,
+              value.droidDetails, context)
         }
       }
     }
 
-    private object Luke : Adapter<TestQuery.Data.Luke> {
+    private object Luke : CompositeAdapter<TestQuery.Data.Luke> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Luke {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Luke {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -134,17 +134,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              customScalarAdapters)
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeComposite(reader,
+              context)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.deserializeComposite(reader,
+              context)
         }
 
         return TestQuery.Data.Luke(
@@ -154,22 +154,22 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Luke,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              customScalarAdapters, value.humanDetails)
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeComposite(writer,
+              value.humanDetails, context)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeComposite(writer,
+              value.droidDetails, context)
         }
       }
     }

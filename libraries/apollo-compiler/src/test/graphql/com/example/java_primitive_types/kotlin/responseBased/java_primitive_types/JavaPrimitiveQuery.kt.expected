@@ -6,11 +6,11 @@
 package com.example.java_primitive_types
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java_primitive_types.adapter.JavaPrimitiveQuery_ResponseAdapter
@@ -36,11 +36,12 @@ public data class JavaPrimitiveQuery(
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    JavaPrimitiveQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
+    JavaPrimitiveQuery_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
-  public override fun adapter(): Adapter<Data> = JavaPrimitiveQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> =
+      JavaPrimitiveQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

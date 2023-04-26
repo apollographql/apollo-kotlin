@@ -6,8 +6,8 @@
 package com.example.subscriptions;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -110,8 +110,8 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
   }
 
   @Override
-  public DataAdapter<Data> adapter() {
-    return new ObjectDataAdapter<Data>(TestSubscription_ResponseAdapter.Data.INSTANCE, false);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(TestSubscription_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

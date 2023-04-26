@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,14 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements DataAdapter<com.example.simple_fragment.fragment.HeroDetails> {
+  public enum HeroDetails implements CompositeAdapter<com.example.simple_fragment.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.simple_fragment.fragment.HeroDetails deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.simple_fragment.fragment.HeroDetails deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -44,7 +44,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       HumanDetails _humanDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.deserializeData(reader, context);
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new com.example.simple_fragment.fragment.HeroDetails(
@@ -54,14 +54,14 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.simple_fragment.fragment.HeroDetails value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.serializeData(writer, value.humanDetails, context);
+        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.serializeComposite(writer, value.humanDetails, context);
       }
     }
   }

@@ -5,13 +5,13 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -21,14 +21,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements Adapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
+  public enum DroidDetails implements CompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "primaryFunction", "friends");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.DroidDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.DroidDetails deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
       String _primaryFunction = null;
       List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> _friends = null;
@@ -36,9 +37,9 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -53,33 +54,35 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.DroidDetails value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.DroidDetails value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend implements Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
+  public enum Friend implements CompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.DroidDetails.Friend fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.DroidDetails.Friend deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -92,10 +95,11 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.DroidDetails.Friend value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.DroidDetails.Friend value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

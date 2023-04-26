@@ -6,7 +6,7 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,7 +28,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): DataAdapter<QueryFragment> =
+  public override fun adapter(): CompositeAdapter<QueryFragment> =
       QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

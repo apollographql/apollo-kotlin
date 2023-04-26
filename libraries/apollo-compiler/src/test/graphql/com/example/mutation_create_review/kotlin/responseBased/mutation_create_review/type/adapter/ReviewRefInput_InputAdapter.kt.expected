@@ -5,8 +5,7 @@
 //
 package com.example.mutation_create_review.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,19 +16,20 @@ import com.example.mutation_create_review.type.ReviewRefInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-internal object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      ReviewRefInput = throw IllegalStateException("Input type used in output position")
+internal object ReviewRefInput_InputAdapter : CompositeAdapter<ReviewRefInput> {
+  public override fun deserializeComposite(reader: JsonReader,
+      context: CompositeAdapter.DeserializeCompositeContext): ReviewRefInput = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  public override fun serializeComposite(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: ReviewRefInput,
+    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.reviewInput)
+      ReviewInput_InputAdapter.obj().nullable().present().serializeComposite(writer,
+          value.reviewInput, context)
     }
   }
 }

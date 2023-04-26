@@ -5,11 +5,11 @@
 //
 package com.example.not_all_combinations_are_needed.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections;
 import com.example.not_all_combinations_are_needed.type.B;
@@ -60,14 +60,14 @@ public class BFragmentImpl implements Fragment<BFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public Adapter<BFragment> adapter() {
-    return new ObjectAdapter<BFragment>(BFragmentImpl_ResponseAdapter.BFragment.INSTANCE, false);
+  public CompositeAdapter<BFragment> adapter() {
+    return new ObjectCompositeAdapter<BFragment>(BFragmentImpl_ResponseAdapter.BFragment.INSTANCE, false);
   }
 
   @Override

@@ -5,26 +5,26 @@
 //
 package com.example.union_inline_fragments.type.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_inline_fragments.type.Episode;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Episode_ResponseAdapter implements DataAdapter<Episode> {
+public enum Episode_ResponseAdapter implements CompositeAdapter<Episode> {
   INSTANCE;
 
   @Override
-  public Episode deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
-      throws IOException {
+  public Episode deserializeComposite(JsonReader reader,
+      CompositeAdapter.DeserializeCompositeContext context) throws IOException {
     String rawValue = reader.nextString();
     return Episode.safeValueOf(rawValue);
   }
 
   @Override
-  public void serializeData(JsonWriter writer, Episode value,
-      DataAdapter.SerializeDataContext context) throws IOException {
+  public void serializeComposite(JsonWriter writer, Episode value,
+      CompositeAdapter.SerializeCompositeContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

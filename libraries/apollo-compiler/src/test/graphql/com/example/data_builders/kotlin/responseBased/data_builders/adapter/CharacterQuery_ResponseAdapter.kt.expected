@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -14,20 +14,21 @@ import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.CharacterQuery
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterQuery_ResponseAdapter {
-  public object Data : Adapter<CharacterQuery.Data> {
+  public object Data : CompositeAdapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): CharacterQuery.Data {
       var _character: CharacterQuery.Data.Character? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _character = Character.obj().fromJson(reader, customScalarAdapters)
+          0 -> _character = Character.obj().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -37,41 +38,41 @@ public object CharacterQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: CharacterQuery.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("character")
-      Character.obj().toJson(writer, customScalarAdapters, value.character)
+      Character.obj().serializeComposite(writer, value.character, context)
     }
 
-    private object Character : Adapter<CharacterQuery.Data.Character> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          CharacterQuery.Data.Character {
+    private object Character : CompositeAdapter<CharacterQuery.Data.Character> {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): CharacterQuery.Data.Character {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanCharacter.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanCharacter.deserializeComposite(reader, context, __typename)
           "Droid",
-          -> DroidCharacter.fromJson(reader, customScalarAdapters, __typename)
+          -> DroidCharacter.deserializeComposite(reader, context, __typename)
           else
-          -> OtherCharacter.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherCharacter.deserializeComposite(reader, context, __typename)
         }
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: CharacterQuery.Data.Character,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is CharacterQuery.Data.HumanCharacter -> HumanCharacter.toJson(writer,
-              customScalarAdapters, value)
-          is CharacterQuery.Data.DroidCharacter -> DroidCharacter.toJson(writer,
-              customScalarAdapters, value)
-          is CharacterQuery.Data.OtherCharacter -> OtherCharacter.toJson(writer,
-              customScalarAdapters, value)
+          is CharacterQuery.Data.HumanCharacter -> HumanCharacter.serializeComposite(writer, value,
+              context)
+          is CharacterQuery.Data.DroidCharacter -> DroidCharacter.serializeComposite(writer, value,
+              context)
+          is CharacterQuery.Data.OtherCharacter -> OtherCharacter.serializeComposite(writer, value,
+              context)
         }
       }
     }
@@ -79,9 +80,9 @@ public object CharacterQuery_ResponseAdapter {
     public object HumanCharacter {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name", "homePlanet")
 
-      public fun fromJson(
+      public fun deserializeComposite(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): CharacterQuery.Data.HumanCharacter {
         var __typename: String? = typename
@@ -89,12 +90,12 @@ public object CharacterQuery_ResponseAdapter {
         var _name: String? = null
         var _homePlanet: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _homePlanet = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            3 -> _homePlanet = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -107,22 +108,22 @@ public object CharacterQuery_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: CharacterQuery.Data.HumanCharacter,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("homePlanet")
-        StringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
       }
     }
 
@@ -130,9 +131,9 @@ public object CharacterQuery_ResponseAdapter {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name",
           "primaryFunction")
 
-      public fun fromJson(
+      public fun deserializeComposite(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): CharacterQuery.Data.DroidCharacter {
         var __typename: String? = typename
@@ -140,12 +141,12 @@ public object CharacterQuery_ResponseAdapter {
         var _name: String? = null
         var _primaryFunction: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _primaryFunction = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            3 -> _primaryFunction = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -158,42 +159,42 @@ public object CharacterQuery_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: CharacterQuery.Data.DroidCharacter,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("primaryFunction")
-        StringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
       }
     }
 
     public object OtherCharacter {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
-      public fun fromJson(
+      public fun deserializeComposite(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): CharacterQuery.Data.OtherCharacter {
         var __typename: String? = typename
         var _id: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -205,19 +206,19 @@ public object CharacterQuery_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: CharacterQuery.Data.OtherCharacter,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
   }

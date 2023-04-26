@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,26 +17,26 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  public object Data : DataAdapter<HeroDetailsImpl.Data> {
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data {
+  public object Data : CompositeAdapter<HeroDetailsImpl.Data> {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): HeroDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> HumanData.deserializeData(reader, context, __typename)
+        -> HumanData.deserializeComposite(reader, context, __typename)
         else
-        -> OtherData.deserializeData(reader, context, __typename)
+        -> OtherData.deserializeComposite(reader, context, __typename)
       }
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       when(value) {
-        is HeroDetailsImpl.HumanData -> HumanData.serializeData(writer, value, context)
-        is HeroDetailsImpl.OtherData -> OtherData.serializeData(writer, value, context)
+        is HeroDetailsImpl.HumanData -> HumanData.serializeComposite(writer, value, context)
+        is HeroDetailsImpl.OtherData -> OtherData.serializeComposite(writer, value, context)
       }
     }
   }
@@ -44,9 +44,9 @@ internal object HeroDetailsImpl_ResponseAdapter {
   public object HumanData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public fun deserializeData(
+    public fun deserializeComposite(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
@@ -66,10 +66,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeData(
+    public fun serializeComposite(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.HumanData,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -82,9 +82,9 @@ internal object HeroDetailsImpl_ResponseAdapter {
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public fun deserializeData(
+    public fun deserializeComposite(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
       typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
@@ -101,10 +101,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeData(
+    public fun serializeComposite(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.OtherData,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)

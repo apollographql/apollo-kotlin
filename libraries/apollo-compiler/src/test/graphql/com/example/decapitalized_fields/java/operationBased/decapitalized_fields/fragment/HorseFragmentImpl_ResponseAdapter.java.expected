@@ -5,11 +5,11 @@
 //
 package com.example.decapitalized_fields.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -19,20 +19,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HorseFragmentImpl_ResponseAdapter {
-  public enum HorseFragment implements Adapter<com.example.decapitalized_fields.fragment.HorseFragment> {
+  public enum HorseFragment implements CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
     @Override
-    public com.example.decapitalized_fields.fragment.HorseFragment fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.decapitalized_fields.fragment.HorseFragment deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       com.example.decapitalized_fields.fragment.HorseFragment.Cow _Cow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _Cow = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -43,27 +44,29 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.decapitalized_fields.fragment.HorseFragment value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.decapitalized_fields.fragment.HorseFragment value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("Cow");
-      new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).toJson(writer, customScalarAdapters, value.cow);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).serializeComposite(writer, value.cow, context);
     }
   }
 
-  public enum Cow implements Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
+  public enum Cow implements CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
     @Override
-    public com.example.decapitalized_fields.fragment.HorseFragment.Cow fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.decapitalized_fields.fragment.HorseFragment.Cow deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _Moo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -74,10 +77,11 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.decapitalized_fields.fragment.HorseFragment.Cow value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.decapitalized_fields.fragment.HorseFragment.Cow value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("Moo");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo);
     }
   }
 }

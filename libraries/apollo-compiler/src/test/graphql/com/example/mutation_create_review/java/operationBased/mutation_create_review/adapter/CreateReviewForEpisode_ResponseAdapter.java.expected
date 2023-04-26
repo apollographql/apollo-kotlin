@@ -5,13 +5,15 @@
 //
 package com.example.mutation_create_review.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
@@ -26,20 +28,20 @@ import java.util.Date;
 import java.util.List;
 
 public class CreateReviewForEpisode_ResponseAdapter {
-  public enum Data implements Adapter<CreateReviewForEpisode.Data> {
+  public enum Data implements CompositeAdapter<CreateReviewForEpisode.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("createReview");
 
     @Override
-    public CreateReviewForEpisode.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public CreateReviewForEpisode.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       CreateReviewForEpisode.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _createReview = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -50,21 +52,21 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, CreateReviewForEpisode.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("createReview");
-      new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).serializeComposite(writer, value.createReview, context);
     }
   }
 
-  public enum CreateReview implements Adapter<CreateReviewForEpisode.CreateReview> {
+  public enum CreateReview implements CompositeAdapter<CreateReviewForEpisode.CreateReview> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary", "listOfListOfString", "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject");
 
     @Override
-    public CreateReviewForEpisode.CreateReview fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public CreateReviewForEpisode.CreateReview deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _stars = null;
       String _commentary = null;
       List<List<String>> _listOfListOfString = null;
@@ -75,12 +77,12 @@ public class CreateReviewForEpisode_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
-          case 2: _listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, customScalarAdapters); break;
-          case 3: _listOfListOfEnum = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
-          case 4: _listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, customScalarAdapters); break;
-          case 5: _listOfListOfObject = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 3: _listOfListOfEnum = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new ListCompositeAdapter<>(Episode_ResponseAdapter.INSTANCE))).deserializeComposite(reader, context); break;
+          case 4: _listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((context.customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 5: _listOfListOfObject = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new ListCompositeAdapter<>(new ObjectCompositeAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -98,42 +100,42 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.CreateReview value) throws IOException {
+    public void serializeComposite(JsonWriter writer, CreateReviewForEpisode.CreateReview value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("stars");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars);
 
       writer.name("commentary");
-      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, customScalarAdapters, value.commentary);
+      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, CustomScalarAdapters.Empty, value.commentary);
 
       writer.name("listOfListOfString");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, customScalarAdapters, value.listOfListOfString);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, CustomScalarAdapters.Empty, value.listOfListOfString);
 
       writer.name("listOfListOfEnum");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).toJson(writer, customScalarAdapters, value.listOfListOfEnum);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new ListCompositeAdapter<>(Episode_ResponseAdapter.INSTANCE))).serializeComposite(writer, value.listOfListOfEnum, context);
 
       writer.name("listOfListOfCustom");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).toJson(writer, customScalarAdapters, value.listOfListOfCustom);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((context.customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).toJson(writer, CustomScalarAdapters.Empty, value.listOfListOfCustom);
 
       writer.name("listOfListOfObject");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.listOfListOfObject);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new ListCompositeAdapter<>(new ObjectCompositeAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).serializeComposite(writer, value.listOfListOfObject, context);
     }
   }
 
-  public enum ListOfListOfObject implements Adapter<CreateReviewForEpisode.ListOfListOfObject> {
+  public enum ListOfListOfObject implements CompositeAdapter<CreateReviewForEpisode.ListOfListOfObject> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public CreateReviewForEpisode.ListOfListOfObject fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public CreateReviewForEpisode.ListOfListOfObject deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
+          case 0: _name = new com.example.MyStringAdapter().fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -146,10 +148,11 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.ListOfListOfObject value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        CreateReviewForEpisode.ListOfListOfObject value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name);
+      new com.example.MyStringAdapter().toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

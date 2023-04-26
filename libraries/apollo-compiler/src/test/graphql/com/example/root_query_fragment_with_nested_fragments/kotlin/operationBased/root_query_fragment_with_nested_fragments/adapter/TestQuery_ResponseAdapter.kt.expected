@@ -5,8 +5,8 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,11 +16,11 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var __typename: String? = null
 
       while (true) {
@@ -31,7 +31,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val _queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.deserializeData(reader,
+      val _queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.deserializeComposite(reader,
           context)
 
       return TestQuery.Data(
@@ -40,15 +40,15 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.serializeData(writer,
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.serializeComposite(writer,
           value.queryFragment, context)
     }
   }

@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,23 +16,23 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
-  public object Data : Adapter<GetUser.Data> {
+  public object Data : CompositeAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetUser.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): GetUser.Data {
       var __typename: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
 
       reader.rewind()
-      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          customScalarAdapters)
+      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.deserializeComposite(reader,
+          context)
 
       return GetUser.Data(
         __typename = __typename!!,
@@ -40,16 +40,16 @@ public object GetUser_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: GetUser.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          customScalarAdapters, value.queryFragment)
+      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.serializeComposite(writer,
+          value.queryFragment, context)
     }
   }
 }

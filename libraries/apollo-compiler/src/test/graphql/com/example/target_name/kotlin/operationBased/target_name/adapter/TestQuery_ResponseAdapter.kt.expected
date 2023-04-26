@@ -5,8 +5,8 @@
 //
 package com.example.target_name.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -25,12 +25,12 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
         "enum")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
       var _union: TestQuery.Data.Union? = null
@@ -39,11 +39,11 @@ public object TestQuery_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _object = Object.obj().nullable().deserializeData(reader, context)
-          1 -> _interface = Interface.obj().nullable().deserializeData(reader, context)
-          2 -> _union = Union.obj(true).nullable().deserializeData(reader, context)
+          0 -> _object = Object.obj().nullable().deserializeComposite(reader, context)
+          1 -> _interface = Interface.obj().nullable().deserializeComposite(reader, context)
+          2 -> _union = Union.obj(true).nullable().deserializeComposite(reader, context)
           3 -> _scalar = NullableAnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          4 -> _enum = renamedEnum_ResponseAdapter.nullable().deserializeData(reader, context)
+          4 -> _enum = renamedEnum_ResponseAdapter.nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -57,32 +57,32 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("object")
-      Object.obj().nullable().serializeData(writer, value.`object`, context)
+      Object.obj().nullable().serializeComposite(writer, value.`object`, context)
 
       writer.name("interface")
-      Interface.obj().nullable().serializeData(writer, value.`interface`, context)
+      Interface.obj().nullable().serializeComposite(writer, value.`interface`, context)
 
       writer.name("union")
-      Union.obj(true).nullable().serializeData(writer, value.union, context)
+      Union.obj(true).nullable().serializeComposite(writer, value.union, context)
 
       writer.name("scalar")
       NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar)
 
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().serializeData(writer, value.`enum`, context)
+      renamedEnum_ResponseAdapter.nullable().serializeComposite(writer, value.`enum`, context)
     }
 
-    private object Object : DataAdapter<TestQuery.Data.Object> {
+    private object Object : CompositeAdapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Object {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Object {
         var _field: String? = null
 
         while (true) {
@@ -97,21 +97,21 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.Object,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("field")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`field`)
       }
     }
 
-    private object Interface : DataAdapter<TestQuery.Data.Interface> {
+    private object Interface : CompositeAdapter<TestQuery.Data.Interface> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Interface {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Interface {
         var _field: String? = null
 
         while (true) {
@@ -126,21 +126,21 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.Interface,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("field")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`field`)
       }
     }
 
-    private object Union : DataAdapter<TestQuery.Data.Union> {
+    private object Union : CompositeAdapter<TestQuery.Data.Union> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Union {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Union {
         var __typename: String? = null
 
         while (true) {
@@ -157,7 +157,7 @@ public object TestQuery_ResponseAdapter {
         var _onReservedObject: TestQuery.Data.Union.OnReservedObject? = null
         if (possibleTypes("ReservedObject").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.deserializeData(reader,
+          _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.deserializeComposite(reader,
               context)
         }
 
@@ -167,25 +167,26 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.Union,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.onReservedObject != null) {
-          com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.serializeData(writer,
+          com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.serializeComposite(writer,
               value.onReservedObject, context)
         }
       }
 
-      private object OnReservedObject : DataAdapter<TestQuery.Data.Union.OnReservedObject> {
+      private object OnReservedObject : CompositeAdapter<TestQuery.Data.Union.OnReservedObject> {
         public val RESPONSE_NAMES: List<String> = listOf("field")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Union.OnReservedObject {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
+            TestQuery.Data.Union.OnReservedObject {
           var _field: String? = null
 
           while (true) {
@@ -200,10 +201,10 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun serializeComposite(
           writer: JsonWriter,
           `value`: TestQuery.Data.Union.OnReservedObject,
-          context: DataAdapter.SerializeDataContext,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("field")
           NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`field`)

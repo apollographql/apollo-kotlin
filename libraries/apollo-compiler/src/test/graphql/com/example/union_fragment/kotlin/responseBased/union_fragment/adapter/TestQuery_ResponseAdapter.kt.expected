@@ -5,8 +5,8 @@
 //
 package com.example.union_fragment.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj().nullable().list().nullable().deserializeData(reader, context)
+          0 -> _search = Search.obj().nullable().list().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -40,35 +40,36 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("search")
-      Search.obj().nullable().list().nullable().serializeData(writer, value.search, context)
+      Search.obj().nullable().list().nullable().serializeComposite(writer, value.search, context)
     }
 
-    private object Search : DataAdapter<TestQuery.Data.Search> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Search {
+    private object Search : CompositeAdapter<TestQuery.Data.Search> {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Search {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Starship",
-          -> StarshipSearch.deserializeData(reader, context, __typename)
+          -> StarshipSearch.deserializeComposite(reader, context, __typename)
           else
-          -> OtherSearch.deserializeData(reader, context, __typename)
+          -> OtherSearch.deserializeComposite(reader, context, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.Search,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is TestQuery.Data.StarshipSearch -> StarshipSearch.serializeData(writer, value, context)
-          is TestQuery.Data.OtherSearch -> OtherSearch.serializeData(writer, value, context)
+          is TestQuery.Data.StarshipSearch -> StarshipSearch.serializeComposite(writer, value,
+              context)
+          is TestQuery.Data.OtherSearch -> OtherSearch.serializeComposite(writer, value, context)
         }
       }
     }
@@ -76,9 +77,9 @@ public object TestQuery_ResponseAdapter {
     public object StarshipSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): TestQuery.Data.StarshipSearch {
         var __typename: String? = typename
@@ -101,10 +102,10 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.StarshipSearch,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -120,9 +121,9 @@ public object TestQuery_ResponseAdapter {
     public object OtherSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): TestQuery.Data.OtherSearch {
         var __typename: String? = typename
@@ -139,10 +140,10 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherSearch,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)

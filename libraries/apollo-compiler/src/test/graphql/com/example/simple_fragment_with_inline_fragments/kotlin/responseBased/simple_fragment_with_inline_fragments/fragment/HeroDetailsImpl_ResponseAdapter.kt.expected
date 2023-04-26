@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -23,18 +23,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object Data : DataAdapter<HeroDetailsImpl.Data> {
+  public object Data : CompositeAdapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): HeroDetailsImpl.Data {
       var _name: String? = null
       var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _friends = Friend.obj().nullable().list().nullable().deserializeData(reader, context)
+          1 -> _friends = Friend.obj().nullable().list().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -45,41 +45,44 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().serializeData(writer, value.friends, context)
+      Friend.obj().nullable().list().nullable().serializeComposite(writer, value.friends, context)
     }
 
-    private object Friend : DataAdapter<HeroDetailsImpl.Data.Friend> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data.Friend {
+    private object Friend : CompositeAdapter<HeroDetailsImpl.Data.Friend> {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): HeroDetailsImpl.Data.Friend {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanFriend.deserializeData(reader, context, __typename)
+          -> HumanFriend.deserializeComposite(reader, context, __typename)
           "Droid",
-          -> DroidFriend.deserializeData(reader, context, __typename)
+          -> DroidFriend.deserializeComposite(reader, context, __typename)
           else
-          -> OtherFriend.deserializeData(reader, context, __typename)
+          -> OtherFriend.deserializeComposite(reader, context, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.Friend,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.serializeData(writer, value, context)
-          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.serializeData(writer, value, context)
-          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.serializeData(writer, value, context)
+          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.serializeComposite(writer, value,
+              context)
+          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.serializeComposite(writer, value,
+              context)
+          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.serializeComposite(writer, value,
+              context)
         }
       }
     }
@@ -87,9 +90,9 @@ public object HeroDetailsImpl_ResponseAdapter {
     public object HumanFriend {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): HeroDetailsImpl.Data.HumanFriend {
         var __typename: String? = typename
@@ -112,10 +115,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.HumanFriend,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -131,9 +134,9 @@ public object HeroDetailsImpl_ResponseAdapter {
     public object DroidFriend {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): HeroDetailsImpl.Data.DroidFriend {
         var __typename: String? = typename
@@ -156,10 +159,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.DroidFriend,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -175,9 +178,9 @@ public object HeroDetailsImpl_ResponseAdapter {
     public object OtherFriend {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): HeroDetailsImpl.Data.OtherFriend {
         var __typename: String? = typename
@@ -197,10 +200,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.OtherFriend,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)

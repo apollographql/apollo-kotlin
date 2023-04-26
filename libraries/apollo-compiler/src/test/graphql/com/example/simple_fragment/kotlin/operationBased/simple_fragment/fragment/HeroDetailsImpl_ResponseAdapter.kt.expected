@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,11 +17,11 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails : DataAdapter<com.example.simple_fragment.fragment.HeroDetails> {
+  public object HeroDetails : CompositeAdapter<com.example.simple_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext):
         com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
 
@@ -39,7 +39,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
       var _humanDetails: HumanDetails? = null
       if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind()
-        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeData(reader,
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeComposite(reader,
             context)
       }
 
@@ -49,16 +49,16 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: com.example.simple_fragment.fragment.HeroDetails,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeData(writer,
+        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeComposite(writer,
             value.humanDetails, context)
       }
     }

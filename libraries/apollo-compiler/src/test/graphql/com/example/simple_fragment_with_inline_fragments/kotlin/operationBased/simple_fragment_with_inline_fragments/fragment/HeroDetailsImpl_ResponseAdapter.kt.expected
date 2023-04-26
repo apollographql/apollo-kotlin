@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -24,11 +24,11 @@ import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails :
-      DataAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
+      CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails {
       var _name: String? = null
       var _friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
@@ -36,7 +36,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeData(reader, context)
+          1 -> _friends = Friend.obj(true).nullable().list().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -47,24 +47,26 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("friends")
-      Friend.obj(true).nullable().list().nullable().serializeData(writer, value.friends, context)
+      Friend.obj(true).nullable().list().nullable().serializeComposite(writer, value.friends,
+          context)
     }
 
     private object Friend :
-        DataAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
+        CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>
+        {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext):
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext):
           com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
         var __typename: String? = null
         var _name: String? = null
@@ -84,14 +86,14 @@ public object HeroDetailsImpl_ResponseAdapter {
         var _onHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman? = null
         if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.deserializeData(reader,
+          _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.deserializeComposite(reader,
               context)
         }
 
         var _onDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid? = null
         if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.deserializeData(reader,
+          _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.deserializeComposite(reader,
               context)
         }
 
@@ -103,10 +105,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -115,23 +117,23 @@ public object HeroDetailsImpl_ResponseAdapter {
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         if (value.onHuman != null) {
-          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.serializeData(writer,
+          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.serializeComposite(writer,
               value.onHuman, context)
         }
 
         if (value.onDroid != null) {
-          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.serializeData(writer,
+          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.serializeComposite(writer,
               value.onDroid, context)
         }
       }
 
       private object OnHuman :
-          DataAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman>
+          CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman>
           {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman {
           var _height: Double? = null
 
@@ -147,10 +149,10 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun serializeComposite(
           writer: JsonWriter,
           `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman,
-          context: DataAdapter.SerializeDataContext,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("height")
           NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
@@ -158,12 +160,12 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       private object OnDroid :
-          DataAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid>
+          CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid>
           {
         public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid {
           var _primaryFunction: String? = null
 
@@ -179,10 +181,10 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun serializeComposite(
           writer: JsonWriter,
           `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid,
-          context: DataAdapter.SerializeDataContext,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("primaryFunction")
           NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)

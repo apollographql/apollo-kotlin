@@ -5,7 +5,7 @@
 //
 package com.example.interface_on_interface.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -16,22 +16,23 @@ import com.apollographql.apollo3.api.obj
 import com.example.interface_on_interface.GetHuman
 import kotlin.Double
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object GetHuman_ResponseAdapter {
-  public object Data : Adapter<GetHuman.Data> {
+  public object Data : CompositeAdapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetHuman.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): GetHuman.Data {
       var _human: GetHuman.Data.Human? = null
       var _node: GetHuman.Data.Node? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _human = Human.obj().fromJson(reader, customScalarAdapters)
-          1 -> _node = Node.obj().fromJson(reader, customScalarAdapters)
+          0 -> _human = Human.obj().deserializeComposite(reader, context)
+          1 -> _node = Node.obj().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -42,32 +43,32 @@ public object GetHuman_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: GetHuman.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("human")
-      Human.obj().toJson(writer, customScalarAdapters, value.human)
+      Human.obj().serializeComposite(writer, value.human, context)
 
       writer.name("node")
-      Node.obj().toJson(writer, customScalarAdapters, value.node)
+      Node.obj().serializeComposite(writer, value.node, context)
     }
 
-    private object Human : Adapter<GetHuman.Data.Human> {
+    private object Human : CompositeAdapter<GetHuman.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetHuman.Data.Human {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): GetHuman.Data.Human {
         var _id: String? = null
         var _name: String? = null
         var _height: Double? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _height = DoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -79,42 +80,42 @@ public object GetHuman_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.Human,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+        DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
       }
     }
 
-    private object Node : Adapter<GetHuman.Data.Node> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetHuman.Data.Node {
+    private object Node : CompositeAdapter<GetHuman.Data.Node> {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): GetHuman.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanNode.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanNode.deserializeComposite(reader, context, __typename)
           else
-          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherNode.deserializeComposite(reader, context, __typename)
         }
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.Node,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is GetHuman.Data.HumanNode -> HumanNode.toJson(writer, customScalarAdapters, value)
-          is GetHuman.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
+          is GetHuman.Data.HumanNode -> HumanNode.serializeComposite(writer, value, context)
+          is GetHuman.Data.OtherNode -> OtherNode.serializeComposite(writer, value, context)
         }
       }
     }
@@ -122,18 +123,18 @@ public object GetHuman_ResponseAdapter {
     public object HumanNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "height")
 
-      public fun fromJson(
+      public fun deserializeComposite(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): GetHuman.Data.HumanNode {
         var __typename: String? = typename
         var _height: Double? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _height = DoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -144,32 +145,32 @@ public object GetHuman_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.HumanNode,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+        DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
       }
     }
 
     public object OtherNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun fromJson(
+      public fun deserializeComposite(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): GetHuman.Data.OtherNode {
         var __typename: String? = typename
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -179,13 +180,13 @@ public object GetHuman_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.OtherNode,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }
     }
   }

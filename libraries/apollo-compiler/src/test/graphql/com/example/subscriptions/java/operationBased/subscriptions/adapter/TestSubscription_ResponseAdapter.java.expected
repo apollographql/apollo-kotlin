@@ -7,10 +7,10 @@ package com.example.subscriptions.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestSubscription_ResponseAdapter {
-  public enum Data implements DataAdapter<TestSubscription.Data> {
+  public enum Data implements CompositeAdapter<TestSubscription.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("commentAdded");
 
     @Override
-    public TestSubscription.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestSubscription.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestSubscription.CommentAdded _commentAdded = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _commentAdded = new NullableDataAdapter<>(new ObjectDataAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _commentAdded = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -46,21 +46,21 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestSubscription.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestSubscription.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("commentAdded");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).serializeData(writer, value.commentAdded, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).serializeComposite(writer, value.commentAdded, context);
     }
   }
 
-  public enum CommentAdded implements DataAdapter<TestSubscription.CommentAdded> {
+  public enum CommentAdded implements CompositeAdapter<TestSubscription.CommentAdded> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "content");
 
     @Override
-    public TestSubscription.CommentAdded deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestSubscription.CommentAdded deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _id = null;
       String _content = null;
 
@@ -83,8 +83,8 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestSubscription.CommentAdded value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestSubscription.CommentAdded value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("id");
       Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 

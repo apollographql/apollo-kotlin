@@ -5,26 +5,26 @@
 //
 package com.example.target_name.type.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.type.renamedEnum;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum renamedEnum_ResponseAdapter implements DataAdapter<renamedEnum> {
+public enum renamedEnum_ResponseAdapter implements CompositeAdapter<renamedEnum> {
   INSTANCE;
 
   @Override
-  public renamedEnum deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
-      throws IOException {
+  public renamedEnum deserializeComposite(JsonReader reader,
+      CompositeAdapter.DeserializeCompositeContext context) throws IOException {
     String rawValue = reader.nextString();
     return renamedEnum.safeValueOf(rawValue);
   }
 
   @Override
-  public void serializeData(JsonWriter writer, renamedEnum value,
-      DataAdapter.SerializeDataContext context) throws IOException {
+  public void serializeComposite(JsonWriter writer, renamedEnum value,
+      CompositeAdapter.SerializeCompositeContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

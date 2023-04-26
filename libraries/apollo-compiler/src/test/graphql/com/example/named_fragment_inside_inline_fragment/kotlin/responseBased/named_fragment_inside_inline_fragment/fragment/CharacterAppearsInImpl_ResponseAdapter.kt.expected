@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -18,17 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
-  public object Data : Adapter<CharacterAppearsInImpl.Data> {
+  public object Data : CompositeAdapter<CharacterAppearsInImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterAppearsInImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): CharacterAppearsInImpl.Data {
       var _appearsIn: List<Episode?>? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-              customScalarAdapters)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -38,14 +36,13 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: CharacterAppearsInImpl.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-          value.appearsIn)
+      Episode_ResponseAdapter.nullable().list().serializeComposite(writer, value.appearsIn, context)
     }
   }
 }

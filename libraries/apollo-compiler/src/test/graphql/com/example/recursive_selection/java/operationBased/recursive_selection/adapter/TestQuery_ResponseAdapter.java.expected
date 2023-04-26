@@ -5,13 +5,13 @@
 //
 package com.example.recursive_selection.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.recursive_selection.TestQuery;
@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("tree");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestQuery.Tree _tree = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _tree = new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _tree = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -46,21 +46,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("tree");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).toJson(writer, customScalarAdapters, value.tree);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).serializeComposite(writer, value.tree, context);
     }
   }
 
-  public enum Tree implements Adapter<TestQuery.Tree> {
+  public enum Tree implements CompositeAdapter<TestQuery.Tree> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "children", "parent");
 
     @Override
-    public TestQuery.Tree fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Tree deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
       List<TestQuery.Child> _children = null;
       TestQuery.Parent _parent = null;
@@ -68,9 +68,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _children = new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 2: _parent = new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _children = new ListCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Child>(Child.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 2: _parent = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -86,33 +86,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Tree value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Tree value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("children");
-      new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).toJson(writer, customScalarAdapters, value.children);
+      new ListCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Child>(Child.INSTANCE, false)).serializeComposite(writer, value.children, context);
 
       writer.name("parent");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).toJson(writer, customScalarAdapters, value.parent);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).serializeComposite(writer, value.parent, context);
     }
   }
 
-  public enum Child implements Adapter<TestQuery.Child> {
+  public enum Child implements CompositeAdapter<TestQuery.Child> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Child fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Child deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -125,27 +125,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Child value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Child value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
-  public enum Parent implements Adapter<TestQuery.Parent> {
+  public enum Parent implements CompositeAdapter<TestQuery.Parent> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Parent fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Parent deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -158,10 +158,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Parent value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Parent value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

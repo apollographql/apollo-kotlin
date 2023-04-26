@@ -5,11 +5,11 @@
 //
 package com.example.java8annotation.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
@@ -20,20 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LoginBarber_ResponseAdapter {
-  public enum Data implements Adapter<LoginBarber.Data> {
+  public enum Data implements CompositeAdapter<LoginBarber.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("login");
 
     @Override
-    public LoginBarber.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public LoginBarber.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       LoginBarber.Login _login = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _login = new ObjectCompositeAdapter<LoginBarber.Login>(Login.INSTANCE, false).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -46,27 +46,27 @@ public class LoginBarber_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        LoginBarber.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, LoginBarber.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("login");
-      new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).toJson(writer, customScalarAdapters, value.login);
+      new ObjectCompositeAdapter<LoginBarber.Login>(Login.INSTANCE, false).serializeComposite(writer, value.login, context);
     }
   }
 
-  public enum Login implements Adapter<LoginBarber.Login> {
+  public enum Login implements CompositeAdapter<LoginBarber.Login> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("response");
 
     @Override
-    public LoginBarber.Login fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public LoginBarber.Login deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _response = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _response = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _response = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -79,10 +79,10 @@ public class LoginBarber_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        LoginBarber.Login value) throws IOException {
+    public void serializeComposite(JsonWriter writer, LoginBarber.Login value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("response");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.response);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.response);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.test_inline.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetPage_ResponseAdapter {
-  public object Data : DataAdapter<GetPage.Data> {
+  public object Data : CompositeAdapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): GetPage.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj().deserializeData(reader, context)
+          0 -> _collection = Collection.obj().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -39,36 +39,37 @@ public object GetPage_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: GetPage.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("collection")
-      Collection.obj().serializeData(writer, value.collection, context)
+      Collection.obj().serializeComposite(writer, value.collection, context)
     }
 
-    private object Collection : DataAdapter<GetPage.Data.Collection> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): GetPage.Data.Collection {
+    private object Collection : CompositeAdapter<GetPage.Data.Collection> {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): GetPage.Data.Collection {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ParticularCollection",
-          -> ParticularCollectionCollection.deserializeData(reader, context, __typename)
+          -> ParticularCollectionCollection.deserializeComposite(reader, context, __typename)
           else
-          -> OtherCollection.deserializeData(reader, context, __typename)
+          -> OtherCollection.deserializeComposite(reader, context, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: GetPage.Data.Collection,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
-              ParticularCollectionCollection.serializeData(writer, value, context)
-          is GetPage.Data.OtherCollection -> OtherCollection.serializeData(writer, value, context)
+              ParticularCollectionCollection.serializeComposite(writer, value, context)
+          is GetPage.Data.OtherCollection -> OtherCollection.serializeComposite(writer, value,
+              context)
         }
       }
     }
@@ -76,9 +77,9 @@ public object GetPage_ResponseAdapter {
     public object ParticularCollectionCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
@@ -87,7 +88,7 @@ public object GetPage_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _items = Item.obj().list().deserializeData(reader, context)
+            1 -> _items = Item.obj().list().deserializeComposite(reader, context)
             else -> break
           }
         }
@@ -98,41 +99,41 @@ public object GetPage_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: GetPage.Data.ParticularCollectionCollection,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("items")
-        Item.obj().list().serializeData(writer, value.items, context)
+        Item.obj().list().serializeComposite(writer, value.items, context)
       }
 
-      private object Item : DataAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+      private object Item : CompositeAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
             GetPage.Data.ParticularCollectionCollection.Item {
           val __typename = reader.readTypename()
           return when(__typename) {
             "ParticularItem",
-            -> ParticularItemItem.deserializeData(reader, context, __typename)
+            -> ParticularItemItem.deserializeComposite(reader, context, __typename)
             else
-            -> OtherItem.deserializeData(reader, context, __typename)
+            -> OtherItem.deserializeComposite(reader, context, __typename)
           }
         }
 
-        public override fun serializeData(
+        public override fun serializeComposite(
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.Item,
-          context: DataAdapter.SerializeDataContext,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
-                ParticularItemItem.serializeData(writer, value, context)
+                ParticularItemItem.serializeComposite(writer, value, context)
             is GetPage.Data.ParticularCollectionCollection.OtherItem ->
-                OtherItem.serializeData(writer, value, context)
+                OtherItem.serializeComposite(writer, value, context)
           }
         }
       }
@@ -140,9 +141,9 @@ public object GetPage_ResponseAdapter {
       public object ParticularItemItem {
         public val RESPONSE_NAMES: List<String> = listOf("title", "__typename", "image")
 
-        public fun deserializeData(
+        public fun deserializeComposite(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var _title: String? = null
@@ -165,10 +166,10 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public fun serializeData(
+        public fun serializeComposite(
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem,
-          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
@@ -184,9 +185,9 @@ public object GetPage_ResponseAdapter {
       public object OtherItem {
         public val RESPONSE_NAMES: List<String> = listOf("title", "__typename")
 
-        public fun deserializeData(
+        public fun deserializeComposite(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var _title: String? = null
@@ -206,10 +207,10 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public fun serializeData(
+        public fun serializeComposite(
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.OtherItem,
-          @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
@@ -223,9 +224,9 @@ public object GetPage_ResponseAdapter {
     public object OtherCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      public fun deserializeData(
+      public fun deserializeComposite(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
         typename: String,
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
@@ -234,7 +235,7 @@ public object GetPage_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _items = Item.obj().list().deserializeData(reader, context)
+            1 -> _items = Item.obj().list().deserializeComposite(reader, context)
             else -> break
           }
         }
@@ -245,23 +246,24 @@ public object GetPage_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun serializeComposite(
         writer: JsonWriter,
         `value`: GetPage.Data.OtherCollection,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
+        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("items")
-        Item.obj().list().serializeData(writer, value.items, context)
+        Item.obj().list().serializeComposite(writer, value.items, context)
       }
 
-      private object Item : DataAdapter<GetPage.Data.OtherCollection.Item> {
+      private object Item : CompositeAdapter<GetPage.Data.OtherCollection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext): GetPage.Data.OtherCollection.Item {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
+            GetPage.Data.OtherCollection.Item {
           var _title: String? = null
 
           while (true) {
@@ -276,10 +278,10 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun serializeComposite(
           writer: JsonWriter,
           `value`: GetPage.Data.OtherCollection.Item,
-          context: DataAdapter.SerializeDataContext,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)

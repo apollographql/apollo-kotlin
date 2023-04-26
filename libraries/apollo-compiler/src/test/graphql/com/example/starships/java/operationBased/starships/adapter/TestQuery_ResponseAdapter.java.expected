@@ -7,12 +7,12 @@ package com.example.starships.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.starships.TestQuery;
@@ -24,20 +24,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("starship");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestQuery.Starship _starship = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _starship = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _starship = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -48,21 +48,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("starship");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).serializeData(writer, value.starship, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).serializeComposite(writer, value.starship, context);
     }
   }
 
-  public enum Starship implements DataAdapter<TestQuery.Starship> {
+  public enum Starship implements CompositeAdapter<TestQuery.Starship> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "coordinates");
 
     @Override
-    public TestQuery.Starship deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Starship deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _id = null;
       String _name = null;
       List<List<Double>> _coordinates = null;
@@ -88,8 +88,8 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Starship value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Starship value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 

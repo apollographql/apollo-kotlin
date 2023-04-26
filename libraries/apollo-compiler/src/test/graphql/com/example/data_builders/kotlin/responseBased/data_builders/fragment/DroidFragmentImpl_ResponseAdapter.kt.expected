@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -15,16 +15,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<DroidFragmentImpl.Data> {
+  public object Data : CompositeAdapter<DroidFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DroidFragmentImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): DroidFragmentImpl.Data {
       var _primaryFunction: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _primaryFunction = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _primaryFunction = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -34,13 +34,13 @@ public object DroidFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: DroidFragmentImpl.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("primaryFunction")
-      StringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
     }
   }
 }

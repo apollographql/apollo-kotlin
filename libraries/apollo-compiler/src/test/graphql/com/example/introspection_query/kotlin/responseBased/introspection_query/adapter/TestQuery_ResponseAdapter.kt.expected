@@ -5,7 +5,7 @@
 //
 package com.example.introspection_query.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,18 +20,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__schema", "__type")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var ___schema: TestQuery.Data.__Schema? = null
       var ___type: TestQuery.Data.__Type? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___schema = __Schema.obj().fromJson(reader, customScalarAdapters)
-          1 -> ___type = __Type.obj().fromJson(reader, customScalarAdapters)
+          0 -> ___schema = __Schema.obj().deserializeComposite(reader, context)
+          1 -> ___type = __Type.obj().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -42,30 +42,30 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__schema")
-      __Schema.obj().toJson(writer, customScalarAdapters, value.__schema)
+      __Schema.obj().serializeComposite(writer, value.__schema, context)
 
       writer.name("__type")
-      __Type.obj().toJson(writer, customScalarAdapters, value.__type)
+      __Type.obj().serializeComposite(writer, value.__type, context)
     }
 
-    private object __Schema : Adapter<TestQuery.Data.__Schema> {
+    private object __Schema : CompositeAdapter<TestQuery.Data.__Schema> {
       public val RESPONSE_NAMES: List<String> = listOf("queryType", "types")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.__Schema {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.__Schema {
         var _queryType: TestQuery.Data.__Schema.QueryType? = null
         var _types: List<TestQuery.Data.__Schema.Type>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _queryType = QueryType.obj().fromJson(reader, customScalarAdapters)
-            1 -> _types = Type.obj().list().fromJson(reader, customScalarAdapters)
+            0 -> _queryType = QueryType.obj().deserializeComposite(reader, context)
+            1 -> _types = Type.obj().list().deserializeComposite(reader, context)
             else -> break
           }
         }
@@ -76,28 +76,29 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.__Schema,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("queryType")
-        QueryType.obj().toJson(writer, customScalarAdapters, value.queryType)
+        QueryType.obj().serializeComposite(writer, value.queryType, context)
 
         writer.name("types")
-        Type.obj().list().toJson(writer, customScalarAdapters, value.types)
+        Type.obj().list().serializeComposite(writer, value.types, context)
       }
 
-      private object QueryType : Adapter<TestQuery.Data.__Schema.QueryType> {
+      private object QueryType : CompositeAdapter<TestQuery.Data.__Schema.QueryType> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.QueryType {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
+            TestQuery.Data.__Schema.QueryType {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -107,26 +108,26 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeComposite(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.__Schema.QueryType,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
 
-      private object Type : Adapter<TestQuery.Data.__Schema.Type> {
+      private object Type : CompositeAdapter<TestQuery.Data.__Schema.Type> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.Type {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.__Schema.Type {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -136,29 +137,29 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeComposite(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.__Schema.Type,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
     }
 
-    private object __Type : Adapter<TestQuery.Data.__Type> {
+    private object __Type : CompositeAdapter<TestQuery.Data.__Type> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "kind")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.__Type {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.__Type {
         var _name: String? = null
         var _kind: __TypeKind? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _kind = __TypeKind_ResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _kind = __TypeKind_ResponseAdapter.deserializeComposite(reader, context)
             else -> break
           }
         }
@@ -169,16 +170,16 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.__Type,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("name")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("kind")
-        __TypeKind_ResponseAdapter.toJson(writer, customScalarAdapters, value.kind)
+        __TypeKind_ResponseAdapter.serializeComposite(writer, value.kind, context)
       }
     }
   }

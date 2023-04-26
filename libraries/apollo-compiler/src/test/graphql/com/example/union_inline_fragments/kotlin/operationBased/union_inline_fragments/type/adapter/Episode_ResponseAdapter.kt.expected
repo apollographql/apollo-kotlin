@@ -5,23 +5,23 @@
 //
 package com.example.union_inline_fragments.type.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Unit
 
-public object Episode_ResponseAdapter : DataAdapter<Episode> {
-  public override fun deserializeData(reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext): Episode {
+public object Episode_ResponseAdapter : CompositeAdapter<Episode> {
+  public override fun deserializeComposite(reader: JsonReader,
+      context: CompositeAdapter.DeserializeCompositeContext): Episode {
     val rawValue = reader.nextString()!!
     return Episode.safeValueOf(rawValue)
   }
 
-  public override fun serializeData(
+  public override fun serializeComposite(
     writer: JsonWriter,
     `value`: Episode,
-    context: DataAdapter.SerializeDataContext,
+    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

@@ -5,7 +5,7 @@
 //
 package com.example.operationbased2_ex7.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -22,16 +22,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : Adapter<TestOperation.Data> {
+  public object Data : CompositeAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = Animal.obj(true).nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -41,32 +41,32 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
+      Animal.obj(true).nullable().serializeComposite(writer, value.animal, context)
     }
 
-    private object Animal : Adapter<TestOperation.Data.Animal> {
+    private object Animal : CompositeAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Animal {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestOperation.Data.Animal {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
 
         reader.rewind()
-        val _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.fromJson(reader,
-            customScalarAdapters)
+        val _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.deserializeComposite(reader,
+            context)
 
         return TestOperation.Data.Animal(
           __typename = __typename!!,
@@ -74,30 +74,31 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Animal,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer,
-            customScalarAdapters, value.onAnimal)
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.serializeComposite(writer,
+            value.onAnimal, context)
       }
 
-      private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
+      private object OnAnimal : CompositeAdapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
+            TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -107,17 +108,17 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onWarmBlooded: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded? = null
-          if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Lion","Cat","Panther").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader,
-                customScalarAdapters)
+            _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.deserializeComposite(reader,
+                context)
           }
 
           var _onPet: TestOperation.Data.Animal.OnAnimal.OnPet? = null
-          if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Cat","Turtle").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader,
-                customScalarAdapters)
+            _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.deserializeComposite(reader,
+                context)
           }
 
           return TestOperation.Data.Animal.OnAnimal(
@@ -128,39 +129,40 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeComposite(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.Animal.OnAnimal,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
           writer.name("species")
-          StringAdapter.toJson(writer, customScalarAdapters, value.species)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
           if (value.onWarmBlooded != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer,
-                customScalarAdapters, value.onWarmBlooded)
+            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.serializeComposite(writer,
+                value.onWarmBlooded, context)
           }
 
           if (value.onPet != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.toJson(writer,
-                customScalarAdapters, value.onPet)
+            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.serializeComposite(writer,
+                value.onPet, context)
           }
         }
 
-        private object OnWarmBlooded : Adapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
+        private object OnWarmBlooded :
+            CompositeAdapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
           public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeComposite(reader: JsonReader,
+              context: CompositeAdapter.DeserializeCompositeContext):
               TestOperation.Data.Animal.OnAnimal.OnWarmBlooded {
             var _temperature: Int? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -170,27 +172,27 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeComposite(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded,
+            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("temperature")
-            IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
+            IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
           }
         }
 
-        private object OnPet : Adapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
+        private object OnPet : CompositeAdapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeComposite(reader: JsonReader,
+              context: CompositeAdapter.DeserializeCompositeContext):
               TestOperation.Data.Animal.OnAnimal.OnPet {
             var _name: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -200,13 +202,13 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeComposite(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: TestOperation.Data.Animal.OnAnimal.OnPet,
+            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }
         }
       }

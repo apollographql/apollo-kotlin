@@ -5,23 +5,23 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.target_name.type.renamedEnum
 import kotlin.Unit
 
-public object renamedEnum_ResponseAdapter : DataAdapter<renamedEnum> {
-  public override fun deserializeData(reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext): renamedEnum {
+public object renamedEnum_ResponseAdapter : CompositeAdapter<renamedEnum> {
+  public override fun deserializeComposite(reader: JsonReader,
+      context: CompositeAdapter.DeserializeCompositeContext): renamedEnum {
     val rawValue = reader.nextString()!!
     return renamedEnum.safeValueOf(rawValue)
   }
 
-  public override fun serializeData(
+  public override fun serializeComposite(
     writer: JsonWriter,
     `value`: renamedEnum,
-    context: DataAdapter.SerializeDataContext,
+    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

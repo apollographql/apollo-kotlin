@@ -5,11 +5,10 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -19,21 +18,21 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ReviewRefInput_InputAdapter implements Adapter<ReviewRefInput> {
+public enum ReviewRefInput_InputAdapter implements CompositeAdapter<ReviewRefInput> {
   INSTANCE;
 
   @Override
-  public ReviewRefInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public ReviewRefInput deserializeComposite(JsonReader reader,
+      CompositeAdapter.DeserializeCompositeContext context) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      ReviewRefInput value) throws IOException {
+  public void serializeComposite(JsonWriter writer, ReviewRefInput value,
+      CompositeAdapter.SerializeCompositeContext context) throws IOException {
     if (value.reviewInput instanceof Optional.Present) {
       writer.name("reviewInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.reviewInput);
+      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).serializeComposite(writer, value.reviewInput, context);
     }
   }
 }

@@ -5,29 +5,27 @@
 //
 package com.example.input_object_type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.TestQuery
 import com.example.input_object_type.type.adapter.Episode_ResponseAdapter
 import com.example.input_object_type.type.adapter.ReviewInput_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      TestQuery = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeCompositeContext =
+        CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters)
     writer.name("ep")
-    Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
+    Episode_ResponseAdapter.serializeComposite(writer, value.ep, serializeCompositeContext)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.review)
+    ReviewInput_InputAdapter.obj().serializeComposite(writer, value.review,
+        serializeCompositeContext)
   }
 }

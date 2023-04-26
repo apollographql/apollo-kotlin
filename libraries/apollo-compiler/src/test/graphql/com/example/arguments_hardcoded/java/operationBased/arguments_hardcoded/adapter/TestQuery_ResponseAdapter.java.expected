@@ -5,13 +5,13 @@
 //
 package com.example.arguments_hardcoded.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.TestQuery;
@@ -23,22 +23,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("reviews", "testNullableArguments");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       List<TestQuery.Review> _reviews = null;
       Integer _testNullableArguments = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
-          case 1: _testNullableArguments = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _reviews = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Review>(Review.INSTANCE, false)))).deserializeComposite(reader, context); break;
+          case 1: _testNullableArguments = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -52,32 +52,32 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("reviews");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.reviews);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Review>(Review.INSTANCE, false)))).serializeComposite(writer, value.reviews, context);
 
       writer.name("testNullableArguments");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.testNullableArguments);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.testNullableArguments);
     }
   }
 
-  public enum Review implements Adapter<TestQuery.Review> {
+  public enum Review implements CompositeAdapter<TestQuery.Review> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary");
 
     @Override
-    public TestQuery.Review fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Review deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Integer _stars = null;
       String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _commentary = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -91,13 +91,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Review value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Review value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("stars");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars);
 
       writer.name("commentary");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.commentary);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,11 +16,12 @@ import kotlin.collections.List
 
 public object HeroFragmentImpl_ResponseAdapter {
   public object HeroFragment :
-      DataAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment> {
+      CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment>
+      {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext):
         com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment {
       var _name: String? = null
 
@@ -36,10 +37,10 @@ public object HeroFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)

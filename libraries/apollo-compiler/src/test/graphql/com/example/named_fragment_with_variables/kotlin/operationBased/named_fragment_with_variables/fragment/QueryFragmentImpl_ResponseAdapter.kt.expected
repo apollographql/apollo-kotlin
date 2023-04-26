@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,16 +19,17 @@ import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment :
-      Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+      CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext):
         com.example.named_fragment_with_variables.fragment.QueryFragment {
       var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _organization = Organization.obj().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -38,28 +39,30 @@ public object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_with_variables.fragment.QueryFragment,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
+      Organization.obj().nullable().serializeComposite(writer, value.organization, context)
     }
 
     private object Organization :
-        Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+        CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>
+        {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext):
           com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var _id: String? = null
         var _user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _user = User.obj(true).list().fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _user = User.obj(true).list().deserializeComposite(reader, context)
             else -> break
           }
         }
@@ -70,38 +73,38 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("user")
-        User.obj(true).list().toJson(writer, customScalarAdapters, value.user)
+        User.obj(true).list().serializeComposite(writer, value.user, context)
       }
 
       private object User :
-          Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
+          CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
           {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext):
             com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
 
           reader.rewind()
-          val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
-              customScalarAdapters)
+          val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.deserializeComposite(reader,
+              context)
 
           return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User(
             __typename = __typename!!,
@@ -109,16 +112,16 @@ public object QueryFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeComposite(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
-              customScalarAdapters, value.userFragment)
+          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.serializeComposite(writer,
+              value.userFragment, context)
         }
       }
     }

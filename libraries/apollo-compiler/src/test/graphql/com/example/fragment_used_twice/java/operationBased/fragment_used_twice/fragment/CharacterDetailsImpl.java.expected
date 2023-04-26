@@ -5,11 +5,11 @@
 //
 package com.example.fragment_used_twice.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_used_twice.fragment.selections.CharacterDetailsSelections;
 import com.example.fragment_used_twice.type.Character;
@@ -60,14 +60,14 @@ public class CharacterDetailsImpl implements Fragment<CharacterDetails> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public Adapter<CharacterDetails> adapter() {
-    return new ObjectAdapter<CharacterDetails>(CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE, false);
+  public CompositeAdapter<CharacterDetails> adapter() {
+    return new ObjectCompositeAdapter<CharacterDetails>(CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE, false);
   }
 
   @Override

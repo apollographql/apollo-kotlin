@@ -6,8 +6,8 @@
 package com.example.root_query_inline_fragment;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -120,8 +120,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public DataAdapter<Data> adapter() {
-    return new ObjectDataAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, true);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, true);
   }
 
   @Override

@@ -5,13 +5,13 @@
 //
 package com.example.fragment_spread_with_nested_fields.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,22 +22,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails> {
+  public enum HeroDetails implements CompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
-    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
       com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _friendsConnection = new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _friendsConnection = new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -52,33 +53,34 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails value) throws
-        IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friendsConnection");
-      new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, customScalarAdapters, value.friendsConnection);
+      new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeComposite(writer, value.friendsConnection, context);
     }
   }
 
-  public enum FriendsConnection implements Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection> {
+  public enum FriendsConnection implements CompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
     @Override
-    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       Integer _totalCount = null;
       List<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -90,31 +92,32 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection value)
-        throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
 
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).serializeComposite(writer, value.edges, context);
     }
   }
 
-  public enum Edge implements Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge> {
+  public enum Edge implements CompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -125,28 +128,29 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge value) throws
-        IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).serializeComposite(writer, value.node, context);
     }
   }
 
-  public enum Node implements Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node> {
+  public enum Node implements CompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -159,11 +163,11 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node value) throws
-        IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

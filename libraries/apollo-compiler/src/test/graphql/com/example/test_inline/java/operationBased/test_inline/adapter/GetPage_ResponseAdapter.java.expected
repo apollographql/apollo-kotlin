@@ -11,10 +11,10 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.GetPage;
@@ -25,20 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetPage_ResponseAdapter {
-  public enum Data implements DataAdapter<GetPage.Data> {
+  public enum Data implements CompositeAdapter<GetPage.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
 
     @Override
-    public GetPage.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       GetPage.Collection _collection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _collection = new ObjectDataAdapter<GetPage.Collection>(Collection.INSTANCE, true).deserializeData(reader, context); break;
+          case 0: _collection = new ObjectCompositeAdapter<GetPage.Collection>(Collection.INSTANCE, true).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -51,21 +51,21 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("collection");
-      new ObjectDataAdapter<GetPage.Collection>(Collection.INSTANCE, true).serializeData(writer, value.collection, context);
+      new ObjectCompositeAdapter<GetPage.Collection>(Collection.INSTANCE, true).serializeComposite(writer, value.collection, context);
     }
   }
 
-  public enum Collection implements DataAdapter<GetPage.Collection> {
+  public enum Collection implements CompositeAdapter<GetPage.Collection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
 
     @Override
-    public GetPage.Collection deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.Collection deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
       List<GetPage.Item> _items = null;
 
@@ -73,7 +73,7 @@ public class GetPage_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _items = new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item>(Item.INSTANCE, false)).deserializeData(reader, context); break;
+          case 1: _items = new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item>(Item.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -82,7 +82,7 @@ public class GetPage_ResponseAdapter {
       GetPage.OnParticularCollection _onParticularCollection = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.deserializeData(reader, context);
+        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.deserializeComposite(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_items, "items");
@@ -95,28 +95,28 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.Collection value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.Collection value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("items");
-      new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item>(Item.INSTANCE, false)).serializeData(writer, value.items, context);
+      new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item>(Item.INSTANCE, false)).serializeComposite(writer, value.items, context);
 
       if (value.onParticularCollection != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.serializeData(writer, value.onParticularCollection, context);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.serializeComposite(writer, value.onParticularCollection, context);
       }
     }
   }
 
-  public enum Item implements DataAdapter<GetPage.Item> {
+  public enum Item implements CompositeAdapter<GetPage.Item> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
 
     @Override
-    public GetPage.Item deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.Item deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _title = null;
 
       loop:
@@ -135,27 +135,27 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.Item value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.Item value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("title");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title);
     }
   }
 
-  public enum OnParticularCollection implements DataAdapter<GetPage.OnParticularCollection> {
+  public enum OnParticularCollection implements CompositeAdapter<GetPage.OnParticularCollection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("items");
 
     @Override
-    public GetPage.OnParticularCollection deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.OnParticularCollection deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       List<GetPage.Item1> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _items = new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item1>(Item1.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _items = new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item1>(Item1.INSTANCE, true)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -168,21 +168,21 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.OnParticularCollection value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.OnParticularCollection value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("items");
-      new ListDataAdapter<>(new ObjectDataAdapter<GetPage.Item1>(Item1.INSTANCE, true)).serializeData(writer, value.items, context);
+      new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item1>(Item1.INSTANCE, true)).serializeComposite(writer, value.items, context);
     }
   }
 
-  public enum Item1 implements DataAdapter<GetPage.Item1> {
+  public enum Item1 implements CompositeAdapter<GetPage.Item1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetPage.Item1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.Item1 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -197,7 +197,7 @@ public class GetPage_ResponseAdapter {
       GetPage.OnParticularItem _onParticularItem = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.deserializeData(reader, context);
+        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new GetPage.Item1(
@@ -207,25 +207,25 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.Item1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.Item1 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onParticularItem != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.serializeData(writer, value.onParticularItem, context);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.serializeComposite(writer, value.onParticularItem, context);
       }
     }
   }
 
-  public enum OnParticularItem implements DataAdapter<GetPage.OnParticularItem> {
+  public enum OnParticularItem implements CompositeAdapter<GetPage.OnParticularItem> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("image");
 
     @Override
-    public GetPage.OnParticularItem deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public GetPage.OnParticularItem deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _image = null;
 
       loop:
@@ -244,8 +244,8 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, GetPage.OnParticularItem value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, GetPage.OnParticularItem value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("image");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.image);
     }

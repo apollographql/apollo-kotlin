@@ -5,7 +5,7 @@
 //
 package com.example.decapitalized_fields.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HorseFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<HorseFragmentImpl.Data> {
+  public object Data : CompositeAdapter<HorseFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HorseFragmentImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): HorseFragmentImpl.Data {
       var _Cow: HorseFragmentImpl.Data.Cow? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Cow = Cow.obj().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -36,25 +36,25 @@ public object HorseFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: HorseFragmentImpl.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
+      Cow.obj().nullable().serializeComposite(writer, value.cow, context)
     }
 
-    private object Cow : Adapter<HorseFragmentImpl.Data.Cow> {
+    private object Cow : CompositeAdapter<HorseFragmentImpl.Data.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          HorseFragmentImpl.Data.Cow {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): HorseFragmentImpl.Data.Cow {
         var _Moo: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _Moo = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _Moo = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -64,13 +64,13 @@ public object HorseFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: HorseFragmentImpl.Data.Cow,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("Moo")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo)
       }
     }
   }

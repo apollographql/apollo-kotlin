@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -17,20 +17,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsImpl_ResponseAdapter {
-  public enum HumanDetails implements Adapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
+  public enum HumanDetails implements CompositeAdapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("homePlanet");
 
     @Override
-    public com.example.fragment_spread_with_include_directive.fragment.HumanDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.fragment_spread_with_include_directive.fragment.HumanDetails deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _homePlanet = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -41,11 +42,11 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_include_directive.fragment.HumanDetails value) throws
-        IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.fragment_spread_with_include_directive.fragment.HumanDetails value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("homePlanet");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet);
     }
   }
 }

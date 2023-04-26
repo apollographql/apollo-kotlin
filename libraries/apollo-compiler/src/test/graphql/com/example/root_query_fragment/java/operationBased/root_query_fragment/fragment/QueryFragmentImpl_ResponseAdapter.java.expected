@@ -5,12 +5,12 @@
 //
 package com.example.root_query_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -20,22 +20,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentImpl_ResponseAdapter {
-  public enum QueryFragment implements Adapter<com.example.root_query_fragment.fragment.QueryFragment> {
+  public enum QueryFragment implements CompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "hero");
 
     @Override
-    public com.example.root_query_fragment.fragment.QueryFragment fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.root_query_fragment.fragment.QueryFragment deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String __typename = null;
       com.example.root_query_fragment.fragment.QueryFragment.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _hero = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -49,30 +50,32 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.root_query_fragment.fragment.QueryFragment value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.root_query_fragment.fragment.QueryFragment value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).serializeComposite(writer, value.hero, context);
     }
   }
 
-  public enum Hero implements Adapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
+  public enum Hero implements CompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.root_query_fragment.fragment.QueryFragment.Hero fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.root_query_fragment.fragment.QueryFragment.Hero deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -85,10 +88,11 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.root_query_fragment.fragment.QueryFragment.Hero value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.root_query_fragment.fragment.QueryFragment.Hero value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

@@ -5,26 +5,26 @@
 //
 package com.example.suppressed_warnings.type.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.type.Direction;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Direction_ResponseAdapter implements DataAdapter<Direction> {
+public enum Direction_ResponseAdapter implements CompositeAdapter<Direction> {
   INSTANCE;
 
   @Override
-  public Direction deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
-      throws IOException {
+  public Direction deserializeComposite(JsonReader reader,
+      CompositeAdapter.DeserializeCompositeContext context) throws IOException {
     String rawValue = reader.nextString();
     return Direction.safeValueOf(rawValue);
   }
 
   @Override
-  public void serializeData(JsonWriter writer, Direction value,
-      DataAdapter.SerializeDataContext context) throws IOException {
+  public void serializeComposite(JsonWriter writer, Direction value,
+      CompositeAdapter.SerializeCompositeContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

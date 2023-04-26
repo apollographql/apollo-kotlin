@@ -5,13 +5,14 @@
 //
 package com.example.java_apollo_optionals.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -24,14 +25,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MyQuery_ResponseAdapter {
-  public enum Data implements Adapter<MyQuery.Data> {
+  public enum Data implements CompositeAdapter<MyQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType", "nullableListOfNullableString", "nullableListOfNonNullableString");
 
     @Override
-    public MyQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public MyQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
       Optional<MyQuery.NullableMyType> _nullableMyType = null;
@@ -42,12 +43,12 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _nullableMyType = new ApolloOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 3: _nonNullableMyType = new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 4: _nullableListOfNullableString = new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.ApolloOptionalStringAdapter)).fromJson(reader, customScalarAdapters); break;
-          case 5: _nullableListOfNonNullableString = new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _nullableMyType = new ApolloOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 3: _nonNullableMyType = new ObjectCompositeAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).deserializeComposite(reader, context); break;
+          case 4: _nullableListOfNullableString = new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.ApolloOptionalStringAdapter)).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 5: _nullableListOfNonNullableString = new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -66,44 +67,44 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        MyQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, MyQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.ApolloOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.ApolloOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
 
       writer.name("nullableMyType");
-      new ApolloOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nullableMyType);
+      new ApolloOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).serializeComposite(writer, value.nullableMyType, context);
 
       writer.name("nonNullableMyType");
-      new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableMyType);
+      new ObjectCompositeAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).serializeComposite(writer, value.nonNullableMyType, context);
 
       writer.name("nullableListOfNullableString");
-      new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.ApolloOptionalStringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNullableString);
+      new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.ApolloOptionalStringAdapter)).toJson(writer, CustomScalarAdapters.Empty, value.nullableListOfNullableString);
 
       writer.name("nullableListOfNonNullableString");
-      new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNonNullableString);
+      new ApolloOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, CustomScalarAdapters.Empty, value.nullableListOfNonNullableString);
     }
   }
 
-  public enum NullableMyType implements Adapter<MyQuery.NullableMyType> {
+  public enum NullableMyType implements CompositeAdapter<MyQuery.NullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public MyQuery.NullableMyType fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public MyQuery.NullableMyType deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -117,32 +118,32 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        MyQuery.NullableMyType value) throws IOException {
+    public void serializeComposite(JsonWriter writer, MyQuery.NullableMyType value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.ApolloOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.ApolloOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 
-  public enum NonNullableMyType implements Adapter<MyQuery.NonNullableMyType> {
+  public enum NonNullableMyType implements CompositeAdapter<MyQuery.NonNullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public MyQuery.NonNullableMyType fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public MyQuery.NonNullableMyType deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -156,13 +157,13 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        MyQuery.NonNullableMyType value) throws IOException {
+    public void serializeComposite(JsonWriter writer, MyQuery.NonNullableMyType value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.ApolloOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      Adapters.ApolloOptionalIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     }
   }
 }

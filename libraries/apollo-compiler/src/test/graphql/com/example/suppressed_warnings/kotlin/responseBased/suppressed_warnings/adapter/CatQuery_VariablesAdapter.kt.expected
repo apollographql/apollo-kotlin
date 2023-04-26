@@ -5,7 +5,7 @@
 //
 package com.example.suppressed_warnings.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,11 +22,12 @@ public object CatQuery_VariablesAdapter : VariablesAdapter<CatQuery> {
     `value`: CatQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
+    val serializeCompositeContext =
+        CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters)
     if (value.filter is Optional.Present) {
       writer.name("filter")
-      Filter_InputAdapter.obj().nullable().present().serializeData(writer, value.filter,
-          serializeDataContext)
+      Filter_InputAdapter.obj().nullable().present().serializeComposite(writer, value.filter,
+          serializeCompositeContext)
     }
   }
 }

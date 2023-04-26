@@ -5,8 +5,8 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,11 +18,11 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
-  public object Data : DataAdapter<QueryFragmentImpl.Data> {
+  public object Data : CompositeAdapter<QueryFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): QueryFragmentImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): QueryFragmentImpl.Data {
       var __typename: String? = null
       var _hero: QueryFragmentImpl.Data.Hero? = null
       var _droid: QueryFragmentImpl.Data.Droid? = null
@@ -31,9 +31,9 @@ public object QueryFragmentImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _hero = Hero.obj().nullable().deserializeData(reader, context)
-          2 -> _droid = Droid.obj().nullable().deserializeData(reader, context)
-          3 -> _human = Human.obj().nullable().deserializeData(reader, context)
+          1 -> _hero = Hero.obj().nullable().deserializeComposite(reader, context)
+          2 -> _droid = Droid.obj().nullable().deserializeComposite(reader, context)
+          3 -> _human = Human.obj().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -46,29 +46,29 @@ public object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: QueryFragmentImpl.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("hero")
-      Hero.obj().nullable().serializeData(writer, value.hero, context)
+      Hero.obj().nullable().serializeComposite(writer, value.hero, context)
 
       writer.name("droid")
-      Droid.obj().nullable().serializeData(writer, value.droid, context)
+      Droid.obj().nullable().serializeComposite(writer, value.droid, context)
 
       writer.name("human")
-      Human.obj().nullable().serializeData(writer, value.human, context)
+      Human.obj().nullable().serializeComposite(writer, value.human, context)
     }
 
-    private object Hero : DataAdapter<QueryFragmentImpl.Data.Hero> {
+    private object Hero : CompositeAdapter<QueryFragmentImpl.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): QueryFragmentImpl.Data.Hero {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): QueryFragmentImpl.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
 
@@ -86,10 +86,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: QueryFragmentImpl.Data.Hero,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -99,11 +99,11 @@ public object QueryFragmentImpl_ResponseAdapter {
       }
     }
 
-    private object Droid : DataAdapter<QueryFragmentImpl.Data.Droid> {
+    private object Droid : CompositeAdapter<QueryFragmentImpl.Data.Droid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): QueryFragmentImpl.Data.Droid {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): QueryFragmentImpl.Data.Droid {
         var __typename: String? = null
         var _name: String? = null
         var _primaryFunction: String? = null
@@ -124,10 +124,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: QueryFragmentImpl.Data.Droid,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
@@ -140,11 +140,11 @@ public object QueryFragmentImpl_ResponseAdapter {
       }
     }
 
-    private object Human : DataAdapter<QueryFragmentImpl.Data.Human> {
+    private object Human : CompositeAdapter<QueryFragmentImpl.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): QueryFragmentImpl.Data.Human {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): QueryFragmentImpl.Data.Human {
         var __typename: String? = null
         var _name: String? = null
         var _homePlanet: String? = null
@@ -165,10 +165,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: QueryFragmentImpl.Data.Human,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)

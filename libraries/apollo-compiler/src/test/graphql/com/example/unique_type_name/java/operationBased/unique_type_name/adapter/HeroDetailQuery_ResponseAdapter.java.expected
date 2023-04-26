@@ -11,11 +11,11 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.unique_type_name.fragment.HeroDetails;
@@ -29,20 +29,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.Data> {
+  public enum Data implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("heroDetailQuery");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 _heroDetailQuery = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _heroDetailQuery = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _heroDetailQuery = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -53,22 +53,23 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("heroDetailQuery");
-      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).serializeData(writer, value.heroDetailQuery, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).serializeComposite(writer, value.heroDetailQuery, context);
     }
   }
 
-  public enum HeroDetailQuery implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1> {
+  public enum HeroDetailQuery implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String __typename = null;
       String _name = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend> _friends = null;
@@ -78,7 +79,7 @@ public class HeroDetailQuery_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 2: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).deserializeData(reader, context); break;
+          case 2: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -87,7 +88,7 @@ public class HeroDetailQuery_ResponseAdapter {
       com.example.unique_type_name.HeroDetailQuery.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.deserializeData(reader, context);
+        _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.deserializeComposite(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -101,9 +102,9 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
@@ -111,22 +112,23 @@ public class HeroDetailQuery_ResponseAdapter {
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).serializeComposite(writer, value.friends, context);
 
       if (value.onHuman != null) {
-        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.serializeData(writer, value.onHuman, context);
+        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.serializeComposite(writer, value.onHuman, context);
       }
     }
   }
 
-  public enum Friend implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend> {
+  public enum Friend implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.Friend deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.Friend deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
 
       loop:
@@ -145,22 +147,23 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.Friend value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
-  public enum OnHuman implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.OnHuman> {
+  public enum OnHuman implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height", "friends");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.OnHuman deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.OnHuman deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       Double _height = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend1> _friends = null;
 
@@ -168,7 +171,7 @@ public class HeroDetailQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).deserializeData(reader, context); break;
+          case 1: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -180,33 +183,34 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.OnHuman value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend1 implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1> {
+  public enum Friend1 implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn", "friends");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.Friend1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.Friend1 deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       List<Episode> _appearsIn = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend2> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _appearsIn = new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).deserializeData(reader, context); break;
-          case 1: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).deserializeData(reader, context); break;
+          case 0: _appearsIn = new ListCompositeAdapter<>(new NullableCompositeAdapter<>(Episode_ResponseAdapter.INSTANCE)).deserializeComposite(reader, context); break;
+          case 1: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -220,25 +224,26 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.Friend1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("appearsIn");
-      new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.appearsIn, context);
+      new ListCompositeAdapter<>(new NullableCompositeAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeComposite(writer, value.appearsIn, context);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend2 implements DataAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2> {
+  public enum Friend2 implements CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.unique_type_name.HeroDetailQuery.Friend2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.unique_type_name.HeroDetailQuery.Friend2 deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String __typename = null;
 
       loop:
@@ -250,7 +255,7 @@ public class HeroDetailQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      HeroDetails _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.deserializeData(reader, context);
+      HeroDetails _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.deserializeComposite(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -261,13 +266,13 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
+    public void serializeComposite(JsonWriter writer,
         com.example.unique_type_name.HeroDetailQuery.Friend2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.serializeData(writer, value.heroDetails, context);
+      com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.serializeComposite(writer, value.heroDetails, context);
     }
   }
 }

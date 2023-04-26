@@ -5,8 +5,8 @@
 //
 package com.example.starships.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -21,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("starship")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var _starship: TestQuery.Data.Starship? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _starship = Starship.obj().nullable().deserializeData(reader, context)
+          0 -> _starship = Starship.obj().nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -40,20 +40,20 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("starship")
-      Starship.obj().nullable().serializeData(writer, value.starship, context)
+      Starship.obj().nullable().serializeComposite(writer, value.starship, context)
     }
 
-    private object Starship : DataAdapter<TestQuery.Data.Starship> {
+    private object Starship : CompositeAdapter<TestQuery.Data.Starship> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "coordinates")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Starship {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Starship {
         var _id: String? = null
         var _name: String? = null
         var _coordinates: List<List<Double>>? = null
@@ -74,10 +74,10 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun serializeComposite(
         writer: JsonWriter,
         `value`: TestQuery.Data.Starship,
-        context: DataAdapter.SerializeDataContext,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("id")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)

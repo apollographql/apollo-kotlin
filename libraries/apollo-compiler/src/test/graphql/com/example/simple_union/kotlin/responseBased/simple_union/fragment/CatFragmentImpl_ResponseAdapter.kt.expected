@@ -5,8 +5,8 @@
 //
 package com.example.simple_union.fragment
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -15,11 +15,11 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CatFragmentImpl_ResponseAdapter {
-  public object Data : DataAdapter<CatFragmentImpl.Data> {
+  public object Data : CompositeAdapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): CatFragmentImpl.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): CatFragmentImpl.Data {
       var _meow: String? = null
 
       while (true) {
@@ -34,10 +34,10 @@ public object CatFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun serializeComposite(
       writer: JsonWriter,
       `value`: CatFragmentImpl.Data,
-      context: DataAdapter.SerializeDataContext,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("meow")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.meow)

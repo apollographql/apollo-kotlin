@@ -5,12 +5,12 @@
 //
 package com.example.hero_name_query_long_name;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_name_query_long_name.adapter.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter;
 import com.example.hero_name_query_long_name.adapter.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter;
@@ -105,14 +105,14 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.INSTANCE, false);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

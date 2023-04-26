@@ -11,10 +11,10 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
@@ -27,14 +27,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("object", "interface", "union", "scalar", "enum");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestQuery.Object _object = null;
       TestQuery.Interface _interface = null;
       TestQuery.Union _union = null;
@@ -44,11 +44,11 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _object = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, false)).deserializeData(reader, context); break;
-          case 1: _interface = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).deserializeData(reader, context); break;
-          case 2: _union = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _object = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Object>(Object.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 1: _interface = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 2: _union = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Union>(Union.INSTANCE, true)).deserializeComposite(reader, context); break;
           case 3: _scalar = Adapters.NullableAnyAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 4: _enum = new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).deserializeData(reader, context); break;
+          case 4: _enum = new NullableCompositeAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -63,33 +63,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("object");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, false)).serializeData(writer, value.object, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Object>(Object.INSTANCE, false)).serializeComposite(writer, value.object, context);
 
       writer.name("interface");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).serializeData(writer, value.interface_, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).serializeComposite(writer, value.interface_, context);
 
       writer.name("union");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).serializeData(writer, value.union, context);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Union>(Union.INSTANCE, true)).serializeComposite(writer, value.union, context);
 
       writer.name("scalar");
       Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar);
 
       writer.name("enum");
-      new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).serializeData(writer, value.enum_, context);
+      new NullableCompositeAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).serializeComposite(writer, value.enum_, context);
     }
   }
 
-  public enum Object implements DataAdapter<TestQuery.Object> {
+  public enum Object implements CompositeAdapter<TestQuery.Object> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Object deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Object deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _field = null;
 
       loop:
@@ -106,21 +106,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Object value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Object value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("field");
       Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 
-  public enum Interface implements DataAdapter<TestQuery.Interface> {
+  public enum Interface implements CompositeAdapter<TestQuery.Interface> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Interface deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Interface deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _field = null;
 
       loop:
@@ -137,21 +137,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Interface value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Interface value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("field");
       Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }
   }
 
-  public enum Union implements DataAdapter<TestQuery.Union> {
+  public enum Union implements CompositeAdapter<TestQuery.Union> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Union deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Union deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -166,7 +166,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnReservedObject _onReservedObject = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ReservedObject")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.deserializeData(reader, context);
+        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.Union(
@@ -176,25 +176,25 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Union value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Union value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onReservedObject != null) {
-        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.serializeData(writer, value.onReservedObject, context);
+        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.serializeComposite(writer, value.onReservedObject, context);
       }
     }
   }
 
-  public enum OnReservedObject implements DataAdapter<TestQuery.OnReservedObject> {
+  public enum OnReservedObject implements CompositeAdapter<TestQuery.OnReservedObject> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.OnReservedObject deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnReservedObject deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _field = null;
 
       loop:
@@ -211,8 +211,8 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnReservedObject value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnReservedObject value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("field");
       Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field);
     }

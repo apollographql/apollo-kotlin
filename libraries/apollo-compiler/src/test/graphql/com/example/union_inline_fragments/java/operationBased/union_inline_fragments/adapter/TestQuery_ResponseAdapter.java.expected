@@ -11,11 +11,11 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_inline_fragments.TestQuery;
@@ -28,20 +28,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("search");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       List<TestQuery.Search> _search = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _search = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Search>(Search.INSTANCE, true)))).deserializeData(reader, context); break;
+          case 0: _search = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Search>(Search.INSTANCE, true)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -52,21 +52,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("search");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Search>(Search.INSTANCE, true)))).serializeData(writer, value.search, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Search>(Search.INSTANCE, true)))).serializeComposite(writer, value.search, context);
     }
   }
 
-  public enum Search implements DataAdapter<TestQuery.Search> {
+  public enum Search implements CompositeAdapter<TestQuery.Search> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Search deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Search deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -81,13 +81,13 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnCharacter _onCharacter = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.deserializeData(reader, context);
+        _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.deserializeComposite(reader, context);
       }
 
       TestQuery.OnStarship _onStarship = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.deserializeData(reader, context);
+        _onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.Search(
@@ -98,29 +98,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Search value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Search value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onCharacter != null) {
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.serializeData(writer, value.onCharacter, context);
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.serializeComposite(writer, value.onCharacter, context);
       }
 
       if (value.onStarship != null) {
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.serializeData(writer, value.onStarship, context);
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.serializeComposite(writer, value.onStarship, context);
       }
     }
   }
 
-  public enum OnCharacter implements DataAdapter<TestQuery.OnCharacter> {
+  public enum OnCharacter implements CompositeAdapter<TestQuery.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "friends");
 
     @Override
-    public TestQuery.OnCharacter deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnCharacter deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _id = null;
       String _name = null;
       List<TestQuery.Friend> _friends = null;
@@ -130,7 +130,7 @@ public class TestQuery_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 2: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).deserializeData(reader, context); break;
+          case 2: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -146,8 +146,8 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnCharacter value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnCharacter value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 
@@ -155,18 +155,18 @@ public class TestQuery_ResponseAdapter {
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend implements DataAdapter<TestQuery.Friend> {
+  public enum Friend implements CompositeAdapter<TestQuery.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Friend deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Friend deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -179,18 +179,18 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnCharacter1 _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter1.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnCharacter1 _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter1.INSTANCE.deserializeComposite(reader, context);
 
       TestQuery.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.deserializeData(reader, context);
+        _onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.deserializeComposite(reader, context);
       }
 
       TestQuery.OnDroid _onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.deserializeData(reader, context);
+        _onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.Friend(
@@ -202,31 +202,31 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Friend value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Friend value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter1.INSTANCE.serializeData(writer, value.onCharacter, context);
+      com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter1.INSTANCE.serializeComposite(writer, value.onCharacter, context);
 
       if (value.onHuman != null) {
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.serializeData(writer, value.onHuman, context);
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.serializeComposite(writer, value.onHuman, context);
       }
 
       if (value.onDroid != null) {
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.serializeData(writer, value.onDroid, context);
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.serializeComposite(writer, value.onDroid, context);
       }
     }
   }
 
-  public enum OnCharacter1 implements DataAdapter<TestQuery.OnCharacter1> {
+  public enum OnCharacter1 implements CompositeAdapter<TestQuery.OnCharacter1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.OnCharacter1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnCharacter1 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
 
       loop:
@@ -245,21 +245,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnCharacter1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnCharacter1 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
-  public enum OnHuman implements DataAdapter<TestQuery.OnHuman> {
+  public enum OnHuman implements CompositeAdapter<TestQuery.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("homePlanet", "friends");
 
     @Override
-    public TestQuery.OnHuman deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnHuman deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _homePlanet = null;
       List<TestQuery.Friend1> _friends = null;
 
@@ -267,7 +267,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).deserializeData(reader, context); break;
+          case 1: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -279,24 +279,24 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnHuman value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnHuman value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("homePlanet");
       Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend1 implements DataAdapter<TestQuery.Friend1> {
+  public enum Friend1 implements CompositeAdapter<TestQuery.Friend1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Friend1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Friend1 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -308,7 +308,7 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      TestQuery.OnCharacter2 _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnCharacter2 _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.deserializeComposite(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -319,29 +319,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Friend1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Friend1 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.serializeData(writer, value.onCharacter, context);
+      com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.serializeComposite(writer, value.onCharacter, context);
     }
   }
 
-  public enum OnCharacter2 implements DataAdapter<TestQuery.OnCharacter2> {
+  public enum OnCharacter2 implements CompositeAdapter<TestQuery.OnCharacter2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("firstAppearsIn");
 
     @Override
-    public TestQuery.OnCharacter2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnCharacter2 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       Episode _firstAppearsIn = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _firstAppearsIn = Episode_ResponseAdapter.INSTANCE.deserializeData(reader, context); break;
+          case 0: _firstAppearsIn = Episode_ResponseAdapter.INSTANCE.deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -354,21 +354,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnCharacter2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnCharacter2 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("firstAppearsIn");
-      Episode_ResponseAdapter.INSTANCE.serializeData(writer, value.firstAppearsIn, context);
+      Episode_ResponseAdapter.INSTANCE.serializeComposite(writer, value.firstAppearsIn, context);
     }
   }
 
-  public enum OnDroid implements DataAdapter<TestQuery.OnDroid> {
+  public enum OnDroid implements CompositeAdapter<TestQuery.OnDroid> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction", "friends");
 
     @Override
-    public TestQuery.OnDroid deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnDroid deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _primaryFunction = null;
       List<TestQuery.Friend2> _friends = null;
 
@@ -376,7 +376,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend2>(Friend2.INSTANCE, false)))).deserializeData(reader, context); break;
+          case 1: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend2>(Friend2.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -388,24 +388,24 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnDroid value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnDroid value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("primaryFunction");
       Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
 
       writer.name("friends");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Friend2>(Friend2.INSTANCE, false)))).serializeData(writer, value.friends, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Friend2>(Friend2.INSTANCE, false)))).serializeComposite(writer, value.friends, context);
     }
   }
 
-  public enum Friend2 implements DataAdapter<TestQuery.Friend2> {
+  public enum Friend2 implements CompositeAdapter<TestQuery.Friend2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public TestQuery.Friend2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Friend2 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _id = null;
 
       loop:
@@ -424,21 +424,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Friend2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Friend2 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
     }
   }
 
-  public enum OnStarship implements DataAdapter<TestQuery.OnStarship> {
+  public enum OnStarship implements CompositeAdapter<TestQuery.OnStarship> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.OnStarship deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnStarship deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _name = null;
 
       loop:
@@ -457,8 +457,8 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnStarship value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnStarship value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }

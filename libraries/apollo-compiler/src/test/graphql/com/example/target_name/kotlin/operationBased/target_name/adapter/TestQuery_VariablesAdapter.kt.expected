@@ -5,8 +5,8 @@
 //
 package com.example.target_name.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
@@ -25,11 +25,12 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
+    val serializeCompositeContext =
+        CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters)
     if (value.input is Optional.Present) {
       writer.name("input")
-      renamedInput_InputAdapter.obj().nullable().present().serializeData(writer, value.input,
-          serializeDataContext)
+      renamedInput_InputAdapter.obj().nullable().present().serializeComposite(writer, value.input,
+          serializeCompositeContext)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
@@ -37,8 +38,8 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().present().serializeData(writer, value.`enum`,
-          serializeDataContext)
+      renamedEnum_ResponseAdapter.nullable().present().serializeComposite(writer, value.`enum`,
+          serializeCompositeContext)
     }
   }
 }

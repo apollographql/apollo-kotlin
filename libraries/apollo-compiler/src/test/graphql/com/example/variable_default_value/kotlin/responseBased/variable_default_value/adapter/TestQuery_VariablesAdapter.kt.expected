@@ -5,7 +5,7 @@
 //
 package com.example.variable_default_value.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,10 +20,12 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = DataAdapter.SerializeDataContext(context.customScalarAdapters)
+    val serializeCompositeContext =
+        CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters)
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.present().serializeData(writer, value.episode, serializeDataContext)
+      Episode_ResponseAdapter.present().serializeComposite(writer, value.episode,
+          serializeCompositeContext)
     }
   }
 }

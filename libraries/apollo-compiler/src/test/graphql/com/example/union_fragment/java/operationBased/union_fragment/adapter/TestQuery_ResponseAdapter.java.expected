@@ -11,11 +11,11 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_fragment.TestQuery;
@@ -27,20 +27,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("search");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       List<TestQuery.Search> _search = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _search = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Search>(Search.INSTANCE, true)))).deserializeData(reader, context); break;
+          case 0: _search = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Search>(Search.INSTANCE, true)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -51,21 +51,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("search");
-      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Search>(Search.INSTANCE, true)))).serializeData(writer, value.search, context);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Search>(Search.INSTANCE, true)))).serializeComposite(writer, value.search, context);
     }
   }
 
-  public enum Search implements DataAdapter<TestQuery.Search> {
+  public enum Search implements CompositeAdapter<TestQuery.Search> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Search deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Search deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
@@ -80,13 +80,13 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnStarship _onStarship = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.deserializeData(reader, context);
+        _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.deserializeComposite(reader, context);
       }
 
       Starship _starship = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.deserializeData(reader, context);
+        _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.Search(
@@ -97,29 +97,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Search value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Search value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.onStarship != null) {
-        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.serializeData(writer, value.onStarship, context);
+        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.serializeComposite(writer, value.onStarship, context);
       }
 
       if (value.starship != null) {
-        com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.serializeData(writer, value.starship, context);
+        com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.serializeComposite(writer, value.starship, context);
       }
     }
   }
 
-  public enum OnStarship implements DataAdapter<TestQuery.OnStarship> {
+  public enum OnStarship implements CompositeAdapter<TestQuery.OnStarship> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public TestQuery.OnStarship deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnStarship deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String _id = null;
 
       loop:
@@ -138,8 +138,8 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnStarship value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.OnStarship value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
     }

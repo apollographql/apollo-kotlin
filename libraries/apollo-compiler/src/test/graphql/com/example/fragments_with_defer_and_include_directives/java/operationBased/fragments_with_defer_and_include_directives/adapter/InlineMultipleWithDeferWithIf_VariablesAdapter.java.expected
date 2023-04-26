@@ -5,29 +5,23 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferWithIf;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum InlineMultipleWithDeferWithIf_VariablesAdapter implements Adapter<InlineMultipleWithDeferWithIf> {
+public enum InlineMultipleWithDeferWithIf_VariablesAdapter implements VariablesAdapter<InlineMultipleWithDeferWithIf> {
   INSTANCE;
 
   @Override
-  public InlineMultipleWithDeferWithIf fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      InlineMultipleWithDeferWithIf value) throws IOException {
+  public void serializeVariables(JsonWriter writer, InlineMultipleWithDeferWithIf value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    CompositeAdapter.SerializeCompositeContext serializeCompositeContext = new CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters);
     writer.name("cond");
-    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond);
+    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond);
   }
 }

@@ -5,16 +5,16 @@
 //
 package com.example.fragments_with_type_condition.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_type_condition.TestQuery;
@@ -27,22 +27,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("r2", "luke");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestQuery.R2 _r2 = null;
       TestQuery.Luke _luke = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 1: _luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _r2 = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.R2>(R2.INSTANCE, true)).deserializeComposite(reader, context); break;
+          case 1: _luke = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Luke>(Luke.INSTANCE, true)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -54,45 +54,45 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("r2");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.r2);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.R2>(R2.INSTANCE, true)).serializeComposite(writer, value.r2, context);
 
       writer.name("luke");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, true)).toJson(writer, customScalarAdapters, value.luke);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Luke>(Luke.INSTANCE, true)).serializeComposite(writer, value.luke, context);
     }
   }
 
-  public enum R2 implements Adapter<TestQuery.R2> {
+  public enum R2 implements CompositeAdapter<TestQuery.R2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.R2 deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.R2(
@@ -103,50 +103,50 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.R2 value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.R2 value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.humanDetails != null) {
-        com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, customScalarAdapters, value.humanDetails);
+        com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.serializeComposite(writer, value.humanDetails, context);
       }
 
       if (value.droidDetails != null) {
-        com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
+        com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.serializeComposite(writer, value.droidDetails, context);
       }
     }
   }
 
-  public enum Luke implements Adapter<TestQuery.Luke> {
+  public enum Luke implements CompositeAdapter<TestQuery.Luke> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Luke deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       return new TestQuery.Luke(
@@ -157,17 +157,17 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Luke value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Luke value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       if (value.humanDetails != null) {
-        com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, customScalarAdapters, value.humanDetails);
+        com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.serializeComposite(writer, value.humanDetails, context);
       }
 
       if (value.droidDetails != null) {
-        com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
+        com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.serializeComposite(writer, value.droidDetails, context);
       }
     }
   }

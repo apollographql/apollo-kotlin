@@ -5,7 +5,6 @@
 //
 package com.example.fragment_spread_with_include_directive.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -13,9 +12,10 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.TestQuery;
@@ -31,22 +31,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "getBoolean");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       TestQuery.Hero _hero = null;
       Boolean _getBoolean = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 1: _getBoolean = Adapters.NullableBooleanAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).deserializeComposite(reader, context); break;
+          case 1: _getBoolean = Adapters.NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -58,59 +58,59 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).serializeComposite(writer, value.hero, context);
 
       writer.name("getBoolean");
-      Adapters.NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.getBoolean);
+      Adapters.NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.getBoolean);
     }
   }
 
-  public enum Hero implements Adapter<TestQuery.Hero> {
+  public enum Hero implements CompositeAdapter<TestQuery.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Hero deserializeComposite(JsonReader reader,
+        CompositeAdapter.DeserializeCompositeContext context) throws IOException {
       String __typename = null;
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HeroDetails _heroDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails")))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue")))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       OtherDroidDetails _otherDroidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue"))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.deserializeComposite(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_id, "id");
@@ -126,28 +126,28 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Hero value) throws IOException {
+    public void serializeComposite(JsonWriter writer, TestQuery.Hero value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
 
       if (value.heroDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, customScalarAdapters, value.heroDetails);
+        com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.serializeComposite(writer, value.heroDetails, context);
       }
 
       if (value.humanDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, customScalarAdapters, value.humanDetails);
+        com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.serializeComposite(writer, value.humanDetails, context);
       }
 
       if (value.droidDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
+        com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.serializeComposite(writer, value.droidDetails, context);
       }
 
       if (value.otherDroidDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.otherDroidDetails);
+        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.serializeComposite(writer, value.otherDroidDetails, context);
       }
     }
   }

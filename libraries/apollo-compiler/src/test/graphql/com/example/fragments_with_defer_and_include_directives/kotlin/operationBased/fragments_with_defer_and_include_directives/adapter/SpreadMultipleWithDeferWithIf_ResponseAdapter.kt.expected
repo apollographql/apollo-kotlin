@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
@@ -28,16 +28,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
-  public object Data : Adapter<SpreadMultipleWithDeferWithIf.Data> {
+  public object Data : CompositeAdapter<SpreadMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        SpreadMultipleWithDeferWithIf.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): SpreadMultipleWithDeferWithIf.Data {
       var _hero: SpreadMultipleWithDeferWithIf.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -47,26 +47,27 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: SpreadMultipleWithDeferWithIf.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().serializeComposite(writer, value.hero, context)
     }
 
-    private object Hero : Adapter<SpreadMultipleWithDeferWithIf.Data.Hero> {
+    private object Hero : CompositeAdapter<SpreadMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext):
           SpreadMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -76,24 +77,24 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         var _characterDetails: CharacterDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
-          _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
-              customScalarAdapters)
+          _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.deserializeComposite(reader,
+              context)
         }
 
         var _characterDetails2: CharacterDetails2? = null
-        if (and(possibleTypes("Droid"),label("c_second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("c_second")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
-          _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.fromJson(reader,
-              customScalarAdapters)
+          _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.deserializeComposite(reader,
+              context)
         }
 
         var _characterDetails3: CharacterDetails3? = null
-        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
-          _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.fromJson(reader,
-              customScalarAdapters)
+          _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.deserializeComposite(reader,
+              context)
         }
 
         return SpreadMultipleWithDeferWithIf.Data.Hero(
@@ -104,27 +105,27 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadMultipleWithDeferWithIf.Data.Hero,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.characterDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
-              customScalarAdapters, value.characterDetails)
+          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.serializeComposite(writer,
+              value.characterDetails, context)
         }
 
         if (value.characterDetails2 != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.toJson(writer,
-              customScalarAdapters, value.characterDetails2)
+          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.serializeComposite(writer,
+              value.characterDetails2, context)
         }
 
         if (value.characterDetails3 != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.toJson(writer,
-              customScalarAdapters, value.characterDetails3)
+          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.serializeComposite(writer,
+              value.characterDetails3, context)
         }
       }
     }

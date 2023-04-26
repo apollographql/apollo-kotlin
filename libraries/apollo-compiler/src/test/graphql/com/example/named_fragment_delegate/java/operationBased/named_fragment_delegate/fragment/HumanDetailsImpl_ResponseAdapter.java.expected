@@ -5,13 +5,13 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,14 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsImpl_ResponseAdapter {
-  public enum HumanDetails implements Adapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
+  public enum HumanDetails implements CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "profileLink", "friendsConnection");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
       Object _profileLink = null;
       com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection _friendsConnection = null;
@@ -37,9 +38,9 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _profileLink = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _friendsConnection = new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _profileLink = Adapters.AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 2: _friendsConnection = new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -56,33 +57,35 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.HumanDetails value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("profileLink");
-      Adapters.AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink);
+      Adapters.AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profileLink);
 
       writer.name("friendsConnection");
-      new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, customScalarAdapters, value.friendsConnection);
+      new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeComposite(writer, value.friendsConnection, context);
     }
   }
 
-  public enum FriendsConnection implements Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
+  public enum FriendsConnection implements CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -93,28 +96,29 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value) throws
-        IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).serializeComposite(writer, value.edges, context);
     }
   }
 
-  public enum Edge implements Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> {
+  public enum Edge implements CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.Edge fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.Edge deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       com.example.named_fragment_delegate.fragment.HumanDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).deserializeComposite(reader, context); break;
           default: break loop;
         }
       }
@@ -125,27 +129,29 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.Edge value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.HumanDetails.Edge value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).serializeComposite(writer, value.node, context);
     }
   }
 
-  public enum Node implements Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node> {
+  public enum Node implements CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.Node fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.Node deserializeComposite(
+        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
+        IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -158,10 +164,11 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.Node value) throws IOException {
+    public void serializeComposite(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.HumanDetails.Node value,
+        CompositeAdapter.SerializeCompositeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

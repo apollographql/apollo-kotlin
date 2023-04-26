@@ -5,10 +5,10 @@
 //
 package com.example.decapitalized_fields.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.decapitalized_fields.fragment.selections.HorseFragmentSelections
@@ -24,11 +24,11 @@ public class HorseFragmentImpl() : Fragment<HorseFragment> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<HorseFragment> =
+  public override fun adapter(): CompositeAdapter<HorseFragment> =
       HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

@@ -5,40 +5,41 @@
 //
 package com.example.deprecated_merged_field.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<AnimalFragmentImpl.Data> {
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        AnimalFragmentImpl.Data {
+  public object Data : CompositeAdapter<AnimalFragmentImpl.Data> {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): AnimalFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Cat",
-        -> CatData.fromJson(reader, customScalarAdapters, __typename)
+        -> CatData.deserializeComposite(reader, context, __typename)
         "Dog",
-        -> DogData.fromJson(reader, customScalarAdapters, __typename)
+        -> DogData.deserializeComposite(reader, context, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
+        -> OtherData.deserializeComposite(reader, context, __typename)
       }
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       when(value) {
-        is AnimalFragmentImpl.CatData -> CatData.toJson(writer, customScalarAdapters, value)
-        is AnimalFragmentImpl.DogData -> DogData.toJson(writer, customScalarAdapters, value)
-        is AnimalFragmentImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
+        is AnimalFragmentImpl.CatData -> CatData.serializeComposite(writer, value, context)
+        is AnimalFragmentImpl.DogData -> DogData.serializeComposite(writer, value, context)
+        is AnimalFragmentImpl.OtherData -> OtherData.serializeComposite(writer, value, context)
       }
     }
   }
@@ -46,18 +47,18 @@ public object AnimalFragmentImpl_ResponseAdapter {
   public object CatData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public fun fromJson(
+    public fun deserializeComposite(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
       typename: String,
     ): AnimalFragmentImpl.CatData {
       var __typename: String? = typename
       var _name: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -68,34 +69,34 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.CatData,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
     }
   }
 
   public object DogData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public fun fromJson(
+    public fun deserializeComposite(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
       typename: String,
     ): AnimalFragmentImpl.DogData {
       var __typename: String? = typename
       var _name: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -106,32 +107,32 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.DogData,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
     }
   }
 
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public fun fromJson(
+    public fun deserializeComposite(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
       typename: String,
     ): AnimalFragmentImpl.OtherData {
       var __typename: String? = typename
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -141,13 +142,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.OtherData,
+      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
     }
   }
 }

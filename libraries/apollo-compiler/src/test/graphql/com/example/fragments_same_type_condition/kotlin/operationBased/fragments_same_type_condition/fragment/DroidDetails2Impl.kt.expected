@@ -5,10 +5,10 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_same_type_condition.fragment.selections.DroidDetails2Selections
@@ -24,11 +24,11 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DroidDetails2> =
+  public override fun adapter(): CompositeAdapter<DroidDetails2> =
       DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

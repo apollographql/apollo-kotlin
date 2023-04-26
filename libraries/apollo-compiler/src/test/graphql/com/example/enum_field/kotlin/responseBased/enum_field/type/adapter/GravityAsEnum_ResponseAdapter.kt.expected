@@ -5,24 +5,23 @@
 //
 package com.example.enum_field.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.enum_field.type.GravityAsEnum
 import kotlin.Unit
 
-public object GravityAsEnum_ResponseAdapter : Adapter<GravityAsEnum> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      GravityAsEnum {
+public object GravityAsEnum_ResponseAdapter : CompositeAdapter<GravityAsEnum> {
+  public override fun deserializeComposite(reader: JsonReader,
+      context: CompositeAdapter.DeserializeCompositeContext): GravityAsEnum {
     val rawValue = reader.nextString()!!
     return GravityAsEnum.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeComposite(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: GravityAsEnum,
+    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

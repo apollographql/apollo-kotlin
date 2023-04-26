@@ -5,7 +5,7 @@
 //
 package com.example.monomorphic.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeComposite(reader: JsonReader,
+        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
       var _cat: TestQuery.Data.Cat? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj(true).deserializeComposite(reader, context)
           else -> break
         }
       }
@@ -36,32 +36,32 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeComposite(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("cat")
-      Cat.obj(true).toJson(writer, customScalarAdapters, value.cat)
+      Cat.obj(true).serializeComposite(writer, value.cat, context)
     }
 
-    private object Cat : Adapter<TestQuery.Data.Cat> {
+    private object Cat : CompositeAdapter<TestQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Cat {
+      public override fun deserializeComposite(reader: JsonReader,
+          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Cat {
         var __typename: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
 
         reader.rewind()
-        val _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
-            customScalarAdapters)
+        val _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.deserializeComposite(reader,
+            context)
 
         return TestQuery.Data.Cat(
           __typename = __typename!!,
@@ -69,35 +69,35 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeComposite(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Cat,
+        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-        com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.toJson(writer,
-            customScalarAdapters, value.onNode)
+        com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.serializeComposite(writer,
+            value.onNode, context)
       }
 
-      private object OnNode : Adapter<TestQuery.Data.Cat.OnNode> {
+      private object OnNode : CompositeAdapter<TestQuery.Data.Cat.OnNode> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode {
+        public override fun deserializeComposite(reader: JsonReader,
+            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Cat.OnNode {
           var __typename: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
 
           reader.rewind()
-          val _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
-              customScalarAdapters)
+          val _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.deserializeComposite(reader,
+              context)
 
           return TestQuery.Data.Cat.OnNode(
             __typename = __typename!!,
@@ -105,28 +105,29 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeComposite(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Cat.OnNode,
+          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
-          com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.toJson(writer,
-              customScalarAdapters, value.onAnimal)
+          com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.serializeComposite(writer,
+              value.onAnimal, context)
         }
 
-        private object OnAnimal : Adapter<TestQuery.Data.Cat.OnNode.OnAnimal> {
+        private object OnAnimal : CompositeAdapter<TestQuery.Data.Cat.OnNode.OnAnimal> {
           public val RESPONSE_NAMES: List<String> = listOf("species")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode.OnAnimal {
+          public override fun deserializeComposite(reader: JsonReader,
+              context: CompositeAdapter.DeserializeCompositeContext):
+              TestQuery.Data.Cat.OnNode.OnAnimal {
             var _species: String? = null
 
-            while(true) {
+            while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
                 else -> break
               }
             }
@@ -136,13 +137,13 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeComposite(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Cat.OnNode.OnAnimal,
+            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("species")
-            StringAdapter.toJson(writer, customScalarAdapters, value.species)
+            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
           }
         }
       }

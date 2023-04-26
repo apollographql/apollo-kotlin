@@ -6,7 +6,7 @@
 package com.example.simple_union.fragment
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,7 +28,7 @@ public class CatFragmentImpl() : Fragment<CatFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): DataAdapter<CatFragment> =
+  public override fun adapter(): CompositeAdapter<CatFragment> =
       CatFragmentImpl_ResponseAdapter.CatFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
