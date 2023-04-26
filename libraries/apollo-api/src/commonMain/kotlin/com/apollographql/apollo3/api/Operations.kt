@@ -72,7 +72,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
   return ResponseParser.parse(
       jsonReader,
       this,
-      DataAdapter.DeserializeDataContext(
+      CompositeAdapter.DeserializeCompositeContext(
           customScalarAdapters = customScalarAdapters,
           falseBooleanVariables = variables,
           mergedDeferredFragmentIds = mergedDeferredFragmentIds,

@@ -1,7 +1,7 @@
 package test;
 
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.google.common.truth.Truth;
 import javatest.GetRandomQuery;
@@ -18,7 +18,7 @@ public class OperationTest {
     GetRandomQuery.Data data = GetRandomQuery.Data.builder().random(42).build();
 
     Buffer buffer = new Buffer();
-    query.adapter().serializeData(new BufferedSinkJsonWriter(buffer), data, new DataAdapter.SerializeDataContext(CustomScalarAdapters.Empty));
+    query.adapter().serializeComposite(new BufferedSinkJsonWriter(buffer), data, new CompositeAdapter.SerializeCompositeContext(CustomScalarAdapters.Empty));
     String json = buffer.readUtf8();
 
     // We don't want to test indentation here so we replace whitespace

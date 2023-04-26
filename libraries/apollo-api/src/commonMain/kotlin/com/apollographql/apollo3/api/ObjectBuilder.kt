@@ -40,14 +40,14 @@ val GlobalBuilder = object : BuilderScope {
  * A property delegate that stores the given property as it would be serialized in a Json
  * This is needed in Data Builders because the serializer only work from Json
  */
-class BuilderProperty<T>(val adapter: DataAdapter<T>) {
-  constructor(adapter: Adapter<T>) : this(AdapterToDataAdapter(adapter))
+class BuilderProperty<T>(val adapter: CompositeAdapter<T>) {
+  constructor(adapter: Adapter<T>) : this(AdapterToCompositeAdapter(adapter))
 
   operator fun getValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>): T {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.deserializeData(MapJsonReader(data), DataAdapter.DeserializeDataContext(customScalarAdapters = CustomScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+    return adapter.deserializeComposite(MapJsonReader(data), CompositeAdapter.DeserializeCompositeContext(customScalarAdapters = CustomScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
@@ -63,7 +63,7 @@ fun <T> adaptValue(adapter: Adapter<T>, value: T): Any? {
   }.root()
 }
 
-fun <T> adaptValue(adapter: DataAdapter<T>, value: T): Any? {
+fun <T> adaptValue(adapter: CompositeAdapter<T>, value: T): Any? {
   return MapJsonWriter().apply {
     adapter.toJson(this, CustomScalarAdapters.Empty, value)
   }.root()

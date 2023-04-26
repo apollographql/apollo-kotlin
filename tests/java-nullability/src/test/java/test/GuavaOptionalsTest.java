@@ -1,7 +1,7 @@
 package test;
 
+import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -142,7 +142,7 @@ public class GuavaOptionalsTest {
         "      }");
     ;
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -179,7 +179,7 @@ public class GuavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.of(0),
@@ -222,7 +222,7 @@ public class GuavaOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),

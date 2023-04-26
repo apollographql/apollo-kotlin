@@ -5,8 +5,8 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -36,7 +36,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.DataAdapter, adaptedTypeName))
+      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
       .apply {
@@ -47,12 +47,12 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(deserializeData)
+private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(deserializeComposite)
     .addModifiers(Modifier.PUBLIC)
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-    .addParameter(JavaClassNames.DeserializeDataContext, Identifier.context)
+    .addParameter(JavaClassNames.DeserializeCompositeContext, Identifier.context)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -62,13 +62,13 @@ private fun List<NamedType>.writeToResponseMethodSpec(
     context: JavaContext,
     adaptedTypeName: TypeName,
 ): MethodSpec {
-  return MethodSpec.methodBuilder(serializeData)
+  return MethodSpec.methodBuilder(serializeComposite)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(adaptedTypeName, value)
-      .addParameter(JavaClassNames.SerializeDataContext, Identifier.context)
+      .addParameter(JavaClassNames.SerializeCompositeContext, Identifier.context)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -93,7 +93,7 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   if (type.isScalarOrWrappedScalar()) {
     builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
   } else {
-    builder.addStatement("$L.$serializeData($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
+    builder.addStatement("$L.$serializeComposite($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
   }
   if (type.isOptional()) {
     builder.endControlFlow()

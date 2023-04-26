@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -87,7 +87,7 @@ internal fun readFromResponseCodeBlock(
                 )
               } else {
                 CodeBlock.of(
-                    "%L·->·%N·=·%L.$deserializeData($reader,·${Identifier.context})",
+                    "%L·->·%N·=·%L.$deserializeComposite($reader,·${Identifier.context})",
                     index,
                     variableName,
                     adapterInitializer,
@@ -158,7 +158,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$deserializeData($reader, ${Identifier.context})\n",
+                "%L·=·%L.$deserializeComposite($reader, ${Identifier.context})\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -244,7 +244,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.serializeData}($writer, $value.%N, ${Identifier.context})",
+        "%L.${Identifier.serializeComposite}($writer, $value.%N, ${Identifier.context})",
         adapterInitializer,
         propertyName,
     )
@@ -271,7 +271,7 @@ internal fun CodeBlock.Builder.addSerializeStatement(
     )
   } else {
     addStatement(
-        "%L.${Identifier.serializeData}($writer, $value.%N, $contextArgument)",
+        "%L.${Identifier.serializeComposite}($writer, $value.%N, $contextArgument)",
         adapterInitializer,
         propertyName,
     )

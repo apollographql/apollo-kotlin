@@ -57,10 +57,10 @@ internal class JavaResolver(
     else -> JavaClassNames.ApolloOptionalAdapter
   }
 
-  private val optionalDataAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
-    else -> JavaClassNames.ApolloOptionalDataAdapter
+  private val optionalCompositeAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalCompositeAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalCompositeAdapter
+    else -> JavaClassNames.ApolloOptionalCompositeAdapter
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
@@ -70,11 +70,11 @@ internal class JavaResolver(
     else -> JavaClassNames.NullableAdapter
   }
 
-  private val optionalOrNullableDataAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalDataAdapter
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
-    else -> JavaClassNames.NullableDataAdapter
+  private val optionalOrNullableCompositeAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalCompositeAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalCompositeAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalCompositeAdapter
+    else -> JavaClassNames.NullableCompositeAdapter
   }
 
   private val wrapNullableFieldsInOptional = nullableFieldStyle in setOf(
@@ -206,7 +206,7 @@ internal class JavaResolver(
         }
 
         else -> {
-          val adapterClassName = if (type.isScalarOrWrappedScalar()) optionalOrNullableAdapterClassName else optionalOrNullableDataAdapterClassName
+          val adapterClassName = if (type.isScalarOrWrappedScalar()) optionalOrNullableAdapterClassName else optionalOrNullableCompositeAdapterClassName
           CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
@@ -256,7 +256,7 @@ internal class JavaResolver(
       }
 
       is IrOptionalType -> {
-        val adapterClassName = if (type.ofType.isScalarOrWrappedScalar()) optionalAdapterClassName else optionalDataAdapterClassName
+        val adapterClassName = if (type.ofType.isScalarOrWrappedScalar()) optionalAdapterClassName else optionalCompositeAdapterClassName
         CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
     }
@@ -425,7 +425,7 @@ internal class JavaResolver(
         if (isScalar) {
           JavaClassNames.ListAdapter
         } else {
-          JavaClassNames.ListDataAdapter
+          JavaClassNames.ListCompositeAdapter
         },
         this
     )

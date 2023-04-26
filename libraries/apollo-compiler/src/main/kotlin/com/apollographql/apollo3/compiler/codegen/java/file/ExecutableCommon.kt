@@ -47,7 +47,7 @@ internal fun adapterMethodSpec(
   return MethodSpec.methodBuilder(Identifier.adapter)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)
-      .returns(ParameterizedTypeName.get(JavaClassNames.DataAdapter, adaptedTypeName))
+      .returns(ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, adaptedTypeName))
       .addCode(
           "return $L;\n",
           resolver.adapterInitializer(property.info.type, property.requiresBuffering)

@@ -5,8 +5,8 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeDataContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeCompositeContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -64,7 +64,7 @@ private fun List<NamedType>.writeToResponseMethodSpec(
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("$T $serializeDataContext = new $T(${Identifier.context}.${Identifier.customScalarAdapters})", JavaClassNames.SerializeDataContext, JavaClassNames.SerializeDataContext)
+  builder.addStatement("$T $serializeCompositeContext = new $T(${Identifier.context}.${Identifier.customScalarAdapters})", JavaClassNames.SerializeCompositeContext, JavaClassNames.SerializeCompositeContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }
@@ -84,7 +84,7 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   if (type.isScalarOrWrappedScalar()) {
     builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
   } else {
-    builder.addStatement("$L.$serializeData($writer, $value.$propertyName, $serializeDataContext)", adapterInitializer)
+    builder.addStatement("$L.$serializeComposite($writer, $value.$propertyName, $serializeCompositeContext)", adapterInitializer)
   }
   if (type.isOptional()) {
     builder.endControlFlow()

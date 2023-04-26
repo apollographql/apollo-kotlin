@@ -3,9 +3,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -90,7 +90,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            KotlinSymbols.DataAdapter.parameterizedBy(adaptedClassName)
+            KotlinSymbols.CompositeAdapter.parameterizedBy(adaptedClassName)
         )
         .applyIf(!public) {
           addModifiers(KModifier.PRIVATE)
@@ -102,10 +102,10 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(deserializeData)
+    return FunSpec.builder(deserializeComposite)
         .returns(adaptedClassName)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
+        .addParameter(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -131,7 +131,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$deserializeData($reader, ${Identifier.context}, $__typename)",
+          "-> %T.$deserializeComposite($reader, ${Identifier.context}, $__typename)",
           ClassName.from(path + model.modelName),
       )
     }
@@ -141,11 +141,11 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(serializeData)
+    return FunSpec.builder(serializeComposite)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, KotlinSymbols.JsonWriter)
         .addParameter(value, adaptedClassName)
-        .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)
+        .addParameter(Identifier.context, KotlinSymbols.SerializeCompositeContext)
         .addCode(writeToResponseCodeBlock())
         .build()
   }
@@ -156,7 +156,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     builder.beginControlFlow("when($value) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       builder.addStatement(
-          "is %T -> %T.$serializeData($writer, $value, ${Identifier.context})",
+          "is %T -> %T.$serializeComposite($writer, $value, ${Identifier.context})",
           context.resolver.resolveModel(model.id),
           ClassName.from(path + model.modelName),
       )

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 
-private fun Operation.Data.adapter(): DataAdapter<Operation.Data> {
+private fun Operation.Data.adapter(): CompositeAdapter<Operation.Data> {
   val name = this::class.java.name
 
   val operationQualifiedName = name.removeSuffix("${'$'}Data")
@@ -18,7 +18,7 @@ private fun Operation.Data.adapter(): DataAdapter<Operation.Data> {
   val field = clazz.getDeclaredField("INSTANCE")
 
   @Suppress("UNCHECKED_CAST")
-  val adapter = field.get(null) as DataAdapter<Operation.Data>
+  val adapter = field.get(null) as CompositeAdapter<Operation.Data>
 
   return adapter.obj()
 }

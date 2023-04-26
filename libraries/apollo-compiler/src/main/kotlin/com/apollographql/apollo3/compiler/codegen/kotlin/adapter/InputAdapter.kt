@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -28,7 +28,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     adaptedTypeName: TypeName,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
-      .addSuperinterface(KotlinSymbols.DataAdapter.parameterizedBy(adaptedTypeName))
+      .addSuperinterface(KotlinSymbols.CompositeAdapter.parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
       .addFunction(writeToResponseFunSpec(context, adaptedTypeName))
       .apply {
@@ -45,10 +45,10 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(deserializeData)
+private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(deserializeComposite)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-    .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
+    .addParameter(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -58,11 +58,11 @@ private fun List<NamedType>.writeToResponseFunSpec(
     context: KotlinContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
-  return FunSpec.builder(serializeData)
+  return FunSpec.builder(serializeComposite)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(value, adaptedTypeName)
-      .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)
+      .addParameter(Identifier.context, KotlinSymbols.SerializeCompositeContext)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }

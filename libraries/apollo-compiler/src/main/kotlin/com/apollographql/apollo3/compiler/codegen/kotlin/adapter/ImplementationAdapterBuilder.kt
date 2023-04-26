@@ -79,7 +79,7 @@ internal class ImplementationAdapterBuilder(
         .apply {
           if (!addTypenameArgument) {
             addSuperinterface(
-                KotlinSymbols.DataAdapter.parameterizedBy(
+                KotlinSymbols.CompositeAdapter.parameterizedBy(
                     context.resolver.resolveModel(model.id)
                 )
             )
@@ -94,11 +94,11 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.deserializeData)
+    return FunSpec.builder(Identifier.deserializeComposite)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
         .addParameter(
-            ParameterSpec.builder(Identifier.context, KotlinSymbols.DeserializeDataContext)
+            ParameterSpec.builder(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
                 .applyIf(addTypenameArgument) {
                   addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
                 }
@@ -121,11 +121,11 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.serializeData)
+    return FunSpec.builder(Identifier.serializeComposite)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
         .addParameter(Identifier.value, adaptedClassName)
         .addParameter(
-            ParameterSpec.builder(Identifier.context, KotlinSymbols.SerializeDataContext)
+            ParameterSpec.builder(Identifier.context, KotlinSymbols.SerializeCompositeContext)
                 .applyIf(addTypenameArgument) {
                   addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
                 }

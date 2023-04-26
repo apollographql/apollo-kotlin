@@ -327,23 +327,23 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
 }
 
 fun <T> buildData(
-    adapter: DataAdapter<T>,
+    adapter: CompositeAdapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     map: Map<String, Any?>,
     resolver: FakeResolver,
     customScalarAdapters: CustomScalarAdapters,
 ): T {
-  return adapter.obj(false).deserializeData(
+  return adapter.obj(false).deserializeComposite(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, customScalarAdapters)),
-      DataAdapter.DeserializeDataContext(customScalarAdapters = CustomScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
+      CompositeAdapter.DeserializeCompositeContext(customScalarAdapters = CustomScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
   )
 }
 
 fun <T, Builder : ObjectBuilder<*>> buildData(
     builderFactory: BuilderFactory<Builder>,
     block: (Builder.() -> Unit),
-    adapter: DataAdapter<T>,
+    adapter: CompositeAdapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     resolver: FakeResolver,

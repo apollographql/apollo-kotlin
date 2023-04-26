@@ -6,11 +6,11 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -121,7 +121,7 @@ internal fun readFromResponseCodeBlock(
                 )
               } else {
                 CodeBlock.of(
-                    "case $L: $L = $L.$deserializeData($reader, ${Identifier.context}); break;",
+                    "case $L: $L = $L.$deserializeComposite($reader, ${Identifier.context}); break;",
                     index,
                     variableName,
                     adapterInitializer
@@ -161,7 +161,7 @@ internal fun readFromResponseCodeBlock(
 
   val syntheticLoop = syntheticProperties.map { property ->
     val fromJsonCall = CodeBlock.of(
-        "$L.INSTANCE.$deserializeData($reader, ${Identifier.context})",
+        "$L.INSTANCE.$deserializeComposite($reader, ${Identifier.context})",
         context.resolver.resolveModelAdapter(property.info.type.modelPath())
     )
     val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
@@ -278,7 +278,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
       )
     } else {
       builder.addStatement(
-          "$L.$serializeData($writer, $value.$propertyName, ${Identifier.context})",
+          "$L.$serializeComposite($writer, $value.$propertyName, ${Identifier.context})",
           adapterInitializer,
       )
     }
@@ -296,7 +296,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     }
     val fieldValue = CodeBlock.of("$value.$propertyName")
     builder.addStatement(
-        "$L.INSTANCE.$serializeData($writer, $L, ${Identifier.context})",
+        "$L.INSTANCE.$serializeComposite($writer, $L, ${Identifier.context})",
         adapterInitializer,
         context.unwrapOptionalValue(fieldValue, resolvedType)
     )
@@ -318,7 +318,7 @@ internal fun List<String>.toClassName() = ClassName.get(
 fun singletonAdapterInitializer(wrappedTypeName: TypeName, adaptedTypeName: TypeName, buffered: Boolean = false): CodeBlock {
   return CodeBlock.of(
       "new $T($T.INSTANCE, $L)",
-      ParameterizedTypeName.get(JavaClassNames.ObjectDataAdapter, adaptedTypeName),
+      ParameterizedTypeName.get(JavaClassNames.ObjectCompositeAdapter, adaptedTypeName),
       wrappedTypeName,
       if (buffered) "true" else "false"
   )

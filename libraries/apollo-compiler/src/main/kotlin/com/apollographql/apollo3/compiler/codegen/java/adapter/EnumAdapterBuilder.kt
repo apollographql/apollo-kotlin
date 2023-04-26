@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.rawValue
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
@@ -45,12 +45,12 @@ internal class EnumResponseAdapterBuilder(
 
   private fun IrEnum.typeSpec(): TypeSpec {
     val adaptedTypeName = context.resolver.resolveSchemaType(enum.name)
-    val fromResponseMethodSpec = MethodSpec.methodBuilder(Identifier.deserializeData)
+    val fromResponseMethodSpec = MethodSpec.methodBuilder(Identifier.deserializeComposite)
         .addModifiers(Modifier.PUBLIC)
         .addException(JavaClassNames.IOException)
         .addAnnotation(JavaClassNames.Override)
         .addParameter(JavaClassNames.JsonReader, reader)
-        .addParameter(JavaClassNames.DeserializeDataContext, Identifier.context)
+        .addParameter(JavaClassNames.DeserializeCompositeContext, Identifier.context)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -66,17 +66,17 @@ internal class EnumResponseAdapterBuilder(
     return TypeSpec.enumBuilder(layout.enumResponseAdapterName(name))
         .addModifiers(Modifier.PUBLIC)
         .addEnumConstant("INSTANCE")
-        .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.DataAdapter, adaptedTypeName))
+        .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, adaptedTypeName))
         .addMethod(fromResponseMethodSpec)
         .addMethod(toResponseMethodSpec)
         .build()
   }
 }
 
-internal fun toResponseMethodSpecBuilder(typeName: TypeName) = MethodSpec.methodBuilder(serializeData)
+internal fun toResponseMethodSpecBuilder(typeName: TypeName) = MethodSpec.methodBuilder(serializeComposite)
     .addModifiers(Modifier.PUBLIC)
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonWriter, writer)
     .addParameter(typeName, value)
-    .addParameter(JavaClassNames.SerializeDataContext, Identifier.context)
+    .addParameter(JavaClassNames.SerializeCompositeContext, Identifier.context)

@@ -6,7 +6,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeDataContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeCompositeContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -63,7 +63,7 @@ private fun List<NamedType>.serializeVariablesFunSpec(
 private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
   if (any { !it.type.isScalarOrWrappedScalar() }) {
-    builder.addStatement("val $serializeDataContext = %T(${Identifier.context}.$customScalarAdapters)", KotlinSymbols.SerializeDataContext)
+    builder.addStatement("val $serializeCompositeContext = %T(${Identifier.context}.$customScalarAdapters)", KotlinSymbols.SerializeCompositeContext)
   }
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
@@ -80,7 +80,7 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("$writer.name(%S)", graphQlName)
-  builder.addSerializeStatement(type, adapterInitializer, propertyName, contextArgument = serializeDataContext)
+  builder.addSerializeStatement(type, adapterInitializer, propertyName, contextArgument = serializeCompositeContext)
   if (type.isOptional()) {
     builder.endControlFlow()
     if (defaultValue is IrBooleanValue) {

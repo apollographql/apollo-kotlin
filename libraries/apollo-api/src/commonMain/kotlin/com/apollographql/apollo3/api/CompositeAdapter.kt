@@ -1,14 +1,14 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
-import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
+import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext
+import com.apollographql.apollo3.api.CompositeAdapter.SerializeCompositeContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 import kotlin.jvm.JvmField
 
 /**
- * A [DataAdapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
+ * A [CompositeAdapter] is responsible for adapting Kotlin-generated GraphQL composite types to/from their Json representation.
  *
  * It is used to
  * - deserialize network responses
@@ -17,19 +17,19 @@ import kotlin.jvm.JvmField
  *
  * This class is implemented by the generated code, it shouldn't be used directly.
  */
-interface DataAdapter<T> {
+interface CompositeAdapter<T> {
   @Throws(IOException::class)
-  fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T
+  fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): T
 
   @Throws(IOException::class)
-  fun serializeData(writer: JsonWriter, value: T, context: SerializeDataContext)
+  fun serializeComposite(writer: JsonWriter, value: T, context: SerializeCompositeContext)
 
-  class SerializeDataContext(
+  class SerializeCompositeContext(
       @JvmField
       val customScalarAdapters: CustomScalarAdapters,
   )
 
-  class DeserializeDataContext(
+  class DeserializeCompositeContext(
       @JvmField
       val customScalarAdapters: CustomScalarAdapters,
 
@@ -49,10 +49,10 @@ interface DataAdapter<T> {
   }
 }
 
-fun <T> DataAdapter<T>.toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-  serializeData(writer, value, SerializeDataContext(customScalarAdapters))
+fun <T> CompositeAdapter<T>.toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+  serializeComposite(writer, value, SerializeCompositeContext(customScalarAdapters))
 }
 
-fun <T> DataAdapter<T>.fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-  return deserializeData(reader, DeserializeDataContext(customScalarAdapters = customScalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+fun <T> CompositeAdapter<T>.fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+  return deserializeComposite(reader, DeserializeCompositeContext(customScalarAdapters = customScalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
 }
