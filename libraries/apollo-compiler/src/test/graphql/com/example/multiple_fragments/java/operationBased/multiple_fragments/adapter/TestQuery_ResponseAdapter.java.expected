@@ -5,12 +5,12 @@
 //
 package com.example.multiple_fragments.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.multiple_fragments.TestQuery;
@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("a");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.A _a = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _a = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.A>(A.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _a = new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,33 +46,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("a");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.A>(A.INSTANCE, true)).serializeData(writer, value.a, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).toJson(writer, customScalarAdapters, value.a);
     }
   }
 
-  public enum A implements DataAdapter<TestQuery.A> {
+  public enum A implements Adapter<TestQuery.A> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.A deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.A fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      AFragment _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.deserializeData(reader, context);
+      AFragment _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -83,12 +83,12 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.A value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.A value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.serializeData(writer, value.aFragment, context);
+      com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.toJson(writer, customScalarAdapters, value.aFragment);
     }
   }
 }

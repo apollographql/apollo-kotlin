@@ -5,7 +5,8 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -17,16 +18,17 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
-  public object Data : DataAdapter<CharacterAppearsInImpl.Data> {
+  public object Data : Adapter<CharacterAppearsInImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): CharacterAppearsInImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        CharacterAppearsInImpl.Data {
       var _appearsIn: List<Episode?>? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeData(reader, context)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -36,13 +38,14 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CharacterAppearsInImpl.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().serializeData(writer, value.appearsIn, context)
+      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
+          value.appearsIn)
     }
   }
 }

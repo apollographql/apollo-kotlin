@@ -5,8 +5,8 @@
 //
 package com.example.data_builders.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -14,21 +14,20 @@ import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.NodeQuery
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object NodeQuery_ResponseAdapter {
-  public object Data : DataAdapter<NodeQuery.Data> {
+  public object Data : Adapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): NodeQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().deserializeData(reader, context)
+          0 -> _node = Node.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,38 +37,38 @@ public object NodeQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: NodeQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("node")
-      Node.obj().serializeData(writer, value.node, context)
+      Node.obj().toJson(writer, customScalarAdapters, value.node)
     }
 
-    private object Node : DataAdapter<NodeQuery.Data.Node> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): NodeQuery.Data.Node {
+    private object Node : Adapter<NodeQuery.Data.Node> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          NodeQuery.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanNode.deserializeData(reader, context, __typename)
+          -> HumanNode.fromJson(reader, customScalarAdapters, __typename)
           "Droid",
-          -> DroidNode.deserializeData(reader, context, __typename)
+          -> DroidNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.deserializeData(reader, context, __typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.Node,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
-          is NodeQuery.Data.HumanNode -> HumanNode.serializeData(writer, value, context)
-          is NodeQuery.Data.DroidNode -> DroidNode.serializeData(writer, value, context)
-          is NodeQuery.Data.OtherNode -> OtherNode.serializeData(writer, value, context)
+          is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, customScalarAdapters, value)
+          is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, customScalarAdapters, value)
+          is NodeQuery.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -77,20 +76,20 @@ public object NodeQuery_ResponseAdapter {
     public object HumanNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "homePlanet")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): NodeQuery.Data.HumanNode {
         var __typename: String? = typename
         var _id: String? = null
         var _homePlanet: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _homePlanet = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _homePlanet = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -102,39 +101,39 @@ public object NodeQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.HumanNode,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("homePlanet")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
+        StringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
       }
     }
 
     public object DroidNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "primaryFunction")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): NodeQuery.Data.DroidNode {
         var __typename: String? = typename
         var _id: String? = null
         var _primaryFunction: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _primaryFunction = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _primaryFunction = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -146,37 +145,37 @@ public object NodeQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.DroidNode,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("primaryFunction")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
+        StringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
       }
     }
 
     public object OtherNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): NodeQuery.Data.OtherNode {
         var __typename: String? = typename
         var _id: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -187,16 +186,16 @@ public object NodeQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.OtherNode,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
       }
     }
   }

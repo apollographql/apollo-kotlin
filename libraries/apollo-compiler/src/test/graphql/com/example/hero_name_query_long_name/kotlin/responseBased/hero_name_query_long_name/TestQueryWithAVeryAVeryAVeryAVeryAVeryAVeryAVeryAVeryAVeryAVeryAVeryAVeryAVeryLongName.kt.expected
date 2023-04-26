@@ -6,11 +6,11 @@
 package com.example.hero_name_query_long_name
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.hero_name_query_long_name.adapter.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter
@@ -35,12 +35,12 @@ public data class
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.serializeVariables(writer,
-        this, context)
+      customScalarAdapters: CustomScalarAdapters): Unit {
+    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.toJson(writer,
+        customScalarAdapters, this)
   }
 
-  public override fun adapter(): DataAdapter<Data> =
+  public override fun adapter(): Adapter<Data> =
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

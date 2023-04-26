@@ -6,11 +6,11 @@
 package com.example.java_java_optionals
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java_java_optionals.adapter.MyQuery_ResponseAdapter
@@ -37,11 +37,11 @@ public data class MyQuery(
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
-    MyQuery_VariablesAdapter.serializeVariables(writer, this, context)
+      customScalarAdapters: CustomScalarAdapters): Unit {
+    MyQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): DataAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): Adapter<Data> = MyQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

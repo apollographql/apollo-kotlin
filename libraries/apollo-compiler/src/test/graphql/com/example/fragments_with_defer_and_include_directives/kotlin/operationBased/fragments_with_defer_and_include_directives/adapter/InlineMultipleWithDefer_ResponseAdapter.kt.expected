@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -22,16 +22,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineMultipleWithDefer_ResponseAdapter {
-  public object Data : DataAdapter<InlineMultipleWithDefer.Data> {
+  public object Data : Adapter<InlineMultipleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): InlineMultipleWithDefer.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        InlineMultipleWithDefer.Data {
       var _hero: InlineMultipleWithDefer.Data.Hero? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,26 +41,26 @@ public object InlineMultipleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: InlineMultipleWithDefer.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().serializeData(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : DataAdapter<InlineMultipleWithDefer.Data.Hero> {
+    private object Hero : Adapter<InlineMultipleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): InlineMultipleWithDefer.Data.Hero {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          InlineMultipleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -70,17 +70,17 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         }
 
         var _onDroidDeferD_first: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first? = null
-        if (and(possibleTypes("Droid"),label("d_first")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
+        if (and(possibleTypes("Droid"),label("d_first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          _onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_first.deserializeData(reader,
-              context)
+          _onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_first.fromJson(reader,
+              customScalarAdapters)
         }
 
         var _onDroidDeferD_second: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second? = null
-        if (and(possibleTypes("Droid"),label("d_second")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
+        if (and(possibleTypes("Droid"),label("d_second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          _onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_second.deserializeData(reader,
-              context)
+          _onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_second.fromJson(reader,
+              customScalarAdapters)
         }
 
         return InlineMultipleWithDefer.Data.Hero(
@@ -90,37 +90,37 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: InlineMultipleWithDefer.Data.Hero,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroidDeferD_first != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_first.serializeData(writer,
-              value.onDroidDeferD_first, context)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_first.toJson(writer,
+              customScalarAdapters, value.onDroidDeferD_first)
         }
 
         if (value.onDroidDeferD_second != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_second.serializeData(writer,
-              value.onDroidDeferD_second, context)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_second.toJson(writer,
+              customScalarAdapters, value.onDroidDeferD_second)
         }
       }
 
       private object OnDroidDeferD_first :
-          DataAdapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first> {
+          Adapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first {
           var _name: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -130,28 +130,28 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
 
       private object OnDroidDeferD_second :
-          DataAdapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second> {
+          Adapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second {
           var _id: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -161,13 +161,13 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("id")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+          StringAdapter.toJson(writer, customScalarAdapters, value.id)
         }
       }
     }

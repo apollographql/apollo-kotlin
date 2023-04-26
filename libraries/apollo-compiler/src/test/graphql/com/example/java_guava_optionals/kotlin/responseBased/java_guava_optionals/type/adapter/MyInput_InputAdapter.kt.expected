@@ -5,8 +5,8 @@
 //
 package com.example.java_guava_optionals.type.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
@@ -17,26 +17,24 @@ import com.example.java_guava_optionals.type.MyInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object MyInput_InputAdapter : DataAdapter<MyInput> {
-  public override fun deserializeData(reader: JsonReader,
-      context: DataAdapter.DeserializeDataContext): MyInput = throw
-      IllegalStateException("Input type used in output position")
+public object MyInput_InputAdapter : Adapter<MyInput> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      MyInput = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeData(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: MyInput,
-    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
+      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
+    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
-          value.nonNullableIntWithDefault)
+      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
     }
   }
 }

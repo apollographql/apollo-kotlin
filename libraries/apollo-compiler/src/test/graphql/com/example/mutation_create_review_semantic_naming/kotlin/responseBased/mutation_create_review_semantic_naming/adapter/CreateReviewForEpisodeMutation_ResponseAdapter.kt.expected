@@ -5,8 +5,8 @@
 //
 package com.example.mutation_create_review_semantic_naming.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CreateReviewForEpisodeMutation_ResponseAdapter {
-  public object Data : DataAdapter<CreateReviewForEpisodeMutation.Data> {
+  public object Data : Adapter<CreateReviewForEpisodeMutation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): CreateReviewForEpisodeMutation.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        CreateReviewForEpisodeMutation.Data {
       var _createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().deserializeData(reader, context)
+          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,28 +39,27 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CreateReviewForEpisodeMutation.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("createReview")
-      CreateReview.obj().nullable().serializeData(writer, value.createReview, context)
+      CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
-    private object CreateReview : DataAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
+    private object CreateReview : Adapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisodeMutation.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _commentary = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -71,16 +70,16 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: CreateReviewForEpisodeMutation.Data.CreateReview,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("stars")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
+        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.commentary)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
       }
     }
   }

@@ -5,8 +5,8 @@
 //
 package com.example.nested_named_fragments.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,20 +19,21 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object StarshipFragmentImpl_ResponseAdapter {
-  public object Data : DataAdapter<StarshipFragmentImpl.Data> {
+  public object Data : Adapter<StarshipFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): StarshipFragmentImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        StarshipFragmentImpl.Data {
       var _id: String? = null
       var _name: String? = null
       var _pilotConnection: StarshipFragmentImpl.Data.PilotConnection? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _pilotConnection = PilotConnection.obj().nullable().deserializeData(reader, context)
+          0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -44,31 +45,32 @@ public object StarshipFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: StarshipFragmentImpl.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("id")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
       writer.name("name")
-      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("pilotConnection")
-      PilotConnection.obj().nullable().serializeData(writer, value.pilotConnection, context)
+      PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
-    private object PilotConnection : DataAdapter<StarshipFragmentImpl.Data.PilotConnection> {
+    private object PilotConnection : Adapter<StarshipFragmentImpl.Data.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): StarshipFragmentImpl.Data.PilotConnection {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          StarshipFragmentImpl.Data.PilotConnection {
         var _edges: List<StarshipFragmentImpl.Data.PilotConnection.Edge?>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -78,26 +80,26 @@ public object StarshipFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: StarshipFragmentImpl.Data.PilotConnection,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      private object Edge : DataAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
+      private object Edge : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             StarshipFragmentImpl.Data.PilotConnection.Edge {
           var _node: StarshipFragmentImpl.Data.PilotConnection.Edge.Node? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().deserializeData(reader, context)
+              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -107,30 +109,30 @@ public object StarshipFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: StarshipFragmentImpl.Data.PilotConnection.Edge,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().serializeData(writer, value.node, context)
+          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        private object Node : DataAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
+        private object Node : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
 
-          public override fun deserializeData(reader: JsonReader,
-              context: DataAdapter.DeserializeDataContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               StarshipFragmentImpl.Data.PilotConnection.Edge.Node {
             var __typename: String? = null
             var _name: String? = null
             var _homeworld: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                2 -> _homeworld = Homeworld.obj().nullable().deserializeData(reader, context)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                2 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -142,35 +144,35 @@ public object StarshipFragmentImpl_ResponseAdapter {
             )
           }
 
-          public override fun serializeData(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node,
-            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             writer.name("name")
-            NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+            NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             writer.name("homeworld")
-            Homeworld.obj().nullable().serializeData(writer, value.homeworld, context)
+            Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
           }
 
           private object Homeworld :
-              DataAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
+              Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-            public override fun deserializeData(reader: JsonReader,
-                context: DataAdapter.DeserializeDataContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld {
               var __typename: String? = null
               var _name: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                  1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                  1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -181,16 +183,16 @@ public object StarshipFragmentImpl_ResponseAdapter {
               )
             }
 
-            public override fun serializeData(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld,
-              context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("__typename")
-              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
               writer.name("name")
-              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
           }
         }

@@ -5,11 +5,11 @@
 //
 package com.example.monomorphic.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.monomorphic.TestQuery;
@@ -20,20 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("cat");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Cat _cat = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _cat = new ObjectDataAdapter<TestQuery.Cat>(Cat.INSTANCE, true).deserializeData(reader, context); break;
+          case 0: _cat = new ObjectAdapter<TestQuery.Cat>(Cat.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,33 +46,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("cat");
-      new ObjectDataAdapter<TestQuery.Cat>(Cat.INSTANCE, true).serializeData(writer, value.cat, context);
+      new ObjectAdapter<TestQuery.Cat>(Cat.INSTANCE, true).toJson(writer, customScalarAdapters, value.cat);
     }
   }
 
-  public enum Cat implements DataAdapter<TestQuery.Cat> {
+  public enum Cat implements Adapter<TestQuery.Cat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Cat deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Cat fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestQuery.OnNode _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnNode _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -83,35 +83,35 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Cat value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Cat value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.serializeData(writer, value.onNode, context);
+      com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.toJson(writer, customScalarAdapters, value.onNode);
     }
   }
 
-  public enum OnNode implements DataAdapter<TestQuery.OnNode> {
+  public enum OnNode implements Adapter<TestQuery.OnNode> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.OnNode deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnNode fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestQuery.OnAnimal _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.deserializeData(reader, context);
+      TestQuery.OnAnimal _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -122,29 +122,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnNode value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnNode value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.serializeData(writer, value.onAnimal, context);
+      com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.toJson(writer, customScalarAdapters, value.onAnimal);
     }
   }
 
-  public enum OnAnimal implements DataAdapter<TestQuery.OnAnimal> {
+  public enum OnAnimal implements Adapter<TestQuery.OnAnimal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("species");
 
     @Override
-    public TestQuery.OnAnimal deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.OnAnimal fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _species = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _species = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -157,10 +157,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.OnAnimal value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnAnimal value) throws IOException {
       writer.name("species");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.species);
     }
   }
 }

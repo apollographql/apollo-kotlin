@@ -5,27 +5,34 @@
 //
 package com.example.mutation_create_review.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
 import com.example.mutation_create_review.type.ReviewInput;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter;
 import java.io.IOException;
+import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum CreateReviewForEpisode_VariablesAdapter implements VariablesAdapter<CreateReviewForEpisode> {
+public enum CreateReviewForEpisode_VariablesAdapter implements Adapter<CreateReviewForEpisode> {
   INSTANCE;
 
   @Override
-  public void serializeVariables(JsonWriter writer, CreateReviewForEpisode value,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.customScalarAdapters);
+  public CreateReviewForEpisode fromJson(JsonReader reader,
+      CustomScalarAdapters customScalarAdapters) throws IOException {
+    throw new IllegalStateException("Input type used in output position");
+  }
+
+  @Override
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      CreateReviewForEpisode value) throws IOException {
     writer.name("ep");
-    Episode_ResponseAdapter.INSTANCE.serializeData(writer, value.ep, serializeDataContext);
+    Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
     writer.name("review");
-    new ObjectDataAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).serializeData(writer, value.review, serializeDataContext);
+    new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.review);
   }
 }

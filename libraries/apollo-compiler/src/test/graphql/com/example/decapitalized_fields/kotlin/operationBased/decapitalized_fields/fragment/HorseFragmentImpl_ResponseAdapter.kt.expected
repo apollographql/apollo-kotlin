@@ -5,8 +5,8 @@
 //
 package com.example.decapitalized_fields.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,18 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HorseFragmentImpl_ResponseAdapter {
-  public object HorseFragment : DataAdapter<com.example.decapitalized_fields.fragment.HorseFragment>
-      {
+  public object HorseFragment : Adapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.decapitalized_fields.fragment.HorseFragment {
       var _Cow: com.example.decapitalized_fields.fragment.HorseFragment.Cow? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().deserializeData(reader, context)
+          0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,26 +36,25 @@ public object HorseFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.decapitalized_fields.fragment.HorseFragment,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("Cow")
-      Cow.obj().nullable().serializeData(writer, value.cow, context)
+      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
     }
 
-    private object Cow : DataAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
+    private object Cow : Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.decapitalized_fields.fragment.HorseFragment.Cow {
         var _Moo: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _Moo = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _Moo = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -67,13 +64,13 @@ public object HorseFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.decapitalized_fields.fragment.HorseFragment.Cow,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("Moo")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo)
       }
     }
   }

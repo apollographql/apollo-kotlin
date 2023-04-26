@@ -5,11 +5,11 @@
 //
 package com.example.fragments_same_type_condition.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_same_type_condition.fragment.selections.DroidDetails2Selections;
 import com.example.fragments_same_type_condition.type.Droid;
@@ -60,14 +60,14 @@ public class DroidDetails2Impl implements Fragment<DroidDetails2> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public DataAdapter<DroidDetails2> adapter() {
-    return new ObjectDataAdapter<DroidDetails2>(DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE, false);
+  public Adapter<DroidDetails2> adapter() {
+    return new ObjectAdapter<DroidDetails2>(DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE, false);
   }
 
   @Override

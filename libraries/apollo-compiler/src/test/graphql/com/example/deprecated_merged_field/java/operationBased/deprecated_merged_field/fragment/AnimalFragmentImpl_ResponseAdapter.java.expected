@@ -5,6 +5,7 @@
 //
 package com.example.deprecated_merged_field.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -12,7 +13,6 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,35 +22,35 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalFragmentImpl_ResponseAdapter {
-  public enum AnimalFragment implements DataAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
+  public enum AnimalFragment implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.deprecated_merged_field.fragment.AnimalFragment deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.deprecated_merged_field.fragment.AnimalFragment fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat _onCat = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.deserializeData(reader, context);
+        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog _onDog = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.deserializeData(reader, context);
+        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new com.example.deprecated_merged_field.fragment.AnimalFragment(
@@ -61,36 +61,35 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.deprecated_merged_field.fragment.AnimalFragment value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.deprecated_merged_field.fragment.AnimalFragment value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onCat != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.serializeData(writer, value.onCat, context);
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.toJson(writer, customScalarAdapters, value.onCat);
       }
 
       if (value.onDog != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.serializeData(writer, value.onDog, context);
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.toJson(writer, customScalarAdapters, value.onDog);
       }
     }
   }
 
-  public enum OnCat implements DataAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
+  public enum OnCat implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -103,28 +102,28 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat value) throws
+        IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum OnDog implements DataAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
+  public enum OnDog implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -137,11 +136,11 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog value) throws
+        IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 }

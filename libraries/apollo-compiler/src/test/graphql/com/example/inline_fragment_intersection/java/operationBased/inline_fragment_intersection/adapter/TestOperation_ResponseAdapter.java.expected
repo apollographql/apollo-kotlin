@@ -5,6 +5,7 @@
 //
 package com.example.inline_fragment_intersection.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -12,9 +13,8 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.TestOperation;
@@ -29,20 +29,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperation_ResponseAdapter {
-  public enum Data implements DataAdapter<TestOperation.Data> {
+  public enum Data implements Adapter<TestOperation.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
     @Override
-    public TestOperation.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestOperation.Random _random = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _random = new ObjectDataAdapter<TestOperation.Random>(Random.INSTANCE, true).deserializeData(reader, context); break;
+          case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,42 +55,42 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Data value) throws IOException {
       writer.name("random");
-      new ObjectDataAdapter<TestOperation.Random>(Random.INSTANCE, true).serializeData(writer, value.random, context);
+      new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, customScalarAdapters, value.random);
     }
   }
 
-  public enum Random implements DataAdapter<TestOperation.Random> {
+  public enum Random implements Adapter<TestOperation.Random> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Random deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Random fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnBeing _onBeing = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.deserializeData(reader, context);
+        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestOperation.OnWookie2 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.deserializeData(reader, context);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestOperation.Random(
@@ -101,29 +101,29 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Random value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Random value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onBeing != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.serializeData(writer, value.onBeing, context);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, customScalarAdapters, value.onBeing);
       }
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.serializeData(writer, value.onWookie, context);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
       }
     }
   }
 
-  public enum OnBeing implements DataAdapter<TestOperation.OnBeing> {
+  public enum OnBeing implements Adapter<TestOperation.OnBeing> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
     @Override
-    public TestOperation.OnBeing deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.OnBeing fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String _name = null;
       List<TestOperation.Friend> _friends = null;
@@ -131,18 +131,18 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 2: _friends = new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.deserializeData(reader, context);
+        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -157,48 +157,48 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.OnBeing value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.OnBeing value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friends");
-      new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).serializeData(writer, value.friends, context);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
 
       if (value.onHuman != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.serializeData(writer, value.onHuman, context);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
       }
     }
   }
 
-  public enum Friend implements DataAdapter<TestOperation.Friend> {
+  public enum Friend implements Adapter<TestOperation.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public TestOperation.Friend deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Friend fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.deserializeData(reader, context);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -211,34 +211,34 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Friend value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Friend value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.serializeData(writer, value.onWookie, context);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
       }
     }
   }
 
-  public enum OnWookie implements DataAdapter<TestOperation.OnWookie> {
+  public enum OnWookie implements Adapter<TestOperation.OnWookie> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.OnWookie deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.OnWookie fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -249,29 +249,29 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.OnWookie value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.OnWookie value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy);
+      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
     }
   }
 
-  public enum OnHuman implements DataAdapter<TestOperation.OnHuman> {
+  public enum OnHuman implements Adapter<TestOperation.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("profilePictureUrl", "friends");
 
     @Override
-    public TestOperation.OnHuman deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.OnHuman fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _profilePictureUrl = null;
       List<TestOperation.Friend1> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friends = new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).deserializeData(reader, context); break;
+          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -285,41 +285,41 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.OnHuman value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.OnHuman value) throws IOException {
       writer.name("profilePictureUrl");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profilePictureUrl);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl);
 
       writer.name("friends");
-      new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).serializeData(writer, value.friends, context);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
-  public enum Friend1 implements DataAdapter<TestOperation.Friend1> {
+  public enum Friend1 implements Adapter<TestOperation.Friend1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "isFamous");
 
     @Override
-    public TestOperation.Friend1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Friend1 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       Boolean _isFamous = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie1 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.deserializeData(reader, context);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestOperation.Friend1(
@@ -330,34 +330,34 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Friend1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Friend1 value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("isFamous");
-      Adapters.NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous);
+      Adapters.NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.serializeData(writer, value.onWookie, context);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
       }
     }
   }
 
-  public enum OnWookie1 implements DataAdapter<TestOperation.OnWookie1> {
+  public enum OnWookie1 implements Adapter<TestOperation.OnWookie1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race");
 
     @Override
-    public TestOperation.OnWookie1 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.OnWookie1 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Race _race = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.deserializeData(reader, context); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -370,29 +370,29 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.OnWookie1 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.OnWookie1 value) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.serializeData(writer, value.race, context);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
     }
   }
 
-  public enum OnWookie2 implements DataAdapter<TestOperation.OnWookie2> {
+  public enum OnWookie2 implements Adapter<TestOperation.OnWookie2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race", "friends");
 
     @Override
-    public TestOperation.OnWookie2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.OnWookie2 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Race _race = null;
       List<TestOperation.Friend2> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.deserializeData(reader, context); break;
-          case 1: _friends = new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -407,30 +407,30 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.OnWookie2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.OnWookie2 value) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.serializeData(writer, value.race, context);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
 
       writer.name("friends");
-      new ListDataAdapter<>(new ObjectDataAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).serializeData(writer, value.friends, context);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
-  public enum Friend2 implements DataAdapter<TestOperation.Friend2> {
+  public enum Friend2 implements Adapter<TestOperation.Friend2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.Friend2 deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestOperation.Friend2 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -441,10 +441,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestOperation.Friend2 value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestOperation.Friend2 value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy);
+      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
     }
   }
 }

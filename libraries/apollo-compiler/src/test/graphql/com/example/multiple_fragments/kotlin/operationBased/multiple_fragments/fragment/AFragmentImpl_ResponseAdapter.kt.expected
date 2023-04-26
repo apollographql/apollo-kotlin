@@ -5,8 +5,8 @@
 //
 package com.example.multiple_fragments.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,17 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
-  public object AFragment : DataAdapter<com.example.multiple_fragments.fragment.AFragment> {
+  public object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.multiple_fragments.fragment.AFragment {
       var _node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj(true).nullable().deserializeData(reader, context)
+          0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,26 +38,25 @@ public object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.multiple_fragments.fragment.AFragment,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("node")
-      Node.obj(true).nullable().serializeData(writer, value.node, context)
+      Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
-    private object Node : DataAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
+    private object Node : Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,17 +66,17 @@ public object AFragmentImpl_ResponseAdapter {
         }
 
         var _fragment1: Fragment1? = null
-        if (possibleTypes("ANode").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.deserializeData(reader,
-              context)
+          _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
+              customScalarAdapters)
         }
 
         var _fragment2: Fragment2? = null
-        if (possibleTypes("ANode").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.deserializeData(reader,
-              context)
+          _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
+              customScalarAdapters)
         }
 
         return com.example.multiple_fragments.fragment.AFragment.Node(
@@ -88,22 +86,22 @@ public object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.multiple_fragments.fragment.AFragment.Node,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.fragment1 != null) {
-          com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.serializeData(writer,
-              value.fragment1, context)
+          com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer,
+              customScalarAdapters, value.fragment1)
         }
 
         if (value.fragment2 != null) {
-          com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.serializeData(writer,
-              value.fragment2, context)
+          com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer,
+              customScalarAdapters, value.fragment2)
         }
       }
     }

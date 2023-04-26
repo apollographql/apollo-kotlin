@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,17 +16,16 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails :
-      DataAdapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
+      Adapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_spread_with_include_directive.fragment.HumanDetails {
       var _homePlanet: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -36,13 +35,13 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragment_spread_with_include_directive.fragment.HumanDetails,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("homePlanet")
-      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
     }
   }
 }

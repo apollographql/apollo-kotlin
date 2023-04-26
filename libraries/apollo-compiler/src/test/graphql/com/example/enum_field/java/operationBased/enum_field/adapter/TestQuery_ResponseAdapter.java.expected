@@ -5,8 +5,9 @@
 //
 package com.example.enum_field.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.TestQuery;
@@ -21,22 +22,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("gravity", "gravityAsEnum");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Gravity _gravity = null;
       GravityAsEnum _gravityAsEnum = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _gravity = new NullableDataAdapter<>(Gravity_ResponseAdapter.INSTANCE).deserializeData(reader, context); break;
-          case 1: _gravityAsEnum = new NullableDataAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).deserializeData(reader, context); break;
+          case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,13 +49,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("gravity");
-      new NullableDataAdapter<>(Gravity_ResponseAdapter.INSTANCE).serializeData(writer, value.gravity, context);
+      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
 
       writer.name("gravityAsEnum");
-      new NullableDataAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).serializeData(writer, value.gravityAsEnum, context);
+      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravityAsEnum);
     }
   }
 }

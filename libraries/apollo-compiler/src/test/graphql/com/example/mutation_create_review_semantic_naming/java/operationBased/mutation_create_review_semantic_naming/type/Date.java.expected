@@ -5,11 +5,11 @@
 //
 package com.example.mutation_create_review_semantic_naming.type;
 
-import com.apollographql.apollo3.api.ScalarType;
+import com.apollographql.apollo3.api.CustomScalarType;
 
 /**
  * The `Date` scalar type represents date format.
  */
 public class Date {
-  public static ScalarType type = new ScalarType("Date", "java.lang.Object");
+  public static CustomScalarType type = new CustomScalarType("Date", "java.lang.Object");
 }

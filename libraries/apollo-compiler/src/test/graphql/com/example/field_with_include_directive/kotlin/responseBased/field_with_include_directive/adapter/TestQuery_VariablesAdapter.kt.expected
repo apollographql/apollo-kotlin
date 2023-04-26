@@ -5,22 +5,27 @@
 //
 package com.example.field_with_include_directive.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.BooleanAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.VariablesAdapter
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.field_with_include_directive.TestQuery
+import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
-  public override fun serializeVariables(
+public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      TestQuery = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery,
-    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
     writer.name("includeName")
-    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.includeName)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.includeName)
     writer.name("skipFriends")
-    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipFriends)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.skipFriends)
   }
 }

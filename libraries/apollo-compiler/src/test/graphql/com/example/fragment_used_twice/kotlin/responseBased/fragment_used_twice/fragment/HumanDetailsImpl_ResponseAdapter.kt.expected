@@ -5,40 +5,40 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.Any
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object Data : DataAdapter<HumanDetailsImpl.Data> {
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): HumanDetailsImpl.Data {
+  public object Data : Adapter<HumanDetailsImpl.Data> {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        HumanDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> CharacterData.deserializeData(reader, context, __typename)
+        -> CharacterData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.deserializeData(reader, context, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       when(value) {
-        is HumanDetailsImpl.CharacterData -> CharacterData.serializeData(writer, value, context)
-        is HumanDetailsImpl.OtherData -> OtherData.serializeData(writer, value, context)
+        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, customScalarAdapters,
+            value)
+        is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }
   }
@@ -46,20 +46,20 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object CharacterData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "birthDate")
 
-    public fun deserializeData(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.CharacterData {
       var __typename: String? = typename
       var _name: String? = null
       var _birthDate: Any? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _birthDate = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -71,37 +71,37 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeData(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.CharacterData,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.birthDate)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
     }
   }
 
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public fun deserializeData(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.OtherData {
       var __typename: String? = typename
       var _name: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -112,16 +112,16 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeData(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.OtherData,
-      @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.`companion`.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("companion")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _companion: TestQuery.Companion_? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _companion = Companion.obj().nullable().deserializeData(reader, context)
+          0 -> _companion = Companion.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,26 +38,26 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("companion")
-      Companion.obj().nullable().serializeData(writer, value.`companion`, context)
+      Companion.obj().nullable().toJson(writer, customScalarAdapters, value.`companion`)
     }
   }
 
-  public object Companion : DataAdapter<TestQuery.Companion_> {
+  public object Companion : Adapter<TestQuery.Companion_> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Companion_ {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Companion_ {
       var _foo: Int? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _foo = IntAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -67,13 +67,13 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Companion_,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("foo")
-      IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.foo)
+      IntAdapter.toJson(writer, customScalarAdapters, value.foo)
     }
   }
 }

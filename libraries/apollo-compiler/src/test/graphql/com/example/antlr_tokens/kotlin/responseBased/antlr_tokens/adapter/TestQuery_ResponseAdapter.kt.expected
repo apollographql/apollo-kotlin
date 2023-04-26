@@ -5,8 +5,8 @@
 //
 package com.example.antlr_tokens.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,16 +18,17 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().deserializeData(reader, context)
+          0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -37,30 +38,30 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("typeWithGraphQLKeywords")
-      TypeWithGraphQLKeywords.obj().nullable().serializeData(writer, value.typeWithGraphQLKeywords,
-          context)
+      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, customScalarAdapters,
+          value.typeWithGraphQLKeywords)
     }
 
-    private object TypeWithGraphQLKeywords : DataAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
+    private object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.TypeWithGraphQLKeywords {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.TypeWithGraphQLKeywords {
         var _on: String? = null
         var _null: String? = null
         var _alias: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _on = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _null = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _alias = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _null = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -72,19 +73,19 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.TypeWithGraphQLKeywords,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("on")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.on)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.on)
 
         writer.name("null")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`null`)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.`null`)
 
         writer.name("alias")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.alias)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.alias)
       }
     }
   }

@@ -5,8 +5,8 @@
 //
 package com.example.not_all_combinations_are_needed.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -21,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _root: TestQuery.Data.Root? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _root = Root.obj(true).nullable().deserializeData(reader, context)
+          0 -> _root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,25 +40,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("root")
-      Root.obj(true).nullable().serializeData(writer, value.root, context)
+      Root.obj(true).nullable().toJson(writer, customScalarAdapters, value.root)
     }
 
-    private object Root : DataAdapter<TestQuery.Data.Root> {
+    private object Root : Adapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Root {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Root {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,10 +68,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.deserializeData(reader,
-              context)
+          _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Root(
@@ -80,32 +80,32 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Root,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.serializeData(writer,
-              value.onA, context)
+          com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer,
+              customScalarAdapters, value.onA)
         }
       }
 
-      private object OnA : DataAdapter<TestQuery.Data.Root.OnA> {
+      private object OnA : Adapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        public override fun deserializeData(reader: JsonReader,
-            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Root.OnA {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -115,10 +115,10 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","SomeBC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+          if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
-            _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.deserializeData(reader,
-                context)
+            _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
+                customScalarAdapters)
           }
 
           return TestQuery.Data.Root.OnA(
@@ -128,40 +128,40 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeData(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Root.OnA,
-          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("fieldA1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
-            com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.serializeData(writer,
-                value.onB, context)
+            com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer,
+                customScalarAdapters, value.onB)
           }
         }
 
-        private object OnB : DataAdapter<TestQuery.Data.Root.OnA.OnB> {
+        private object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeData(reader: JsonReader,
-              context: DataAdapter.DeserializeDataContext): TestQuery.Data.Root.OnA.OnB {
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA.OnB {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             reader.rewind()
-            val _bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.deserializeData(reader,
-                context)
+            val _bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.fromJson(reader,
+                customScalarAdapters)
 
             return TestQuery.Data.Root.OnA.OnB(
               __typename = __typename!!,
@@ -169,16 +169,16 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun serializeData(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Root.OnA.OnB,
-            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.serializeData(writer,
-                value.bFragment, context)
+            com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.toJson(writer,
+                customScalarAdapters, value.bFragment)
           }
         }
       }

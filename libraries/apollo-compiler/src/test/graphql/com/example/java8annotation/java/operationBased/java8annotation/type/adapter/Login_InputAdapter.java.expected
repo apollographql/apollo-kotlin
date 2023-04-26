@@ -5,9 +5,9 @@
 //
 package com.example.java8annotation.type.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.type.Login;
@@ -15,19 +15,19 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum Login_InputAdapter implements DataAdapter<Login> {
+public enum Login_InputAdapter implements Adapter<Login> {
   INSTANCE;
 
   @Override
-  public Login deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context) throws
+  public Login fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
       IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void serializeData(JsonWriter writer, Login value,
-      DataAdapter.SerializeDataContext context) throws IOException {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Login value)
+      throws IOException {
     writer.name("email");
-    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.email);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.email);
   }
 }

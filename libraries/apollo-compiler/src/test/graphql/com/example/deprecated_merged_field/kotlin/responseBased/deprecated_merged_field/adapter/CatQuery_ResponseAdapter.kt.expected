@@ -5,8 +5,8 @@
 //
 package com.example.deprecated_merged_field.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -15,21 +15,20 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.deprecated_merged_field.CatQuery
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
-  public object Data : DataAdapter<CatQuery.Data> {
+  public object Data : Adapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): CatQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj().nullable().deserializeData(reader, context)
+          0 -> _cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,35 +38,36 @@ public object CatQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CatQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("cat")
-      Cat.obj().nullable().serializeData(writer, value.cat, context)
+      Cat.obj().nullable().toJson(writer, customScalarAdapters, value.cat)
     }
 
-    private object Cat : DataAdapter<CatQuery.Data.Cat> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): CatQuery.Data.Cat {
+    private object Cat : Adapter<CatQuery.Data.Cat> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          CatQuery.Data.Cat {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> OtherAnimalCat.deserializeData(reader, context, __typename)
+          -> OtherAnimalCat.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherCat.deserializeData(reader, context, __typename)
+          -> OtherCat.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Data.Cat,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
-          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.serializeData(writer, value, context)
-          is CatQuery.Data.OtherCat -> OtherCat.serializeData(writer, value, context)
+          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, customScalarAdapters,
+              value)
+          is CatQuery.Data.OtherCat -> OtherCat.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -75,16 +75,16 @@ public object CatQuery_ResponseAdapter {
     public object OtherCat {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherCat {
         var __typename: String? = typename
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -94,31 +94,31 @@ public object CatQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Data.OtherCat,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
 
     public object OtherAnimalCat {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherAnimalCat {
         var __typename: String? = typename
         var _name: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -129,16 +129,16 @@ public object CatQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Data.OtherAnimalCat,
-        @Suppress("UNUSED_PARAMETER") context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }
