@@ -39,8 +39,7 @@ class GradleToolingModelService(
 ) : Disposable {
   private var gradleHasSyncedDisposable: CheckedDisposable? = null
 
-  private var gradleCancellation: CancellationTokenSource? = null
-  private var abortRequested: Boolean = false
+  private var fetchToolingModelsTask: FetchToolingModelsTask? = null
 
   var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
 
@@ -106,12 +105,12 @@ class GradleToolingModelService(
   private fun fetchToolingModels() {
     logd()
 
-    if (gradleCancellation != null) {
+    if (fetchToolingModelsTask?.gradleCancellation != null) {
       logd("Already running")
       return
     }
 
-    FetchToolingModelsTask().queue()
+    fetchToolingModelsTask = FetchToolingModelsTask().apply { queue() }
   }
 
   private inner class FetchToolingModelsTask : Task.Backgroundable(
@@ -120,9 +119,11 @@ class GradleToolingModelService(
       ApolloBundle.message("GradleToolingModelService.fetchToolingModels.progress"),
       true,
   ) {
+    var abortRequested: Boolean = false
+    var gradleCancellation: CancellationTokenSource? = null
+
     override fun run(indicator: ProgressIndicator) {
       val rootProjectPath = project.getGradleRootPath() ?: return
-      abortRequested = false
       val gradleExecutionHelper = GradleExecutionHelper()
       val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
       val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
@@ -147,17 +148,7 @@ class GradleToolingModelService(
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
       indicator.isIndeterminate = false
       val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
-        if (abortRequested) {
-          logd("Aborted")
-          return@run
-        }
-        try {
-          ProgressManager.checkCanceled()
-        } catch (e: ProcessCanceledException) {
-          logd("Canceled by user")
-          return@run
-        }
-
+        if (isAbortRequested())          return@run
         indicator.fraction = (index + 1).toDouble() / allApolloGradleProjects.size
         gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
           gradleCancellation = GradleConnector.newCancellationTokenSource()
@@ -177,24 +168,47 @@ class GradleToolingModelService(
       }
 
       logd("allToolingModels=$allToolingModels")
+      if (isAbortRequested()) return
       computeGraphQLProjectFiles(allToolingModels)
+    }
+
+    private fun isAbortRequested(): Boolean {
+      if (abortRequested) {
+        logd("Aborted")
+        return true
+      }
+      try {
+        ProgressManager.checkCanceled()
+      } catch (e: ProcessCanceledException) {
+        logd("Canceled by user")
+        return true
+      }
+      return false
     }
 
     override fun onCancel() {
       logd()
       abortFetchToolingModels()
     }
+
+    override fun onFinished() {
+      fetchToolingModelsTask = null
+    }
   }
 
   private fun computeGraphQLProjectFiles(toolingModels: List<ApolloGradleToolingModel>) {
     // Compute the GraphQLProjectFiles, taking into account the dependencies between projects
+    val allKnownProjectNames = toolingModels.map { it.projectName }
     val projectServiceToGraphQLProjectFiles = mutableMapOf<String, GraphQLProjectFiles>()
     fun getGraphQLProjectFiles(projectName: String, serviceName: String): GraphQLProjectFiles {
       val key = "$projectName/$serviceName"
       return projectServiceToGraphQLProjectFiles.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
-        val dependenciesProjectFiles = serviceInfo.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
+        val dependenciesProjectFiles = serviceInfo.upstreamProjects
+            // The tooling model for some upstream projects might not have been fetched successfully - filter them out
+            .filter { upstreamProject -> upstreamProject in allKnownProjectNames }
+            .map { getGraphQLProjectFiles(it, serviceName) }
         GraphQLProjectFiles(
             name = key,
             schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
@@ -228,9 +242,9 @@ class GradleToolingModelService(
 
   private fun abortFetchToolingModels() {
     logd()
-    abortRequested = true
-    gradleCancellation?.cancel()
-    gradleCancellation = null
+    fetchToolingModelsTask?.abortRequested = true
+    fetchToolingModelsTask?.gradleCancellation?.cancel()
+    fetchToolingModelsTask = null
   }
 
   override fun dispose() {
