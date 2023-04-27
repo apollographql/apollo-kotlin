@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
@@ -67,9 +68,9 @@ public class GetHero() : Query<GetHero.Data> {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       public companion object {
-        public fun Hero.characterName() = this as? CharacterName
+        public fun Hero.characterName() = this.unsafeCastOrCast<CharacterName>()
 
-        public fun Hero.characterAppearsIn() = this as? CharacterAppearsIn
+        public fun Hero.characterAppearsIn() = this.unsafeCastOrCast<CharacterAppearsIn>()
       }
     }
   }

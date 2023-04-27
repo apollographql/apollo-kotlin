@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.hero_name.adapter.TestQuery_ResponseAdapter
 import com.example.hero_name.selections.TestQuerySelections
 import kotlin.Any
@@ -63,7 +64,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val birthDate: Any
 
       public companion object {
-        public fun Hero.asDroid() = this as? DroidHero
+        public fun Hero.asDroid() = this.unsafeCastOrCast<DroidHero>()
       }
     }
 

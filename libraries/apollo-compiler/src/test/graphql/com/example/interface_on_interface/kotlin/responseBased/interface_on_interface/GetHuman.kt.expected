@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter
 import com.example.interface_on_interface.selections.GetHumanSelections
 import kotlin.Any
@@ -61,7 +62,7 @@ public class GetHuman() : Query<GetHuman.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Node.asHuman() = this as? HumanNode
+        public fun Node.asHuman() = this.unsafeCastOrCast<HumanNode>()
       }
     }
 

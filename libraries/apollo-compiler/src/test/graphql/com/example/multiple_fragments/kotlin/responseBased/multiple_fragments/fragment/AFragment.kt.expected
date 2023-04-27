@@ -5,6 +5,7 @@
 //
 package com.example.multiple_fragments.fragment
 
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 
 public interface AFragment {
@@ -14,11 +15,11 @@ public interface AFragment {
     public val __typename: String
 
     public companion object {
-      public fun Node.fragment1() = this as? Fragment1
+      public fun Node.fragment1() = this.unsafeCastOrCast<Fragment1>()
 
-      public fun Node.fragment2() = this as? Fragment2
+      public fun Node.fragment2() = this.unsafeCastOrCast<Fragment2>()
 
-      public fun Node.asANode() = this as? ANodeNode
+      public fun Node.asANode() = this.unsafeCastOrCast<ANodeNode>()
     }
   }
 

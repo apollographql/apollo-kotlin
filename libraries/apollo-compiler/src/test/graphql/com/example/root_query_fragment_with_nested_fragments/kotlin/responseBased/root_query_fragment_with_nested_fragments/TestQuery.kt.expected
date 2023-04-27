@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragment
 import com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment
@@ -63,7 +64,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val name: String,
     ) : HeroFragment, QueryFragment.Hero {
       public companion object {
-        public fun Hero.heroFragment() = this as? HeroFragment
+        public fun Hero.heroFragment() = this.unsafeCastOrCast<HeroFragment>()
       }
     }
 
@@ -79,7 +80,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val primaryFunction: String?,
     ) : DroidFragment, QueryFragment.Droid {
       public companion object {
-        public fun Droid.droidFragment() = this as? DroidFragment
+        public fun Droid.droidFragment() = this.unsafeCastOrCast<DroidFragment>()
       }
     }
 
@@ -96,7 +97,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     ) : QueryFragment.Human
 
     public companion object {
-      public fun Data.queryFragment() = this as? QueryFragment
+      public fun Data.queryFragment() = this.unsafeCastOrCast<QueryFragment>()
     }
   }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter
 import com.example.inline_fragments_with_friends.selections.TestQuerySelections
 import com.example.inline_fragments_with_friends.type.Episode
@@ -61,9 +62,9 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val name: String
 
       public companion object {
-        public fun Hero.asHuman() = this as? HumanHero
+        public fun Hero.asHuman() = this.unsafeCastOrCast<HumanHero>()
 
-        public fun Hero.asDroid() = this as? DroidHero
+        public fun Hero.asDroid() = this.unsafeCastOrCast<DroidHero>()
       }
     }
 

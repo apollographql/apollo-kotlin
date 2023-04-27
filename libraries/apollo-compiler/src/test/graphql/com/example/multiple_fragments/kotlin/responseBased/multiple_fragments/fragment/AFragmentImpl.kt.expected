@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.multiple_fragments.fragment.selections.aFragmentSelections
 import com.example.multiple_fragments.type.A
 import kotlin.Any
@@ -45,11 +46,11 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
       public override val __typename: String
 
       public companion object {
-        public fun Node.fragment1() = this as? Fragment1
+        public fun Node.fragment1() = this.unsafeCastOrCast<Fragment1>()
 
-        public fun Node.fragment2() = this as? Fragment2
+        public fun Node.fragment2() = this.unsafeCastOrCast<Fragment2>()
 
-        public fun Node.asANode() = this as? ANodeNode
+        public fun Node.asANode() = this.unsafeCastOrCast<ANodeNode>()
       }
     }
 

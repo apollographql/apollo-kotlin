@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.nested_named_fragments.adapter.AllStarships_ResponseAdapter
 import com.example.nested_named_fragments.fragment.PilotFragment
 import com.example.nested_named_fragments.fragment.PlanetFragment
@@ -114,19 +115,19 @@ public class AllStarships() : Query<AllStarships.Data> {
                 ) : PlanetFragment, PilotFragment.Homeworld,
                     StarshipFragment.PilotConnection.Edge.Node.Homeworld {
                   public companion object {
-                    public fun Homeworld.planetFragment() = this as? PlanetFragment
+                    public fun Homeworld.planetFragment() = this.unsafeCastOrCast<PlanetFragment>()
                   }
                 }
 
                 public companion object {
-                  public fun Node.pilotFragment() = this as? PilotFragment
+                  public fun Node.pilotFragment() = this.unsafeCastOrCast<PilotFragment>()
                 }
               }
             }
           }
 
           public companion object {
-            public fun Node.starshipFragment() = this as? StarshipFragment
+            public fun Node.starshipFragment() = this.unsafeCastOrCast<StarshipFragment>()
           }
         }
       }

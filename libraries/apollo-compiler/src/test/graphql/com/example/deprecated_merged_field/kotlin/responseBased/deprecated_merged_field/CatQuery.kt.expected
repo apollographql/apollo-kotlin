@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.deprecated_merged_field.adapter.CatQuery_ResponseAdapter
 import com.example.deprecated_merged_field.fragment.AnimalFragment
 import com.example.deprecated_merged_field.fragment.CatAnimalFragment
@@ -57,11 +58,11 @@ public class CatQuery() : Query<CatQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Cat.animalFragment() = this as? AnimalFragment
+        public fun Cat.animalFragment() = this.unsafeCastOrCast<AnimalFragment>()
 
-        public fun Cat.asAnimal() = this as? AnimalCat
+        public fun Cat.asAnimal() = this.unsafeCastOrCast<AnimalCat>()
 
-        public fun Cat.asAnimalDog() = this as? AnimalDogCat
+        public fun Cat.asAnimalDog() = this.unsafeCastOrCast<AnimalDogCat>()
       }
     }
 

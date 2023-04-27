@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fragment_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter
 import com.example.fragment_with_multiple_fieldsets.fragment.AIFragment
 import com.example.fragment_with_multiple_fieldsets.fragment.IFragment
@@ -55,9 +56,9 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val __typename: String
 
       public companion object {
-        public fun I.iFragment() = this as? IFragment
+        public fun I.iFragment() = this.unsafeCastOrCast<IFragment>()
 
-        public fun I.asA() = this as? AI
+        public fun I.asA() = this.unsafeCastOrCast<AI>()
       }
     }
 

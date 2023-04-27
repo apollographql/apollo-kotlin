@@ -5,6 +5,7 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.Any
 import kotlin.String
 
@@ -17,9 +18,9 @@ public interface HumanDetails {
   public val name: String
 
   public companion object {
-    public fun HumanDetails.characterDetails() = this as? CharacterDetails
+    public fun HumanDetails.characterDetails() = this.unsafeCastOrCast<CharacterDetails>()
 
-    public fun HumanDetails.asCharacter() = this as? CharacterHumanDetails
+    public fun HumanDetails.asCharacter() = this.unsafeCastOrCast<CharacterHumanDetails>()
   }
 }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.simple_union.adapter.AnimalQuery_ResponseAdapter
 import com.example.simple_union.fragment.CatFragment
 import com.example.simple_union.fragment.DogFragment
@@ -55,13 +56,13 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Animal.catFragment() = this as? CatFragment
+        public fun Animal.catFragment() = this.unsafeCastOrCast<CatFragment>()
 
-        public fun Animal.dogFragment() = this as? DogFragment
+        public fun Animal.dogFragment() = this.unsafeCastOrCast<DogFragment>()
 
-        public fun Animal.asCat() = this as? CatAnimal
+        public fun Animal.asCat() = this.unsafeCastOrCast<CatAnimal>()
 
-        public fun Animal.asDog() = this as? DogAnimal
+        public fun Animal.asDog() = this.unsafeCastOrCast<DogAnimal>()
       }
     }
 

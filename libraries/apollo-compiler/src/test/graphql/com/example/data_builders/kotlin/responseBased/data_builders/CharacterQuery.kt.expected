@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.data_builders.adapter.CharacterQuery_ResponseAdapter
 import com.example.data_builders.fragment.DroidFragment
 import com.example.data_builders.fragment.HumanFragment
@@ -65,13 +66,13 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
       public val name: String
 
       public companion object {
-        public fun Character.humanFragment() = this as? HumanFragment
+        public fun Character.humanFragment() = this.unsafeCastOrCast<HumanFragment>()
 
-        public fun Character.droidFragment() = this as? DroidFragment
+        public fun Character.droidFragment() = this.unsafeCastOrCast<DroidFragment>()
 
-        public fun Character.asHuman() = this as? HumanCharacter
+        public fun Character.asHuman() = this.unsafeCastOrCast<HumanCharacter>()
 
-        public fun Character.asDroid() = this as? DroidCharacter
+        public fun Character.asDroid() = this.unsafeCastOrCast<DroidCharacter>()
       }
     }
 

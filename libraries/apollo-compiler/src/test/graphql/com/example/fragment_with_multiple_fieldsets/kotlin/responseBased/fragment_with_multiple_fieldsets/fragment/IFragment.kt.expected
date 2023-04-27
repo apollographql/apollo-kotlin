@@ -5,13 +5,14 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 
 public interface IFragment {
   public val __typename: String
 
   public companion object {
-    public fun IFragment.asA() = this as? AIFragment
+    public fun IFragment.asA() = this.unsafeCastOrCast<AIFragment>()
   }
 }
 

@@ -5,6 +5,7 @@
 //
 package com.example.nested_named_fragments.fragment
 
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 
 public interface PilotFragment {
@@ -27,7 +28,7 @@ public interface PilotFragment {
     public override val name: String?
 
     public companion object {
-      public fun Homeworld.planetFragment() = this as? PlanetFragment
+      public fun Homeworld.planetFragment() = this.unsafeCastOrCast<PlanetFragment>()
     }
   }
 }

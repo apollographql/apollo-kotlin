@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fragment_spread_with_nested_fields.adapter.TestQuery_ResponseAdapter
 import com.example.fragment_spread_with_nested_fields.fragment.HeroDetails
 import com.example.fragment_spread_with_nested_fields.selections.TestQuerySelections
@@ -90,7 +91,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       }
 
       public companion object {
-        public fun Hero.heroDetails() = this as? HeroDetails
+        public fun Hero.heroDetails() = this.unsafeCastOrCast<HeroDetails>()
       }
     }
   }

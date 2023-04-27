@@ -5,6 +5,7 @@
 //
 package com.example.deprecated_merged_field.fragment
 
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.Deprecated
 import kotlin.String
 
@@ -12,9 +13,9 @@ public interface AnimalFragment {
   public val __typename: String
 
   public companion object {
-    public fun AnimalFragment.asCat() = this as? CatAnimalFragment
+    public fun AnimalFragment.asCat() = this.unsafeCastOrCast<CatAnimalFragment>()
 
-    public fun AnimalFragment.asDog() = this as? DogAnimalFragment
+    public fun AnimalFragment.asDog() = this.unsafeCastOrCast<DogAnimalFragment>()
   }
 }
 

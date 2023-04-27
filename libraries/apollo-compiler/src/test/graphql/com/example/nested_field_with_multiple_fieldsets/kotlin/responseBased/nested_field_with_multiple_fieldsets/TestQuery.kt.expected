@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter
 import com.example.nested_field_with_multiple_fieldsets.selections.TestQuerySelections
 import kotlin.Any
@@ -60,7 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public val scalar1: String?
 
         public companion object {
-          public fun Iface2.asImpl2() = this as? Impl2Iface2
+          public fun Iface2.asImpl2() = this.unsafeCastOrCast<Impl2Iface2>()
         }
       }
 
@@ -73,7 +74,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       }
 
       public companion object {
-        public fun Iface1.asImpl1() = this as? Impl1Iface1
+        public fun Iface1.asImpl1() = this.unsafeCastOrCast<Impl1Iface1>()
       }
     }
 
@@ -89,7 +90,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public val scalar3: String?
 
         public companion object {
-          public fun Iface2.asImpl2() = this as? Impl2Iface2
+          public fun Iface2.asImpl2() = this.unsafeCastOrCast<Impl2Iface2>()
         }
       }
 
@@ -118,7 +119,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public override val scalar1: String?
 
         public companion object {
-          public fun Iface2.asImpl2() = this as? Impl2Iface2
+          public fun Iface2.asImpl2() = this.unsafeCastOrCast<Impl2Iface2>()
         }
       }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter
 import com.example.decapitalized_fields.fragment.HorseFragment
 import com.example.decapitalized_fields.selections.TestQuerySelections
@@ -60,7 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       ) : HorseFragment.Cow
 
       public companion object {
-        public fun Horse.horseFragment() = this as? HorseFragment
+        public fun Horse.horseFragment() = this.unsafeCastOrCast<HorseFragment>()
       }
     }
   }

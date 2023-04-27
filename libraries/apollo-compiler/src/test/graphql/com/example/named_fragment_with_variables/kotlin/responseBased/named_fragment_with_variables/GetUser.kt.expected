@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter
 import com.example.named_fragment_with_variables.adapter.GetUser_VariablesAdapter
 import com.example.named_fragment_with_variables.fragment.QueryFragment
@@ -64,13 +65,13 @@ public data class GetUser(
         public override val avatar: String,
       ) : UserFragment, QueryFragment.Organization.User {
         public companion object {
-          public fun User.userFragment() = this as? UserFragment
+          public fun User.userFragment() = this.unsafeCastOrCast<UserFragment>()
         }
       }
     }
 
     public companion object {
-      public fun Data.queryFragment() = this as? QueryFragment
+      public fun Data.queryFragment() = this.unsafeCastOrCast<QueryFragment>()
     }
   }
 

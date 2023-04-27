@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fragment_with_inline_fragment.fragment.selections.HeroDetailsSelections
 import com.example.fragment_with_inline_fragment.type.Character
 import kotlin.Any
@@ -79,13 +80,13 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     }
 
     public companion object {
-      public fun Data.humanDetails() = this as? HumanDetails
+      public fun Data.humanDetails() = this.unsafeCastOrCast<HumanDetails>()
 
-      public fun Data.droidDetails() = this as? DroidDetails
+      public fun Data.droidDetails() = this.unsafeCastOrCast<DroidDetails>()
 
-      public fun Data.asHuman() = this as? HumanData
+      public fun Data.asHuman() = this.unsafeCastOrCast<HumanData>()
 
-      public fun Data.asDroid() = this as? DroidData
+      public fun Data.asDroid() = this.unsafeCastOrCast<DroidData>()
     }
   }
 
