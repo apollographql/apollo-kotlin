@@ -4,11 +4,13 @@ import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrAccessor
@@ -30,17 +32,18 @@ internal class ModelBuilder(
     private val path: List<String>,
     private val hasSubclassesInSamePackage: Boolean,
     private val adaptableWith: String?,
-    private val reservedNames: Set<String> = emptySet()
+    private val reservedNames: Set<String> = emptySet(),
+    private val isTopLevel: Boolean = false
 ) {
-  private val nestedBuilders = model.modelGroups.flatMap {
-    it.models.map {
+  private val nestedBuilders = model.modelGroups.flatMap { modelGroup ->
+    modelGroup.models.map {
       ModelBuilder(
           context = context,
           model = it,
           superClassName = null,
           path = path + model.modelName,
           hasSubclassesInSamePackage = hasSubclassesInSamePackage,
-          adaptableWith = null
+          adaptableWith = null,
       )
     }
   }
@@ -62,7 +65,7 @@ internal class ModelBuilder(
     val properties = properties.map {
       PropertySpec.builder(
           context.layout.propertyName(it.info.responseName),
-          context.resolver.resolveIrType(it.info.type)
+          context.resolver.resolveIrType(it.info.type, context.jsExport)
       )
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
           .maybeAddDescription(it.info.description)
@@ -97,26 +100,40 @@ internal class ModelBuilder(
           addAnnotation(annotationSpec)
         }
         .addTypes(nestedTypes)
+        .applyIf(isTopLevel) { maybeAddJsExport(context) }
         .applyIf(accessors.isNotEmpty()) {
-          addType(companionTypeSpec(this@typeSpec))
+          val accessorFunSpecs = buildAccessorFunSpecs(this@typeSpec)
+          if (!context.jsExport) {
+            addType(
+              TypeSpec.companionObjectBuilder()
+              .addFunctions(accessorFunSpecs)
+              .build()
+            )
+          }
         }
         .addSuperinterfaces(superInterfaces)
         .build()
   }
 
-  private fun companionTypeSpec(model: IrModel): TypeSpec {
-    val funSpecs = model.accessors.map { accessor ->
+  private fun buildAccessorFunSpecs(model: IrModel): List<FunSpec> {
+    return model.accessors.map { accessor ->
+
       FunSpec.builder(accessor.funName())
-          .receiver(context.resolver.resolveModel(model.id))
-          .addCode("return·this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
+          .applyIf(!context.jsExport) {
+            receiver(context.resolver.resolveModel(model.id))
+          }
+          // TODO: Else? We need top level declarations for extension functions
+          .addCode(
+            "return·this.%M<%T>()\n",
+            KotlinMemberNames.unsafeCastOrCast,
+            context.resolver.resolveModel(accessor.returnedModelId)
+          )
           .build()
     }
-    return TypeSpec.companionObjectBuilder()
-        .addFunctions(funSpecs)
-        .build()
   }
 
   private fun IrAccessor.funName(): String {
+    // TODO
     return when (this) {
       is IrFragmentAccessor -> this.fragmentName.decapitalizeFirstLetter()
       is IrSubtypeAccessor -> {

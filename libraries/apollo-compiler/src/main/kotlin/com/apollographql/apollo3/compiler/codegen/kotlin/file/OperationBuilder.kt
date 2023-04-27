@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
@@ -58,7 +59,7 @@ internal class OperationBuilder(
         path = listOf(packageName, simpleName),
         hasSubclassesInSamePackage = true,
         adaptableWith = if (it.id == operation.dataModelGroup.baseModelId) it.id else null,
-        reservedNames = setOf("Companion")
+        reservedNames = setOf("Companion"),
     )
   }
 
@@ -83,11 +84,12 @@ internal class OperationBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
         .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
+        .maybeAddJsExport(context, suppressNonExportable = true)
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())
         .addFunction(serializeVariablesFunSpec())
-        .addFunction(adapterFunSpec(context.resolver, operation.dataProperty))
+        .addFunction(adapterFunSpec(context, operation.dataProperty))
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
@@ -97,7 +99,8 @@ internal class OperationBuilder(
 
   private fun serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
-      emptyMessage = "This operation doesn't have any variable"
+      emptyMessage = "This operation doesn't have any variable",
+      jsExport = context.jsExport
   )
 
   private fun dataTypeSpecs(): List<TypeSpec> {
@@ -195,7 +198,7 @@ internal class OperationBuilder(
     return rootFieldFunSpec(
         context,
         operation.typeCondition,
-        context.resolver.resolveOperationSelections(operation.name)
+        context.resolver.resolveOperationSelections(operation.name),
     )
   }
 }

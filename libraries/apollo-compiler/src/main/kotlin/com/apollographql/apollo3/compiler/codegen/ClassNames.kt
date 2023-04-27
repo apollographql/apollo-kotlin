@@ -9,6 +9,7 @@ internal object ClassNames {
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
   private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
+  private const val kotlinJsPackageName = "kotlin.js"
 
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
   val InterfaceType = ResolverClassName(apolloApiPackageName, "InterfaceType")
@@ -59,4 +60,5 @@ internal object ClassNames {
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
   val JetBrainsNullable = ResolverClassName(jetbrainsAnnotationsPackageName, "Nullable")
   val JetBrainsNonNull = ResolverClassName(jetbrainsAnnotationsPackageName, "NotNull")
+  val JsExport = ResolverClassName(kotlinJsPackageName, "JsExport")
 }

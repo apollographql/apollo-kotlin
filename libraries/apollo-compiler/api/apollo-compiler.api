@@ -139,8 +139,8 @@ public final class com/apollographql/apollo3/compiler/JavaNullable$Companion {
 }
 
 public final class com/apollographql/apollo3/compiler/KotlinCodegenOptions {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;Z)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAddJvmOverloads ()Z
 	public final fun getGenerateAsInternal ()Z
 	public final fun getGenerateFilterNotNull ()Z
@@ -201,6 +201,7 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field defaultGenerateResponseFields Z
 	public static final field defaultGenerateSchema Z
 	public static final field defaultGeneratedSchemaName Ljava/lang/String;
+	public static final field defaultJsExport Z
 	public static final field defaultRequiresOptInAnnotation Ljava/lang/String;
 	public static final field defaultUseSemanticNaming Z
 	public static final field defaultWarnOnDeprecatedUsages Z

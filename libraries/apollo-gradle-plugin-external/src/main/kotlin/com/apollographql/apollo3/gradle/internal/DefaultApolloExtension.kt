@@ -636,6 +636,7 @@ abstract class DefaultApolloExtension(
     task.generatedSchemaName.set(service.generatedSchemaName)
     task.generateModelBuilders.set(service.generateModelBuilders)
     task.addJvmOverloads.set(service.addJvmOverloads)
+    task.jsExport.set(service.jsExport)
     task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
     task.classesForEnumsMatching.set(service.classesForEnumsMatching)
     task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)

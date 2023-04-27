@@ -224,7 +224,7 @@ private fun IrMapProperty.toPropertySpec(context: KotlinContext): PropertySpec {
   return PropertySpec.builder(context.layout.propertyName(name), context.resolver.resolveIrType2(type))
       .mutable(true)
       .apply {
-        val initializer = context.resolver.adapterInitializer2(type)
+        val initializer = context.resolver.adapterInitializer2(type, context.jsExport)
         if (initializer == null) {
           // Composite or no mapping registered (Int/Boolean/String/...)
           delegate(CodeBlock.of(Identifier.__fields))

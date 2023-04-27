@@ -13,6 +13,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
+import kotlin.js.ExperimentalJsExport
 
 /**
  * @param addTypenameArgument whether to add a `typename` argument to the fromJson method

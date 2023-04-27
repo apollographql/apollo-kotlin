@@ -1,29 +1,20 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.block
-import com.apollographql.apollo3.compiler.codegen.Identifier.resolver
-import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
-import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -81,10 +72,11 @@ internal class FragmentBuilder(
         .maybeAddDescription(description)
         .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
         .addFunction(serializeVariablesFunSpec())
-        .addFunction(adapterFunSpec(context.resolver, dataProperty))
+        .addFunction(adapterFunSpec(context, dataProperty))
         .addFunction(rootFieldFunSpec())
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
+        .maybeAddJsExport(context)
         .applyIf(generateDataBuilders) {
           addType(
               TypeSpec.companionObjectBuilder()
@@ -113,6 +105,7 @@ internal class FragmentBuilder(
   private fun IrFragmentDefinition.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
       emptyMessage = "This fragment doesn't have any variable",
+      jsExport = context.jsExport,
   )
 
   private fun dataTypeSpecs(): List<TypeSpec> {

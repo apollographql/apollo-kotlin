@@ -42,6 +42,34 @@ class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@Jvm
   }
 }
 
+inline fun <reified T> arrayFromJson(wrappedAdapter: Adapter<T>, reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+  reader.beginArray()
+  val list = mutableListOf<T>()
+  while (reader.hasNext()) {
+    list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  }
+  reader.endArray()
+  return list.toTypedArray()
+}
+
+inline fun <reified T> arrayToJson(
+  wrappedAdapter: Adapter<T>,
+  writer: JsonWriter,
+  customScalarAdapters: CustomScalarAdapters,
+  value: Array<T>
+) {
+  writer.beginArray()
+  value.forEach {
+    wrappedAdapter.toJson(writer, customScalarAdapters, it)
+  }
+  writer.endArray()
+}
+
+
+private inline fun <reified T> foo(): Array<T> {
+  return arrayOf<T>()
+}
+
 class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
@@ -321,6 +349,17 @@ fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
 
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
+
+@JvmName("-array")
+inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+    return arrayFromJson(this@array, reader, customScalarAdapters)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Array<T>) {
+    return arrayToJson(this@array, writer, customScalarAdapters, value)
+  }
+}
 
 @JvmName("-obj")
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)

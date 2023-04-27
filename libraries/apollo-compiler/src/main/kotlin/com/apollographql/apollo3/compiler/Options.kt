@@ -241,6 +241,14 @@ class KotlinCodegenOptions(
      */
     val addJvmOverloads: Boolean = false,
     val requiresOptInAnnotation: String?,
+    /**
+     * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
+     * responses into Kotlin classes using [unsafeCast].
+     *
+     * Default: false
+     */
+    @ApolloExperimental
+    val jsExport: Boolean = false,
 )
 
 class JavaCodegenOptions(
@@ -354,6 +362,7 @@ const val defaultGenerateOptionalOperationVariables = true
 const val defaultAddJvmOverloads = false
 const val defaultFieldsOnDisjointTypesMustMerge = true
 const val defaultGeneratePrimitiveTypes = false
+const val defaultJsExport = false
 val defaultNullableFieldStyle = JavaNullable.NONE
 const val defaultDecapitalizeFields = false
 val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity

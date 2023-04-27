@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
@@ -37,7 +38,8 @@ internal class FragmentModelsBuilder(
             superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
             path = listOf(packageName),
             hasSubclassesInSamePackage = localInheritance,
-            adaptableWith = null
+            adaptableWith = null,
+            isTopLevel = true
         )
       }
 

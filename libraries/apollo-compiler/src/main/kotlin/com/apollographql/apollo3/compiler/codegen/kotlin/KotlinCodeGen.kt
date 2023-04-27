@@ -65,6 +65,7 @@ internal object KotlinCodeGen {
     val targetLanguageVersion = kotlinCodegenOptions.languageVersion
     val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
     val addJvmOverloads = kotlinCodegenOptions.addJvmOverloads
+    val jsExport = kotlinCodegenOptions.jsExport
     val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation
     val decapitalizeFields = ir.decapitalizeFields
     val hooks = kotlinCodegenOptions.compilerKotlinHooks
@@ -89,6 +90,7 @@ internal object KotlinCodeGen {
         layout = layout,
         resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
         targetLanguageVersion = targetLanguageVersion,
+        jsExport = jsExport,
     )
     val builders = mutableListOf<CgFileBuilder>()
 
@@ -180,7 +182,7 @@ internal object KotlinCodeGen {
                   operation,
                   flatten,
                   addJvmOverloads,
-                  generateDataBuilders
+                  generateDataBuilders,
               )
           )
         }

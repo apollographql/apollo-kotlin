@@ -261,6 +261,7 @@ private class FieldNodeBuilder(
       val fragmentFieldNode = buildFragmentInterface(it)
       fragmentFieldNodes.add(fragmentFieldNode)
       fragmentAccessors.add(
+
           IrFragmentAccessor(
               fragmentName = it,
               returnedModelId = fragmentFieldNode.modelId!!

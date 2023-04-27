@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
@@ -12,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressNonExportableType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -24,6 +26,7 @@ import com.squareup.kotlinpoet.TypeSpec
 internal fun serializeVariablesFunSpec(
     adapterClassName: TypeName?,
     emptyMessage: String,
+    jsExport: Boolean
 ): FunSpec {
 
   val body = if (adapterClassName == null) {
@@ -41,25 +44,31 @@ internal fun serializeVariablesFunSpec(
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
       .addCode(body)
+      .applyIf(jsExport) {
+        addAnnotation(suppressNonExportableType)
+      }
       .build()
 }
 
 internal fun adapterFunSpec(
-    resolver: KotlinResolver,
+    context: KotlinContext,
     property: IrProperty,
 ): FunSpec {
   val type = property.info.type
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.Adapter.parameterizedBy(resolver.resolveIrType(type)))
+      .returns(KotlinSymbols.Adapter.parameterizedBy(context.resolver.resolveIrType(type, context.jsExport)))
       .addCode(
           CodeBlock.of(
               "return·%L",
-              resolver.adapterInitializer(type, property.requiresBuffering)
+              context.resolver.adapterInitializer(type, property.requiresBuffering, context.jsExport)
           )
       )
-      .build()
+      .applyIf(context.jsExport) {
+        addAnnotation(suppressNonExportableType)
+      }
+    .build()
 }
 
 internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName): FunSpec {
@@ -78,6 +87,9 @@ internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, select
               .add(".build()\n")
               .build()
       )
+      .applyIf(context.jsExport) {
+        addAnnotation(suppressNonExportableType)
+      }
       .build()
 }
 
