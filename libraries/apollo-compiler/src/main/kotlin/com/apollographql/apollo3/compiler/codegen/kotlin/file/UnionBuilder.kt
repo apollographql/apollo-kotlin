@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -77,6 +78,7 @@ internal class UnionBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
+        .maybeAddJsExport(context, true)
         .addType(companionTypeSpec())
         .build()
   }

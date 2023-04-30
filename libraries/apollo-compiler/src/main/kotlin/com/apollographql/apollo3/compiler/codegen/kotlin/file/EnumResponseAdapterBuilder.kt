@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -65,6 +66,7 @@ internal class EnumResponseAdapterBuilder(
 
     return TypeSpec
         .objectBuilder(layout.enumResponseAdapterName(name))
+        .maybeAddJsExport(context, true)
         .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)
