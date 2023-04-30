@@ -35,12 +35,16 @@ class ApolloProjectServiceImpl(
 
   private fun onLibrariesChanged() {
     logd()
+    val previousIsApolloAndroid2Project  = isApolloAndroid2Project
+    val previousIsApolloKotlin3Project = isApolloKotlin3Project
     synchronized(this) {
       isApolloAndroid2Project = project.isApolloAndroid2Project()
       isApolloKotlin3Project = project.isApolloKotlin3Project()
     }
     logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
-    project.messageBus.syncPublisher(ApolloProjectListener.TOPIC).apolloProjectChanged(isApolloAndroid2Project = isApolloAndroid2Project, isApolloKotlin3Project = isApolloKotlin3Project)
+    if (previousIsApolloAndroid2Project != isApolloAndroid2Project || previousIsApolloKotlin3Project != isApolloKotlin3Project) {
+      project.messageBus.syncPublisher(ApolloProjectListener.TOPIC).apolloProjectChanged(isApolloAndroid2Project = isApolloAndroid2Project, isApolloKotlin3Project = isApolloKotlin3Project)
+    }
   }
 
   override fun dispose() {

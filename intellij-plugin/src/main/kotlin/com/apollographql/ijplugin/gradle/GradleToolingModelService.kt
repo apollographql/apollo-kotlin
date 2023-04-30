@@ -6,6 +6,9 @@ import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
 import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.settings.SettingsListener
+import com.apollographql.ijplugin.settings.SettingsState
+import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
@@ -48,6 +51,7 @@ class GradleToolingModelService(
     startObserveApolloProject()
     startOrStopObserveGradleHasSynced()
     startOrAbortFetchToolingModels()
+    startObservingSettings()
   }
 
   private fun startObserveApolloProject() {
@@ -61,7 +65,8 @@ class GradleToolingModelService(
     })
   }
 
-  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project
+  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project &&
+      project.settingsState.contributeConfigurationToGraphqlPlugin
 
   private fun startOrStopObserveGradleHasSynced() {
     logd()
@@ -92,6 +97,16 @@ class GradleToolingModelService(
     logd()
     dispose(gradleHasSyncedDisposable)
     gradleHasSyncedDisposable = null
+  }
+
+  private fun startObservingSettings() {
+    logd()
+    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      override fun settingsChanged(settingsState: SettingsState) {
+        logd("settingsState=$settingsState")
+        startOrAbortFetchToolingModels()
+      }
+    })
   }
 
   private fun startOrAbortFetchToolingModels() {

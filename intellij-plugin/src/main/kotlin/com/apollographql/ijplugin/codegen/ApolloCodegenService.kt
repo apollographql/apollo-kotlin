@@ -80,7 +80,7 @@ class ApolloCodegenService(
     logd()
     project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
       override fun settingsChanged(settingsState: SettingsState) {
-        logd()
+        logd("settingsState=$settingsState")
         startOrStopCodegenObservers()
       }
     })
