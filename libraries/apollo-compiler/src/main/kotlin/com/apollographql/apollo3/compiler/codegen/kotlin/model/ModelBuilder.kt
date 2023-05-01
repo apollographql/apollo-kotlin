@@ -65,7 +65,7 @@ internal class ModelBuilder(
     val properties = properties.map {
       PropertySpec.builder(
           context.layout.propertyName(it.info.responseName),
-          context.resolver.resolveIrType(it.info.type, context.jsExport)
+          context.resolver.resolveIrType(it.info.type, jsExport = context.jsExport, isInterface = isInterface)
       )
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
           .maybeAddDescription(it.info.description)
@@ -100,7 +100,7 @@ internal class ModelBuilder(
           addAnnotation(annotationSpec)
         }
         .addTypes(nestedTypes)
-        .applyIf(isTopLevel) { maybeAddJsExport(context) }
+        .applyIf(isTopLevel) { maybeAddJsExport(context, true) }
         .applyIf(accessors.isNotEmpty()) {
           val accessorFunSpecs = buildAccessorFunSpecs(this@typeSpec)
           if (!context.jsExport) {

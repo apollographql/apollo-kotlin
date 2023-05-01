@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -31,6 +32,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.WildcardTypeName
 
 
 internal class KotlinResolver(
@@ -74,30 +76,38 @@ internal class KotlinResolver(
     classNames.put(ResolverKey(kind, id), ClassName(memberName.packageName, memberName.simpleName))
   }
 
-  internal fun resolveIrType(type: IrType, jsExport: Boolean, override: (IrType) -> TypeName? = { null }): TypeName {
+  internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false, override: (IrType) -> TypeName? = { null }): TypeName {
     if (type is IrNonNullType) {
-      return resolveIrType(type.ofType, jsExport, override).copy(nullable = false)
+      return resolveIrType(type.ofType, jsExport, isInterface, override = override).copy(nullable = false)
     }
 
     override(type)?.let {
       return it
     }
 
-    val listType = if (jsExport) {
-      KotlinSymbols.Array
-    } else {
-      KotlinSymbols.List
-    }
-
     return when {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      type is IrOptionalType -> KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.ofType, jsExport, override))
-      type is IrListType -> listType.parameterizedBy(resolveIrType(type.ofType, jsExport, override))
+      type is IrOptionalType -> KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.ofType, jsExport, isInterface, override = override))
+      type is IrListType -> toListType(resolveIrType(type.ofType, jsExport, isInterface, override), jsExport, isInterface)
       type is IrScalarType -> resolveIrScalarType(type)
       type is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       type is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
       else -> error("$type is not a schema type")
     }.copy(nullable = true)
+  }
+
+  private fun toListType(ofType: TypeName, jsExport: Boolean, isInterface: Boolean): TypeName {
+    val listType = if (jsExport) {
+      KotlinSymbols.Array
+    } else {
+      KotlinSymbols.List
+    }
+    val param = if (jsExport && isInterface) {
+      WildcardTypeName.producerOf(ofType)
+    } else {
+      ofType
+    }
+    return listType.parameterizedBy(param)
   }
 
   private fun resolveIrScalarType(type: IrScalarType): ClassName {

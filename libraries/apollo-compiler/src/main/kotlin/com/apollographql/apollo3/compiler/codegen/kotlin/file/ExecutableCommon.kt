@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressNonExportableType
