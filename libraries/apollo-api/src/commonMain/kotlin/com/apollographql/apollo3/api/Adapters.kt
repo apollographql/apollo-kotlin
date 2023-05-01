@@ -66,10 +66,6 @@ inline fun <reified T> arrayToJson(
 }
 
 
-private inline fun <reified T> foo(): Array<T> {
-  return arrayOf<T>()
-}
-
 class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
@@ -350,6 +346,11 @@ fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
 
+/**
+ * Note that Array's require their type to be known at compile time, so we construct an anonymous object with reference to
+ * function with reified type parameters as a workaround.
+ *
+ */
 @JvmName("-array")
 inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
