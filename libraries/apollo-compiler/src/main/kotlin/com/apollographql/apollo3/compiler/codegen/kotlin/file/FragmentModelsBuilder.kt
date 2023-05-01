@@ -4,9 +4,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.flattenFragmentModels
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 
@@ -27,15 +26,14 @@ internal class FragmentModelsBuilder(
    */
   private val localInheritance = modelGroup.models.any { !it.isInterface }
 
-  /**
-   * Fragments need to be flattened at depth 1 to avoid having all classes poluting the fragments package name
-   */
-  private val modelBuilders = modelGroup.maybeFlatten(flatten, 1).flatMap { it.models }
-      .map {
+  private val mainModelName = modelGroup.models.first().modelName
+
+  private val modelBuilders = modelGroup.flattenFragmentModels(flatten, context, mainModelName)
+      .map { model ->
         ModelBuilder(
             context = context,
-            model = it,
-            superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
+            model = model,
+            superClassName = if (addSuperInterface && model.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
             path = listOf(packageName),
             hasSubclassesInSamePackage = localInheritance,
             adaptableWith = null,
