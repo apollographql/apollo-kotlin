@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigContributor
+import com.intellij.lang.jsgraphql.ide.config.loader.GraphQLConfigKeys
 import com.intellij.lang.jsgraphql.ide.config.loader.GraphQLRawConfig
 import com.intellij.lang.jsgraphql.ide.config.loader.GraphQLRawProjectConfig
 import com.intellij.lang.jsgraphql.ide.config.loader.GraphQLRawSchemaPointer
@@ -35,5 +36,17 @@ class ApolloGraphQLConfigContributor : GraphQLConfigContributor {
   private fun GraphQLProjectFiles.toGraphQLRawProjectConfig() = GraphQLRawProjectConfig(
       schema = schemaPaths.map { GraphQLRawSchemaPointer(it) },
       include = operationPaths.map { "$it/*.graphql" },
+      extensions = endpointUrl?.let {
+        mapOf(
+            GraphQLConfigKeys.EXTENSION_ENDPOINTS to mapOf(
+                name to buildMap {
+                  put(GraphQLConfigKeys.EXTENSION_ENDPOINT_URL, endpointUrl)
+                  if (endpointHeaders != null) {
+                    put(GraphQLConfigKeys.HEADERS, endpointHeaders)
+                  }
+                }
+            )
+        )
+      }
   )
 }

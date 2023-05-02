@@ -15,4 +15,6 @@ data class GraphQLProjectFiles(
     val name: String,
     val schemaPaths: List<String>,
     val operationPaths: List<String>,
+    val endpointUrl: String?,
+    val endpointHeaders: Map<String, String>?,
 )
