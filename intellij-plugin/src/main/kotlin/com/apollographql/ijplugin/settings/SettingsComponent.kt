@@ -8,6 +8,7 @@ import javax.swing.JPanel
 
 class SettingsComponent {
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
+  private lateinit var chkContributeConfigurationToGraphqlPlugin: JCheckBox
 
   val panel: JPanel = panel {
     group(ApolloBundle.message("settings.codegen.title")) {
@@ -17,13 +18,26 @@ class SettingsComponent {
             .component
       }
     }
+    group(ApolloBundle.message("settings.graphqlPlugin.title")) {
+      row {
+        chkContributeConfigurationToGraphqlPlugin = checkBox(ApolloBundle.message("settings.graphqlPlugin.contributeConfigurationToGraphqlPlugin.text"))
+            .comment(ApolloBundle.message("settings.graphqlPlugin.contributeConfigurationToGraphqlPlugin.comment"))
+            .component
+      }
+    }
   }
 
   val preferredFocusedComponent: JComponent = chkAutomaticCodegenTriggering
 
   var automaticCodegenTriggering: Boolean
     get() = chkAutomaticCodegenTriggering.isSelected
-    set(newStatus) {
-      chkAutomaticCodegenTriggering.isSelected = newStatus
+    set(value) {
+      chkAutomaticCodegenTriggering.isSelected = value
+    }
+
+  var contributeConfigurationToGraphqlPlugin: Boolean
+    get() = chkContributeConfigurationToGraphqlPlugin.isSelected
+    set(value) {
+      chkContributeConfigurationToGraphqlPlugin.isSelected = value
     }
 }

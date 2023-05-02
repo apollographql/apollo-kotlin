@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.settings;
+package com.apollographql.ijplugin.settings
 
 import com.intellij.lang.jsgraphql.GraphQLSettings
 import com.intellij.openapi.components.PersistentStateComponent
@@ -13,7 +13,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
     storages = [Storage("apollo.xml")]
 )
 class SettingsService(private val project: Project) : PersistentStateComponent<SettingsStateImpl>, SettingsState {
-  private var _state = SettingsStateImpl()
+  private val _state = SettingsStateImpl()
 
   override fun getState(): SettingsStateImpl {
     return _state
@@ -37,8 +37,19 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       _state.hasEnabledGraphQLPluginApolloKotlinSupport = value
     }
 
+  override var contributeConfigurationToGraphqlPlugin: Boolean
+    get() = _state.contributeConfigurationToGraphqlPlugin
+    set(value) {
+      _state.contributeConfigurationToGraphqlPlugin = value
+      notifySettingsChanged()
+    }
+
+  private var lastNotifiedSettingsState: SettingsState? = null
   private fun notifySettingsChanged() {
-    project.messageBus.syncPublisher(SettingsListener.TOPIC).settingsChanged(_state)
+    if (lastNotifiedSettingsState != _state) {
+      lastNotifiedSettingsState = _state.copy()
+      project.messageBus.syncPublisher(SettingsListener.TOPIC).settingsChanged(_state)
+    }
   }
 
   init {
@@ -53,11 +64,13 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
 interface SettingsState {
   var automaticCodegenTriggering: Boolean
   var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
+  var contributeConfigurationToGraphqlPlugin: Boolean
 }
 
-class SettingsStateImpl : SettingsState {
-  override var automaticCodegenTriggering: Boolean = true
-  override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false
-}
+data class SettingsStateImpl(
+    override var automaticCodegenTriggering: Boolean = true,
+    override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false,
+    override var contributeConfigurationToGraphqlPlugin: Boolean = true,
+) : SettingsState
 
 val Project.settingsState get(): SettingsState = service<SettingsService>()
