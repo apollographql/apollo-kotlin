@@ -100,7 +100,6 @@ internal class OperationBuilder(
   private fun serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
       emptyMessage = "This operation doesn't have any variable",
-      jsExport = context.jsExport
   )
 
   private fun dataTypeSpecs(): List<TypeSpec> {

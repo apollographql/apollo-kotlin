@@ -105,7 +105,6 @@ internal class FragmentBuilder(
   private fun IrFragmentDefinition.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
       emptyMessage = "This fragment doesn't have any variable",
-      jsExport = context.jsExport,
   )
 
   private fun dataTypeSpecs(): List<TypeSpec> {
