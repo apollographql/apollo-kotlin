@@ -267,7 +267,7 @@ class DeferWithRouterTest {
   fun handlesErrorsThrownInDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"computer":{"__typename":"Computer","id":"Computer1"}},"hasNext":true}
-    // {"hasNext":false,"incremental":[{"data":{"errorField":null},"path":["computer"],"errors":[{"message":"Subgraph errors redacted","locations":[{"line":1,"column":104}],"path":["computer","errorField"]}]}]}
+    // {"hasNext":false,"incremental":[{"data":{"errorField":null},"path":["computer"],"errors":[{"message":"Subgraph errors redacted","path":["computer","errorField"]}]}]}
     val query = HandlesErrorsThrownInDeferredFragmentsQuery()
     val uuid = uuid4()
 
@@ -296,7 +296,7 @@ class DeferWithRouterTest {
                 listOf(
                     Error(
                         message = "Subgraph errors redacted",
-                        locations = listOf(Error.Location(1, 104)),
+                        locations = null,
                         path = listOf("computer", "errorField"),
                         extensions = null,
                         nonStandardFields = null,
@@ -360,7 +360,7 @@ class DeferWithRouterTest {
   @Test
   fun handlesNonNullableErrorsThrownOutsideDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
-    // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted","locations":[{"line":1,"column":117}],"path":["computer","nonNullErrorField"]}],"hasNext":true}
+    // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted","path":["computer","nonNullErrorField"]}],"hasNext":true}
     // {"hasNext":false}
     val query = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery()
     val uuid = uuid4()
@@ -377,7 +377,7 @@ class DeferWithRouterTest {
                 listOf(
                     Error(
                         message = "Subgraph errors redacted",
-                        locations = listOf(Error.Location(1, 117)),
+                        locations = null,
                         path = listOf("computer", "nonNullErrorField"),
                         extensions = null,
                         nonStandardFields = null,
