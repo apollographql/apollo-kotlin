@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -91,6 +90,11 @@ internal class KotlinResolver(
       type is IrListType -> toListType(resolveIrType(type.ofType, jsExport, isInterface, override), jsExport, isInterface)
       type is IrScalarType -> resolveIrScalarType(type)
       type is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
+      type is IrEnumType -> if (jsExport) {
+        KotlinSymbols.String
+      } else {
+        resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+      }
       type is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
       else -> error("$type is not a schema type")
     }.copy(nullable = true)
@@ -219,7 +223,11 @@ internal class KotlinResolver(
       }
 
       type is IrEnumType -> {
-        CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
+        if (jsExport) {
+          nonNullableScalarAdapterInitializer(IrScalarType("String"))
+        } else {
+          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
+        }
       }
 
       type is IrInputObjectType -> {
