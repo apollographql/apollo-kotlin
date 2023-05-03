@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -66,7 +65,7 @@ internal class EnumResponseAdapterBuilder(
 
     return TypeSpec
         .objectBuilder(layout.enumResponseAdapterName(name))
-        .maybeAddJsExport(context, true)
+        .maybeAddJsExport(context)
         .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)

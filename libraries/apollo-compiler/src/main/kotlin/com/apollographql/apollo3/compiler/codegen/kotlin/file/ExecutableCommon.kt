@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal fun serializeVariablesFunSpec(
     adapterClassName: TypeName?,
-    emptyMessage: String
+    emptyMessage: String,
 ): FunSpec {
 
   val body = if (adapterClassName == null) {

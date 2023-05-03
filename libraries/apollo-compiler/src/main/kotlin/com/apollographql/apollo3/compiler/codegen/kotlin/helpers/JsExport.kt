@@ -13,12 +13,10 @@ internal val suppressNonExportableType = AnnotationSpec.builder(KotlinSymbols.Su
   .addMember("%S", "NON_EXPORTABLE_TYPE")
   .build()
 
-internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext, suppressNonExportable: Boolean = false): TypeSpec.Builder {
+internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext): TypeSpec.Builder {
   return applyIf(context.jsExport) {
     addAnnotation(KotlinSymbols.JsExport)
-    if (suppressNonExportable) {
-      addAnnotation(suppressNonExportableType)
-    }
+    addAnnotation(suppressNonExportableType)
   }
 }
 

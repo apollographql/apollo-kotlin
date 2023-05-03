@@ -55,7 +55,7 @@ internal class EnumAsEnumBuilder(
     return TypeSpec
         .enumBuilder(simpleName)
         .maybeAddDescription(description)
-        .maybeAddJsExport(context, true)
+        .maybeAddJsExport(context)
         .primaryConstructor(primaryConstructorSpec)
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())

@@ -78,7 +78,7 @@ internal class UnionBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .maybeAddJsExport(context, true)
+        .maybeAddJsExport(context)
         .addType(companionTypeSpec())
         .build()
   }

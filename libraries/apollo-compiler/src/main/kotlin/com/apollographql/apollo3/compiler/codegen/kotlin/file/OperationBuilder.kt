@@ -59,7 +59,7 @@ internal class OperationBuilder(
         path = listOf(packageName, simpleName),
         hasSubclassesInSamePackage = true,
         adaptableWith = if (it.id == operation.dataModelGroup.baseModelId) it.id else null,
-        reservedNames = setOf("Companion"),
+        reservedNames = setOf("Companion")
     )
   }
 
@@ -84,7 +84,7 @@ internal class OperationBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
         .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
-        .maybeAddJsExport(context, suppressNonExportable = true)
+        .maybeAddJsExport(context)
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())
@@ -99,7 +99,7 @@ internal class OperationBuilder(
 
   private fun serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
-      emptyMessage = "This operation doesn't have any variable",
+      emptyMessage = "This operation doesn't have any variable"
   )
 
   private fun dataTypeSpecs(): List<TypeSpec> {
@@ -197,7 +197,7 @@ internal class OperationBuilder(
     return rootFieldFunSpec(
         context,
         operation.typeCondition,
-        context.resolver.resolveOperationSelections(operation.name),
+        context.resolver.resolveOperationSelections(operation.name)
     )
   }
 }

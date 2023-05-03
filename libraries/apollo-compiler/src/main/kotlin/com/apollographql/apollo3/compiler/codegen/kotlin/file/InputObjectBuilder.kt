@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
-import kotlin.js.ExperimentalJsExport
 
 internal class InputObjectBuilder(
     val context: KotlinContext,

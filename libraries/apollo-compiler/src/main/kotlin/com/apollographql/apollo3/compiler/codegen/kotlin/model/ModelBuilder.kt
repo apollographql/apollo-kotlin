@@ -100,7 +100,7 @@ internal class ModelBuilder(
           addAnnotation(annotationSpec)
         }
         .addTypes(nestedTypes)
-        .applyIf(isTopLevel) { maybeAddJsExport(context, true) }
+        .applyIf(isTopLevel) { maybeAddJsExport(context) }
         .applyIf(accessors.isNotEmpty()) {
           val accessorFunSpecs = buildAccessorFunSpecs(this@typeSpec)
           if (!context.jsExport) {
@@ -133,7 +133,6 @@ internal class ModelBuilder(
   }
 
   private fun IrAccessor.funName(): String {
-    // TODO
     return when (this) {
       is IrFragmentAccessor -> this.fragmentName.decapitalizeFirstLetter()
       is IrSubtypeAccessor -> {
