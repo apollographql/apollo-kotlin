@@ -31,6 +31,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         // For org.jetbrains.changelog
         includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
         includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
+
+        includeModule("dev.adamko.dokkatoo", "dokkatoo-plugin")
       }
     }
 

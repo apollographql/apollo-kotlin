@@ -14,7 +14,6 @@ apollo-published = "3.8.0"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.4.3"
-dokka = "1.8.10"
 guava = "31.1-jre"
 javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
@@ -73,8 +72,7 @@ atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version = "0.20
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "3.5.2" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version = "1.3.3" }
-dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref = "dokka" }
-dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
+dokkatoo = "dev.adamko.dokkatoo:dokkatoo-plugin:1.3.0"
 gegp = "com.gradle:gradle-enterprise-gradle-plugin:3.13" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context

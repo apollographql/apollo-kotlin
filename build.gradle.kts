@@ -1,4 +1,5 @@
 import JapiCmp.configureJapiCmp
+import dev.adamko.dokkatoo.DokkatooExtension
 
 plugins {
   id("apollo.library") apply false
@@ -8,7 +9,7 @@ plugins {
 golatac.init(file("gradle/libraries.toml"))
 
 apply(plugin = "com.github.ben-manes.versions")
-apply(plugin = "org.jetbrains.dokka")
+apply(plugin = "dev.adamko.dokkatoo-html")
 apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 
 version = property("VERSION_NAME")!!
@@ -100,11 +101,6 @@ tasks.register("ciBuild") {
   dependsOn(subprojectTasks("build"))
 }
 
-tasks.named("dokkaHtmlMultiModule").configure {
-  this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
-  outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
-}
-
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
   rejectVersionIf {
@@ -159,4 +155,9 @@ tasks.register("rmbuild") {
       }
     }.count()
   }
+}
+
+setDokkaStyle()
+dependencies {
+  add("dokkatooPluginHtml", "org.jetbrains.dokka:all-modules-page-plugin:1.7.20")
 }

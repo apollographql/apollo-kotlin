@@ -1,6 +1,10 @@
 
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
+import dev.adamko.dokkatoo.DokkatooExtension
+import dev.adamko.dokkatoo.dokka.parameters.VisibilityModifier
+import dev.adamko.dokkatoo.dokka.plugins.DokkaHtmlPluginParameters
+import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
@@ -13,9 +17,6 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
-import org.jetbrains.dokka.gradle.AbstractDokkaTask
-import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
   if (
@@ -49,26 +50,52 @@ fun Project.configurePublishing() {
   configurePublishingInternal()
 }
 
-private fun Project.configureDokka() {
-  apply {
-    plugin("org.jetbrains.dokka")
-  }
-
-  tasks.withType(DokkaTask::class.java).configureEach {
-    //https://github.com/Kotlin/dokka/issues/1455
-    dependsOn("assemble")
-  }
-  tasks.withType(DokkaTaskPartial::class.java).configureEach {
-    //https://github.com/Kotlin/dokka/issues/1455
-    dependsOn("assemble")
-  }
-
-  tasks.withType(AbstractDokkaTask::class.java).configureEach {
-    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
-      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
-      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+fun Project.setDokkaStyle() {
+  extensions.getByName("dokkatoo").apply {
+    this as DokkatooExtension
+    pluginsConfiguration.named("html", DokkaHtmlPluginParameters::class.java) {
+      customStyleSheets.from(
+          listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+      )
+      customAssets.from(
+          listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+      )
     }
   }
+}
+
+private fun Project.configureDokka() {
+  apply {
+    plugin("dev.adamko.dokkatoo-html")
+  }
+
+  setDokkaStyle()
+
+  extensions.getByName("dokkatoo").apply {
+    this as DokkatooExtension
+    dokkatooSourceSets.configureEach {
+      documentedVisibilities(
+        VisibilityModifier.PUBLIC,
+        VisibilityModifier.PROTECTED,
+      )
+      suppressedFiles.from(file("src/main/kotlin/it/suppressedByPath"))
+      perPackageOption {
+        matchingRegex.set(".*internal")
+        suppress.set(true)
+      }
+    }
+
+    dokkatooPublications.configureEach {
+      suppressObviousFunctions.set(true)
+      suppressObviousFunctions.set(false)
+    }
+  }
+
+  tasks.withType(DokkatooGenerateTask::class.java).configureEach {
+    workerMaxHeapSize.set("6g")
+  }
+
+  rootProject.dependencies.add("dokkatoo", rootProject.dependencies.create(rootProject.project(this.path)))
 }
 
 private fun Project.getOssStagingUrl(): String {
@@ -105,7 +132,7 @@ private fun Project.configurePublishingInternal() {
     archiveClassifier.set("javadoc")
 
     runCatching {
-      from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
+      from(tasks.named("dokkatooGeneratePublicationHtml").flatMap { (it as DokkatooGenerateTask).outputDirectory })
     }
   }
   val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {

@@ -23,8 +23,7 @@ dependencies {
 
   implementation(golatac.lib("okhttp"))
 
-  implementation(golatac.lib("dokka.plugin"))
-  implementation(golatac.lib("dokka.base"))
+  implementation(golatac.lib("dokkatoo"))
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741

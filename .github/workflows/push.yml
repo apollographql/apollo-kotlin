@@ -23,16 +23,11 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
+        # Dokka is very memory hungry and running it in parallel will exhaust the runners memory
         run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew --no-build-cache compileKotlinJs
-          ./gradlew --stop
           ./gradlew --no-build-cache ciBuild
-          ./gradlew --stop
-          ./gradlew --no-build-cache -p tests ciBuild
-          ./gradlew --no-build-cache dokkaHtmlMultiModule
+          ./gradlew --no-build-cache -p tests ciBuild    
+          ./gradlew --no-build-cache dokkatooGeneratePublicationHtml --max-workers 4 
           ./gradlew --no-build-cache ciPublishSnapshot
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -50,4 +45,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 #v4.4.1
         with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: build/dokkaHtml # The folder the action should deploy.
+          folder: build/dokka/html # The folder the action should deploy.
