@@ -42,11 +42,11 @@
         nonDefaultProject="true"
     />
 
-    <!-- Marker provider (unused for now) -->
-    <!--    <codeInsight.lineMarkerProvider-->
-    <!--        language="UAST"-->
-    <!--        implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider"-->
-    <!--    />-->
+    <!-- Operation/Fragment marker provider -->
+    <codeInsight.lineMarkerProvider
+        language="UAST"
+        implementationClass="com.apollographql.ijplugin.navigation.OperationAndFragmentUsageMarkerProvider"
+    />
 
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
