@@ -54,7 +54,7 @@ val Project.dokkatooExtension: DokkatooExtension
   get() = extensions.getByName("dokkatoo") as DokkatooExtension
 
 val DokkatooExtension.versions: DokkatooExtension.Versions
-  get() = extensions.getByName("version") as DokkatooExtension.Versions
+  get() = extensions.getByName("versions") as DokkatooExtension.Versions
 
 fun Project.setDokkaStyle() {
   dokkatooExtension.apply {
