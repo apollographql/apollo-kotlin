@@ -50,9 +50,14 @@ fun Project.configurePublishing() {
   configurePublishingInternal()
 }
 
+val Project.dokkatooExtension: DokkatooExtension
+  get() = extensions.getByName("dokkatoo") as DokkatooExtension
+
+val DokkatooExtension.versions: DokkatooExtension.Versions
+  get() = extensions.getByName("version") as DokkatooExtension.Versions
+
 fun Project.setDokkaStyle() {
-  extensions.getByName("dokkatoo").apply {
-    this as DokkatooExtension
+  dokkatooExtension.apply {
     pluginsConfiguration.named("html", DokkaHtmlPluginParameters::class.java) {
       customStyleSheets.from(
           listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
@@ -71,8 +76,7 @@ private fun Project.configureDokka() {
 
   setDokkaStyle()
 
-  extensions.getByName("dokkatoo").apply {
-    this as DokkatooExtension
+  dokkatooExtension.apply {
     dokkatooSourceSets.configureEach {
       documentedVisibilities(
         VisibilityModifier.PUBLIC,
@@ -87,7 +91,6 @@ private fun Project.configureDokka() {
 
     dokkatooPublications.configureEach {
       suppressObviousFunctions.set(true)
-      suppressObviousFunctions.set(false)
     }
   }
 

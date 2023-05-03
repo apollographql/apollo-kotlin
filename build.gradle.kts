@@ -159,5 +159,9 @@ tasks.register("rmbuild") {
 
 setDokkaStyle()
 dependencies {
-  add("dokkatooPluginHtml", "org.jetbrains.dokka:all-modules-page-plugin:${org.jetbrains.dokka.DokkaVersion.version}")
+  add("dokkatooPluginHtml",
+      dokkatooExtension.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
+      }
+  )
 }
