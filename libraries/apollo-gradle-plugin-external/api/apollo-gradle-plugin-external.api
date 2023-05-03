@@ -42,6 +42,8 @@ public final class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$ServiceInfo {
+	public abstract fun getEndpointHeaders ()Ljava/util/Map;
+	public abstract fun getEndpointUrl ()Ljava/lang/String;
 	public abstract fun getGraphqlSrcDirs ()Ljava/util/Set;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getSchemaFiles ()Ljava/util/Set;
