@@ -8,9 +8,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UastCallKind
-import org.jetbrains.uast.toUElement
+import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
  * Adds a gutter icon to Apollo operation/fragment constructor call allowing to navigate to the corresponding GraphQL definition.
@@ -24,9 +22,8 @@ class OperationAndFragmentUsageMarkerProvider : RelatedItemLineMarkerProvider() 
   override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
     if (!element.project.apolloProjectService.isApolloKotlin3Project) return
 
-    val uElement = element.toUElement()
-    if (uElement !is UCallExpression || uElement.kind != UastCallKind.CONSTRUCTOR_CALL) return
-    if (uElement.isApolloOperationOrFragment()) {
+    val nameReferenceExpression = element as? KtNameReferenceExpression ?: return
+    if (nameReferenceExpression.isApolloOperationOrFragment()) {
       val psiLeaf = PsiTreeUtil.getDeepestFirst(element)
       val builder = NavigationGutterIconBuilder.create(ApolloIcons.Gutter.GraphQL)
           .setTargets(findOperationOrFragmentGraphQLDefinition(element.project, psiLeaf.text))

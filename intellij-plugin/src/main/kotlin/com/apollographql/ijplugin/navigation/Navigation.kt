@@ -7,11 +7,15 @@ import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLOperationDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiMember
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.uast.UCallExpression
+import org.jetbrains.kotlin.asJava.toLightClass
+import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
+import org.jetbrains.kotlin.psi.KtConstructor
+import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
+import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 private val APOLLO_OPERATION_OR_FRAGMENT_TYPES = arrayOf(
     "com.apollographql.apollo3.api.Query",
@@ -20,13 +24,16 @@ private val APOLLO_OPERATION_OR_FRAGMENT_TYPES = arrayOf(
     "com.apollographql.apollo3.api.Fragment.Data",
 )
 
-fun UCallExpression.isApolloOperationOrFragment() = (resolve() as? PsiMember)
-    ?.containingClass
-    ?.implementsList
-    ?.referencedTypes
-    ?.any { classType ->
-      APOLLO_OPERATION_OR_FRAGMENT_TYPES.any { classType.canonicalText.startsWith(it) }
-    } == true
+fun KtNameReferenceExpression.isApolloOperationOrFragment(): Boolean {
+  return (references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve() as? KtConstructor<*>)
+      ?.containingClass()
+      ?.toLightClass()
+      ?.implementsList
+      ?.referencedTypes
+      ?.any { classType ->
+        APOLLO_OPERATION_OR_FRAGMENT_TYPES.any { classType.canonicalText.startsWith(it) }
+      } == true
+}
 
 fun findOperationOrFragmentGraphQLDefinition(project: Project, name: String): List<GraphQLDefinition> {
   val definitions = mutableListOf<GraphQLDefinition>()
