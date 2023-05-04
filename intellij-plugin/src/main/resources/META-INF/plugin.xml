@@ -48,6 +48,11 @@
         implementationClass="com.apollographql.ijplugin.navigation.OperationAndFragmentUsageMarkerProvider"
     />
 
+    <!-- Operation/Fragment 'go to declaration' handler -->
+    <gotoDeclarationHandler
+        implementation="com.apollographql.ijplugin.navigation.OperationAndFragmentGotoDeclarationHandler"
+    />
+
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 
