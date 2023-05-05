@@ -7,9 +7,6 @@ plugins {
 }
 
 apolloLibrary {
-  // See GradleVersionTests.kt the Gradle runner will choke on more recent versions
-  // Keep in sync with TestUtils.kt
-  runTestsWithJavaVersion(11)
 }
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
@@ -127,7 +124,7 @@ tasks.withType<Test> {
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
-  addRelativeInput("testFiles", "src/test/files")
+  addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
@@ -144,3 +141,37 @@ tasks.withType<Test> {
   }
 }
 
+val allTests = tasks.create("allTests")
+tasks.check {
+  dependsOn(allTests)
+}
+
+fun createTests(javaVersion: Int) {
+  val sourceSet = sourceSets.create("test-java$javaVersion")
+
+  configurations[sourceSet.implementationConfigurationName].extendsFrom(configurations.testImplementation.get())
+  dependencies.add(sourceSet.implementationConfigurationName, sourceSets.getByName("test").output)
+  configurations[sourceSet.runtimeOnlyConfigurationName].extendsFrom(configurations.testRuntimeOnly.get())
+
+  val task = tasks.register<Test>("testJava$javaVersion") {
+    description = "Runs integration tests for Java $javaVersion."
+    group = "verification"
+    useJUnit()
+
+    testClassesDirs = sourceSet.output.classesDirs
+    classpath = configurations[sourceSet.runtimeClasspathConfigurationName] + sourceSet.output
+
+    setTestToolchain(project, this, javaVersion)
+  }
+
+  allTests.dependsOn(task)
+}
+
+tasks.named("test").configure {
+  // Disable the default tests, they are empty
+  enabled = false
+}
+
+listOf(11, 17).forEach { javaVersion ->
+  createTests(javaVersion)
+}
