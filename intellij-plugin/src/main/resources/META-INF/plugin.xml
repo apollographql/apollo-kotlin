@@ -42,15 +42,15 @@
         nonDefaultProject="true"
     />
 
-    <!-- Operation/Fragment marker provider -->
+    <!-- Operation/fragment marker provider -->
     <codeInsight.lineMarkerProvider
-        language="UAST"
-        implementationClass="com.apollographql.ijplugin.navigation.OperationAndFragmentUsageMarkerProvider"
+        language="kotlin"
+        implementationClass="com.apollographql.ijplugin.navigation.GraphQLDefinitionMarkerProvider"
     />
 
-    <!-- Operation/Fragment 'go to declaration' handler -->
+    <!-- Operation/fragment/field 'go to declaration' handler -->
     <gotoDeclarationHandler
-        implementation="com.apollographql.ijplugin.navigation.OperationAndFragmentGotoDeclarationHandler"
+        implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler"
     />
 
     <!-- Listen to Gradle sync -->

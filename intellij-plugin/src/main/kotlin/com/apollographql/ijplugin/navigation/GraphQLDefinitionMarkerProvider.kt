@@ -11,11 +11,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
- * Adds a gutter icon to Apollo operation/fragment constructor call allowing to navigate to the corresponding GraphQL definition.
+ * Adds a gutter icon to Apollo operation/fragment references allowing to navigate to the corresponding GraphQL definition.
  */
-class OperationAndFragmentUsageMarkerProvider : RelatedItemLineMarkerProvider() {
+class GraphQLDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
 
-  override fun getName() = ApolloBundle.message("navigation.OperationAndFragmentUsageMarkerProvider.name")
+  override fun getName() = ApolloBundle.message("navigation.GraphQLDefinitionMarkerProvider.name")
 
   override fun getIcon() = ApolloIcons.Gutter.GraphQL
 
@@ -23,11 +23,13 @@ class OperationAndFragmentUsageMarkerProvider : RelatedItemLineMarkerProvider() 
     if (!element.project.apolloProjectService.isApolloKotlin3Project) return
 
     val nameReferenceExpression = element as? KtNameReferenceExpression ?: return
-    if (nameReferenceExpression.isApolloOperationOrFragment()) {
+    if (nameReferenceExpression.isApolloOperationOrFragmentReference()) {
       val psiLeaf = PsiTreeUtil.getDeepestFirst(element)
+      val graphQLDefinitions = findOperationOrFragmentGraphQLDefinitions(element.project, psiLeaf.text)
+      if (graphQLDefinitions.isEmpty()) return
       val builder = NavigationGutterIconBuilder.create(ApolloIcons.Gutter.GraphQL)
-          .setTargets(findOperationOrFragmentGraphQLDefinition(element.project, psiLeaf.text))
-          .setTooltipText(ApolloBundle.message("navigation.operation.tooltip"))
+          .setTargets(graphQLDefinitions)
+          .setTooltipText(ApolloBundle.message("navigation.GraphQLDefinitionMarkerProvider.tooltip", psiLeaf.text))
           .createLineMarkerInfo(psiLeaf)
       result.add(builder)
     }
