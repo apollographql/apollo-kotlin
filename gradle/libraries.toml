@@ -1,6 +1,10 @@
 [versions]
+# The version we use by default in tests
 android-plugin = "7.4.0"
+# The version we compile against
 android-plugin-min = "3.4.2"
+# The latest version that has been tested to work
+android-plugin-max = "8.2.0-alpha02"
 android-sdkversion-compile = "33"
 android-sdkversion-min = "15"
 android-sdkversion-compose-min = "21"
@@ -156,4 +160,5 @@ kotlin-android-max = { id = "org.jetbrains.kotlin.android", version.ref = "kotli
 kotlin-jvm-min = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-min" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-plugin" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-application-max = { id = "com.android.application", version.ref = "android-plugin-max" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }

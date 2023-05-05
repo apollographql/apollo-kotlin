@@ -88,6 +88,13 @@ class AndroidProjectTests {
   }
 
   @Test
+  fun `android-plugin-max`() {
+    withTestProject("android-plugin-max") { dir ->
+      executeTaskAndAssertSuccess(":build", dir)
+    }
+  }
+
+  @Test
   fun `android with java`() {
     withTestProject("android-java") { dir ->
       executeTaskAndAssertSuccess(":assembleDebug", dir)
