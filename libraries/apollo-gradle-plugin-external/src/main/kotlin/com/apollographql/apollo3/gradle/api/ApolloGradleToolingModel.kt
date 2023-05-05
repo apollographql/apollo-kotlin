@@ -13,6 +13,8 @@ interface ApolloGradleToolingModel {
     val schemaFiles: Set<File>
     val graphqlSrcDirs: Set<File>
     val upstreamProjects: Set<String>
+    val endpointUrl: String?
+    val endpointHeaders: Map<String, String>?
   }
 
   companion object {

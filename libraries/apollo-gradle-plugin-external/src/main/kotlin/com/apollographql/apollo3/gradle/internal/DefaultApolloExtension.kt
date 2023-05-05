@@ -62,7 +62,9 @@ abstract class DefaultApolloExtension(
         name = service.name,
         schemaFiles = service.lazySchemaFiles(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
-        upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet()
+        upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
+        endpointUrl = service.introspection?.endpointUrl?.orNull,
+        endpointHeaders = service.introspection?.headers?.orNull,
     )
   }
 

@@ -232,6 +232,8 @@ class GradleToolingModelService(
             operationPaths = (serviceInfo.graphqlSrcDirs.mapNotNull { it.toProjectLocalPathOrNull() } +
                 dependenciesProjectFiles.flatMap { it.operationPaths })
                 .distinct(),
+            endpointUrl = serviceInfo.endpointUrl,
+            endpointHeaders = serviceInfo.endpointHeaders,
         )
       }
     }

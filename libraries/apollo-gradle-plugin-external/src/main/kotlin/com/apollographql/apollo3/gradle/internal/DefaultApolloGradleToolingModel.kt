@@ -16,5 +16,6 @@ internal data class DefaultServiceInfo(
     override val schemaFiles: Set<File>,
     override val graphqlSrcDirs: Set<File>,
     override val upstreamProjects: Set<String>,
-
+    override val endpointUrl: String?,
+    override val endpointHeaders: Map<String, String>?,
 ) : ApolloGradleToolingModel.ServiceInfo, Serializable
