@@ -51,3 +51,13 @@ gradleEnterprise {
   }
 }
 
+buildCache {
+  local {
+    isEnabled = true
+    isPush = true
+  }
+  remote(gradleEnterprise.buildCache) {
+    isEnabled = true
+    isPush = true
+  }
+}
