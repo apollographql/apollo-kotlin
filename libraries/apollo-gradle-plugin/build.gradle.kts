@@ -170,8 +170,6 @@ tasks.withType<Test> {
 
   dependsOn("cleanStaleTestProjects")
 
-  dependsOn("cleanStaleTestProjects")
-
   addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
