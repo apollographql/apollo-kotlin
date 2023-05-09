@@ -1,0 +1,9 @@
+subscription GetReview {
+  reviewAdded {
+    id
+    body
+    product {
+      id
+    }
+  }
+}
