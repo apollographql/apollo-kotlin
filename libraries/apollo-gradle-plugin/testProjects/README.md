@@ -6,7 +6,7 @@ You can find other files in [../testFiles](../src/testFiles). These projects are
 
 They expect a plugin and other dependencies to be published in apollo-kotlin/build/localMaven.
 
-The tests will be run with the `:libraries:apollo-gradle-plugin:test` tasks. You can also debug individual projects by running gradle tasks manually:
+The tests will be run with the `:libraries:apollo-gradle-plugin:allTests` tasks. You can also debug individual projects by running gradle tasks manually:
 
     ../../gradlew -p $projectName $taskName.
 

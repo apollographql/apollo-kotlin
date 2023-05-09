@@ -113,6 +113,19 @@ configure<PublishingExtension> {
   }
 }
 
+tasks.register("cleanStaleTestProjects") {
+  doFirst {
+    /**
+     * Remove stale testProject directories
+     */
+    buildDir.listFiles()?.forEach {
+      if (it.isDirectory && it.name.startsWith("testProject")) {
+        it.deleteRecursively()
+      }
+    }
+  }
+}
+
 tasks.withType<Test> {
   dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
@@ -124,21 +137,12 @@ tasks.withType<Test> {
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
+  dependsOn("cleanStaleTestProjects")
+
   addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
-
-  doFirst {
-    /**
-     * Remove stale testProject directories
-     */
-    buildDir.listFiles().forEach {
-      if (it.isDirectory && it.name.startsWith("testProject")) {
-        it.deleteRecursively()
-      }
-    }
-  }
 }
 
 val allTests = tasks.create("allTests")
@@ -174,4 +178,15 @@ tasks.named("test").configure {
 
 listOf(11, 17).forEach { javaVersion ->
   createTests(javaVersion)
+}
+
+tasks.register("acceptAndroidLicenses") {
+  doLast {
+    rootProject.file("android-licenses/android-sdk-preview-license")
+        .copyTo(rootProject.file("${System.getenv("ANDROID_HOME")}/licenses/android-sdk-preview-license"), overwrite = true)
+  }
+}
+
+tasks.named("testJava17").configure {
+  dependsOn("acceptAndroidLicenses")
 }
