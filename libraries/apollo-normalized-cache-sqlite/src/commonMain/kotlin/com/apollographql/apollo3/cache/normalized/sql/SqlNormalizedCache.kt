@@ -112,20 +112,18 @@ class SqlNormalizedCache internal constructor(
    * Assume an enclosing transaction
    */
   private fun internalDeleteRecord(key: String, cascade: Boolean): Boolean {
-    return if (cascade) {
+    if (cascade) {
       recordDatabase.select(key)
           ?.referencedFields()
-          ?.all {
+          ?.forEach {
             internalDeleteRecord(
                 key = it.key,
                 cascade = true,
             )
           }
-          ?: false
-    } else {
-      recordDatabase.delete(key)
-      recordDatabase.changes() > 0
     }
+    recordDatabase.delete(key)
+    return recordDatabase.changes() > 0
   }
 
   /**
@@ -169,6 +167,7 @@ class SqlNormalizedCache internal constructor(
     )
 
   }
+
   /**
    * Update a single [Record], loading the previous one
    */

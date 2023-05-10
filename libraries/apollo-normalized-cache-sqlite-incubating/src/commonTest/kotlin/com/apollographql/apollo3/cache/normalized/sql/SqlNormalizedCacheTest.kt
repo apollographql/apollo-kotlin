@@ -5,12 +5,11 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordForKey
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.Records
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordsForKeys
-import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.TransactionWithReturn
@@ -107,6 +106,32 @@ class SqlNormalizedCacheTest {
         cacheHeaders = CacheHeaders.NONE,
     )
     cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = false)
+    val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
+    assertNull(record)
+  }
+
+  @Test
+  fun testRecordDeleteCascade() {
+    cache.merge(
+        record = Record(
+            key = "referencedKey",
+            fields = mapOf(
+                "field1" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
+    cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "field1" to "value1",
+                "field2" to CacheKey("referencedKey"),
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
+    cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = true)
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
   }
