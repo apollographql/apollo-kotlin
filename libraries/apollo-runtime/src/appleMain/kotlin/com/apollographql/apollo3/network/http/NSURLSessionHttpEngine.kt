@@ -41,8 +41,6 @@ actual class DefaultHttpEngine constructor(
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
-      initRuntimeIfNeeded()
-
       continuation.resumeWith(
           buildHttpResponse(
               data = httpData,
