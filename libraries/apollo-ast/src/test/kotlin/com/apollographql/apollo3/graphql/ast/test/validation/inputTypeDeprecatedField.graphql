@@ -1,0 +1,17 @@
+query DontUseDeprecatedInputField($authorId: String!) {
+  viewer {
+    books(input: { authorId: $authorId }) {
+      id
+      name
+    }
+  }
+}
+
+query UseDeprecatedInputField($authorId: String!) {
+  viewer {
+    books(input: { authorId: $authorId, deprecatedParameter: 4 }) {
+      id
+      name
+    }
+  }
+}
