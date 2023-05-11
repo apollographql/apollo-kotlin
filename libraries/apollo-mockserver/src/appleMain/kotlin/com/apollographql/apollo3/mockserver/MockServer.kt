@@ -83,8 +83,6 @@ actual class MockServer(
     val stableRef = StableRef.create(socket!!)
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
-      initRuntimeIfNeeded()
-
       val ref = arg!!.asStableRef<Socket>()
 
       try {
