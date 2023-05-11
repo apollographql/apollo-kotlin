@@ -20,13 +20,23 @@ fun PsiElement.addSiblingAfter(element: PsiElement): PsiElement {
 
 inline fun <reified T : PsiElement> PsiElement.findChildrenOfType(
     withSelf: Boolean = false,
+    recursive: Boolean = true,
     noinline predicate: ((T) -> Boolean)? = null,
 ): List<T> {
-  return PsiTreeUtil.findChildrenOfAnyType(this, !withSelf, T::class.java).let {
-    if (predicate == null) {
-      it.toList()
+  return if (recursive) {
+    PsiTreeUtil.findChildrenOfAnyType(this, !withSelf, T::class.java)
+  } else {
+    if (withSelf && this is T) {
+      listOf(this)
     } else {
-      it.filter(predicate)
+      PsiTreeUtil.getChildrenOfTypeAsList(this, T::class.java)
     }
   }
+      .let {
+        if (predicate == null) {
+          it.toList()
+        } else {
+          it.filter(predicate)
+        }
+      }
 }

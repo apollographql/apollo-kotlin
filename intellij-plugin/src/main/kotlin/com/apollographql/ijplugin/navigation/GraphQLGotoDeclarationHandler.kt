@@ -39,7 +39,7 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       nameReferenceExpression.isApolloModelField() -> {
         return buildList {
           // Add GraphQL field(s)
-          addAll(findGraphQLFields(nameReferenceExpression))
+          addAll(findGraphQLElements(nameReferenceExpression))
 
           // Add the original referred to element
           val resolvedElement = nameReferenceExpression.references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
