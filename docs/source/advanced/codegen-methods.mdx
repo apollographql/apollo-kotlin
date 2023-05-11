@@ -25,6 +25,80 @@ apollo {
 }
 ```
 
+## The `operationBased` codegen (default)
+
+The `operationBased` codegen generates models following the shape of the operation. 
+
+* A model is generated for each composite field selection.
+* Fragments spreads and inline fragments are generated as their own classes.
+* Merged fields are stored multiple times, once each time they are queried.
+
+For example, given this query:
+
+```graphql title="HeroQuery.graphql"
+query HeroForEpisode($ep: Episode!) {
+  search {
+    hero(episode: $ep) {
+      name
+      ... on Droid {
+        name
+        primaryFunction
+      }
+      ...HumanFields
+    }
+  }
+}
+
+fragment HumanFields on Human {
+  height
+}
+```
+The codegen generates these classes:
+
+```kotlin title="HeroQuery.kt"
+class Search(
+    val hero: Hero?
+)
+
+class Hero(
+    val name: String,
+    val onDroid: OnDroid?,
+    val humanFields: HumanFields?
+)
+
+class OnDroid(
+    val name: String,
+    val primaryFunction: String
+)
+```
+
+```kotlin title="HumanFields.kt"
+class HumanFields(
+    val height: Double
+)
+```
+
+Notice how `onDroid` and `humanFields` are nullable in the `Hero` class. This is because they will be present or not depending on the concrete type of the returned hero:
+
+```kotlin
+val hero = data.search?.hero
+when {
+  hero.onDroid != null -> {
+    // Hero is a Droid
+    println(hero.onDroid.primaryFunction)
+  }
+  hero.humanFields != null -> {
+    // Hero is a Human
+    println(hero.humanFields.height)
+  }
+  else -> {
+    // Hero is something else
+    println(hero.name)
+  }
+}
+```
+
+
 ## The `responseBased` codegen
 
 The `responseBased` codegen differs from the `operationBased` codegen in the following ways:
