@@ -4,7 +4,7 @@ android-plugin = "7.4.0"
 # The version we compile against
 android-plugin-min = "3.4.2"
 # The latest version that has been tested to work
-android-plugin-max = "8.2.0-alpha02"
+android-plugin-max = "8.2.0-alpha03"
 android-sdkversion-compile = "33"
 android-sdkversion-min = "15"
 android-sdkversion-compose-min = "21"
