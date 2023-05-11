@@ -44,7 +44,9 @@ class SqlNormalizedCache internal constructor(
         recordDatabase.delete(record.key)
       }
     }
-    return records
+    val missRecordKeys = keys - records.map { it.key }.toSet()
+    val missRecords = missRecordKeys.ifEmpty { null }?.let { nextCache?.loadRecords(it, cacheHeaders) }.orEmpty()
+    return records + missRecords
   }
 
   override fun clearAll() {
@@ -53,12 +55,14 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    return recordDatabase.transaction {
+    val selfRemoved = recordDatabase.transaction {
       internalDeleteRecord(
           key = cacheKey.key,
           cascade = cascade,
       )
     }
+    val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
+    return selfRemoved || chainRemoved
   }
 
   override fun remove(pattern: String): Int {
@@ -77,7 +81,7 @@ class SqlNormalizedCache internal constructor(
       return emptySet()
     }
     return try {
-      internalUpdateRecords(records = records, cacheHeaders.date())
+      internalUpdateRecords(records = records, cacheHeaders.date()) + nextCache?.merge(records, cacheHeaders).orEmpty()
     } catch (e: Exception) {
       // Unable to merge the records in the database, it is possibly corrupted - treat this as a cache miss
       apolloExceptionHandler(Exception("Unable to merge records from the database", e))
@@ -94,7 +98,7 @@ class SqlNormalizedCache internal constructor(
       return emptySet()
     }
     return try {
-      internalUpdateRecord(record, cacheHeaders.date())
+      internalUpdateRecord(record, cacheHeaders.date()) + nextCache?.merge(record, cacheHeaders).orEmpty()
     } catch (e: Exception) {
       // Unable to merge the record in the database, it is possibly corrupted - treat this as a cache miss
       apolloExceptionHandler(Exception("Unable to merge a record from the database", e))

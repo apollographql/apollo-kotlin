@@ -3,6 +3,7 @@ package com.apollographql.apollo3.cache.normalized.sql
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
@@ -111,8 +112,19 @@ class SqlNormalizedCacheTest {
   }
 
   @Test
-  fun testRecordDeleteCascade() {
-    cache.merge(
+  fun testSqlThenMemoryMergeAndDeleteCascade() {
+    val chainedCache = cache.chain(MemoryCacheFactory().create())
+    testChainedMergeAndDeleteCascade(chainedCache)
+  }
+
+  @Test
+  fun testMemoryThenSqlMergeAndDeleteCascade() {
+    val chainedCache = MemoryCacheFactory().create().chain(cache)
+    testChainedMergeAndDeleteCascade(chainedCache)
+  }
+
+  private fun testChainedMergeAndDeleteCascade(chainedCache: NormalizedCache) {
+    chainedCache.merge(
         record = Record(
             key = "referencedKey",
             fields = mapOf(
@@ -121,7 +133,7 @@ class SqlNormalizedCacheTest {
         ),
         cacheHeaders = CacheHeaders.NONE,
     )
-    cache.merge(
+    chainedCache.merge(
         record = Record(
             key = STANDARD_KEY,
             fields = mapOf(
@@ -131,9 +143,28 @@ class SqlNormalizedCacheTest {
         ),
         cacheHeaders = CacheHeaders.NONE,
     )
-    cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = true)
-    val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
-    assertNull(record)
+    chainedCache.onEach {
+      val record1 = it.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
+      assertNotNull(record1)
+      val record2 = it.loadRecord("referencedKey", CacheHeaders.NONE)
+      assertNotNull(record2)
+    }
+    chainedCache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = true)
+    chainedCache.onEach {
+      val record1 = it.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
+      assertNull(record1)
+      val record2 = it.loadRecord("referencedKey", CacheHeaders.NONE)
+      assertNull(record2)
+    }
+  }
+
+  private fun NormalizedCache.onEach(block: (NormalizedCache) -> Unit): NormalizedCache? {
+    var c: NormalizedCache? = this
+    while (c != null) {
+      block(c)
+      c = c.nextCache
+    }
+    return c
   }
 
   @Test
