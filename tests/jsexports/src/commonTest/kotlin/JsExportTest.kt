@@ -10,6 +10,10 @@ val response = """
               "__typename": "Cat",
               "name": "Noushka",
               "species": "Maine Coon"
+            },
+            "point": {
+              "x": 1,
+              "y": 2
             }
           }          
         """
@@ -24,6 +28,9 @@ class JsExportTest {
     assertEquals("Maine Coon", data.animal.species, )
     assertEquals("Cat", data.animal.__typename, )
     assertEquals("Noushka", data.animal.unsafeCastOrCast<GetAnimalQuery.Data.CatAnimal>().name, )
+
+    assertEquals(1, data.point?.x, )
+    assertEquals(2, data.point?.y, )
     //assertNull(data.animal.unsafeCastOrCast<GetAnimalQuery.Data.OtherAnimal>(), )
   }
 }

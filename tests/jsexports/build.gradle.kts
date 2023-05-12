@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("apollo.test")
@@ -34,5 +32,6 @@ apollo {
     packageName.set("jsexport")
     jsExport.set(true)
     codegenModels.set("responseBased")
+    mapScalar("Point", "Point", "PointAdapter")
   }
 }

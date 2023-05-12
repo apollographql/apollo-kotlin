@@ -1,6 +1,7 @@
 type Query {
   animal: Animal!
   direction: Direction
+  point: Point
 }
 
 interface Animal {
@@ -19,3 +20,5 @@ type Cat implements Animal {
 enum Direction {
   SOUTH, NORTH
 }
+
+scalar Point
