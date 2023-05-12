@@ -10,16 +10,18 @@ apolloTest {
 
 kotlin {
   sourceSets {
-    val nonJsTest = create("nonJsTest")
+    val nonJsTest = create("nonJsTest") {
+      dependsOn(getByName("commonTest"))
+    }
+
+    getByName("appleTest").dependsOn(nonJsTest)
+    getByName("jvmTest").dependsOn(nonJsTest)
 
     findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
       }
     }
-
-    findByName("jvmTest")!!.dependsOn(nonJsTest)
-    findByName("appleTest")!!.dependsOn(nonJsTest)
 
     all {
       languageSettings.optIn("kotlin.js.ExperimentalJsExport")

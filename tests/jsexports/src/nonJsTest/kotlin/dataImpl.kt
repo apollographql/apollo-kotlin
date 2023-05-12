@@ -6,7 +6,7 @@ import jsexport.adapter.GetAnimalQuery_ResponseAdapter
 import okio.Buffer
 import okio.use
 
-fun animalImpl(response: String): GetAnimalQuery.Data {
+actual fun data(response: String): GetAnimalQuery.Data {
   return Buffer().writeUtf8(response).jsonReader().use {
     GetAnimalQuery_ResponseAdapter.Data.obj(false).fromJson(it, CustomScalarAdapters.Empty)
   }
