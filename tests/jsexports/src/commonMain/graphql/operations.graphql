@@ -1,0 +1,9 @@
+query GetAnimal {
+  animal {
+    __typename
+    species
+    ... on Cat {
+      name
+    }
+  }
+}
