@@ -2,9 +2,9 @@
 title: Kotlin native
 ---
 
-Apollo Kotlin is built for multiplatform and therefore supports iOS, MacOS, and other Darwin targets.
+Apollo Kotlin supports multiple native targets, including iOS and MacOS.
 
-Since version 3.5.0, the library requires executables to use the [new Kotlin Native Memory Manager](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/). To configure it on your project you can use the following snippet:
+Apollo Kotlin requires the [new Kotlin Native Memory Manager](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/). It is enabled by default since Kotlin 1.7.20. If you're using a version of Kotlin lower than 1.7.20, you need to opt-in:
 
 ```kotlin title="build.gradle.kts"
 kotlin.targets.withType(KotlinNativeTarget::class.java) {
