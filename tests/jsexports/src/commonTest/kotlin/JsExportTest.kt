@@ -11,6 +11,7 @@ val response = """
               "name": "Noushka",
               "species": "Maine Coon"
             },
+            "direction": "SOUTH",
             "point": {
               "x": 1,
               "y": 2
@@ -28,6 +29,8 @@ class JsExportTest {
     assertEquals("Maine Coon", data.animal.species, )
     assertEquals("Cat", data.animal.__typename, )
     assertEquals("Noushka", data.animal.unsafeCastOrCast<GetAnimalQuery.Data.CatAnimal>().name, )
+
+    assertEquals("SOUTH", data.direction, )
 
     assertEquals(1, data.point?.x, )
     assertEquals(2, data.point?.y, )
