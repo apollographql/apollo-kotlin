@@ -21,7 +21,6 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.internal.failOnNativeIfLegacyMemoryManager
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -198,10 +197,6 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
     private var webSocketReopenServerUrl: (suspend () -> String)? = null
-
-    init {
-      failOnNativeIfLegacyMemoryManager()
-    }
 
     override var httpMethod: HttpMethod? = null
       private set

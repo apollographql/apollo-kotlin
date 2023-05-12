@@ -36,7 +36,6 @@ fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroi
       withLinux = withLinux,
       appleTargets = enabledAppleTargets,
       withAndroid = withAndroid,
-      newMemoryManager = null
   )
 }
 
@@ -49,7 +48,6 @@ fun Project.configureMppTestsDefaults(
     withJs: Boolean,
     withJvm: Boolean,
     browserTest: Boolean,
-    newMemoryManager: Boolean,
     appleTargets: Collection<String>,
 ) {
   configureMpp(
@@ -59,7 +57,6 @@ fun Project.configureMppTestsDefaults(
       withLinux = false,
       withAndroid = false,
       appleTargets = appleTargets,
-      newMemoryManager = newMemoryManager
   )
 }
 
@@ -69,7 +66,6 @@ fun Project.configureMpp(
     withLinux: Boolean,
     withAndroid: Boolean,
     appleTargets: Collection<String>,
-    newMemoryManager: Boolean?,
     browserTest: Boolean = false,
 ) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -117,8 +113,6 @@ fun Project.configureMpp(
     createAndConfigureAppleTargets(appleTargets.toSet().intersect(enabledAppleTargets))
 
     addTestDependencies()
-
-    if (newMemoryManager == false) setStrictMemoryModel()
   }
 }
 
@@ -172,15 +166,6 @@ private fun KotlinMultiplatformExtension.addTestDependencies() {
   sourceSets.getByName("commonTest") {
     dependencies {
       implementation(kotlin("test"))
-    }
-  }
-}
-
-// See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md
-private fun KotlinMultiplatformExtension.setStrictMemoryModel() {
-  targets.withType(KotlinNativeTarget::class.java) {
-    binaries.all {
-      binaryOptions["memoryModel"] = "strict"
     }
   }
 }

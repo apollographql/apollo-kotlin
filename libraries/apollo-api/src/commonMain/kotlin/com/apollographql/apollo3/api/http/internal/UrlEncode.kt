@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.api.http.internal
 
-import kotlin.native.concurrent.SharedImmutable
 
-@SharedImmutable
 private val RESERVED_CHARS = "!#\$&'\"()*+,/:;=?@[]{}% "
 
 /**

@@ -31,15 +31,4 @@ class MainTest {
       check(response.dataOrThrow().random == 42)
     }
   }
-
-  @Test
-  fun freezingTheStoreIsPossible() = runTest {
-    val server = MockServer()
-    server.enqueueData(data)
-    val client = ApolloClient.Builder().serverUrl(server.url()).normalizedCache(MemoryCacheFactory()).build()
-    withContext(Dispatchers.Default) {
-      val response = client.query(GetRandomQuery()).execute()
-      check(response.dataOrThrow().random == 42)
-    }
-  }
 }
