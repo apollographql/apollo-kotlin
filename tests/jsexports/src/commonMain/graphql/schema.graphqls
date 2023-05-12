@@ -1,5 +1,6 @@
 type Query {
   animal: Animal!
+  direction: Direction
 }
 
 interface Animal {
@@ -13,4 +14,8 @@ type Lion implements Animal{
 type Cat implements Animal {
   species: String!
   name: String!
+}
+
+enum Direction {
+  SOUTH, NORTH
 }

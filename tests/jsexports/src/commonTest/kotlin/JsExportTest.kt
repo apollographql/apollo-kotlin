@@ -2,7 +2,6 @@ import com.apollographql.apollo3.api.unsafeCastOrCast
 import jsexport.GetAnimalQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 
 val response = """

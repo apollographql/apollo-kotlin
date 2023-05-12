@@ -6,4 +6,5 @@ query GetAnimal {
       name
     }
   }
+  direction
 }
