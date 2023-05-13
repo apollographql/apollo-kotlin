@@ -28,7 +28,7 @@ class JsExportTest {
 
     assertEquals("Maine Coon", data.animal.species, )
     assertEquals("Cat", data.animal.__typename, )
-    assertEquals("Noushka", data.animal.unsafeCastOrCast<GetAnimalQuery.Data.CatAnimal>().name, )
+    assertEquals("Noushka", data.animal.unsafeCastOrCast<GetAnimalQuery.Data.CatAnimal>()?.name, )
 
     assertEquals("SOUTH", data.direction, )
 
