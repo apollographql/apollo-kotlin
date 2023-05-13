@@ -15,6 +15,11 @@ internal val suppressNonExportableType = AnnotationSpec.builder(KotlinSymbols.Su
 
 internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext): TypeSpec.Builder {
   return applyIf(context.jsExport) {
+    addKdoc("""
+      Note that we add [JsExport] to the top-level operation because it cannot be applied to the
+      nested classes within. [JsExport] is only applicable to top-level objects. We need the data
+      classes so that they are not mangled during compilation and we can safely cast parsed JSON.
+    """.trimIndent())
     addAnnotation(KotlinSymbols.JsExport)
     addAnnotation(suppressNonExportableType)
   }
