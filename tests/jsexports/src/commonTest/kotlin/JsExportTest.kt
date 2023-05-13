@@ -34,6 +34,7 @@ class JsExportTest {
 
     assertEquals(1, data.point?.x, )
     assertEquals(2, data.point?.y, )
+    // NOTE: The behavior of this will be different for JS vs non-JS platforms. On JS platforms it will be non-null
     //assertNull(data.animal.unsafeCastOrCast<GetAnimalQuery.Data.OtherAnimal>(), )
   }
 }
