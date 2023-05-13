@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
@@ -112,6 +113,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
   @get:Optional
   abstract val addJvmOverloads: Property<Boolean>
 
+  @ApolloExperimental
   @get:Internal
   @get:Optional
   abstract val jsExport: Property<Boolean>
