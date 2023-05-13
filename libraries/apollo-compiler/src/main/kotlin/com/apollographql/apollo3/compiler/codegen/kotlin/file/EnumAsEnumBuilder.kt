@@ -8,7 +8,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeSuppressDeprecation
@@ -55,7 +54,6 @@ internal class EnumAsEnumBuilder(
     return TypeSpec
         .enumBuilder(simpleName)
         .maybeAddDescription(description)
-        .maybeAddJsExport(context)
         .primaryConstructor(primaryConstructorSpec)
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())
