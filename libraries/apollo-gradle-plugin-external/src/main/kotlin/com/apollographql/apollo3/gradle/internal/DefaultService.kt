@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.defaultCodegenModels
+import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -255,6 +256,25 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     }
     return packageNameGenerator
   }
+
+  internal fun jsExport(): Boolean {
+    return when (targetLanguage()) {
+      TargetLanguage.JAVA -> {
+        throw IllegalStateException("jsExport can only be used for Kotlin codegen")
+      }
+      else -> {
+        check(codegenModels.isPresent && codegenModels.get() == MODELS_RESPONSE_BASED) {
+          "jsExport only supports responseBased codegen, received codegenModels=${codegenModels.orNull}"
+        }
+        check(!generateAsInternal.isPresent) {
+          "jsExport does not support generateAsInternal because the compiler ignores JsExport on internal classes"
+        }
+
+        jsExport.getOrElse(defaultJsExport)
+      }
+    }
+  }
+
   internal fun codegenModels(): String {
     return when (targetLanguage()) {
       TargetLanguage.JAVA -> {
