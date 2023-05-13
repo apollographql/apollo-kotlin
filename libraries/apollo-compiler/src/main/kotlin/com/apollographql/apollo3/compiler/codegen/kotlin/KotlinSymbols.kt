@@ -61,7 +61,6 @@ internal object KotlinSymbols {
   val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
   val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
   val MandatoryTypenameProperty = ClassNames.MandatoryTypenameProperty.toKotlinPoetClassName()
-  val JsExport = ClassNames.JsExport.toKotlinPoetClassName()
 
   /**
    * Kotlin class names
@@ -106,6 +105,7 @@ internal object KotlinSymbols {
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
 
+  val JsExport = ClassName("kotlin.js", "JsExport")
 }
 
 internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

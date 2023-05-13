@@ -1,0 +1,24 @@
+type Query {
+  animal: Animal!
+  direction: Direction
+  point: Point
+}
+
+interface Animal {
+  species: String!
+}
+
+type Lion implements Animal{
+  species: String!
+}
+
+type Cat implements Animal {
+  species: String!
+  name: String!
+}
+
+enum Direction {
+  SOUTH, NORTH
+}
+
+scalar Point
