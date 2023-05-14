@@ -258,6 +258,9 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   internal fun jsExport(): Boolean {
+    if (!jsExport.isPresent || jsExport.get() == false) {
+      return false
+    }
     return when (targetLanguage()) {
       TargetLanguage.JAVA -> {
         throw IllegalStateException("jsExport can only be used for Kotlin codegen")
@@ -266,11 +269,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
         check(codegenModels.isPresent && codegenModels.get() == MODELS_RESPONSE_BASED) {
           "jsExport only supports responseBased codegen, received codegenModels=${codegenModels.orNull}"
         }
-        check(!generateAsInternal.isPresent) {
+        check(!generateAsInternal.isPresent || generateAsInternal.get() != true) {
           "jsExport does not support generateAsInternal because the compiler ignores JsExport on internal classes"
         }
-
-        jsExport.getOrElse(defaultJsExport)
+        true
       }
     }
   }
