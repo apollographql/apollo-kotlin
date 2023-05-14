@@ -15,6 +15,10 @@ val response = """
             "point": {
               "x": 1,
               "y": 2
+            },
+            "bookOrLion": {
+              "__typename": "Book",
+              "title": "The Lion, the Witch and the Wardrobe"
             }
           }          
         """
@@ -34,6 +38,7 @@ class JsExportTest {
 
     assertEquals(1, data.point?.x, )
     assertEquals(2, data.point?.y, )
+    assertEquals("The Lion, the Witch and the Wardrobe", data.bookOrLion?.unsafeCastOrCast<GetAnimalQuery.Data.BookBookOrLion>()?.title)
     // NOTE: The behavior of this will be different for JS vs non-JS platforms. On JS platforms it will be non-null
     //assertNull(data.animal.unsafeCastOrCast<GetAnimalQuery.Data.OtherAnimal>(), )
   }

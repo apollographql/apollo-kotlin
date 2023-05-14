@@ -2,6 +2,7 @@ type Query {
   animal: Animal!
   direction: Direction
   point: Point
+  bookOrLion: BookOrLion
 }
 
 interface Animal {
@@ -17,8 +18,14 @@ type Cat implements Animal {
   name: String!
 }
 
+type Book {
+  title: String
+}
+
 enum Direction {
   SOUTH, NORTH
 }
+
+union BookOrLion = Lion | Book
 
 scalar Point
