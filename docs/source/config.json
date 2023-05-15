@@ -75,7 +75,8 @@
       "Using with Java": "/advanced/java",
       "RxJava support": "/advanced/rxjava",
       "Kotlin native": "/advanced/kotlin-native",
-      "Apollo AST": "/advanced/apollo-ast"
+      "Apollo AST": "/advanced/apollo-ast",
+      "JS Interoperability": "/advanced/js-interop"
     }
   }
 }
