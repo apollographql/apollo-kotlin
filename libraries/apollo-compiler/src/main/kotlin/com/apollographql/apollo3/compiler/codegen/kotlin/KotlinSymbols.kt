@@ -113,7 +113,6 @@ internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(pa
 internal object KotlinMemberNames {
   val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
   val obj = MemberName(apolloApiPackageName, "obj")
-  val unsafeCastOrCast = MemberName(apolloApiPackageName, "unsafeCastOrCast")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")

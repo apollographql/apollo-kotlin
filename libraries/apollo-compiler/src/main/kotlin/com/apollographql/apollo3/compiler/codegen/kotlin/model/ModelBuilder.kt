@@ -122,12 +122,7 @@ internal class ModelBuilder(
           .applyIf(!context.jsExport) {
             receiver(context.resolver.resolveModel(model.id))
           }
-          // TODO: Else? We need top level declarations for extension functions
-          .addCode(
-            "return·this.%M<%T>()\n",
-            KotlinMemberNames.unsafeCastOrCast,
-            context.resolver.resolveModel(accessor.returnedModelId)
-          )
+          .addCode("return·this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
           .build()
     }
   }
