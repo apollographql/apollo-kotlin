@@ -20,10 +20,10 @@ gradleEnterprise {
 
 buildCache {
   local {
-    enabled = true
-    push = true
+    enabled = false
   }
   remote(gradleEnterprise.buildCache) {
+    url = 'https://ge.example.com/cache/exp4/'
     enabled = true
     push = isCI
   }
