@@ -230,7 +230,7 @@ And then use the `4.0.0-dev.3-SNAPSHOT` version for the plugin and libraries.
 
 ### Android Studio / IntelliJ plugin
 
-Snapshots for the Android Studio / IntelliJ plugin [are also available](tree/main/intellij-plugin#snapshots). 
+Snapshots for the Android Studio / IntelliJ plugin [are also available](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin#snapshots). 
 
 ## Deprecation policy
 
