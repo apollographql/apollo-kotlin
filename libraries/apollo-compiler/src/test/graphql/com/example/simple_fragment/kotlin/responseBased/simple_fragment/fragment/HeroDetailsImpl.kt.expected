@@ -16,7 +16,6 @@ import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.simple_fragment.fragment.selections.HeroDetailsSelections
 import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Character
@@ -55,9 +54,9 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     public override val __typename: String
 
     public companion object {
-      public fun Data.humanDetails() = this.unsafeCastOrCast<HumanDetails>()
+      public fun Data.humanDetails() = this as? HumanDetails
 
-      public fun Data.asHuman() = this.unsafeCastOrCast<HumanData>()
+      public fun Data.asHuman() = this as? HumanData
     }
   }
 

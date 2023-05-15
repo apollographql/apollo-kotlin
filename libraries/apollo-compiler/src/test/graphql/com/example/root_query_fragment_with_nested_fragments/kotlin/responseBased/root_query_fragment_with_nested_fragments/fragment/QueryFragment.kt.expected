@@ -5,7 +5,6 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 
 public interface QueryFragment {
@@ -26,7 +25,7 @@ public interface QueryFragment {
     public override val name: String
 
     public companion object {
-      public fun Hero.heroFragment() = this.unsafeCastOrCast<HeroFragment>()
+      public fun Hero.heroFragment() = this as? HeroFragment
     }
   }
 
@@ -44,7 +43,7 @@ public interface QueryFragment {
     public override val primaryFunction: String?
 
     public companion object {
-      public fun Droid.droidFragment() = this.unsafeCastOrCast<DroidFragment>()
+      public fun Droid.droidFragment() = this as? DroidFragment
     }
   }
 

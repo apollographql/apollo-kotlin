@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter
 import com.example.inline_fragment_type_coercion.selections.TestQuerySelections
 import kotlin.Any
@@ -59,7 +58,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val foo: String
 
       public companion object {
-        public fun Foo.asBar() = this.unsafeCastOrCast<BarFoo>()
+        public fun Foo.asBar() = this as? BarFoo
       }
     }
 

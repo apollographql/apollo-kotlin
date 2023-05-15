@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
 import com.example.nested_named_fragments.type.Starship
 import kotlin.Any
@@ -85,12 +84,12 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
           ) : PlanetFragment, PilotFragment.Homeworld,
               StarshipFragment.PilotConnection.Edge.Node.Homeworld {
             public companion object {
-              public fun Homeworld.planetFragment() = this.unsafeCastOrCast<PlanetFragment>()
+              public fun Homeworld.planetFragment() = this as? PlanetFragment
             }
           }
 
           public companion object {
-            public fun Node.pilotFragment() = this.unsafeCastOrCast<PilotFragment>()
+            public fun Node.pilotFragment() = this as? PilotFragment
           }
         }
       }

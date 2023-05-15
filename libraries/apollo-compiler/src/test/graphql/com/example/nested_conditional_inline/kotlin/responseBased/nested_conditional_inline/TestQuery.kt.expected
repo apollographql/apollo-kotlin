@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter
 import com.example.nested_conditional_inline.adapter.TestQuery_VariablesAdapter
 import com.example.nested_conditional_inline.selections.TestQuerySelections
@@ -59,9 +58,9 @@ public data class TestQuery(
       public val name: String
 
       public companion object {
-        public fun Hero.asHuman() = this.unsafeCastOrCast<HumanHero>()
+        public fun Hero.asHuman() = this as? HumanHero
 
-        public fun Hero.asDroid() = this.unsafeCastOrCast<DroidHero>()
+        public fun Hero.asDroid() = this as? DroidHero
       }
     }
 
@@ -87,7 +86,7 @@ public data class TestQuery(
         public val name: String
 
         public companion object {
-          public fun Friend.asHuman() = this.unsafeCastOrCast<HumanFriend>()
+          public fun Friend.asHuman() = this as? HumanFriend
         }
       }
 
@@ -134,7 +133,7 @@ public data class TestQuery(
         public val name: String
 
         public companion object {
-          public fun Friend.asHuman() = this.unsafeCastOrCast<HumanFriend>()
+          public fun Friend.asHuman() = this as? HumanFriend
         }
       }
 

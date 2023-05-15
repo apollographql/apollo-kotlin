@@ -5,7 +5,6 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -50,13 +49,13 @@ public interface HeroDetails {
   }
 
   public companion object {
-    public fun HeroDetails.humanDetails() = this.unsafeCastOrCast<HumanDetails>()
+    public fun HeroDetails.humanDetails() = this as? HumanDetails
 
-    public fun HeroDetails.droidDetails() = this.unsafeCastOrCast<DroidDetails>()
+    public fun HeroDetails.droidDetails() = this as? DroidDetails
 
-    public fun HeroDetails.asHuman() = this.unsafeCastOrCast<HumanHeroDetails>()
+    public fun HeroDetails.asHuman() = this as? HumanHeroDetails
 
-    public fun HeroDetails.asDroid() = this.unsafeCastOrCast<DroidHeroDetails>()
+    public fun HeroDetails.asDroid() = this as? DroidHeroDetails
   }
 }
 

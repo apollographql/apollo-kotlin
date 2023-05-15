@@ -5,7 +5,6 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.Any
 import kotlin.String
 
@@ -23,6 +22,6 @@ public interface HeroDetails : CharacterDetails {
   public override val birthDate: Any
 
   public companion object {
-    public fun HeroDetails.characterDetails() = this.unsafeCastOrCast<CharacterDetails>()
+    public fun HeroDetails.characterDetails() = this as? CharacterDetails
   }
 }

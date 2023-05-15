@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter
 import com.example.fieldset_with_multiple_super.selections.TestQuerySelections
 import kotlin.Any
@@ -54,11 +53,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun C.asA() = this.unsafeCastOrCast<AC>()
+        public fun C.asA() = this as? AC
 
-        public fun C.asAB() = this.unsafeCastOrCast<ABC>()
+        public fun C.asAB() = this as? ABC
 
-        public fun C.asB() = this.unsafeCastOrCast<BC>()
+        public fun C.asB() = this as? BC
       }
     }
 

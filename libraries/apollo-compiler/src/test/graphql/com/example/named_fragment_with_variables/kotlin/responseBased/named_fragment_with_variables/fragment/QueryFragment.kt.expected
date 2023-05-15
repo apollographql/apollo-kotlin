@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 import kotlin.collections.List
 
@@ -27,7 +26,7 @@ public interface QueryFragment {
       public override val avatar: String
 
       public companion object {
-        public fun User.userFragment() = this.unsafeCastOrCast<UserFragment>()
+        public fun User.userFragment() = this as? UserFragment
       }
     }
   }

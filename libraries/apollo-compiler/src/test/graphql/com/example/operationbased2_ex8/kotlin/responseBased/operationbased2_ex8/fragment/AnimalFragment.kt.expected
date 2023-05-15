@@ -5,7 +5,6 @@
 //
 package com.example.operationbased2_ex8.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.Int
 import kotlin.String
 
@@ -20,9 +19,9 @@ public interface AnimalFragment {
     public val species: String
 
     public companion object {
-      public fun Parent.asLion() = this.unsafeCastOrCast<LionParent>()
+      public fun Parent.asLion() = this as? LionParent
 
-      public fun Parent.asCat() = this.unsafeCastOrCast<CatParent>()
+      public fun Parent.asCat() = this as? CatParent
     }
   }
 

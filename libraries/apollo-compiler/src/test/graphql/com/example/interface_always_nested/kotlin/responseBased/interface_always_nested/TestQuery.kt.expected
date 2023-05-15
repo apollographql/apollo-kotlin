@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter
 import com.example.interface_always_nested.selections.TestQuerySelections
 import kotlin.Any
@@ -54,9 +53,9 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Root.asA() = this.unsafeCastOrCast<ARoot>()
+        public fun Root.asA() = this as? ARoot
 
-        public fun Root.asAB() = this.unsafeCastOrCast<ABRoot>()
+        public fun Root.asAB() = this as? ABRoot
       }
     }
 

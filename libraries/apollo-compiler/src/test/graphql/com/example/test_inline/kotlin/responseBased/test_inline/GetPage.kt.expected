@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
 import com.example.test_inline.selections.GetPageSelections
 import kotlin.Any
@@ -61,8 +60,7 @@ public class GetPage() : Query<GetPage.Data> {
       }
 
       public companion object {
-        public fun Collection.asParticularCollection() =
-            this.unsafeCastOrCast<ParticularCollectionCollection>()
+        public fun Collection.asParticularCollection() = this as? ParticularCollectionCollection
       }
     }
 
@@ -76,7 +74,7 @@ public class GetPage() : Query<GetPage.Data> {
         public val __typename: String
 
         public companion object {
-          public fun Item.asParticularItem() = this.unsafeCastOrCast<ParticularItemItem>()
+          public fun Item.asParticularItem() = this as? ParticularItemItem
         }
       }
 

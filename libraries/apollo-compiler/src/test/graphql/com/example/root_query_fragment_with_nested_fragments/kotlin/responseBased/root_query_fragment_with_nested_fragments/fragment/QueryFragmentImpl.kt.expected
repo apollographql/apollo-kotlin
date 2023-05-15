@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections
 import com.example.root_query_fragment_with_nested_fragments.type.Query
 import kotlin.Any
@@ -53,7 +52,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
       public override val name: String,
     ) : HeroFragment, QueryFragment.Hero {
       public companion object {
-        public fun Hero.heroFragment() = this.unsafeCastOrCast<HeroFragment>()
+        public fun Hero.heroFragment() = this as? HeroFragment
       }
     }
 
@@ -69,7 +68,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
       public override val primaryFunction: String?,
     ) : DroidFragment, QueryFragment.Droid {
       public companion object {
-        public fun Droid.droidFragment() = this.unsafeCastOrCast<DroidFragment>()
+        public fun Droid.droidFragment() = this as? DroidFragment
       }
     }
 

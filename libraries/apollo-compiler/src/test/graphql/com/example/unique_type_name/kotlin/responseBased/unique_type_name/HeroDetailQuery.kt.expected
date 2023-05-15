@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.selections.HeroDetailQuerySelections
@@ -75,7 +74,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
       }
 
       public companion object {
-        public fun HeroDetailQuery.asHuman() = this.unsafeCastOrCast<HumanHeroDetailQuery>()
+        public fun HeroDetailQuery.asHuman() = this as? HumanHeroDetailQuery
       }
     }
 
@@ -154,7 +153,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
           }
 
           public companion object {
-            public fun Friend.heroDetails() = this.unsafeCastOrCast<HeroDetails>()
+            public fun Friend.heroDetails() = this as? HeroDetails
           }
         }
       }

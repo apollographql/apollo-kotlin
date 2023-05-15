@@ -5,16 +5,15 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import kotlin.String
 
 internal interface HeroDetails {
   public val __typename: String
 
   public companion object {
-    public fun HeroDetails.humanDetails() = this.unsafeCastOrCast<HumanDetails>()
+    public fun HeroDetails.humanDetails() = this as? HumanDetails
 
-    public fun HeroDetails.asHuman() = this.unsafeCastOrCast<HumanHeroDetails>()
+    public fun HeroDetails.asHuman() = this as? HumanHeroDetails
   }
 }
 

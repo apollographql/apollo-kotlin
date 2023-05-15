@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter
 import com.example.fragment_used_twice.fragment.CharacterHumanDetails
 import com.example.fragment_used_twice.fragment.HeroDetails
@@ -67,11 +66,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val birthDate: Any
 
       public companion object {
-        public fun Hero.heroDetails() = this.unsafeCastOrCast<HeroDetails>()
+        public fun Hero.heroDetails() = this as? HeroDetails
 
-        public fun Hero.humanDetails() = this.unsafeCastOrCast<HumanDetails>()
+        public fun Hero.humanDetails() = this as? HumanDetails
 
-        public fun Hero.asHuman() = this.unsafeCastOrCast<HumanHero>()
+        public fun Hero.asHuman() = this as? HumanHero
       }
     }
 

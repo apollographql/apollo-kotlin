@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.union_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.union_fragment.fragment.Starship
 import com.example.union_fragment.selections.TestQuerySelections
@@ -58,9 +57,9 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Search.starship() = this.unsafeCastOrCast<Starship>()
+        public fun Search.starship() = this as? Starship
 
-        public fun Search.asStarship() = this.unsafeCastOrCast<StarshipSearch>()
+        public fun Search.asStarship() = this as? StarshipSearch
       }
     }
 

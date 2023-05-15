@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.operationbased2_ex8.adapter.TestOperation_ResponseAdapter
 import com.example.operationbased2_ex8.fragment.AnimalFragment
 import com.example.operationbased2_ex8.selections.TestOperationSelections
@@ -62,9 +61,9 @@ public class TestOperation() : Query<TestOperation.Data> {
         public override val species: String
 
         public companion object {
-          public fun Parent.asLion() = this.unsafeCastOrCast<LionParent>()
+          public fun Parent.asLion() = this as? LionParent
 
-          public fun Parent.asCat() = this.unsafeCastOrCast<CatParent>()
+          public fun Parent.asCat() = this as? CatParent
         }
       }
 
@@ -86,7 +85,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       ) : Parent, AnimalFragment.Parent
 
       public companion object {
-        public fun Animal.animalFragment() = this.unsafeCastOrCast<AnimalFragment>()
+        public fun Animal.animalFragment() = this as? AnimalFragment
       }
     }
   }

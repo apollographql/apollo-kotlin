@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.operationbased2_ex8.fragment.selections.AnimalFragmentSelections
 import com.example.operationbased2_ex8.type.Animal
 import kotlin.Any
@@ -49,9 +48,9 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
       public override val species: String
 
       public companion object {
-        public fun Parent.asLion() = this.unsafeCastOrCast<LionParent>()
+        public fun Parent.asLion() = this as? LionParent
 
-        public fun Parent.asCat() = this.unsafeCastOrCast<CatParent>()
+        public fun Parent.asCat() = this as? CatParent
       }
     }
 

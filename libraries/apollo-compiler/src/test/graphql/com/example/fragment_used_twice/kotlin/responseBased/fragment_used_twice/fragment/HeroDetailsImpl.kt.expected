@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.fragment_used_twice.fragment.selections.HeroDetailsSelections
 import com.example.fragment_used_twice.type.Character
 import kotlin.Any
@@ -51,7 +50,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     public override val birthDate: Any,
   ) : CharacterDetails, HeroDetails, Fragment.Data {
     public companion object {
-      public fun Data.characterDetails() = this.unsafeCastOrCast<CharacterDetails>()
+      public fun Data.characterDetails() = this as? CharacterDetails
     }
   }
 }

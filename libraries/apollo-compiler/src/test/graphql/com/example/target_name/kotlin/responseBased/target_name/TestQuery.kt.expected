@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.target_name.adapter.TestQuery_ResponseAdapter
 import com.example.target_name.adapter.TestQuery_VariablesAdapter
 import com.example.target_name.selections.TestQuerySelections
@@ -68,7 +67,7 @@ public data class TestQuery(
       public val __typename: String
 
       public companion object {
-        public fun Union.asReservedObject() = this.unsafeCastOrCast<ReservedObjectUnion>()
+        public fun Union.asReservedObject() = this as? ReservedObjectUnion
       }
     }
 

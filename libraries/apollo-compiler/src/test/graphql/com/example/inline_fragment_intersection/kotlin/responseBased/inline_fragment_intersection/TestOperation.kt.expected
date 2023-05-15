@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.unsafeCastOrCast
 import com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter
 import com.example.inline_fragment_intersection.selections.TestOperationSelections
 import com.example.inline_fragment_intersection.type.Race
@@ -66,7 +65,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         public val name: String
 
         public companion object {
-          public fun Friend.asWookie() = this.unsafeCastOrCast<WookieFriend>()
+          public fun Friend.asWookie() = this as? WookieFriend
         }
       }
 
@@ -95,13 +94,13 @@ public class TestOperation() : Query<TestOperation.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Random.asBeing() = this.unsafeCastOrCast<BeingRandom>()
+        public fun Random.asBeing() = this as? BeingRandom
 
-        public fun Random.asBeingHuman() = this.unsafeCastOrCast<BeingHumanRandom>()
+        public fun Random.asBeingHuman() = this as? BeingHumanRandom
 
-        public fun Random.asWookie() = this.unsafeCastOrCast<WookieRandom>()
+        public fun Random.asWookie() = this as? WookieRandom
 
-        public fun Random.asBeingWookie() = this.unsafeCastOrCast<BeingWookieRandom>()
+        public fun Random.asBeingWookie() = this as? BeingWookieRandom
       }
     }
 
@@ -119,7 +118,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         public val isFamous: Boolean?
 
         public companion object {
-          public fun Friend.asWookie() = this.unsafeCastOrCast<WookieFriend>()
+          public fun Friend.asWookie() = this as? WookieFriend
         }
       }
 
@@ -152,7 +151,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         public override val lifeExpectancy: Double?
 
         public companion object {
-          public fun Friend.asWookie() = this.unsafeCastOrCast<WookieFriend>()
+          public fun Friend.asWookie() = this as? WookieFriend
         }
       }
 
