@@ -17,7 +17,7 @@ fun Project.configureTesting() {
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
     tasks.withType(Test::class.java) {
       retry {
-        if (System.getenv().containsKey("CI")) {
+        if (isCIBuild()) {
           maxRetries.set(3)
           failOnPassedAfterRetry.set(true)
         }
@@ -39,3 +39,5 @@ fun Project.configureTesting() {
 fun Test.addRelativeInput(name: String, dirPath: Any) {
   this.inputs.dir(dirPath).withPropertyName(name).withPathSensitivity(PathSensitivity.RELATIVE)
 }
+
+fun isCIBuild() = !System.getenv("CI").isNullOrEmpty()
