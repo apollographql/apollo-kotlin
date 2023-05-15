@@ -2,9 +2,8 @@ name: pr
 
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
+    branches: [ exp5 ]
+
 env:
   GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
   GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
