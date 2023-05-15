@@ -22,7 +22,7 @@ buildCache {
   local {
     enabled = false
   }
-  remote(gradleEnterprise.buildCache) {
+  remote(HttpBuildCache) {
     url = 'https://ge.apollographql.com/cache/exp4/'
     enabled = true
     push = isCI
