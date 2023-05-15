@@ -26,6 +26,8 @@ A plugin for Android Studio and IntelliJ is now available to help you work with 
 
 See [this page](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin) for installation instructions and more information.
 
+Note that it may take 1 or 2 days after the release for the plugin to be visible in the JetBrains Marketplace.
+
 ## ⚡️ Error handling improvements
 
 Error handling is an important aspect of a client library and we found it could benefit from some changes.
