@@ -157,3 +157,40 @@ class Point {
 To work around this, you need to tell the compiler not to mangle property names, which you can do by annotating the class
 with `JsExport`. When you set the `jsExport` option on your service, you tell Apollo to annotate each generated
 class with `JsExport` so that the property names are not mangled, and you can safely cast.
+
+## Alternative approaches
+
+
+### Use `DynamicJsJsonReader`
+If you would prefer to use `operationBased` models, and performance is not _as_ critical, you can use `DynamicJsJsonReader`. In JS
+simply looping through the byte array incurs a lot of overhead because Kotlin uses `Long` indices in its Arrays, and Longs do not
+have a JS implementation. The `DynamicJsJsonReader` takes a javascript object that has already been parsed from JSON, and turns
+it into Apollo `Data`.
+
+In testing we've seen a ~2x performance boost on JS platforms using this parser vs ~10x with the `JsExport` approach.
+
+To use `DynamicJsJsonReader`, your JS implementation above would become:
+
+```kotlin
+// js implementation
+actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
+    operation: Operation<D>,
+    headers: Array<Array<String>> = emptyArray(),
+    method: HttpMethod = HttpMethod.Post
+): ApolloResponse<D> {
+
+  val body = buildJsonString {
+      operation.composeJsonRequest(this)
+  }
+  val response = fetch(somePath, body).await()
+  val dynamicJson = response.json().await().asDynamic()
+  return operation.parseJsonResponse(DynamicJsJsonReader(dynamicJson)
+}
+```
+
+
+### Use [JSEI](https://github.com/apollosolutions/apollo-jsei)
+If you do not need to interop with non-JS platforms (eg JVM/Apple/Native), or you are comfortable with some code duplication for the JS
+side you can use [JSEI](https://github.com/apollosolutions/apollo-jsei), which uses the `apollo-ast` to generate Javascript `external interfaces`
+that you can cast to similar to the `JsExport` approach. The disadvantage is that `external interfaces` can only be used from Javascript targeted code,
+so you cannot reference the models in common code.
