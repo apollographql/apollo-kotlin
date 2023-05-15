@@ -8,7 +8,7 @@ gradleEnterprise {
   buildScan {
     publishAlways()
     publishIfAuthenticated()
-    tag("exp5-take1")
+    tag("exp5-take2")
 
     uploadInBackground = !isCI
 
@@ -24,7 +24,7 @@ buildCache {
     enabled = false
   }
   remote(HttpBuildCache) {
-    url = 'https://ge.apollographql.com/cache/exp5-take1/'
+    url = 'https://ge.apollographql.com/cache/exp5-take2/'
     enabled = true
     push = isCI
     credentials { creds ->
