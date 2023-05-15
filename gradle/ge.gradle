@@ -23,7 +23,7 @@ buildCache {
     enabled = false
   }
   remote(HttpBuildCache) {
-    url = 'https://ge.apollographql.com/cache/exp4-16-42/'
+    url = 'https://ge.apollographql.com/cache/exp4-take2/'
     enabled = true
     push = isCI
     credentials { creds ->
