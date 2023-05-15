@@ -8,7 +8,8 @@ internal data class DefaultApolloGradleToolingModel(
     override val projectName: String,
     override val serviceInfos: List<ApolloGradleToolingModel.ServiceInfo>,
 ) : ApolloGradleToolingModel, Serializable {
-  override val version: Int = ApolloGradleToolingModel.VERSION
+  override val versionMajor: Int = ApolloGradleToolingModel.VERSION_MAJOR
+  override val versionMinor: Int = ApolloGradleToolingModel.VERSION_MINOR
 }
 
 internal data class DefaultServiceInfo(

@@ -173,6 +173,13 @@ class GradleToolingModelService(
             gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, id, executionSettings, connection, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
                 .withCancellationToken(gradleCancellation!!.token())
                 .get()
+                .takeIf {
+                  val isCompatibleVersion = it.versionMajor == ApolloGradleToolingModel.VERSION_MAJOR
+                  if (!isCompatibleVersion) {
+                    logw("Incompatible version of Apollo Gradle plugin in module :${gradleProject.name}: ${it.versionMajor} != ${ApolloGradleToolingModel.VERSION_MAJOR}, ignoring")
+                  }
+                  isCompatibleVersion
+                }
           } catch (t: Throwable) {
             logw(t, "Couldn't fetch tooling model for :${gradleProject.name}")
             null
@@ -232,8 +239,8 @@ class GradleToolingModelService(
             operationPaths = (serviceInfo.graphqlSrcDirs.mapNotNull { it.toProjectLocalPathOrNull() } +
                 dependenciesProjectFiles.flatMap { it.operationPaths })
                 .distinct(),
-            endpointUrl = serviceInfo.endpointUrl,
-            endpointHeaders = serviceInfo.endpointHeaders,
+            endpointUrl = if (toolingModel.versionMinor >= ApolloGradleToolingModel.VERSION_MINOR) serviceInfo.endpointUrl else null,
+            endpointHeaders = if (toolingModel.versionMinor >= ApolloGradleToolingModel.VERSION_MINOR) serviceInfo.endpointHeaders else null,
         )
       }
     }

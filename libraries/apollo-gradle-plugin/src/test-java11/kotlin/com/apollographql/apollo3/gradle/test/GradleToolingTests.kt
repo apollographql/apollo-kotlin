@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
-import util.TestUtils
 import org.gradle.tooling.GradleConnector
 import org.junit.Assert
 import org.junit.Test
+import util.TestUtils
 import java.io.File
 
 class GradleToolingTests {
@@ -33,6 +33,11 @@ class GradleToolingTests {
         service("starwars") {
           packageName.set("starwars")
           srcDir("src/main/graphql/starwars")
+          introspection {
+            endpointUrl.set("https://example.com")
+            schemaFile.set(file("schema.graphqls"))
+            headers.set(["header1": "value1"])
+          }
         }
         service("githunt") {
           packageName.set("githunt")
@@ -47,13 +52,16 @@ class GradleToolingTests {
           .use { connection ->
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
-      Assert.assertEquals(ApolloGradleToolingModel.VERSION, toolingModel.version)
+      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MAJOR, toolingModel.versionMajor)
+      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MINOR, toolingModel.versionMinor)
       Assert.assertEquals(emptyList<String>(), toolingModel.serviceInfos.flatMap { it.upstreamProjects })
 
       val serviceInfo0 = toolingModel.serviceInfos[0]
       Assert.assertEquals("starwars", serviceInfo0.name)
       Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars")), serviceInfo0.graphqlSrcDirs)
       Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars/example/schema.json")), serviceInfo0.schemaFiles)
+      Assert.assertEquals("https://example.com", serviceInfo0.endpointUrl)
+      Assert.assertEquals(mapOf("header1" to "value1"), serviceInfo0.endpointHeaders)
 
       val serviceInfo1 = toolingModel.serviceInfos[1]
       Assert.assertEquals("githunt", serviceInfo1.name)
@@ -71,7 +79,8 @@ class GradleToolingTests {
           .use { connection ->
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
-      Assert.assertEquals(ApolloGradleToolingModel.VERSION, toolingModel.version)
+      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MAJOR, toolingModel.versionMajor)
+      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MINOR, toolingModel.versionMinor)
       Assert.assertEquals(listOf("node1", "node2"), toolingModel.serviceInfos.flatMap { it.upstreamProjects }.sorted())
     }
   }
