@@ -18,16 +18,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
-  if (
-      name in setOf(
-          "apollo-runtime-java",
-          "apollo-rx2-support-java",
-          "apollo-rx3-support-java",
-      )
-  ) {
-    return
-  }
-
   apply {
       plugin("signing")
     }
