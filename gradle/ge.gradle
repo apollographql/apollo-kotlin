@@ -23,8 +23,13 @@ buildCache {
     enabled = false
   }
   remote(HttpBuildCache) {
-    url = 'https://ge.apollographql.com/cache/exp4/'
+    url = 'https://ge.apollographql.com/cache/exp4-16-42/'
     enabled = true
     push = isCI
+    credentials { creds ->
+      // inject credentials with read-write access to the remote build cache via env vars set in your CI environment
+      creds.username = System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME')
+      creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
+    }
   }
 }
