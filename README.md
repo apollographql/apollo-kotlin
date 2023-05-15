@@ -83,7 +83,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "4.0.0-alpha.0"
+  id("com.apollographql.apollo3") version "4.0.0-alpha.1"
 }
 ```
 
@@ -91,7 +91,7 @@ Add the runtime dependency:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-alpha.0")
+  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-alpha.1")
 }
 ```
 
@@ -181,7 +181,7 @@ Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollo
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "4.0.0-alpha.0"
+  id("com.apollographql.apollo3") version "4.0.0-alpha.1"
 }
 
 repositories {
@@ -189,13 +189,13 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-alpha.0")
+  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-alpha.1")
 
   // optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:4.0.0-alpha.0")
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:4.0.0-alpha.1")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
-  implementation("com.apollographql.apollo3:apollo-api:4.0.0-alpha.0")
+  implementation("com.apollographql.apollo3:apollo-api:4.0.0-alpha.1")
 }
 ```
 
@@ -226,7 +226,7 @@ pluginManagement {
 }
 ```
 
-And then use the `4.0.0-alpha.1-SNAPSHOT` version for the plugin and libraries.
+And then use the `4.0.0-alpha.2-SNAPSHOT` version for the plugin and libraries.
 
 ### Android Studio / IntelliJ plugin
 
