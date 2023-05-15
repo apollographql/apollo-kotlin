@@ -1,6 +1,136 @@
 Change Log
 ==========
 
+# Version 4.0.0-alpha.1
+
+_2023-05-15_
+
+This release is the first alpha of the next major version of Apollo Kotlin: 4.0.0. 
+
+This version is under development, but we want to give you a preview of what's coming, and get your early feedback. Please see the [roadmap](https://github.com/apollographql/apollo-kotlin/blob/main/ROADMAP.md) for more details about the release plan.
+
+As this is a major version, this release introduces new features but also some breaking changes.
+
+We would love to hear your feedback on this release. Please report any issues, questions, ideas, or comments on the [issue tracker](https://github.com/apollographql/apollo-kotlin/issues).
+
+## 🛠️ Android Studio / IntelliJ plugin
+
+A plugin for Android Studio and IntelliJ is now available to help you work with Apollo Kotlin. It provides the following features:
+
+- Automatic code generation
+- Integration with the [GraphQL IntelliJ Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql)
+- Navigation to GraphQL definitions
+- Migration helpers
+
+See [this page](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin) for installation instructions and more information.
+
+## ⚡️ Error handling improvements
+
+Error handling is an important aspect of a client library and we found it could benefit from some changes.
+
+In particular we are moving away from throwing exceptions:
+- This improves dealing with Flows as they will no longer terminate on errors
+- It helps grouping all error handling (network, GraphQL, caching) in the same area of your code
+
+There is now a `ApolloResponse.exception : ApolloException` property, which will be present when a network error or cache miss have occurred, or when GraphQL errors are present:
+
+```kotlin
+val data = response.data
+when {
+  data != null -> {
+    println("The server returned data: $data")
+  }
+  else -> {
+    // An error happened, check response.exception for more details or just display a generic error 
+    when (response.exception) {
+      is ApolloGraphQLException -> // do something with exception.errors
+      is ApolloHttpException -> // do something with exception.statusCode
+      is ApolloNetworkException -> TODO()
+      is ApolloParseException -> TODO()
+      else -> // generic error
+    }
+  }
+}
+```
+
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+
+Feedback about this change is welcome on [issue 4711](https://github.com/apollographql/apollo-kotlin/issues/4711).
+
+## ☕️ Better Java support
+
+As v3 has a Kotlin and Coroutines first API, using it from Java is sometimes impractical or not idiomatic. That is why in v4 we are introducing a new Java runtime, written in Java, which provides a Java friendly API. It is callback based and doesn't depend on a third-party library like Rx.
+
+To use it in your project, instead of the usual runtime (`com.apollographql.apollo3:apollo-runtime`), use the following dependency in your `build.gradle[.kts]` file:
+
+```kotlin
+implementation("com.apollographql.apollo3:apollo-runtime-java")
+```
+
+Then you can use the `ApolloClient` class from Java:
+
+```java
+ApolloClient apolloClient = new ApolloClient.Builder()
+  .serverUrl("https://...")
+  .build();
+
+apolloClient
+  .query(MyQuery.builder().build())
+  .enqueue(new ApolloCallback<MyQuery.Data>() {
+      @Override public void onResponse(@NotNull ApolloResponse<MyQuery.Data> response) {
+        System.out.prinitln(response.getData());
+      }
+  });
+```
+
+A few examples can be found in the [tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/java-client/src/test/java/test).
+
+## 🔃 Multi-module improvements
+
+In multi-module projects, by default, all the types of an upstream module are generated because there is no way to know in advance what types are going to be used by downstream modules. For large projects this can lead to a lot of unused code and an increased build time.
+
+To avoid this, in v3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In v4 this can now be computed automatically by detecting which types are used by the downstream modules.
+
+To enable this, add the "opposite" link of dependencies with `isADependencyOf()`.
+
+```kotlin
+// schema/build.gradle.kts
+apollo {
+  service("service") {
+    packageName.set("schema")
+
+    // Enable generation of metadata for use by downstream modules 
+    generateApolloMetadata.set(true)
+
+    // More options...
+
+    // Get used types from the downstream module
+    isADependencyOf(project(":feature1"))
+
+    // You can have several downstream modules
+    isADependencyOf(project(":feature2"))
+  }
+}
+```
+
+```kotlin
+// feature1/build.gradle.kts
+apollo {
+  service("service") {
+    packageName.set("feature1")
+    
+    // Get the generated schema types (and fragments) from the upstream schema module 
+    dependsOn(project(":schema")) 
+  }
+}
+```
+
+## ⚙️ Other changes
+
+- All the previously deprecated APIs have been removed.
+- For a more exhaustive list of changes, see the [migration guide](https://www.apollographql.com/docs/kotlin/v4/migration/4.0).
+
+
 # Version 3.8.1
 
 _2023-04-21_
