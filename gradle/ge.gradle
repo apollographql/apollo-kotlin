@@ -28,6 +28,8 @@ buildCache {
     push = isCI
     credentials { creds ->
       // inject credentials with read-write access to the remote build cache via env vars set in your CI environment
+      System.out.println("GRADLE_ENTERPRISE_CACHE_USERNAME:" + System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME').length())
+      System.out.println("GRADLE_ENTERPRISE_CACHE_PASSWORD:" + System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD').length())
       creds.username = System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME')
       creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
     }
