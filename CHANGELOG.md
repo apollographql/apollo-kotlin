@@ -9,7 +9,9 @@ This release is the first alpha of the next major version of Apollo Kotlin: 4.0.
 
 This version is under development, but we want to give you a preview of what's coming, and get your early feedback. Please see the [roadmap](https://github.com/apollographql/apollo-kotlin/blob/main/ROADMAP.md) for more details about the release plan.
 
-As this is a major version, this release introduces new features but also some breaking changes.
+While version 3 changed a lot of APIs compared to version 2, version 4 should be mostly compatible with version 3. Version 4 will most likely even keep the same package name in order to keep the number of changes low (see [this RFC](https://github.com/apollographql/apollo-kotlin/issues/4710)).
+
+The error handling has changed but besides that, the version should be mostly compatible.
 
 We would love to hear your feedback on this release. Please report any issues, questions, ideas, or comments on the [issue tracker](https://github.com/apollographql/apollo-kotlin/issues).
 
@@ -124,12 +126,6 @@ apollo {
   }
 }
 ```
-
-## ⚙️ Other changes
-
-- All the previously deprecated APIs have been removed.
-- For a more exhaustive list of changes, see the [migration guide](https://www.apollographql.com/docs/kotlin/v4/migration/4.0).
-
 
 # Version 3.8.1
 
