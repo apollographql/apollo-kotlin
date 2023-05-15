@@ -89,7 +89,7 @@ gradlePlugin {
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
       implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
-      tags.set(listOf("graphql", "apollo", "plugin"))
+      tags.set(listOf("graphql", "apollo"))
     }
   }
 }
