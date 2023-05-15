@@ -9,9 +9,9 @@ With that said, the default implementation has some performance limitations. Kot
 amount of overhead to basic Kotlin data structures (notably `List`, `Set`, and `Map`), and so performance sensitive
 workloads (like those found in the Kotlin JSON parsing codepaths) can be slow.
 
-To work around this, the Apollo compiler provides an option to skip the JSON parsing step completely on JS
-platforms. To make use of this, you must set `jsExport.set(true)` on your service, and take careful note
-of the limitations listed below.
+To work around this, the Apollo compiler provides an option that allows you to to skip the JSON parsing
+step completely on JS platforms. To make use of this, you must set `jsExport.set(true)` on your service,
+and then you can `unsafeCast()` a JSON parsed response directly to the generated model. Take careful note of the limitations listed below.
 
 ## Example
 
@@ -78,7 +78,7 @@ ktor for non-JS clients.
 ## Accessors and Polymorphism
 Typically `responseBased` codegen would create companion objects with accessors for polymorphic models. For example:
 
-```
+```kotlin
 public interface Animal {
   public val __typename: String
 
