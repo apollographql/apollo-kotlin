@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api
 
-expect inline fun <reified T>  Any.unsafeCastOrCast(): T?
+expect inline fun <reified T>  Any.apolloUnsafeCast(): T
 
 /**
  * Uses `unsafeCast` on JS or a regular `as?` cast on other platforms. Note that
@@ -9,6 +9,6 @@ expect inline fun <reified T>  Any.unsafeCastOrCast(): T?
  *
  * @return
  */
-inline fun <reified T> Any.defaultUnsafeCastOrCast(): T? {
-  return this as? T
+inline fun <reified T> Any.defaultApolloUnsafeCast(): T {
+  return this as T
 }
