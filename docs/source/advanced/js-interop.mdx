@@ -9,23 +9,25 @@ With that said, the default implementation has some performance limitations. Kot
 amount of overhead to basic Kotlin data structures (notably `List`, `Set`, and `Map`), and so performance sensitive
 workloads (like those found in the Kotlin JSON parsing codepaths) can be slow.
 
-To work around this, Apollo Kotlin provides a `jsExport` option and a `DynamicJsJsonReader` class to work with
-JS faster at the price of some limitations.
+To work around this, Apollo Kotlin provides two alternative solutions to work with JS faster:
+
+* `jsExport` can be up to ~10x faster but does support the Kotlin type system nor `operationBased` codegen.
+* `DynamicJsJsonReader` can be up to ~2x faster but requires bypassing some parts of ApolloClient for JS.
 
 ## `jsExport`
-
-> ℹ️ `JsExport` is an experimental feature in Kotlin and Apollo Kotlin and may change in future versions.
 
 `jsExport` uses
 the [@JsExport](https://kotlinlang.org/docs/js-to-kotlin-interop.html#jsexport-annotation) annotation so that the
 dynamic JS object is callable from Kotlin directly.
 
-Because it bypasses some of the Kotlin type system, using `jsExport` comes with limitations.
+> ℹ️ `JsExport` is an experimental feature in Kotlin and Apollo Kotlin and may change in future versions.
+
+Because it bypasses the Kotlin type system, using `jsExport` comes with limitations.
 See [Limitations](#Limitations) for more details.
 
 ### Usage
 
-To use it, et `jsExport` to `true` in your Gradle scripts:
+To use it, set `jsExport` to `true` in your Gradle scripts:
 
 ```kotlin
 // build.gradle[.kts]
@@ -85,7 +87,7 @@ actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
    * Because responseBased codegen maps to the response data and the models have
    * @JsExport annotations, you can use unsafeCast directly
    */
-  return SimpleApolloResponse(data = dynamicJson["data"].unsafeCast())
+  return dynamicJson["data"].unsafeCast()
 }
 ```
 
@@ -199,7 +201,6 @@ when (animal.__typename) {
   of [supported types](https://kotlinlang.org/docs/js-to-kotlin-interop.html#kotlin-types-in-javascript)).
 * Enums do not support `@JsExport` and are generated as `String`. The Kotlin enum is still generated so you can
   use `safeValueOf()` to get a Kotlin enum from a `String`
-* `GraphQLList` are generated as `Array` instead of `List`.
 
 ## `DynamicJsJsonReader`
 
