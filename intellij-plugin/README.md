@@ -36,9 +36,15 @@ The plugin is supported on:
 <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>⚙</kbd>️ > <kbd>Manage Plugin
 Repositories</kbd> > <kbd>+</kbd> > <kbd>https://plugins.jetbrains.com/plugins/preview/20645</kbd>
 
+<img src="assets/instructions-1-manage-repositories.png" width="600" />
+
+<img src="assets/instructions-2-add-repository.png" width="600" />
+
 Then:
 
 <kbd>Marketplace</kbd> > Search for "Apollo GraphQL" > <kbd>Install</kbd>
+
+<img src="assets/instructions-3-search-and-install.png" width="600" />
 
 ### Snapshots
 

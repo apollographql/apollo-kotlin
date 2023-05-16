@@ -9,26 +9,26 @@ This release is the first alpha of the next major version of Apollo Kotlin: 4.0.
 
 This version is under development, but we want to give you a preview of what's coming, and get your early feedback. Please see the [roadmap](https://github.com/apollographql/apollo-kotlin/blob/main/ROADMAP.md) for more details about the release plan.
 
-While version 3 changed a lot of APIs compared to version 2, version 4 should be mostly compatible with version 3. Version 4 will most likely even keep the same package name in order to keep the number of changes low (see [this RFC](https://github.com/apollographql/apollo-kotlin/issues/4710)).
+While version 3 changed a lot of APIs compared to version 2, version 4 should be mostly compatible with version 3. Version 4 will even keep the same package name in order to keep the number of changes low.
 
-The error handling has changed but besides that, the version should be mostly compatible.
+The error handling has changed but besides that, the version should be mostly compatible. Please consult the [migration guide](https://www.apollographql.com/docs/kotlin/v4/migration/4.0) for all the details.
 
 We would love to hear your feedback on this release. Please report any issues, questions, ideas, or comments on the [issue tracker](https://github.com/apollographql/apollo-kotlin/issues).
 
 ## 🛠️ Android Studio / IntelliJ plugin
 
-A plugin for Android Studio and IntelliJ is now available to help you work with Apollo Kotlin. It provides the following features:
+> Please note that the plugin is not yet visible in the JetBrains Marketplace, as it takes 1 to 2 days after publishing for it to be available.
+
+See [this page](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin) for installation instructions and more information.
+
+This plugin for Android Studio and IntelliJ helps you work with Apollo Kotlin. It provides the following features:
 
 - Automatic code generation
 - Integration with the [GraphQL IntelliJ Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql)
 - Navigation to GraphQL definitions
-- Migration helpers
+- Helpers to migrate your project to the latest version
 
-See [this page](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin) for installation instructions and more information.
-
-Note that it may take 1 or 2 days after the release for the plugin to be visible in the JetBrains Marketplace.
-
-## ⚡️ Error handling improvements
+## ⚡️ `ApolloResponse.exception` for error handling
 
 Error handling is an important aspect of a client library and we found it could benefit from some changes.
 
@@ -36,7 +36,7 @@ In particular we are moving away from throwing exceptions:
 - This improves dealing with Flows as they will no longer terminate on errors
 - It helps grouping all error handling (network, GraphQL, caching) in the same area of your code
 
-There is now a `ApolloResponse.exception : ApolloException` property, which will be present when a network error or cache miss have occurred, or when GraphQL errors are present:
+To that effect, there is now an `ApolloResponse.exception : ApolloException` property, which will be present when a network error or cache miss have occurred, or when GraphQL errors are present:
 
 ```kotlin
 val data = response.data
@@ -61,7 +61,7 @@ To ease the migration to v4, the v3 behavior can be restored by calling `ApolloC
 
 Feedback about this change is welcome on [issue 4711](https://github.com/apollographql/apollo-kotlin/issues/4711).
 
-## ☕️ Better Java support
+## ☕️ `apollo-runtime-java` for better Java support
 
 As v3 has a Kotlin and Coroutines first API, using it from Java is sometimes impractical or not idiomatic. That is why in v4 we are introducing a new Java runtime, written in Java, which provides a Java friendly API. It is callback based and doesn't depend on a third-party library like Rx.
 
@@ -89,7 +89,7 @@ apolloClient
 
 A few examples can be found in the [tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/java-client/src/test/java/test).
 
-## 🔃 Multi-module improvements
+## 🔃 Multi-module: automatic detection of used types
 
 In multi-module projects, by default, all the types of an upstream module are generated because there is no way to know in advance what types are going to be used by downstream modules. For large projects this can lead to a lot of unused code and an increased build time.
 
