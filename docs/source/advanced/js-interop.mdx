@@ -170,20 +170,20 @@ public interface Animal {
 ```
 
 Unfortunately, `@JsExport` does not support companion objects nor extension functions (see [limitations](#limitations)).
-What's more, `@JsExport` have no runtime type information on JS so it's impossible to tell at runtime if a given
-instance is a `Cat` ot a `Lion`. To check this, use `__typename` and `unsafeCastOrCast`:
+What's more, `@JsExport` has no runtime type information from JS so it's impossible to tell at runtime if a given
+instance is a `Cat` or a `Lion`. To check this, use `__typename` and `apolloUnsafeCast`:
 
 ```kotlin
 when (animal.__typename) {
-  "Lion" -> animal.unsafeCastOrCast<Lion>()
-  "Cat" -> animal.unsafeCastOrCast<Cat>()
+  "Lion" -> animal.apolloUnsafeCast<Lion>()
+  "Cat" -> animal.apolloUnsafeCast<Cat>()
 }
 ```
 
-`unsafeCastOrCast`:
+`apolloUnsafeCast`:
 
-* Uses a `as?` cast on non-JS targets
-* Uses `unsafeCast()` ([doc](https://kotlinlang.org/docs/js-interop.html#casts)) on JS. This does not type checking at
+* Uses a `as` cast on non-JS targets
+* Uses `unsafeCast()` ([doc](https://kotlinlang.org/docs/js-interop.html#casts)) on JS. This does no type checking at
   all. If for some reason, your response doesn't have the expected shape your program will fail.
 
 ### Limitations
