@@ -2,9 +2,11 @@ package com.apollographql.ijplugin.util
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 fun PsiElement.containingKtFile(): KtFile? = getStrictParentOfType()
 
@@ -40,3 +42,6 @@ inline fun <reified T : PsiElement> PsiElement.findChildrenOfType(
         }
       }
 }
+
+fun PsiElement.resolveKtName() =
+    references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()

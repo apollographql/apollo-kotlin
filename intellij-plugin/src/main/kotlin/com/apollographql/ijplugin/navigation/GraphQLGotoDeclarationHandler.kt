@@ -1,13 +1,12 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 /**
  * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo operation/fragment
@@ -19,37 +18,33 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
     if (!sourceElement.project.apolloProjectService.isApolloKotlin3Project) return null
 
     val nameReferenceExpression = sourceElement.parent as? KtNameReferenceExpression ?: return null
-    return when {
-      nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
-        val psiLeaf = PsiTreeUtil.getDeepestFirst(sourceElement)
-        val graphQLDefinitions = findOperationOrFragmentGraphQLDefinitions(sourceElement.project, psiLeaf.text)
-        if (graphQLDefinitions.isEmpty()) return null
-        return buildList {
-          // Add GraphQL definition(s)
-          addAll(graphQLDefinitions)
+    val psiLeaf = PsiTreeUtil.getDeepestFirst(sourceElement)
 
-          // Add the original referred to element
-          val resolvedElement = nameReferenceExpression.references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
-          if (resolvedElement != null) {
-            add(resolvedElement)
-          }
-        }.toTypedArray()
+    val graphQLDefinitions = when {
+      nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
+        findOperationOrFragmentGraphQLDefinitions(sourceElement.project, psiLeaf.text)
       }
 
       nameReferenceExpression.isApolloModelField() -> {
-        return buildList {
-          // Add GraphQL field(s)
-          addAll(findGraphQLElements(nameReferenceExpression))
-
-          // Add the original referred to element
-          val resolvedElement = nameReferenceExpression.references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
-          if (resolvedElement != null) {
-            add(resolvedElement)
-          }
-        }.toTypedArray()
+        findGraphQLElements(nameReferenceExpression)
       }
 
-      else -> null
+      nameReferenceExpression.isApolloEnumClassReference() -> {
+        findEnumGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+      }
+
+      else -> return null
     }
+
+    return buildList {
+      // Add GraphQL definition(s)
+      addAll(graphQLDefinitions)
+
+      // Add the original referred to element
+      val resolvedElement = nameReferenceExpression.resolveKtName()
+      if (resolvedElement != null) {
+        add(resolvedElement)
+      }
+    }.toTypedArray()
   }
 }

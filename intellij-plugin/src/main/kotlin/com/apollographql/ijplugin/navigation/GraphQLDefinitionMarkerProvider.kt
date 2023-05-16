@@ -23,15 +23,24 @@ class GraphQLDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
     if (!element.project.apolloProjectService.isApolloKotlin3Project) return
 
     val nameReferenceExpression = element as? KtNameReferenceExpression ?: return
-    if (nameReferenceExpression.isApolloOperationOrFragmentReference()) {
-      val psiLeaf = PsiTreeUtil.getDeepestFirst(element)
-      val graphQLDefinitions = findOperationOrFragmentGraphQLDefinitions(element.project, psiLeaf.text)
-      if (graphQLDefinitions.isEmpty()) return
-      val builder = NavigationGutterIconBuilder.create(ApolloIcons.Gutter.GraphQL)
-          .setTargets(graphQLDefinitions)
-          .setTooltipText(ApolloBundle.message("navigation.GraphQLDefinitionMarkerProvider.tooltip", psiLeaf.text))
-          .createLineMarkerInfo(psiLeaf)
-      result.add(builder)
+    val psiLeaf = PsiTreeUtil.getDeepestFirst(element)
+    val graphQLDefinitions = when {
+      nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
+        findOperationOrFragmentGraphQLDefinitions(element.project, psiLeaf.text)
+      }
+
+      nameReferenceExpression.isApolloEnumClassReference() -> {
+        findEnumGraphQLDefinitions(element.project, psiLeaf.text)
+      }
+
+      else -> return
     }
+
+    if (graphQLDefinitions.isEmpty()) return
+    val builder = NavigationGutterIconBuilder.create(ApolloIcons.Gutter.GraphQL)
+        .setTargets(graphQLDefinitions)
+        .setTooltipText(ApolloBundle.message("navigation.GraphQLDefinitionMarkerProvider.tooltip", psiLeaf.text))
+        .createLineMarkerInfo(psiLeaf)
+    result.add(builder)
   }
 }
