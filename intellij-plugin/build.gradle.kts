@@ -9,7 +9,6 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij")
-  id("org.jetbrains.changelog")
   id("maven-publish")
 }
 
@@ -23,7 +22,7 @@ repositories {
 group = properties("pluginGroup")
 
 // Use the global version defined in the root project + snapshot suffix if from the CI
-version = properties("VERSION_NAME") + if (System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()) ".${properties("snapshotVersion")}" else ""
+version = properties("VERSION_NAME") + if (isSnapshotBuild()) ".${properties("snapshotVersion")}" else ""
 
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
@@ -40,12 +39,6 @@ intellij {
 
   // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
   plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-}
-
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-changelog {
-  version.set(project.version.toString())
-  groups.set(emptyList())
 }
 
 tasks {
@@ -74,12 +67,13 @@ tasks {
         }.joinToString("\n").run { markdownToHTML(this) }
     )
 
-    // Get the latest available change notes from the changelog file
-    changeNotes.set(provider {
-      changelog.run {
-        getOrNull(project.version.toString()) ?: getUnreleased()
-      }.toHTML()
-    })
+    changeNotes.set(
+        if (isSnapshotBuild()) {
+          "Snapshot builds contain the latest changes from the <code>main</code> branch."
+        } else {
+          "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/${project.version}\">release notes</a>."
+        }
+    )
   }
 
   // Configure UI tests plugin
@@ -116,7 +110,6 @@ tasks {
   }
 
   publishPlugin {
-    dependsOn("patchChangelog")
     token.set(System.getenv("PUBLISH_TOKEN"))
     // Currently we release to a specific "preview" release channel so the plugin is not listed on the Marketplace
     // Change to "default" to release to the main channel.
@@ -212,3 +205,5 @@ publishing {
 dependencies {
   implementation(project(":apollo-gradle-plugin-external"))
 }
+
+fun isSnapshotBuild() = System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()
