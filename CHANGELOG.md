@@ -3,7 +3,7 @@ Change Log
 
 # Version 4.0.0-alpha.1
 
-_2023-05-15_
+_2023-05-16_
 
 This release is the first alpha of the next major version of Apollo Kotlin: 4.0.0. 
 
