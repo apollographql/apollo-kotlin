@@ -3,18 +3,12 @@ title: Migrating to Apollo Kotlin 4.0
 description: From 3.x
 ---
 
-> Note: this page is a work in progress.
+> Note: as version 4 is currently under development, this page is a work in progress.
 
-* Requires Kotlin Gradle Plugin 1.6 (from 1.5)
-* Dropped `enableCompatibilityMetadataVariant`
-* Configuring your cache after enabling APQs will now fail (
-  see https://github.com/apollographql/apollo-kotlin/pull/4709)
-* The AST classes (GQLNode and subclasses) as well as Introspection classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/)
-* Enums are now capitalized
-* Using the `apolloMetadata` configuration is now an error
-* Publishing is not configured automatically any more
-* To avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema`
-  subpackage (instead of `type`) when using the `generateSchema` option.
+## Dependencies / compatibility
+
+- Apollo Kotlin 4 now requires the Kotlin Gradle Plugin version 1.6+ (whereas 3.x needed 1.5+).
+- Compatibility with non-hierarchical multiplatform projects (`enableCompatibilityMetadataVariant`) has been removed.
 
 ## Error handling
 
@@ -115,7 +109,7 @@ client.query(MyQuery()).watch().filter { it.exception == null }.collect { respon
 
 ## HTTP headers
 
-In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHeaders(true)`.
+In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
 ```kotlin
 // Replace
@@ -126,6 +120,85 @@ val call = client.query(MyQuery())
 // With
 val call = client.query(MyQuery())
   .httpHeaders(listOf("key", "value"))
-  .ignoreApolloClientHeaders(true)
+  .ignoreApolloClientHttpHeaders(true)
   .execute()
 ```
+
+## Multi-module improvements
+
+In a multi-module setup, the syntax for depending on an upstream module (e.g. the schema module) has changed: use `dependsOn` in the `apollo` block instead of `apolloMetadata` in the `dependencies` block.
+
+```kotlin
+// feature1/build.gradle.kts
+
+// Replace
+dependencies {
+  // ...
+
+  // Get the generated schema types (and fragments) from the upstream schema module 
+  apolloMetadata(project(":schema"))
+
+  // You also need to declare the schema module as a regular dependency
+  implementation(project(":schema"))
+}
+
+// With
+dependencies {
+  // ...
+  
+  // You still need to declare the schema module as a regular dependency
+  implementation(project(":schema"))
+}
+
+apollo {
+  service("service") {
+    // ...
+
+    // Get the generated schema types (and fragments) from the upstream schema module 
+    dependsOn(project(":schema"))
+  }
+}
+```
+
+### Auto-detection of used types
+
+In multi-module projects, by default, all the types of an upstream module are generated because there is no way to know in advance what types are going to be used by downstream modules. For large projects this can lead to a lot of unused code and an increased build time.
+
+To avoid this, in v3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In v4 this can now be computed automatically by detecting which types are used by the downstream modules.
+
+To enable this, add the "opposite" link of dependencies with `isADependencyOf()`.
+
+```kotlin
+// schema/build.gradle.kts
+apollo {
+  service("service") {
+    // ...
+
+    // Enable generation of metadata for use by downstream modules 
+    generateApolloMetadata.set(true)
+
+    // Get used types from the downstream module
+    isADependencyOf(project(":feature1"))
+
+    // You can have several downstream modules
+    isADependencyOf(project(":feature2"))
+  }
+}
+```
+
+## Code generation
+
+- Enum class names now have their first letter capitalized, as other generated types.
+- To avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`) when using the `generateSchema` option.
+
+## Cache
+
+The normalized cache must be configured before the auto persisted queries, configuring it after will now fail (see https://github.com/apollographql/apollo-kotlin/pull/4709).
+
+## apollo-ast
+
+The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/).
+
+## Gradle configuration
+
+Publishing is no longer configured automatically.
