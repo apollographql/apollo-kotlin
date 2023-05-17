@@ -6,6 +6,7 @@ import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.psi.GraphQLDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
@@ -25,9 +26,11 @@ import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtElement
+import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 private val APOLLO_OPERATION_TYPES = setOf(
@@ -56,16 +59,24 @@ fun KtNameReferenceExpression.isApolloModelField(): Boolean {
 }
 
 fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
-  // Apollo enums have a companion object that has a property named "type" of type EnumType
   val ktClass = resolveKtName() as? KtClass ?: return false
-  return ktClass.isEnum() &&
-      ktClass.companionObjects.any { companion ->
-        companion.declarations.filterIsInstance<KtProperty>().any { property ->
-          property.name == "type" &&
-              property.type()?.fqName == APOLLO_ENUM_TYPE
-        }
-      }
+  return ktClass.isApolloEnumClass()
 }
+
+private fun KtClass.isApolloEnumClass() = isEnum() &&
+    // Apollo enums have a companion object that has a property named "type" of type EnumType
+    companionObjects.any { companion ->
+      companion.declarations.filterIsInstance<KtProperty>().any { property ->
+        property.name == "type" &&
+            property.type()?.fqName == APOLLO_ENUM_TYPE
+      }
+    }
+
+fun KtNameReferenceExpression.isApolloEnumValueReference(): Boolean {
+  val ktEnumEntry = resolveKtName() as? KtEnumEntry ?: return false
+  return ktEnumEntry.containingClass()?.isApolloEnumClass() == true
+}
+
 
 private fun KtClass.isOperationOrFragment(): Boolean {
   return superTypeListEntries.any {
@@ -103,12 +114,34 @@ fun findOperationOrFragmentGraphQLDefinitions(project: Project, name: String): L
   }
 }
 
-fun findEnumGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
+fun findEnumTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
   return findGraphQLDefinitions(project) {
     it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name == name
   }
       .mapNotNull { (it as GraphQLEnumTypeDefinition).typeNameDefinition }
 }
+
+fun findEnumValueGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLEnumValue> {
+  val project = nameReferenceExpression.project
+  val resolved = nameReferenceExpression.resolveKtName()
+  val ktEnumEntry = resolved as? KtEnumEntry ?: return emptyList()
+  // First argument (rawValue) of the super call is the original enum value name
+  val enumValueName = (ktEnumEntry.initializerList?.initializers?.first() as? KtSuperTypeCallEntry)
+      ?.valueArgumentList?.arguments?.first()
+      ?.stringTemplateExpression?.entries?.first()?.text
+  val enumTypeName = ktEnumEntry.containingClass()?.name ?: return emptyList()
+  val enumTypeGqlDefinitions = findEnumTypeGraphQLDefinitions(project, enumTypeName)
+  return enumTypeGqlDefinitions.flatMap { enumTypeDefinition ->
+    (enumTypeDefinition.parent as GraphQLEnumTypeDefinition)
+        .enumValueDefinitions?.enumValueDefinitionList
+        ?.map { it.enumValue }
+        ?.filter {
+          it.name == enumValueName
+        }
+        ?: emptyList()
+  }
+}
+
 
 fun findGraphQLElements(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLElement> {
   val elements = mutableListOf<GraphQLElement>()

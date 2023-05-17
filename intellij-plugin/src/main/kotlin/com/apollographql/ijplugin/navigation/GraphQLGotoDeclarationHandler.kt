@@ -30,7 +30,11 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       }
 
       nameReferenceExpression.isApolloEnumClassReference() -> {
-        findEnumGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+        findEnumTypeGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+      }
+
+      nameReferenceExpression.isApolloEnumValueReference() -> {
+        findEnumValueGraphQLDefinitions(nameReferenceExpression)
       }
 
       else -> return null

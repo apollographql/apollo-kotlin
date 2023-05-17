@@ -30,7 +30,7 @@ class GraphQLDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
       }
 
       nameReferenceExpression.isApolloEnumClassReference() -> {
-        findEnumGraphQLDefinitions(element.project, psiLeaf.text)
+        findEnumTypeGraphQLDefinitions(element.project, psiLeaf.text)
       }
 
       else -> return
