@@ -11,8 +11,8 @@ workloads (like those found in the Kotlin JSON parsing codepaths) can be slow.
 
 To work around this, Apollo Kotlin provides two alternative solutions to work with JS faster:
 
-* `jsExport` can be up to ~10x faster but does not support the Kotlin type system nor `operationBased` codegen.
-* `DynamicJsJsonReader` can be up to ~2x faster but requires bypassing some parts of ApolloClient for JS.
+* `jsExport` can be up to ~100x faster but does not support the Kotlin type system nor `operationBased` codegen.
+* `DynamicJsJsonReader` can be up to ~25x faster but requires bypassing some parts of ApolloClient for JS.
 
 ## `jsExport`
 
@@ -212,7 +212,7 @@ uses `Long` indices in its Arrays, and Longs do not have a JS implementation.
 
 By bypassing this reading, `DynamicJsJsonReader` allows faster reading of responses while still keeping the full Kotlin type information. 
 
-In testing we've seen a ~2x performance boost on JS platforms using this parser vs ~10x with the `JsExport` approach.
+In testing we've seen a ~25x performance boost on JS platforms using this parser vs ~100x with the `JsExport` approach.
 
 To use `DynamicJsJsonReader`, your JS implementation above would become:
 
