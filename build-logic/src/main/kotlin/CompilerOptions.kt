@@ -42,6 +42,10 @@ fun Project.configureJavaAndKotlinCompilers() {
   (project.extensions.findByName("kotlin")
       as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
     sourceSets.all {
+      /**
+       * Inside our own codebase, we opt-in ApolloInternal and ApolloExperimental
+       * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
+       */
       languageSettings.optIn("kotlin.RequiresOptIn")
       languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
       languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
