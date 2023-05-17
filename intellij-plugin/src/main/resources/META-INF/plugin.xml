@@ -42,7 +42,7 @@
         nonDefaultProject="true"
     />
 
-    <!-- Operation/fragment/enum marker provider -->
+    <!-- Operation/fragment marker provider -->
     <codeInsight.lineMarkerProvider
         language="kotlin"
         implementationClass="com.apollographql.ijplugin.navigation.GraphQLDefinitionMarkerProvider"
