@@ -2,7 +2,9 @@
 title: Response based codegen
 ---
 
-Apollo Kotlin takes your GraphQL operations, generates Kotlin models for them and instantiates them from your JSON responses allowing you to access your data in a type safe way. Effectively, there are 3 different domains at play:
+Apollo Kotlin takes your GraphQL operations, generates Kotlin models for them and instantiates them from your JSON responses allowing you to access your data in a type safe way. 
+
+There are effectively 3 different domains at play:
 
 * The GraphQL domain: operations
 * The Kotlin domain: models
@@ -10,9 +12,9 @@ Apollo Kotlin takes your GraphQL operations, generates Kotlin models for them an
 
 By default, Apollo Kotlin generates models that match 1:1 with your GraphQL operations. Inline and named fragments generate synthetic fields, so you can access GraphQL fragments with Kotlin code like `data.hero.onDroid.primaryFunction`. Named fragments are classes that can be reused. This code generation engine (**codegen**) is named `operationBased` because it matches the GraphQL operation.
 
-The Json response may have a different shape than your GraphQL operation though. This is the case when using merged fields or fragments. If you want to access your Kotlin properties as they are in the JSON response, Apollo Kotlin provides a `responseBased` codegen that matches the JSON response. GraphQL fragments are represented as Kotlin interfaces, so you can access their fields with Kotlin code like `(data.hero as Droid).primaryFunction`. Because they map to the JSON responses, the `responseBased` models have the property of allowing JSON streaming and/or mapping to dynamic JS objects. But because GraphQL is a very expressive language, [it's also easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144). **For this reason and other [limitations](#responsebased-codegen-limitations), we recommend using `operationBased` codegen by default**.
+The Json response may have a different shape than your GraphQL operation though. This is the case when using merged fields or fragments. If you want to access your Kotlin properties as they are in the JSON response, Apollo Kotlin provides a `responseBased` codegen that matches the JSON response. GraphQL fragments are represented as Kotlin interfaces, so you can access their fields with Kotlin code like `(data.hero as Droid).primaryFunction`. Because they map to the JSON responses, the `responseBased` models have the property of allowing JSON streaming and/or mapping to dynamic JS objects. But because GraphQL is a very expressive language, [it's also easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144). **For this reason and other [limitations](#limitations-of-responsebased-codegen), we recommend using `operationBased` codegen by default**.
 
-This page first recaps how [`operationBased` codegen](#the-operationbased-codegen-default) works before explaining [`responseBased` codegen](#the-responsebased-codegen). Finally, it lists the different [limitations](#responsebased-codegen-limitations) coming with `responseBased` codegen so you can make an informed decision should you use this codegen. 
+This page first recaps how [`operationBased` codegen](#the-operationbased-codegen-default) works before explaining [`responseBased` codegen](#the-responsebased-codegen). Finally, it lists the different [limitations](#limitations-of-responsebased-codegen) coming with `responseBased` codegen so you can make an informed decision should you use this codegen. 
 
 To use a particular codegen, configure `codegenModels` in your Gradle scripts:
 
@@ -232,7 +234,7 @@ val primaryFunction = hero1.droidFields().primaryFunction
 val height = hero2.humanFields().height
 ```
 
-## `responseBased` codegen limitations
+## Limitations of `responseBased` codegen
 
 1. Because GraphQL is a very expressive language, [it's easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144). If you're using a lot of nested fragments, the generated code size can grow exponentially with the nesting level. We have seen relatively small GraphQL queries breaking the JVM limits like [maximum method size](https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.7.3).
 2. When using fragments, data classes must be generated for each operation where the fragments are used. To avoid name clashes, the models are nested and this comes with two side effects:

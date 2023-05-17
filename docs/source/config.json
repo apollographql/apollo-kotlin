@@ -27,7 +27,6 @@
     "Configuration": {
       "File types": "/essentials/file-types",
       "Client Awareness": "/advanced/client-awareness",
-      "ResponseBased codegen": "/advanced/response-based",
       "Multi Modules": "/advanced/multi-modules",
       "Connecting source sets": "/advanced/source-sets",
       "Gradle plugin configuration": "/advanced/plugin-configuration"
@@ -75,7 +74,8 @@
       "Using with Java": "/advanced/java",
       "RxJava support": "/advanced/rxjava",
       "Kotlin native": "/advanced/kotlin-native",
-      "Apollo AST": "/advanced/apollo-ast"
+      "Apollo AST": "/advanced/apollo-ast",
+      "Response based codegen": "/advanced/response-based"
     }
   }
 }
