@@ -27,7 +27,7 @@
     "Configuration": {
       "File types": "/essentials/file-types",
       "Client Awareness": "/advanced/client-awareness",
-      "Codegen methods": "/advanced/codegen-methods",
+      "ResponseBased codegen": "/advanced/response-based",
       "Multi Modules": "/advanced/multi-modules",
       "Connecting source sets": "/advanced/source-sets",
       "Gradle plugin configuration": "/advanced/plugin-configuration"
