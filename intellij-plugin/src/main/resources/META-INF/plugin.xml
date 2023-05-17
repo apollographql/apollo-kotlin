@@ -48,10 +48,12 @@
         implementationClass="com.apollographql.ijplugin.navigation.GraphQLDefinitionMarkerProvider"
     />
 
-    <!-- Operation/fragment/field 'go to declaration' handler -->
-    <gotoDeclarationHandler
-        implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler"
-    />
+    <!-- Operation/fragment/field/enum 'go to declaration' handler -->
+    <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler" />
+
+    <!-- Operation/fragment/field/enum 'go to type declaration' handler -->
+    <!-- TODO -->
+    <!-- <typeDeclarationProvider implementation="com.apollographql.ijplugin.navigation.GraphQLTypeDeclarationProvider" order="first" />-->
 
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />

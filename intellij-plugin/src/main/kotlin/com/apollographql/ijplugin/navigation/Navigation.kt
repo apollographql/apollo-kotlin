@@ -1,65 +1,88 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.util.findChildrenOfType
+import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.psi.GraphQLDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
-import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
 import com.intellij.lang.jsgraphql.psi.GraphQLOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLSelectionSet
+import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.kotlin.asJava.toLightClass
+import com.intellij.util.castSafelyTo
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.idea.base.utils.fqname.getKotlinFqName
-import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtElement
+import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 private val APOLLO_OPERATION_TYPES = setOf(
-    "com.apollographql.apollo3.api.Query",
-    "com.apollographql.apollo3.api.Mutation",
-    "com.apollographql.apollo3.api.Subscription",
+    FqName("com.apollographql.apollo3.api.Query"),
+    FqName("com.apollographql.apollo3.api.Mutation"),
+    FqName("com.apollographql.apollo3.api.Subscription"),
 )
 
-private const val APOLLO_FRAGMENT_TYPE = "com.apollographql.apollo3.api.Fragment.Data"
+private val APOLLO_FRAGMENT_TYPE = FqName("com.apollographql.apollo3.api.Fragment.Data")
+
+private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo3.api.EnumType")
 
 fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
-  val resolvedElement = references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
-  return (resolvedElement as? KtClass
-      ?: (resolvedElement as? KtConstructor<*>)?.containingClass())
+  val resolvedElement = resolveKtName()
+  return (resolvedElement.castSafelyTo<KtClass>()
+      ?: resolvedElement.castSafelyTo<KtConstructor<*>>()?.containingClass())
       ?.isOperationOrFragment() == true
 }
 
 fun KtNameReferenceExpression.isApolloModelField(): Boolean {
-  val resolved = references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
+  val resolved = resolveKtName()
   // Parameter is for data classes, property is for interfaces
   return (resolved is KtParameter || resolved is KtProperty) &&
       (resolved as KtElement).topMostContainingClass()
           ?.isOperationOrFragment() == true
 }
 
+fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
+  val ktClass = resolveKtName() as? KtClass ?: return false
+  return ktClass.isApolloEnumClass()
+}
+
+private fun KtClass.isApolloEnumClass() = isEnum() &&
+    // Apollo enums have a companion object that has a property named "type" of type EnumType
+    companionObjects.any { companion ->
+      companion.declarations.filterIsInstance<KtProperty>().any { property ->
+        property.name == "type" &&
+            property.type()?.fqName == APOLLO_ENUM_TYPE
+      }
+    }
+
+fun KtNameReferenceExpression.isApolloEnumValueReference(): Boolean {
+  val ktEnumEntry = resolveKtName() as? KtEnumEntry ?: return false
+  return ktEnumEntry.containingClass()?.isApolloEnumClass() == true
+}
+
+
 private fun KtClass.isOperationOrFragment(): Boolean {
-  return toLightClass()
-      ?.implementsList
-      ?.referencedTypes
-      ?.any { classType ->
-        classType.canonicalText.startsWith(APOLLO_FRAGMENT_TYPE) ||
-            APOLLO_OPERATION_TYPES.any { classType.canonicalText.startsWith(it) }
-      } == true ||
+  return superTypeListEntries.any {
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    superType == APOLLO_FRAGMENT_TYPE || superType in APOLLO_OPERATION_TYPES
+  } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
       isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment"
@@ -73,27 +96,57 @@ private fun KtElement.topMostContainingClass(): KtClass? {
   }
 }
 
-fun findOperationOrFragmentGraphQLDefinitions(project: Project, name: String): List<GraphQLDefinition> {
-  val definitions = mutableListOf<GraphQLDefinition>()
-  val virtualFiles = FileTypeIndex.getFiles(GraphQLFileType.INSTANCE, GlobalSearchScope.allScope(project))
-  for (virtualFile in virtualFiles) {
-    val graphQLFile = PsiManager.getInstance(project).findFile(virtualFile) as GraphQLFile? ?: continue
-    definitions +=
-        // Look for operation definitions
-        graphQLFile.findChildrenOfType<GraphQLOperationDefinition>()
-            .filter { it.name == name || it.name == name.minusOperationTypeSuffix() }
-            .ifEmpty {
-              // Fallback: look for fragment definitions
-              graphQLFile.findChildrenOfType<GraphQLFragmentDefinition> { it.name == name }
-            }
+private fun findGraphQLDefinitions(project: Project, predicate: (GraphQLDefinition) -> Boolean): List<GraphQLDefinition> {
+  return FileTypeIndex.getFiles(GraphQLFileType.INSTANCE, GlobalSearchScope.allScope(project)).flatMap { virtualFile ->
+    PsiManager.getInstance(project).findFile(virtualFile)
+        ?.findChildrenOfType<GraphQLDefinition>()
+        ?.filter { predicate(it) }
+        ?: emptyList()
   }
-  return definitions
 }
+
+fun findOperationOrFragmentGraphQLDefinitions(project: Project, name: String): List<GraphQLDefinition> {
+  return findGraphQLDefinitions(project) { graphQLDefinition ->
+    // Look for operation definitions
+    graphQLDefinition is GraphQLOperationDefinition && (graphQLDefinition.name == name || graphQLDefinition.name == name.minusOperationTypeSuffix()) ||
+        // Fallback: look for fragment definitions
+        graphQLDefinition is GraphQLFragmentDefinition && graphQLDefinition.name == name
+  }
+}
+
+fun findEnumTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
+  return findGraphQLDefinitions(project) {
+    it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name == name
+  }
+      .mapNotNull { (it as GraphQLEnumTypeDefinition).typeNameDefinition }
+}
+
+fun findEnumValueGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLEnumValue> {
+  val project = nameReferenceExpression.project
+  val resolved = nameReferenceExpression.resolveKtName()
+  val ktEnumEntry = resolved as? KtEnumEntry ?: return emptyList()
+  // First argument (rawValue) of the super call is the original enum value name
+  val enumValueName = (ktEnumEntry.initializerList?.initializers?.first() as? KtSuperTypeCallEntry)
+      ?.valueArgumentList?.arguments?.first()
+      ?.stringTemplateExpression?.entries?.first()?.text
+  val enumTypeName = ktEnumEntry.containingClass()?.name ?: return emptyList()
+  val enumTypeGqlDefinitions = findEnumTypeGraphQLDefinitions(project, enumTypeName)
+  return enumTypeGqlDefinitions.flatMap { enumTypeDefinition ->
+    (enumTypeDefinition.parent as GraphQLEnumTypeDefinition)
+        .enumValueDefinitions?.enumValueDefinitionList
+        ?.map { it.enumValue }
+        ?.filter {
+          it.name == enumValueName
+        }
+        ?: emptyList()
+  }
+}
+
 
 fun findGraphQLElements(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLElement> {
   val elements = mutableListOf<GraphQLElement>()
   val project = nameReferenceExpression.project
-  val resolved = nameReferenceExpression.references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
+  val resolved = nameReferenceExpression.resolveKtName()
   // Parameter is for data classes, property is for interfaces
   val ktElement = if (resolved is KtParameter || resolved is KtProperty) resolved as KtElement else return emptyList()
   val operationOrFragmentClass = ktElement.topMostContainingClass() ?: return emptyList()
