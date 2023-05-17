@@ -11,7 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
- * Adds a gutter icon to Apollo operation/fragment references allowing to navigate to the corresponding GraphQL definition.
+ * Adds a gutter icon to Apollo operation/fragment/enum references allowing to navigate to the corresponding GraphQL definition.
  */
 class GraphQLDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
 
