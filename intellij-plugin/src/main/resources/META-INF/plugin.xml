@@ -48,7 +48,7 @@
         implementationClass="com.apollographql.ijplugin.navigation.GraphQLDefinitionMarkerProvider"
     />
 
-    <!-- Operation/fragment/field/enum 'go to declaration' handler -->
+    <!-- Operation/fragment/field/enum/input 'go to declaration' handler -->
     <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler" />
 
     <!-- Operation/fragment/field/enum 'go to type declaration' handler -->

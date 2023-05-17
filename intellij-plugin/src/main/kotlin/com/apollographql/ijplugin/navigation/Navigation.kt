@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.lang.jsgraphql.GraphQLFileType
@@ -11,13 +12,17 @@ import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
+import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLSelectionSet
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.descendantsOfType
 import com.intellij.util.castSafelyTo
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.idea.base.utils.fqname.getKotlinFqName
@@ -47,7 +52,7 @@ fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
   val resolvedElement = resolveKtName()
   return (resolvedElement.castSafelyTo<KtClass>()
       ?: resolvedElement.castSafelyTo<KtConstructor<*>>()?.containingClass())
-      ?.isOperationOrFragment() == true
+      ?.isApolloOperationOrFragment() == true
 }
 
 fun KtNameReferenceExpression.isApolloModelField(): Boolean {
@@ -55,7 +60,17 @@ fun KtNameReferenceExpression.isApolloModelField(): Boolean {
   // Parameter is for data classes, property is for interfaces
   return (resolved is KtParameter || resolved is KtProperty) &&
       (resolved as KtElement).topMostContainingClass()
-          ?.isOperationOrFragment() == true
+          ?.isApolloOperationOrFragment() == true
+}
+
+private fun KtClass.isApolloOperationOrFragment(): Boolean {
+  return superTypeListEntries.any {
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    superType == APOLLO_FRAGMENT_TYPE || superType in APOLLO_OPERATION_TYPES
+  } ||
+      // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
+      // This can lead to false positives, but consequences are not dire.
+      isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
 }
 
 fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
@@ -65,28 +80,43 @@ fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
 
 private fun KtClass.isApolloEnumClass() = isEnum() &&
     // Apollo enums have a companion object that has a property named "type" of type EnumType
-    companionObjects.any { companion ->
-      companion.declarations.filterIsInstance<KtProperty>().any { property ->
-        property.name == "type" &&
-            property.type()?.fqName == APOLLO_ENUM_TYPE
-      }
-    }
+    isEnum() && companionObjects.any { companion ->
+  companion.declarations.filterIsInstance<KtProperty>().any { property ->
+    property.name == "type" &&
+        property.type()?.fqName == APOLLO_ENUM_TYPE
+  }
+}
 
 fun KtNameReferenceExpression.isApolloEnumValueReference(): Boolean {
   val ktEnumEntry = resolveKtName() as? KtEnumEntry ?: return false
   return ktEnumEntry.containingClass()?.isApolloEnumClass() == true
 }
 
-
-private fun KtClass.isOperationOrFragment(): Boolean {
-  return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
-    superType == APOLLO_FRAGMENT_TYPE || superType in APOLLO_OPERATION_TYPES
-  } ||
-      // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
-      // This can lead to false positives, but consequences are not dire.
-      isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment"
+fun KtNameReferenceExpression.isApolloInputClassReference(): Boolean {
+  val resolvedElement = resolveKtName()
+  return (resolvedElement.castSafelyTo<KtClass>()
+      ?: resolvedElement.castSafelyTo<KtConstructor<*>>()?.containingClass())
+      ?.isApolloInputClass() == true
 }
+
+private fun KtClass.isApolloInputClass(): Boolean {
+  // Apollo input classes are data classes, generated in a package named "type", and we also look at the header comment.
+  // This can lead to false positives, but consequences are not dire.
+  return isData() &&
+      getKotlinFqName()?.parent()?.shortName()?.asString() == "type" &&
+      hasGeneratedByApolloComment()
+}
+
+fun KtNameReferenceExpression.isApolloInputField(): Boolean {
+  val resolved = resolveKtName()
+  // Parameter is for data classes, property is for interfaces
+  return (resolved is KtParameter || resolved is KtProperty) &&
+      (resolved as KtElement).topMostContainingClass()
+          ?.isApolloInputClass() == true
+}
+
+private fun KtElement.hasGeneratedByApolloComment() =
+    containingKtFile()?.descendantsOfType<PsiComment>()?.any { it.text.contains("generated by Apollo GraphQL") } == true
 
 private fun KtElement.topMostContainingClass(): KtClass? {
   return if (containingClass() == null) {
@@ -142,6 +172,25 @@ fun findEnumValueGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpr
   }
 }
 
+fun findInputTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
+  return findGraphQLDefinitions(project) {
+    it is GraphQLInputObjectTypeDefinition && it.typeNameDefinition?.name == name
+  }
+      .mapNotNull { (it as GraphQLInputObjectTypeDefinition).typeNameDefinition }
+}
+
+fun findInputFieldGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLInputValueDefinition> {
+  val project = nameReferenceExpression.project
+  val resolved = nameReferenceExpression.resolveKtName()
+  val ktElement = if (resolved is KtParameter || resolved is KtProperty) resolved as KtElement else return emptyList()
+  val inputClassName = ktElement.containingClass()?.name ?: return emptyList()
+  return findInputTypeGraphQLDefinitions(project, inputClassName).flatMap {
+    val inputObjectTypeDefinition = it.parent as GraphQLInputObjectTypeDefinition
+    inputObjectTypeDefinition.inputObjectValueDefinitions?.inputValueDefinitionList?.filter {
+      it.name == ktElement.name
+    } ?: emptyList()
+  }
+}
 
 fun findGraphQLElements(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLElement> {
   val elements = mutableListOf<GraphQLElement>()
