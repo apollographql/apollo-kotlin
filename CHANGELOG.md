@@ -17,8 +17,6 @@ We would love to hear your feedback on this release. Please report any issues, q
 
 ## 🛠️ Android Studio / IntelliJ plugin
 
-> Please note that the plugin is not yet visible in the JetBrains Marketplace, as it takes 1 to 2 days after publishing for it to be available.
-
 See [this page](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin) for installation instructions and more information.
 
 This plugin for Android Studio and IntelliJ helps you work with Apollo Kotlin. It provides the following features:
