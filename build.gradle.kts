@@ -62,7 +62,7 @@ tasks.register("ciPublishRelease") {
 
 tasks.register("ciTestsGradle") {
   description = "Execute the Gradle tests (slow)"
-  dependsOn(":apollo-gradle-plugin:test")
+  dependsOn(":apollo-gradle-plugin:allTests")
 }
 
 tasks.register("ciTestsNoGradle") {

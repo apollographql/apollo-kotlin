@@ -3,7 +3,8 @@ package com.apollographql.apollo3.gradle.api
 import java.io.File
 
 interface ApolloGradleToolingModel {
-  val version: Int
+  val versionMajor: Int
+  val versionMinor: Int
 
   val projectName: String
   val serviceInfos: List<ServiceInfo>
@@ -13,14 +14,26 @@ interface ApolloGradleToolingModel {
     val schemaFiles: Set<File>
     val graphqlSrcDirs: Set<File>
     val upstreamProjects: Set<String>
+
+    // Introduced in 1.1
+    val endpointUrl: String?
+
+    // Introduced in 1.1
+    val endpointHeaders: Map<String, String>?
   }
 
   companion object {
     /**
-     * Current version of the tooling model.
-     * Increment this value when the model changes in breaking ways.
-     * Adding properties / functions is never breaking, whereas deleting, renaming, changing types or signatures is breaking.
+     * Current major version of the tooling model.
+     * Increment this value when the model changes in incompatible ways.
+     * Adding properties / functions is compatible, whereas deleting, renaming, changing types or signatures is incompatible.
      */
-    const val VERSION = 1
+    const val VERSION_MAJOR = 1
+
+    /**
+     * Current minor version of the tooling model.
+     * Increment this value when the model changes in compatible ways (additions).
+     */
+    const val VERSION_MINOR = 1
   }
 }

@@ -143,8 +143,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 ): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 /**
- * Gets the result from the network, then observes the cache for any changes.
- * [fetchPolicy] will control how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
+ * Gets initial response(s) then observes the cache for any changes.
+ * [fetchPolicy] controls how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
  */
 fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {

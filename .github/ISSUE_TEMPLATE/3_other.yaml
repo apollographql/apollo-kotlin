@@ -1,0 +1,11 @@
+name: Other
+description: Free form issue for everything that doesn't fit in the templates above
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      value: |
+        This is a place of freedom. Enjoy!
+    validations:
+      required: true
+

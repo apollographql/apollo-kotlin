@@ -74,7 +74,7 @@ private fun ValidationScope.mergeEnumValues(
     val existing = result.firstOrNull { it.name == other.name }
     result += if (existing != null) {
       result.remove(existing)
-      other.copy(directives = mergeDirectives(existing.directives, other.directives))
+      existing.copy(directives = mergeDirectives(existing.directives, other.directives))
     } else {
       other
     }

@@ -1,0 +1,245 @@
+---
+title: Response based codegen
+---
+
+Apollo Kotlin takes your GraphQL operations, generates Kotlin models for them and instantiates them from your JSON responses allowing you to access your data in a type safe way. 
+
+There are effectively 3 different domains at play:
+
+* The GraphQL domain: operations
+* The Kotlin domain: models
+* The JSON domain: responses
+
+By default, Apollo Kotlin generates models that match 1:1 with your GraphQL operations. Inline and named fragments generate synthetic fields, so you can access GraphQL fragments with Kotlin code like `data.hero.onDroid.primaryFunction`. Fragments are classes that can be reused from different operations. This code generation engine (**codegen**) is named `operationBased` because it matches the GraphQL operation.
+
+The Json response may have a different shape than your GraphQL operation though. This is the case when using merged fields or fragments. If you want to access your Kotlin properties as they are in the JSON response, Apollo Kotlin provides a `responseBased` codegen that match 1:1 with the JSON response. GraphQL fragments are represented as Kotlin interfaces, so you can access their fields with Kotlin code like `(data.hero as Droid).primaryFunction`. Because they map to the JSON responses, the `responseBased` models have the property of allowing JSON streaming and/or mapping to dynamic JS objects. But because GraphQL is a very expressive language, [it's also easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144).
+
+**For this reason and other [limitations](#limitations-of-responsebased-codegen), we recommend using `operationBased` codegen by default**.
+
+This page first recaps how [`operationBased` codegen](#the-operationbased-codegen-default) works before explaining [`responseBased` codegen](#the-responsebased-codegen). Finally, it lists the different [limitations](#limitations-of-responsebased-codegen) coming with `responseBased` codegen so you can make an informed decision should you use this codegen. 
+
+To use a particular codegen, configure `codegenModels` in your Gradle scripts:
+
+```kotlin title="build.gradle.kts"
+apollo {
+  service("service") {
+    // ...
+    codegenModels.set("responseBased")
+  }
+}
+```
+
+## The `operationBased` codegen (default)
+
+The `operationBased` codegen generates models following the shape of the operation. 
+
+* A model is generated for each composite field selection.
+* Fragments spreads and inline fragments are generated as their own classes.
+* Merged fields are stored multiple times, once each time they are queried.
+
+For example, given this query:
+
+```graphql title="HeroQuery.graphql"
+query HeroForEpisode($ep: Episode!) {
+  search {
+    hero(episode: $ep) {
+      name
+      ... on Droid {
+        name
+        primaryFunction
+      }
+      ...HumanFields
+    }
+  }
+}
+
+fragment HumanFields on Human {
+  height
+}
+```
+The codegen generates these classes:
+
+```kotlin title="HeroQuery.kt"
+class Search(
+    val hero: Hero?
+)
+
+class Hero(
+    val name: String,
+    val onDroid: OnDroid?,
+    val humanFields: HumanFields?
+)
+
+class OnDroid(
+    val name: String,
+    val primaryFunction: String
+)
+```
+
+```kotlin title="HumanFields.kt"
+class HumanFields(
+    val height: Double
+)
+```
+
+Notice how `onDroid` and `humanFields` are nullable in the `Hero` class. This is because they will be present or not depending on the concrete type of the returned hero:
+
+```kotlin
+val hero = data.search?.hero
+when {
+  hero.onDroid != null -> {
+    // Hero is a Droid
+    println(hero.onDroid.primaryFunction)
+  }
+  hero.humanFields != null -> {
+    // Hero is a Human
+    println(hero.humanFields.height)
+  }
+  else -> {
+    // Hero is something else
+    println(hero.name)
+  }
+}
+```
+
+
+## The `responseBased` codegen
+
+The `responseBased` codegen differs from the `operationBased` codegen in the following ways:
+
+* Generated models have a **1:1 mapping** with the JSON structure received in an operation's response.
+* Polymorphism is handled by generating **interfaces**. Possible shapes are then defined as different classes that implement the corresponding interfaces.
+* Fragments are also generated as **interfaces**.
+* Any merged fields appear _once_ in generated models.
+
+Let's look at examples using fragments to highlight some of these differences.
+
+### Inline fragments
+
+Consider this query:
+
+```graphql {4-9} title="HeroQuery.graphql"
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+If we run the `responseBased` codegen on this operation, it generates a `Hero` interface with three implementing classes:
+
+* `DroidHero`
+* `HumanHero`
+* `OtherHero`
+
+Because `Hero` is an interface with different implementations, you can use a `when` clause to handle each different case:
+
+```kotlin
+when (hero) {
+  is DroidHero -> println(hero.primaryFunction)
+  is HumanHero -> println(hero.height)
+  else -> {
+    // Account for other Hero types (including unknown ones)
+    // Note: in this example `name` is common to all Hero types
+    println(hero.name)
+  }
+}
+```
+
+#### Accessors
+
+As a convenience, the `responseBased` codegen generates methods with the name pattern `as<ShapeName>` (e.g., `asDroid` or `asHuman`) that enable you to avoid manual casting:
+
+```kotlin
+val primaryFunction = hero1.asDroid().primaryFunction
+val height = hero2.asHuman().height
+```
+
+### Named fragments
+
+Consider this example:
+
+```graphql {9-15} title="HeroQuery.graphql"
+query HeroForEpisode($ep: Episode!) {
+    hero(episode: $ep) {
+        name
+        ...DroidFields
+        ...HumanFields
+    }
+}
+
+fragment DroidFields on Droid {
+    primaryFunction
+}
+
+fragment HumanFields on Human {
+    height
+}
+```
+
+The `responseBased` codegen generates interfaces for the `DroidFields` and `HumanFields` fragments:
+
+```kotlin
+interface DroidFields {
+  val primaryFunction: String
+}
+
+interface HumanFields {
+  val height: Double
+}
+```
+
+These interfaces are implemented by subclasses of the generated `HeroForEpisodeQuery.Data.Hero` (and other models for any operations using
+these fragments):
+
+```kotlin title="HeroForEpisodeQuery.kt"
+interface Hero {
+  val name: String
+}
+
+data class DroidHero(
+  override val name: String,
+  override val primaryFunction: String
+) : Hero, DroidFields
+
+data class HumanHero(
+  override val name: String,
+  override val height: Double
+) : Hero, HumanFields
+
+data class OtherHero(
+  override val name: String
+) : Hero
+```
+
+This can be used like so:
+
+```kotlin
+when (hero) {
+  is DroidFields -> println(hero.primaryFunction)
+  is HumanFields -> println(hero.height)
+}
+```
+
+#### Accessors
+
+As a convenience, the `responseBased` codegen generates methods with the name pattern `<fragmentName>` (e.g., `droidFields` for a fragment named `DroidFields`). This enables you to chain calls together, like so:
+
+```kotlin
+val primaryFunction = hero1.droidFields().primaryFunction
+val height = hero2.humanFields().height
+```
+
+## Limitations of `responseBased` codegen
+
+1. Because GraphQL is a very expressive language, [it's easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144). If you're using a lot of nested fragments, the generated code size can grow exponentially with the nesting level. We have seen relatively small GraphQL queries breaking the JVM limits like [maximum method size](https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.7.3).
+2. When using fragments, data classes must be generated for each operation where the fragments are used. To avoid name clashes, the models are nested and this comes with two side effects:
+   * The resulting `.class` file name can be very long, breaking the [256 default maximum file name on MacOS](https://apple.stackexchange.com/questions/86611/does-os-x-enforce-a-maximum-filename-length-or-character-restriction).
+   * Similarly named interfaces might be nested (for fragments). While this is valid in Kotlin, [Java does not allow this](https://docs.oracle.com/javase/specs/jls/se8/html/jls-9.html#jls-9.1), and [it will break kapt if you're using it](https://youtrack.jetbrains.com/issue/KT-24272/kapt-generated-code-fails-to-compile-with-symbol-not-found-for-same-named-nested-class). 
+3. `@include`, `@skip` and `@defer` directives are not supported on fragments in `responseBased` codegen. Supporting them would require generating twice the models each time one of these directive would be used.

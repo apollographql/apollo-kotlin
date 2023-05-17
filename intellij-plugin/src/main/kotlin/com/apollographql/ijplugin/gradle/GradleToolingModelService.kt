@@ -6,6 +6,9 @@ import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
 import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.settings.SettingsListener
+import com.apollographql.ijplugin.settings.SettingsState
+import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
@@ -48,6 +51,7 @@ class GradleToolingModelService(
     startObserveApolloProject()
     startOrStopObserveGradleHasSynced()
     startOrAbortFetchToolingModels()
+    startObservingSettings()
   }
 
   private fun startObserveApolloProject() {
@@ -61,7 +65,8 @@ class GradleToolingModelService(
     })
   }
 
-  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project
+  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project &&
+      project.settingsState.contributeConfigurationToGraphqlPlugin
 
   private fun startOrStopObserveGradleHasSynced() {
     logd()
@@ -92,6 +97,16 @@ class GradleToolingModelService(
     logd()
     dispose(gradleHasSyncedDisposable)
     gradleHasSyncedDisposable = null
+  }
+
+  private fun startObservingSettings() {
+    logd()
+    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      override fun settingsChanged(settingsState: SettingsState) {
+        logd("settingsState=$settingsState")
+        startOrAbortFetchToolingModels()
+      }
+    })
   }
 
   private fun startOrAbortFetchToolingModels() {
@@ -158,6 +173,13 @@ class GradleToolingModelService(
             gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, id, executionSettings, connection, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
                 .withCancellationToken(gradleCancellation!!.token())
                 .get()
+                .takeIf {
+                  val isCompatibleVersion = it.versionMajor == ApolloGradleToolingModel.VERSION_MAJOR
+                  if (!isCompatibleVersion) {
+                    logw("Incompatible version of Apollo Gradle plugin in module :${gradleProject.name}: ${it.versionMajor} != ${ApolloGradleToolingModel.VERSION_MAJOR}, ignoring")
+                  }
+                  isCompatibleVersion
+                }
           } catch (t: Throwable) {
             logw(t, "Couldn't fetch tooling model for :${gradleProject.name}")
             null
@@ -217,6 +239,8 @@ class GradleToolingModelService(
             operationPaths = (serviceInfo.graphqlSrcDirs.mapNotNull { it.toProjectLocalPathOrNull() } +
                 dependenciesProjectFiles.flatMap { it.operationPaths })
                 .distinct(),
+            endpointUrl = if (toolingModel.versionMinor >= ApolloGradleToolingModel.VERSION_MINOR) serviceInfo.endpointUrl else null,
+            endpointHeaders = if (toolingModel.versionMinor >= ApolloGradleToolingModel.VERSION_MINOR) serviceInfo.endpointHeaders else null,
         )
       }
     }

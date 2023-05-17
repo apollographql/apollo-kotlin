@@ -70,6 +70,7 @@ internal fun ValidationScope.validateAndCoerceValue(
     is GQLNonNullType -> {
       return validateAndCoerceValue(value, expectedType.type, hasLocationDefaultValue, registerVariableUsage)
     }
+
     is GQLListType -> {
       val coercedValue = if (value !is GQLListValue) {
         /**
@@ -90,11 +91,13 @@ internal fun ValidationScope.validateAndCoerceValue(
           }
       )
     }
+
     is GQLNamedType -> {
       when (val expectedTypeDefinition = typeDefinitions[expectedType.name]) {
         is GQLInputObjectTypeDefinition -> {
           return validateAndCoerceInputObject(value, expectedTypeDefinition, registerVariableUsage)
         }
+
         is GQLScalarTypeDefinition -> {
           if (!expectedTypeDefinition.isBuiltIn()) {
             // custom scalar types are passed through
@@ -102,9 +105,11 @@ internal fun ValidationScope.validateAndCoerceValue(
           }
           return validateAndCoerceScalar(value, expectedType)
         }
+
         is GQLEnumTypeDefinition -> {
           return validateAndCoerceEnum(value, expectedTypeDefinition)
         }
+
         else -> {
           registerIssue("Value cannot be of non-input type ${expectedType.pretty()}", value.sourceLocation)
           return value
@@ -137,7 +142,10 @@ private fun ValidationScope.validateAndCoerceInputObject(
     ) {
       registerIssue(message = "No value passed for required inputField `${inputValueDefinition.name}`", sourceLocation = value.sourceLocation)
     }
-    if (inputValueDefinition.directives.findDeprecationReason() != null) {
+  }
+  value.fields.forEach { field ->
+    val inputValueDefinition = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
+    if (inputValueDefinition?.directives?.findDeprecationReason() != null) {
       issues.add(
           Issue.DeprecatedUsage(
               message = "Use of deprecated input field `${inputValueDefinition.name}`",
@@ -145,7 +153,6 @@ private fun ValidationScope.validateAndCoerceInputObject(
           )
       )
     }
-
   }
 
   return GQLObjectValue(fields = value.fields.mapNotNull { field ->
@@ -192,6 +199,7 @@ private fun ValidationScope.validateAndCoerceScalar(value: GQLValue, expectedTyp
       }
       value
     }
+
     "Float" -> {
       when (value) {
         is GQLFloatValue -> value
@@ -203,18 +211,21 @@ private fun ValidationScope.validateAndCoerceScalar(value: GQLValue, expectedTyp
         }
       }
     }
+
     "String" -> {
       if (value !is GQLStringValue) {
         registerIssue(value, expectedType)
       }
       value
     }
+
     "Boolean" -> {
       if (value !is GQLBooleanValue) {
         registerIssue(value, expectedType)
       }
       value
     }
+
     "ID" -> {
       // 3.5.5 ID can be either string or int
       if (value !is GQLStringValue && value !is GQLIntValue) {
@@ -222,6 +233,7 @@ private fun ValidationScope.validateAndCoerceScalar(value: GQLValue, expectedTyp
       }
       value
     }
+
     else -> {
       registerIssue(value, expectedType)
       value

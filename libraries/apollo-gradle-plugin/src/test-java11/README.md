@@ -1,0 +1,1 @@
+Tests run with JDK 11 for compatibility with older Gradle versions

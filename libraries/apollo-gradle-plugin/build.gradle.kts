@@ -7,9 +7,6 @@ plugins {
 }
 
 apolloLibrary {
-  // See GradleVersionTests.kt the Gradle runner will choke on more recent versions
-  // Keep in sync with TestUtils.kt
-  runTestsWithJavaVersion(11)
 }
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
@@ -92,7 +89,7 @@ gradlePlugin {
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
       implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
-      tags.set(listOf("graphql", "apollo", "plugin"))
+      tags.set(listOf("graphql", "apollo"))
     }
   }
 }
@@ -116,6 +113,45 @@ configure<PublishingExtension> {
   }
 }
 
+tasks.register("wrapInitScripts") {
+  doLast {
+    val initDir = File(System.getenv("HOME")).resolve(".gradle/init.d/")
+
+    val buildCapture = initDir.resolve("build-result-capture.init.gradle")
+    if (!buildCapture.exists()) {
+      // Running on a local machine or wrapping is already done
+      println("~/.gradle/init.d/build-result-capture.init.gradle not found")
+      return@doLast
+    }
+    println("wrapping init scrips")
+
+    // Rename the script
+    buildCapture.renameTo(initDir.resolve("build-result-capture"))
+
+    initDir.resolve("wrapper.init.gradle.kts").writeText("""
+      if (System.getProperty("skipBuildCollection") == null) {
+          println("Init scripts: capturing builds")
+          apply(from = "build-result-capture")
+      } else {
+          println("Init scripts: skipping build capture")
+      }
+    """.trimIndent())
+  }
+}
+
+tasks.register("cleanStaleTestProjects") {
+  doFirst {
+    /**
+     * Remove stale testProject directories
+     */
+    buildDir.listFiles()?.forEach {
+      if (it.isDirectory && it.name.startsWith("testProject")) {
+        it.deleteRecursively()
+      }
+    }
+  }
+}
+
 tasks.withType<Test> {
   dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
@@ -126,21 +162,62 @@ tasks.withType<Test> {
   dependsOn(":apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
+  if (System.getenv("CI") != null) {
+    dependsOn("wrapInitScripts")
+  }
+  // Because we run the GradleRunner in process, this gets forwarded to invocation
+  systemProperty("skipBuildCollection", "true")
 
-  addRelativeInput("testFiles", "src/test/files")
+  dependsOn("cleanStaleTestProjects")
+
+  addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
+}
 
-  doFirst {
-    /**
-     * Remove stale testProject directories
-     */
-    buildDir.listFiles().forEach {
-      if (it.isDirectory && it.name.startsWith("testProject")) {
-        it.deleteRecursively()
-      }
-    }
+val allTests = tasks.create("allTests")
+tasks.check {
+  dependsOn(allTests)
+}
+
+fun createTests(javaVersion: Int) {
+  val sourceSet = sourceSets.create("test-java$javaVersion")
+
+  configurations[sourceSet.implementationConfigurationName].extendsFrom(configurations.testImplementation.get())
+  dependencies.add(sourceSet.implementationConfigurationName, sourceSets.getByName("test").output)
+  configurations[sourceSet.runtimeOnlyConfigurationName].extendsFrom(configurations.testRuntimeOnly.get())
+
+  val task = tasks.register<Test>("testJava$javaVersion") {
+    description = "Runs integration tests for Java $javaVersion."
+    group = "verification"
+    useJUnit()
+
+    testClassesDirs = sourceSet.output.classesDirs
+    classpath = configurations[sourceSet.runtimeClasspathConfigurationName] + sourceSet.output
+
+    setTestToolchain(project, this, javaVersion)
+  }
+
+  allTests.dependsOn(task)
+}
+
+tasks.named("test").configure {
+  // Disable the default tests, they are empty
+  enabled = false
+}
+
+listOf(11, 17).forEach { javaVersion ->
+  createTests(javaVersion)
+}
+
+tasks.register("acceptAndroidLicenses") {
+  doLast {
+    rootProject.file("android-licenses/android-sdk-preview-license")
+        .copyTo(rootProject.file("${System.getenv("ANDROID_HOME")}/licenses/android-sdk-preview-license"), overwrite = true)
   }
 }
 
+tasks.named("testJava17").configure {
+  dependsOn("acceptAndroidLicenses")
+}

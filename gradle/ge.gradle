@@ -1,0 +1,30 @@
+
+def isCI = System.getenv("CI") != null
+
+gradleEnterprise {
+  server = "https://ge.apollographql.com"
+  allowUntrustedServer = false
+
+  buildScan {
+    publishAlways()
+    publishIfAuthenticated()
+
+    uploadInBackground = !isCI
+
+    capture {
+      taskInputFiles = true
+    }
+  }
+}
+
+
+buildCache {
+  local {
+    enabled = true
+    push = true
+  }
+  remote(gradleEnterprise.buildCache) {
+    enabled = true
+    push = isCI
+  }
+}

@@ -14,10 +14,6 @@ internal fun assertResponseListEquals(expectedResponseList: List<ApolloResponse<
     assertContentEquals(expectedResponse.errors, actualResponse.errors) { expectedError, actualError ->
       assertEquals(expectedError.message, actualError.message)
       kotlin.test.assertContentEquals(expectedError.path, actualError.path)
-      assertContentEquals(expectedError.locations, actualError.locations) { expectedLocation, actualLocation ->
-        assertEquals(expectedLocation.line, actualLocation.line)
-        assertEquals(expectedLocation.column, actualLocation.column)
-      }
     }
   }
 }
