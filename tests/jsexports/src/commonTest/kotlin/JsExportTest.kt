@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.api.unsafeCastOrCast
+import com.apollographql.apollo3.api.apolloUnsafeCast
 import jsexport.GetAnimalQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,14 +32,12 @@ class JsExportTest {
 
     assertEquals("Maine Coon", data.animal.species, )
     assertEquals("Cat", data.animal.__typename, )
-    assertEquals("Noushka", data.animal.unsafeCastOrCast<GetAnimalQuery.Data.CatAnimal>()?.name, )
+    assertEquals("Noushka", data.animal.apolloUnsafeCast<GetAnimalQuery.Data.CatAnimal>().name, )
 
     assertEquals("SOUTH", data.direction, )
 
     assertEquals(1, data.point?.x, )
     assertEquals(2, data.point?.y, )
-    assertEquals("The Lion, the Witch and the Wardrobe", data.bookOrLion?.unsafeCastOrCast<GetAnimalQuery.Data.BookBookOrLion>()?.title)
-    // NOTE: The behavior of this will be different for JS vs non-JS platforms. On JS platforms it will be non-null
-    //assertNull(data.animal.unsafeCastOrCast<GetAnimalQuery.Data.OtherAnimal>(), )
+    assertEquals("The Lion, the Witch and the Wardrobe", data.bookOrLion?.apolloUnsafeCast<GetAnimalQuery.Data.BookBookOrLion>()?.title)
   }
 }
