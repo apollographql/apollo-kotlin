@@ -232,3 +232,34 @@ actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
   return operation.parseJsonResponse(DynamicJsJsonReader(dynamicJson))
 }
 ```
+
+## Benchmarks
+
+We have done some benchmarking using a large polymorphic query result from the Github API.
+
+The idea was to compare:
+
+ * `JSON.parse` + `unsafeCast` (`JsExporrt`)
+ * `JSON.parse` + `DynamicJsJSONReader`
+ * `BufferedSourceJsonReader` (default configuration)
+
+We ran the tests on Kotlin 1.8.21 on Chrome 112 on a 2021 Macbook Pro M1 Max.
+
+These are the results:
+
+```
+parse with js export 40327.72686447989 ops/sec
+parse with js export 68 runs
+parse with dnymaic reader 9989.38589840788 ops/sec
+parse with dnymaic reader 54 runs
+parse with buffer reader 394.15146896515483 ops/sec
+parse with buffer reader 63 runs
+```
+
+`DynamicJsJsonReader` is ~25x faster than the default configuration, and `JsExport` is ~4x faster than `DynamicJsJsonReader`.
+
+The code used to generate these results can be seen here:
+
+* [The query](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/commonMain/graphql/SearchQuery.graphql)
+* [The setup](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/jsMain/kotlin/com/baconz/apolloperformance/GithubSearch.kt)
+* [The benchmarking code](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/commonMain/resources/index.html#L12)
