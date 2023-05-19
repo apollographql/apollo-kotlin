@@ -53,7 +53,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.of(
         "var·%N:·%T·=·%L",
         context.layout.variableName(property.info.responseName),
-        context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
+        context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.isOptional()),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -77,7 +77,7 @@ internal fun readFromResponseCodeBlock(
                   "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
                   index,
                   context.layout.variableName(property.info.responseName),
-                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
+                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
               )
             }.joinToCode(separator = "\n", suffix = "\n")
         )
@@ -122,7 +122,7 @@ internal fun readFromResponseCodeBlock(
             add(
                 "var·%N:·%T·=·null\n",
                 context.layout.variableName(property.info.responseName),
-                context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
+                context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.isOptional()),
             )
             val typenameLiteral = if (property.requiresTypename) {
               __typename
@@ -217,7 +217,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val propertyName = context.layout.propertyName(info.responseName)
 
   if (!isSynthetic) {
-    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
+    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
         "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",

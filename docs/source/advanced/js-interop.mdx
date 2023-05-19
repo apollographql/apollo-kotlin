@@ -1,0 +1,265 @@
+---
+title: JS Interoperability
+---
+
+[Kotlin/JS](https://kotlinlang.org/docs/js-overview.html) is a powerful tool that allows you to compile
+Kotlin down to Javascript. `apollo-runtime` supports Kotlin/JS out of the box with no code changes required.
+
+With that said, the default implementation has some performance limitations. Kotlin/JS adds a significant
+amount of overhead to basic Kotlin data structures (notably `List`, `Set`, and `Map`), and so performance sensitive
+workloads (like those found in the Kotlin JSON parsing codepaths) can be slow.
+
+To work around this, Apollo Kotlin provides two alternative solutions to work with JS faster:
+
+* `jsExport` can be up to ~100x faster but does not support the Kotlin type system nor `operationBased` codegen.
+* `DynamicJsJsonReader` can be up to ~25x faster but requires bypassing some parts of ApolloClient for JS.
+
+## `jsExport`
+
+`jsExport` uses
+the [@JsExport](https://kotlinlang.org/docs/js-to-kotlin-interop.html#jsexport-annotation) annotation so that the
+dynamic JS object is callable from Kotlin directly.
+
+> ℹ️ `JsExport` is an experimental feature in Kotlin and Apollo Kotlin and may change in future versions.
+
+Because it bypasses the Kotlin type system, using `jsExport` comes with limitations.
+See [Limitations](#Limitations) for more details.
+
+### Usage
+
+To use it, set `jsExport` to `true` in your Gradle scripts:
+
+```kotlin
+// build.gradle[.kts]
+apollo {
+  service("service") {
+    packageName.set("jsexport")
+    // opt in jsExport
+    jsExport.set(true)
+    // jsExport only works with responseBased codegen
+    codegenModels.set("responseBased")
+  }
+}
+```
+
+Define a simple `executeApolloOperation` in your common sources:
+
+```kotlin
+expect suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
+    operation: Operation<D>,
+): D?
+```
+
+For non-JS implementations, implement `executeApolloOperation` using your favorite HTTP client (
+see [no-runtime](no-runtime)) and `parseJsonResponse`:
+
+```kotlin
+// non-js implementation
+actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
+    operation: Operation<D>,
+): D? {
+
+  val body = buildJsonString {
+    operation.composeJsonRequest(this)
+  }
+  val bytes = yourHttpClient.execute(somePath, body)
+  val response = operation.parseJsonResponse(BufferedSourceJsonReader(Buffer().write(bytes)))
+  return response.data
+}
+```
+
+On JS, you can use `fetch` and `unsafeCast()` to cast the returned javascript object into the @JsExport responseBased
+model:
+
+```kotlin
+// js implementation
+actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
+    operation: Operation<D>,
+): D? {
+
+  val body = buildJsonString {
+    operation.composeJsonRequest(this)
+  }
+  val response = fetch(somePath, body).await()
+  val dynamicJson = response.json().await().asDynamic()
+
+  /**
+   * Because responseBased codegen maps to the response data and the models have
+   * @JsExport annotations, you can use unsafeCast directly
+   */
+  return dynamicJson["data"].unsafeCast()
+}
+```
+
+For a more complete example see [this gist](https://gist.github.com/baconz/778e8a0b359267292d6e05ad81c19b90) which uses
+ktor for non-JS clients.
+
+### How it works
+
+Javascript is a dynamic language, which means that if you don't need methods/prototype functionality
+you can cast an arbitrary JS object to generated code that matches its shape. For example consider this Javascript:
+
+```javascript
+// Imagine Kotlin generated a class like this:
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+// And we had data like this:
+val point = {
+  x: 10
+  y: 10
+}
+
+// This would be perfectly valid code, even though `point` is not actually a `Point`:
+console.log(point.x)
+```
+
+In Kotlin this would look like:
+
+```kotlin
+data class Point(val x: Int, val y: Int)
+
+val point = jso<dynamic> {
+  x = 10
+  y = 10
+}
+
+val typedPoint = point.unsafeCast<Point>()
+
+console.log(typedPoint.x)
+```
+
+But! That code would fail with a `RuntimeException` because, by default the Kotlin compiler mangles properties,
+which means that the generated code for the `Point` data class, ends up looking like this after Kotlin compiles it:
+
+```javascript
+class Point {
+  constructor(x, y) {
+    // Note how it's x_1 here and not just x
+    this.x_1 = x;
+    this.y_1 = y;
+  }
+}
+```
+
+To work around this, you need to tell the compiler not to mangle property names, which you can do by annotating the
+class
+with `JsExport`. When you set the `jsExport` option on your service, you tell Apollo to annotate each generated
+class with `JsExport` so that the property names are not mangled, and you can safely cast.
+
+### Accessors and Polymorphism
+
+Typically `responseBased` codegen would create companion objects with accessors for polymorphic models. For example:
+
+```kotlin
+public interface Animal {
+  public val __typename: String
+
+  public val species: String
+
+  public companion object {
+    public fun Animal.asLion() = this as? Lion
+
+    public fun Animal.asCat() = this as? Cat
+  }
+}
+```
+
+Unfortunately, `@JsExport` does not support companion objects nor extension functions (see [limitations](#limitations)).
+What's more, `@JsExport` has no runtime type information from JS so it's impossible to tell at runtime if a given
+instance is a `Cat` or a `Lion`. To check this, use `__typename` and `apolloUnsafeCast`:
+
+```kotlin
+when (animal.__typename) {
+  "Lion" -> animal.apolloUnsafeCast<Lion>()
+  "Cat" -> animal.apolloUnsafeCast<Cat>()
+}
+```
+
+`apolloUnsafeCast`:
+
+* Uses a `as` cast on non-JS targets
+* Uses `unsafeCast()` ([doc](https://kotlinlang.org/docs/js-interop.html#casts)) on JS. This does no type checking at
+  all. If for some reason, your response doesn't have the expected shape your program will fail.
+
+### Limitations
+
+* `JsExport` is an experimental feature in Kotlin and Apollo Kotlin and may change in future versions.
+* `JsExport` only makes sense on response based codegen since it requires the Kotlin models to have the same shape as
+  the JSON.
+* On JS, is is not possible to check if a `@JsExport` instance implements a given class. If you need polymorphism, you
+  must check `__typename` to determine what interface to use.
+* Extension functions on generated code break when you use this technique since we are casting a raw JS object and not
+  actually instantiating a class.
+* `generateAsInternal = true` does not work with `JsExport`, since the compiler ends up giving the internal modifier
+  precedence, and thus mangling the property names.
+* Custom adapters can only be used when their target types are supported by JS (see the full list
+  of [supported types](https://kotlinlang.org/docs/js-to-kotlin-interop.html#kotlin-types-in-javascript)).
+* Enums do not support `@JsExport` and are generated as `String`. The Kotlin enum is still generated so you can
+  use `safeValueOf()` to get a Kotlin enum from a `String`
+
+## `DynamicJsJsonReader`
+
+If you would prefer to use `operationBased` models, and performance is not _as_ critical, you can
+use `DynamicJsJsonReader`. `DynamicJsJsonReader` works with a javascript object that is already parsed on the JS side.
+
+In JS reading response byte by byte from a byte array like okio is doing incurs a lot of overhead because Kotlin
+uses `Long` indices in its Arrays, and Longs do not have a JS implementation. 
+
+By bypassing this reading, `DynamicJsJsonReader` allows faster reading of responses while still keeping the full Kotlin type information. 
+
+In testing we've seen a ~25x performance boost on JS platforms using this parser vs ~100x with the `JsExport` approach.
+
+To use `DynamicJsJsonReader`, your JS implementation above would become:
+
+```kotlin
+// js implementation
+actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
+    operation: Operation<D>,
+    headers: Array<Array<String>> = emptyArray(),
+    method: HttpMethod = HttpMethod.Post
+): ApolloResponse<D> {
+
+  val body = buildJsonString {
+    operation.composeJsonRequest(this)
+  }
+  val response = fetch(somePath, body).await()
+  val dynamicJson = response.json().await().asDynamic()
+  return operation.parseJsonResponse(DynamicJsJsonReader(dynamicJson))
+}
+```
+
+## Benchmarks
+
+We have done some benchmarking using a large polymorphic query result from the Github API.
+
+The idea was to compare:
+
+ * `JSON.parse` + `unsafeCast` (`JsExporrt`)
+ * `JSON.parse` + `DynamicJsJSONReader`
+ * `BufferedSourceJsonReader` (default configuration)
+
+We ran the tests on Kotlin 1.8.21 on Chrome 112 on a 2021 Macbook Pro M1 Max.
+
+These are the results:
+
+```
+parse with js export 40327.72686447989 ops/sec
+parse with js export 68 runs
+parse with dnymaic reader 9989.38589840788 ops/sec
+parse with dnymaic reader 54 runs
+parse with buffer reader 394.15146896515483 ops/sec
+parse with buffer reader 63 runs
+```
+
+`DynamicJsJsonReader` is ~25x faster than the default configuration, and `JsExport` is ~4x faster than `DynamicJsJsonReader`.
+
+The code used to generate these results can be seen here:
+
+* [The query](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/commonMain/graphql/SearchQuery.graphql)
+* [The setup](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/jsMain/kotlin/com/baconz/apolloperformance/GithubSearch.kt)
+* [The benchmarking code](https://github.com/baconz/apollo-kotlin-js-performance/blob/benchmark/shared/src/commonMain/resources/index.html#L12)

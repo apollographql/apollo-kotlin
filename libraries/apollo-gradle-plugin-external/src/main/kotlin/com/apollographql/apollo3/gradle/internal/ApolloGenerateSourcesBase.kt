@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
@@ -21,6 +22,7 @@ import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
@@ -111,6 +113,11 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
   @get:Optional
   abstract val addJvmOverloads: Property<Boolean>
 
+  @ApolloExperimental
+  @get:Internal
+  @get:Optional
+  abstract val jsExport: Property<Boolean>
+
   @get:Input
   @get:Optional
   abstract val requiresOptInAnnotation: Property<String>
@@ -196,7 +203,8 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
             addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
             requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
             compilerKotlinHooks = compilerKotlinHooks,
-            languageVersion = codegenSchema.targetLanguage
+            languageVersion = codegenSchema.targetLanguage,
+            jsExport = jsExport.getOrElse(defaultJsExport)
         )
         ApolloCompiler.writeKotlin(
             commonCodegenOptions = commonCodegenOptions,

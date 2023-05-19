@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
@@ -83,11 +84,12 @@ internal class OperationBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
         .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
+        .maybeAddJsExport(context)
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())
         .addFunction(serializeVariablesFunSpec())
-        .addFunction(adapterFunSpec(context.resolver, operation.dataProperty))
+        .addFunction(adapterFunSpec(context, operation.dataProperty))
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())

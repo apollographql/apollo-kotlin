@@ -75,6 +75,7 @@
       "RxJava support": "/advanced/rxjava",
       "Kotlin native": "/advanced/kotlin-native",
       "Apollo AST": "/advanced/apollo-ast",
+      "JS Interoperability": "/advanced/js-interop",
       "Response based codegen": "/advanced/response-based"
     }
   }

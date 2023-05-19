@@ -6,6 +6,7 @@ internal class KotlinContext(
     val layout: KotlinCodegenLayout,
     val resolver: KotlinResolver,
     val targetLanguageVersion: TargetLanguage,
+    val jsExport: Boolean,
 ) {
   fun isTargetLanguageVersionAtLeast(targetLanguage: TargetLanguage): Boolean {
     // Assumes TargetLanguage.KOTLIN_X_Y values are declared in increasing order

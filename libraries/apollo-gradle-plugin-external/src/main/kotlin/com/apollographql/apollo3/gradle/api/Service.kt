@@ -344,6 +344,16 @@ interface Service {
   val generateApolloMetadata: Property<Boolean>
 
   /**
+   * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
+   * responses into Kotlin classes using [unsafeCast].
+   *
+   * This is currently experimental and this API might change in the future.
+   *
+   * Default: false
+   */
+  val jsExport: Property<Boolean>
+
+  /**
    * A list of [Regex] patterns matching [schema coordinates](https://github.com/magicmark/graphql-spec/blob/add_field_coordinates/rfcs/SchemaCoordinates.md)
    * for types and fields that should be generated whether they are used by queries/fragments in this module or not.
    *

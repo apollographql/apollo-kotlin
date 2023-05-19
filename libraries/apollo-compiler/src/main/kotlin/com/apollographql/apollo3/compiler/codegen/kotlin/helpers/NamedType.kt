@@ -28,7 +28,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
       .builder(
           // we use property for parameters as these are ultimately data classes
           name = context.layout.propertyName(graphQlName),
-          type = context.resolver.resolveIrType(type)
+          type = context.resolver.resolveIrType(type, context.jsExport)
       )
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
@@ -66,7 +66,7 @@ internal fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext, wi
 }
 
 internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefaultBooleanValues: Boolean): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type, false)
+  val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 

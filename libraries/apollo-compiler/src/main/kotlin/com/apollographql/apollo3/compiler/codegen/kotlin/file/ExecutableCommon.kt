@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo3.compiler.ir.IrProperty
@@ -45,21 +44,21 @@ internal fun serializeVariablesFunSpec(
 }
 
 internal fun adapterFunSpec(
-    resolver: KotlinResolver,
+    context: KotlinContext,
     property: IrProperty,
 ): FunSpec {
   val type = property.info.type
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.Adapter.parameterizedBy(resolver.resolveIrType(type)))
+      .returns(KotlinSymbols.Adapter.parameterizedBy(context.resolver.resolveIrType(type, context.jsExport)))
       .addCode(
           CodeBlock.of(
               "return·%L",
-              resolver.adapterInitializer(type, property.requiresBuffering)
+              context.resolver.adapterInitializer(type, property.requiresBuffering, context.jsExport)
           )
       )
-      .build()
+    .build()
 }
 
 internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName): FunSpec {
