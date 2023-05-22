@@ -2,9 +2,9 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
-import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
@@ -115,7 +115,6 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
   @ApolloExperimental
   @get:Internal
-  @get:Optional
   abstract val jsExport: Property<Boolean>
 
   @get:Input
