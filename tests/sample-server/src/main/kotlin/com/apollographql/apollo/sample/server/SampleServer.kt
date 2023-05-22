@@ -4,8 +4,9 @@ import org.springframework.boot.runApplication
 import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext
 import java.io.Closeable
 
-class SampleServer : Closeable {
-  private var context = runApplication<DefaultApplication>() as AnnotationConfigReactiveWebServerApplicationContext
+class SampleServer(val port: Int = -1) : Closeable {
+  val args = if (port > 0) arrayOf("--server.port=$port") else emptyArray()
+  private var context = runApplication<DefaultApplication>(*args) as AnnotationConfigReactiveWebServerApplicationContext
 
   fun graphqlUrl(): String {
     return "http://localhost:${context.webServer.port}/graphql"
