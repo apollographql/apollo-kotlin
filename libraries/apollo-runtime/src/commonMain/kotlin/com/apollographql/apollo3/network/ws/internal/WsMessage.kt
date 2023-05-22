@@ -7,6 +7,7 @@ internal sealed interface Message
 internal sealed interface Command : Message
 internal class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
 internal class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
+internal object RestartConnection: Command
 internal object Dispose: Command
 
 internal sealed interface Event : Message {
@@ -20,6 +21,9 @@ internal sealed interface Event : Message {
 internal class OperationResponse(override val id: String?, val payload: Map<String, Any?>) : Event
 internal class OperationError(override val id: String?, val payload: Map<String, Any?>?) : Event
 internal class OperationComplete(override val id: String?) : Event
+internal class ConnectionReEstablished : Event {
+  override val id: String? = null
+}
 internal class GeneralError(val payload: Map<String, Any?>?) : Event {
   override val id: String? = null
 }
