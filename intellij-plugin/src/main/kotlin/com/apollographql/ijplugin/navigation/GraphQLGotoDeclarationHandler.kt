@@ -9,8 +9,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
- * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo operation/fragment/enum
- * reference, or model field.
+ * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo element:
+ * - operation/fragment class
+ * - model field
+ * - enum class / value
+ * - input class / field
  */
 class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
@@ -35,6 +38,14 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
 
       nameReferenceExpression.isApolloEnumValueReference() -> {
         findEnumValueGraphQLDefinitions(nameReferenceExpression)
+      }
+
+      nameReferenceExpression.isApolloInputClassReference() -> {
+        findInputTypeGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+      }
+
+      nameReferenceExpression.isApolloInputField() -> {
+        findInputFieldGraphQLDefinitions(nameReferenceExpression)
       }
 
       else -> return null
