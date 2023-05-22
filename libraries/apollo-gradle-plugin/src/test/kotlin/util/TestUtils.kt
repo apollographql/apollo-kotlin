@@ -176,15 +176,8 @@ object TestUtils {
         .forwardStdOutput(output)
         .forwardStdError(error)
         .withProjectDir(projectDir)
-        // Runs in-process, saves a bit of time
         .withDebug(true)
-        .withArguments(
-            "-g",
-            // Reuse the main build home directory
-            File(System.getenv("HOME")).resolve(".gradle").absolutePath,
-            "--stacktrace",
-            *args
-        )
+        .withArguments("--stacktrace", *args)
         .apply {
           if (gradleVersion != null) {
             withGradleVersion(gradleVersion)
@@ -204,8 +197,8 @@ object TestUtils {
 
   fun fixturesDirectory() = File(System.getProperty("user.dir"), "testFiles")
 
-  fun executeTaskAndAssertSuccess(task: String, dir: File, vararg args: String) {
-    val result = executeTask(task, dir, *args)
+  fun executeTaskAndAssertSuccess(task: String, dir: File) {
+    val result = executeTask(task, dir)
     Assert.assertEquals(TaskOutcome.SUCCESS, result.task(task)?.outcome)
   }
 }
