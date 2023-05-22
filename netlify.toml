@@ -1,5 +1,5 @@
 [build]
-  ignore = "exit 0"
+  ignore = "exit 0" # Production builds are triggered through GitHub actions
 
 [build.environment]
   NODE_VERSION = "16"

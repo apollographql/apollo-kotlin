@@ -1,14 +1,15 @@
+# This triggers a release of all the apollo docs
+# The deploy preview for a single docset are handled in netlify.toml
 name: Deploy docs to production
 
 on:
   push:
     branches:
       - main
+      - release-3.x
       - release-2.x
     paths:
       - docs/**
-env:
-  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
 jobs:
   publish:
