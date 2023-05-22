@@ -71,7 +71,7 @@ tasks {
         if (isSnapshotBuild()) {
           "Snapshot builds contain the latest changes from the <code>main</code> branch."
         } else {
-          "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/${project.version}\">release notes</a>."
+          "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/v${project.version}\">release notes</a>."
         }
     )
   }
