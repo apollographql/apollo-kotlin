@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
 import com.intellij.psi.PsiElement
@@ -13,6 +14,8 @@ import org.jetbrains.kotlin.psi.KtElement
  */
 class GraphQLTypeDeclarationProvider : TypeDeclarationProvider {
   override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
+    if (!symbol.project.apolloProjectService.isApolloKotlin3Project) return null
+
     // Only care about Kotlin
     if (symbol !is KtElement) return null
 
