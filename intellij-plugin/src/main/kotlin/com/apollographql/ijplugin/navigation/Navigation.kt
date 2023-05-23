@@ -55,15 +55,17 @@ fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
       ?.isApolloOperationOrFragment() == true
 }
 
-fun KtNameReferenceExpression.isApolloModelField(): Boolean {
+fun KtNameReferenceExpression.isApolloModelFieldReference(): Boolean {
   val resolved = resolveKtName()
   // Parameter is for data classes, property is for interfaces
   return (resolved is KtParameter || resolved is KtProperty) &&
-      (resolved as KtElement).topMostContainingClass()
-          ?.isApolloOperationOrFragment() == true
+      (resolved as KtElement).isApolloModelField()
 }
 
-private fun KtClass.isApolloOperationOrFragment(): Boolean {
+fun KtElement.isApolloModelField() = topMostContainingClass()
+    ?.isApolloOperationOrFragment() == true
+
+fun KtClass.isApolloOperationOrFragment(): Boolean {
   return superTypeListEntries.any {
     val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
     superType == APOLLO_FRAGMENT_TYPE || superType in APOLLO_OPERATION_TYPES
@@ -78,7 +80,7 @@ fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
   return ktClass.isApolloEnumClass()
 }
 
-private fun KtClass.isApolloEnumClass() = isEnum() &&
+fun KtClass.isApolloEnumClass() = isEnum() &&
     // Apollo enums have a companion object that has a property named "type" of type EnumType
     isEnum() && companionObjects.any { companion ->
   companion.declarations.filterIsInstance<KtProperty>().any { property ->
@@ -99,7 +101,7 @@ fun KtNameReferenceExpression.isApolloInputClassReference(): Boolean {
       ?.isApolloInputClass() == true
 }
 
-private fun KtClass.isApolloInputClass(): Boolean {
+fun KtClass.isApolloInputClass(): Boolean {
   // Apollo input classes are data classes, generated in a package named "type", and we also look at the header comment.
   // This can lead to false positives, but consequences are not dire.
   return isData() &&
@@ -107,7 +109,7 @@ private fun KtClass.isApolloInputClass(): Boolean {
       hasGeneratedByApolloComment()
 }
 
-fun KtNameReferenceExpression.isApolloInputField(): Boolean {
+fun KtNameReferenceExpression.isApolloInputFieldReference(): Boolean {
   val resolved = resolveKtName()
   // Parameter is for data classes, property is for interfaces
   return (resolved is KtParameter || resolved is KtProperty) &&
@@ -193,14 +195,20 @@ fun findInputFieldGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExp
 }
 
 fun findGraphQLElements(nameReferenceExpression: KtNameReferenceExpression): List<GraphQLElement> {
-  val elements = mutableListOf<GraphQLElement>()
-  val project = nameReferenceExpression.project
   val resolved = nameReferenceExpression.resolveKtName()
   // Parameter is for data classes, property is for interfaces
   val ktElement = if (resolved is KtParameter || resolved is KtProperty) resolved as KtElement else return emptyList()
+  return findGraphQLElements(ktElement)
+}
+
+/**
+ * 'Element' here means either a field, a fragment spread, or an inline fragment.
+ */
+fun findGraphQLElements(ktElement: KtElement): List<GraphQLElement> {
+  val elements = mutableListOf<GraphQLElement>()
   val operationOrFragmentClass = ktElement.topMostContainingClass() ?: return emptyList()
   val fieldPath = operationOrFragmentClass.elementPath(ktElement)
-  val operationOrFragmentDefinitions = findOperationOrFragmentGraphQLDefinitions(project, operationOrFragmentClass.name!!)
+  val operationOrFragmentDefinitions = findOperationOrFragmentGraphQLDefinitions(ktElement.project, operationOrFragmentClass.name!!)
   for (operationOrFragmentDefinition in operationOrFragmentDefinitions) {
     val elementsAtPath = operationOrFragmentDefinition.findElementAtPath(fieldPath)
     if (elementsAtPath != null) {
@@ -212,6 +220,7 @@ fun findGraphQLElements(nameReferenceExpression: KtNameReferenceExpression): Lis
   }
   return elements
 }
+
 
 /**
  * For a given [element], return its path in the given operation class.
