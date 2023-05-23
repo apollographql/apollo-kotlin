@@ -28,7 +28,7 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
         findOperationOrFragmentGraphQLDefinitions(sourceElement.project, psiLeaf.text)
       }
 
-      nameReferenceExpression.isApolloModelField() -> {
+      nameReferenceExpression.isApolloModelFieldReference() -> {
         findGraphQLElements(nameReferenceExpression)
       }
 
@@ -44,7 +44,7 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
         findInputTypeGraphQLDefinitions(sourceElement.project, psiLeaf.text)
       }
 
-      nameReferenceExpression.isApolloInputField() -> {
+      nameReferenceExpression.isApolloInputFieldReference() -> {
         findInputFieldGraphQLDefinitions(nameReferenceExpression)
       }
 
