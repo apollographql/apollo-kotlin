@@ -8,6 +8,8 @@ import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -109,5 +111,13 @@ class MapTestNetworkTransportHandlerTest {
     apolloClient.registerTestResponse(GetHeroNameOnlyQuery(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
     val response: ApolloResponse<GetHeroNameOnlyQuery.Data> = apolloClient.query(GetHeroNameOnlyQuery()).execute()
     assertEquals("Darth Vader", response.data!!.hero.name)
+  }
+
+  @Test
+  fun errorWhenNoResponseFoundInMap() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient.query(GetHeroNameOnlyQuery()).toFlow().catch { e ->
+      assertTrue(e is IllegalStateException)
+      assertTrue(e.message!!.startsWith("No response registered for operation"))
+    }.toList()
   }
 }

@@ -10,6 +10,8 @@ import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -115,5 +117,13 @@ class QueueTestNetworkTransportHandlerTest {
 
     val actual = apolloClient.query(query).execute().data!!
     assertEquals(testData.hero.name, actual.hero.name)
+  }
+
+  @Test
+  fun errorWhenNoResponseFoundInQueue() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient.query(GetHeroNameOnlyQuery()).toFlow().catch { e ->
+      assertTrue(e is IllegalStateException)
+      assertTrue(e.message!!.startsWith("No more responses in queue"))
+    }.toList()
   }
 }
