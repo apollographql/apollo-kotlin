@@ -147,10 +147,10 @@ To assign default values to fields, data builders use an implementation of the `
 
 The `DefaultFakeResolver` gives each `String` field the field's name as its default value, and it increments a counter as it assigns default values for `Int` fields. It defines similar default behavior for other types.
 
-You can create your _own_ `FakeResolver` implementation (optionally delegating to `DefaultTestResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
+You can create your _own_ `FakeResolver` implementation (optionally delegating to `DefaultFakeResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
 
 ```kotlin {6}
-// A TestResolver implementation that assigns -1 to all Int fields
+// A FakeResolver implementation that assigns -1 to all Int fields
 class MyFakeResolver : FakeResolver {
   private val delegate = DefaultFakeResolver(__Schema.all)
   
@@ -179,7 +179,7 @@ class MyFakeResolver : FakeResolver {
 
 @Test
 fun test() {
-  val data = HeroForEpisodeQuery.Data(resolver = myTestResolver) {
+  val data = HeroForEpisodeQuery.Data(resolver = MyFakeResolver) {
     hero = buildHuman {
       firstName = "John"
     }
