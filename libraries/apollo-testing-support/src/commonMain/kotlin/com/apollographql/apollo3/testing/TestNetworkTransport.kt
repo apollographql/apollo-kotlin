@@ -69,19 +69,26 @@ class MapTestNetworkTransport : NetworkTransport {
   private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, TestResponse>()
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    val response = lock.withLock { operationsToResponses[request.operation] }
-        ?: error("No response registered for operation ${request.operation}")
-    val apolloResponse = when (response) {
-      is TestResponse.NetworkError -> {
-        ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, exception = ApolloNetworkException("Network error registered in MapTestNetworkTransport")).build()
+    return flow {
+      // "Emulate" a network call
+      yield()
+
+      val response = lock.withLock { operationsToResponses[request.operation] }
+          ?: error("No response registered for operation ${request.operation}")
+
+      val apolloResponse = when (response) {
+        is TestResponse.NetworkError -> {
+          ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, exception = ApolloNetworkException("Network error registered in MapTestNetworkTransport")).build()
+        }
+
+        is TestResponse.Response -> {
+          @Suppress("UNCHECKED_CAST")
+          response.response as ApolloResponse<D>
+        }
       }
 
-      is TestResponse.Response -> {
-        @Suppress("UNCHECKED_CAST")
-        response.response as ApolloResponse<D>
-      }
+      emit(apolloResponse . newBuilder ().isLast(true).build())
     }
-    return flowOf(apolloResponse.newBuilder().isLast(true).build())
   }
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {
