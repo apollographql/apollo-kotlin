@@ -186,7 +186,7 @@ val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") 
     check(
         file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText() == file("testFixtures/manifest.json").readText()
     ) {
-      "Known Operation Manifest has changed"
+      "Persisted Query Manifest has changed"
     }
   }
 }
