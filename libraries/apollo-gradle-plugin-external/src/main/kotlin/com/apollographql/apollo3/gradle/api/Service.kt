@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -506,6 +507,7 @@ interface Service {
    * Defaults value: false
    */
   @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"operationOutput\""))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val generateOperationOutput: Property<Boolean>
 
   /**
@@ -565,6 +567,7 @@ interface Service {
    * If you want a [RegularFileProperty] that carries the task dependency, use [operationManifestConnection]
    */
   @Deprecated("Use operationManifest", ReplaceWith("operationManifest"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val operationOutputFile: RegularFileProperty
 
   /**
@@ -694,8 +697,10 @@ interface Service {
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun usedCoordinates(file: File)
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun usedCoordinates(file: String)
 
   /**
@@ -721,6 +726,7 @@ interface Service {
    * By default, operationOutput is not connected
    */
   @Deprecated("Use operationManifestConnection", ReplaceWith("operationManifestConnection"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun operationOutputConnection(action: Action<in OperationOutputConnection>)
 
   /**
