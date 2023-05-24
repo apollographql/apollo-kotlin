@@ -34,13 +34,6 @@ fun PersistedQueryManifest.writeTo(file: File) {
   }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-fun File.toPersistedQueryManifest(): PersistedQueryManifest {
-  return source().buffer().use {
-    Json.decodeFromBufferedSource<PersistedQueryManifest>(it)
-  }
-}
-
 fun OperationOutput.toPersistedQueryManifest(): PersistedQueryManifest {
   return PersistedQueryManifest(
       format = "apollo-persisted-query-manifest",
