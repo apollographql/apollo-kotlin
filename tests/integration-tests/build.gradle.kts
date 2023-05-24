@@ -180,7 +180,7 @@ configurations.named("javaCodegenSourcesElements").configure {
   }
 }
 
-val checkKnownOperationsManifest = tasks.register("checkKnownOperationsManifest") {
+val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
   dependsOn("generateApolloSources")
   doLast {
     check(
@@ -191,5 +191,5 @@ val checkKnownOperationsManifest = tasks.register("checkKnownOperationsManifest"
   }
 }
 tasks.named("jvmTest").configure {
-  dependsOn(checkKnownOperationsManifest)
+  dependsOn(checkPersistedQueryManifest)
 }
