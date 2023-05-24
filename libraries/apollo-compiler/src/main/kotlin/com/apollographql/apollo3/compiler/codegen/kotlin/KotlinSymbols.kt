@@ -111,7 +111,6 @@ internal object KotlinSymbols {
 internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
 
 internal object KotlinMemberNames {
-  val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
