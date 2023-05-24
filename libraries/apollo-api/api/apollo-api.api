@@ -1148,12 +1148,6 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter : com/apollo
 	public fun value (Z)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 }
 
-public abstract interface annotation class com/apollographql/apollo3/api/test/ApolloTestBuilderMarker : java/lang/annotation/Annotation {
-}
-
-public final class com/apollographql/apollo3/api/test/TestResolverKt {
-}
-
 public final class com/apollographql/apollo3/exception/ApolloCompositeException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (Ljava/lang/Throwable;Ljava/lang/Throwable;)V
 	public fun <init> (Ljava/util/List;)V
