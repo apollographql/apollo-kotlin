@@ -514,7 +514,7 @@ interface Service {
    * The format to output for the operation manifest. Valid values are:
    *
    * - "operationOutput": a manifest that matches the format used by [OperationOutputGenerator]
-   * - "persistedQueryManifest": a manifest format that is compatible with the router
+   * - "persistedQueryManifest": a manifest format for an upcoming GraphOS feature
    * - nothing (Default): by default no manifest is generated
    *
    * "operationOutput" uses a JSON format like so:
