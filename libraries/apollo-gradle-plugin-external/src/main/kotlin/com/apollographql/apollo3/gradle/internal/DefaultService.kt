@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.MANIFEST_NONE
+import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -16,6 +19,8 @@ import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companio
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Provider
 import org.gradle.util.GradleVersion
 import java.io.File
 import javax.inject.Inject
@@ -57,6 +62,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   override fun usedCoordinates(file: File) = TODO()
+
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   override fun usedCoordinates(file: String) = TODO()
 
@@ -113,7 +119,12 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       "Apollo: registerOperations {} cannot be configured outside of a service {} block"
     }
 
-    generateOperationOutput.set(true)
+    val existing = operationManifestFormat.orNull
+    check(existing == null || existing == MANIFEST_OPERATION_OUTPUT) {
+      "Apollo: registerOperation {} requires $MANIFEST_OPERATION_OUTPUT (found $existing)"
+    }
+    operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
+    operationManifestFormat.finalizeValue()
 
     val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
 
@@ -127,13 +138,23 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null
+  var operationManifestAction: Action<in Service.OperationManifestConnection>? = null
 
+  @Deprecated("Use operationManifestConnection", replaceWith = ReplaceWith("operationManifestConnection"))
   override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
     check(!registered) {
       "Apollo: operationOutputConnection {} cannot be configured outside of a service {} block"
     }
 
     this.operationOutputAction = action
+  }
+
+  override fun operationManifestConnection(action: Action<in Service.OperationManifestConnection>) {
+    check(!registered) {
+      "Apollo: operationOutputConnection {} cannot be configured outside of a service {} block"
+    }
+
+    this.operationManifestAction = action
   }
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
@@ -265,6 +286,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       TargetLanguage.JAVA -> {
         throw IllegalStateException("jsExport can only be used for Kotlin codegen")
       }
+
       else -> {
         check(codegenModels.isPresent && codegenModels.get() == MODELS_RESPONSE_BASED) {
           "jsExport only supports responseBased codegen, received codegenModels=${codegenModels.orNull}"
@@ -285,6 +307,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
         }
         MODELS_OPERATION_BASED
       }
+
       else -> codegenModels.getOrElse(defaultCodegenModels)
     }
   }
@@ -303,10 +326,78 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       return emptySet()
     }
   }
+
   internal fun flattenModels(): Boolean {
-    return flattenModels.getOrElse(when(codegenModels()) {
+    return flattenModels.getOrElse(when (codegenModels()) {
       MODELS_RESPONSE_BASED -> false
       else -> true
     })
+  }
+
+  /**
+   * Resolves the operation manifest and formats.
+   */
+  @Suppress("DEPRECATION")
+  private fun resolveOperationManifest(): Pair<String, File> {
+    generateOperationOutput.disallowChanges()
+    operationManifest.disallowChanges()
+
+    var format = operationManifestFormat.orNull
+    if (format == null) {
+      if (generateOperationOutput.get()) {
+        format = MANIFEST_OPERATION_OUTPUT
+      }
+    } else {
+      when (format) {
+        MANIFEST_NONE,
+        MANIFEST_OPERATION_OUTPUT,
+        MANIFEST_PERSISTED_QUERY,
+        -> Unit
+
+        else -> {
+          error("Apollo: unknonwn operation manifest format: $format")
+        }
+      }
+      check(!generateOperationOutput.isPresent) {
+        "Apollo: it is an error to set both `generateOperationOutput` and `operationManifestFormat`. Remove `generateOperationOutput`"
+      }
+    }
+    var userFile = operationManifest.orNull?.asFile
+    if (userFile == null) {
+      userFile = operationOutputFile.orNull?.asFile
+    } else {
+      check(!operationOutputFile.isPresent) {
+        "Apollo: it is an error to set both `operationManifest` and `operationOutputFile`. Remove `operationOutputFile`"
+      }
+    }
+
+    if (userFile != null) {
+      if (format == null) {
+        format = MANIFEST_OPERATION_OUTPUT
+      }
+    } else {
+      userFile = BuildDirLayout.operationManifest(project, this, format ?: MANIFEST_OPERATION_OUTPUT)
+    }
+
+    if (format == null) {
+      format = MANIFEST_NONE
+    }
+    return format to userFile
+  }
+
+  fun operationManifestFile(): RegularFileProperty {
+    return project.provider {
+      resolveOperationManifest().second
+    }.let { fileProvider ->
+      project.objects.fileProperty().value {
+        fileProvider.get()
+      }
+    }
+  }
+
+  fun operationManifestFormat(): Provider<String> {
+    return project.provider {
+      resolveOperationManifest().first
+    }
   }
 }

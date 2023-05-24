@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -11,9 +10,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.ExternalModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -505,23 +501,77 @@ interface Service {
   val outputDir: DirectoryProperty
 
   /**
-   * The directory where the test builders will be written.
-   * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
-   */
-  val testDir: DirectoryProperty
-
-  /**
    * Whether to generate the operationOutput.json
    *
    * Defaults value: false
    */
+  @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"operationOutput\""))
   val generateOperationOutput: Property<Boolean>
 
   /**
-   * The file where the operation output will be written. It's called [operationOutputFile] but this an "input" parameter for the compiler
-   * If you want a [RegularFileProperty] that carries the task dependency, use [operationOutputConnection]
+   * The format to output for the operation manifest. Valid values are:
+   *
+   * - "operationOutput": a manifest that matches the format used by [OperationOutputGenerator]
+   * - "persistedQueryManifest": a manifest format that is compatible with the router
+   * - nothing (Default): by default no manifest is generated
+   *
+   * "operationOutput" uses a JSON format like so:
+   * ```json
+   * {
+   *   "3f8a446ab7672c1efad3735b6fa86caaeefe7ec47f87fca9b84e71e0d93e6bea": {
+   *     "name": "DroidDetails",
+   *     "source": "query DroidDetails { species(id: \"c3BlY2llczoy\") { id name filmConnection { edges { node { id title } } } } }"
+   *   },
+   *   "e772cb55495ad5becc0c804ca3de7d5a5f31f145552bc33529f025d6cb0a8ce6": {
+   *     "name": "AllFilms",
+   *     "source": "query AllFilms { allFilms(first: 100) { totalCount films { title releaseDate } } }"
+   *   }
+   * }
+   * ```
+   *
+   * "persistedQueryManifest" uses a format compatible with the router like so:
+   * ```json
+   * {
+   *   "format": "apollo-persisted-query-manifest",
+   *   "version": 1,
+   *   "operations": [
+   *     {
+   *       "id": "dc67510fb4289672bea757e862d6b00e83db5d3cbbcfb15260601b6f29bb2b8f",
+   *       "body": "query UniversalQuery { __typename }",
+   *       "name": "UniversalQuery",
+   *       "type": "query"
+   *     },
+   *     {
+   *       "id": "f11e4dcb28788af2e41689bb366472084aa1aa1e1ba633c3d605279cff08ed59",
+   *       "body": "query FragmentedQuery { post { ...PostFragment } }  fragment PostFragment on Post { id title }",
+   *       "name": "FragmentedQuery",
+   *       "type": "query"
+   *     },
+   *     {
+   *       "id": "04649073787db6f24b495d49e5e87526734335a002edbd6e06e7315e302af5ac",
+   *       "body": "mutation SetNameMutation($name: String!) { setName($name) }",
+   *       "name": "SetNameMutation",
+   *       "type": "mutation"
+   *     }
+   *   ]
+   * }
+   * ```
+   *
    */
+  val operationManifestFormat: Property<String>
+
+  /**
+   * The file where the operation output will be written. It's called [operationOutputFile] but this an "input" parameter for the compiler
+   * If you want a [RegularFileProperty] that carries the task dependency, use [operationManifestConnection]
+   */
+  @Deprecated("Use operationManifest", ReplaceWith("operationManifest"))
   val operationOutputFile: RegularFileProperty
+
+  /**
+   * The file where to write the operation manifest.
+   * If you want a [RegularFileProperty] that carries the task dependency, use [operationManifestConnection].
+   */
+  val operationManifest: RegularFileProperty
 
   /**
    * A debug directory where the compiler will output intermediary results
@@ -670,7 +720,17 @@ interface Service {
    *
    * By default, operationOutput is not connected
    */
+  @Deprecated("Use operationManifestConnection", ReplaceWith("operationManifestConnection"))
   fun operationOutputConnection(action: Action<in OperationOutputConnection>)
+
+  /**
+   * overrides the way the operation manifest is connected.
+   * Use this if you want to connect the generated operation manifest. For an example
+   * you can use this to send the modified queries to your backend for whitelisting
+   *
+   * By default, operation manifest is not connected
+   */
+  fun operationManifestConnection(action: Action<in OperationManifestConnection>)
 
   /**
    * Adds a given dependency for the codegen
@@ -691,6 +751,21 @@ interface Service {
        * or persisted queries.
        */
       val operationOutputFile: Provider<RegularFile>,
+  )
+
+  class OperationManifestConnection(
+      /**
+       * The task that produces operationOutput
+       */
+      val task: TaskProvider<out Task>,
+
+      /**
+       * A json file containing the operation manifest
+       *
+       * This file can be used to upload the queries exact content and their matching operation ID to a server for whitelisting
+       * or persisted queries. The specific format of the file depends on [operationManifestFormat]
+       */
+      val manifest: Provider<RegularFile>,
   )
 
   /**

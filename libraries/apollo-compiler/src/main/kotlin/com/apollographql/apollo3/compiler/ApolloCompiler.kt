@@ -31,6 +31,8 @@ import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.writeTo
+import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
+import com.apollographql.apollo3.compiler.pqm.writeTo
 import okio.buffer
 import okio.source
 import java.io.File
@@ -252,7 +254,8 @@ object ApolloCompiler {
   fun buildOperationOutput(
       ir: IrOperations,
       operationOutputGenerator: OperationOutputGenerator,
-      operationOutputFile: File?,
+      operationManifestFile: File,
+      operationManifestFormat: String,
   ): OperationOutput {
     check(ir is DefaultIrOperations)
 
@@ -260,7 +263,8 @@ object ApolloCompiler {
     val operationOutput = ir.operations.map {
       OperationDescriptor(
           name = it.name,
-          source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+          source = QueryDocumentMinifier.minify(it.sourceWithFragments),
+          type = it.operationType.name.lowercase()
       )
     }.let {
       operationOutputGenerator.generate(it)
@@ -271,11 +275,10 @@ object ApolloCompiler {
         |Check that all your IDs are unique.
       """.trimMargin()
     }
-
-    if (operationOutputFile != null) {
-      operationOutput.writeTo(operationOutputFile)
+    when (operationManifestFormat) {
+      MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
+      MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
     }
-
     return operationOutput
   }
 
@@ -420,8 +423,9 @@ object ApolloCompiler {
 
     val operationOutput = buildOperationOutput(
         ir = irOperations,
-        operationOutputFile = null,
         operationOutputGenerator = operationOutputGenerator,
+        operationManifestFile = File("unused"),
+        operationManifestFormat = MANIFEST_NONE,
     )
 
     val irSchema = IrSchemaBuilder.build(

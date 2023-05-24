@@ -46,8 +46,10 @@ import org.gradle.api.tasks.OutputFile
 @Suppress("UnstableApiUsage")
 abstract class ApolloGenerateSourcesBase : DefaultTask() {
   @get:OutputFile
-  @get:Optional
-  abstract val operationOutputFile: RegularFileProperty
+  abstract val operationManifestFile: RegularFileProperty
+
+  @get:Input
+  abstract val operationManifestFormat: Property<String>
 
   @get:Internal
   lateinit var operationOutputGenerator: OperationOutputGenerator
@@ -150,7 +152,8 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
     val operationOutput = ApolloCompiler.buildOperationOutput(
         ir = irOperations,
-        operationOutputFile = operationOutputFile.asFile.orNull,
+        operationManifestFile = operationManifestFile.asFile.get(),
+        operationManifestFormat = operationManifestFormat.get(),
         operationOutputGenerator = operationOutputGenerator,
     )
 
