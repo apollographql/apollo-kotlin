@@ -179,7 +179,7 @@ class MyFakeResolver : FakeResolver {
 
 @Test
 fun test() {
-  val data = HeroForEpisodeQuery.Data(resolver = MyFakeResolver) {
+  val data = HeroForEpisodeQuery.Data(resolver = MyFakeResolver()) {
     hero = buildHuman {
       firstName = "John"
     }
