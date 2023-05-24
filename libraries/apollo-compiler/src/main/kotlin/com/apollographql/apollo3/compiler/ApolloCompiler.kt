@@ -254,7 +254,7 @@ object ApolloCompiler {
   fun buildOperationOutput(
       ir: IrOperations,
       operationOutputGenerator: OperationOutputGenerator,
-      operationManifestFile: File,
+      operationManifestFile: File?,
       operationManifestFormat: String,
   ): OperationOutput {
     check(ir is DefaultIrOperations)
@@ -275,9 +275,15 @@ object ApolloCompiler {
         |Check that all your IDs are unique.
       """.trimMargin()
     }
+
+    if (operationManifestFormat != MANIFEST_NONE) {
+      check(operationManifestFile != null) {
+        "Apollo: $operationManifestFormat requires a manifest file"
+      }
+    }
     when (operationManifestFormat) {
-      MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
-      MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
+      MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile!!)
+      MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile!!)
     }
     return operationOutput
   }

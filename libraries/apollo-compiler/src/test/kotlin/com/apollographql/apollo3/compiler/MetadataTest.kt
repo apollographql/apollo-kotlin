@@ -134,7 +134,7 @@ class MetadataTest {
         rootIrOperations,
         defaultOperationOutputGenerator,
         null,
-        operationManifestFormat.get()
+        MANIFEST_NONE
     )
 
     val rootCommonCodegenOptions = CommonCodegenOptions(
@@ -172,7 +172,7 @@ class MetadataTest {
         leafIrOperations,
         defaultOperationOutputGenerator,
         null,
-        operationManifestFormat.get()
+        MANIFEST_NONE
     )
     val leafIrSchema = ApolloCompiler.buildIrSchema(
         codegenSchema = codegenSchema,
