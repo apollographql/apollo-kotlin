@@ -24,16 +24,9 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew --no-build-cache compileKotlinJs
-          ./gradlew --stop
-          ./gradlew --no-build-cache ciBuild
-          ./gradlew --stop
-          ./gradlew --no-build-cache -p tests ciBuild
-          ./gradlew --no-build-cache dokkaHtmlMultiModule
-          ./gradlew --no-build-cache ciPublishSnapshot
+          ./gradlew -p tests ciBuild
+          ./gradlew dokkaHtmlMultiModule
+          ./gradlew ciPublishSnapshot
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}

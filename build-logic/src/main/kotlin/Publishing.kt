@@ -39,7 +39,7 @@ fun Project.configurePublishing() {
   configurePublishingInternal()
 }
 
-private fun Project.configureDokka() {
+fun Project.configureDokka() {
   apply {
     plugin("org.jetbrains.dokka")
   }
