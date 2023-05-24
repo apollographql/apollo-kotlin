@@ -356,7 +356,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
         -> Unit
 
         else -> {
-          error("Apollo: unknonwn operation manifest format: $format")
+          error("Apollo: unknown operation manifest format: $format")
         }
       }
       check(!generateOperationOutput.isPresent) {
