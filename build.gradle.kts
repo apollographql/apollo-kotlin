@@ -8,7 +8,6 @@ plugins {
 golatac.init(file("gradle/libraries.toml"))
 
 apply(plugin = "com.github.ben-manes.versions")
-apply(plugin = "org.jetbrains.dokka")
 apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 
 version = property("VERSION_NAME")!!
@@ -101,6 +100,7 @@ tasks.register("ciBuild") {
   dependsOn(subprojectTasks("build"))
 }
 
+rootProject.configureDokka()
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
