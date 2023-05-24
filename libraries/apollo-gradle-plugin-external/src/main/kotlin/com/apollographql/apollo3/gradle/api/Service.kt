@@ -531,7 +531,7 @@ interface Service {
    * }
    * ```
    *
-   * "persistedQueryManifest" uses a format compatible with the router like so:
+   * "persistedQueryManifest" uses a format compatible with an upcoming GraphQL feature like so:
    * ```json
    * {
    *   "format": "apollo-persisted-query-manifest",
