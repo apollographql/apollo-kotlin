@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.defaultCodegenModels
-import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -340,11 +339,13 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   @Suppress("DEPRECATION")
   private fun resolveOperationManifest(): Pair<String, File> {
     generateOperationOutput.disallowChanges()
+    operationOutputFile.disallowChanges()
     operationManifest.disallowChanges()
+    operationManifestFormat.disallowChanges()
 
     var format = operationManifestFormat.orNull
     if (format == null) {
-      if (generateOperationOutput.get()) {
+      if (generateOperationOutput.orElse(false).get()) {
         format = MANIFEST_OPERATION_OUTPUT
       }
     } else {

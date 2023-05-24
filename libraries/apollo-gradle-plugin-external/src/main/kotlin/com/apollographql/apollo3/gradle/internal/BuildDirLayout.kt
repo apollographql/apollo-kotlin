@@ -10,7 +10,7 @@ import java.io.File
 object BuildDirLayout {
   internal fun operationManifest(project: Project, service: Service, format: String): File {
     return project.layout.buildDirectory.file(
-        "generated/operationOutput/apollo/${service.name}/$format.json"
+        "generated/manifest/apollo/${service.name}/$format.json"
     ).get().asFile
   }
 
