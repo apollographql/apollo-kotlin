@@ -13,7 +13,6 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.yield
 
 private sealed interface TestResponse {
@@ -87,7 +86,7 @@ class MapTestNetworkTransport : NetworkTransport {
         }
       }
 
-      emit(apolloResponse . newBuilder ().isLast(true).build())
+      emit(apolloResponse.newBuilder().isLast(true).build())
     }
   }
 
