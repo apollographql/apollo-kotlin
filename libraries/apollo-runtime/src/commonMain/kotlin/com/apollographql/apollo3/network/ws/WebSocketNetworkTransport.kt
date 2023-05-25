@@ -18,6 +18,7 @@ import com.apollographql.apollo3.internal.isDeferred
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.ws.internal.Command
+import com.apollographql.apollo3.network.ws.internal.ConnectionReEstablished
 import com.apollographql.apollo3.network.ws.internal.Dispose
 import com.apollographql.apollo3.network.ws.internal.Event
 import com.apollographql.apollo3.network.ws.internal.GeneralError
@@ -26,6 +27,7 @@ import com.apollographql.apollo3.network.ws.internal.NetworkError
 import com.apollographql.apollo3.network.ws.internal.OperationComplete
 import com.apollographql.apollo3.network.ws.internal.OperationError
 import com.apollographql.apollo3.network.ws.internal.OperationResponse
+import com.apollographql.apollo3.network.ws.internal.RestartConnection
 import com.apollographql.apollo3.network.ws.internal.StartOperation
 import com.apollographql.apollo3.network.ws.internal.StopOperation
 import com.benasher44.uuid.Uuid
@@ -156,15 +158,18 @@ private constructor(
 
             if (reopenWhen?.invoke(message.cause, reopenAttemptCount) == true) {
               reopenAttemptCount++
-              activeMessages.values.forEach {
-                // Re-queue all start messages
-                // This will restart the websocket
-                messages.trySend(it)
-              }
+              messages.send(RestartConnection)
             } else {
               reopenAttemptCount = 0L
               // forward the NetworkError downstream. Active flows will throw
               mutableEvents.tryEmit(message)
+            }
+          } else if (message is ConnectionReEstablished) {
+            reopenAttemptCount = 0L
+            activeMessages.values.forEach {
+              // Re-queue all start messages
+              // This will restart the websocket
+              messages.trySend(it)
             }
           } else {
             reopenAttemptCount = 0L
@@ -234,6 +239,11 @@ private constructor(
               activeMessages.remove(message.request.requestUuid)
               protocol!!.stopOperation(message.request)
             }
+
+            is RestartConnection -> {
+              messages.send(ConnectionReEstablished())
+            }
+
             else -> {
               // Other cases have been handled above
             }
@@ -267,6 +277,12 @@ private constructor(
         is OperationComplete -> {
           false
         }
+
+        is ConnectionReEstablished -> {
+          // means we are in the process of restarting the connection
+          false
+        }
+
         is NetworkError -> {
           emit(it)
           false
@@ -309,7 +325,7 @@ private constructor(
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream
-        is OperationComplete, is GeneralError -> error("Unexpected event $response")
+        is ConnectionReEstablished, is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
     }.filterNot {
       deferredJsonMerger.isEmptyPayload
