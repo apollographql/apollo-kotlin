@@ -6,7 +6,7 @@ import org.gradle.api.provider.Property
 /**
  * The entry point for configuring the apollo plugin.
  */
-interface ApolloExtension : Service {
+interface ApolloExtension {
 
   /**
    * Registers a new [Service]

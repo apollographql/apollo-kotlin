@@ -21,6 +21,10 @@ const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 const val ADD_TYPENAME_ALWAYS = "always"
 
+const val MANIFEST_OPERATION_OUTPUT = "operationOutput"
+const val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
+const val MANIFEST_NONE = "none"
+
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,

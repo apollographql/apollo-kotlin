@@ -23,7 +23,8 @@ typealias OperationOutput = Map<String, OperationDescriptor>
 @Serializable
 class OperationDescriptor(
     val name: String,
-    val source: String
+    val source: String,
+    val type: String
 )
 
 fun OperationOutput.findOperationId(name: String): String {

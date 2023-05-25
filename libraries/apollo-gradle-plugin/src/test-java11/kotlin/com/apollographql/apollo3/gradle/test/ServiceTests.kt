@@ -254,7 +254,7 @@ class ServiceTests {
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "292319c237e71c9dfec7a7d7f993e9c91bd81361a786f251840e105f4b6c9145"
-      val operationOutput = File(dir, "build/generated/operationOutput/apollo/service/operationOutput.json")
+      val operationOutput = File(dir, "build/generated/manifest/apollo/service/operationOutput.json")
       Truth.assertThat(operationOutput.readText()).contains(expectedOperationId)
 
       val queryJavaFile = dir.generatedChild("service/com/example/DroidDetailsQuery.kt")

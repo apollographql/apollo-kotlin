@@ -180,6 +180,9 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field ADD_TYPENAME_IF_ABSTRACT Ljava/lang/String;
 	public static final field ADD_TYPENAME_IF_FRAGMENTS Ljava/lang/String;
 	public static final field ADD_TYPENAME_IF_POLYMORPHIC Ljava/lang/String;
+	public static final field MANIFEST_NONE Ljava/lang/String;
+	public static final field MANIFEST_OPERATION_OUTPUT Ljava/lang/String;
+	public static final field MANIFEST_PERSISTED_QUERY Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED_WITH_INTERFACES Ljava/lang/String;
 	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
@@ -416,10 +419,11 @@ public final class com/apollographql/apollo3/compiler/ir/IrSchemaBuilder {
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/operationoutput/OperationDescriptor$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun getSource ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/operationoutput/OperationDescriptor;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -442,5 +446,61 @@ public final class com/apollographql/apollo3/compiler/operationoutput/OperationO
 	public static final fun findOperationId (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
 	public static final fun toOperationOutput (Ljava/io/File;)Ljava/util/Map;
 	public static final fun writeTo (Ljava/util/Map;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest$Companion;
+	public synthetic fun <init> (ILjava/lang/String;ILjava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;ILjava/util/List;)V
+	public final fun getFormat ()Ljava/lang/String;
+	public final fun getOperations ()Ljava/util/List;
+	public final fun getVersion ()I
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifestKt {
+	public static final fun toPersistedQueryManifest (Ljava/util/Map;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
+	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PqmOperation {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/pqm/PqmOperation$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getBody ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/pqm/PqmOperation;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PqmOperation$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/pqm/PqmOperation$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/pqm/PqmOperation;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/pqm/PqmOperation;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PqmOperation$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

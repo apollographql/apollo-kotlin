@@ -69,6 +69,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
               }
 
               "upload" -> {
+                operationManifestFormat.set("persistedQueryManifest")
                 mapScalar("Upload", "com.apollographql.apollo3.api.Upload")
               }
 
@@ -177,4 +178,18 @@ configurations.named("javaCodegenSourcesElements").configure {
   attributes {
     attribute(myAttribute, "java")
   }
+}
+
+val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
+  dependsOn("generateApolloSources")
+  doLast {
+    check(
+        file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText() == file("testFixtures/manifest.json").readText()
+    ) {
+      "Persisted Query Manifest has changed"
+    }
+  }
+}
+tasks.named("jvmTest").configure {
+  dependsOn(checkPersistedQueryManifest)
 }

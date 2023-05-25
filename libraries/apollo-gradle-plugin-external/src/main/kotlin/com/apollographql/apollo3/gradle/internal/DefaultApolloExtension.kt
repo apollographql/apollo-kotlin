@@ -388,7 +388,7 @@ abstract class DefaultApolloExtension(
 
       operationOutputConnection = Service.OperationOutputConnection(
           task = codegenTaskProvider,
-          operationOutputFile = codegenTaskProvider.flatMap { it.operationOutputFile }
+          operationOutputFile = codegenTaskProvider.flatMap { it.operationManifestFile }
       )
 
       directoryConnection = DefaultDirectoryConnection(
@@ -429,7 +429,7 @@ abstract class DefaultApolloExtension(
 
       operationOutputConnection = Service.OperationOutputConnection(
           task = codegenTaskProvider,
-          operationOutputFile = codegenTaskProvider.flatMap { it.operationOutputFile }
+          operationOutputFile = codegenTaskProvider.flatMap { it.operationManifestFile }
       )
 
       directoryConnection = DefaultDirectoryConnection(
@@ -443,8 +443,19 @@ abstract class DefaultApolloExtension(
       checkKotlinPluginVersion(project)
     }
 
+    check(service.operationOutputAction == null || service.operationManifestAction == null) {
+      "Apollo: it is an error to set both operationOutputAction and operationManifestAction. Remove operationOutputAction"
+    }
     if (service.operationOutputAction != null) {
       service.operationOutputAction!!.execute(operationOutputConnection)
+    }
+    if (service.operationManifestAction != null) {
+      service.operationManifestAction!!.execute(
+          Service.OperationManifestConnection(
+              operationOutputConnection.task,
+              operationOutputConnection.operationOutputFile
+          )
+      )
     }
     maybeRegisterRegisterOperationsTasks(project, service, operationOutputConnection)
 
@@ -622,10 +633,8 @@ abstract class DefaultApolloExtension(
     task.useSemanticNaming.set(service.useSemanticNaming)
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
 
-    if (service.generateOperationOutput.getOrElse(false)) {
-      task.operationOutputFile.set(service.operationOutputFile.orElse(BuildDirLayout.operationOutput(project, service)))
-    }
-    service.generateOperationOutput.disallowChanges()
+    task.operationManifestFile.set(service.operationManifestFile())
+    task.operationManifestFormat.set(service.operationManifestFormat())
 
     task.packageNameGenerator = service.packageNameGenerator()
     service.packageNameGenerator.disallowChanges()
