@@ -49,6 +49,7 @@ com.apollographql.apollo3.compiler.hooks
 com.apollographql.apollo3.compiler.hooks.internal
 com.apollographql.apollo3.compiler.ir
 com.apollographql.apollo3.compiler.operationoutput
+com.apollographql.apollo3.compiler.pqm
 module:apollo-gradle-plugin-external
 com.apollographql.apollo3.gradle.api
 com.apollographql.apollo3.gradle.internal
