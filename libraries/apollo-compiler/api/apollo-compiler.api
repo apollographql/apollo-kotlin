@@ -195,6 +195,9 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field ADD_TYPENAME_IF_ABSTRACT Ljava/lang/String;
 	public static final field ADD_TYPENAME_IF_FRAGMENTS Ljava/lang/String;
 	public static final field ADD_TYPENAME_IF_POLYMORPHIC Ljava/lang/String;
+	public static final field MANIFEST_NONE Ljava/lang/String;
+	public static final field MANIFEST_OPERATION_OUTPUT Ljava/lang/String;
+	public static final field MANIFEST_PERSISTED_QUERY Ljava/lang/String;
 	public static final field MODELS_COMPAT Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED_WITH_INTERFACES Ljava/lang/String;
@@ -911,9 +914,10 @@ public final class com/apollographql/apollo3/compiler/introspection/Schema_to_in
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun getSource ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptorJsonAdapter : com/squareup/moshi/JsonAdapter {
@@ -928,5 +932,42 @@ public final class com/apollographql/apollo3/compiler/operationoutput/OperationD
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationOutputKt {
 	public static final fun findOperationId (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
 	public static final fun toOperationOutput (Lokio/BufferedSource;)Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest {
+	public fun <init> (Ljava/lang/String;ILjava/util/List;)V
+	public final fun getFormat ()Ljava/lang/String;
+	public final fun getOperations ()Ljava/util/List;
+	public final fun getVersion ()I
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifestJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifestKt {
+	public static final fun toPersistedQueryManifest (Ljava/util/Map;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PqmOperation {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getBody ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/pqm/PqmOperationJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/pqm/PqmOperation;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/pqm/PqmOperation;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
 }
 

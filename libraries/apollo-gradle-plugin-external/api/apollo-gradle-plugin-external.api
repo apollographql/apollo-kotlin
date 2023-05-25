@@ -21,7 +21,7 @@ public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension {
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension : com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;
