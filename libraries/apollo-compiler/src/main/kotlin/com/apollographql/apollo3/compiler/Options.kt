@@ -31,6 +31,10 @@ const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 const val ADD_TYPENAME_ALWAYS = "always"
 
+const val MANIFEST_OPERATION_OUTPUT = "operationOutput"
+const val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
+const val MANIFEST_NONE = "none"
+
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
@@ -129,7 +133,8 @@ class Options(
      * OperationOutput represents the modified operations as they are sent to the server. This is useful for whitelisting/
      * persisted queries
      */
-    val operationOutputFile: File? = null,
+    val operationManifestFile: File? = null,
+    val operationManifestFormat: String = MANIFEST_NONE,
     /**
      * The package name used as a base for input objects, fragments, enums and types
      */
@@ -365,7 +370,8 @@ class Options(
       outputDir: File = this.outputDir,
       testDir: File = this.testDir,
       debugDir: File? = this.debugDir,
-      operationOutputFile: File? = this.operationOutputFile,
+      operationOutputFile: File? = this.operationManifestFile,
+      operationManifestFormat: String = this.operationManifestFormat,
       executableFiles: Set<File> = this.executableFiles,
       schemaPackageName: String = this.schemaPackageName,
       useSchemaPackageNameForFragments: Boolean = this.useSchemaPackageNameForFragments,
@@ -407,7 +413,8 @@ class Options(
       schema = schema,
       outputDir = outputDir,
       debugDir = debugDir,
-      operationOutputFile = operationOutputFile,
+      operationManifestFile = operationOutputFile,
+      operationManifestFormat = operationManifestFormat,
       schemaPackageName = schemaPackageName,
       useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
       packageNameGenerator = packageNameGenerator,

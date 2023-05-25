@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.MANIFEST_NONE
+import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
@@ -9,6 +12,8 @@ import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Provider
 import org.gradle.util.GradleVersion
 import java.io.File
 import javax.inject.Inject
@@ -91,7 +96,12 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var registerOperationsConfig: DefaultRegisterOperationsConfig? = null
 
   override fun registerOperations(configure: Action<in RegisterOperationsConfig>) {
-    generateOperationOutput.set(true)
+    val existing = operationManifestFormat.orNull
+    check(existing == null || existing == MANIFEST_OPERATION_OUTPUT) {
+      "Apollo: registerOperation {} requires $MANIFEST_OPERATION_OUTPUT (found $existing)"
+    }
+    operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
+    operationManifestFormat.finalizeValue()
 
     val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
 
@@ -105,9 +115,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null
+  var operationManifestAction: Action<in Service.OperationManifestConnection>? = null
 
   override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
     this.operationOutputAction = action
+  }
+
+  override fun operationManifestConnection(action: Action<in Service.OperationManifestConnection>) {
+    this.operationManifestAction = action
   }
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
@@ -193,4 +208,73 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo3.api.Adapters.AnyAdapter")
 
   override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo3.api.Upload", "com.apollographql.apollo3.api.UploadAdapter")
+
+  /**
+   * Resolves the operation manifest and formats.
+   */
+  @Suppress("DEPRECATION")
+  private fun resolveOperationManifest(): Pair<String, File> {
+    generateOperationOutput.disallowChanges()
+    operationOutputFile.disallowChanges()
+    operationManifest.disallowChanges()
+    operationManifestFormat.disallowChanges()
+
+    var format = operationManifestFormat.orNull
+    if (format == null) {
+      if (generateOperationOutput.orElse(false).get()) {
+        format = MANIFEST_OPERATION_OUTPUT
+      }
+    } else {
+      when (format) {
+        MANIFEST_NONE,
+        MANIFEST_OPERATION_OUTPUT,
+        MANIFEST_PERSISTED_QUERY,
+        -> Unit
+
+        else -> {
+          error("Apollo: unknown operation manifest format: $format")
+        }
+      }
+      check(!generateOperationOutput.isPresent) {
+        "Apollo: it is an error to set both `generateOperationOutput` and `operationManifestFormat`. Remove `generateOperationOutput`"
+      }
+    }
+    var userFile = operationManifest.orNull?.asFile
+    if (userFile == null) {
+      userFile = operationOutputFile.orNull?.asFile
+    } else {
+      check(!operationOutputFile.isPresent) {
+        "Apollo: it is an error to set both `operationManifest` and `operationOutputFile`. Remove `operationOutputFile`"
+      }
+    }
+
+    if (userFile != null) {
+      if (format == null) {
+        format = MANIFEST_OPERATION_OUTPUT
+      }
+    } else {
+      userFile = BuildDirLayout.operationManifest(project, this, format ?: MANIFEST_OPERATION_OUTPUT)
+    }
+
+    if (format == null) {
+      format = MANIFEST_NONE
+    }
+    return format to userFile
+  }
+
+  fun operationManifestFile(): RegularFileProperty {
+    return project.provider {
+      resolveOperationManifest().second
+    }.let { fileProvider ->
+      project.objects.fileProperty().value {
+        fileProvider.get()
+      }
+    }
+  }
+
+  fun operationManifestFormat(): Provider<String> {
+    return project.provider {
+      resolveOperationManifest().first
+    }
+  }
 }

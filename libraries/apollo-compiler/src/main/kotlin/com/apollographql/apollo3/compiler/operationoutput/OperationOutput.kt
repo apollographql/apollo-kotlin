@@ -19,7 +19,8 @@ typealias OperationOutput = Map<String, OperationDescriptor>
 @JsonClass(generateAdapter = true)
 class OperationDescriptor(
     val name: String,
-    val source: String
+    val source: String,
+    val type: String
 )
 
 fun OperationOutput.findOperationId(name: String): String {
@@ -38,3 +39,4 @@ private fun operationOutputAdapter(): JsonAdapter<OperationOutput> {
   val type = Types.newParameterizedType(Map::class.java, String::class.java, OperationDescriptor::class.java)
   return MOSHI.adapter<OperationOutput>(type)
 }
+

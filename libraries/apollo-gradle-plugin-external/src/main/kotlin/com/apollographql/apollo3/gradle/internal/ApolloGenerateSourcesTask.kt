@@ -68,8 +68,10 @@ import javax.inject.Inject
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
-  @get:Optional
-  abstract val operationOutputFile: RegularFileProperty
+  abstract val operationManifestFile: RegularFileProperty
+
+  @get:Input
+  abstract val operationManifestFormat: Property<String>
 
   @get:OutputFile
   @get:Optional
@@ -368,7 +370,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         testDir = testDir.asFile.get(),
         debugDir = debugDir.asFile.orNull,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        operationOutputFile = operationOutputFile.asFile.orNull,
+        operationManifestFile = operationManifestFile.asFile.get(),
+        operationManifestFormat = operationManifestFormat.get(),
         operationOutputGenerator = operationOutputGenerator,
         useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),

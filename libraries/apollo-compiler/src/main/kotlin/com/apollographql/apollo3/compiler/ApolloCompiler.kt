@@ -19,6 +19,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.ir.IrBuilder
 import com.apollographql.apollo3.compiler.ir.dumpTo
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
 import okio.buffer
 import okio.source
 import java.io.File
@@ -172,7 +173,8 @@ object ApolloCompiler {
     val operationOutput = ir.operations.map {
       OperationDescriptor(
           name = it.name,
-          source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+          source = QueryDocumentMinifier.minify(it.sourceWithFragments),
+          type = it.operationType.name.lowercase()
       )
     }.let {
       options.operationOutputGenerator.generate(it)
@@ -184,8 +186,18 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    if (options.operationOutputFile != null) {
-      options.operationOutputFile.writeText(operationOutput.toJson("  "))
+    if (options.operationManifestFormat != MANIFEST_NONE) {
+      check(options.operationManifestFile != null) {
+        "Apollo: ${options.operationManifestFormat} requires a manifest file"
+      }
+    }
+    when (options.operationManifestFormat) {
+      MANIFEST_OPERATION_OUTPUT -> {
+        options.operationManifestFile!!.writeText(operationOutput.toJson("  "))
+      }
+      MANIFEST_PERSISTED_QUERY -> {
+        options.operationManifestFile!!.writeText(operationOutput.toPersistedQueryManifest().toJson("  "))
+      }
     }
 
     /**

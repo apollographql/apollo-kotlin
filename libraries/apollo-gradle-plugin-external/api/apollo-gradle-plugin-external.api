@@ -21,7 +21,7 @@ public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension : com/apollographql/apollo3/gradle/api/Service {
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension {
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;
@@ -95,6 +95,8 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getNullableFieldStyle ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationIdGenerator ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOperationManifest ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getOperationManifestFormat ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getOperationOutputGenerator ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
@@ -127,6 +129,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun mapScalarToKotlinLong (Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinString (Ljava/lang/String;)V
 	public abstract fun mapScalarToUpload (Ljava/lang/String;)V
+	public abstract fun operationManifestConnection (Lorg/gradle/api/Action;)V
 	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
 	public abstract fun outputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
@@ -152,6 +155,12 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service$Dir
 	public abstract fun connectToKotlinSourceSet (Ljava/lang/String;)V
 	public abstract fun getOutputDir ()Lorg/gradle/api/provider/Provider;
 	public abstract fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
+}
+
+public final class com/apollographql/apollo3/gradle/api/Service$OperationManifestConnection {
+	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
+	public final fun getManifest ()Lorg/gradle/api/provider/Provider;
+	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
 public final class com/apollographql/apollo3/gradle/api/Service$OperationOutputConnection {
