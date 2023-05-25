@@ -1,6 +1,30 @@
 Change Log
 ==========
 
+# Version 3.8.2
+
+_2023-05-25_
+
+A maintenance release with bugfixes, mostly around WebSockets and subscriptions as well as a LocalTime adapter and options to work with operation manifests.
+
+Huge thank YOU to @baconz, @AlexHartford, @Oleur for the love they put in WebSocket contributions as well as @Jephuff for their first contribution 💙 .
+
+## 👷‍ All changes
+
+* add `Service.operationManifestFormat` (#4981)
+* WebSockets: Fix fan out in websocket network transport (#4972)
+* Test: Throw inside flow in MapTestNetworkTransport (#4982)
+* Doc: Add Optional.Absent in documentation (#4979)
+* Doc: clarify that operationBased codegen is the recommendation (#4966)
+* AST: use existing as the base for copying enum values (#4943)
+* Cache: Fix deleting records in the SqlNormalizedCache with cascade-true (#4938)
+* Compiler: Fix deprecated input field usage false positive (#4935)
+* Doc: Clarify KDoc of `watch()` (#4914)
+* WebSockets: allow changing the serverUrl of WebSocketNetworkTransport (#4885)
+* WebSockets: accept connectionPayload lambda instead of static auth (#4855)
+* Add LocalTime adapter for Java and Kotlin (#4829)
+* Doc: Add a section about the operationBased codegen (3.x) (#4940)
+
 # Version 4.0.0-alpha.1
 
 _2023-05-16_
