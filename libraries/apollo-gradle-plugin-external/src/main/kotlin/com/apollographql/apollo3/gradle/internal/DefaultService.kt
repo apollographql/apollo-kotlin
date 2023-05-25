@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
@@ -140,6 +141,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var operationManifestAction: Action<in Service.OperationManifestConnection>? = null
 
   @Deprecated("Use operationManifestConnection", replaceWith = ReplaceWith("operationManifestConnection"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
     check(!registered) {
       "Apollo: operationOutputConnection {} cannot be configured outside of a service {} block"
