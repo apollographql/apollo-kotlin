@@ -502,6 +502,13 @@ interface Service {
   val outputDir: DirectoryProperty
 
   /**
+   * The directory where the test builders will be written.
+   * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
+   */
+  @Deprecated("test builders are not used anymore", level = DeprecationLevel.ERROR)
+  val testDir: DirectoryProperty
+  
+  /**
    * Whether to generate the operationOutput.json
    *
    * Defaults value: false
@@ -842,6 +849,7 @@ interface Service {
      * This provider carries task dependency information.
      */
     val outputDir: Provider<Directory>
+
 
     /**
      * The task that produces outputDir. Usually this is not needed as [outputDir] carries
