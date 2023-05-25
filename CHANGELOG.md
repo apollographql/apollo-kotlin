@@ -7,7 +7,7 @@ _2023-05-25_
 
 A maintenance release with bugfixes, mostly around WebSockets and subscriptions as well as a LocalTime adapter and options to work with operation manifests.
 
-Huge thank YOU to @baconz, @AlexHartford, @Oleur for the love they put in WebSocket contributions as well as @Jephuff for their first contribution 💙 .
+Huge THANK YOU to @baconz, @AlexHartford, @Oleur for the love they put in WebSocket contributions as well as @Jephuff for their first contribution 💙 .
 
 ## 👷‍ All changes
 
