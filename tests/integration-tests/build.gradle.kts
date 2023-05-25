@@ -74,6 +74,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 customScalarsMapping.set(mapOf(
                     "Upload" to "com.apollographql.apollo3.api.Upload"
                 ))
+                operationManifestFormat.set("persistedQueryManifest")
               }
 
               "normalizer" -> {
@@ -145,3 +146,17 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
 }
 configureApollo(true)
 configureApollo(false)
+
+val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
+  dependsOn("generateApolloSources")
+  doLast {
+    check(
+        file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText() == file("testFixtures/manifest.json").readText()
+    ) {
+      "Persisted Query Manifest has changed"
+    }
+  }
+}
+tasks.named("jvmTest").configure {
+  dependsOn(checkPersistedQueryManifest)
+}

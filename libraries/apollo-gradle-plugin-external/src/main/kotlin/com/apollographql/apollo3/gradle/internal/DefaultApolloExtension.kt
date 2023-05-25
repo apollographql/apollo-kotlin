@@ -402,12 +402,22 @@ abstract class DefaultApolloExtension(
       it.finalizedBy(checkApolloDuplicates)
     }
 
+    check(service.operationOutputAction == null || service.operationManifestAction == null) {
+      "Apollo: it is an error to set both operationOutputAction and operationManifestAction. Remove operationOutputAction"
+    }
     if (service.operationOutputAction != null) {
       val operationOutputConnection = Service.OperationOutputConnection(
           task = codegenTaskProvider,
-          operationOutputFile = codegenTaskProvider.flatMap { it.operationOutputFile }
+          operationOutputFile = codegenTaskProvider.flatMap { it.operationManifestFile }
       )
       service.operationOutputAction!!.execute(operationOutputConnection)
+    }
+    if (service.operationManifestAction != null) {
+      val operationManifestConnection = Service.OperationManifestConnection(
+          task = codegenTaskProvider,
+          manifest = codegenTaskProvider.flatMap { it.operationManifestFile }
+      )
+      service.operationManifestAction!!.execute(operationManifestConnection)
     }
 
     if (service.outputDirAction == null) {
@@ -542,7 +552,7 @@ abstract class DefaultApolloExtension(
         task.graph.set(registerOperationsConfig.graph)
         task.graphVariant.set(registerOperationsConfig.graphVariant)
         task.key.set(registerOperationsConfig.key)
-        task.operationOutput.set(codegenProvider.flatMap { it.operationOutputFile })
+        task.operationOutput.set(codegenProvider.flatMap { it.operationManifestFile })
       }
     }
   }
@@ -737,12 +747,9 @@ abstract class DefaultApolloExtension(
         set(service.debugDir)
         disallowChanges()
       }
-      if (service.generateOperationOutput.getOrElse(false)) {
-        task.operationOutputFile.apply {
-          set(service.operationOutputFile.orElse(BuildDirLayout.operationOutput(project, service)))
-          disallowChanges()
-        }
-      }
+      task.operationManifestFile.set(service.operationManifestFile())
+      task.operationManifestFormat.set(service.operationManifestFormat())
+
       if (shouldGenerateMetadata(service)) {
         task.metadataOutputFile.apply {
           set(BuildDirLayout.metadata(project, service))

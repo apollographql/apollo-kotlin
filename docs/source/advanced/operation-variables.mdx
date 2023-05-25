@@ -22,7 +22,10 @@ query GetTodos($first: Int, $offset: Int) {
 Apollo Kotlin generates the following Kotlin code for this query:
 
 ```kotlin
-class GetTodosQuery(val first: Optional<Int?>, val offset: Optional<Int?>)
+class GetTodosQuery(
+    val first: Optional<Int?> = Optional.Absent,
+    val offset: Optional<Int?> = Optional.Absent
+)
 ```
 
 You can then selectively provide or omit variable values like so:

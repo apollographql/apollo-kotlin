@@ -1,16 +1,22 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
+import java.io.File
 
 object BuildDirLayout {
-  internal fun operationOutput(project: Project, service: Service): Provider<RegularFile> {
+  internal fun operationManifest(project: Project, service: Service, format: String): File {
+    val dir = when (format) {
+      MANIFEST_OPERATION_OUTPUT -> "operationOutput"
+      else -> "manifest"
+    }
     return project.layout.buildDirectory.file(
-        "generated/operationOutput/apollo/${service.name}/operationOutput.json"
-    )
+        "generated/$dir/apollo/${service.name}/$format.json"
+    ).get().asFile
   }
 
   internal fun metadata(project: Project, service: Service): Provider<RegularFile> {

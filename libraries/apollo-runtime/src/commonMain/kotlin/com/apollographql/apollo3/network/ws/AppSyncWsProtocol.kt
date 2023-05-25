@@ -17,11 +17,19 @@ import kotlinx.coroutines.withTimeout
  * A [WsProtocol] for https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
  */
 class AppSyncWsProtocol(
-    private val authorization: Map<String, Any?>,
     private val connectionAcknowledgeTimeoutMs: Long,
+    private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
     webSocketConnection: WebSocketConnection,
     listener: Listener,
 ) : WsProtocol(webSocketConnection, listener) {
+  constructor(
+      authorization: Map<String, Any?>,
+      connectionAcknowledgeTimeoutMs: Long,
+      webSocketConnection: WebSocketConnection,
+      listener: Listener
+  ) : this(connectionAcknowledgeTimeoutMs, { authorization }, webSocketConnection, listener)
+    
+  private var authorization: Map<String, Any?>? = null
 
   override suspend fun connectionInit() {
     val message = mutableMapOf<String, Any?>(
@@ -29,6 +37,8 @@ class AppSyncWsProtocol(
     )
 
     sendMessageMapText(message)
+    
+    authorization = connectionPayload()
 
     withTimeout(connectionAcknowledgeTimeoutMs) {
       val map = receiveMessageMap()
@@ -86,7 +96,7 @@ class AppSyncWsProtocol(
   }
 
   /**
-   * @param authorization: a map containing the authorization information. For an example:
+   * @param connectionPayload: a function generating a map containing the authorization information. For an example:
    * ```
    *  mapOf(
    *     "host" to "example1234567890000.appsync-api.us-east-1.amazonaws.com",
@@ -96,9 +106,14 @@ class AppSyncWsProtocol(
    *
    */
   class Factory(
-      private val authorization: Map<String, Any?>,
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
+      private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
   ) : WsProtocol.Factory {
+    constructor(
+        authorization: Map<String, Any?>,
+        connectionAcknowledgeTimeoutMs: Long = 10_000,
+    ) : this(connectionAcknowledgeTimeoutMs, { authorization })
+        
     override val name: String
       get() = "graphql-ws"
 
@@ -108,7 +123,7 @@ class AppSyncWsProtocol(
         scope: CoroutineScope
     ): WsProtocol {
       return AppSyncWsProtocol(
-          authorization = authorization,
+          connectionPayload = connectionPayload,
           webSocketConnection = webSocketConnection,
           connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
           listener = listener

@@ -1,0 +1,22 @@
+type Query {
+  viewer: Viewer
+}
+
+type Viewer {
+  books(input: BookInput!): [Book]!
+}
+
+input BookInput {
+  authorId: String
+  deprecatedParameter: Int @deprecated(reason: "Not needed anymore")
+  plus: String
+  couple: String
+  of: String
+  other: String
+  filters: String
+}
+
+type Book {
+  id: ID!
+  name: String!
+}

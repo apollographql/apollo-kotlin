@@ -2,10 +2,12 @@ import com.apollographql.apollo3.adapter.DateAdapter
 import com.apollographql.apollo3.adapter.JavaInstantAdapter
 import com.apollographql.apollo3.adapter.JavaLocalDateAdapter
 import com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter
+import com.apollographql.apollo3.adapter.JavaLocalTimeAdapter
 import com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter
 import com.apollographql.apollo3.adapter.KotlinxInstantAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
@@ -84,6 +86,15 @@ class JavaTimeAdaptersTest {
   }
 
   @Test
+  fun localTime() {
+    val localTime = JavaLocalTimeAdapter.fromJson("14:35:20")
+    assertEquals(14, localTime.hour)
+    assertEquals(35, localTime.minute)
+    assertEquals(20, localTime.second)
+    assertEquals("14:35:20", JavaLocalTimeAdapter.toJson(localTime))
+  }
+
+  @Test
   fun kotlinxInstant() {
     var instant = KotlinxInstantAdapter.fromJson("2010-06-01T22:19:44.475Z")
     assertEquals(1275430784475, instant.toEpochMilliseconds())
@@ -107,6 +118,15 @@ class JavaTimeAdaptersTest {
     val localDate = KotlinxLocalDateAdapter.fromJson("2010-06-01")
     assertEquals(1275430784, localDate.atTime(22, 19, 44).toInstant(TimeZone.UTC).epochSeconds)
     assertEquals("2010-06-01", KotlinxLocalDateAdapter.toJson(localDate))
+  }
+
+  @Test
+  fun kotlinxLocalTime() {
+    val localTime = KotlinxLocalTimeAdapter.fromJson("14:35:20")
+    assertEquals(14, localTime.hour)
+    assertEquals(35, localTime.minute)
+    assertEquals(20, localTime.second)
+    assertEquals("14:35:20", KotlinxLocalTimeAdapter.toJson(localTime))
   }
 
 }
