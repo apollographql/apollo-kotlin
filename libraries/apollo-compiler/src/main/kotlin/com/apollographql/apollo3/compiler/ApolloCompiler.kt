@@ -430,7 +430,7 @@ object ApolloCompiler {
     val operationOutput = buildOperationOutput(
         ir = irOperations,
         operationOutputGenerator = operationOutputGenerator,
-        operationManifestFile = File("unused"),
+        operationManifestFile = null,
         operationManifestFormat = MANIFEST_NONE,
     )
 
