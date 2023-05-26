@@ -9,13 +9,13 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
- * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo element:
+ * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo element in Kotlin code:
  * - operation/fragment class
  * - model field
  * - enum class / value
  * - input class / field
  */
-class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
+class KotlinGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
     if (sourceElement == null) return null
     if (!sourceElement.project.apolloProjectService.isApolloKotlin3Project) return null
