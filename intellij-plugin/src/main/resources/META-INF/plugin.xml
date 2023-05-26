@@ -51,11 +51,12 @@
     <!-- Kotlin operation/fragment/field/enum/input 'go to declaration' handler -->
     <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.KotlinGotoDeclarationHandler" />
 
+    <!-- GraphQL operation/fragment/field/enum/input 'go to declaration' handler -->
+    <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler" />
+
     <!-- Kotlin operation/fragment/field/enum/input 'go to type declaration' handler -->
     <!-- Needs order="first" so the Kotlin handler doesn't take over -->
     <typeDeclarationProvider implementation="com.apollographql.ijplugin.navigation.KotlinTypeDeclarationProvider" order="first" />
-
-    <!--    <findUsagesHandlerFactory implementation="com.apollographql.ijplugin.navigation.GraphQLFindUsagesHandlerFactory" />-->
 
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
