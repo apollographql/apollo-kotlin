@@ -217,14 +217,18 @@ internal class IrOperationsBuilder(
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
               }
+
               is GQLInputObjectTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
               }
+
               else -> error("output type '${fieldType.name}' used in input position")
             }
           }
         }
+
+        else -> {}
       }
     }
 
