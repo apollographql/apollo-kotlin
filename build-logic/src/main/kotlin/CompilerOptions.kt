@@ -35,6 +35,7 @@ fun Project.configureJavaAndKotlinCompilers() {
   tasks.withType(KotlinNativeCompile::class.java).configureEach {
     kotlinOptions {
       this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.UnsafeNumber"
+      this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.ExperimentalForeignApi"
     }
   }
 
