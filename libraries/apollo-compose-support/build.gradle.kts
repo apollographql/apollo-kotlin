@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
@@ -29,13 +27,13 @@ android {
   }
 }
 
-// TODO: needed as long as we use a non supported version of Kotlin
-// See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-tasks.withType(KotlinCompile::class.java).configureEach {
-  kotlinOptions {
-    freeCompilerArgs += listOf(
-        "-P",
-        "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.20"
-    )
-  }
-}
+// Uncomment when using a non supported version of Kotlin
+//// See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+//tasks.withType(KotlinCompile::class.java).configureEach {
+//  kotlinOptions {
+//    freeCompilerArgs += listOf(
+//        "-P",
+//        "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.8.20"
+//    )
+//  }
+//}
