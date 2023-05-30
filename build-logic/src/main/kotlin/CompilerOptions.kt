@@ -27,6 +27,9 @@ fun Project.configureJavaAndKotlinCompilers() {
       apiVersion = "1.5"
       languageVersion = "1.5"
 
+      // languageVersion 1.5 is deprecated which produces a warning
+      freeCompilerArgs = freeCompilerArgs + "-Xsuppress-version-warnings"
+
       (this as? KotlinJvmOptions)?.let {
         it.jvmTarget = "1.8"
       }
