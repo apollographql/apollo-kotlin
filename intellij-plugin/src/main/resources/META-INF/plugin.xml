@@ -64,6 +64,12 @@
     <!-- Listens to availability of Tooling model, and notifies the GraphQL plugin -->
     <projectService serviceImplementation="com.apollographql.ijplugin.graphql.GraphQLConfigService" />
 
+    <!-- Icons -->
+    <!-- This may be a bit controversial, but we want to override the GraphQL plugin's icons (hence order="first") -->
+    <!-- because when navigating to GraphQL files from Kotlin code, a generic GraphQL logo is nicer than a specific -->
+    <!-- icon per element type -->
+    <iconProvider implementation="com.apollographql.ijplugin.icons.GraphQLIconProvider" order="first" />
+
   </extensions>
 
   <!-- Contribute configuration to the GraphQL plugin -->
