@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>NONE</title>
 <link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../../../styles/style.css" rel="Stylesheet">
 <link href="../../../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../../../images/apollo.svg">
 <link href="../../../../../styles/style.css" rel="Stylesheet">
 <link href="../../../../../styles/prism.css" rel="Stylesheet">
@@ -29,7 +38,7 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../../../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>3.8.2-SNAPSHOT
+    <div>4.0.0-alpha.2-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -44,48 +53,44 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-runtime::com.apollographql.apollo3.network.http/LoggingInterceptor.Level.NONE///PointingToDeclaration/{&quot;org.jetbrains.dokka.links.EnumEntryDRIExtra&quot;:{&quot;key&quot;:&quot;org.jetbrains.dokka.links.EnumEntryDRIExtra&quot;}}/-1314432391">
-  <div class="breadcrumbs"><a href="../../../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../../../index.html">com.apollographql.apollo3.network.http</a><span class="delimiter">/</span><a href="../../index.html">LoggingInterceptor</a><span class="delimiter">/</span><a href="../index.html">Level</a><span class="delimiter">/</span><a href="index.html">NONE</a></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-runtime::com.apollographql.apollo3.network.http/LoggingInterceptor.Level.NONE///PointingToDeclaration/{&quot;org.jetbrains.dokka.links.EnumEntryDRIExtra&quot;:{&quot;key&quot;:&quot;org.jetbrains.dokka.links.EnumEntryDRIExtra&quot;}}/-1314432391">
+  <div class="breadcrumbs"><a href="../../../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../../../index.html">com.apollographql.apollo3.network.http</a><span class="delimiter">/</span><a href="../../index.html">LoggingInterceptor</a><span class="delimiter">/</span><a href="../index.html">Level</a><span class="delimiter">/</span><span class="current">NONE</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>NONE</span></span></h1>
-    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="index.html">NONE</a></div><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">No logs.</p></div>    </div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="index.html">NONE</a></div></div><p class="paragraph">No logs.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-372974862%2FProperties%2F-1314432391" anchor-label="name" id="-372974862%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-372974862%2FProperties%2F-1314432391"><span><span>name</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-372974862%2FProperties%2F-1314432391" anchor-label="name" id="-372974862%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-372974862%2FProperties%2F-1314432391"><span><span>name</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-372974862%2FProperties%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><a data-name="-372974862%2FProperties%2F-1314432391" anchor-label="name" id="-372974862%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-372974862%2FProperties%2F-1314432391">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-372974862%2FProperties%2F-1314432391">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-739389684%2FProperties%2F-1314432391" anchor-label="ordinal" id="-739389684%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-739389684%2FProperties%2F-1314432391"><span><span>ordinal</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-739389684%2FProperties%2F-1314432391"><span><span>ordinal</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-739389684%2FProperties%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><a data-name="-739389684%2FProperties%2F-1314432391" anchor-label="ordinal" id="-739389684%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-739389684%2FProperties%2F-1314432391">ordinal</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../../com.apollographql.apollo3.network.ws/-ws-frame-type/-binary/index.html#-739389684%2FProperties%2F-1314432391">ordinal</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -99,6 +104,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
