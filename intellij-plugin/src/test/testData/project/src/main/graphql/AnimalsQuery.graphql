@@ -1,0 +1,12 @@
+query Animals {
+    animals {
+        id
+        name
+        ... on Cat {
+            meowVolume
+        }
+        ... on Dog {
+            barkVolume
+        }
+    }
+}

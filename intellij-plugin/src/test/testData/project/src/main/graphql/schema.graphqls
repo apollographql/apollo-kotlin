@@ -1,0 +1,36 @@
+type Query {
+  animals: [Animal!]!
+  computers: [Computer!]!
+}
+
+interface Animal {
+  id: ID!
+  name: String!
+}
+
+type Dog implements Animal {
+  id: ID!
+  name: String!
+  barkVolume: Int!
+}
+
+type Cat implements Animal {
+  id: ID!
+  name: String!
+  meowVolume: Int!
+}
+
+type Computer {
+  id: ID!
+  cpu: String!
+  year: Int!
+  screen: Screen!
+  releaseDate: Date
+}
+
+type Screen {
+  resolution: String!
+  isColor: Boolean!
+}
+
+scalar Date

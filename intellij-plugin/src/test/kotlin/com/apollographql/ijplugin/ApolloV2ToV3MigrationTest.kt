@@ -1,16 +1,7 @@
 package com.apollographql.ijplugin
 
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.ApolloV2ToV3MigrationProcessor
-import com.intellij.application.options.CodeStyle
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ContentEntry
-import com.intellij.openapi.roots.DependencyScope
-import com.intellij.openapi.roots.ModifiableRootModel
-import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.TestDataPath
-import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
-import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -18,8 +9,8 @@ import org.junit.runners.JUnit4
 
 @TestDataPath("\$CONTENT_ROOT/testData/migration/v2-to-v3")
 @RunWith(JUnit4::class)
-class ApolloV2ToV3MigrationTest : LightJavaCodeInsightFixtureTestCase() {
-  private val mavenLibraries = listOf(
+class ApolloV2ToV3MigrationTest : ApolloTestCase() {
+  override val mavenLibraries = listOf(
       "com.apollographql.apollo:apollo-runtime:2.5.14",
       "com.apollographql.apollo:apollo-coroutines-support:2.5.14",
       "com.apollographql.apollo:apollo-normalized-cache-jvm:2.5.14",
@@ -28,26 +19,6 @@ class ApolloV2ToV3MigrationTest : LightJavaCodeInsightFixtureTestCase() {
   )
 
   override fun getTestDataPath() = "src/test/testData/migration/v2-to-v3"
-
-  private val projectDescriptor = object : DefaultLightProjectDescriptor() {
-    override fun configureModule(module: Module, model: ModifiableRootModel, contentEntry: ContentEntry) {
-      for (library in mavenLibraries) {
-        addFromMaven(model, library, true, DependencyScope.COMPILE)
-      }
-    }
-  }
-
-  override fun getProjectDescriptor(): LightProjectDescriptor {
-    return projectDescriptor
-  }
-
-  override fun setUp() {
-    super.setUp()
-    // Set the indent size to 2 to match the fixtures (default is 4)
-    val codeStyleSettings = CodeStyle.getSettings(project)
-    val kotlinSettings = codeStyleSettings.getCommonSettings(KotlinLanguage.INSTANCE)
-    kotlinSettings.indentOptions!!.INDENT_SIZE = 2
-  }
 
   @Test
   fun testUpdatePackageName() = runMigration()

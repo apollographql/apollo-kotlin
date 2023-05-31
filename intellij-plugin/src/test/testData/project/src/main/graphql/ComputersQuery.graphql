@@ -1,0 +1,21 @@
+query Computers {
+  computers {
+    id
+    ... on Computer {
+      cpu
+      year
+    }
+
+
+    screen {
+      resolution
+      ...ScreenFields
+    }
+
+    ...ComputerFields
+  }
+}
+
+fragment ScreenFields on Screen {
+  isColor
+}
