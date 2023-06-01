@@ -6,6 +6,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.junit.Test
@@ -16,69 +17,69 @@ import org.junit.runners.JUnit4
 class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
   private val kotlinTypeDeclarationProvider = KotlinTypeDeclarationProvider()
 
-  @Test
-  fun goToOperationDefinition() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<KtProperty>("animalsQuery")!!
+  private fun testNavigation(
+      fromFile: String,
+      fromElement: () -> PsiElement?,
+      toFile: String,
+      toElement: () -> PsiElement?,
+  ) {
+    // Open the destination file
+    myFixture.configureFromTempProjectFile(toFile)
+    // Find the element to navigate to
+    val gqlDeclarationElementInGqlFile = toElement()!!
+
+    // Open the file
+    myFixture.configureFromTempProjectFile(fromFile)
+    // Find the element to navigate from
+    val ktElement = fromElement()!!
+
+    // Simulate navigation
     val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
+    // We want our target (gql), but also the original targets (Kotlin)
     assertTrue(foundGqlDeclarationElements.size > 1)
 
-    myFixture.configureFromTempProjectFile("src/main/graphql/AnimalsQuery.graphql")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypedOperationDefinition>("query Animals")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
+    // Make sure they're the same
+    assertEquals(foundGqlDeclarationElements.first(), gqlDeclarationElementInGqlFile)
   }
 
   @Test
-  fun goToFragmentDefinition() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<KtProperty>("computerFields")!!
-    val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/ComputerFields.graphql")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLFragmentDefinition>("fragment ComputerFields")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToOperationDefinition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<KtProperty>("animalsQuery") },
+      toFile = "src/main/graphql/AnimalsQuery.graphql",
+      toElement = { elementAt<GraphQLTypedOperationDefinition>("query Animals") }
+  )
 
   @Test
-  fun goToField() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<KtReferenceExpression>("fieldOnDogAndCat")!!
-    val resolved = ktElement.resolveKtName()!!
-    val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(resolved)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLIdentifier>("fieldOnDogAndCat", afterText = "type Dog implements Animal {")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToFragmentDefinition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<KtProperty>("computerFields") },
+      toFile = "src/main/graphql/ComputerFields.graphql",
+      toElement = { elementAt<GraphQLFragmentDefinition>("fragment ComputerFields") }
+  )
 
   @Test
-  fun goToEnumType() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<KtProperty>("val myEnum")!!
-    val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToField() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<KtReferenceExpression>("fieldOnDogAndCat")!!.resolveKtName() },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLIdentifier>("fieldOnDogAndCat", afterText = "type Dog implements Animal {") }
+  )
 
   @Test
-  fun goToInputType() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<KtProperty>("val personInput")!!
-    val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
+  fun goToEnumType() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<KtProperty>("val myEnum") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {") }
+  )
 
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput")!!
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  @Test
+  fun goToInputType() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<KtProperty>("val personInput") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput") }
+  )
 }
 

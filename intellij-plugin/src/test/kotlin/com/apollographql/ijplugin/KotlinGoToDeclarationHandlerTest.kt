@@ -16,95 +16,85 @@ import org.junit.runners.JUnit4
 class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
   private val kotlinGoToDeclarationHandler = KotlinGotoDeclarationHandler()
 
-  @Test
-  fun goToOperationDefinition() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("AnimalsQuery()")!!
+  private fun testNavigation(
+      fromFile: String,
+      fromElement: () -> PsiElement?,
+      toFile: String,
+      toElement: () -> PsiElement?,
+  ) {
+    // Open the destination file
+    myFixture.configureFromTempProjectFile(toFile)
+    // Find the element to navigate to
+    val gqlDeclarationElementInGqlFile = toElement()!!
+
+    // Open the source file
+    myFixture.configureFromTempProjectFile(fromFile)
+    // Find the element to navigate from
+    val ktElement = fromElement()!!
+
+    // Simulate navigation
     val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
+    // We want our target (gql), but also the original targets (Kotlin)
     assertTrue(foundGqlDeclarationElements.size > 1)
 
-    myFixture.configureFromTempProjectFile("src/main/graphql/AnimalsQuery.graphql")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypedOperationDefinition>("query Animals")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
+    // Make sure they're the same
+    assertEquals(foundGqlDeclarationElements.first(), gqlDeclarationElementInGqlFile)
   }
 
   @Test
-  fun goToFragmentDefinition() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("ComputerFields(")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/ComputerFields.graphql")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLFragmentDefinition>("fragment ComputerFields")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToOperationDefinition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("AnimalsQuery()") },
+      toFile = "src/main/graphql/AnimalsQuery.graphql",
+      toElement = { elementAt<GraphQLTypedOperationDefinition>("query Animals") }
+  )
 
   @Test
-  fun goToField() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("fieldOnDogAndCat")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/AnimalsQuery.graphql")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLField>("fieldOnDogAndCat", afterText = "... on Dog {")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToFragmentDefinition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("ComputerFields(") },
+      toFile = "src/main/graphql/ComputerFields.graphql",
+      toElement = { elementAt<GraphQLFragmentDefinition>("fragment ComputerFields") }
+  )
 
   @Test
-  fun goToEnumType() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("MyEnum", afterText = "Optional.present(MyEnum.VALUE_C)")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToField() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("fieldOnDogAndCat") },
+      toFile = "src/main/graphql/AnimalsQuery.graphql",
+      toElement = { elementAt<GraphQLField>("fieldOnDogAndCat", afterText = "... on Dog {") }
+  )
 
   @Test
-  fun goToEnumValue() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("VALUE_C")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLEnumValue>("VALUE_C")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToEnumType() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("MyEnum", afterText = "Optional.present(MyEnum.VALUE_C)") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {") }
+  )
 
   @Test
-  fun goToInputType() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("PersonInput")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
-
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput")!!
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
+  fun goToEnumValue() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("VALUE_C") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLEnumValue>("VALUE_C", afterText = "enum MyEnum {") }
+  )
 
   @Test
-  fun goToInputField() {
-    myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Main.kt")
-    val ktElement = elementAt<PsiElement>("lastName = ")!!
-    val foundGqlDeclarationElements = kotlinGoToDeclarationHandler.getGotoDeclarationTargets(ktElement, 0, editor)!!
-    assertTrue(foundGqlDeclarationElements.size > 1)
+  fun goToInputType() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("PersonInput") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput") }
+  )
 
-    myFixture.configureFromTempProjectFile("src/main/graphql/schema.graphqls")
-    val gqlDeclarationElementInGqlFile = elementAt<GraphQLInputValueDefinition>("lastName")!!
-
-    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
-  }
-
+  @Test
+  fun goToInputField() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("lastName = ") },
+      toFile = "src/main/graphql/schema.graphqls",
+      toElement = { elementAt<GraphQLInputValueDefinition>("lastName", afterText = "input PersonInput {") }
+  )
 }
 
