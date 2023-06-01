@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_VARIABLE", "unused")
+
 package com.example
 
 import com.apollographql.apollo3.ApolloClient
