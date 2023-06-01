@@ -21,7 +21,7 @@ dependencies {
 
 apollo {
   service("main") {
-    packageName.set("com.example")
+    packageName.set("com.example.generated")
   }
 }
 

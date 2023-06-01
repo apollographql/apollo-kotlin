@@ -44,5 +44,12 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     }
   }
 
-  protected inline fun <reified T : PsiElement> elementAt(text: String): T? = file.findElementAt(file.text.indexOf(text))?.getNonStrictParentOfType<T>()
+  protected inline fun <reified T : PsiElement> elementAt(text: String, afterText: String? = null): T? {
+    val index = if (afterText != null) {
+      file.text.indexOf(text, startIndex = file.text.indexOf(afterText)).takeIf { it != -1 } ?: throw NoSuchElementException("Couldn't find $text after $afterText")
+    } else {
+      file.text.indexOf(text).takeIf { it != -1 } ?: throw NoSuchElementException("Couldn't find $text")
+    }
+    return file.findElementAt(index)?.getNonStrictParentOfType<T>()
+  }
 }

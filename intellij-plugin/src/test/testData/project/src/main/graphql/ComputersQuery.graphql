@@ -1,21 +1,21 @@
 query Computers {
-  computers {
-    id
-    ... on Computer {
-      cpu
-      year
+    computers {
+        id
+        ... on Computer {
+            cpu
+            year
+        }
+
+
+        screen {
+            resolution
+            ...ScreenFields
+        }
+
+        ...ComputerFields
     }
-
-
-    screen {
-      resolution
-      ...ScreenFields
-    }
-
-    ...ComputerFields
-  }
 }
 
 fragment ScreenFields on Screen {
-  isColor
+    isColor
 }
