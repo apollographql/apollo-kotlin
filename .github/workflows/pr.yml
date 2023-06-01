@@ -125,6 +125,10 @@ jobs:
 
           ./gradlew :intellij-plugin:listProductsReleases # prepare list of IDEs for Plugin Verifier
 
+      # Trigger code generation in test project, as the plugin's tests depend on it
+      - name: Test project codegen
+        run: ./gradlew -p tests :intellij-plugin-test-project:generateApolloSources
+
       # Run tests
       - name: Run Tests
         run: ./gradlew :intellij-plugin:check

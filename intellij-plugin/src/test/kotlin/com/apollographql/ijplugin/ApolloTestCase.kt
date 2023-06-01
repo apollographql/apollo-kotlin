@@ -13,7 +13,7 @@ import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 
-@TestDataPath("\$CONTENT_ROOT/testData/project")
+@TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
   open val mavenLibraries: List<String> = listOf(
       "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
@@ -30,7 +30,7 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     }
   }
 
-  override fun getTestDataPath() = "src/test/testData/project"
+  override fun getTestDataPath() = "../tests/intellij-plugin-test-project"
 
   override fun getProjectDescriptor(): LightProjectDescriptor {
     return projectDescriptor
@@ -44,7 +44,7 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     kotlinSettings.indentOptions!!.INDENT_SIZE = 2
 
     // Copy the 'project' test project to the virtual project dir
-    if (testDataPath == "src/test/testData/project") {
+    if (testDataPath == "../tests/intellij-plugin-test-project") {
       myFixture.copyDirectoryToProject("", "")
     }
   }
