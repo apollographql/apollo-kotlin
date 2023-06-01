@@ -8,23 +8,12 @@ import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.PsiTreeUtil.getNonStrictParentOfType
-import junit.framework.TestCase
-import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
-  override val mavenLibraries = listOf(
-      "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-api-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-mpp-utils-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-runtime-jvm:4.0.0-alpha.1",
-  )
-
   private val kotlinGoToDeclarationHandler = KotlinGotoDeclarationHandler()
 
   @Test
@@ -37,7 +26,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
     myFixture.configureFromTempProjectFile("src/main/graphql/AnimalsQuery.graphql")
     val gqlDeclarationElementInGqlFile = elementAt<GraphQLTypedOperationDefinition>("query Animals")!!
 
-    assert(foundGqlDeclarationElements.first() == gqlDeclarationElementInGqlFile)
+    assertEquals(gqlDeclarationElementInGqlFile, foundGqlDeclarationElements.first())
   }
 
   @Test

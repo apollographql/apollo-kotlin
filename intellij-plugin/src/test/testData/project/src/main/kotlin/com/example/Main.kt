@@ -11,28 +11,30 @@ import com.example.generated.type.PersonInput
 
 suspend fun main() {
   val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://example.com")
-    .build()
+      .serverUrl("https://example.com")
+      .build()
 
-  val response = apolloClient.query(AnimalsQuery()).execute()
+  val animalsQuery = AnimalsQuery()
+  val response = apolloClient.query(animalsQuery).execute()
   println(response.data!!.animals[0].name)
   println(response.data!!.animals[0].onDog?.fieldOnDogAndCat)
 
   val computerFields = ComputerFields(
-    cpu = "386",
-    screen = ComputerFields.Screen(resolution = "640x480"),
-    releaseDate = "1992",
+      cpu = "386",
+      screen = ComputerFields.Screen(resolution = "640x480"),
+      releaseDate = "1992",
   )
 
   val myEnum = apolloClient.query(MyEnumQuery(Optional.present(MyEnum.VALUE_C))).execute().data!!.myEnum
 
+  val personInput = PersonInput(
+      lastName = Optional.Present("Smith")
+  )
   val response2 = apolloClient.mutation(
-    CreatePersonMutation(
-      Optional.present(
-        PersonInput(
-          lastName = Optional.Present("Smith")
-        )
+      CreatePersonMutation(
+          Optional.present(
+              personInput
+          )
       )
-    )
   ).execute()
 }

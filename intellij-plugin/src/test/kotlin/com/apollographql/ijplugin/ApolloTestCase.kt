@@ -15,7 +15,12 @@ import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 
 @TestDataPath("\$CONTENT_ROOT/testData/project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
-  abstract val mavenLibraries: List<String>
+  open val mavenLibraries: List<String> = listOf(
+      "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo3:apollo-api-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo3:apollo-mpp-utils-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo3:apollo-runtime-jvm:4.0.0-alpha.1",
+  )
 
   private val projectDescriptor = object : DefaultLightProjectDescriptor() {
     override fun configureModule(module: Module, model: ModifiableRootModel, contentEntry: ContentEntry) {
@@ -46,7 +51,8 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
 
   protected inline fun <reified T : PsiElement> elementAt(text: String, afterText: String? = null): T? {
     val index = if (afterText != null) {
-      file.text.indexOf(text, startIndex = file.text.indexOf(afterText)).takeIf { it != -1 } ?: throw NoSuchElementException("Couldn't find $text after $afterText")
+      file.text.indexOf(text, startIndex = file.text.indexOf(afterText)).takeIf { it != -1 }
+          ?: throw NoSuchElementException("Couldn't find $text after $afterText")
     } else {
       file.text.indexOf(text).takeIf { it != -1 } ?: throw NoSuchElementException("Couldn't find $text")
     }
