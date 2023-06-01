@@ -58,4 +58,9 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     }
     return file.findElementAt(index)?.getNonStrictParentOfType<T>()
   }
+
+  protected inline fun <reified T> PsiElement.assertTypeAndText(prefix: String) {
+    assertInstanceOf(this, T::class.java)
+    assertTrue(text.startsWith(prefix))
+  }
 }
