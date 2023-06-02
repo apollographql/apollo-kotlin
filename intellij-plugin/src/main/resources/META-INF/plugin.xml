@@ -58,6 +58,9 @@
     <!-- Needs order="first" so the Kotlin handler doesn't take over -->
     <typeDeclarationProvider implementation="com.apollographql.ijplugin.navigation.KotlinTypeDeclarationProvider" order="first" />
 
+    <!-- GraphQL 'find usages' -->
+    <customUsageSearcher implementation="com.apollographql.ijplugin.navigation.GraphQLCustomUsageSearcher" />
+
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 

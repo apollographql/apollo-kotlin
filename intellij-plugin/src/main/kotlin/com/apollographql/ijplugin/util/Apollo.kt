@@ -2,9 +2,11 @@ package com.apollographql.ijplugin.util
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.rootManager
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 
 fun Project.isApolloAndroid2Project(): Boolean = dependsOn("com.apollographql.apollo")
@@ -26,4 +28,8 @@ private fun Project.dependsOn(groupId: String): Boolean {
 
 fun Module.apolloGeneratedSourcesRoots(): List<VirtualFile> {
   return this.rootManager.contentRoots.filter { it.path.contains("generated/source/apollo") }
+}
+
+fun VirtualFile.isApolloGenerated(project: Project): Boolean {
+  return ModuleManager.getInstance(project).modules.flatMap { it.apolloGeneratedSourcesRoots() }.any { VfsUtilCore.isAncestor(it, this, true) }
 }
