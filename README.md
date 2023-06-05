@@ -81,7 +81,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "3.8.1"
+  id("com.apollographql.apollo3") version "3.8.2"
 }
 ```
 
@@ -163,7 +163,7 @@ Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollo
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "3.8.1"
+  id("com.apollographql.apollo3") version "3.8.2"
 }
 
 repositories {
