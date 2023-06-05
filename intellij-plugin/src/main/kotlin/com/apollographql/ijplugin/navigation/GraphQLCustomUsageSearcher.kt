@@ -32,11 +32,12 @@ import org.jetbrains.kotlin.idea.findUsages.KotlinFindUsagesHandlerFactory
 class GraphQLCustomUsageSearcher : CustomUsageSearcher() {
   override fun processElementUsages(element: PsiElement, processor: Processor<in Usage>, options: FindUsagesOptions) {
     if (element !is GraphQLElement) return
-    if (!element.project.apolloProjectService.isApolloKotlin3Project) return
 
-    var isProperty = false
-    val kotlinDefinitions = runReadAction {
-      when (val parent = element.parent) {
+    runReadAction {
+      if (!element.project.apolloProjectService.isApolloKotlin3Project) return@runReadAction
+
+      var isProperty = false
+      val kotlinDefinitions = when (val parent = element.parent) {
         is GraphQLTypedOperationDefinition -> {
           findKotlinOperationDefinitions(parent)
         }
@@ -63,15 +64,16 @@ class GraphQLCustomUsageSearcher : CustomUsageSearcher() {
         }
 
         else -> emptyList()
-      }
-    }.ifEmpty { return@processElementUsages }
-    val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactory(element.project)
-    val ignoreGeneratedFilesProcessor = IgnoreGeneratedFilesProcessor(processor)
-    for (kotlinDefinition in kotlinDefinitions) {
-      if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
-        val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
-        val findUsageOptions = if (isProperty) kotlinFindUsagesHandlerFactory.findPropertyOptions else kotlinFindUsagesHandlerFactory.findClassOptions
-        kotlinFindUsagesHandler.processElementUsages(kotlinDefinition, ignoreGeneratedFilesProcessor, findUsageOptions)
+
+      }.ifEmpty { return@runReadAction }
+      val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactory(element.project)
+      val ignoreGeneratedFilesProcessor = IgnoreGeneratedFilesProcessor(processor)
+      for (kotlinDefinition in kotlinDefinitions) {
+        if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
+          val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
+          val findUsageOptions = if (isProperty) kotlinFindUsagesHandlerFactory.findPropertyOptions else kotlinFindUsagesHandlerFactory.findClassOptions
+          kotlinFindUsagesHandler.processElementUsages(kotlinDefinition, ignoreGeneratedFilesProcessor, findUsageOptions)
+        }
       }
     }
   }
