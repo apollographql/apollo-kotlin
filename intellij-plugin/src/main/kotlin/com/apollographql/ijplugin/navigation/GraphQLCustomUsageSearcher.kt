@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.navigation.compat.KotlinFindUsagesHandlerFactoryCompat
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.isGenerated
 import com.intellij.find.findUsages.CustomUsageSearcher
@@ -18,7 +19,6 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usages.Usage
 import com.intellij.usages.UsageInfo2UsageAdapter
 import com.intellij.util.Processor
-import org.jetbrains.kotlin.idea.findUsages.KotlinFindUsagesHandlerFactory
 
 /**
  * Allows to find usages of the corresponding Kotlin generated code when invoking 'Find Usages' on GraphQL elements:
@@ -66,12 +66,17 @@ class GraphQLCustomUsageSearcher : CustomUsageSearcher() {
         else -> emptyList()
 
       }.ifEmpty { return@runReadAction }
-      val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactory(element.project)
+      val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(element.project)
       val ignoreGeneratedFilesProcessor = IgnoreGeneratedFilesProcessor(processor)
       for (kotlinDefinition in kotlinDefinitions) {
         if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
           val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
-          val findUsageOptions = if (isProperty) kotlinFindUsagesHandlerFactory.findPropertyOptions else kotlinFindUsagesHandlerFactory.findClassOptions
+              ?: return@runReadAction
+          val findUsageOptions = if (isProperty) {
+            kotlinFindUsagesHandlerFactory.findPropertyOptions
+          } else {
+            kotlinFindUsagesHandlerFactory.findClassOptions
+          } ?: return@runReadAction
           kotlinFindUsagesHandler.processElementUsages(kotlinDefinition, ignoreGeneratedFilesProcessor, findUsageOptions)
         }
       }
