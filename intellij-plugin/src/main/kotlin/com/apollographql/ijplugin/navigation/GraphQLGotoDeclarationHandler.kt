@@ -7,6 +7,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
@@ -33,6 +34,10 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       }
 
       is GraphQLFragmentDefinition -> {
+        findKotlinFragmentClassDefinitions(gqlElement)
+      }
+
+      is GraphQLFragmentSpread -> {
         findKotlinFragmentClassDefinitions(gqlElement)
       }
 

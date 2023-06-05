@@ -6,6 +6,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
@@ -57,6 +58,11 @@ fun findKotlinFieldDefinitions(graphQLField: GraphQLField): List<PsiElement> {
         psiClass.findChildrenOfType<KtParameter> { it.name == graphQLField.name }
       }
       ?: emptyList()
+}
+
+fun findKotlinFragmentClassDefinitions(fragmentSpread: GraphQLFragmentSpread): List<KtClass> {
+  val fragmentName = fragmentSpread.nameIdentifier.referenceName ?: return emptyList()
+  return findKotlinClass(fragmentSpread.project, fragmentName) { it.isApolloFragment() }
 }
 
 fun findKotlinFragmentClassDefinitions(fragmentDefinition: GraphQLFragmentDefinition): List<KtClass> {
