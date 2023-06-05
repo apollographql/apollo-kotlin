@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.apollographql.ijplugin.util.resolveKtName
@@ -23,7 +24,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.descendantsOfType
-import com.intellij.util.castSafelyTo
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.idea.base.utils.fqname.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
@@ -50,8 +50,8 @@ private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo3.api.EnumType")
 
 fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
   val resolvedElement = resolveKtName()
-  return (resolvedElement.castSafelyTo<KtClass>()
-      ?: resolvedElement.castSafelyTo<KtConstructor<*>>()?.containingClass())
+  return (resolvedElement.cast<KtClass>()
+      ?: resolvedElement.cast<KtConstructor<*>>()?.containingClass())
       ?.isApolloOperationOrFragment() == true
 }
 
@@ -114,8 +114,8 @@ fun KtNameReferenceExpression.isApolloEnumValueReference(): Boolean {
 
 fun KtNameReferenceExpression.isApolloInputClassReference(): Boolean {
   val resolvedElement = resolveKtName()
-  return (resolvedElement.castSafelyTo<KtClass>()
-      ?: resolvedElement.castSafelyTo<KtConstructor<*>>()?.containingClass())
+  return (resolvedElement.cast<KtClass>()
+      ?: resolvedElement.cast<KtConstructor<*>>()?.containingClass())
       ?.isApolloInputClass() == true
 }
 

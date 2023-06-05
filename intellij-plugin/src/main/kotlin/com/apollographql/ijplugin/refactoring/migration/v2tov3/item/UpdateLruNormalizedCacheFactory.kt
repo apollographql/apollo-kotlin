@@ -3,12 +3,12 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
+import com.apollographql.ijplugin.util.cast
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
-import com.intellij.util.castSafelyTo
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
@@ -43,7 +43,7 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
             val maxSizeBytesCall =
                 argumentExpression.findDescendantOfType<KtNameReferenceExpression> { it.getReferencedName() == "maxSizeBytes" }
             if (maxSizeBytesCall != null) {
-              maxSizeBytesValue = maxSizeBytesCall.parent.castSafelyTo<KtCallExpression>()?.valueArguments?.firstOrNull()?.text
+              maxSizeBytesValue = maxSizeBytesCall.parent.cast<KtCallExpression>()?.valueArguments?.firstOrNull()?.text
             }
 
             var expireAfterWriteTimeValue: String? = null
@@ -51,7 +51,7 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
             val expireAfterWriteCall =
                 argumentExpression.findDescendantOfType<KtNameReferenceExpression> { it.getReferencedName() == "expireAfterWrite" }
             if (expireAfterWriteCall != null) {
-              val arguments = expireAfterWriteCall.parent.castSafelyTo<KtCallExpression>()?.valueArguments
+              val arguments = expireAfterWriteCall.parent.cast<KtCallExpression>()?.valueArguments
               expireAfterWriteTimeValue = arguments?.firstOrNull()?.text
               expireAfterWriteUnitValue = arguments?.getOrNull(1)?.text
             }
