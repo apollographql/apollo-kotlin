@@ -225,7 +225,7 @@ internal class KotlinResolver(
 
       type is IrEnumType -> {
         if (jsExport) {
-          nonNullableScalarAdapterInitializer(IrScalarType("String"))
+          nonNullableScalarAdapterInitializer(IrScalarType("String"), "${Identifier.context}.$customScalarAdapters")
         } else {
           CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
         }
