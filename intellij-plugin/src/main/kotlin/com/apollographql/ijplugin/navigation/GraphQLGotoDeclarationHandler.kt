@@ -1,65 +1,78 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.project.apolloProjectService
-import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler
+import com.intellij.lang.jsgraphql.psi.GraphQLElement
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
+import com.intellij.lang.jsgraphql.psi.GraphQLField
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
+import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 /**
- * Allows to navigate to the corresponding GraphQL definition when middle-clicking/cmd-clicking/cmd-b on an Apollo element:
- * - operation/fragment class
- * - model field
- * - enum class / value
- * - input class / field
+ * Allows to navigate to the corresponding Kotlin generated code when middle-clicking/cmd-clicking/cmd-b on GraphQL elements:
+ * - operation
+ * - fragment
+ * - field
+ * - enum type/value
+ * - input type/field
  */
 class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
-    if (sourceElement == null) return null
-    if (!sourceElement.project.apolloProjectService.isApolloKotlin3Project) return null
+    val gqlElement = sourceElement?.parent?.parent as? GraphQLElement ?: return null
+    if (!gqlElement.project.apolloProjectService.isApolloKotlin3Project) return null
 
-    val nameReferenceExpression = sourceElement.parent as? KtNameReferenceExpression ?: return null
-    val psiLeaf = PsiTreeUtil.getDeepestFirst(sourceElement)
-
-    val graphQLDefinitions = when {
-      nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
-        findOperationOrFragmentGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+    val kotlinDefinitions = when (gqlElement) {
+      is GraphQLTypedOperationDefinition -> {
+        findKotlinOperationDefinitions(gqlElement)
       }
 
-      nameReferenceExpression.isApolloModelFieldReference() -> {
-        findGraphQLElements(nameReferenceExpression)
+      is GraphQLFragmentDefinition -> {
+        findKotlinFragmentClassDefinitions(gqlElement)
       }
 
-      nameReferenceExpression.isApolloEnumClassReference() -> {
-        findEnumTypeGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+      is GraphQLFragmentSpread -> {
+        findKotlinFragmentClassDefinitions(gqlElement)
       }
 
-      nameReferenceExpression.isApolloEnumValueReference() -> {
-        findEnumValueGraphQLDefinitions(nameReferenceExpression)
+      is GraphQLField -> {
+        findKotlinFieldDefinitions(gqlElement)
       }
 
-      nameReferenceExpression.isApolloInputClassReference() -> {
-        findInputTypeGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+      is GraphQLTypeNameDefinition -> {
+        when (val parent = gqlElement.parent) {
+          is GraphQLEnumTypeDefinition -> findKotlinEnumClassDefinitions(parent)
+          is GraphQLInputObjectTypeDefinition -> findKotlinInputClassDefinitions(parent)
+          else -> return null
+        }
       }
 
-      nameReferenceExpression.isApolloInputFieldReference() -> {
-        findInputFieldGraphQLDefinitions(nameReferenceExpression)
+      is GraphQLEnumValue -> {
+        findKotlinEnumValueDefinitions(gqlElement)
+      }
+
+      is GraphQLInputValueDefinition -> {
+        findKotlinInputFieldDefinitions(gqlElement)
       }
 
       else -> return null
     }
 
     return buildList {
-      // Add GraphQL definition(s)
-      addAll(graphQLDefinitions)
-
       // Add the original referred to element
-      val resolvedElement = nameReferenceExpression.resolveKtName()
+      val resolvedElement = sourceElement.parent?.reference?.resolve()
       if (resolvedElement != null) {
         add(resolvedElement)
       }
+
+      // Add Kotlin definition(s)
+      addAll(kotlinDefinitions)
     }.toTypedArray()
   }
 }

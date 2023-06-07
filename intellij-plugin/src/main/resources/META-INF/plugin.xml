@@ -42,18 +42,21 @@
         nonDefaultProject="true"
     />
 
-    <!-- Operation/fragment marker provider -->
+    <!-- Kotlin operation/fragment marker provider -->
     <codeInsight.lineMarkerProvider
         language="kotlin"
-        implementationClass="com.apollographql.ijplugin.navigation.GraphQLDefinitionMarkerProvider"
+        implementationClass="com.apollographql.ijplugin.navigation.KotlinDefinitionMarkerProvider"
     />
 
-    <!-- Operation/fragment/field/enum/input 'go to declaration' handler -->
+    <!-- Kotlin operation/fragment/field/enum/input 'go to declaration' handler -->
+    <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.KotlinGotoDeclarationHandler" />
+
+    <!-- GraphQL operation/fragment/field/enum/input 'go to declaration' handler -->
     <gotoDeclarationHandler implementation="com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler" />
 
-    <!-- Operation/fragment/field/enum/input 'go to type declaration' handler -->
+    <!-- Kotlin operation/fragment/field/enum/input 'go to type declaration' handler -->
     <!-- Needs order="first" so the Kotlin handler doesn't take over -->
-    <typeDeclarationProvider implementation="com.apollographql.ijplugin.navigation.GraphQLTypeDeclarationProvider" order="first" />
+    <typeDeclarationProvider implementation="com.apollographql.ijplugin.navigation.KotlinTypeDeclarationProvider" order="first" />
 
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />

@@ -9,10 +9,10 @@ import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtElement
 
 /**
- * Allows to navigate to the corresponding GraphQL type definition when shift-middle-clicking/shift-cmd-clicking/shift-cmd-b on a symbol
- * whose type is an Apollo enum , input type or model field.
+ * Allows to navigate to the corresponding GraphQL type definition when shift-middle-clicking/shift-cmd-clicking/shift-cmd-b on a Kotlin
+ * symbol whose type is an Apollo enum, input type or model field.
  */
-class GraphQLTypeDeclarationProvider : TypeDeclarationProvider {
+class KotlinTypeDeclarationProvider : TypeDeclarationProvider {
   override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
     if (!symbol.project.apolloProjectService.isApolloKotlin3Project) return null
 

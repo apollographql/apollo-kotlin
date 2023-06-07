@@ -65,10 +65,28 @@ fun KtNameReferenceExpression.isApolloModelFieldReference(): Boolean {
 fun KtElement.isApolloModelField() = topMostContainingClass()
     ?.isApolloOperationOrFragment() == true
 
+
+fun KtClass.isApolloOperation(): Boolean {
+  return superTypeListEntries.any {
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    superType in APOLLO_OPERATION_TYPES
+  }
+}
+
+fun KtClass.isApolloFragment(): Boolean {
+  return superTypeListEntries.any {
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    superType == APOLLO_FRAGMENT_TYPE
+  } ||
+      // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
+      // This can lead to false positives, but consequences are not dire.
+      isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
+}
+
 fun KtClass.isApolloOperationOrFragment(): Boolean {
   return superTypeListEntries.any {
     val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
-    superType == APOLLO_FRAGMENT_TYPE || superType in APOLLO_OPERATION_TYPES
+    superType in APOLLO_OPERATION_TYPES || superType == APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
