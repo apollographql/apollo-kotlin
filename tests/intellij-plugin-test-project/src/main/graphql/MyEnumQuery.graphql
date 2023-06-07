@@ -1,0 +1,3 @@
+query MyEnumQuery($inputEnum: MyEnum) {
+    myEnum(inputEnum: $inputEnum)
+}

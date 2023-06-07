@@ -1,0 +1,7 @@
+fragment ComputerFields on Computer {
+    cpu
+    screen {
+        resolution
+    }
+    releaseDate
+}
