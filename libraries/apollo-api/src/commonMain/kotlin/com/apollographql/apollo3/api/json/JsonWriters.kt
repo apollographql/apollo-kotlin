@@ -36,7 +36,7 @@ fun JsonWriter.writeAny(value: Any?) {
     is Double -> value(value)
     is JsonNumber -> value(value)
     is String -> value(value)
-    else -> error("Cannot write $value of class '${value::class.qualifiedName}' to Json")
+    else -> error("Cannot write $value of class '${value::class}' to Json")
   }
 }
 
