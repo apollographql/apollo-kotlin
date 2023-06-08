@@ -63,4 +63,15 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     assertInstanceOf(this, T::class.java)
     assertTrue(text.startsWith(prefix))
   }
+
+  protected fun moveCaret(text: String, afterText: String? = null) {
+    val index = if (afterText != null) {
+      file.text.indexOf(text, startIndex = file.text.indexOf(afterText)).takeIf { it != -1 }
+          ?: throw NoSuchElementException("Couldn't find $text after $afterText")
+    } else {
+      file.text.indexOf(text).takeIf { it != -1 } ?: throw NoSuchElementException("Couldn't find $text")
+    }
+    myFixture.editor.caretModel.moveToOffset(index)
+  }
+
 }

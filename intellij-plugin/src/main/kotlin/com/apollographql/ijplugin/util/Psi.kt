@@ -43,5 +43,9 @@ inline fun <reified T : PsiElement> PsiElement.findChildrenOfType(
       }
 }
 
-fun PsiElement.resolveKtName() =
-    references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
+fun PsiElement.resolveKtName(): PsiElement? = runCatching {
+  references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
+}.onFailure { t ->
+  // Sometimes KotlinIdeaResolutionException is thrown
+  logw(t, "Could not resolve $this")
+}.getOrNull()

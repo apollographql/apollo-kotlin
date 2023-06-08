@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.util.containingKtFileImportList
+import com.apollographql.ijplugin.util.isGenerated
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
@@ -14,7 +15,6 @@ import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.GeneratedSourcesFilter
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiDocumentManager
@@ -84,9 +84,7 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
                 .filterNot { usageInfo ->
                   // Filter out all generated code usages. We don't want generated code to come up in findUsages.
                   // TODO: how to mark Apollo generated code as generated per this method?
-                  usageInfo.virtualFile?.let {
-                    GeneratedSourcesFilter.isGeneratedSourceByAnyFilter(it, myProject)
-                  } == true
+                  usageInfo.virtualFile?.isGenerated(myProject) == true
                 }
           }
           .toMutableList()

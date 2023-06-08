@@ -33,7 +33,7 @@ fun findKotlinOperationDefinitions(operationDefinition: GraphQLTypedOperationDef
       // Fallback to no suffix
       .ifEmpty {
         PsiShortNamesCache.getInstance(project).getClassesByName(
-            operationName + operationType,
+            operationName,
             GlobalSearchScope.allScope(project)
         )
       }
