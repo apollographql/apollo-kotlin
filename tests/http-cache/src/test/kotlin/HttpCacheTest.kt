@@ -187,7 +187,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun mutationAreNotCachedByDefault() = runTest(before = { before() }, after = { tearDown() }) {
+  fun mutationAreNeverCached() = runTest(before = { before() }, after = { tearDown() }) {
     val mutation = SetRandomMutation()
 
     repeat(2) {
@@ -198,11 +198,11 @@ class HttpCacheTest {
           }
         }
       """.trimIndent())
-      apolloClient.mutation(mutation).execute()
+      apolloClient.mutation(mutation)
+          .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+          .execute()
 
-      /**
-       * The HTTP request should hit the network twice
-       */
+      // The HTTP request should hit the network
       mockServer.takeRequest()
     }
   }
