@@ -95,10 +95,11 @@ class CachingHttpInterceptor(
   }
 
   private fun getPolicy(request: HttpRequest): String {
-    return if (request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value == "query") {
-      request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: CACHE_FIRST
-    } else {
-      NETWORK_ONLY
+    val operationType = request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value
+    return when (operationType) {
+      // Can be null if the interceptor is used without ApolloClient.Builder.httpCache
+      "query", null -> request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: CACHE_FIRST
+      else -> NETWORK_ONLY
     }
   }
 
