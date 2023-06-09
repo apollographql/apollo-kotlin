@@ -28,7 +28,7 @@ class CachingHttpInterceptor(
   val cache: ApolloHttpCache = lruHttpCache
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-    val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
+    val policy = getPolicy(request)
     val cacheKey = request.headers.valueOf(CACHE_KEY_HEADER)!!
     when (policy) {
       CACHE_FIRST -> {
@@ -47,12 +47,15 @@ class CachingHttpInterceptor(
           }
         }
       }
+
       CACHE_ONLY -> {
         return cacheMightThrow(request, cacheKey)
       }
+
       NETWORK_ONLY -> {
         return networkMightThrow(request, chain, cacheKey)
       }
+
       NETWORK_FIRST -> {
         val networkException: ApolloException
         try {
@@ -84,17 +87,19 @@ class CachingHttpInterceptor(
           }
         }
       }
+
       else -> {
         error("Unknown HTTP fetch policy: $policy")
       }
     }
   }
 
-  private fun defaultPolicy(request: HttpRequest): String {
-    return if (request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value == "query") {
-      CACHE_FIRST
-    } else {
-      NETWORK_ONLY
+  private fun getPolicy(request: HttpRequest): String {
+    val operationType = request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value
+    return when (operationType) {
+      // Can be null if the interceptor is used without ApolloClient.Builder.httpCache
+      "query", null -> request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: CACHE_FIRST
+      else -> NETWORK_ONLY
     }
   }
 

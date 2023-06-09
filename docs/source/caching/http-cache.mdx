@@ -45,7 +45,7 @@ apolloClient = ApolloClient.Builder()
 
 The HTTP cache is a least recently used (LRU) cache with a configurable max size.
 
-Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
+Once your cache setup is complete, the cache will be used by default by all your queries (mutations are never cached). By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
 
 ```kotlin
 val response = apolloClient.query(query)

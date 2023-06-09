@@ -94,7 +94,7 @@ fun ApolloClient.Builder.httpCache(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      val policy = request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
+      val policy = getPolicy(request)
       val policyStr = when (policy) {
         HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
         HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
@@ -118,7 +118,7 @@ fun ApolloClient.Builder.httpCache(
               .build()
       )
           .run {
-            if (request.operation is Query<*> || request.operation is Mutation<*>) {
+            if (request.operation is Query<*>) {
               onEach { response ->
                 // Revert caching of responses with errors
                 val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
@@ -136,11 +136,12 @@ fun ApolloClient.Builder.httpCache(
   })
 }
 
-private fun defaultPolicy(operation: Operation<*>): HttpFetchPolicy {
-  return if (operation is Query) {
-    HttpFetchPolicy.CacheFirst
-  } else {
+private fun getPolicy(request: ApolloRequest<*>): HttpFetchPolicy {
+  return if (request.operation is Mutation<*>) {
+    // Don't cache mutations
     HttpFetchPolicy.NetworkOnly
+  } else {
+    request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: HttpFetchPolicy.CacheFirst
   }
 }
 
