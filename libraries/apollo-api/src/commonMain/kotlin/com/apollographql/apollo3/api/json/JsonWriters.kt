@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import okio.Buffer
 import okio.ByteString
 import kotlin.contracts.ExperimentalContracts
@@ -37,7 +36,7 @@ fun JsonWriter.writeAny(value: Any?) {
     is Double -> value(value)
     is JsonNumber -> value(value)
     is String -> value(value)
-    else -> error("Cannot write $value to Json")
+    else -> error("Cannot write $value of class '${value::class}' to Json")
   }
 }
 
