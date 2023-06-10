@@ -190,6 +190,7 @@ private val json: Json by lazy {
     classDiscriminator = "kind"
     @OptIn(ExperimentalSerializationApi::class)
     explicitNulls = false
+    encodeDefaults = true
   }
 }
 
