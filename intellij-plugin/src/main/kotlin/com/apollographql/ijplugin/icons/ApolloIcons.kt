@@ -13,7 +13,11 @@ object ApolloIcons {
   }
 
   object Action {
-    val Apollo by lazy { load("/icons/action-apollo.svg") }
+    val Apollo by lazy { load("/icons/action-apollo-monochrome.svg") }
+
+    // This one cannot be lazy because it's referenced from plugin.xml
+    @JvmField
+    val ApolloColor = load("/icons/action-apollo-color.svg")
   }
 
   private fun load(path: String): Icon {

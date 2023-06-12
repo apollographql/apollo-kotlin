@@ -127,6 +127,7 @@
     <group
         id="ApolloToolsActionGroup"
         popup="true"
+        icon="com.apollographql.ijplugin.icons.ApolloIcons.Action.ApolloColor"
         class="com.apollographql.ijplugin.action.ApolloToolsActionGroup"
     >
       <add-to-group group-id="ToolsMenu" anchor="last" />
@@ -140,9 +141,9 @@
       <add-to-group group-id="ApolloToolsActionGroup" />
       <add-to-group group-id="RevealGroup" />
       <override-text place="EditorTabPopup" text="Apollo Sandbox" />
-      <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup"/>
-      <override-text place="EditorPopup" use-text-of-place="EditorTabPopup"/>
-      <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup"/>
+      <override-text place="ProjectViewPopup" use-text-of-place="EditorTabPopup" />
+      <override-text place="EditorPopup" use-text-of-place="EditorTabPopup" />
+      <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup" />
     </action>
 
   </actions>
