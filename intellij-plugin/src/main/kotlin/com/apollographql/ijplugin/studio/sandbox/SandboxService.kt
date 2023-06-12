@@ -63,7 +63,7 @@ class SandboxService(
     val actionToolbar = onePixelSplitter.secondComponent as? ActionToolbarImpl ?: return
     val actionGroup = actionToolbar.actionGroup as? DefaultActionGroup ?: return
 
-    if (!actionGroup.getChildActionsOrStubs().any { it is OpenInSandboxAction }) {
+    if (actionGroup.getChildActionsOrStubs().none { it is OpenInSandboxAction }) {
       actionGroup.addSeparator()
       actionGroup.addAction(ActionManager.getInstance().getAction(OpenInSandboxAction.ACTION_ID))
     }

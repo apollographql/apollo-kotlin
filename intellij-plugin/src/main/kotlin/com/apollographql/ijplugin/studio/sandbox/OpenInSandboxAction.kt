@@ -34,13 +34,18 @@ class OpenInSandboxAction : AnAction(
     logd()
     val project = e.project ?: return
 
-    val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-    val contents = editor.document.text
+    // Editor will be present if the action is triggered from the editor toolbar, the main menu, the Open In popup inside the editor
+    // Otherwise it will be null, and we fallback to the File (but no endpoint / variables)
+    val editor = e.getData(CommonDataKeys.EDITOR)
+    val contents = editor?.document?.text ?: run {
+      val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return@actionPerformed
+      file.contentsToByteArray().toString(file.charset)
+    }
 
-    val endpointsModel = editor.getUserData(GraphQLUIProjectService.GRAPH_QL_ENDPOINTS_MODEL)
+    val endpointsModel = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_ENDPOINTS_MODEL)
     val selectedEndpointUrl = endpointsModel?.let { promptForEnvVariables(project, it.selectedItem) }?.url
 
-    val variablesEditor = editor.getUserData(GraphQLUIProjectService.GRAPH_QL_VARIABLES_EDITOR)
+    val variablesEditor = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_VARIABLES_EDITOR)
     val variables = variablesEditor?.document?.text
 
     // See https://www.apollographql.com/docs/graphos/explorer/sandbox/#url-parameters
