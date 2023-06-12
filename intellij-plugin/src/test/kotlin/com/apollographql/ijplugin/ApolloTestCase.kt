@@ -5,11 +5,13 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.util.ui.UIUtil
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 
@@ -47,6 +49,10 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     if (testDataPath == "../tests/intellij-plugin-test-project") {
       myFixture.copyDirectoryToProject("", "")
     }
+
+    // Make sure that all file system events up to this point have been processed
+    VirtualFileManager.getInstance().syncRefresh()
+    UIUtil.dispatchAllInvocationEvents()
   }
 
   protected inline fun <reified T : PsiElement> elementAt(text: String, afterText: String? = null): T? {
