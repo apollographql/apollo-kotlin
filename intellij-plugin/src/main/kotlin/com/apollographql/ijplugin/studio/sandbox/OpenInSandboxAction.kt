@@ -23,11 +23,15 @@ class OpenInSandboxAction : AnAction(
 
   override fun update(e: AnActionEvent) {
     // Only care about GraphQL files
-    e.presentation.isEnabled = e.getData(CommonDataKeys.VIRTUAL_FILE)?.let { file ->
+    val isGraphQLFile = e.getData(CommonDataKeys.VIRTUAL_FILE)?.let { file ->
       e.project?.let { project ->
         GraphQLFileType.isGraphQLFile(project, file)
       }
     } == true
+    e.presentation.isEnabled = isGraphQLFile
+
+    // Only show the action if there's an editor (i.e. not in 'Open in' from the project view)
+    e.presentation.isVisible = isGraphQLFile || e.getData(CommonDataKeys.EDITOR) != null
   }
 
   override fun actionPerformed(e: AnActionEvent) {
