@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.studio.sandbox
 import com.apollographql.ijplugin.util.logd
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -64,7 +65,7 @@ class SandboxService(
 
     if (!actionGroup.getChildActionsOrStubs().any { it is OpenInSandboxAction }) {
       actionGroup.addSeparator()
-      actionGroup.addAction(OpenInSandboxAction())
+      actionGroup.addAction(ActionManager.getInstance().getAction(OpenInSandboxAction.ACTION_ID))
     }
   }
 

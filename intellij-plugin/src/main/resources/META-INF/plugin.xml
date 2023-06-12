@@ -121,5 +121,24 @@
       <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>
 
+
+    <!-- Tools / Apollo -->
+    <!--suppress PluginXmlCapitalization -->
+    <group
+        id="ApolloToolsActionGroup"
+        popup="true"
+        class="com.apollographql.ijplugin.action.ApolloToolsActionGroup"
+    >
+      <add-to-group group-id="ToolsMenu" anchor="last" />
+    </group>
+
+    <!-- Tools / Apollo / Open in Apollo Sandbox -->
+    <action
+        id="OpenInSandboxAction"
+        class="com.apollographql.ijplugin.studio.sandbox.OpenInSandboxAction"
+    >
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
+
   </actions>
 </idea-plugin>
