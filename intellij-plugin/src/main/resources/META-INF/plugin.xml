@@ -76,6 +76,9 @@
     <!-- icon per element type -->
     <iconProvider implementation="com.apollographql.ijplugin.icons.GraphQLIconProvider" order="first" />
 
+    <!-- Studio / Sandbox -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.studio.sandbox.SandboxService" />
+
   </extensions>
 
   <!-- Contribute configuration to the GraphQL plugin -->

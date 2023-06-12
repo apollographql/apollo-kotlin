@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.codegen.ApolloCodegenService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.graphql.GraphQLConfigService
 import com.apollographql.ijplugin.settings.SettingsService
+import com.apollographql.ijplugin.studio.sandbox.SandboxService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
@@ -22,6 +23,7 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       project.service<GradleToolingModelService>()
       project.service<SettingsService>()
       project.service<GraphQLConfigService>()
+      project.service<SandboxService>()
 
       project.apolloProjectService.isInitialized = true
     }
