@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ide.BrowserUtil
 import com.intellij.lang.jsgraphql.GraphQLFileType
+import com.intellij.lang.jsgraphql.ide.config.model.GraphQLConfigEndpoint
 import com.intellij.lang.jsgraphql.ide.introspection.promptForEnvVariables
 import com.intellij.lang.jsgraphql.ui.GraphQLUIProjectService
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -47,7 +48,9 @@ class OpenInSandboxAction : AnAction(
     }
 
     val endpointsModel = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_ENDPOINTS_MODEL)
-    val selectedEndpointUrl = endpointsModel?.let { promptForEnvVariables(project, it.selectedItem) }?.url
+    val graphQLConfigEndpoint: GraphQLConfigEndpoint? = endpointsModel?.let { promptForEnvVariables(project, it.selectedItem) }
+    val selectedEndpointUrl = graphQLConfigEndpoint?.url
+    val headers = graphQLConfigEndpoint?.headers?.formatAsJson()
 
     val variablesEditor = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_VARIABLES_EDITOR)
     val variables = variablesEditor?.document?.text
@@ -61,9 +64,14 @@ class OpenInSandboxAction : AnAction(
       if (!variables.isNullOrBlank()) {
         append("&variables=$variables")
       }
+      if (!headers.isNullOrBlank()) {
+        append("&headers=$headers")
+      }
     }
     BrowserUtil.browse(url, project)
   }
 
   override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }
+
+private fun Map<String, Any?>.formatAsJson() = "{" + map { (key, value) -> """"$key": "$value"""" }.joinToString() + "}"
