@@ -154,3 +154,43 @@ fun <T> CompositeAdapter<T>.toJsonString(
 ): String = buildJsonString(indent) {
   this@toJsonString.toJson(this, value, adapterContext)
 }
+
+/**
+ * Note that Arrays require their type to be known at compile time, so we construct an anonymous object with reference to
+ * function with reified type parameters as a workaround.
+ *
+ */
+@JvmName("-array2")
+inline fun <reified T> CompositeAdapter<T>.array() = object : CompositeAdapter<Array<T>> {
+
+  private inline fun <reified T> arrayFromJson(wrappedAdapter: CompositeAdapter<T>, reader: JsonReader, adapterContext: CompositeAdapterContext): Array<T> {
+    reader.beginArray()
+    val list = mutableListOf<T>()
+    while (reader.hasNext()) {
+      list.add(wrappedAdapter.fromJson(reader, adapterContext))
+    }
+    reader.endArray()
+    return list.toTypedArray()
+  }
+
+  private inline fun <reified T> arrayToJson(
+      wrappedAdapter: CompositeAdapter<T>,
+      writer: JsonWriter,
+      value: Array<T>,
+      adapterContext: CompositeAdapterContext,
+  ) {
+    writer.beginArray()
+    value.forEach {
+      wrappedAdapter.toJson(writer, it, adapterContext)
+    }
+    writer.endArray()
+  }
+
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Array<T> {
+    return arrayFromJson(this@array, reader, adapterContext)
+  }
+
+  override fun toJson(writer: JsonWriter, value: Array<T>, adapterContext: CompositeAdapterContext) {
+    return arrayToJson(this@array, writer, value, adapterContext)
+  }
+}

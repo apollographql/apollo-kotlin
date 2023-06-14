@@ -284,6 +284,46 @@ fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
 
+/**
+ * Note that Arrays require their type to be known at compile time, so we construct an anonymous object with reference to
+ * function with reified type parameters as a workaround.
+ *
+ */
+@JvmName("-array")
+inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
+
+  private inline fun <reified T> arrayFromJson(wrappedAdapter: Adapter<T>, reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+    reader.beginArray()
+    val list = mutableListOf<T>()
+    while (reader.hasNext()) {
+      list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    }
+    reader.endArray()
+    return list.toTypedArray()
+  }
+
+  private inline fun <reified T> arrayToJson(
+      wrappedAdapter: Adapter<T>,
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: Array<T>
+  ) {
+    writer.beginArray()
+    value.forEach {
+      wrappedAdapter.toJson(writer, customScalarAdapters, it)
+    }
+    writer.endArray()
+  }
+
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+    return arrayFromJson(this@array, reader, customScalarAdapters)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Array<T>) {
+    return arrayToJson(this@array, writer, customScalarAdapters, value)
+  }
+}
+
 @JvmName("-optional")
 @Deprecated("Use present instead", ReplaceWith("present()"))
 fun <T> Adapter<T>.optional() = PresentAdapter(this)
