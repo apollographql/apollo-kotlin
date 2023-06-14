@@ -12,6 +12,14 @@ object ApolloIcons {
     val GraphQL by lazy { load("/icons/symbol-graphql.svg") }
   }
 
+  object Action {
+    val Apollo by lazy { load("/icons/action-apollo-monochrome.svg") }
+
+    // This one cannot be lazy because it's referenced from plugin.xml
+    @JvmField
+    val ApolloColor = load("/icons/action-apollo-color.svg")
+  }
+
   private fun load(path: String): Icon {
     return IconLoader.getIcon(path, ApolloIcons::class.java)
   }
