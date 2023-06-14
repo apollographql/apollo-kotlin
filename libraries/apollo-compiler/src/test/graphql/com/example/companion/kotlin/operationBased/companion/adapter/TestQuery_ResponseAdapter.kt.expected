@@ -5,7 +5,8 @@
 //
 package com.example.`companion`.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("companion")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _companion: TestQuery.Companion_? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _companion = Companion.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _companion = Companion.obj().nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -40,24 +41,24 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("companion")
-      Companion.obj().nullable().toJson(writer, customScalarAdapters, value.`companion`)
+      Companion.obj().nullable().toJson(writer, value.`companion`, adapterContext)
     }
   }
 
-  public object Companion : Adapter<TestQuery.Companion_> {
+  public object Companion : CompositeAdapter<TestQuery.Companion_> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Companion_ {
       var _foo: Int? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = IntAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _foo = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -69,11 +70,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Companion_,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("foo")
-      IntAdapter.toJson(writer, customScalarAdapters, value.foo)
+      IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.foo)
     }
   }
 }

@@ -220,12 +220,12 @@ internal class KotlinResolver(
       }
 
       type is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$customScalarAdapters")
+        nonNullableScalarAdapterInitializer(type, "${Identifier.adapterContext}.$customScalarAdapters")
       }
 
       type is IrEnumType -> {
         if (jsExport) {
-          nonNullableScalarAdapterInitializer(IrScalarType("String"), "${Identifier.context}.$customScalarAdapters")
+          nonNullableScalarAdapterInitializer(IrScalarType("String"), "${Identifier.adapterContext}.$customScalarAdapters")
         } else {
           CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
         }

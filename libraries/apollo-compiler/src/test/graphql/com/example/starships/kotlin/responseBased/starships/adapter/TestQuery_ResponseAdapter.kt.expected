@@ -5,7 +5,8 @@
 //
 package com.example.starships.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -21,16 +22,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("starship")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _starship: TestQuery.Data.Starship? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _starship = Starship.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _starship = Starship.obj().nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -42,28 +43,27 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("starship")
-      Starship.obj().nullable().toJson(writer, customScalarAdapters, value.starship)
+      Starship.obj().nullable().toJson(writer, value.starship, adapterContext)
     }
 
-    private object Starship : Adapter<TestQuery.Data.Starship> {
+    private object Starship : CompositeAdapter<TestQuery.Data.Starship> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "coordinates")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Starship {
         var _id: String? = null
         var _name: String? = null
         var _coordinates: List<List<Double>>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _coordinates = DoubleAdapter.list().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _coordinates = DoubleAdapter.list().list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -77,17 +77,17 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Starship,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("coordinates")
-        DoubleAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
+        DoubleAdapter.list().list().nullable().toJson(writer, CustomScalarAdapters.Empty,
             value.coordinates)
       }
     }

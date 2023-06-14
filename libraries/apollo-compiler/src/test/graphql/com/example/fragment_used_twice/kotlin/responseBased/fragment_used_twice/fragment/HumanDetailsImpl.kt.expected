@@ -5,8 +5,8 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,12 +24,16 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> = HumanDetailsImpl_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> =
+      HumanDetailsImpl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

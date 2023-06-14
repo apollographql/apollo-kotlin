@@ -6,8 +6,8 @@
 package com.example.suppressed_warnings
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -18,6 +18,7 @@ import com.example.suppressed_warnings.adapter.CatQuery_VariablesAdapter
 import com.example.suppressed_warnings.selections.CatQuerySelections
 import com.example.suppressed_warnings.type.Direction
 import com.example.suppressed_warnings.type.Filter
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -31,12 +32,16 @@ public data class CatQuery(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    CatQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
+    CatQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
+        withBooleanDefaultValues)
   }
 
-  public override fun adapter(): Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

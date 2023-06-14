@@ -5,12 +5,14 @@
 //
 package com.example.suppressed_warnings.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.CatQuery;
@@ -24,22 +26,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CatQuery_ResponseAdapter {
-  public enum Data implements Adapter<CatQuery.Data> {
+  public enum Data implements CompositeAdapter<CatQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("search", "direction");
 
     @Override
-    public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public CatQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
+        IOException {
       CatQuery.Search _search = null;
       Direction _direction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _search = new NullableAdapter<>(new ObjectAdapter<CatQuery.Search>(Search.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: _direction = new NullableAdapter<>(Direction_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 0: _search = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CatQuery.Search>(Search.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 1: _direction = new NullableAdapter<>(Direction_ResponseAdapter.INSTANCE).fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -51,30 +53,30 @@ public class CatQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CatQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, CatQuery.Data value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("search");
-      new NullableAdapter<>(new ObjectAdapter<CatQuery.Search>(Search.INSTANCE, false)).toJson(writer, customScalarAdapters, value.search);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CatQuery.Search>(Search.INSTANCE, false)).toJson(writer, value.search, adapterContext);
 
       writer.name("direction");
-      new NullableAdapter<>(Direction_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.direction);
+      new NullableAdapter<>(Direction_ResponseAdapter.INSTANCE).toJson(writer, CustomScalarAdapters.Empty, value.direction);
     }
   }
 
-  public enum Search implements Adapter<CatQuery.Search> {
+  public enum Search implements CompositeAdapter<CatQuery.Search> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("mustaches");
 
     @Override
-    public CatQuery.Search fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public CatQuery.Search fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       Integer _mustaches = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _mustaches = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _mustaches = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -87,10 +89,10 @@ public class CatQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CatQuery.Search value) throws IOException {
+    public void toJson(JsonWriter writer, CatQuery.Search value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("mustaches");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.mustaches);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.mustaches);
     }
   }
 }

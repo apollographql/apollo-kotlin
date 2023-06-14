@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext
-import com.apollographql.apollo3.api.CompositeAdapter.SerializeCompositeContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
@@ -19,40 +17,53 @@ import kotlin.jvm.JvmField
  */
 interface CompositeAdapter<T> {
   @Throws(IOException::class)
-  fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): T
+  fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): T
 
   @Throws(IOException::class)
-  fun serializeComposite(writer: JsonWriter, value: T, context: SerializeCompositeContext)
+  fun toJson(writer: JsonWriter, value: T, adapterContext: CompositeAdapterContext)
+}
 
-  class SerializeCompositeContext(
-      @JvmField
-      val customScalarAdapters: CustomScalarAdapters,
-  )
+class CompositeAdapterContext private constructor(
+    @JvmField
+    val customScalarAdapters: CustomScalarAdapters,
 
-  class DeserializeCompositeContext(
-      @JvmField
-      val customScalarAdapters: CustomScalarAdapters,
+    @JvmField
+    val falseVariables: Set<String>,
 
-      @JvmField
-      val falseBooleanVariables: Set<String>,
+    @JvmField
+    val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+) {
+  class Builder {
+    private var customScalarAdapters: CustomScalarAdapters? = null
+    private var falseVariables: Set<String>? = null
+    private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
 
-      @JvmField
-      val mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>?,
-  ) {
-    fun hasDeferredFragment(path: List<Any>, label: String?): Boolean {
-      if (mergedDeferredFragmentIds == null) {
-        // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
-        return true
-      }
-      return mergedDeferredFragmentIds.contains(DeferredFragmentIdentifier(path, label))
+    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
+      this.customScalarAdapters = customScalarAdapters
     }
+
+    fun falseVariables(falseVariables: Set<String>?) = apply {
+      this.falseVariables = falseVariables
+    }
+    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?) = apply {
+      this.deferredFragmentIdentifiers = deferredFragmentIdentifiers
+    }
+
+    fun build(): CompositeAdapterContext {
+      return CompositeAdapterContext(
+          customScalarAdapters ?: CustomScalarAdapters.Empty,
+          falseVariables ?: emptySet(),
+          deferredFragmentIdentifiers
+      )
+    }
+
   }
 }
 
 fun <T> CompositeAdapter<T>.toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-  serializeComposite(writer, value, SerializeCompositeContext(customScalarAdapters))
+  toJson(writer, value, CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build())
 }
 
 fun <T> CompositeAdapter<T>.fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-  return deserializeComposite(reader, DeserializeCompositeContext(customScalarAdapters = customScalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+  return fromJson(reader, CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build())
 }

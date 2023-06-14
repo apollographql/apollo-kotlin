@@ -6,8 +6,8 @@
 package com.example.java8annotation
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,6 +16,7 @@ import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter
 import com.example.java8annotation.adapter.LoginBarber_VariablesAdapter
 import com.example.java8annotation.selections.LoginBarberSelections
 import com.example.java8annotation.type.Login
+import kotlin.Boolean
 import kotlin.String
 import kotlin.Unit
 
@@ -28,12 +29,16 @@ public data class LoginBarber(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    LoginBarber_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
+    LoginBarber_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
+        withBooleanDefaultValues)
   }
 
-  public override fun adapter(): Adapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

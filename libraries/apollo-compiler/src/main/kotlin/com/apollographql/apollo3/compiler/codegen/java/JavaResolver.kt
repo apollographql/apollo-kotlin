@@ -28,7 +28,8 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
-import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
+import com.apollographql.apollo3.compiler.ir.isComposite
+import com.apollographql.apollo3.compiler.ir.isCompositeOrWrappedComposite
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -206,7 +207,7 @@ internal class JavaResolver(
         }
 
         else -> {
-          val adapterClassName = if (type.isScalarOrWrappedScalar()) optionalOrNullableAdapterClassName else optionalOrNullableCompositeAdapterClassName
+          val adapterClassName = if (!type.rawType().isComposite()) optionalOrNullableAdapterClassName else optionalOrNullableCompositeAdapterClassName
           CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
@@ -228,11 +229,11 @@ internal class JavaResolver(
     return when (type) {
       is IrNonNullType -> error("")
       is IrListType -> {
-        adapterInitializer(type.ofType, requiresBuffering).listAdapter(isScalar = type.ofType.isScalarOrWrappedScalar())
+        adapterInitializer(type.ofType, requiresBuffering).listAdapter(isComposite = type.ofType.rawType().isComposite())
       }
 
       is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$customScalarAdapters")
+        nonNullableScalarAdapterInitializer(type, "${Identifier.adapterContext}.$customScalarAdapters")
       }
 
       is IrEnumType -> {
@@ -256,7 +257,7 @@ internal class JavaResolver(
       }
 
       is IrOptionalType -> {
-        val adapterClassName = if (type.ofType.isScalarOrWrappedScalar()) optionalAdapterClassName else optionalCompositeAdapterClassName
+        val adapterClassName = if (!type.ofType.rawType().isComposite()) optionalAdapterClassName else optionalCompositeAdapterClassName
         CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
     }
@@ -402,7 +403,7 @@ internal class JavaResolver(
   private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
     return when (type) {
       is IrNonNullType2 -> error("")
-      is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isScalar = type.ofType.isScalarOrWrappedScalar())
+      is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isComposite = type.ofType.isCompositeOrWrappedComposite())
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
           nonNullableScalarAdapterInitializer(IrScalarType(type.name), customScalarAdapters)
@@ -419,10 +420,10 @@ internal class JavaResolver(
     }
   }
 
-  private fun CodeBlock.listAdapter(isScalar: Boolean): CodeBlock {
+  private fun CodeBlock.listAdapter(isComposite: Boolean): CodeBlock {
     return CodeBlock.of(
         "new $T<>($L)",
-        if (isScalar) {
+        if (!isComposite) {
           JavaClassNames.ListAdapter
         } else {
           JavaClassNames.ListCompositeAdapter

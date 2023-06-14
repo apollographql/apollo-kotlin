@@ -6,8 +6,8 @@
 package com.example.target_name
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -19,6 +19,7 @@ import com.example.target_name.selections.TestQuerySelections
 import com.example.target_name.type.renamedEnum
 import com.example.target_name.type.renamedInput
 import kotlin.Any
+import kotlin.Boolean
 import kotlin.String
 import kotlin.Unit
 
@@ -33,12 +34,16 @@ public data class TestQuery(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
+        withBooleanDefaultValues)
   }
 
-  public override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

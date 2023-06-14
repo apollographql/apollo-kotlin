@@ -5,7 +5,6 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
@@ -13,9 +12,11 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferWithIf;
@@ -26,20 +27,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InlineMultipleWithDeferWithIf_ResponseAdapter {
-  public enum Data implements Adapter<InlineMultipleWithDeferWithIf.Data> {
+  public enum Data implements CompositeAdapter<InlineMultipleWithDeferWithIf.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
     public InlineMultipleWithDeferWithIf.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       InlineMultipleWithDeferWithIf.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -50,45 +51,45 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.Data value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDeferWithIf.Data value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, adapterContext);
     }
   }
 
-  public enum Hero implements Adapter<InlineMultipleWithDeferWithIf.Hero> {
+  public enum Hero implements CompositeAdapter<InlineMultipleWithDeferWithIf.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
     public InlineMultipleWithDeferWithIf.Hero fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      InlineMultipleWithDeferWithIf.OnCharacter _onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
+      InlineMultipleWithDeferWithIf.OnCharacter _onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, adapterContext);
 
       InlineMultipleWithDeferWithIf.OnCharacterDeferF_second _onCharacterDeferF_second = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BLabel("f_second")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BLabel("f_second")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, __path)) {
         reader.rewind();
-        _onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.fromJson(reader, adapterContext);
       }
 
       InlineMultipleWithDeferWithIf.OnCharacterDeferF_third _onCharacterDeferF_third = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("f_third"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("f_third"))), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, __path)) {
         reader.rewind();
-        _onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.fromJson(reader, adapterContext);
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
@@ -102,37 +103,37 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.Hero value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDeferWithIf.Hero value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
+      com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, value.onCharacter, adapterContext);
 
       if (value.onCharacterDeferF_second != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferF_second);
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.toJson(writer, value.onCharacterDeferF_second, adapterContext);
       }
 
       if (value.onCharacterDeferF_third != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferF_third);
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.toJson(writer, value.onCharacterDeferF_third, adapterContext);
       }
     }
   }
 
-  public enum OnCharacter implements Adapter<InlineMultipleWithDeferWithIf.OnCharacter> {
+  public enum OnCharacter implements CompositeAdapter<InlineMultipleWithDeferWithIf.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacter fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -145,27 +146,27 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.OnCharacter value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDeferWithIf.OnCharacter value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
     }
   }
 
-  public enum OnCharacterDeferF_second implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_second> {
+  public enum OnCharacterDeferF_second implements CompositeAdapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacterDeferF_second fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -178,27 +179,28 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.OnCharacterDeferF_second value) throws IOException {
+    public void toJson(JsonWriter writer,
+        InlineMultipleWithDeferWithIf.OnCharacterDeferF_second value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 
-  public enum OnCharacterDeferF_third implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_third> {
+  public enum OnCharacterDeferF_third implements CompositeAdapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_third> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacterDeferF_third fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -211,10 +213,11 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.OnCharacterDeferF_third value) throws IOException {
+    public void toJson(JsonWriter writer,
+        InlineMultipleWithDeferWithIf.OnCharacterDeferF_third value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

@@ -5,53 +5,46 @@
 //
 package com.example.java_primitive_types.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.JavaPrimitiveQuery;
 import com.example.java_primitive_types.type.MyInput;
 import com.example.java_primitive_types.type.adapter.MyInput_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.Override;
 
-public enum JavaPrimitiveQuery_VariablesAdapter implements Adapter<JavaPrimitiveQuery> {
+public enum JavaPrimitiveQuery_VariablesAdapter {
   INSTANCE;
 
-  @Override
-  public JavaPrimitiveQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      JavaPrimitiveQuery value) throws IOException {
+  public void serializeVariables(JsonWriter writer, JavaPrimitiveQuery value,
+      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
+      IOException {
+    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
     }
     if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.nullableInput);
+      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, value.nullableInput, adapterContext);
     }
     writer.name("nonNullableInput");
-    new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableInput);
+    new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, value.nonNullableInput, adapterContext);
     if (value.nonNullableInputWithDefault instanceof Optional.Present) {
       writer.name("nonNullableInputWithDefault");
-      new ApolloOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault);
+      new ApolloOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, value.nonNullableInputWithDefault, adapterContext);
     }
   }
 }

@@ -94,11 +94,11 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.deserializeComposite)
+    return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
         .addParameter(
-            ParameterSpec.builder(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
+            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
                 .applyIf(addTypenameArgument) {
                   addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
                 }
@@ -121,11 +121,11 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.serializeComposite)
+    return FunSpec.builder(Identifier.toJson)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
         .addParameter(Identifier.value, adaptedClassName)
         .addParameter(
-            ParameterSpec.builder(Identifier.context, KotlinSymbols.SerializeCompositeContext)
+            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
                 .applyIf(addTypenameArgument) {
                   addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
                 }

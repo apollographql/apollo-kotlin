@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
-import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiTestPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -26,17 +25,14 @@ internal object KotlinSymbols {
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
-  val SerializeCompositeContext = ClassNames.SerializeCompositeContext.toKotlinPoetClassName()
-  val DeserializeCompositeContext = ClassNames.DeserializeCompositeContext.toKotlinPoetClassName()
   val CustomScalarAdaptersBuilder = ClassNames.CustomScalarAdaptersBuilder.toKotlinPoetClassName()
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
+  val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
   val CompositeAdapter = ClassNames.CompositeAdapter.toKotlinPoetClassName()
-  val VariablesAdapter = ClassNames.VariablesAdapter.toKotlinPoetClassName()
-  val SerializeVariablesContext = ClassNames.SerializeVariablesContext.toKotlinPoetClassName()
+  val CompositeAdapterContext = ClassNames.CompositeAdapterContext.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
-  val CompiledType = ClassNames.CompiledType.toKotlinPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toKotlinPoetClassName()
   val UnionType = ClassNames.UnionType.toKotlinPoetClassName()
   val Fragment = ClassNames.Fragment.toKotlinPoetClassName()

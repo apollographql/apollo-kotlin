@@ -5,7 +5,8 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -15,16 +16,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object Fragment1Impl_ResponseAdapter {
-  public object Data : Adapter<Fragment1Impl.Data> {
+  public object Data : CompositeAdapter<Fragment1Impl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("field1")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         Fragment1Impl.Data {
       var _field1: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _field1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -36,11 +37,11 @@ public object Fragment1Impl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: Fragment1Impl.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("field1")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.field1)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field1)
     }
   }
 }

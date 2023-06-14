@@ -312,7 +312,7 @@ private constructor(
             responsePayload to null
           }
           val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(jsonReader = payload.jsonReader(), customScalarAdapters = requestCustomScalarAdapters, mergedDeferredFragmentIds = mergedFragmentIds)
+              .parseJsonResponse(jsonReader = payload.jsonReader(), customScalarAdapters = requestCustomScalarAdapters, deferredFragmentIdentifiers = mergedFragmentIds)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()

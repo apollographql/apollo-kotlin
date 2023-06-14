@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
+import com.apollographql.apollo3.compiler.codegen.Identifier.withBooleanDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -27,14 +29,15 @@ internal fun serializeVariablesMethodSpec(
   val body = if (adapterClassName == null) {
     CodeBlock.of("// $emptyMessage\n")
   } else {
-    CodeBlock.of("$T.INSTANCE.$serializeVariables($writer, this, ${Identifier.context});\n", adapterClassName)
+    CodeBlock.of("$T.INSTANCE.$serializeVariables($writer, this, $customScalarAdapters, $withBooleanDefaultValues);\n", adapterClassName)
   }
   return MethodSpec.methodBuilder(serializeVariables)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
-      .addParameter(JavaClassNames.SerializeVariablesContext, Identifier.context)
+      .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+      .addParameter(TypeName.BOOLEAN, withBooleanDefaultValues)
       .addCode(body)
       .build()
 }

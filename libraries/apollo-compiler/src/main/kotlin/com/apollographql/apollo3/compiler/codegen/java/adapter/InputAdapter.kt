@@ -5,8 +5,9 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -18,8 +19,8 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
+import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -47,12 +48,12 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(deserializeComposite)
+private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(fromJson)
     .addModifiers(Modifier.PUBLIC)
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
-    .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-    .addParameter(JavaClassNames.DeserializeCompositeContext, Identifier.context)
+    .addParameter(JavaClassNames.JsonReader, reader)
+    .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -62,13 +63,13 @@ private fun List<NamedType>.writeToResponseMethodSpec(
     context: JavaContext,
     adaptedTypeName: TypeName,
 ): MethodSpec {
-  return MethodSpec.methodBuilder(serializeComposite)
+  return MethodSpec.methodBuilder(toJson)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(adaptedTypeName, value)
-      .addParameter(JavaClassNames.SerializeCompositeContext, Identifier.context)
+      .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -90,10 +91,10 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  if (type.isScalarOrWrappedScalar()) {
+  if (!type.rawType().isComposite()) {
     builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
   } else {
-    builder.addStatement("$L.$serializeComposite($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
+    builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
   }
   if (type.isOptional()) {
     builder.endControlFlow()

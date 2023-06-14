@@ -5,16 +5,17 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_field_with_multiple_fieldsets.TestQuery;
@@ -25,20 +26,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface1");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
+        IOException {
       TestQuery.Iface1 _iface1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface1 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _iface1 = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -49,39 +50,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("iface1");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface1);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, value.iface1, adapterContext);
     }
   }
 
-  public enum Iface1 implements Adapter<TestQuery.Iface1> {
+  public enum Iface1 implements CompositeAdapter<TestQuery.Iface1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.Iface1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, adapterContext);
 
       TestQuery.OnImpl1 _onImpl1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, adapterContext);
       }
 
       return new TestQuery.Iface1(
@@ -92,33 +93,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface1 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface1 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.toJson(writer, customScalarAdapters, value.onIface1);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.toJson(writer, value.onIface1, adapterContext);
 
       if (value.onImpl1 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl1);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.toJson(writer, value.onImpl1, adapterContext);
       }
     }
   }
 
-  public enum OnIface1 implements Adapter<TestQuery.OnIface1> {
+  public enum OnIface1 implements CompositeAdapter<TestQuery.OnIface1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnIface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.OnIface1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       TestQuery.Iface2 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _iface2 = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -129,39 +130,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface1 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface1 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("iface2");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, value.iface2, adapterContext);
     }
   }
 
-  public enum Iface2 implements Adapter<TestQuery.Iface2> {
+  public enum Iface2 implements CompositeAdapter<TestQuery.Iface2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.Iface2 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, adapterContext);
 
       TestQuery.OnImpl2 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, adapterContext);
       }
 
       return new TestQuery.Iface2(
@@ -172,33 +173,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface2 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface2 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.toJson(writer, customScalarAdapters, value.onIface2);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.toJson(writer, value.onIface2, adapterContext);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl2);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.toJson(writer, value.onImpl2, adapterContext);
       }
     }
   }
 
-  public enum OnIface2 implements Adapter<TestQuery.OnIface2> {
+  public enum OnIface2 implements CompositeAdapter<TestQuery.OnIface2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar1");
 
     @Override
-    public TestQuery.OnIface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.OnIface2 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String _scalar1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _scalar1 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -209,27 +210,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface2 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface2 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("scalar1");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1);
     }
   }
 
-  public enum OnImpl2 implements Adapter<TestQuery.OnImpl2> {
+  public enum OnImpl2 implements CompositeAdapter<TestQuery.OnImpl2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar2");
 
     @Override
-    public TestQuery.OnImpl2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.OnImpl2 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String _scalar2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _scalar2 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -240,27 +241,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl2 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl2 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("scalar2");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar2);
     }
   }
 
-  public enum OnImpl1 implements Adapter<TestQuery.OnImpl1> {
+  public enum OnImpl1 implements CompositeAdapter<TestQuery.OnImpl1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnImpl1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.OnImpl1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       TestQuery.Iface21 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _iface2 = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -271,39 +272,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl1 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl1 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("iface2");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, value.iface2, adapterContext);
     }
   }
 
-  public enum Iface21 implements Adapter<TestQuery.Iface21> {
+  public enum Iface21 implements CompositeAdapter<TestQuery.Iface21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.Iface21 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, adapterContext);
 
       TestQuery.OnImpl21 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, adapterContext);
       }
 
       return new TestQuery.Iface21(
@@ -314,33 +315,33 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface21 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface21 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.toJson(writer, customScalarAdapters, value.onIface2);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.toJson(writer, value.onIface2, adapterContext);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.toJson(writer, customScalarAdapters, value.onImpl2);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.toJson(writer, value.onImpl2, adapterContext);
       }
     }
   }
 
-  public enum OnIface21 implements Adapter<TestQuery.OnIface21> {
+  public enum OnIface21 implements CompositeAdapter<TestQuery.OnIface21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar3");
 
     @Override
-    public TestQuery.OnIface21 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.OnIface21 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+        throws IOException {
       String _scalar3 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar3 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _scalar3 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -351,27 +352,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface21 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface21 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("scalar3");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar3);
     }
   }
 
-  public enum OnImpl21 implements Adapter<TestQuery.OnImpl21> {
+  public enum OnImpl21 implements CompositeAdapter<TestQuery.OnImpl21> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar4");
 
     @Override
-    public TestQuery.OnImpl21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.OnImpl21 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
         throws IOException {
       String _scalar4 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar4 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _scalar4 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -382,10 +383,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl21 value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl21 value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("scalar4");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar4);
     }
   }
 }

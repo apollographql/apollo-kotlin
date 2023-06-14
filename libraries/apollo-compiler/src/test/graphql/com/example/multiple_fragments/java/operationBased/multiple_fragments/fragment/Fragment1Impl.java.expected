@@ -5,11 +5,11 @@
 //
 package com.example.multiple_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.multiple_fragments.fragment.selections.fragment1Selections;
 import com.example.multiple_fragments.type.ANode;
@@ -60,14 +60,14 @@ public class Fragment1Impl implements Fragment<Fragment1> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public Adapter<Fragment1> adapter() {
-    return new ObjectAdapter<Fragment1>(Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE, false);
+  public CompositeAdapter<Fragment1> adapter() {
+    return new ObjectCompositeAdapter<Fragment1>(Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE, false);
   }
 
   @Override

@@ -5,10 +5,10 @@
 //
 package com.example.subscriptions;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter;
@@ -104,14 +104,14 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    TestSubscription_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
+    TestSubscription_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(TestSubscription_ResponseAdapter.Data.INSTANCE, false);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(TestSubscription_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

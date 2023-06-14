@@ -21,10 +21,10 @@ public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapt
 
 public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalCompositeAdapter : com/apollographql/apollo3/api/CompositeAdapter {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompositeAdapter;)V
-	public fun deserializeComposite (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapter$DeserializeCompositeContext;)Lcom/google/common/base/Optional;
-	public synthetic fun deserializeComposite (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapter$DeserializeCompositeContext;)Ljava/lang/Object;
-	public fun serializeComposite (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/google/common/base/Optional;Lcom/apollographql/apollo3/api/CompositeAdapter$SerializeCompositeContext;)V
-	public synthetic fun serializeComposite (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CompositeAdapter$SerializeCompositeContext;)V
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)Lcom/google/common/base/Optional;
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)Ljava/lang/Object;
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/google/common/base/Optional;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)V
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)V
 }
 
 public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter : com/apollographql/apollo3/api/Adapter {
@@ -45,9 +45,9 @@ public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapte
 
 public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalCompositeAdapter : com/apollographql/apollo3/api/CompositeAdapter {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompositeAdapter;)V
-	public synthetic fun deserializeComposite (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapter$DeserializeCompositeContext;)Ljava/lang/Object;
-	public fun deserializeComposite (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapter$DeserializeCompositeContext;)Ljava/util/Optional;
-	public synthetic fun serializeComposite (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CompositeAdapter$SerializeCompositeContext;)V
-	public fun serializeComposite (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Optional;Lcom/apollographql/apollo3/api/CompositeAdapter$SerializeCompositeContext;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)Ljava/util/Optional;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Optional;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)V
 }
 

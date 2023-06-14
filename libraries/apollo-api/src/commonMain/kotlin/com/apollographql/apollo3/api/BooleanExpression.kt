@@ -4,7 +4,6 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
-import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
@@ -140,7 +139,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>,
     typename: String?,
-    context: DeserializeCompositeContext,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     path: List<Any>?,
 ): Boolean {
   // Remove "data" from the path
@@ -148,10 +147,18 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !variables.contains(it.name)
-      is BLabel -> context.hasDeferredFragment(croppedPath!!, it.label)
+      is BLabel -> hasDeferredFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
+}
+
+private fun hasDeferredFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
+  if (deferredFragmentIdentifiers == null) {
+    // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
+    return true
+  }
+  return deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path, label))
 }
 
 /**

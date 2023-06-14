@@ -1,15 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -27,8 +27,8 @@ import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
+import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -78,7 +78,7 @@ internal fun readFromResponseCodeBlock(
             regularProperties.mapIndexed { index, property ->
               val variableName = context.layout.variableName(property.info.responseName)
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
-              if (property.info.type.rawType() is IrScalarType) {
+              if (!property.info.type.rawType().isComposite()) {
                 CodeBlock.of(
                     "%L·->·%N·=·%L.$fromJson($reader,·%T.$Empty)",
                     index,
@@ -88,7 +88,7 @@ internal fun readFromResponseCodeBlock(
                 )
               } else {
                 CodeBlock.of(
-                    "%L·->·%N·=·%L.$deserializeComposite($reader,·${Identifier.context})",
+                    "%L·->·%N·=·%L.$fromJson($reader,·$adapterContext)",
                     index,
                     variableName,
                     adapterInitializer,
@@ -149,7 +149,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M(${Identifier.context}.falseBooleanVariables,·$typenameLiteral,·${Identifier.context},·$pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($adapterContext.falseVariables,·$typenameLiteral,·$adapterContext.deferredFragmentIdentifiers,·$pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
@@ -159,7 +159,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$deserializeComposite($reader, ${Identifier.context})\n",
+                "%L·=·%L.$fromJson($reader, $adapterContext)\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -245,7 +245,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.serializeComposite}($writer, $value.%N, ${Identifier.context})",
+        "%L.$toJson($writer, $value.%N, $adapterContext)",
         adapterInitializer,
         propertyName,
     )
@@ -261,18 +261,17 @@ internal fun CodeBlock.Builder.addSerializeStatement(
     type: IrType,
     adapterInitializer: CodeBlock,
     propertyName: String,
-    contextArgument: String = Identifier.context,
 ) {
-  if (type.isScalarOrWrappedScalar()) {
+  if (!type.rawType().isComposite()) {
     addStatement(
-        "%L.toJson($writer, %T.$Empty, $value.%N)",
+        "%L.$toJson($writer, %T.$Empty, $value.%N)",
         adapterInitializer,
         KotlinSymbols.CustomScalarAdapters,
         propertyName,
     )
   } else {
     addStatement(
-        "%L.${Identifier.serializeComposite}($writer, $value.%N, $contextArgument)",
+        "%L.$toJson($writer, $value.%N, $adapterContext)",
         adapterInitializer,
         propertyName,
     )

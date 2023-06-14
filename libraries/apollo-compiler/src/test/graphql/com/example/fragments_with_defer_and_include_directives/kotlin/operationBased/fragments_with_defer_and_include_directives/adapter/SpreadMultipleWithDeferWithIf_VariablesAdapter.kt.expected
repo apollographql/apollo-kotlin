@@ -5,27 +5,23 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.BooleanAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf
-import kotlin.IllegalStateException
+import kotlin.Boolean
+import kotlin.Suppress
 import kotlin.Unit
 
-public object SpreadMultipleWithDeferWithIf_VariablesAdapter :
-    Adapter<SpreadMultipleWithDeferWithIf> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      SpreadMultipleWithDeferWithIf = throw
-      IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object SpreadMultipleWithDeferWithIf_VariablesAdapter {
+  @Suppress("UNUSED_PARAMETER")
+  public fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: SpreadMultipleWithDeferWithIf,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
   ): Unit {
     writer.name("cond")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond)
   }
 }

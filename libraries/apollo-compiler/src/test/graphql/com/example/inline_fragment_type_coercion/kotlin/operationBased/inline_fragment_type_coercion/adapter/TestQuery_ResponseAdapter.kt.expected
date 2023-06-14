@@ -5,7 +5,8 @@
 //
 package com.example.inline_fragment_type_coercion.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -20,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _foo: TestQuery.Data.Foo? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = Foo.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _foo = Foo.obj(true).nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -41,25 +42,25 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("foo")
-      Foo.obj(true).nullable().toJson(writer, customScalarAdapters, value.foo)
+      Foo.obj(true).nullable().toJson(writer, value.foo, adapterContext)
     }
 
-    private object Foo : Adapter<TestQuery.Data.Foo> {
+    private object Foo : CompositeAdapter<TestQuery.Data.Foo> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Foo {
         var __typename: String? = null
         var _foo: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _foo = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -69,10 +70,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onBar: TestQuery.Data.Foo.OnBar? = null
-        if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("BarObject","FooBar").evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
-              customScalarAdapters)
+              adapterContext)
         }
 
         return TestQuery.Data.Foo(
@@ -84,31 +85,31 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Foo,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("foo")
-        StringAdapter.toJson(writer, customScalarAdapters, value.foo)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.foo)
 
         if (value.onBar != null) {
           com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.toJson(writer,
-              customScalarAdapters, value.onBar)
+              value.onBar, adapterContext)
         }
       }
 
-      private object OnBar : Adapter<TestQuery.Data.Foo.OnBar> {
+      private object OnBar : CompositeAdapter<TestQuery.Data.Foo.OnBar> {
         public val RESPONSE_NAMES: List<String> = listOf("bar")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Foo.OnBar {
+        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+            TestQuery.Data.Foo.OnBar {
           var _bar: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _bar = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _bar = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -120,11 +121,11 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Foo.OnBar,
+          adapterContext: CompositeAdapterContext,
         ): Unit {
           writer.name("bar")
-          StringAdapter.toJson(writer, customScalarAdapters, value.bar)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.bar)
         }
       }
     }

@@ -334,9 +334,9 @@ fun <T> buildData(
     resolver: FakeResolver,
     customScalarAdapters: CustomScalarAdapters,
 ): T {
-  return adapter.obj(false).deserializeComposite(
+  return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, customScalarAdapters)),
-      CompositeAdapter.DeserializeCompositeContext(customScalarAdapters = CustomScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
+      CompositeAdapterContext.Builder().customScalarAdapters(CustomScalarAdapters.PassThrough).build()
   )
 }
 

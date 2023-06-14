@@ -1,7 +1,6 @@
 package  com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.Executable.Variables
-import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
@@ -22,7 +21,7 @@ interface Executable<D: Executable.Data> {
    * Serializes the variables of this operation to a json
    */
   @Throws(IOException::class)
-  fun serializeVariables(writer: JsonWriter, context: SerializeVariablesContext)
+  fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withBooleanDefaultValues: Boolean)
 
   /**
    * A list of [CompiledSelection]. Used when reading from the cache and/or normalizing a model.

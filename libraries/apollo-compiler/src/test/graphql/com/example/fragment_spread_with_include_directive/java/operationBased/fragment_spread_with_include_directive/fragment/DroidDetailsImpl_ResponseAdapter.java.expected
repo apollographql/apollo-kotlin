@@ -5,8 +5,9 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -17,20 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements Adapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
+  public enum DroidDetails implements CompositeAdapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
 
     @Override
     public com.example.fragment_spread_with_include_directive.fragment.DroidDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
       String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -41,11 +42,11 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_include_directive.fragment.DroidDetails value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.fragment_spread_with_include_directive.fragment.DroidDetails value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
+      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
     }
   }
 }

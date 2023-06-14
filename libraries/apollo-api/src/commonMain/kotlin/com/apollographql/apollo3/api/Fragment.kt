@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
@@ -11,7 +10,7 @@ import okio.IOException
  */
 interface Fragment<D : Fragment.Data> : Executable<D> {
   @Throws(IOException::class)
-  override fun serializeVariables(writer: JsonWriter, context: SerializeVariablesContext)
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withBooleanDefaultValues: Boolean)
 
   override fun adapter(): CompositeAdapter<D>
 

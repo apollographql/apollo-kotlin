@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -45,10 +45,10 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(deserializeComposite)
+private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(fromJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-    .addParameter(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
+    .addParameter(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -58,11 +58,11 @@ private fun List<NamedType>.writeToResponseFunSpec(
     context: KotlinContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
-  return FunSpec.builder(serializeComposite)
+  return FunSpec.builder(toJson)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(value, adaptedTypeName)
-      .addParameter(Identifier.context, KotlinSymbols.SerializeCompositeContext)
+      .addParameter(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }

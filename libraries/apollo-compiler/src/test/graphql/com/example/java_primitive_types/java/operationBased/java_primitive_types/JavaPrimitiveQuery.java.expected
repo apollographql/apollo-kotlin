@@ -5,10 +5,10 @@
 //
 package com.example.java_primitive_types;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -152,14 +152,14 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    JavaPrimitiveQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
+    JavaPrimitiveQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(JavaPrimitiveQuery_ResponseAdapter.Data.INSTANCE, false);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(JavaPrimitiveQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

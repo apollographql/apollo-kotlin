@@ -5,7 +5,8 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -15,16 +16,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DogFragmentImpl_ResponseAdapter {
-  public object DogFragment : Adapter<com.example.data_builders.fragment.DogFragment> {
+  public object DogFragment : CompositeAdapter<com.example.data_builders.fragment.DogFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("woof")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.data_builders.fragment.DogFragment {
       var _woof: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _woof = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _woof = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -36,11 +37,11 @@ public object DogFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.data_builders.fragment.DogFragment,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("woof")
-      StringAdapter.toJson(writer, customScalarAdapters, value.woof)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.woof)
     }
   }
 }

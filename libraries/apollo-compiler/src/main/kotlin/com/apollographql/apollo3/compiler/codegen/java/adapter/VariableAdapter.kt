@@ -3,13 +3,13 @@
  */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeCompositeContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
+import com.apollographql.apollo3.compiler.codegen.Identifier.withBooleanDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -20,11 +20,10 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.IrBooleanValue
+import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -37,7 +36,6 @@ internal fun List<NamedType>.variableAdapterTypeSpec(
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.VariablesAdapter, adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
       .apply {
         if (this@variableAdapterTypeSpec.any { it.deprecationReason != null }) {
@@ -54,17 +52,17 @@ private fun List<NamedType>.writeToResponseMethodSpec(
   return MethodSpec.methodBuilder(serializeVariables)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
-      .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(adaptedTypeName, value)
-      .addParameter(JavaClassNames.SerializeVariablesContext, Identifier.context)
+      .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+      .addParameter(TypeName.BOOLEAN, withBooleanDefaultValues)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("$T $serializeCompositeContext = new $T(${Identifier.context}.${Identifier.customScalarAdapters})", JavaClassNames.SerializeCompositeContext, JavaClassNames.SerializeCompositeContext)
+  builder.addStatement("$T $adapterContext = new $T.Builder().$customScalarAdapters($customScalarAdapters).build()", JavaClassNames.CompositeAdapterContext, JavaClassNames.CompositeAdapterContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }
@@ -81,15 +79,15 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   }
 
   builder.add("$writer.name($S);\n", graphQlName)
-  if (type.isScalarOrWrappedScalar()) {
+  if (!type.rawType().isComposite()) {
     builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
   } else {
-    builder.addStatement("$L.$serializeComposite($writer, $value.$propertyName, $serializeCompositeContext)", adapterInitializer)
+    builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
   }
   if (type.isOptional()) {
     builder.endControlFlow()
     if (defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if (${Identifier.context}.withDefaultBooleanValues)")
+      builder.beginControlFlow("else if ($withBooleanDefaultValues)")
       builder.addStatement("$writer.name($S)", graphQlName)
       builder.addStatement(
           "$L.$toJson($writer, $T.$Empty, $L)",

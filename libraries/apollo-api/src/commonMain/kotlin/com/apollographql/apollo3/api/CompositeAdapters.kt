@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext
-import com.apollographql.apollo3.api.CompositeAdapter.SerializeCompositeContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
@@ -13,20 +11,20 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
 
 class ListCompositeAdapter<T>(private val wrappedAdapter: CompositeAdapter<T>) : CompositeAdapter<List<@JvmSuppressWildcards T>> {
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): List<T> {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
-      list.add(wrappedAdapter.deserializeComposite(reader, context))
+      list.add(wrappedAdapter.fromJson(reader, adapterContext))
     }
     reader.endArray()
     return list
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: List<T>, context: SerializeCompositeContext) {
+  override fun toJson(writer: JsonWriter, value: List<T>, adapterContext: CompositeAdapterContext) {
     writer.beginArray()
     value.forEach {
-      wrappedAdapter.serializeComposite(writer, it, context)
+      wrappedAdapter.toJson(writer, it, adapterContext)
     }
     writer.endArray()
   }
@@ -39,47 +37,47 @@ class NullableCompositeAdapter<T : Any>(private val wrappedAdapter: CompositeAda
     }
   }
 
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): T? {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       null
     } else {
-      wrappedAdapter.deserializeComposite(reader, context)
+      wrappedAdapter.fromJson(reader, adapterContext)
     }
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: T?, context: SerializeCompositeContext) {
+  override fun toJson(writer: JsonWriter, value: T?, adapterContext: CompositeAdapterContext) {
     if (value == null) {
       writer.nullValue()
     } else {
-      wrappedAdapter.serializeComposite(writer, value, context)
+      wrappedAdapter.toJson(writer, value, adapterContext)
     }
   }
 }
 
 class PresentCompositeAdapter<T>(private val wrappedAdapter: CompositeAdapter<T>) : CompositeAdapter<Optional.Present<@JvmSuppressWildcards T>> {
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): Optional.Present<T> {
-    return Optional.Present(wrappedAdapter.deserializeComposite(reader, context))
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.fromJson(reader, adapterContext))
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: Optional.Present<T>, context: SerializeCompositeContext) {
-    wrappedAdapter.serializeComposite(writer, value.value, context)
+  override fun toJson(writer: JsonWriter, value: Optional.Present<T>, adapterContext: CompositeAdapterContext) {
+    wrappedAdapter.toJson(writer, value.value, adapterContext)
   }
 }
 
 class ApolloOptionalCompositeAdapter<T>(private val wrappedAdapter: CompositeAdapter<T>) : CompositeAdapter<Optional<@JvmSuppressWildcards T>> {
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): Optional<T> {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       Optional.Absent
     } else {
-      Optional.Present(wrappedAdapter.deserializeComposite(reader, context))
+      Optional.Present(wrappedAdapter.fromJson(reader, adapterContext))
     }
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: Optional<T>, context: SerializeCompositeContext) {
+  override fun toJson(writer: JsonWriter, value: Optional<T>, adapterContext: CompositeAdapterContext) {
     if (value is Optional.Present) {
-      wrappedAdapter.serializeComposite(writer, value.value, context)
+      wrappedAdapter.toJson(writer, value.value, adapterContext)
     } else {
       writer.nullValue()
     }
@@ -87,11 +85,11 @@ class ApolloOptionalCompositeAdapter<T>(private val wrappedAdapter: CompositeAda
 }
 
 class AdapterToCompositeAdapter<T>(private val wrappedAdapter: Adapter<T>) : CompositeAdapter<T> {
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): T {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): T {
     return wrappedAdapter.fromJson(reader, CustomScalarAdapters.Empty)
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: T, context: SerializeCompositeContext) {
+  override fun toJson(writer: JsonWriter, value: T, adapterContext: CompositeAdapterContext) {
     wrappedAdapter.toJson(writer, CustomScalarAdapters.Empty, value)
   }
 }
@@ -100,26 +98,26 @@ class ObjectCompositeAdapter<T>(
     private val wrappedAdapter: CompositeAdapter<T>,
     private val buffered: Boolean,
 ) : CompositeAdapter<@JvmSuppressWildcards T> {
-  override fun deserializeComposite(reader: JsonReader, context: DeserializeCompositeContext): T {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): T {
     val actualReader = if (buffered) {
       reader.buffer()
     } else {
       reader
     }
     actualReader.beginObject()
-    return wrappedAdapter.deserializeComposite(actualReader, context).also {
+    return wrappedAdapter.fromJson(actualReader, adapterContext).also {
       actualReader.endObject()
     }
   }
 
-  override fun serializeComposite(writer: JsonWriter, value: T, context: SerializeCompositeContext) {
+  override fun toJson(writer: JsonWriter, value: T, adapterContext: CompositeAdapterContext) {
     if (buffered && writer !is MapJsonWriter) {
       /**
        * Convert to a Map first
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
-      wrappedAdapter.serializeComposite(mapWriter, value, context)
+      wrappedAdapter.toJson(mapWriter, value, adapterContext)
       mapWriter.endObject()
 
       /**
@@ -128,7 +126,7 @@ class ObjectCompositeAdapter<T>(
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
-      wrappedAdapter.serializeComposite(writer, value, context)
+      wrappedAdapter.toJson(writer, value, adapterContext)
       writer.endObject()
     }
   }
@@ -151,8 +149,8 @@ fun <T> CompositeAdapter<T>.present() = PresentCompositeAdapter(this)
 @JvmOverloads
 fun <T> CompositeAdapter<T>.toJsonString(
     value: T,
-    context: SerializeCompositeContext = SerializeCompositeContext(customScalarAdapters = CustomScalarAdapters.Empty),
+    adapterContext: CompositeAdapterContext = CompositeAdapterContext.Builder().build(),
     indent: String? = null,
 ): String = buildJsonString(indent) {
-  this@toJsonString.serializeComposite(this, value, context)
+  this@toJsonString.toJson(this, value, adapterContext)
 }

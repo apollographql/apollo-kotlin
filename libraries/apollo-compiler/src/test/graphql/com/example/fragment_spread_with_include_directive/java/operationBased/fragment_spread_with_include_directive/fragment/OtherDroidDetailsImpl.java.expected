@@ -5,11 +5,11 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.fragment.selections.OtherDroidDetailsSelections;
 import com.example.fragment_spread_with_include_directive.type.Droid;
@@ -60,14 +60,14 @@ public class OtherDroidDetailsImpl implements Fragment<OtherDroidDetails> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public Adapter<OtherDroidDetails> adapter() {
-    return new ObjectAdapter<OtherDroidDetails>(OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE, false);
+  public CompositeAdapter<OtherDroidDetails> adapter() {
+    return new ObjectCompositeAdapter<OtherDroidDetails>(OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE, false);
   }
 
   @Override

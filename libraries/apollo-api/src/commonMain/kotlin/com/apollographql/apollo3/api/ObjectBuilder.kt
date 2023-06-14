@@ -47,7 +47,7 @@ class BuilderProperty<T>(val adapter: CompositeAdapter<T>) {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.deserializeComposite(MapJsonReader(data), CompositeAdapter.DeserializeCompositeContext(customScalarAdapters = CustomScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+    return adapter.fromJson(MapJsonReader(data), CompositeAdapterContext.Builder().build())
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {

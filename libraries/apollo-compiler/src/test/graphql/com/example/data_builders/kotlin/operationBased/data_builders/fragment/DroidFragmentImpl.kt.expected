@@ -5,8 +5,8 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -29,12 +29,15 @@ public class DroidFragmentImpl() : Fragment<DroidFragment> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DroidFragment> =
+  public override fun adapter(): CompositeAdapter<DroidFragment> =
       DroidFragmentImpl_ResponseAdapter.DroidFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

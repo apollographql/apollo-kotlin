@@ -6,11 +6,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -37,8 +36,8 @@ import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
+import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.isScalarOrWrappedScalar
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -111,7 +110,7 @@ internal fun readFromResponseCodeBlock(
             regularProperties.mapIndexed { index, property ->
               val variableName = context.layout.variableName(property.info.responseName)
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
-              if (property.info.type.isScalarOrWrappedScalar()) {
+              if (!property.info.type.rawType().isComposite()) {
                 CodeBlock.of(
                     "case $L: $L = $L.$fromJson($reader, $T.$Empty); break;",
                     index,
@@ -121,7 +120,7 @@ internal fun readFromResponseCodeBlock(
                 )
               } else {
                 CodeBlock.of(
-                    "case $L: $L = $L.$deserializeComposite($reader, ${Identifier.context}); break;",
+                    "case $L: $L = $L.$fromJson($reader, $adapterContext); break;",
                     index,
                     variableName,
                     adapterInitializer
@@ -161,7 +160,7 @@ internal fun readFromResponseCodeBlock(
 
   val syntheticLoop = syntheticProperties.map { property ->
     val fromJsonCall = CodeBlock.of(
-        "$L.INSTANCE.$deserializeComposite($reader, ${Identifier.context})",
+        "$L.INSTANCE.$fromJson($reader, $adapterContext)",
         context.resolver.resolveModelAdapter(property.info.type.modelPath())
     )
     val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
@@ -180,7 +179,7 @@ internal fun readFromResponseCodeBlock(
               "null"
             }
             beginControlFlow(
-                "if ($T.$evaluate($L, ${Identifier.context}.falseBooleanVariables, $__typename, ${Identifier.context}, $pathLiteral))",
+                "if ($T.$evaluate($L, $adapterContext.falseVariables, $__typename, $adapterContext.deferredFragmentIdentifiers, $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
@@ -270,7 +269,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name($S)", info.responseName)
-    if (info.type.isScalarOrWrappedScalar()) {
+    if (!info.type.rawType().isComposite()) {
       builder.addStatement(
           "$L.$toJson($writer, $T.$Empty, $value.$propertyName)",
           adapterInitializer,
@@ -278,7 +277,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
       )
     } else {
       builder.addStatement(
-          "$L.$serializeComposite($writer, $value.$propertyName, ${Identifier.context})",
+          "$L.$toJson($writer, $value.$propertyName, $adapterContext)",
           adapterInitializer,
       )
     }
@@ -296,7 +295,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     }
     val fieldValue = CodeBlock.of("$value.$propertyName")
     builder.addStatement(
-        "$L.INSTANCE.$serializeComposite($writer, $L, ${Identifier.context})",
+        "$L.INSTANCE.$toJson($writer, $L, $adapterContext)",
         adapterInitializer,
         context.unwrapOptionalValue(fieldValue, resolvedType)
     )

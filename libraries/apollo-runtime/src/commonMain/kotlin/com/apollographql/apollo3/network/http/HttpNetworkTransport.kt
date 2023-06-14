@@ -142,7 +142,7 @@ private constructor(
       operation.parseJsonResponse(
           jsonReader = httpResponse.body!!.jsonReader(),
           customScalarAdapters = customScalarAdapters,
-          mergedDeferredFragmentIds = null,
+          deferredFragmentIdentifiers = null,
       )
     } catch (e: Exception) {
       errorResponse(operation, e)
@@ -198,7 +198,7 @@ private constructor(
                 operation.parseJsonResponse(
                     jsonReader = reader,
                     customScalarAdapters = customScalarAdapters,
-                    mergedDeferredFragmentIds = null,
+                    deferredFragmentIdentifiers = null,
                 )
               }
 
@@ -223,7 +223,7 @@ private constructor(
               operation.parseJsonResponse(
                   jsonReader = merged.jsonReader(),
                   customScalarAdapters = customScalarAdapters,
-                  mergedDeferredFragmentIds = deferredFragmentIds,
+                  deferredFragmentIdentifiers = deferredFragmentIds,
               ).newBuilder().isLast(isLast).build()
             }
           }

@@ -3,7 +3,6 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -38,7 +37,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 
     name("variables")
     writeObject {
-      serializeVariables(this, SerializeVariablesContext(customScalarAdapters, withDefaultBooleanValues = false))
+      serializeVariables(this, customScalarAdapters, false)
     }
 
     name("query")
@@ -66,17 +65,13 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  val variables = booleanVariables(customScalarAdapters)
   return ResponseParser.parse(
       jsonReader,
       this,
-      CompositeAdapter.DeserializeCompositeContext(
-          customScalarAdapters = customScalarAdapters,
-          falseBooleanVariables = variables,
-          mergedDeferredFragmentIds = mergedDeferredFragmentIds,
-      )
+      customScalarAdapters,
+      deferredFragmentIdentifiers,
   )
 }
 

@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeComposite
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -102,10 +102,10 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(deserializeComposite)
+    return FunSpec.builder(fromJson)
         .returns(adaptedClassName)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.context, KotlinSymbols.DeserializeCompositeContext)
+        .addParameter(adapterContext, KotlinSymbols.CompositeAdapterContext)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -131,7 +131,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$deserializeComposite($reader, ${Identifier.context}, $__typename)",
+          "-> %T.$fromJson($reader, $adapterContext, $__typename)",
           ClassName.from(path + model.modelName),
       )
     }
@@ -141,11 +141,11 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(serializeComposite)
+    return FunSpec.builder(toJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, KotlinSymbols.JsonWriter)
         .addParameter(value, adaptedClassName)
-        .addParameter(Identifier.context, KotlinSymbols.SerializeCompositeContext)
+        .addParameter(adapterContext, KotlinSymbols.CompositeAdapterContext)
         .addCode(writeToResponseCodeBlock())
         .build()
   }
@@ -156,7 +156,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     builder.beginControlFlow("when($value) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       builder.addStatement(
-          "is %T -> %T.$serializeComposite($writer, $value, ${Identifier.context})",
+          "is %T -> %T.$toJson($writer, $value, $adapterContext)",
           context.resolver.resolveModel(model.id),
           ClassName.from(path + model.modelName),
       )

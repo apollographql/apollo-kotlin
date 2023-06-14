@@ -5,10 +5,10 @@
 //
 package com.example.capitalized_fields;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter;
@@ -101,14 +101,14 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
     // This operation doesn't have any variable
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override
