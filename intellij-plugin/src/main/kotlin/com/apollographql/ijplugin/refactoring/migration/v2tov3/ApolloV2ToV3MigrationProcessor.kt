@@ -29,7 +29,7 @@ import com.intellij.openapi.project.Project
 
 private const val apollo2 = "com.apollographql.apollo"
 private const val apollo3 = "com.apollographql.apollo3"
-private const val apollo3LatestVersion = "3.7.4"
+private const val apollo3LatestVersion = "3.8.2"
 
 /**
  * Migrations of Apollo Android v2 to Apollo Kotlin v3.
