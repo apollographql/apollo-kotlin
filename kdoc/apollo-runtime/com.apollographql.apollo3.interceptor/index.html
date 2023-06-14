@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.apollographql.apollo3.interceptor</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -27,7 +19,6 @@
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../images/apollo.svg">
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
@@ -38,7 +29,7 @@
     <div class="library-name">
 <a href="../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-alpha.2-SNAPSHOT
+    <div>3.8.3-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -53,58 +44,45 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="apollo-runtime::com.apollographql.apollo3.interceptor////PointingToDeclaration//-1314432391">
-  <div class="breadcrumbs"><a href="../index.html">apollo-runtime</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo3.interceptor</span></div>
+<div class="main-content" id="content" pageids="apollo-runtime::com.apollographql.apollo3.interceptor////PointingToDeclaration//-1314432391">
+  <div class="breadcrumbs"><a href="../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3.interceptor</a></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3.</span><wbr><span><span>interceptor</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="562286288%2FClasslikes%2F-1314432391" anchor-label="ApolloInterceptor" id="562286288%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-apollo-interceptor/index.html"><span>Apollo</span><wbr><span><span>Interceptor</span></span></a></div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="562286288%2FClasslikes%2F-1314432391" anchor-label="ApolloInterceptor" id="562286288%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-apollo-interceptor/index.html"><span>Apollo</span><wbr><span><span>Interceptor</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="562286288%2FClasslikes%2F-1314432391"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-apollo-interceptor/index.html">ApolloInterceptor</a></div></div></div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-apollo-interceptor/index.html">ApolloInterceptor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
+        </div>
 <a data-name="1900644721%2FClasslikes%2F-1314432391" anchor-label="ApolloInterceptorChain" id="1900644721%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-apollo-interceptor-chain/index.html"><span>Apollo</span><wbr><span>Interceptor</span><wbr><span><span>Chain</span></span></a></div>
+        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-apollo-interceptor-chain/index.html"><span>Apollo</span><wbr><span>Interceptor</span><wbr><span><span>Chain</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1900644721%2FClasslikes%2F-1314432391"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-apollo-interceptor-chain/index.html">ApolloInterceptorChain</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1159663963%2FClasslikes%2F-1314432391" anchor-label="AutoPersistedQueryInterceptor" id="-1159663963%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-auto-persisted-query-interceptor/index.html"><span>Auto</span><wbr><span>Persisted</span><wbr><span>Query</span><wbr><span><span>Interceptor</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1159663963%2FClasslikes%2F-1314432391"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-auto-persisted-query-interceptor/index.html">AutoPersistedQueryInterceptor</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpMethodForHashedQueries<span class="token operator">: </span><a href="../../apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token punctuation">, </span></span><span class="parameter ">httpMethodForDocumentQueries<span class="token operator">: </span><a href="../../apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a></span></span><span class="token punctuation">)</span> : <a href="-apollo-interceptor/index.html">ApolloInterceptor</a></div></div></div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-apollo-interceptor-chain/index.html">ApolloInterceptorChain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
@@ -118,6 +96,6 @@
       </div>
     </div>
 </div>
-</body>
-</html>
+
+</body></html>
 

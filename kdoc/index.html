@@ -6,18 +6,10 @@
     <link href="images/logo-icon.svg" rel="icon" type="image/svg">
     <script>var pathToRoot = "";</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="scripts/sourceset_dependencies.js" async="async"></script>
 <link href="styles/style.css" rel="Stylesheet">
 <link href="styles/jetbrains-mono.css" rel="Stylesheet">
@@ -29,11 +21,6 @@
 <script type="text/javascript" src="scripts/platform-content-handler.js" async="async"></script>
 <script type="text/javascript" src="scripts/main.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/prism.js" async="async"></script>
-<script type="text/javascript" src="scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
-<link href="images/apollo.svg">
-<link href="styles/style.css" rel="Stylesheet">
-<link href="styles/prism.css" rel="Stylesheet">
-<link href="styles/logo-styles.css" rel="Stylesheet">
 </head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
@@ -44,7 +31,7 @@
             </a>
     </div>
     <div>
-4.0.0-alpha.2-SNAPSHOT    </div>
+3.8.3-SNAPSHOT    </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
@@ -257,17 +244,6 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="1394731512%2FMain%2F0" anchor-label="apollo-runtime-java" id="1394731512%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="apollo-runtime-java/index.html">apollo-runtime-java</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1394731512%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
 <a data-name="-363516507%2FMain%2F0" anchor-label="apollo-rx2-support" id="-363516507%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
         <div class="main-subrow ">
@@ -279,34 +255,12 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="1794691662%2FMain%2F0" anchor-label="apollo-rx2-support-java" id="1794691662%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="apollo-rx2-support-java/index.html">apollo-rx2-support-java</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1794691662%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
 <a data-name="661975492%2FMain%2F0" anchor-label="apollo-rx3-support" id="661975492%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="apollo-rx3-support/index.html">apollo-rx3-support</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="661975492%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="872008079%2FMain%2F0" anchor-label="apollo-rx3-support-java" id="872008079%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="apollo-rx3-support-java/index.html">apollo-rx3-support-java</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="872008079%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment"></span></div>
