@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections;
 import com.example.named_fragment_inside_inline_fragment.type.Character;
@@ -60,14 +60,14 @@ public class CharacterNameImpl implements Fragment<CharacterName> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public CompositeAdapter<CharacterName> adapter() {
-    return new ObjectCompositeAdapter<CharacterName>(CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE, false);
+  public Adapter<CharacterName> adapter() {
+    return new ObjectAdapter<CharacterName>(CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE, false);
   }
 
   @Override

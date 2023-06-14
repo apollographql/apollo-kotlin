@@ -5,7 +5,7 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestSubscription_ResponseAdapter {
-  public object Data : CompositeAdapter<TestSubscription.Data> {
+  public object Data : Adapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestSubscription.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _commentAdded = CommentAdded.obj().nullable().deserializeComposite(reader, context)
+          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,28 +39,27 @@ public object TestSubscription_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestSubscription.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("commentAdded")
-      CommentAdded.obj().nullable().serializeComposite(writer, value.commentAdded, context)
+      CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
     }
 
-    private object CommentAdded : CompositeAdapter<TestSubscription.Data.CommentAdded> {
+    private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestSubscription.Data.CommentAdded {
         var _id: Int? = null
         var _content: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _content = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _id = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _content = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -71,16 +70,16 @@ public object TestSubscription_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestSubscription.Data.CommentAdded,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("id")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        IntAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("content")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.content)
+        StringAdapter.toJson(writer, customScalarAdapters, value.content)
       }
     }
   }

@@ -5,28 +5,31 @@
 //
 package com.example.nested_conditional_inline.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.VariablesAdapter
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.present
 import com.example.nested_conditional_inline.TestQuery
 import com.example.nested_conditional_inline.type.adapter.Episode_ResponseAdapter
+import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
-  public override fun serializeVariables(
+public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      TestQuery = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery,
-    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeCompositeContext =
-        CompositeAdapter.SerializeCompositeContext(context.customScalarAdapters)
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().serializeComposite(writer, value.episode,
-          serializeCompositeContext)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
+          value.episode)
     }
   }
 }

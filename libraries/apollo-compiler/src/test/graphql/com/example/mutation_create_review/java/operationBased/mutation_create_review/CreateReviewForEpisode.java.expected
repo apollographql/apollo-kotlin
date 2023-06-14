@@ -5,14 +5,14 @@
 //
 package com.example.mutation_create_review;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DefaultFakeResolver;
 import com.apollographql.apollo3.api.FakeResolver;
 import com.apollographql.apollo3.api.FakeResolverKt;
 import com.apollographql.apollo3.api.Mutation;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter;
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter;
@@ -126,14 +126,14 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    CreateReviewForEpisode_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
+    CreateReviewForEpisode_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(CreateReviewForEpisode_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(CreateReviewForEpisode_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

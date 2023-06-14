@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -15,16 +15,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterNameImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<CharacterNameImpl.Data> {
+  public object Data : Adapter<CharacterNameImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): CharacterNameImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        CharacterNameImpl.Data {
       var _name: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -34,13 +34,13 @@ public object CharacterNameImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CharacterNameImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

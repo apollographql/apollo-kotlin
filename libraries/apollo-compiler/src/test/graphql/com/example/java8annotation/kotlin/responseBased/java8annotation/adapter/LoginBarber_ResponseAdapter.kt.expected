@@ -5,7 +5,7 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object LoginBarber_ResponseAdapter {
-  public object Data : CompositeAdapter<LoginBarber.Data> {
+  public object Data : Adapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): LoginBarber.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _login = Login.obj().deserializeComposite(reader, context)
+          0 -> _login = Login.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -36,25 +36,25 @@ public object LoginBarber_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: LoginBarber.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("login")
-      Login.obj().serializeComposite(writer, value.login, context)
+      Login.obj().toJson(writer, customScalarAdapters, value.login)
     }
 
-    private object Login : CompositeAdapter<LoginBarber.Data.Login> {
+    private object Login : Adapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): LoginBarber.Data.Login {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          LoginBarber.Data.Login {
         var _response: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _response = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _response = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -64,13 +64,13 @@ public object LoginBarber_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: LoginBarber.Data.Login,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("response")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.response)
+        StringAdapter.toJson(writer, customScalarAdapters, value.response)
       }
     }
   }

@@ -5,11 +5,11 @@
 //
 package com.example.enum_field;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.adapter.TestQuery_ResponseAdapter;
 import com.example.enum_field.selections.TestQuerySelections;
@@ -96,14 +96,14 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

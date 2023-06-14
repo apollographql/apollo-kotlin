@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -13,31 +13,30 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<IFragmentImpl.Data> {
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): IFragmentImpl.Data {
+  public object Data : Adapter<IFragmentImpl.Data> {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        IFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "A",
-        -> AData.deserializeComposite(reader, context, __typename)
+        -> AData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.deserializeComposite(reader, context, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: IFragmentImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       when(value) {
-        is IFragmentImpl.AData -> AData.serializeComposite(writer, value, context)
-        is IFragmentImpl.OtherData -> OtherData.serializeComposite(writer, value, context)
+        is IFragmentImpl.AData -> AData.toJson(writer, customScalarAdapters, value)
+        is IFragmentImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }
   }
@@ -45,18 +44,18 @@ public object IFragmentImpl_ResponseAdapter {
   public object AData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
 
-    public fun deserializeComposite(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): IFragmentImpl.AData {
       var __typename: String? = typename
       var _fieldA: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _fieldA = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -67,32 +66,32 @@ public object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeComposite(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: IFragmentImpl.AData,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("fieldA")
-      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA)
     }
   }
 
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public fun deserializeComposite(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): IFragmentImpl.OtherData {
       var __typename: String? = typename
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -102,13 +101,13 @@ public object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeComposite(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: IFragmentImpl.OtherData,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 }

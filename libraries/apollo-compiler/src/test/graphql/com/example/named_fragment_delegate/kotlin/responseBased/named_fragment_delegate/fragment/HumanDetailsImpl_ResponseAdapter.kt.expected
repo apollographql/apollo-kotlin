@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_delegate.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,20 +20,20 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<HumanDetailsImpl.Data> {
+  public object Data : Adapter<HumanDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): HumanDetailsImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        HumanDetailsImpl.Data {
       var _name: String? = null
       var _profileLink: Any? = null
       var _friendsConnection: HumanDetailsImpl.Data.FriendsConnection? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _profileLink = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _friendsConnection = FriendsConnection.obj().deserializeComposite(reader, context)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,32 +45,32 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("profileLink")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profileLink)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().serializeComposite(writer, value.friendsConnection, context)
+      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
-    private object FriendsConnection : CompositeAdapter<HumanDetailsImpl.Data.FriendsConnection> {
+    private object FriendsConnection : Adapter<HumanDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HumanDetailsImpl.Data.FriendsConnection {
         var _edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().deserializeComposite(reader, context)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -80,26 +80,26 @@ public object HumanDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: HumanDetailsImpl.Data.FriendsConnection,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().serializeComposite(writer, value.edges, context)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      private object Edge : CompositeAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
+      private object Edge : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             HumanDetailsImpl.Data.FriendsConnection.Edge {
           var _node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().deserializeComposite(reader, context)
+              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -109,26 +109,26 @@ public object HumanDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: HumanDetailsImpl.Data.FriendsConnection.Edge,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().serializeComposite(writer, value.node, context)
+          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        private object Node : CompositeAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
+        private object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
             var _name: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -138,13 +138,13 @@ public object HumanDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: HumanDetailsImpl.Data.FriendsConnection.Edge.Node,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+            StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }
         }
       }

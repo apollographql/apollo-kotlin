@@ -5,7 +5,7 @@
 //
 package com.example.hero_name_query_long_name.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -21,18 +21,18 @@ public object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter
     {
   public object Data :
-      CompositeAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
+      Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
       {
     public val RESPONSE_NAMES: List<String> = listOf("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
       var _heroAVeryAVeryAVeryAVeryAVeryAVeryAV: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().deserializeComposite(reader, context)
+          0 -> _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -42,30 +42,30 @@ public object
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
-      HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().serializeComposite(writer,
-          value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV, context)
+      HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().toJson(writer, customScalarAdapters,
+          value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
     }
 
     private object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV :
-        CompositeAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
+        Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
         {
       public val RESPONSE_NAMES: List<String> =
           listOf("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
         var _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringAdapter.fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -75,13 +75,13 @@ public object
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty,
+        StringAdapter.toJson(writer, customScalarAdapters,
             value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
       }
     }

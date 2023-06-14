@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,16 +18,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("i")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _i: TestQuery.Data.I? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _i = I.obj(true).nullable().deserializeComposite(reader, context)
+          0 -> _i = I.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,32 +37,32 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("i")
-      I.obj(true).nullable().serializeComposite(writer, value.i, context)
+      I.obj(true).nullable().toJson(writer, customScalarAdapters, value.i)
     }
 
-    private object I : CompositeAdapter<TestQuery.Data.I> {
+    private object I : Adapter<TestQuery.Data.I> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.I {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.I {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
-        val _iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.deserializeComposite(reader,
-            context)
+        val _iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Data.I(
           __typename = __typename!!,
@@ -70,16 +70,16 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.I,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.serializeComposite(writer,
-            value.iFragment, context)
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.toJson(writer,
+            customScalarAdapters, value.iFragment)
       }
     }
   }

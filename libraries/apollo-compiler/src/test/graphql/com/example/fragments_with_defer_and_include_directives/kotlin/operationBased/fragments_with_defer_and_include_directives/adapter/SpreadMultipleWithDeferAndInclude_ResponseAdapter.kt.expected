@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
@@ -26,17 +26,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
-  public object Data : CompositeAdapter<SpreadMultipleWithDeferAndInclude.Data> {
+  public object Data : Adapter<SpreadMultipleWithDeferAndInclude.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         SpreadMultipleWithDeferAndInclude.Data {
       var _hero: SpreadMultipleWithDeferAndInclude.Data.Hero? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().deserializeComposite(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,27 +45,26 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: SpreadMultipleWithDeferAndInclude.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().serializeComposite(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : CompositeAdapter<SpreadMultipleWithDeferAndInclude.Data.Hero> {
+    private object Hero : Adapter<SpreadMultipleWithDeferAndInclude.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           SpreadMultipleWithDeferAndInclude.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -76,10 +74,10 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),label("b_first"),label("b_second"),and(label("b_third"),variable("cond3")),and(label("b_fourth"),not(variable("cond4"))))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
+        if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),label("b_first"),label("b_second"),and(label("b_third"),variable("cond3")),and(label("b_fourth"),not(variable("cond4"))))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.deserializeComposite(reader,
-              context)
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
         }
 
         return SpreadMultipleWithDeferAndInclude.Data.Hero(
@@ -88,17 +86,17 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadMultipleWithDeferAndInclude.Data.Hero,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeComposite(writer,
-              value.droidDetails, context)
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }

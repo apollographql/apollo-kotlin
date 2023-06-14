@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,21 +16,20 @@ import kotlin.collections.List
 
 public object UserFragmentImpl_ResponseAdapter {
   public object UserFragment :
-      CompositeAdapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
+      Adapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("firstName", "lastName", "avatar")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_with_variables.fragment.UserFragment {
       var _firstName: String? = null
       var _lastName: String? = null
       var _avatar: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _firstName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _lastName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _avatar = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,19 +41,19 @@ public object UserFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_with_variables.fragment.UserFragment,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("firstName")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.firstName)
+      StringAdapter.toJson(writer, customScalarAdapters, value.firstName)
 
       writer.name("lastName")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lastName)
+      StringAdapter.toJson(writer, customScalarAdapters, value.lastName)
 
       writer.name("avatar")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.avatar)
+      StringAdapter.toJson(writer, customScalarAdapters, value.avatar)
     }
   }
 }

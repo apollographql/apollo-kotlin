@@ -5,11 +5,11 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections;
 import com.example.root_query_fragment_with_nested_fragments.type.Query;
@@ -60,14 +60,14 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public CompositeAdapter<QueryFragment> adapter() {
-    return new ObjectCompositeAdapter<QueryFragment>(QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE, false);
+  public Adapter<QueryFragment> adapter() {
+    return new ObjectAdapter<QueryFragment>(QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE, false);
   }
 
   @Override

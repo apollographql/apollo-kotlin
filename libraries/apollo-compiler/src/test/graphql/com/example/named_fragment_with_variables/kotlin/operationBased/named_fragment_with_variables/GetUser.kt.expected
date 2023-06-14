@@ -6,10 +6,10 @@
 package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter
@@ -33,11 +33,11 @@ public data class GetUser(
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
-    GetUser_VariablesAdapter.serializeVariables(writer, this, context)
+      customScalarAdapters: CustomScalarAdapters): Unit {
+    GetUser_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
+  public override fun adapter(): Adapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

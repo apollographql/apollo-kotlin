@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,18 +16,16 @@ import kotlin.collections.List
 
 public object OtherDroidDetailsImpl_ResponseAdapter {
   public object OtherDroidDetails :
-      CompositeAdapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails>
-      {
+      Adapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("id")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails {
       var _id: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,13 +35,13 @@ public object OtherDroidDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("id")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
     }
   }
 }

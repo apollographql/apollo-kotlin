@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_intersection.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.NullableDoubleAdapter
@@ -27,16 +27,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : CompositeAdapter<TestOperation.Data> {
+  public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestOperation.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _random = Random.obj(true).deserializeComposite(reader, context)
+          0 -> _random = Random.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,25 +46,25 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("random")
-      Random.obj(true).serializeComposite(writer, value.random, context)
+      Random.obj(true).toJson(writer, customScalarAdapters, value.random)
     }
 
-    private object Random : CompositeAdapter<TestOperation.Data.Random> {
+    private object Random : Adapter<TestOperation.Data.Random> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestOperation.Data.Random {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestOperation.Data.Random {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -74,17 +74,17 @@ public object TestOperation_ResponseAdapter {
         }
 
         var _onBeing: TestOperation.Data.Random.OnBeing? = null
-        if (possibleTypes("Human","Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.deserializeComposite(reader,
-              context)
+          _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
+              customScalarAdapters)
         }
 
         var _onWookie: TestOperation.Data.Random.OnWookie? = null
-        if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.deserializeComposite(reader,
-              context)
+          _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestOperation.Data.Random(
@@ -94,40 +94,39 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Random,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onBeing != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.serializeComposite(writer,
-              value.onBeing, context)
+          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.toJson(writer,
+              customScalarAdapters, value.onBeing)
         }
 
         if (value.onWookie != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.serializeComposite(writer,
-              value.onWookie, context)
+          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.toJson(writer,
+              customScalarAdapters, value.onWookie)
         }
       }
 
-      private object OnBeing : CompositeAdapter<TestOperation.Data.Random.OnBeing> {
+      private object OnBeing : Adapter<TestOperation.Data.Random.OnBeing> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
-            TestOperation.Data.Random.OnBeing {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
           var _name: String? = null
           var _friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _friends = Friend.obj(true).list().deserializeComposite(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -137,10 +136,10 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
-          if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
-            _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.deserializeComposite(reader,
-                context)
+            _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
+                customScalarAdapters)
           }
 
           return TestOperation.Data.Random.OnBeing(
@@ -151,39 +150,39 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.Random.OnBeing,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("friends")
-          Friend.obj(true).list().serializeComposite(writer, value.friends, context)
+          Friend.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
 
           if (value.onHuman != null) {
-            com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.serializeComposite(writer,
-                value.onHuman, context)
+            com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.toJson(writer,
+                customScalarAdapters, value.onHuman)
           }
         }
 
-        private object Friend : CompositeAdapter<TestOperation.Data.Random.OnBeing.Friend> {
+        private object Friend : Adapter<TestOperation.Data.Random.OnBeing.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
             var _name: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -193,10 +192,10 @@ public object TestOperation_ResponseAdapter {
             }
 
             var _onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
-            if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+            if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.deserializeComposite(reader,
-                  context)
+              _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
+                  customScalarAdapters)
             }
 
             return TestOperation.Data.Random.OnBeing.Friend(
@@ -206,35 +205,35 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestOperation.Data.Random.OnBeing.Friend,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             writer.name("name")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+            StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.onWookie != null) {
-              com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.serializeComposite(writer,
-                  value.onWookie, context)
+              com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.toJson(writer,
+                  customScalarAdapters, value.onWookie)
             }
           }
 
-          private object OnWookie :
-              CompositeAdapter<TestOperation.Data.Random.OnBeing.Friend.OnWookie> {
+          private object OnWookie : Adapter<TestOperation.Data.Random.OnBeing.Friend.OnWookie> {
             public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var _lifeExpectancy: Double? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader,
+                      customScalarAdapters)
                   else -> break
                 }
               }
@@ -244,30 +243,31 @@ public object TestOperation_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestOperation.Data.Random.OnBeing.Friend.OnWookie,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("lifeExpectancy")
-              NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
+              NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
             }
           }
         }
 
-        private object OnHuman : CompositeAdapter<TestOperation.Data.Random.OnBeing.OnHuman> {
+        private object OnHuman : Adapter<TestOperation.Data.Random.OnBeing.OnHuman> {
           public val RESPONSE_NAMES: List<String> = listOf("profilePictureUrl", "friends")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnBeing.OnHuman {
             var _profilePictureUrl: String? = null
             var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                1 -> _friends = Friend.obj(true).list().deserializeComposite(reader, context)
+                0 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader,
+                    customScalarAdapters)
+                1 -> _friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -278,33 +278,31 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestOperation.Data.Random.OnBeing.OnHuman,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("profilePictureUrl")
-            NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty,
-                value.profilePictureUrl)
+            NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
 
             writer.name("friends")
-            Friend.obj(true).list().serializeComposite(writer, value.friends, context)
+            Friend.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
           }
 
-          private object Friend : CompositeAdapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend>
-              {
+          private object Friend : Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
               var _isFamous: Boolean? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                  1 -> _isFamous = NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                  1 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -314,10 +312,10 @@ public object TestOperation_ResponseAdapter {
               }
 
               var _onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
-              if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+              if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
                 reader.rewind()
-                _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.deserializeComposite(reader,
-                    context)
+                _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
+                    customScalarAdapters)
               }
 
               return TestOperation.Data.Random.OnBeing.OnHuman.Friend(
@@ -327,35 +325,35 @@ public object TestOperation_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("__typename")
-              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
               writer.name("isFamous")
-              NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous)
+              NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
               if (value.onWookie != null) {
-                com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.serializeComposite(writer,
-                    value.onWookie, context)
+                com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.toJson(writer,
+                    customScalarAdapters, value.onWookie)
               }
             }
 
             private object OnWookie :
-                CompositeAdapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
+                Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
               public val RESPONSE_NAMES: List<String> = listOf("race")
 
-              public override fun deserializeComposite(reader: JsonReader,
-                  context: CompositeAdapter.DeserializeCompositeContext):
+              public override fun fromJson(reader: JsonReader,
+                  customScalarAdapters: CustomScalarAdapters):
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var _race: Race? = null
 
-                while (true) {
+                while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> _race = Race_ResponseAdapter.deserializeComposite(reader, context)
+                    0 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
                 }
@@ -365,32 +363,31 @@ public object TestOperation_ResponseAdapter {
                 )
               }
 
-              public override fun serializeComposite(
+              public override fun toJson(
                 writer: JsonWriter,
+                customScalarAdapters: CustomScalarAdapters,
                 `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie,
-                context: CompositeAdapter.SerializeCompositeContext,
               ): Unit {
                 writer.name("race")
-                Race_ResponseAdapter.serializeComposite(writer, value.race, context)
+                Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
               }
             }
           }
         }
       }
 
-      private object OnWookie : CompositeAdapter<TestOperation.Data.Random.OnWookie> {
+      private object OnWookie : Adapter<TestOperation.Data.Random.OnWookie> {
         public val RESPONSE_NAMES: List<String> = listOf("race", "friends")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
-            TestOperation.Data.Random.OnWookie {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnWookie {
           var _race: Race? = null
           var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _race = Race_ResponseAdapter.deserializeComposite(reader, context)
-              1 -> _friends = Friend.obj().list().deserializeComposite(reader, context)
+              0 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -401,29 +398,29 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.Random.OnWookie,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("race")
-          Race_ResponseAdapter.serializeComposite(writer, value.race, context)
+          Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
 
           writer.name("friends")
-          Friend.obj().list().serializeComposite(writer, value.friends, context)
+          Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
         }
 
-        private object Friend : CompositeAdapter<TestOperation.Data.Random.OnWookie.Friend> {
+        private object Friend : Adapter<TestOperation.Data.Random.OnWookie.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnWookie.Friend {
             var _lifeExpectancy: Double? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -433,13 +430,13 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestOperation.Data.Random.OnWookie.Friend,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("lifeExpectancy")
-            NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
+            NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
           }
         }
       }

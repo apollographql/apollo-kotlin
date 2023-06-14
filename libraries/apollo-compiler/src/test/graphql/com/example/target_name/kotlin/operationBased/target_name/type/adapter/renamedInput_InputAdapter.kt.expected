@@ -5,7 +5,7 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
@@ -16,19 +16,18 @@ import com.example.target_name.type.renamedInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object renamedInput_InputAdapter : CompositeAdapter<renamedInput> {
-  public override fun deserializeComposite(reader: JsonReader,
-      context: CompositeAdapter.DeserializeCompositeContext): renamedInput = throw
-      IllegalStateException("Input type used in output position")
+public object renamedInput_InputAdapter : Adapter<renamedInput> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      renamedInput = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeComposite(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: renamedInput,
-    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.`field`)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.`field`)
     }
   }
 }

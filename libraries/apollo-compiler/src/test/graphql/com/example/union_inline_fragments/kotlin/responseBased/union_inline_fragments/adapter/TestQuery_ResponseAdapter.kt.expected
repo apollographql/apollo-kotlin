@@ -5,7 +5,7 @@
 //
 package com.example.union_inline_fragments.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -19,21 +19,21 @@ import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.adapter.Episode_ResponseAdapter
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj().nullable().list().nullable().deserializeComposite(reader, context)
+          0 -> _search = Search.obj().nullable().list().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -43,41 +43,41 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("search")
-      Search.obj().nullable().list().nullable().serializeComposite(writer, value.search, context)
+      Search.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
     }
 
-    private object Search : CompositeAdapter<TestQuery.Data.Search> {
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Search {
+    private object Search : Adapter<TestQuery.Data.Search> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Search {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Droid",
           "Human",
-          -> CharacterSearch.deserializeComposite(reader, context, __typename)
+          -> CharacterSearch.fromJson(reader, customScalarAdapters, __typename)
           "Starship",
-          -> StarshipSearch.deserializeComposite(reader, context, __typename)
+          -> StarshipSearch.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherSearch.deserializeComposite(reader, context, __typename)
+          -> OtherSearch.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Search,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is TestQuery.Data.CharacterSearch -> CharacterSearch.serializeComposite(writer, value,
-              context)
-          is TestQuery.Data.StarshipSearch -> StarshipSearch.serializeComposite(writer, value,
-              context)
-          is TestQuery.Data.OtherSearch -> OtherSearch.serializeComposite(writer, value, context)
+          is TestQuery.Data.CharacterSearch -> CharacterSearch.toJson(writer, customScalarAdapters,
+              value)
+          is TestQuery.Data.StarshipSearch -> StarshipSearch.toJson(writer, customScalarAdapters,
+              value)
+          is TestQuery.Data.OtherSearch -> OtherSearch.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -85,9 +85,9 @@ public object TestQuery_ResponseAdapter {
     public object CharacterSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name", "friends")
 
-      public fun deserializeComposite(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.CharacterSearch {
         var __typename: String? = typename
@@ -95,12 +95,13 @@ public object TestQuery_ResponseAdapter {
         var _name: String? = null
         var _friends: List<TestQuery.Data.CharacterSearch.Friend?>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            3 -> _friends = Friend.obj().nullable().list().nullable().deserializeComposite(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -113,51 +114,51 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeComposite(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.CharacterSearch,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().nullable().list().nullable().serializeComposite(writer, value.friends, context)
+        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
+            value.friends)
       }
 
-      private object Friend : CompositeAdapter<TestQuery.Data.CharacterSearch.Friend> {
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
-            TestQuery.Data.CharacterSearch.Friend {
+      private object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.CharacterSearch.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Human",
-            -> HumanFriend.deserializeComposite(reader, context, __typename)
+            -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)
             "Droid",
-            -> DroidFriend.deserializeComposite(reader, context, __typename)
+            -> DroidFriend.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherFriend.deserializeComposite(reader, context, __typename)
+            -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.CharacterSearch.Friend,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           when(value) {
-            is TestQuery.Data.CharacterSearch.HumanFriend -> HumanFriend.serializeComposite(writer,
-                value, context)
-            is TestQuery.Data.CharacterSearch.DroidFriend -> DroidFriend.serializeComposite(writer,
-                value, context)
-            is TestQuery.Data.CharacterSearch.OtherFriend -> OtherFriend.serializeComposite(writer,
-                value, context)
+            is TestQuery.Data.CharacterSearch.HumanFriend -> HumanFriend.toJson(writer,
+                customScalarAdapters, value)
+            is TestQuery.Data.CharacterSearch.DroidFriend -> DroidFriend.toJson(writer,
+                customScalarAdapters, value)
+            is TestQuery.Data.CharacterSearch.OtherFriend -> OtherFriend.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -166,9 +167,9 @@ public object TestQuery_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet",
             "friends")
 
-        public fun deserializeComposite(
+        public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.CharacterSearch.HumanFriend {
           var __typename: String? = typename
@@ -176,12 +177,13 @@ public object TestQuery_ResponseAdapter {
           var _homePlanet: String? = null
           var _friends: List<TestQuery.Data.CharacterSearch.HumanFriend.Friend?>? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              3 -> _friends = Friend.obj().nullable().list().nullable().deserializeComposite(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+                  customScalarAdapters)
               else -> break
             }
           }
@@ -194,39 +196,39 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public fun serializeComposite(
+        public fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.CharacterSearch.HumanFriend,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("homePlanet")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().serializeComposite(writer, value.friends,
-              context)
+          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
+              value.friends)
         }
 
-        private object Friend : CompositeAdapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend>
-            {
+        private object Friend : Adapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.CharacterSearch.HumanFriend.Friend {
             var __typename: String? = null
             var _firstAppearsIn: Episode? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-                1 -> _firstAppearsIn = Episode_ResponseAdapter.deserializeComposite(reader, context)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> _firstAppearsIn = Episode_ResponseAdapter.fromJson(reader,
+                    customScalarAdapters)
                 else -> break
               }
             }
@@ -237,16 +239,16 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.CharacterSearch.HumanFriend.Friend,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             writer.name("firstAppearsIn")
-            Episode_ResponseAdapter.serializeComposite(writer, value.firstAppearsIn, context)
+            Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.firstAppearsIn)
           }
         }
       }
@@ -255,9 +257,9 @@ public object TestQuery_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction",
             "friends")
 
-        public fun deserializeComposite(
+        public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.CharacterSearch.DroidFriend {
           var __typename: String? = typename
@@ -265,12 +267,13 @@ public object TestQuery_ResponseAdapter {
           var _primaryFunction: String? = null
           var _friends: List<TestQuery.Data.CharacterSearch.DroidFriend.Friend?>? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              3 -> _friends = Friend.obj().nullable().list().nullable().deserializeComposite(reader, context)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+                  customScalarAdapters)
               else -> break
             }
           }
@@ -283,37 +286,36 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public fun serializeComposite(
+        public fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.CharacterSearch.DroidFriend,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().serializeComposite(writer, value.friends,
-              context)
+          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
+              value.friends)
         }
 
-        private object Friend : CompositeAdapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend>
-            {
+        private object Friend : Adapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("id")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.CharacterSearch.DroidFriend.Friend {
             var _id: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -323,13 +325,13 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.CharacterSearch.DroidFriend.Friend,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("id")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+            StringAdapter.toJson(writer, customScalarAdapters, value.id)
           }
         }
       }
@@ -337,18 +339,18 @@ public object TestQuery_ResponseAdapter {
       public object OtherFriend {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-        public fun deserializeComposite(
+        public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.CharacterSearch.OtherFriend {
           var __typename: String? = typename
           var _name: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -359,16 +361,16 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public fun serializeComposite(
+        public fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.CharacterSearch.OtherFriend,
-          @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }
@@ -376,18 +378,18 @@ public object TestQuery_ResponseAdapter {
     public object StarshipSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public fun deserializeComposite(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.StarshipSearch {
         var __typename: String? = typename
         var _name: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -398,32 +400,32 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeComposite(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.StarshipSearch,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
 
     public object OtherSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun deserializeComposite(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherSearch {
         var __typename: String? = typename
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -433,13 +435,13 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public fun serializeComposite(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.OtherSearch,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

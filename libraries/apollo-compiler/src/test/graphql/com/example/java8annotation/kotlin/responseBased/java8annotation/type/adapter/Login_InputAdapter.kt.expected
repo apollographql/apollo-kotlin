@@ -5,7 +5,7 @@
 //
 package com.example.java8annotation.type.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -14,17 +14,16 @@ import com.example.java8annotation.type.Login
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object Login_InputAdapter : CompositeAdapter<Login> {
-  public override fun deserializeComposite(reader: JsonReader,
-      context: CompositeAdapter.DeserializeCompositeContext): Login = throw
-      IllegalStateException("Input type used in output position")
+public object Login_InputAdapter : Adapter<Login> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      Login = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeComposite(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: Login,
-    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     writer.name("email")
-    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.email)
+    StringAdapter.toJson(writer, customScalarAdapters, value.email)
   }
 }

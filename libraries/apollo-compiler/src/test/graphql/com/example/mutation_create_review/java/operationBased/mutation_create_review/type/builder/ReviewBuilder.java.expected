@@ -7,7 +7,6 @@ package com.example.mutation_create_review.type.builder;
 
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
 import com.apollographql.apollo3.api.ObjectBuilderKt;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
@@ -40,7 +39,7 @@ public class ReviewBuilder {
   }
 
   public ReviewBuilder listOfListOfEnum(List<List<Episode>> listOfListOfEnum) {
-    __fields.put("listOfListOfEnum", ObjectBuilderKt.adaptValue(new ListCompositeAdapter<>(new ListCompositeAdapter<>(Episode_ResponseAdapter.INSTANCE)), listOfListOfEnum));
+    __fields.put("listOfListOfEnum", ObjectBuilderKt.adaptValue(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE)), listOfListOfEnum));
     return this;
   }
 

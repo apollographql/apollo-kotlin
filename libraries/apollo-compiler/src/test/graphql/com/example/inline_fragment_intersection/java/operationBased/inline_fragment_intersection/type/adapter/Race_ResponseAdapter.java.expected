@@ -5,26 +5,27 @@
 //
 package com.example.inline_fragment_intersection.type.adapter;
 
-import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.type.Race;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Race_ResponseAdapter implements CompositeAdapter<Race> {
+public enum Race_ResponseAdapter implements Adapter<Race> {
   INSTANCE;
 
   @Override
-  public Race deserializeComposite(JsonReader reader,
-      CompositeAdapter.DeserializeCompositeContext context) throws IOException {
+  public Race fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     String rawValue = reader.nextString();
     return Race.safeValueOf(rawValue);
   }
 
   @Override
-  public void serializeComposite(JsonWriter writer, Race value,
-      CompositeAdapter.SerializeCompositeContext context) throws IOException {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Race value)
+      throws IOException {
     writer.value(value.rawValue);
   }
 }

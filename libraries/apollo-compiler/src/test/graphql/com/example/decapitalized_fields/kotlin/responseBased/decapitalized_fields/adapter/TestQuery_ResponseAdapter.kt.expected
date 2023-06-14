@@ -5,7 +5,7 @@
 //
 package com.example.decapitalized_fields.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -19,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _Horse: TestQuery.Data.Horse? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj().nullable().deserializeComposite(reader, context)
+          0 -> _Horse = Horse.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,29 +38,29 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("Horse")
-      Horse.obj().nullable().serializeComposite(writer, value.horse, context)
+      Horse.obj().nullable().toJson(writer, customScalarAdapters, value.horse)
     }
 
-    private object Horse : CompositeAdapter<TestQuery.Data.Horse> {
+    private object Horse : Adapter<TestQuery.Data.Horse> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Horse {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Horse {
         var __typename: String? = null
         var _Donkey: String? = null
         var _Cow: TestQuery.Data.Horse.Cow? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _Donkey = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _Cow = Cow.obj().nullable().deserializeComposite(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _Donkey = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -72,31 +72,31 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Horse,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("Donkey")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.donkey)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.donkey)
 
         writer.name("Cow")
-        Cow.obj().nullable().serializeComposite(writer, value.cow, context)
+        Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
       }
 
-      private object Cow : CompositeAdapter<TestQuery.Data.Horse.Cow> {
+      private object Cow : Adapter<TestQuery.Data.Horse.Cow> {
         public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Horse.Cow {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Horse.Cow {
           var _Moo: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _Moo = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _Moo = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -106,13 +106,13 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Horse.Cow,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("Moo")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo)
         }
       }
     }

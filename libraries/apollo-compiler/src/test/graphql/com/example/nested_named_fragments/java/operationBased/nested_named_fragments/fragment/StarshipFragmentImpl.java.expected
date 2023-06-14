@@ -5,11 +5,11 @@
 //
 package com.example.nested_named_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
-import com.apollographql.apollo3.api.VariablesAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections;
 import com.example.nested_named_fragments.type.Starship;
@@ -60,14 +60,14 @@ public class StarshipFragmentImpl implements Fragment<StarshipFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This fragment doesn't have any variable
   }
 
   @Override
-  public CompositeAdapter<StarshipFragment> adapter() {
-    return new ObjectCompositeAdapter<StarshipFragment>(StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE, false);
+  public Adapter<StarshipFragment> adapter() {
+    return new ObjectAdapter<StarshipFragment>(StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE, false);
   }
 
   @Override

@@ -5,7 +5,8 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -18,18 +19,17 @@ import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
   public object CharacterAppearsIn :
-      CompositeAdapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn>
-      {
+      Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().deserializeComposite(reader, context)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -39,13 +39,14 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().serializeComposite(writer, value.appearsIn, context)
+      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
+          value.appearsIn)
     }
   }
 }

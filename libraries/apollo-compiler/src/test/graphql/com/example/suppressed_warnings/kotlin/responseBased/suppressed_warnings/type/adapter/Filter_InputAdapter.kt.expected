@@ -6,7 +6,7 @@
 package com.example.suppressed_warnings.type.adapter
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
@@ -21,27 +21,26 @@ import kotlin.Unit
 
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
-public object Filter_InputAdapter : CompositeAdapter<Filter> {
-  public override fun deserializeComposite(reader: JsonReader,
-      context: CompositeAdapter.DeserializeCompositeContext): Filter = throw
-      IllegalStateException("Input type used in output position")
+public object Filter_InputAdapter : Adapter<Filter> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      Filter = throw IllegalStateException("Input type used in output position")
 
-  public override fun serializeComposite(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: Filter,
-    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     if (value.name is Optional.Present) {
       writer.name("name")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.name)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.name)
     }
     if (value.deprecated is Optional.Present) {
       writer.name("deprecated")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.deprecated)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.deprecated)
     }
     if (value.experimental is Optional.Present) {
       writer.name("experimental")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.experimental)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.experimental)
     }
   }
 }

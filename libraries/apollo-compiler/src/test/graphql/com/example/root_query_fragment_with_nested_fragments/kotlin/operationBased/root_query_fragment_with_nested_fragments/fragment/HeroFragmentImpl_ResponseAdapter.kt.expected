@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,18 +16,16 @@ import kotlin.collections.List
 
 public object HeroFragmentImpl_ResponseAdapter {
   public object HeroFragment :
-      CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment>
-      {
+      Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment {
       var _name: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,13 +35,13 @@ public object HeroFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

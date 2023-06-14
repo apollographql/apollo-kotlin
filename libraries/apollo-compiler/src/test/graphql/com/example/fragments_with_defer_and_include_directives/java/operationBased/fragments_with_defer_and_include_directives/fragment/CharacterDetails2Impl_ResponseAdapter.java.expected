@@ -5,9 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -18,21 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CharacterDetails2Impl_ResponseAdapter {
-  public enum CharacterDetails2 implements CompositeAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2> {
+  public enum CharacterDetails2 implements Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2 deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2 fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,11 +44,11 @@ public class CharacterDetails2Impl_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2 value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2 value)
+        throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }
   }
 }

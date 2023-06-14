@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,17 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AllStarships_ResponseAdapter {
-  public object Data : CompositeAdapter<AllStarships.Data> {
+  public object Data : Adapter<AllStarships.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("allStarships")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.AllStarships.Data {
       var _allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _allStarships = AllStarships.obj().nullable().deserializeComposite(reader, context)
+          0 -> _allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,27 +38,27 @@ public object AllStarships_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.nested_named_fragments.AllStarships.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("allStarships")
-      AllStarships.obj().nullable().serializeComposite(writer, value.allStarships, context)
+      AllStarships.obj().nullable().toJson(writer, customScalarAdapters, value.allStarships)
     }
 
     private object AllStarships :
-        CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships> {
+        Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
         var _edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().deserializeComposite(reader, context)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -69,27 +68,27 @@ public object AllStarships_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().serializeComposite(writer, value.edges, context)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge :
-          CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge> {
+          Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
           var _node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj(true).nullable().deserializeComposite(reader, context)
+              0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -99,35 +98,34 @@ public object AllStarships_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("node")
-          Node.obj(true).nullable().serializeComposite(writer, value.node, context)
+          Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node :
-            CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node>
-            {
+            Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             reader.rewind()
-            val _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.deserializeComposite(reader,
-                context)
+            val _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
+                customScalarAdapters)
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
               __typename = __typename!!,
@@ -135,16 +133,16 @@ public object AllStarships_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.serializeComposite(writer,
-                value.starshipFragment, context)
+            com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.toJson(writer,
+                customScalarAdapters, value.starshipFragment)
           }
         }
       }

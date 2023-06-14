@@ -5,23 +5,24 @@
 //
 package com.example.optional.type.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.optional.type.Episode
 import kotlin.Unit
 
-public object Episode_ResponseAdapter : CompositeAdapter<Episode> {
-  public override fun deserializeComposite(reader: JsonReader,
-      context: CompositeAdapter.DeserializeCompositeContext): Episode {
+public object Episode_ResponseAdapter : Adapter<Episode> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      Episode {
     val rawValue = reader.nextString()!!
     return Episode.safeValueOf(rawValue)
   }
 
-  public override fun serializeComposite(
+  public override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: Episode,
-    context: CompositeAdapter.SerializeCompositeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

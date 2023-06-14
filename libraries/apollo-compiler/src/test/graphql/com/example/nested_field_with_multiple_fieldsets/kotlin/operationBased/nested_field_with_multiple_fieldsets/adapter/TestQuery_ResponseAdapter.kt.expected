@@ -5,7 +5,7 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -21,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj(true).nullable().deserializeComposite(reader, context)
+          0 -> _iface1 = Iface1.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,25 +40,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("iface1")
-      Iface1.obj(true).nullable().serializeComposite(writer, value.iface1, context)
+      Iface1.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface1)
     }
 
-    private object Iface1 : CompositeAdapter<TestQuery.Data.Iface1> {
+    private object Iface1 : Adapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Iface1 {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Iface1 {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,14 +68,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.deserializeComposite(reader,
-            context)
+        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
+            customScalarAdapters)
 
         var _onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
-        if (possibleTypes("Impl1").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("Impl1").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.deserializeComposite(reader,
-              context)
+          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Iface1(
@@ -85,33 +85,33 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Iface1,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.serializeComposite(writer,
-            value.onIface1, context)
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer,
+            customScalarAdapters, value.onIface1)
 
         if (value.onImpl1 != null) {
-          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.serializeComposite(writer,
-              value.onImpl1, context)
+          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer,
+              customScalarAdapters, value.onImpl1)
         }
       }
 
-      private object OnIface1 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1> {
+      private object OnIface1 : Adapter<TestQuery.Data.Iface1.OnIface1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Iface1.OnIface1 {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1 {
           var _iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().deserializeComposite(reader, context)
+              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -121,26 +121,25 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Iface1.OnIface1,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("iface2")
-          Iface2.obj(true).nullable().serializeComposite(writer, value.iface2, context)
+          Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
         }
 
-        private object Iface2 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
+        private object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
-              TestQuery.Data.Iface1.OnIface1.Iface2 {
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -150,14 +149,14 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.deserializeComposite(reader,
-                context)
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
+                customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+            if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.deserializeComposite(reader,
-                  context)
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader,
+                  customScalarAdapters)
             }
 
             return TestQuery.Data.Iface1.OnIface1.Iface2(
@@ -167,35 +166,34 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Iface1.OnIface1.Iface2,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.serializeComposite(writer,
-                value.onIface2, context)
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer,
+                customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.serializeComposite(writer,
-                  value.onImpl2, context)
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer,
+                  customScalarAdapters, value.onImpl2)
             }
           }
 
-          private object OnIface2 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2>
-              {
+          private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar1")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
               var _scalar1: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -205,27 +203,27 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("scalar1")
-              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
             }
           }
 
-          private object OnImpl2 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
+          private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar2")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
               var _scalar2: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar2 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -235,28 +233,28 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("scalar2")
-              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar2)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
             }
           }
         }
       }
 
-      private object OnImpl1 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1> {
+      private object OnImpl1 : Adapter<TestQuery.Data.Iface1.OnImpl1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Iface1.OnImpl1 {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1 {
           var _iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().deserializeComposite(reader, context)
+              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -266,26 +264,25 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Iface1.OnImpl1,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("iface2")
-          Iface2.obj(true).nullable().serializeComposite(writer, value.iface2, context)
+          Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
         }
 
-        private object Iface2 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
+        private object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
-              TestQuery.Data.Iface1.OnImpl1.Iface2 {
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -295,14 +292,14 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.deserializeComposite(reader,
-                context)
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
+                customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+            if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.deserializeComposite(reader,
-                  context)
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader,
+                  customScalarAdapters)
             }
 
             return TestQuery.Data.Iface1.OnImpl1.Iface2(
@@ -312,35 +309,34 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Iface1.OnImpl1.Iface2,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.serializeComposite(writer,
-                value.onIface2, context)
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer,
+                customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.serializeComposite(writer,
-                  value.onImpl2, context)
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer,
+                  customScalarAdapters, value.onImpl2)
             }
           }
 
-          private object OnIface2 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2>
-              {
+          private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar3")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
               var _scalar3: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar3 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -350,27 +346,27 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("scalar3")
-              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar3)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
             }
           }
 
-          private object OnImpl2 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
+          private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar4")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
               var _scalar4: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar4 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -380,13 +376,13 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("scalar4")
-              NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar4)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4)
             }
           }
         }

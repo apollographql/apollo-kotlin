@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -24,16 +24,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().deserializeComposite(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,27 +43,27 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().serializeComposite(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Hero {
         var __typename: String? = null
         var _id: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -73,24 +73,24 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.deserializeComposite(reader,
-              context)
+          _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
+              customScalarAdapters)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.deserializeComposite(reader,
-              context)
+          _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
+              customScalarAdapters)
         }
 
         var _onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        if (variable("withDetails").evaluate(context.falseBooleanVariables, null, context, null)) {
+        if (variable("withDetails").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.deserializeComposite(reader,
-              context)
+          _onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
@@ -102,45 +102,45 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         if (value.onHuman != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.serializeComposite(writer,
-              value.onHuman, context)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer,
+              customScalarAdapters, value.onHuman)
         }
 
         if (value.onDroid != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.serializeComposite(writer,
-              value.onDroid, context)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
+              customScalarAdapters, value.onDroid)
         }
 
         if (value.onCharacter != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.serializeComposite(writer,
-              value.onCharacter, context)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
+              customScalarAdapters, value.onCharacter)
         }
       }
 
-      private object OnHuman : CompositeAdapter<TestQuery.Data.Hero.OnHuman> {
+      private object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Hero.OnHuman {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
           var _name: String? = null
           var _homePlanet: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -151,31 +151,31 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Hero.OnHuman,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("homePlanet")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
         }
       }
 
-      private object OnDroid : CompositeAdapter<TestQuery.Data.Hero.OnDroid> {
+      private object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): TestQuery.Data.Hero.OnDroid {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
           var _name: String? = null
           var _primaryFunction: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -186,30 +186,29 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Hero.OnDroid,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
         }
       }
 
-      private object OnCharacter : CompositeAdapter<TestQuery.Data.Hero.OnCharacter> {
+      private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
-            TestQuery.Data.Hero.OnCharacter {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnCharacter {
           var _name: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -219,13 +218,13 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Hero.OnCharacter,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }

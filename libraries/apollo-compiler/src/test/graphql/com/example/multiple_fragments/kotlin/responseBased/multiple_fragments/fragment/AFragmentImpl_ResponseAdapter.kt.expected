@@ -5,7 +5,7 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -15,21 +15,20 @@ import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<AFragmentImpl.Data> {
+  public object Data : Adapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): AFragmentImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().nullable().deserializeComposite(reader, context)
+          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,35 +38,35 @@ public object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: AFragmentImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("node")
-      Node.obj().nullable().serializeComposite(writer, value.node, context)
+      Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
-    private object Node : CompositeAdapter<AFragmentImpl.Data.Node> {
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): AFragmentImpl.Data.Node {
+    private object Node : Adapter<AFragmentImpl.Data.Node> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ANode",
-          -> ANodeNode.deserializeComposite(reader, context, __typename)
+          -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.deserializeComposite(reader, context, __typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: AFragmentImpl.Data.Node,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         when(value) {
-          is AFragmentImpl.Data.ANodeNode -> ANodeNode.serializeComposite(writer, value, context)
-          is AFragmentImpl.Data.OtherNode -> OtherNode.serializeComposite(writer, value, context)
+          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
+          is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -75,20 +74,20 @@ public object AFragmentImpl_ResponseAdapter {
     public object ANodeNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "field1", "field2")
 
-      public fun deserializeComposite(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
         var _field1: String? = null
         var _field2: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _field1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _field2 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -100,35 +99,35 @@ public object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      public fun serializeComposite(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: AFragmentImpl.Data.ANodeNode,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("field1")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field1)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.field1)
 
         writer.name("field2")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field2)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.field2)
       }
     }
 
     public object OtherNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun deserializeComposite(
+      public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.OtherNode {
         var __typename: String? = typename
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -138,13 +137,13 @@ public object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      public fun serializeComposite(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: AFragmentImpl.Data.OtherNode,
-        @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

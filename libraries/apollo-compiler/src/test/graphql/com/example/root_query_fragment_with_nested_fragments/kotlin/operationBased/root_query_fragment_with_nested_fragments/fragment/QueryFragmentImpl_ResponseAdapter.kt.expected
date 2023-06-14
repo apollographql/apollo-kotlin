@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -19,24 +19,22 @@ import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment :
-      CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment>
-      {
+      Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment {
       var __typename: String? = null
       var _hero: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero? = null
       var _droid: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid? = null
       var _human: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _hero = Hero.obj(true).nullable().deserializeComposite(reader, context)
-          2 -> _droid = Droid.obj(true).nullable().deserializeComposite(reader, context)
-          3 -> _human = Human.obj(true).nullable().deserializeComposite(reader, context)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          2 -> _droid = Droid.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          3 -> _human = Human.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -49,44 +47,42 @@ public object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("hero")
-      Hero.obj(true).nullable().serializeComposite(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("droid")
-      Droid.obj(true).nullable().serializeComposite(writer, value.droid, context)
+      Droid.obj(true).nullable().toJson(writer, customScalarAdapters, value.droid)
 
       writer.name("human")
-      Human.obj(true).nullable().serializeComposite(writer, value.human, context)
+      Human.obj(true).nullable().toJson(writer, customScalarAdapters, value.human)
     }
 
     private object Hero :
-        CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>
-        {
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
-        val _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.deserializeComposite(reader,
-            context)
+        val _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
           __typename = __typename!!,
@@ -94,39 +90,38 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.serializeComposite(writer,
-            value.heroFragment, context)
+        com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
+            customScalarAdapters, value.heroFragment)
       }
     }
 
     private object Droid :
-        CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>
         {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
-        val _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.deserializeComposite(reader,
-            context)
+        val _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
           __typename = __typename!!,
@@ -134,39 +129,38 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.serializeComposite(writer,
-            value.droidFragment, context)
+        com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
+            customScalarAdapters, value.droidFragment)
       }
     }
 
     private object Human :
-        CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>
         {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human {
         var __typename: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
-        val _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.deserializeComposite(reader,
-            context)
+        val _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
           __typename = __typename!!,
@@ -174,33 +168,33 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.serializeComposite(writer,
-            value.onHuman, context)
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.toJson(writer,
+            customScalarAdapters, value.onHuman)
       }
 
       private object OnHuman :
-          CompositeAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman>
+          Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman>
           {
         public val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman {
           var _name: String? = null
           var _homePlanet: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _homePlanet = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -211,16 +205,16 @@ public object QueryFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("homePlanet")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
         }
       }
     }

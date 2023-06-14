@@ -5,8 +5,8 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -14,32 +14,31 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.Any
 import kotlin.String
-import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<HumanDetailsImpl.Data> {
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): HumanDetailsImpl.Data {
+  public object Data : Adapter<HumanDetailsImpl.Data> {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        HumanDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> CharacterData.deserializeComposite(reader, context, __typename)
+        -> CharacterData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.deserializeComposite(reader, context, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       when(value) {
-        is HumanDetailsImpl.CharacterData -> CharacterData.serializeComposite(writer, value,
-            context)
-        is HumanDetailsImpl.OtherData -> OtherData.serializeComposite(writer, value, context)
+        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, customScalarAdapters,
+            value)
+        is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }
   }
@@ -47,20 +46,20 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object CharacterData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "birthDate")
 
-    public fun deserializeComposite(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.CharacterData {
       var __typename: String? = typename
       var _name: String? = null
       var _birthDate: Any? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _birthDate = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -72,37 +71,37 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeComposite(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.CharacterData,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.birthDate)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
     }
   }
 
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public fun deserializeComposite(
+    public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.DeserializeCompositeContext,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.OtherData {
       var __typename: String? = typename
       var _name: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -113,16 +112,16 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun serializeComposite(
+    public fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HumanDetailsImpl.OtherData,
-      @Suppress("UNUSED_PARAMETER") context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

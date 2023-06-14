@@ -6,10 +6,10 @@
 package com.example.operationbased2_ex7
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter
@@ -32,11 +32,11 @@ public class TestOperation() : Query<TestOperation.Data> {
   public override fun name(): String = OPERATION_NAME
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestOperation_ResponseAdapter.Data.obj()
+  public override fun adapter(): Adapter<Data> = TestOperation_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

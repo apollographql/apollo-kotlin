@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -17,17 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails : CompositeAdapter<com.example.simple_fragment.fragment.HeroDetails> {
+  public object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,10 +36,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeComposite(reader,
-            context)
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+            customScalarAdapters)
       }
 
       return com.example.simple_fragment.fragment.HeroDetails(
@@ -49,17 +48,17 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.simple_fragment.fragment.HeroDetails,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeComposite(writer,
-            value.humanDetails, context)
+        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+            customScalarAdapters, value.humanDetails)
       }
     }
   }

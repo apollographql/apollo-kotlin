@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -15,16 +15,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CatFragmentImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<CatFragmentImpl.Data> {
+  public object Data : Adapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): CatFragmentImpl.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        CatFragmentImpl.Data {
       var _meow: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _meow = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _meow = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -34,13 +34,13 @@ public object CatFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CatFragmentImpl.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("meow")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.meow)
+      StringAdapter.toJson(writer, customScalarAdapters, value.meow)
     }
   }
 }

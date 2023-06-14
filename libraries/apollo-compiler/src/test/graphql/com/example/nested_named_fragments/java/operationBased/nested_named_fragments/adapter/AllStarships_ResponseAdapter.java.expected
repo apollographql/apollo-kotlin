@@ -5,13 +5,13 @@
 //
 package com.example.nested_named_fragments.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_named_fragments.fragment.StarshipFragment;
@@ -22,21 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AllStarships_ResponseAdapter {
-  public enum Data implements CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data> {
+  public enum Data implements Adapter<com.example.nested_named_fragments.AllStarships.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("allStarships");
 
     @Override
-    public com.example.nested_named_fragments.AllStarships.Data deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.nested_named_fragments.AllStarships.Data fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.nested_named_fragments.AllStarships.AllStarships1 _allStarships = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _allStarships = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).deserializeComposite(reader, context); break;
+          case 0: _allStarships = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,29 +46,27 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.nested_named_fragments.AllStarships.Data value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.nested_named_fragments.AllStarships.Data value) throws IOException {
       writer.name("allStarships");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).serializeComposite(writer, value.allStarships, context);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).toJson(writer, customScalarAdapters, value.allStarships);
     }
   }
 
-  public enum AllStarships implements CompositeAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1> {
+  public enum AllStarships implements Adapter<com.example.nested_named_fragments.AllStarships.AllStarships1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
     @Override
-    public com.example.nested_named_fragments.AllStarships.AllStarships1 deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.nested_named_fragments.AllStarships.AllStarships1 fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       List<com.example.nested_named_fragments.AllStarships.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).deserializeComposite(reader, context); break;
+          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -80,29 +77,27 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.nested_named_fragments.AllStarships.AllStarships1 value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.nested_named_fragments.AllStarships.AllStarships1 value) throws IOException {
       writer.name("edges");
-      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).serializeComposite(writer, value.edges, context);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
-  public enum Edge implements CompositeAdapter<com.example.nested_named_fragments.AllStarships.Edge> {
+  public enum Edge implements Adapter<com.example.nested_named_fragments.AllStarships.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public com.example.nested_named_fragments.AllStarships.Edge deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.nested_named_fragments.AllStarships.Edge fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.nested_named_fragments.AllStarships.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).deserializeComposite(reader, context); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -113,35 +108,33 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.nested_named_fragments.AllStarships.Edge value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.nested_named_fragments.AllStarships.Edge value) throws IOException {
       writer.name("node");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).serializeComposite(writer, value.node, context);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 
-  public enum Node implements CompositeAdapter<com.example.nested_named_fragments.AllStarships.Node> {
+  public enum Node implements Adapter<com.example.nested_named_fragments.AllStarships.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.nested_named_fragments.AllStarships.Node deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.nested_named_fragments.AllStarships.Node fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      StarshipFragment _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.deserializeComposite(reader, context);
+      StarshipFragment _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -152,13 +145,12 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.nested_named_fragments.AllStarships.Node value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.nested_named_fragments.AllStarships.Node value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.serializeComposite(writer, value.starshipFragment, context);
+      com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.toJson(writer, customScalarAdapters, value.starshipFragment);
     }
   }
 }

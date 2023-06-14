@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -20,21 +20,21 @@ import kotlin.collections.List
 
 public object StarshipFragmentImpl_ResponseAdapter {
   public object StarshipFragment :
-      CompositeAdapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
+      Adapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.StarshipFragment {
       var _id: String? = null
       var _name: String? = null
       var _pilotConnection: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _pilotConnection = PilotConnection.obj().nullable().deserializeComposite(reader, context)
+          0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -46,34 +46,33 @@ public object StarshipFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.nested_named_fragments.fragment.StarshipFragment,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("id")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
       writer.name("name")
-      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("pilotConnection")
-      PilotConnection.obj().nullable().serializeComposite(writer, value.pilotConnection, context)
+      PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
     private object PilotConnection :
-        CompositeAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>
-        {
+        Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
         var _edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge?>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().deserializeComposite(reader, context)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -83,28 +82,28 @@ public object StarshipFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().serializeComposite(writer, value.edges, context)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge :
-          CompositeAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge>
+          Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge>
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge {
           var _node: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj(true).nullable().deserializeComposite(reader, context)
+              0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -114,35 +113,35 @@ public object StarshipFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("node")
-          Node.obj(true).nullable().serializeComposite(writer, value.node, context)
+          Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node :
-            CompositeAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node>
+            Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node>
             {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             reader.rewind()
-            val _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.deserializeComposite(reader,
-                context)
+            val _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
+                customScalarAdapters)
 
             return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node(
               __typename = __typename!!,
@@ -150,16 +149,16 @@ public object StarshipFragmentImpl_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.serializeComposite(writer,
-                value.pilotFragment, context)
+            com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
+                customScalarAdapters, value.pilotFragment)
           }
         }
       }

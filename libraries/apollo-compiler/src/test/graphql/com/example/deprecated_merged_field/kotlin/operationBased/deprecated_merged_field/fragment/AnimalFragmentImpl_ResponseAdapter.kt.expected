@@ -5,7 +5,7 @@
 //
 package com.example.deprecated_merged_field.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -18,17 +18,16 @@ import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object AnimalFragment :
-      CompositeAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
+      Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,17 +37,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
-      if (possibleTypes("Cat").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.deserializeComposite(reader,
-            context)
+        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
+            customScalarAdapters)
       }
 
       var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
-      if (possibleTypes("Dog").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.deserializeComposite(reader,
-            context)
+        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
+            customScalarAdapters)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
@@ -58,37 +57,36 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.deprecated_merged_field.fragment.AnimalFragment,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onCat != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.serializeComposite(writer,
-            value.onCat, context)
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.toJson(writer,
+            customScalarAdapters, value.onCat)
       }
 
       if (value.onDog != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.serializeComposite(writer,
-            value.onDog, context)
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.toJson(writer,
+            customScalarAdapters, value.onDog)
       }
     }
 
     private object OnCat :
-        CompositeAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
+        Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
         var _name: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -98,28 +96,27 @@ public object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
 
     private object OnDog :
-        CompositeAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
+        Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
         var _name: String? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -129,13 +126,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

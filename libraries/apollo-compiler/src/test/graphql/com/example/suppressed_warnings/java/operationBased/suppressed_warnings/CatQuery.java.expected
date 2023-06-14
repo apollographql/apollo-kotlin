@@ -5,12 +5,12 @@
 //
 package com.example.suppressed_warnings;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.adapter.CatQuery_ResponseAdapter;
 import com.example.suppressed_warnings.adapter.CatQuery_VariablesAdapter;
@@ -107,14 +107,14 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    CatQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
+    CatQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(CatQuery_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(CatQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

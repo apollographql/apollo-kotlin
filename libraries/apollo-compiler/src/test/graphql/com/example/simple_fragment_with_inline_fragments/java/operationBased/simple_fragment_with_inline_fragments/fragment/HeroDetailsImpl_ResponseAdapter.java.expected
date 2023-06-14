@@ -5,17 +5,17 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -26,23 +26,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
+  public enum HeroDetails implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friends");
 
     @Override
-    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _name = null;
       List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friends = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).deserializeComposite(reader, context); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -56,49 +55,48 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) throws
+        IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friends");
-      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).serializeComposite(writer, value.friends, context);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
-  public enum Friend implements CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
+  public enum Friend implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.deserializeComposite(reader, context);
+        _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid _onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.deserializeComposite(reader, context);
+        _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -112,40 +110,39 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       if (value.onHuman != null) {
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.serializeComposite(writer, value.onHuman, context);
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
       }
 
       if (value.onDroid != null) {
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.serializeComposite(writer, value.onDroid, context);
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.toJson(writer, customScalarAdapters, value.onDroid);
       }
     }
   }
 
-  public enum OnHuman implements CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman> {
+  public enum OnHuman implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
     @Override
-    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -156,29 +153,28 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value) throws
+        IOException {
       writer.name("height");
-      Adapters.NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height);
+      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
     }
   }
 
-  public enum OnDroid implements CompositeAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid> {
+  public enum OnDroid implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
 
     @Override
-    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid deserializeComposite(
-        JsonReader reader, CompositeAdapter.DeserializeCompositeContext context) throws
-        IOException {
+    public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -189,11 +185,11 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeComposite(JsonWriter writer,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value,
-        CompositeAdapter.SerializeCompositeContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value) throws
+        IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
     }
   }
 }

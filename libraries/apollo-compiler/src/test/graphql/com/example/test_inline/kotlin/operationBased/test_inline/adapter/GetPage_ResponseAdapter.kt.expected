@@ -5,7 +5,7 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetPage_ResponseAdapter {
-  public object Data : CompositeAdapter<GetPage.Data> {
+  public object Data : Adapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    public override fun deserializeComposite(reader: JsonReader,
-        context: CompositeAdapter.DeserializeCompositeContext): GetPage.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
-      while (true) {
+      while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj(true).deserializeComposite(reader, context)
+          0 -> _collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,27 +39,27 @@ public object GetPage_ResponseAdapter {
       )
     }
 
-    public override fun serializeComposite(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: GetPage.Data,
-      context: CompositeAdapter.SerializeCompositeContext,
     ): Unit {
       writer.name("collection")
-      Collection.obj(true).serializeComposite(writer, value.collection, context)
+      Collection.obj(true).toJson(writer, customScalarAdapters, value.collection)
     }
 
-    private object Collection : CompositeAdapter<GetPage.Data.Collection> {
+    private object Collection : Adapter<GetPage.Data.Collection> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      public override fun deserializeComposite(reader: JsonReader,
-          context: CompositeAdapter.DeserializeCompositeContext): GetPage.Data.Collection {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          GetPage.Data.Collection {
         var __typename: String? = null
         var _items: List<GetPage.Data.Collection.Item>? = null
 
-        while (true) {
+        while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _items = Item.obj().list().deserializeComposite(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -69,10 +69,10 @@ public object GetPage_ResponseAdapter {
         }
 
         var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
-        if (possibleTypes("ParticularCollection").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.deserializeComposite(reader,
-              context)
+          _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
+              customScalarAdapters)
         }
 
         return GetPage.Data.Collection(
@@ -82,33 +82,33 @@ public object GetPage_ResponseAdapter {
         )
       }
 
-      public override fun serializeComposite(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetPage.Data.Collection,
-        context: CompositeAdapter.SerializeCompositeContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().serializeComposite(writer, value.items, context)
+        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
 
         if (value.onParticularCollection != null) {
-          com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.serializeComposite(writer,
-              value.onParticularCollection, context)
+          com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.toJson(writer,
+              customScalarAdapters, value.onParticularCollection)
         }
       }
 
-      private object Item : CompositeAdapter<GetPage.Data.Collection.Item> {
+      private object Item : Adapter<GetPage.Data.Collection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext): GetPage.Data.Collection.Item {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.Item {
           var _title: String? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -118,28 +118,28 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.Collection.Item,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("title")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
         }
       }
 
       private object OnParticularCollection :
-          CompositeAdapter<GetPage.Data.Collection.OnParticularCollection> {
+          Adapter<GetPage.Data.Collection.OnParticularCollection> {
         public val RESPONSE_NAMES: List<String> = listOf("items")
 
-        public override fun deserializeComposite(reader: JsonReader,
-            context: CompositeAdapter.DeserializeCompositeContext):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.Collection.OnParticularCollection {
           var _items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
 
-          while (true) {
+          while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _items = Item.obj(true).list().deserializeComposite(reader, context)
+              0 -> _items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -149,27 +149,26 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public override fun serializeComposite(
+        public override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.Collection.OnParticularCollection,
-          context: CompositeAdapter.SerializeCompositeContext,
         ): Unit {
           writer.name("items")
-          Item.obj(true).list().serializeComposite(writer, value.items, context)
+          Item.obj(true).list().toJson(writer, customScalarAdapters, value.items)
         }
 
-        private object Item : CompositeAdapter<GetPage.Data.Collection.OnParticularCollection.Item>
-            {
+        private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun deserializeComposite(reader: JsonReader,
-              context: CompositeAdapter.DeserializeCompositeContext):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               GetPage.Data.Collection.OnParticularCollection.Item {
             var __typename: String? = null
 
-            while (true) {
+            while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -179,10 +178,10 @@ public object GetPage_ResponseAdapter {
             }
 
             var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
-            if (possibleTypes("ParticularItem").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.deserializeComposite(reader,
-                  context)
+              _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
+                  customScalarAdapters)
             }
 
             return GetPage.Data.Collection.OnParticularCollection.Item(
@@ -191,33 +190,32 @@ public object GetPage_ResponseAdapter {
             )
           }
 
-          public override fun serializeComposite(
+          public override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: GetPage.Data.Collection.OnParticularCollection.Item,
-            context: CompositeAdapter.SerializeCompositeContext,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             if (value.onParticularItem != null) {
-              com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.serializeComposite(writer,
-                  value.onParticularItem, context)
+              com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.toJson(writer,
+                  customScalarAdapters, value.onParticularItem)
             }
           }
 
           private object OnParticularItem :
-              CompositeAdapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem>
-              {
+              Adapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
             public val RESPONSE_NAMES: List<String> = listOf("image")
 
-            public override fun deserializeComposite(reader: JsonReader,
-                context: CompositeAdapter.DeserializeCompositeContext):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem {
               var _image: String? = null
 
-              while (true) {
+              while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _image = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                  0 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -227,13 +225,13 @@ public object GetPage_ResponseAdapter {
               )
             }
 
-            public override fun serializeComposite(
+            public override fun toJson(
               writer: JsonWriter,
+              customScalarAdapters: CustomScalarAdapters,
               `value`: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem,
-              context: CompositeAdapter.SerializeCompositeContext,
             ): Unit {
               writer.name("image")
-              StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.image)
+              StringAdapter.toJson(writer, customScalarAdapters, value.image)
             }
           }
         }
