@@ -13,7 +13,7 @@ dependencies {
 android {
   namespace = "com.example"
   compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
-  buildToolsVersion = "34.0.0-rc4"
+  buildToolsVersion = "34.0.0"
 
   defaultConfig {
     minSdkVersion(libs.versions.android.sdkversion.min.get())
