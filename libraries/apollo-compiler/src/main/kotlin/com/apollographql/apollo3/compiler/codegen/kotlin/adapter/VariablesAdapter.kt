@@ -51,16 +51,15 @@ private fun List<NamedType>.serializeVariablesFunSpec(
       .addParameter(value, adaptedTypeName)
       .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
       .addParameter(withBooleanDefaultValues, KotlinSymbols.Boolean)
-      .addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+      .addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").addMember("%S", "UNUSED_VARIABLE").build())
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
-  if (any { it.type.rawType().isComposite() }) {
-    builder.addStatement("val $adapterContext = %T.Builder().$customScalarAdapters($customScalarAdapters).build()", KotlinSymbols.CompositeAdapterContext)
-  }
+  builder.addStatement("val $adapterContext = %T.Builder().$customScalarAdapters($customScalarAdapters).build()", KotlinSymbols.CompositeAdapterContext)
+
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }

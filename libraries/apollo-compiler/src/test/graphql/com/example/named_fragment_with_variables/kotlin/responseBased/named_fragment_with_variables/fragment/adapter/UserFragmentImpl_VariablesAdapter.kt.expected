@@ -5,6 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -14,13 +15,18 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object UserFragmentImpl_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: UserFragmentImpl,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("size")
     IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size)
   }

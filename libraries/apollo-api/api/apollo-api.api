@@ -395,7 +395,7 @@ public abstract interface class com/apollographql/apollo3/api/CompositeAdapter {
 public final class com/apollographql/apollo3/api/CompositeAdapterContext {
 	public final field customScalarAdapters Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final field deferredFragmentIdentifiers Ljava/util/Set;
-	public final field falseBooleanVariables Ljava/util/Set;
+	public final field falseVariables Ljava/util/Set;
 	public synthetic fun <init> (Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/Set;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

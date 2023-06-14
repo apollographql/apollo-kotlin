@@ -5,6 +5,7 @@
 //
 package com.example.input_object_variable_and_argument.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.IntAdapter
@@ -19,13 +20,18 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.episode is Optional.Present) {
       writer.name("episode")
       Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,

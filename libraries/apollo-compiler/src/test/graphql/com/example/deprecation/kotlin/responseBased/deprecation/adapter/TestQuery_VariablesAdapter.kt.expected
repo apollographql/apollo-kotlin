@@ -5,6 +5,7 @@
 //
 package com.example.deprecation.adapter
 
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,13 +18,18 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.episode is Optional.Present) {
       writer.name("episode")
       Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,

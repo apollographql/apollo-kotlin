@@ -1,8 +1,7 @@
 package test;
 
-import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
@@ -33,7 +32,7 @@ public class JavaOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter,CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -73,7 +72,7 @@ public class JavaOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -99,7 +98,7 @@ public class JavaOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -141,7 +140,7 @@ public class JavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.empty(),
@@ -178,7 +177,7 @@ public class JavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.of(0),
@@ -221,7 +220,7 @@ public class JavaOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.empty(),

@@ -299,7 +299,7 @@ public class ApolloClient implements Closeable {
      * property. For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
      * @param customScalarAdapter the {@link Adapter} to use for this custom scalar
      */
-    public <T> Builder addScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
+    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
       customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter);
       return this;
     }

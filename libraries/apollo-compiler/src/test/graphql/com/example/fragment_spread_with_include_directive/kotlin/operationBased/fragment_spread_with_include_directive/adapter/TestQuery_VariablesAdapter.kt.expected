@@ -6,6 +6,7 @@
 package com.example.fragment_spread_with_include_directive.adapter
 
 import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.Optional
@@ -17,13 +18,18 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("withDetails")
     BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.withDetails)
     writer.name("skipHumanDetails")

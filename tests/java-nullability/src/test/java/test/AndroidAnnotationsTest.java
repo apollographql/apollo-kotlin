@@ -2,10 +2,9 @@ package test;
 
 import annotations.android.MyQuery;
 import annotations.android.type.MyInput;
-import com.apollographql.apollo3.api.CompositeAdapter.DeserializeCompositeContext;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
@@ -33,7 +32,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -69,7 +68,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -95,7 +94,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, new SerializeVariablesContext(CustomScalarAdapters.Empty, false));
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -133,7 +132,7 @@ public class AndroidAnnotationsTest {
         "          }\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ null,
@@ -166,7 +165,7 @@ public class AndroidAnnotationsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeComposite(jsonReader, new DeserializeCompositeContext(CustomScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ 0,

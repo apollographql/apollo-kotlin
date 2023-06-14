@@ -17,7 +17,10 @@ import kotlin.Suppress
 import kotlin.Unit
 
 internal object CreateReviewForEpisode_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: CreateReviewForEpisode,

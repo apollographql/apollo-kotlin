@@ -6,6 +6,7 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude
@@ -14,13 +15,18 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object SpreadMultipleWithDeferAndInclude_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: SpreadMultipleWithDeferAndInclude,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("cond1")
     BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond1)
     writer.name("cond2")

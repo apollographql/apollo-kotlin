@@ -21,7 +21,10 @@ import kotlin.Suppress
 import kotlin.Unit
 
 public object MyQuery_VariablesAdapter {
-  @Suppress("UNUSED_PARAMETER")
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
   public fun serializeVariables(
     writer: JsonWriter,
     `value`: MyQuery,
