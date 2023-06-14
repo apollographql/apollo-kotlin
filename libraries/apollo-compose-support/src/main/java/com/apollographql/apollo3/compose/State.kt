@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
+import kotlinx.coroutines.flow.catch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -35,6 +36,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 fun <D : Operation.Data> ApolloCall<D>.toState(context: CoroutineContext = EmptyCoroutineContext): State<ApolloResponse<D>?> {
   val responseFlow = remember {
     toFlow()
+        .catch { emit(ApolloResponse(this@toState, it as? ApolloException ?: throw it)) }
   }
   return responseFlow.collectAsState(initial = null, context = context)
 }
@@ -59,6 +61,7 @@ fun <D : Operation.Data> ApolloCall<D>.toState(context: CoroutineContext = Empty
 fun <D : Query.Data> ApolloCall<D>.watchAsState(context: CoroutineContext = EmptyCoroutineContext): State<ApolloResponse<D>?> {
   val responseFlow = remember {
     watch()
+        .catch { emit(ApolloResponse(this@watchAsState, it as? ApolloException ?: throw it)) }
   }
   return responseFlow.collectAsState(initial = null, context = context)
 }
