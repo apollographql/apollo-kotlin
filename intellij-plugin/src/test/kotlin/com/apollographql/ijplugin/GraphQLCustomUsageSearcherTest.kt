@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin
 
+import com.apollographql.ijplugin.util.cast
 import com.intellij.usages.UsageInfo2UsageAdapter
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +21,8 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
 
     // Call Find Usages
     val usages = myFixture.testFindUsagesUsingAction()
+        // Ignore usages found in generated files
+        .filterNot { it.cast<UsageInfo2UsageAdapter>()!!.file.path.contains("build") }
 
     // Evaluate this expression to see expected results
     // usages.map {(it as UsageInfo2UsageAdapter).file.name + " / " + it.plainText}
