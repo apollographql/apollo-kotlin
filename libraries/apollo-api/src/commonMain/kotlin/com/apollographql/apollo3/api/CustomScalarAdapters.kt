@@ -13,7 +13,7 @@ class CustomScalarAdapters private constructor(
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
-  fun <T : Any> responseAdapterFor(customScalar: ScalarType): Adapter<T> {
+  fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
     @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[customScalar.name] != null -> {
@@ -85,7 +85,7 @@ class CustomScalarAdapters private constructor(
     private var unsafe = false
 
     fun <T> add(
-        customScalarType: ScalarType,
+        customScalarType: CustomScalarType,
         customScalarAdapter: Adapter<T>,
     ) = apply {
       adaptersMap[customScalarType.name] = customScalarAdapter

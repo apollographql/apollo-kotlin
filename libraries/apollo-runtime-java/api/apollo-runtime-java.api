@@ -26,6 +26,10 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun addHttpInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+<<<<<<< HEAD
+=======
+	public fun addScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+>>>>>>> parent of 5975d51041 (Rename CustomScalarType to ScalarType)
 	public fun addWsHeader (Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addWsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun autoPersistedQueries ()Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;

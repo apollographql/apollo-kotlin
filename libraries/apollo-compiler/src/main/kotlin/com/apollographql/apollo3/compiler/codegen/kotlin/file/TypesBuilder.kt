@@ -30,8 +30,8 @@ internal fun IrScalar.typePropertySpec(targetTypeName: String?): PropertySpec {
    */
   val kotlinName = targetTypeName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
   return PropertySpec
-      .builder(Identifier.type, KotlinSymbols.ScalarType)
-      .initializer("%T(%S,·%S)", KotlinSymbols.ScalarType, name, kotlinName)
+      .builder(Identifier.type, KotlinSymbols.CustomScalarType)
+      .initializer("%T(%S,·%S)", KotlinSymbols.CustomScalarType, name, kotlinName)
       .build()
 }
 

@@ -5,11 +5,11 @@
 //
 package com.example.fragment_with_multiple_fieldsets.type;
 
-import com.apollographql.apollo3.api.ScalarType;
+import com.apollographql.apollo3.api.CustomScalarType;
 
 /**
  * The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
  */
 public class GraphQLFloat {
-  public static ScalarType type = new ScalarType("Float", "java.lang.Float");
+  public static CustomScalarType type = new CustomScalarType("Float", "java.lang.Float");
 }

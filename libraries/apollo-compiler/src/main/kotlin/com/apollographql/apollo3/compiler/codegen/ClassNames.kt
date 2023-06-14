@@ -43,7 +43,7 @@ internal object ClassNames {
   val MutationData = ResolverClassName(apolloApiPackageName, "Mutation", "Data")
   val SubscriptionData = ResolverClassName(apolloApiPackageName, "Subscription", "Data")
   val EnumType = ResolverClassName(apolloApiPackageName, "EnumType")
-  val ScalarType = ResolverClassName(apolloApiPackageName, "ScalarType")
+  val CustomScalarType = ResolverClassName(apolloApiPackageName, "CustomScalarType")
   val True = ResolverClassName(apolloApiPackageName, "BooleanExpression", "True")
   val False = ResolverClassName(apolloApiPackageName, "BooleanExpression", "False")
   val CompiledArgument = ResolverClassName(apolloApiPackageName, "CompiledArgument", "Builder")

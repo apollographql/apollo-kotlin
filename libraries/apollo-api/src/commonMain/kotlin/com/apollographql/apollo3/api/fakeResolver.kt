@@ -220,7 +220,7 @@ private fun buildFieldOfNonNullType(
           }
         } else {
           val leafValue = resolver.resolveLeaf(FakeResolverContext(path, id, mergedField))
-          if (type is ScalarType) {
+          if (type is CustomScalarType) {
             /**
              * This might be a scalar with a build time registered adapter.
              * If that's the case, we need to adapt before putting the value in the map

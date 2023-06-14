@@ -5,11 +5,11 @@
 //
 package com.example.fragment_spread_with_include_directive.type;
 
-import com.apollographql.apollo3.api.ScalarType;
+import com.apollographql.apollo3.api.CustomScalarType;
 
 /**
  * The `Boolean` scalar type represents `true` or `false`.
  */
 public class GraphQLBoolean {
-  public static ScalarType type = new ScalarType("Boolean", "java.lang.Boolean");
+  public static CustomScalarType type = new CustomScalarType("Boolean", "java.lang.Boolean");
 }

@@ -387,6 +387,7 @@ public final class com/apollographql/apollo3/api/CompiledVariable {
 	public final fun getName ()Ljava/lang/String;
 }
 
+<<<<<<< HEAD
 public abstract interface class com/apollographql/apollo3/api/CompositeAdapter {
 	public abstract fun deserializeComposite (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapter$DeserializeCompositeContext;)Ljava/lang/Object;
 	public abstract fun serializeComposite (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CompositeAdapter$SerializeCompositeContext;)V
@@ -445,6 +446,11 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
 }
 
 public final class com/apollographql/apollo3/api/CustomScalarAdapters$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
+=======
+public final class com/apollographql/apollo3/api/CustomScalarType : com/apollographql/apollo3/api/CompiledNamedType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getClassName ()Ljava/lang/String;
+>>>>>>> parent of 5975d51041 (Rename CustomScalarType to ScalarType)
 }
 
 public class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {
@@ -854,9 +860,38 @@ public abstract interface class com/apollographql/apollo3/api/Query : com/apollo
 public abstract interface class com/apollographql/apollo3/api/Query$Data : com/apollographql/apollo3/api/Operation$Data {
 }
 
+<<<<<<< HEAD
+=======
+public final class com/apollographql/apollo3/api/ScalarAdapters : com/apollographql/apollo3/api/ExecutionContext$Element {
+	public static final field Empty Lcom/apollographql/apollo3/api/ScalarAdapters;
+	public static final field Key Lcom/apollographql/apollo3/api/ScalarAdapters$Key;
+	public static final field PassThrough Lcom/apollographql/apollo3/api/ScalarAdapters;
+	public synthetic fun <init> (Ljava/util/Map;Lcom/apollographql/apollo3/api/AdapterContext;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
+	public final fun getAdapterContext ()Lcom/apollographql/apollo3/api/AdapterContext;
+	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
+	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/CustomScalarType;)Lcom/apollographql/apollo3/api/Adapter;
+}
+
+public final class com/apollographql/apollo3/api/ScalarAdapters$Builder {
+	public fun <init> ()V
+	public final fun adapterContext (Lcom/apollographql/apollo3/api/AdapterContext;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public final fun add (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public final fun addAll (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public final fun build ()Lcom/apollographql/apollo3/api/ScalarAdapters;
+	public final fun clear ()V
+}
+
+public final class com/apollographql/apollo3/api/ScalarAdapters$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
+}
+
+>>>>>>> parent of 5975d51041 (Rename CustomScalarType to ScalarType)
 public final class com/apollographql/apollo3/api/ScalarType : com/apollographql/apollo3/api/CompiledNamedType {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun getClassName ()Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;)V
 }
 
 public abstract interface class com/apollographql/apollo3/api/Subscription : com/apollographql/apollo3/api/Operation {

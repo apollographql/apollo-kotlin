@@ -28,8 +28,8 @@ internal fun IrScalar.typeFieldSpec(targetTypeName: String?): FieldSpec {
    */
   val typeName = targetTypeName ?: builtinScalarJavaName(name) ?: "java.lang.Object"
   return FieldSpec
-      .builder(JavaClassNames.ScalarType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
-      .initializer("new $T($S, $S)", JavaClassNames.ScalarType, name, typeName)
+      .builder(JavaClassNames.CustomScalarType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
+      .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, typeName)
       .build()
 }
 
