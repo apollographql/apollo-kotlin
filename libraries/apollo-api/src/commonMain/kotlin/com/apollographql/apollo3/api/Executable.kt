@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
 /**
- * Base interface for [Operation] and [Fragment] that have an [CompositeAdapter] and [Variables].
+ * Base interface for [Operation] and [Fragment] that have a [CompositeAdapter] and [Variables].
  *
  * Fragments cannot be executed against a server but can be executed against the cache.
  */
