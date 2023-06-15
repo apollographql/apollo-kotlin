@@ -20,7 +20,7 @@ class CustomScalarAdapters private constructor(
         adaptersMap[customScalar.name]
       }
       /**
-       * Below are shortcuts to save the users a call to `registerScalarAdapter`
+       * Below are shortcuts to save the users a call to `registerCustomScalarAdapter`
        */
       customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
         UploadAdapter
