@@ -31,7 +31,7 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
    * ```
-   * override fun fromJson(reader: JsonReader): GeoPoint {
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
    *   val map = AnyAdapter.fromJson(reader) as Map<String, Double>
    *
    *   return GeoPoint(map["lat"]!!, map["lon"]!!)
