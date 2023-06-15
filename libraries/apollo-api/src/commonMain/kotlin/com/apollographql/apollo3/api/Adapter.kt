@@ -24,7 +24,7 @@ interface Adapter<T> {
    *
    * Example:
    * ```
-   * override fun fromJson(reader: JsonReader): LocalDateTime {
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
    *   return LocalDateTime.parse(reader.nextString()!!)
    * }
    * ```
