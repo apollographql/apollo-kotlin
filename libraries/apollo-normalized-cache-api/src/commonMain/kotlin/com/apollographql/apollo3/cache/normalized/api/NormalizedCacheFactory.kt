@@ -2,7 +2,7 @@ package com.apollographql.apollo3.cache.normalized.api
 
 /**
  * A Factory used to construct an instance of a [NormalizedCache] configured with the custom scalar adapters set in
- * ApolloClient.Builder#addScalarAdapter(ScalarType, ScalarAdapter).
+ * ApolloClient.Builder#addCustomScalarAdapter(CustomScalarType, Adapter).
  */
 abstract class NormalizedCacheFactory {
 
