@@ -9,7 +9,7 @@ abstract class NormalizedCacheFactory {
   private var nextFactory: NormalizedCacheFactory? = null
 
   /**
-   * ApolloClient.Builder#addScalarAdapter(ScalarType, ScalarAdapter).
+   * ApolloClient.Builder#addCustomScalarAdapter(CustomScalarType, Adapter).
    * @return An implementation of [NormalizedCache].
    */
   abstract fun create(): NormalizedCache
