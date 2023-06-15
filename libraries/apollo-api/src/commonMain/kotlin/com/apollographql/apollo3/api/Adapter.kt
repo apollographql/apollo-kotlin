@@ -53,7 +53,7 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the built-in [AnyAdapter]:
    * ```
-   * override fun toJson(writer: JsonWriter, value: GeoPoint) {
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
    *   val map = mapOf("lat" to value.lat, "lon" to value.lon)
    *   AnyAdapter.toJson(writer, map)
    * }
