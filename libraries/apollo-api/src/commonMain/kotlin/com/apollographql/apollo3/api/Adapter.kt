@@ -46,7 +46,7 @@ interface Adapter<T> {
    *
    * Example:
    * ```
-   * override fun toJson(writer: JsonWriter value: LocalDateTime) {
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDateTime) {
    *   writer.value(value.toString())
    * }
    * ```
