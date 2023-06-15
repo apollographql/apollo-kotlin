@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.BuilderFactoryBuilder
-import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.EnumAsClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.FragmentBuilder
@@ -30,6 +29,7 @@ import com.apollographql.apollo3.compiler.codegen.java.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilderBuilder
@@ -99,7 +99,7 @@ internal class JavaCodeGen(
 
     if (irSchema is DefaultIrSchema) {
       irSchema.irScalars.forEach { irScalar ->
-        builders.add(CustomScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
+        builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
       }
       irSchema.irEnums.forEach { irEnum ->
         if (classesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {

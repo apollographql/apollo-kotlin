@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrModel
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -77,7 +79,7 @@ internal class ImplementationAdapterBuilder(
         .apply {
           if (!addTypenameArgument) {
             addSuperinterface(
-                KotlinSymbols.Adapter.parameterizedBy(
+                KotlinSymbols.CompositeAdapter.parameterizedBy(
                     context.resolver.resolveModel(model.id)
                 )
             )
@@ -95,7 +97,13 @@ internal class ImplementationAdapterBuilder(
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(
+            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
+                .applyIf(addTypenameArgument) {
+                  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+                }
+                .build()
+        )
         .apply {
           if (addTypenameArgument) {
             addParameter(
@@ -115,8 +123,14 @@ internal class ImplementationAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
-        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
         .addParameter(Identifier.value, adaptedClassName)
+        .addParameter(
+            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
+                .applyIf(addTypenameArgument) {
+                  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+                }
+                .build()
+        )
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
           if (!addTypenameArgument) {

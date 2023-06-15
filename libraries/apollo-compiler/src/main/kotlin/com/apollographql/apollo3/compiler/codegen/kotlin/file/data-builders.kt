@@ -141,7 +141,7 @@ internal fun topLevelBuildFunSpec(
       .receiver(KotlinSymbols.BuilderScope)
       .addCode(
           CodeBlock.builder()
-              .add("return·%T(${customScalarAdapters}).apply($block)",builderClassName)
+              .add("return·%T(${customScalarAdapters}).apply($block)", builderClassName)
               .apply {
                 if (requiresTypename) {
                   add(".apply·{·__typename·=·typename·}")

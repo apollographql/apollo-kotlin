@@ -6,8 +6,6 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class MyLong {
   public Long value;
 
@@ -16,7 +14,7 @@ public class MyLong {
   }
 
   public static class MyLongAdapter implements Adapter<MyLong> {
-    @Override public MyLong fromJson(@NotNull JsonReader reader, @NotNull CustomScalarAdapters customScalarAdapters)  {
+    @Override public MyLong fromJson(@NotNull JsonReader reader, @NotNull CustomScalarAdapters customScalarAdapters) {
       try {
         return new MyLong(reader.nextLong());
       } catch (Exception e) {
@@ -35,5 +33,3 @@ public class MyLong {
     public static final MyLongAdapter INSTANCE = new MyLongAdapter();
   }
 }
-
-

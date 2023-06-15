@@ -5,7 +5,8 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -18,18 +19,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object PilotFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<PilotFragmentImpl.Data> {
+  public object Data : CompositeAdapter<PilotFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         PilotFragmentImpl.Data {
       var _name: String? = null
       var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -42,28 +43,28 @@ public object PilotFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: PilotFragmentImpl.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("name")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("homeworld")
-      Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
+      Homeworld.obj().nullable().toJson(writer, value.homeworld, adapterContext)
     }
 
-    private object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
+    private object Homeworld : CompositeAdapter<PilotFragmentImpl.Data.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var _name: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -76,14 +77,14 @@ public object PilotFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: PilotFragmentImpl.Data.Homeworld,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("name")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }
     }
   }

@@ -74,5 +74,5 @@ internal class EnumResponseAdapterBuilder(
 private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = KotlinSymbols.JsonWriter)
-    .addParameter(name = customScalarAdapters, type = KotlinSymbols.CustomScalarAdapters)
+    .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
     .addParameter(value, typeName)

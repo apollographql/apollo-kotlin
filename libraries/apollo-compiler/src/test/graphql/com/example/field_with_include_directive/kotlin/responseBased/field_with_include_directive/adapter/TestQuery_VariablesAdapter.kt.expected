@@ -5,27 +5,31 @@
 //
 package com.example.field_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.field_with_include_directive.TestQuery
-import kotlin.IllegalStateException
+import kotlin.Boolean
+import kotlin.Suppress
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      TestQuery = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object TestQuery_VariablesAdapter {
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
+  public fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("includeName")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.includeName)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.includeName)
     writer.name("skipFriends")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.skipFriends)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipFriends)
   }
 }

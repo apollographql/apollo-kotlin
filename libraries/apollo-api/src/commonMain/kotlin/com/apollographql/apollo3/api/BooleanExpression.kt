@@ -139,7 +139,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>,
     typename: String?,
-    adapterContext: AdapterContext,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     path: List<Any>?,
 ): Boolean {
   // Remove "data" from the path
@@ -147,10 +147,18 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !variables.contains(it.name)
-      is BLabel -> adapterContext.hasDeferredFragment(croppedPath!!, it.label)
+      is BLabel -> hasDeferredFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
+}
+
+private fun hasDeferredFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
+  if (deferredFragmentIdentifiers == null) {
+    // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
+    return true
+  }
+  return deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path, label))
 }
 
 /**

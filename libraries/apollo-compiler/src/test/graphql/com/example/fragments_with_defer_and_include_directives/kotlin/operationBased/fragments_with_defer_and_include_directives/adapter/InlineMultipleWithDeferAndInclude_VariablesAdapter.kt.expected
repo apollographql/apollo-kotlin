@@ -5,33 +5,35 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferAndInclude
-import kotlin.IllegalStateException
+import kotlin.Boolean
+import kotlin.Suppress
 import kotlin.Unit
 
-public object InlineMultipleWithDeferAndInclude_VariablesAdapter :
-    Adapter<InlineMultipleWithDeferAndInclude> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      InlineMultipleWithDeferAndInclude = throw
-      IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object InlineMultipleWithDeferAndInclude_VariablesAdapter {
+  @Suppress(
+    "UNUSED_PARAMETER",
+    "UNUSED_VARIABLE",
+  )
+  public fun serializeVariables(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: InlineMultipleWithDeferAndInclude,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
   ): Unit {
+    val adapterContext =
+        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("cond1")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond1)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond1)
     writer.name("cond2")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond2)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond2)
     writer.name("cond3")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond3)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond3)
     writer.name("cond4")
-    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond4)
+    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond4)
   }
 }

@@ -5,29 +5,21 @@
 //
 package com.example.starships.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.starships.TestQuery;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
+public enum TestQuery_VariablesAdapter {
   INSTANCE;
 
-  @Override
-  public TestQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public void serializeVariables(JsonWriter writer, TestQuery value,
+      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
       IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, TestQuery value)
-      throws IOException {
+    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("id");
-    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
   }
 }

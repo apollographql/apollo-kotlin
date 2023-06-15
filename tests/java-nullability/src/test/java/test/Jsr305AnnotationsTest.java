@@ -2,6 +2,7 @@ package test;
 
 import annotations.jsr305.MyQuery;
 import annotations.jsr305.type.MyInput;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
@@ -11,6 +12,7 @@ import okio.Buffer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Map;
 
 import static test.MapUtils.entry;
@@ -30,7 +32,7 @@ public class Jsr305AnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -66,7 +68,7 @@ public class Jsr305AnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -92,7 +94,7 @@ public class Jsr305AnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -130,7 +132,7 @@ public class Jsr305AnnotationsTest {
         "          }\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ null,
@@ -163,7 +165,7 @@ public class Jsr305AnnotationsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ 0,

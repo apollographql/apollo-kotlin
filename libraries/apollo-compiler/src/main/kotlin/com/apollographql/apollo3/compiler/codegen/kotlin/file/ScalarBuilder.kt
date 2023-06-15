@@ -11,12 +11,12 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal class ScalarBuilder(
     private val context: KotlinContext,
-    private val customScalar: IrScalar,
+    private val scalar: IrScalar,
     private val targetTypeName: String?,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(customScalar.name))
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(scalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {
     // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).
@@ -28,14 +28,14 @@ internal class ScalarBuilder(
   }
 
   override fun prepare() {
-    context.resolver.registerSchemaType(customScalar.name, ClassName(packageName, simpleName))
+    context.resolver.registerSchemaType(scalar.name, ClassName(packageName, simpleName))
   }
 
   override fun build(): CgFile {
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        typeSpecs = listOf(customScalar.typeSpec())
+        typeSpecs = listOf(scalar.typeSpec())
     )
   }
 

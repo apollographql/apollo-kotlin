@@ -5,8 +5,8 @@
 //
 package com.example.input_object_type.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,19 +17,19 @@ import com.example.input_object_type.type.ReviewRefInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+public object ReviewRefInput_InputAdapter : CompositeAdapter<ReviewRefInput> {
+  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
       ReviewRefInput = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: ReviewRefInput,
+    adapterContext: CompositeAdapterContext,
   ): Unit {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.reviewInput)
+      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, value.reviewInput,
+          adapterContext)
     }
   }
 }

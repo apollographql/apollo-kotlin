@@ -5,7 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -23,16 +24,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineMultipleWithDeferWithIf_ResponseAdapter {
-  public object Data : Adapter<InlineMultipleWithDeferWithIf.Data> {
+  public object Data : CompositeAdapter<InlineMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         InlineMultipleWithDeferWithIf.Data {
       var _hero: InlineMultipleWithDeferWithIf.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -44,44 +45,44 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: InlineMultipleWithDeferWithIf.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
 
-    private object Hero : Adapter<InlineMultipleWithDeferWithIf.Data.Hero> {
+    private object Hero : CompositeAdapter<InlineMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           InlineMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
 
         reader.rewind()
         val _onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
-            customScalarAdapters)
+            adapterContext)
 
         var _onCharacterDeferF_second: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second? = null
-        if (label("f_second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+        if (label("f_second").evaluate(adapterContext.falseVariables, null, adapterContext.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_second.fromJson(reader,
-              customScalarAdapters)
+              adapterContext)
         }
 
         var _onCharacterDeferF_third: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third? = null
-        if (or(not(variable("cond")),label("f_third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+        if (or(not(variable("cond")),label("f_third")).evaluate(adapterContext.falseVariables, null, adapterContext.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_third.fromJson(reader,
-              customScalarAdapters)
+              adapterContext)
         }
 
         return InlineMultipleWithDeferWithIf.Data.Hero(
@@ -94,37 +95,37 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: InlineMultipleWithDeferWithIf.Data.Hero,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
-            customScalarAdapters, value.onCharacter)
+            value.onCharacter, adapterContext)
 
         if (value.onCharacterDeferF_second != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_second.toJson(writer,
-              customScalarAdapters, value.onCharacterDeferF_second)
+              value.onCharacterDeferF_second, adapterContext)
         }
 
         if (value.onCharacterDeferF_third != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_third.toJson(writer,
-              customScalarAdapters, value.onCharacterDeferF_third)
+              value.onCharacterDeferF_third, adapterContext)
         }
       }
 
-      private object OnCharacter : Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter> {
+      private object OnCharacter :
+          CompositeAdapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter {
           var _id: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -136,26 +137,25 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter,
+          adapterContext: CompositeAdapterContext,
         ): Unit {
           writer.name("id")
-          StringAdapter.toJson(writer, customScalarAdapters, value.id)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
       }
 
       private object OnCharacterDeferF_second :
-          Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second> {
+          CompositeAdapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -167,26 +167,25 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second,
+          adapterContext: CompositeAdapterContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
 
       private object OnCharacterDeferF_third :
-          Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third> {
+          CompositeAdapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third {
           var _name: String? = null
 
-          while(true) {
+          while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
               else -> break
             }
           }
@@ -198,11 +197,11 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third,
+          adapterContext: CompositeAdapterContext,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
       }
     }

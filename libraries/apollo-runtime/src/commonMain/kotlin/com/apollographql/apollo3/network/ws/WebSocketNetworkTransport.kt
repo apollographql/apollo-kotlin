@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
@@ -307,13 +306,13 @@ private constructor(
         is OperationResponse -> {
           val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-          val (payload, customScalarAdapters) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to requestCustomScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
+          val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
+            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.mergedFragmentIds
           } else {
-            responsePayload to requestCustomScalarAdapters
+            responsePayload to null
           }
           val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(payload.jsonReader(), customScalarAdapters)
+              .parseJsonResponse(jsonReader = payload.jsonReader(), customScalarAdapters = requestCustomScalarAdapters, deferredFragmentIdentifiers = mergedFragmentIds)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()
@@ -341,8 +340,8 @@ private constructor(
       request: ApolloRequest<D>,
       apolloException: ApolloException,
   ) = ApolloResponse.Builder(requestUuid = request.requestUuid, operation = request.operation, exception = apolloException)
-          .isLast(true)
-          .build()
+      .isLast(true)
+      .build()
 
   override fun dispose() {
     messages.trySend(Dispose)

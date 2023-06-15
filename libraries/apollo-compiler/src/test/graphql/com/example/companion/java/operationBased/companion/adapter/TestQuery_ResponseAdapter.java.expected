@@ -5,12 +5,13 @@
 //
 package com.example.companion.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.companion.TestQuery;
@@ -22,20 +23,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements CompositeAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("companion");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
+        IOException {
       TestQuery.Companion _companion = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _companion = new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _companion = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -46,27 +47,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("companion");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).toJson(writer, customScalarAdapters, value.companion);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).toJson(writer, value.companion, adapterContext);
     }
   }
 
-  public enum Companion implements Adapter<TestQuery.Companion> {
+  public enum Companion implements CompositeAdapter<TestQuery.Companion> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("foo");
 
     @Override
-    public TestQuery.Companion fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.Companion fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+        throws IOException {
       Integer _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _foo = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _foo = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -79,10 +80,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Companion value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Companion value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("foo");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.foo);
+      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.foo);
     }
   }
 }

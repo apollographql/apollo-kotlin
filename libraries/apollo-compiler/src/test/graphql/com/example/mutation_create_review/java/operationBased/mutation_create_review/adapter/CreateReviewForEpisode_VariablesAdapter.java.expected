@@ -5,34 +5,26 @@
 //
 package com.example.mutation_create_review.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
 import com.example.mutation_create_review.type.ReviewInput;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.Override;
 
-public enum CreateReviewForEpisode_VariablesAdapter implements Adapter<CreateReviewForEpisode> {
+public enum CreateReviewForEpisode_VariablesAdapter {
   INSTANCE;
 
-  @Override
-  public CreateReviewForEpisode fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      CreateReviewForEpisode value) throws IOException {
+  public void serializeVariables(JsonWriter writer, CreateReviewForEpisode value,
+      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
+      IOException {
+    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("ep");
-    Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
+    Episode_ResponseAdapter.INSTANCE.toJson(writer, CustomScalarAdapters.Empty, value.ep);
     writer.name("review");
-    new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.review);
+    new ObjectCompositeAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, value.review, adapterContext);
   }
 }

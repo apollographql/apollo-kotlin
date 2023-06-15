@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 /**
  * An [Adapter] that converts to/from [BigDecimal]
  */
-object BigDecimalAdapter: Adapter<BigDecimal> {
+object BigDecimalAdapter : Adapter<BigDecimal> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BigDecimal {
     return BigDecimal(reader.nextString()!!)
   }

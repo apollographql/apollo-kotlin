@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
 /**
- * An [Adapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
+ * An [Adapter] is responsible for adapting scalars between their Json and Kotlin representations.
  *
  * It is used to
  * - deserialize network responses
@@ -14,7 +14,6 @@ import okio.IOException
  * - deserialize records
  *
  * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
- * ```
  */
 interface Adapter<T> {
   /**
@@ -23,31 +22,19 @@ interface Adapter<T> {
    * implementations may throw [com.apollographql.apollo3.exception.JsonEncodingException] or [com.apollographql.apollo3.exception.JsonDataException]
    * on unexpected incoming data
    *
-   * @param [customScalarAdapters] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
-   *
    * Example:
    * ```
-   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
-   *   var name: String? = null
-   *   var homeworld: String? = null
-   *
-   *   while (reader.hasNext()) {
-   *     when(reader.nextName()) {
-   *       "name" -> name = reader.nextString()
-   *       "homeworld" -> homeworld = reader.nextString()
-   *     }
-   *   }
-   *
-   *   return Hero(name!!, homeworld!!)
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
+   *   return LocalDateTime.parse(reader.nextString()!!)
    * }
    * ```
    *
    * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
    * ```
-   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
-   *   val map = AnyAdapter.fromJson(reader) as Map<String, String>
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+   *   val map = AnyAdapter.fromJson(reader) as Map<String, Double>
    *
-   *   return Hero(map["name"]!!, map["homeworld"]!!)
+   *   return GeoPoint(map["lat"]!!, map["lon"]!!)
    * }
    * ```
    */
@@ -59,19 +46,16 @@ interface Adapter<T> {
    *
    * Example:
    * ```
-   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
-   *   writer.name("name")
-   *   writer.value(value.name)
-   *   writer.name("homeworld")
-   *   writer.value(value.homeworld)
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDateTime) {
+   *   writer.value(value.toString())
    * }
-   *```
+   * ```
    *
    * Alternatively, you can use the built-in [AnyAdapter]:
    * ```
-   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
-   *   val map = mapOf("name" to value.name, "homeworld" to value.homeworld)
-   *   AnyAdapter.toJson(writer, customScalarAdapters, map)
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+   *   val map = mapOf("lat" to value.lat, "lon" to value.lon)
+   *   AnyAdapter.toJson(writer, map)
    * }
    * ```
    */

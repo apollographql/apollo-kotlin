@@ -1,14 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -23,8 +24,10 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
+import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
+import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -69,16 +72,28 @@ internal fun readFromResponseCodeBlock(
    */
   val loop = if (regularProperties.isNotEmpty()) {
     CodeBlock.builder()
-        .beginControlFlow("while(true)")
+        .beginControlFlow("while·(true)")
         .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              CodeBlock.of(
-                  "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
-                  index,
-                  context.layout.variableName(property.info.responseName),
-                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
-              )
+              val variableName = context.layout.variableName(property.info.responseName)
+              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
+              if (!property.info.type.rawType().isComposite()) {
+                CodeBlock.of(
+                    "%L·->·%N·=·%L.$fromJson($reader,·%T.$Empty)",
+                    index,
+                    variableName,
+                    adapterInitializer,
+                    KotlinSymbols.CustomScalarAdapters,
+                )
+              } else {
+                CodeBlock.of(
+                    "%L·->·%N·=·%L.$fromJson($reader,·$adapterContext)",
+                    index,
+                    variableName,
+                    adapterInitializer,
+                )
+              }
             }.joinToCode(separator = "\n", suffix = "\n")
         )
         .addStatement("else -> break")
@@ -134,7 +149,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($adapterContext.falseVariables,·$typenameLiteral,·$adapterContext.deferredFragmentIdentifiers,·$pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
@@ -144,7 +159,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
+                "%L·=·%L.$fromJson($reader, $adapterContext)\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -219,11 +234,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
-    builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
-        adapterInitializer,
-        propertyName,
-    )
+    builder.addSerializeStatement(info.type, adapterInitializer, propertyName)
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
 
@@ -234,7 +245,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
+        "%L.$toJson($writer, $value.%N, $adapterContext)",
         adapterInitializer,
         propertyName,
     )
@@ -244,6 +255,27 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   }
 
   return builder.build()
+}
+
+internal fun CodeBlock.Builder.addSerializeStatement(
+    type: IrType,
+    adapterInitializer: CodeBlock,
+    propertyName: String,
+) {
+  if (!type.rawType().isComposite()) {
+    addStatement(
+        "%L.$toJson($writer, %T.$Empty, $value.%N)",
+        adapterInitializer,
+        KotlinSymbols.CustomScalarAdapters,
+        propertyName,
+    )
+  } else {
+    addStatement(
+        "%L.$toJson($writer, $value.%N, $adapterContext)",
+        adapterInitializer,
+        propertyName,
+    )
+  }
 }
 
 

@@ -5,8 +5,9 @@
 //
 package com.example.java_guava_optionals.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
@@ -17,27 +18,27 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum MyInput_InputAdapter implements Adapter<MyInput> {
+public enum MyInput_InputAdapter implements CompositeAdapter<MyInput> {
   INSTANCE;
 
   @Override
-  public MyInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public MyInput fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
       IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, MyInput value)
+  public void toJson(JsonWriter writer, MyInput value, CompositeAdapterContext adapterContext)
       throws IOException {
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
+      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new GuavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
+      new GuavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
     }
   }
 }

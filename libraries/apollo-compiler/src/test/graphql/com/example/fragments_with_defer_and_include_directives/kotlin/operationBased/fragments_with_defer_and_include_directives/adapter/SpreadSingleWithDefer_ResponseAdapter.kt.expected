@@ -5,7 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
@@ -23,16 +24,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
-  public object Data : Adapter<SpreadSingleWithDefer.Data> {
+  public object Data : CompositeAdapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         SpreadSingleWithDefer.Data {
       var _hero: SpreadSingleWithDefer.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -44,24 +45,24 @@ public object SpreadSingleWithDefer_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: SpreadSingleWithDefer.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
 
-    private object Hero : Adapter<SpreadSingleWithDefer.Data.Hero> {
+    private object Hero : CompositeAdapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -71,10 +72,10 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+              adapterContext)
         }
 
         return SpreadSingleWithDefer.Data.Hero(
@@ -85,15 +86,15 @@ public object SpreadSingleWithDefer_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadSingleWithDefer.Data.Hero,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+              value.droidDetails, adapterContext)
         }
       }
     }

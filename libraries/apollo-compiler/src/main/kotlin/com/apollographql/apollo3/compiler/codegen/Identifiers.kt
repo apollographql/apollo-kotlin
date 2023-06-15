@@ -11,15 +11,17 @@ internal object Identifier {
   const val nullable = "nullable"
 
   const val type = "type"
+  const val adapterContext = "adapterContext"
   const val customScalarAdapters = "customScalarAdapters"
   const val value = "value"
   const val reader = "reader"
   const val writer = "writer"
-  const val toJson = "toJson"
   const val build = "build"
   const val fromJson = "fromJson"
   const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
+  const val withBooleanDefaultValues = "withBooleanDefaultValues"
+  const val toJson = "toJson"
   const val fields = "fields"
   const val rootField = "rootField"
 
@@ -47,6 +49,8 @@ internal object Identifier {
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"
   const val RESPONSE_NAMES = "RESPONSE_NAMES"
+
+  const val Empty = "Empty"
 
   /**
    * Only used by generated code

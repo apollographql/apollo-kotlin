@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,12 +23,15 @@ public class DroidDetailsImpl() : Fragment<DroidDetails> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DroidDetails> =
+  public override fun adapter(): CompositeAdapter<DroidDetails> =
       DroidDetailsImpl_ResponseAdapter.DroidDetails.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

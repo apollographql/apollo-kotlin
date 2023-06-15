@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -21,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CharacterAppearsInImpl_ResponseAdapter {
-  public enum CharacterAppearsIn implements Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
+  public enum CharacterAppearsIn implements CompositeAdapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn");
 
     @Override
     public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
       List<Episode> _appearsIn = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
+          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -47,11 +48,11 @@ public class CharacterAppearsInImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("appearsIn");
-      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, CustomScalarAdapters.Empty, value.appearsIn);
     }
   }
 }

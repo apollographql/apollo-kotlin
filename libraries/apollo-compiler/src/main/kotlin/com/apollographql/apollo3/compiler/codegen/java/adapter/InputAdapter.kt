@@ -1,21 +1,27 @@
 /*
- * Generates ResponseAdapters for variables/input
+ * Generates ResponseAdapters for input
  */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
+import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
-import com.apollographql.apollo3.compiler.codegen.java.helpers.writeToResponseCodeBlock
+import com.apollographql.apollo3.compiler.ir.isComposite
+import com.apollographql.apollo3.compiler.ir.isOptional
+import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -27,14 +33,13 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     context: JavaContext,
     adapterName: String,
     adaptedTypeName: TypeName,
-    withDefaultBooleanValues: Boolean,
 ): TypeSpec {
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
+      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
-      .addMethod(writeToResponseMethodSpec(context, adaptedTypeName, withDefaultBooleanValues))
+      .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
       .apply {
         if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
           addAnnotation(suppressDeprecatedAnnotation())
@@ -47,8 +52,8 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
     .addModifiers(Modifier.PUBLIC)
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
-    .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-    .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+    .addParameter(JavaClassNames.JsonReader, reader)
+    .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -57,17 +62,42 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
 private fun List<NamedType>.writeToResponseMethodSpec(
     context: JavaContext,
     adaptedTypeName: TypeName,
-    withDefaultBooleanValues: Boolean,
 ): MethodSpec {
   return MethodSpec.methodBuilder(toJson)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
-      .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
       .addParameter(adaptedTypeName, value)
-      .addCode(writeToResponseCodeBlock(context, withDefaultBooleanValues))
+      .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
+      .addCode(writeToResponseCodeBlock(context))
       .build()
 }
 
+private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+  val builder = CodeBlock.builder()
+  forEach {
+    builder.add(it.writeToResponseCodeBlock(context))
+  }
+  return builder.build()
+}
 
+private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+  val adapterInitializer = context.resolver.adapterInitializer(type, false)
+  val builder = CodeBlock.builder()
+  val propertyName = context.layout.propertyName(graphQlName)
+
+  if (type.isOptional()) {
+    builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
+  }
+  builder.add("$writer.name($S);\n", graphQlName)
+  if (!type.rawType().isComposite()) {
+    builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
+  } else {
+    builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
+  }
+  if (type.isOptional()) {
+    builder.endControlFlow()
+  }
+  return builder.build()
+}

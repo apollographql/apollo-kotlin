@@ -42,7 +42,6 @@ class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@Jvm
   }
 }
 
-
 class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
@@ -279,44 +278,6 @@ val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
 @JvmField
 val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
 
-class ObjectAdapter<T>(
-    private val wrappedAdapter: Adapter<T>,
-    private val buffered: Boolean,
-) : Adapter<@JvmSuppressWildcards T> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    val actualReader = if (buffered) {
-      reader.buffer()
-    } else {
-      reader
-    }
-    actualReader.beginObject()
-    return wrappedAdapter.fromJson(actualReader, customScalarAdapters).also {
-      actualReader.endObject()
-    }
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    if (buffered && writer !is MapJsonWriter) {
-      /**
-       * Convert to a Map first
-       */
-      val mapWriter = MapJsonWriter()
-      mapWriter.beginObject()
-      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value)
-      mapWriter.endObject()
-
-      /**
-       * And write to the original writer
-       */
-      writer.writeAny(mapWriter.root()!!)
-    } else {
-      writer.beginObject()
-      wrappedAdapter.toJson(writer, customScalarAdapters, value)
-      writer.endObject()
-    }
-  }
-}
-
 @JvmName("-nullable")
 fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
 
@@ -362,9 +323,6 @@ inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
     return arrayToJson(this@array, writer, customScalarAdapters, value)
   }
 }
-
-@JvmName("-obj")
-fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-optional")
 @Deprecated("Use present instead", ReplaceWith("present()"))

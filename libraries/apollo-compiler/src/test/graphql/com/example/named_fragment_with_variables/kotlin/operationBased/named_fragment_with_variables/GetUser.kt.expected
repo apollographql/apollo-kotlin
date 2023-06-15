@@ -6,8 +6,8 @@
 package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,6 +17,7 @@ import com.example.named_fragment_with_variables.adapter.GetUser_VariablesAdapte
 import com.example.named_fragment_with_variables.fragment.QueryFragment
 import com.example.named_fragment_with_variables.selections.GetUserSelections
 import com.example.named_fragment_with_variables.type.UserQuery
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -32,12 +33,16 @@ public data class GetUser(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    GetUser_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
+    GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
+        withBooleanDefaultValues)
   }
 
-  public override fun adapter(): Adapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
+  public override fun adapter(): CompositeAdapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

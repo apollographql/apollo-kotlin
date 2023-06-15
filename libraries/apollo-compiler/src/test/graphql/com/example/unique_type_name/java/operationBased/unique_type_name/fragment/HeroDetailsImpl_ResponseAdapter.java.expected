@@ -5,13 +5,14 @@
 //
 package com.example.unique_type_name.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ListCompositeAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,22 +23,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements Adapter<com.example.unique_type_name.fragment.HeroDetails> {
+  public enum HeroDetails implements CompositeAdapter<com.example.unique_type_name.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String _name = null;
       com.example.unique_type_name.fragment.HeroDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _friendsConnection = new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _friendsConnection = new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -52,32 +53,32 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.fragment.HeroDetails value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.unique_type_name.fragment.HeroDetails value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
 
       writer.name("friendsConnection");
-      new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, customScalarAdapters, value.friendsConnection);
+      new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, value.friendsConnection, adapterContext);
     }
   }
 
-  public enum FriendsConnection implements Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
+  public enum FriendsConnection implements CompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails.FriendsConnection fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
       Integer _totalCount = null;
       List<com.example.unique_type_name.fragment.HeroDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 1: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -89,31 +90,31 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.fragment.HeroDetails.FriendsConnection value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.fragment.HeroDetails.FriendsConnection value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
+      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
 
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, value.edges, adapterContext);
     }
   }
 
-  public enum Edge implements Adapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
+  public enum Edge implements CompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails.Edge fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       com.example.unique_type_name.fragment.HeroDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, adapterContext); break;
           default: break loop;
         }
       }
@@ -124,27 +125,28 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.fragment.HeroDetails.Edge value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.fragment.HeroDetails.Edge value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, value.node, adapterContext);
     }
   }
 
-  public enum Node implements Adapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
+  public enum Node implements CompositeAdapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails.Node fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        CompositeAdapterContext adapterContext) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
           default: break loop;
         }
       }
@@ -157,10 +159,11 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.fragment.HeroDetails.Node value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.fragment.HeroDetails.Node value,
+        CompositeAdapterContext adapterContext) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
     }
   }
 }

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
-abstract class ObjectBuilder<out T: Map<String, Any?>>(override val customScalarAdapters: CustomScalarAdapters): BuilderScope {
+abstract class ObjectBuilder<out T : Map<String, Any?>>(override val customScalarAdapters: CustomScalarAdapters) : BuilderScope {
   val __fields = mutableMapOf<String, Any?>()
 
   var __typename: String by __fields
@@ -21,7 +21,7 @@ interface BuilderScope {
 }
 
 interface BuilderFactory<out T> {
-  fun newBuilder(customScalarAdapters: CustomScalarAdapters) : T
+  fun newBuilder(customScalarAdapters: CustomScalarAdapters): T
 }
 
 fun Builder(customScalarAdapters: CustomScalarAdapters): BuilderScope {
@@ -40,12 +40,14 @@ val GlobalBuilder = object : BuilderScope {
  * A property delegate that stores the given property as it would be serialized in a Json
  * This is needed in Data Builders because the serializer only work from Json
  */
-class BuilderProperty<T>(val adapter: Adapter<T>) {
+class BuilderProperty<T>(val adapter: CompositeAdapter<T>) {
+  constructor(adapter: Adapter<T>) : this(AdapterToCompositeAdapter(adapter))
+
   operator fun getValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>): T {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.fromJson(MapJsonReader(data), CustomScalarAdapters.Empty)
+    return adapter.fromJson(MapJsonReader(data), CompositeAdapterContext.Builder().build())
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
@@ -61,4 +63,10 @@ fun <T> adaptValue(adapter: Adapter<T>, value: T): Any? {
   }.root()
 }
 
-abstract class ObjectMap(__fields: Map<String, Any?>): Map<String, Any?> by __fields
+fun <T> adaptValue(adapter: CompositeAdapter<T>, value: T): Any? {
+  return MapJsonWriter().apply {
+    adapter.toJson(this, CustomScalarAdapters.Empty, value)
+  }.root()
+}
+
+abstract class ObjectMap(__fields: Map<String, Any?>) : Map<String, Any?> by __fields

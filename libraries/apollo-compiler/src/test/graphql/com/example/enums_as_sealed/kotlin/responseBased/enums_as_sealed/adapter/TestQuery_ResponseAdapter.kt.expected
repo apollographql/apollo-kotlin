@@ -5,7 +5,8 @@
 //
 package com.example.enums_as_sealed.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("enum")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _enum: Enum? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _enum = Enum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> _enum = Enum_ResponseAdapter.nullable().fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -39,11 +40,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("enum")
-      Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
+      Enum_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty, value.`enum`)
     }
   }
 }

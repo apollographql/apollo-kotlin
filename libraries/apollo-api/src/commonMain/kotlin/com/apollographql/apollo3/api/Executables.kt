@@ -4,9 +4,12 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 
 
 /**
@@ -23,7 +26,7 @@ fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: Cust
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters)
+    serializeVariables(this, customScalarAdapters, false)
     endObject()
   }
   return buffer.readUtf8()
@@ -45,26 +48,47 @@ fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: Cust
  * - variables: {} => bit not set
  */
 @ApolloInternal
-fun <D : Executable.Data> Executable<D>.booleanVariables(customScalarAdapters: CustomScalarAdapters): Set<String> {
+fun <D : Executable.Data> Executable<D>.falseVariables(customScalarAdapters: CustomScalarAdapters): Set<String> {
   return variables(customScalarAdapters, true).valueMap.filter { it.value == false }.keys
 }
 
 @Suppress("UNCHECKED_CAST")
 @ApolloInternal
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters, withDefaultBooleanValues: Boolean): Executable.Variables {
+fun <D : Executable.Data> Executable<D>.variables(
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters.let { if (withDefaultBooleanValues) it.serializeVariablesWithDefaultBooleanValues() else it })
+    serializeVariables(this, customScalarAdapters, withBooleanDefaultValues)
     endObject()
   }.root() as Map<String, Any?>
   return Executable.Variables(valueMap)
 }
 
+@JvmOverloads
+fun <D : Executable.Data> Executable<D>.parseData(
+    jsonReader: JsonReader,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    falseVariables: Set<String>? = null,
+    deferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
+): D? {
+  val adapterContext = CompositeAdapterContext.Builder()
+      .customScalarAdapters(customScalarAdapters)
+      .falseVariables(falseVariables)
+      .deferredFragmentIdentifiers(deferredFragmentIds)
+      .build()
+  return adapter().nullable().fromJson(jsonReader, adapterContext)
+}
 
-private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
-    .adapterContext(
-        adapterContext.newBuilder()
-            .serializeVariablesWithDefaultBooleanValues(true)
-            .build()
-    )
-    .build()
+
+fun <D : Executable.Data> Executable<D>.composeData(
+    jsonWriter: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    value: D
+) {
+  val adapterContext = CompositeAdapterContext.Builder()
+      .customScalarAdapters(customScalarAdapters)
+      .build()
+  adapter().toJson(jsonWriter, value, adapterContext)
+}

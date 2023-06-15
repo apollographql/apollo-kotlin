@@ -91,7 +91,7 @@ object ApolloCompiler {
 
     val schema = result.getOrThrow()
 
-    checkCustomScalars(schema, scalarMapping)
+    checkScalars(schema, scalarMapping)
     return CodegenSchema(
         schema = schema,
         packageName = packageNameGenerator.packageName(mainSchemaDocument.filePath!!),
@@ -288,9 +288,9 @@ object ApolloCompiler {
     return operationOutput
   }
 
-  private fun checkCustomScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
+  private fun checkScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
     /**
-     * Generate the mapping for all custom scalars
+     * Generate the mapping for all scalars
      *
      * If the user specified a mapping, use it, else fallback to [Any]
      */

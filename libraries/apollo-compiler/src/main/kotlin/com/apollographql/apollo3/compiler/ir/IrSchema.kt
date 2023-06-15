@@ -310,3 +310,14 @@ private fun GQLInputValueDefinition.toIrInputField(schema: Schema): IrInputField
       defaultValue = coercedDefaultValue?.toIrValue(),
   )
 }
+
+
+internal fun IrType2.isCompositeOrWrappedComposite(): Boolean {
+  return when (this) {
+    is IrScalarType2 -> false
+    is IrEnumType2 -> false
+    is IrNonNullType2 -> ofType.isCompositeOrWrappedComposite()
+    is IrListType2 -> ofType.isCompositeOrWrappedComposite()
+    else -> true
+  }
+}

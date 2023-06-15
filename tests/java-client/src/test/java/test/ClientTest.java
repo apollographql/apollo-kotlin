@@ -136,7 +136,7 @@ public class ClientTest {
   }
 
   @Test
-  public void customScalarAdapters() {
+  public void scalarAdapters() {
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
         .addCustomScalarAdapter(javatest.type.GeoPoint.type, new GeoPointAdapter())

@@ -5,29 +5,21 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.Override;
 
-public enum UserFragmentImpl_VariablesAdapter implements Adapter<UserFragmentImpl> {
+public enum UserFragmentImpl_VariablesAdapter {
   INSTANCE;
 
-  @Override
-  public UserFragmentImpl fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      UserFragmentImpl value) throws IOException {
+  public void serializeVariables(JsonWriter writer, UserFragmentImpl value,
+      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
+      IOException {
+    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("size");
-    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.size);
+    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size);
   }
 }

@@ -14,7 +14,7 @@ fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    delayMs: Long = 0
+    delayMs: Long = 0,
 ) {
   val json = buildJsonString {
     operation.composeJsonResponse(jsonWriter = this, data = data, customScalarAdapters = customScalarAdapters)
@@ -26,7 +26,7 @@ fun MockServer.enqueueData(
     data: Map<String, Any?>,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     delayMs: Long = 0,
-    statusCode: Int = 200
+    statusCode: Int = 200,
 ) {
 
   val response = buildJsonString {
@@ -45,7 +45,7 @@ fun MockServer.enqueueData(
     data: Operation.Data,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     delayMs: Long = 0,
-    statusCode: Int = 200
+    statusCode: Int = 200,
 ) {
   val response = buildJsonString {
     beginObject()

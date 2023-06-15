@@ -37,7 +37,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 
     name("variables")
     writeObject {
-      serializeVariables(this, customScalarAdapters)
+      serializeVariables(this, customScalarAdapters, false)
     }
 
     name("query")
@@ -65,16 +65,13 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  val variables = booleanVariables(customScalarAdapters)
   return ResponseParser.parse(
       jsonReader,
       this,
-      customScalarAdapters.newBuilder()
-          .adapterContext(customScalarAdapters.adapterContext.newBuilder()
-              .variables(variables)
-              .build())
-          .build()
+      customScalarAdapters,
+      deferredFragmentIdentifiers,
   )
 }
 

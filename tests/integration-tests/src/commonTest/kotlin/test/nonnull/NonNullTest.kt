@@ -2,6 +2,7 @@ package test.nonnull
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import nonnull.NonNullField1Query
 import nonnull.NonNullField2Query

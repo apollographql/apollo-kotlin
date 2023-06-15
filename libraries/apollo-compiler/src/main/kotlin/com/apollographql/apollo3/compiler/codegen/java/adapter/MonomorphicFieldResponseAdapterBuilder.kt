@@ -1,6 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -45,7 +49,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
-            ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.id))
+            ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, context.resolver.resolveModel(model.id))
         )
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)
@@ -64,25 +68,25 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.fromJson)
+    return MethodSpec.methodBuilder(fromJson)
         .addModifiers(Modifier.PUBLIC)
         .returns(adaptedClassName)
         .addException(JavaClassNames.IOException)
-        .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-        .addParameter(JavaClassNames.CustomScalarAdapters, Identifier.customScalarAdapters)
+        .addParameter(JavaClassNames.JsonReader, reader)
+        .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
         .addAnnotation(JavaClassNames.Override)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
   }
 
   private fun writeToResponseMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.toJson)
+    return MethodSpec.methodBuilder(toJson)
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(JavaClassNames.Override)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonWriter, Identifier.writer)
-        .addParameter(JavaClassNames.CustomScalarAdapters, Identifier.customScalarAdapters)
         .addParameter(adaptedClassName, Identifier.value)
+        .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
   }

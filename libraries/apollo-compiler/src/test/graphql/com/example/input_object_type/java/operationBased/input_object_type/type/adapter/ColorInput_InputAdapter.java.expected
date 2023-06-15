@@ -5,12 +5,15 @@
 //
 package com.example.input_object_type.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.NullableCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -20,37 +23,37 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
+public enum ColorInput_InputAdapter implements CompositeAdapter<ColorInput> {
   INSTANCE;
 
   @Override
-  public ColorInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public ColorInput fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
       IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, ColorInput value)
+  public void toJson(JsonWriter writer, ColorInput value, CompositeAdapterContext adapterContext)
       throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.red);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.red);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
-      new ApolloOptionalAdapter<>(Adapters.NullableDoubleAdapter).toJson(writer, customScalarAdapters, value.green);
+      new ApolloOptionalAdapter<>(Adapters.NullableDoubleAdapter).toJson(writer, CustomScalarAdapters.Empty, value.green);
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new ApolloOptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, customScalarAdapters, value.blue);
+      new ApolloOptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, CustomScalarAdapters.Empty, value.blue);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.enumWithDefaultValue);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, CustomScalarAdapters.Empty, value.enumWithDefaultValue);
     }
     if (value.reviewRefInput instanceof Optional.Present) {
       writer.name("reviewRefInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.reviewRefInput);
+      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).toJson(writer, value.reviewRefInput, adapterContext);
     }
   }
 }

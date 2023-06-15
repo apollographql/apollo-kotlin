@@ -5,8 +5,9 @@
 //
 package com.example.custom_scalar_type.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,16 +24,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -44,18 +45,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj().nullable().toJson(writer, value.hero, adapterContext)
     }
 
-    private object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "birthDate", "appearanceDates",
           "fieldWithUnsupportedType", "profileLink", "links")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Hero {
         var _id: Long? = null
         var _name: String? = null
@@ -65,18 +66,15 @@ public object TestQuery_ResponseAdapter {
         var _profileLink: String? = null
         var _links: List<String>? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
-                customScalarAdapters)
-            1 -> _name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
-            2 -> _birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
-                customScalarAdapters)
-            3 -> _appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
-                customScalarAdapters)
-            4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
-            5 -> _profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
-            6 -> _links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
+            0 -> _id = adapterContext.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _name = com.example.MyStringAdapter().fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _birthDate = adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader, CustomScalarAdapters.Empty)
+            3 -> _appearanceDates = adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader, CustomScalarAdapters.Empty)
+            4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            5 -> _profileLink = com.example.UrlAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            6 -> _links = com.example.UrlAdapter.list().fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -94,32 +92,32 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("id")
-        customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer,
-            customScalarAdapters, value.id)
+        adapterContext.customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer,
+            CustomScalarAdapters.Empty, value.id)
 
         writer.name("name")
-        com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)
+        com.example.MyStringAdapter().toJson(writer, CustomScalarAdapters.Empty, value.name)
 
         writer.name("birthDate")
-        customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,
-            customScalarAdapters, value.birthDate)
+        adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,
+            CustomScalarAdapters.Empty, value.birthDate)
 
         writer.name("appearanceDates")
-        customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().toJson(writer,
-            customScalarAdapters, value.appearanceDates)
+        adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().toJson(writer,
+            CustomScalarAdapters.Empty, value.appearanceDates)
 
         writer.name("fieldWithUnsupportedType")
-        AnyAdapter.toJson(writer, customScalarAdapters, value.fieldWithUnsupportedType)
+        AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldWithUnsupportedType)
 
         writer.name("profileLink")
-        com.example.UrlAdapter.toJson(writer, customScalarAdapters, value.profileLink)
+        com.example.UrlAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profileLink)
 
         writer.name("links")
-        com.example.UrlAdapter.list().toJson(writer, customScalarAdapters, value.links)
+        com.example.UrlAdapter.list().toJson(writer, CustomScalarAdapters.Empty, value.links)
       }
     }
   }

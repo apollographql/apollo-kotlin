@@ -135,7 +135,7 @@ class CustomScalarTest {
     val customTypeAdapter = object : Adapter<Address> {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Address {
         @Suppress("UNCHECKED_CAST")
-        val map = AnyAdapter.fromJson(reader, customScalarAdapters) as Map<String, Any?>
+        val map = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty) as Map<String, Any?>
 
         return Address(map.get("street") as String, map.get("number") as Int)
       }

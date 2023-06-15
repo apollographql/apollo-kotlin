@@ -5,7 +5,8 @@
 //
 package com.example.java_jetbrains_annotations.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
@@ -17,24 +18,25 @@ import com.example.java_jetbrains_annotations.type.MyInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object MyInput_InputAdapter : Adapter<MyInput> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      MyInput = throw IllegalStateException("Input type used in output position")
+public object MyInput_InputAdapter : CompositeAdapter<MyInput> {
+  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): MyInput
+      = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
     `value`: MyInput,
+    adapterContext: CompositeAdapterContext,
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+      IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+          value.nonNullableIntWithDefault)
     }
   }
 }

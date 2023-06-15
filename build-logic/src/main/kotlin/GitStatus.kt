@@ -8,11 +8,9 @@ fun checkGitStatus() {
 fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
       .redirectError(ProcessBuilder.Redirect.INHERIT)
-
   val process = builder.start()
-  val ret = process.waitFor()
-
   val output = process.inputStream.bufferedReader().readText()
+  val ret = process.waitFor()
   if (ret != 0) {
     throw java.lang.Exception("command ${args.joinToString(" ")} failed:\n$output")
   }

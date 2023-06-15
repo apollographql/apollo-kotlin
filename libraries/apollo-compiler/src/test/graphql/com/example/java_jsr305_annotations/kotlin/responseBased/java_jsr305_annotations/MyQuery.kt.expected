@@ -6,8 +6,8 @@
 package com.example.java_jsr305_annotations
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -17,6 +17,7 @@ import com.example.java_jsr305_annotations.adapter.MyQuery_ResponseAdapter
 import com.example.java_jsr305_annotations.adapter.MyQuery_VariablesAdapter
 import com.example.java_jsr305_annotations.selections.MyQuerySelections
 import com.example.java_jsr305_annotations.type.MyInput
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -36,12 +37,16 @@ public data class MyQuery(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    MyQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
+    MyQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
+        withBooleanDefaultValues)
   }
 
-  public override fun adapter(): Adapter<Data> = MyQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): CompositeAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

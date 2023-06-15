@@ -5,31 +5,23 @@
 //
 package com.example.java8annotation.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
 import com.example.java8annotation.type.Login;
 import com.example.java8annotation.type.adapter.Login_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.Override;
 
-public enum LoginBarber_VariablesAdapter implements Adapter<LoginBarber> {
+public enum LoginBarber_VariablesAdapter {
   INSTANCE;
 
-  @Override
-  public LoginBarber fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public void serializeVariables(JsonWriter writer, LoginBarber value,
+      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
       IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      LoginBarber value) throws IOException {
+    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("input");
-    new ObjectAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.input);
+    new ObjectCompositeAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, value.input, adapterContext);
   }
 }

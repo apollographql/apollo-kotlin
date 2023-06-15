@@ -5,7 +5,8 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -14,20 +15,21 @@ import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.NodeQuery
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 
 public object NodeQuery_ResponseAdapter {
-  public object Data : Adapter<NodeQuery.Data> {
+  public object Data : CompositeAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj().fromJson(reader, adapterContext)
           else -> break
         }
       }
@@ -39,36 +41,36 @@ public object NodeQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: NodeQuery.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("node")
-      Node.obj().toJson(writer, customScalarAdapters, value.node)
+      Node.obj().toJson(writer, value.node, adapterContext)
     }
 
-    private object Node : Adapter<NodeQuery.Data.Node> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    private object Node : CompositeAdapter<NodeQuery.Data.Node> {
+      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           NodeQuery.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanNode.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanNode.fromJson(reader, adapterContext, __typename)
           "Droid",
-          -> DroidNode.fromJson(reader, customScalarAdapters, __typename)
+          -> DroidNode.fromJson(reader, adapterContext, __typename)
           else
-          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherNode.fromJson(reader, adapterContext, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.Node,
+        adapterContext: CompositeAdapterContext,
       ): Unit {
         when(value) {
-          is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, customScalarAdapters, value)
-          is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, customScalarAdapters, value)
-          is NodeQuery.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
+          is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, value, adapterContext)
+          is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, value, adapterContext)
+          is NodeQuery.Data.OtherNode -> OtherNode.toJson(writer, value, adapterContext)
         }
       }
     }
@@ -78,18 +80,18 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         typename: String,
       ): NodeQuery.Data.HumanNode {
         var __typename: String? = typename
         var _id: String? = null
         var _homePlanet: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _homePlanet = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _homePlanet = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -103,17 +105,17 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.HumanNode,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("homePlanet")
-        StringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
       }
     }
 
@@ -122,18 +124,18 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         typename: String,
       ): NodeQuery.Data.DroidNode {
         var __typename: String? = typename
         var _id: String? = null
         var _primaryFunction: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _primaryFunction = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            2 -> _primaryFunction = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -147,17 +149,17 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.DroidNode,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
         writer.name("primaryFunction")
-        StringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
       }
     }
 
@@ -166,16 +168,16 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         typename: String,
       ): NodeQuery.Data.OtherNode {
         var __typename: String? = typename
         var _id: String? = null
 
-        while(true) {
+        while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
             else -> break
           }
         }
@@ -188,14 +190,14 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.OtherNode,
+        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
       }
     }
   }

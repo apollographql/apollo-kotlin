@@ -4,8 +4,10 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
@@ -34,7 +36,7 @@ fun <D : Executable.Data> Executable<D>.normalize(
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
-  val variables = variables(customScalarAdapters)
+  val variables = variables(customScalarAdapters, true)
   return Normalizer(variables, rootKey, cacheKeyGenerator, EmptyMetadataGenerator)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
 }
@@ -109,7 +111,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       cache = cache,
       cacheHeaders = cacheHeaders,
       cacheResolver = cacheResolver,
-      variables = variables(customScalarAdapters),
+      variables = variables(customScalarAdapters, true),
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
       rootTypename = rootField().type.rawType().name

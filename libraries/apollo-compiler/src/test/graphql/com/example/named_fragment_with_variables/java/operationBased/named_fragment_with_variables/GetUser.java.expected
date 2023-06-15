@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_with_variables;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter;
@@ -134,14 +134,14 @@ public class GetUser implements Query<GetUser.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    GetUser_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      boolean withBooleanDefaultValues) throws IOException {
+    GetUser_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
   }
 
   @Override
-  public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(GetUser_ResponseAdapter.Data.INSTANCE, true);
+  public CompositeAdapter<Data> adapter() {
+    return new ObjectCompositeAdapter<Data>(GetUser_ResponseAdapter.Data.INSTANCE, true);
   }
 
   @Override

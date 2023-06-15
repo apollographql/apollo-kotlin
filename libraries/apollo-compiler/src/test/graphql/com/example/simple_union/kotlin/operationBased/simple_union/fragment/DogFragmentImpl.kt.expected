@@ -5,8 +5,8 @@
 //
 package com.example.simple_union.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,12 +23,15 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(
+    writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
+    withBooleanDefaultValues: Boolean,
+  ): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DogFragment> =
+  public override fun adapter(): CompositeAdapter<DogFragment> =
       DogFragmentImpl_ResponseAdapter.DogFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

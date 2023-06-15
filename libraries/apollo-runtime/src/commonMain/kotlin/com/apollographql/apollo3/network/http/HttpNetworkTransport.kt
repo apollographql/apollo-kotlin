@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -142,7 +141,8 @@ private constructor(
     val response = try {
       operation.parseJsonResponse(
           jsonReader = httpResponse.body!!.jsonReader(),
-          customScalarAdapters = customScalarAdapters
+          customScalarAdapters = customScalarAdapters,
+          deferredFragmentIdentifiers = null,
       )
     } catch (e: Exception) {
       errorResponse(operation, e)
@@ -177,6 +177,7 @@ private constructor(
                     Kind.PAYLOAD
                   }
                 }
+
                 else -> Kind.OTHER
               }
             }
@@ -196,7 +197,8 @@ private constructor(
                 // TODO: make parseJsonResponse not close the jsonReader
                 operation.parseJsonResponse(
                     jsonReader = reader,
-                    customScalarAdapters = customScalarAdapters
+                    customScalarAdapters = customScalarAdapters,
+                    deferredFragmentIdentifiers = null,
                 )
               }
 
@@ -220,7 +222,8 @@ private constructor(
             } else {
               operation.parseJsonResponse(
                   jsonReader = merged.jsonReader(),
-                  customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+                  customScalarAdapters = customScalarAdapters,
+                  deferredFragmentIdentifiers = deferredFragmentIds,
               ).newBuilder().isLast(isLast).build()
             }
           }

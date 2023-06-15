@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -26,9 +25,9 @@ class AppSyncWsProtocol(
       authorization: Map<String, Any?>,
       connectionAcknowledgeTimeoutMs: Long,
       webSocketConnection: WebSocketConnection,
-      listener: Listener
+      listener: Listener,
   ) : this(connectionAcknowledgeTimeoutMs, { authorization }, webSocketConnection, listener)
-    
+
   private var authorization: Map<String, Any?>? = null
 
   override suspend fun connectionInit() {
@@ -37,7 +36,7 @@ class AppSyncWsProtocol(
     )
 
     sendMessageMapText(message)
-    
+
     authorization = connectionPayload()
 
     withTimeout(connectionAcknowledgeTimeoutMs) {
@@ -52,7 +51,7 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request), CustomScalarAdapters.Empty, )
+    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request))
 
     sendMessageMapText(
         mapOf(
@@ -89,6 +88,7 @@ class AppSyncWsProtocol(
           listener.generalError(messageMap["payload"] as Map<String, Any?>?)
         }
       }
+
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       "ka" -> Unit // Keep Alive: nothing to do
       else -> Unit // Unknown message
@@ -113,14 +113,14 @@ class AppSyncWsProtocol(
         authorization: Map<String, Any?>,
         connectionAcknowledgeTimeoutMs: Long = 10_000,
     ) : this(connectionAcknowledgeTimeoutMs, { authorization })
-        
+
     override val name: String
       get() = "graphql-ws"
 
     override fun create(
         webSocketConnection: WebSocketConnection,
         listener: Listener,
-        scope: CoroutineScope
+        scope: CoroutineScope,
     ): WsProtocol {
       return AppSyncWsProtocol(
           connectionPayload = connectionPayload,

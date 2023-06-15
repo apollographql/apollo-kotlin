@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.rawValue
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
@@ -51,7 +50,7 @@ internal class EnumResponseAdapterBuilder(
         .addException(JavaClassNames.IOException)
         .addAnnotation(JavaClassNames.Override)
         .addParameter(JavaClassNames.JsonReader, reader)
-        .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+        .addParameter(JavaClassNames.CustomScalarAdapters, Identifier.customScalarAdapters)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -79,5 +78,5 @@ internal fun toResponseMethodSpecBuilder(typeName: TypeName) = MethodSpec.method
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonWriter, writer)
-    .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+    .addParameter(JavaClassNames.CustomScalarAdapters, Identifier.customScalarAdapters)
     .addParameter(typeName, value)

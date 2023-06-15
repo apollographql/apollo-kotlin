@@ -5,7 +5,8 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompositeAdapter
+import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -16,18 +17,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<DroidFragmentImpl.Data> {
+  public object Data : CompositeAdapter<DroidFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         DroidFragmentImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
 
-      while(true) {
+      while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
           else -> break
         }
       }
@@ -40,14 +41,14 @@ public object DroidFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: DroidFragmentImpl.Data,
+      adapterContext: CompositeAdapterContext,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
     }
   }
 }

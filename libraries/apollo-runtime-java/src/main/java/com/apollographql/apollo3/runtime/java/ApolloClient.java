@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.ScalarType;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpHeader;
