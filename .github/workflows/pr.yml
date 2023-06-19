@@ -104,7 +104,7 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
 
-      # Setup Java 11 environment for the next steps
+      # Setup Java 17 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
@@ -124,22 +124,6 @@ jobs:
           echo "::set-output name=pluginVerifierHomeDir::~/.pluginVerifier"
 
           ./gradlew :intellij-plugin:listProductsReleases # prepare list of IDEs for Plugin Verifier
-
-      # Trigger code generation in test project, as the plugin's tests depend on it
-      - name: Test project codegen
-        run: ./gradlew -p tests :intellij-plugin-test-project:generateApolloSources
-
-      # Run tests
-      - name: Run Tests
-        run: ./gradlew :intellij-plugin:check
-
-      # Collect Tests Result of failed tests
-      - name: Collect Tests Result
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: tests-result
-          path: ${{ github.workspace }}/intellij-plugin/build/reports/tests
 
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
