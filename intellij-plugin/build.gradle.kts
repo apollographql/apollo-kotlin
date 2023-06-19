@@ -133,19 +133,15 @@ tasks {
       showStandardStreams = true
     }
   }
-
-  test {
-    // Setup fake JDK for maven dependencies to work
-    // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
-    systemProperty("idea.home.path", file("mockJDK").absolutePath)
-  }
 }
+
+val mockJdkRoot = buildDir.resolve("mockJDK")
 
 // Setup fake JDK for maven dependencies to work
 // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
 tasks.register("downloadMockJdk") {
   doLast {
-    val rtJar = file("mockJDK/java/mockJDK-1.7/jre/lib/rt.jar")
+    val rtJar = mockJdkRoot.resolve("java/mockJDK-1.7/jre/lib/rt.jar")
     if (!rtJar.exists()) {
       rtJar.parentFile.mkdirs()
       rtJar.writeBytes(URL("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").openStream().readBytes())
@@ -153,8 +149,12 @@ tasks.register("downloadMockJdk") {
   }
 }
 
-tasks.named("test").configure {
+tasks.test.configure {
   dependsOn("downloadMockJdk")
+  // Setup fake JDK for maven dependencies to work
+  // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
+  // Use a relative path to make build caching work
+  systemProperty("idea.home.path", mockJdkRoot.relativeTo(project.projectDir).path)
 }
 
 // See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
