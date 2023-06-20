@@ -1,7 +1,8 @@
 package com.apollographql.ijplugin.settings
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.intellij.ide.passwordSafe.PasswordSafe
+import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
+import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign
@@ -10,7 +11,7 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 
 
-class SettingsComponent {
+class SettingsComponent(private val project: Project) {
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
   private lateinit var chkContributeConfigurationToGraphqlPlugin: JCheckBox
   private lateinit var addEditRemovePanel: AddEditRemovePanel<ServiceConfiguration>
@@ -38,14 +39,19 @@ class SettingsComponent {
             ApolloBundle.message("settings.studio.apiKeys.text")
         ) {
           override fun addItem(): ServiceConfiguration? {
-            // TODO
-            PasswordSafe.instance.setPassword(credentialAttributesForService("Service 4"), "API 4")
-            return ServiceConfiguration("Service 4")
+            val apiKeyDialog = ApiKeyDialog(project)
+            if (!apiKeyDialog.showAndGet()) return null
+            val serviceConfiguration = ServiceConfiguration(apiKeyDialog.apiKey)
+            serviceConfiguration.apiKey = apiKeyDialog.apiKey
+            return serviceConfiguration
           }
 
           override fun editItem(o: ServiceConfiguration): ServiceConfiguration? {
-            // TODO
-            return null
+            val apiKeyDialog = ApiKeyDialog(project, serviceName = o.serviceName, apiKey = o.apiKey ?: "")
+            if (!apiKeyDialog.showAndGet()) return null
+            val serviceConfiguration = ServiceConfiguration(apiKeyDialog.apiKey)
+            serviceConfiguration.apiKey = apiKeyDialog.apiKey
+            return serviceConfiguration
           }
 
           override fun removeItem(o: ServiceConfiguration?): Boolean {

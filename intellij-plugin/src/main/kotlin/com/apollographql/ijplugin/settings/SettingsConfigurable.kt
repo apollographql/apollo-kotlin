@@ -10,7 +10,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
   override fun getDisplayName() = "Apollo GraphQL"
 
   override fun createComponent(): JComponent {
-    val settingsComponent = SettingsComponent()
+    val settingsComponent = SettingsComponent(project)
     this.settingsComponent = settingsComponent
     return settingsComponent.panel
   }

@@ -11,6 +11,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.Attribute
+import com.intellij.util.xmlb.annotations.Transient
 
 @State(
     name = "com.apollographql.ijplugin.settings.SettingsState",
@@ -84,8 +85,17 @@ data class ServiceConfiguration(
     val serviceName: String = "",
 ) {
   // API key is not stored as an attribute, but via PasswordSafe
-  val apiKey: String?
+  var apiKey: String?
+    @Transient
     get() = PasswordSafe.instance.getPassword(credentialAttributesForService(serviceName))
+    @Transient
+    set(value) {
+      PasswordSafe.instance.setPassword(credentialAttributesForService(serviceName), value)
+    }
+
+  private fun credentialAttributesForService(serviceName: String): CredentialAttributes {
+    return CredentialAttributes(generateServiceName("Apollo/Service", serviceName))
+  }
 }
 
 data class SettingsStateImpl(
@@ -94,10 +104,6 @@ data class SettingsStateImpl(
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var serviceConfigurations: List<ServiceConfiguration> = emptyList(),
 ) : SettingsState
-
-fun credentialAttributesForService(serviceName: String): CredentialAttributes {
-  return CredentialAttributes(generateServiceName("Apollo/Service", serviceName))
-}
 
 
 val Project.settingsState get(): SettingsState = service<SettingsService>()
