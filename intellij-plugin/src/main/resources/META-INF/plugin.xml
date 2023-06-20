@@ -79,6 +79,16 @@
     <!-- Studio / Sandbox -->
     <projectService serviceImplementation="com.apollographql.ijplugin.studio.sandbox.SandboxService" />
 
+<!--    <codeInsight.parameterNameHints-->
+<!--        implementationClass="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsInlayParameterHintsProvider"-->
+<!--        language="GraphQL"-->
+<!--    />-->
+    <!-- TODO -->
+    <codeInsight.inlayProvider
+        implementationClass="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsInlayHintsProvider"
+        language="GraphQL"
+    />
+
   </extensions>
 
   <!-- Contribute configuration to the GraphQL plugin -->
@@ -147,4 +157,5 @@
     </action>
 
   </actions>
+
 </idea-plugin>
