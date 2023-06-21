@@ -25,3 +25,21 @@ mutation RegisterOperations(
     }
   }
 }
+
+query FieldLatencies($serviceId: ID!, $fromTimestamp: Timestamp!, $percentile: Float!) {
+  service(id: $serviceId) {
+    statsWindow(from: $fromTimestamp) {
+      fieldLatencies {
+        groupBy {
+          parentType
+          fieldName
+        }
+        metrics {
+          fieldHistogram {
+            durationMs(percentile: $percentile)
+          }
+        }
+      }
+    }
+  }
+}
