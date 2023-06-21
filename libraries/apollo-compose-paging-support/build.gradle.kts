@@ -40,7 +40,7 @@ tasks.withType(KotlinCompile::class.java).configureEach {
   kotlinOptions {
     freeCompilerArgs += listOf(
         "-P",
-        "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.9.0"
+        "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=1.9.0-RC"
     )
   }
 }
