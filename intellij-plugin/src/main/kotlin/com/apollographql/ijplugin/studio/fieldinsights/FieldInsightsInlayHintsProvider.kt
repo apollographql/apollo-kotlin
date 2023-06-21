@@ -9,11 +9,14 @@ import com.intellij.codeInsight.hints.InlayHintsProvider
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.NoSettings
 import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
+import com.intellij.lang.jsgraphql.ide.config.model.GraphQLProjectConfig
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFieldDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -24,7 +27,6 @@ import kotlin.math.roundToInt
 
 @Suppress("UnstableApiUsage")
 class FieldInsightsInlayHintsProvider : InlayHintsProvider<NoSettings> {
-  private val fieldInsightsRepository = newMockFieldInsightsRepository()
 
   override val key: SettingsKey<NoSettings> = SettingsKey("FieldInsightsInlayHintsProvider")
 
@@ -35,13 +37,14 @@ class FieldInsightsInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
   override fun createSettings() = NoSettings()
 
-  override fun getCollectorFor(file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): InlayHintsCollector? {
+  override fun getCollectorFor(file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): InlayHintsCollector {
     return object : FactoryInlayHintsCollector(editor) {
       override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
         val latency = getLatency(element)
             // Only report latencies > 1ms
             ?.takeIf { it > 1 }
             ?: return true
+        // TODO add click action to go to settings
         sink.addInlineElement(
             offset = element.endOffset,
             relatesToPrecedingText = true,
@@ -53,25 +56,31 @@ class FieldInsightsInlayHintsProvider : InlayHintsProvider<NoSettings> {
     }
   }
 
-  private fun getLatency(element: PsiElement): Milliseconds? {
+  private fun getLatency(element: PsiElement): Double? {
     return when (element) {
+      is GraphQLIdentifier -> getLatency(element)
       is GraphQLFieldDefinition -> getLatency(element)
-      is GraphQLField -> getLatency(element)
       else -> null
     }
   }
 
-  private fun getLatency(field: GraphQLField): Milliseconds? {
+  private fun getLatency(identifier: GraphQLIdentifier): Double? {
+    val field = identifier.parent as? GraphQLField ?: return null
+    return getLatency(field)
+  }
+
+  private fun getLatency(field: GraphQLField): Double? {
     val fieldDefinition = field.findChildrenOfType<GraphQLIdentifier>().firstOrNull()?.reference?.resolve()?.parent as? GraphQLFieldDefinition
         ?: return null
     return getLatency(fieldDefinition)
   }
 
-  private fun getLatency(fieldDefinition: GraphQLFieldDefinition): Milliseconds? {
+  private fun getLatency(fieldDefinition: GraphQLFieldDefinition): Double? {
     val typeDefinition = fieldDefinition.parent.parent as? GraphQLTypeDefinition ?: return null
     val typeName = typeDefinition.findChildrenOfType<GraphQLTypeNameDefinition>().firstOrNull()?.name ?: return null
     val fieldName = fieldDefinition.name ?: return null
-    return fieldInsightsRepository.getLatency(typeName, fieldName)
+    val graphQLProjectFilesName = fieldDefinition.containingFile.getGraphQLProjectFilesName() ?: return null
+    return fieldDefinition.project.service<FieldInsightsService>().getLatency(graphQLProjectFilesName, typeName, fieldName)
   }
 
 
@@ -80,7 +89,12 @@ class FieldInsightsInlayHintsProvider : InlayHintsProvider<NoSettings> {
       return panel {}
     }
   }
+
+  private fun PsiFile.getGraphQLProjectFilesName(): String? {
+    val config: GraphQLProjectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(this)
+        ?: return null
+    return config.name
+  }
 }
 
-private fun Milliseconds.toFormattedString() = "~${roundToInt()} ms"
-
+private fun Double.toFormattedString() = "~${roundToInt()} ms"

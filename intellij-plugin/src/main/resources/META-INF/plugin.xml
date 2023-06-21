@@ -79,15 +79,14 @@
     <!-- Studio / Sandbox -->
     <projectService serviceImplementation="com.apollographql.ijplugin.studio.sandbox.SandboxService" />
 
-<!--    <codeInsight.parameterNameHints-->
-<!--        implementationClass="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsInlayParameterHintsProvider"-->
-<!--        language="GraphQL"-->
-<!--    />-->
-    <!-- TODO -->
+    <!-- Fields insights inlay provider -->
     <codeInsight.inlayProvider
         implementationClass="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsInlayHintsProvider"
         language="GraphQL"
     />
+
+    <!-- Fields insights service (fetch and cache data) -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService" />
 
   </extensions>
 

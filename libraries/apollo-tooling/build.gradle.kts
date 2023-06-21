@@ -9,6 +9,10 @@ plugins {
 dependencies {
   api(project(":apollo-compiler"))
 
+  api(project(":apollo-annotations")) {
+    because("Allows to opt-in to experimental features")
+  }
+
   implementation(project(":apollo-ast"))
   implementation(golatac.lib("apollo-runtime-published"))
   implementation(golatac.lib("okhttp"))
