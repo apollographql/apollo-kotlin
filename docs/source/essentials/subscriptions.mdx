@@ -2,12 +2,17 @@
 title: Subscriptions in Apollo Kotlin
 ---
 
-> By default, Apollo Kotlin uses the [`subscriptions-transport-ws`](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) protocol for subscriptions via the `SubscriptionWsProtocol` class. **This protocol is no longer actively maintained.** It remains the default for backward compatibility purposes.
->
-> A future version of Apollo Kotlin will change the default to the newer [`graphql-ws`](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol and `GraphQLWsProtocol` class. If your server already uses `graphql-ws`, make sure to set your `WsProtocol` to [`GraphQLWsProtocol`](#customizing-your-websocket-protocol)
+Subscriptions are long-lived GraphQL read operations that can update their response over time, enabling clients to receive new data as it becomes available.
 
+The GraphQL spec does not specify a particular protocol to use for subscription operations. Apollo Kotlin supports the following protocols:
 
-Subscriptions are long-lived GraphQL read operations that can update their response over time, enabling clients to receive updates as they occur. They're usually implemented as a connection to a GraphQL server over WebSocket (including in Apollo Kotlin).
+- **WebSocket,** using one of the following subprotocols:
+  - [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) (⚠️ not actively maintained!)
+  - [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
+  - [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
+* **HTTP,** using [chunked multipart responses](https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md)
+
+**You must use whichever transport is supported by your GraphQL endpoint.**
 
 You define a subscription in your app just like you define a query, except you use the `subscription` keyword. Here's an example subscription for getting the latest value of a number whenever that number is incremented:
 
@@ -19,17 +24,76 @@ subscription NumberIncremented {
 
 Unlike with queries and mutations, a subscription operation can include only _one_ field of the `Subscription` type. To subscribe to multiple fields, you create multiple subscription operations.
 
-## Setting the WebSocket URL
+## Configuring WebSocket subscriptions
 
-Because subscriptions usually use WebSocket instead of HTTP, you might have to customize the URL used:
+> By default, Apollo Kotlin uses the [`subscriptions-transport-ws`](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) protocol for subscriptions via the `SubscriptionWsProtocol` class. **This protocol is no longer actively maintained.** It remains the default for backward compatibility purposes.
+>
+> A future version of Apollo Kotlin will change the default to the newer [`graphql-ws`](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol and `GraphQLWsProtocol` class. If your server already uses `graphql-ws`, make sure to [set your `WsProtocol` to `GraphQLWsProtocol`](#customizing-your-websocket-protocol).
+
+To use subscriptions over WebSocket, use `WebSocketNetworkTransport`:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-  .webSocketServerUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-  .build()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .build()
+    )
+    .build()
 ```
 
 > **Note:** Apollo Kotlin supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
+
+
+### Customizing your WebSocket protocol
+
+By default, Apollo Kotlin uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) for backward compatibility purposes, but it supports all of the following WebSocket subprotocols:
+
+- [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) (⚠️ not actively maintained!)
+- [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
+- [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
+
+To customize your protocol, use the `WsProtocol` interface. Apollo Kotlin comes with built-in support for the subprotocols above:
+
+| Subprotocol | Class |
+|-------------|-------|
+| subscriptions-transport-ws | `SubscriptionWsProtocol` (default) |
+| graphql-ws | `GraphQLWsProtocol` |
+| appsync | `AppSyncWsProtocol` |
+
+For example, you can configure a `graphql-ws` transport like so:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .protocol(GraphQLWsProtocol.Factory()) // highlight-line
+            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .build()
+    )
+    .build()
+```
+
+### Authentication
+
+Please refer to [this section](../advanced/authentication#authenticating-your-websockets) about authentication with WebSocket.
+
+
+## Configuring HTTP subscriptions
+
+To use HTTP for subscriptions, use `HttpNetworkTransport` like so:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        HttpNetworkTransport.Builder()
+            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .build()
+    )
+    .build()
+```
+
+This is the only configuration required. `HttpNetworkTransport` will use [chunked multipart responses](https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md) for subscription operations and standard POST or GET requests for queries and mutations.
 
 ## Listening to a subscription
 
@@ -58,30 +122,3 @@ Like queries, subscriptions support partial responses with GraphQL errors, which
 Network errors terminate the `Flow`, and you need to retry to get new updates. Depending on the situation, retrying might open a new WebSocket or restart the subscription.
 
 See also [this section](../advanced/websocket-errors) about WebSocket errors handling.
-
-## Customizing your WebSocket protocol
-
-The GraphQL spec does not specify a particular protocol to use for subscription operations. By default, Apollo Kotlin uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) for backward compatibility purposes, but it supports all of the following:
-
-* [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) (⚠️ not actively maintained!)
-* [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
-* [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
-
-To customize your protocol, use the `WsProtocol` interface. Apollo Kotlin comes with built-in support for the protocols above:
-
-* subscriptions-transport-ws: `SubscriptionWsProtocol` (default)
-* graphql-ws: `GraphQLWsProtocol`
-* appsync: `AppSyncWsProtocol`
-
-For example, you can configure a `graphql-ws` transport like so:
-
-```kotlin
-val apolloClient = ApolloClient.Builder()
-    .webSocketServerUrl("http://localhost:9090/graphql")
-    .wsProtocol(GraphQLWsProtocol.Factory())
-    .build()
-```
-
-## Authentication
-
-Please refer to [this section](../advanced/authentication#authenticating-your-websockets) about authentication with WebSocket.
