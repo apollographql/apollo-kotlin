@@ -42,7 +42,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   @Test
   fun operation() = testFindUsages(
       fromFile = "src/main/graphql/AnimalsQuery.graphql",
-      moveCaret = { moveCaret("Animals") },
+      moveCaret = { moveCaret("animals") },
       expected = setOf(
           "Main.kt" to "import com.example.generated.AnimalsQuery",
           "Main.kt" to "val animalsQuery = AnimalsQuery()",
@@ -54,9 +54,9 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   @Test
   fun fragment() = testFindUsages(
       fromFile = "src/main/graphql/ComputerFields.graphql",
-      moveCaret = { moveCaret("ComputerFields") },
+      moveCaret = { moveCaret("computerFields") },
       expected = setOf(
-          "ComputersQuery.graphql" to "...ComputerFields",
+          "ComputersQuery.graphql" to "...computerFields",
           "Main.kt" to "import com.example.generated.fragment.ComputerFields",
           "Main.kt" to "val computerFields = ComputerFields(",
           "Main.kt" to "screen = ComputerFields.Screen(",
@@ -66,20 +66,20 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   @Test
   fun enumClass() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
-      moveCaret = { moveCaret("MyEnum", afterText = "enum MyEnum {") },
+      moveCaret = { moveCaret("myEnum", afterText = "enum myEnum {") },
       expected = setOf(
           "Main.kt" to "import com.example.generated.type.MyEnum",
           "Main.kt" to "MyEnum.VALUE_C",
-          "schema.graphqls" to "inputEnum: MyEnum",
-          "schema.graphqls" to "): MyEnum",
-          "MyEnumQuery.graphql" to "query MyEnumQuery(\$inputEnum: MyEnum) {",
+          "schema.graphqls" to "inputEnum: myEnum",
+          "schema.graphqls" to "): myEnum",
+          "MyEnumQuery.graphql" to "query MyEnumQuery(\$inputEnum: myEnum) {",
       ),
   )
 
   @Test
   fun enumValue() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
-      moveCaret = { moveCaret("VALUE_C", afterText = "enum MyEnum {") },
+      moveCaret = { moveCaret("VALUE_C", afterText = "enum myEnum {") },
       expected = setOf(
           "Main.kt" to "MyEnum.VALUE_C",
       ),
@@ -89,19 +89,19 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   @Test
   fun inputType() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
-      moveCaret = { moveCaret("PersonInput", afterText = "input PersonInput {") },
+      moveCaret = { moveCaret("personInput", afterText = "input personInput {") },
       expected = setOf(
           "Main.kt" to "import com.example.generated.type.PersonInput",
           "Main.kt" to "val personInput = PersonInput(",
-          "schema.graphqls" to "personInput: PersonInput",
-          "CreatePersonMutation.graphql" to "mutation CreatePerson(\$personInput: PersonInput) {",
+          "schema.graphqls" to "personInput: personInput",
+          "CreatePersonMutation.graphql" to "mutation CreatePerson(\$personInput: personInput) {",
       )
   )
 
   @Test
   fun inputField() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
-      moveCaret = { moveCaret("lastName", afterText = "input PersonInput {") },
+      moveCaret = { moveCaret("lastName", afterText = "input personInput {") },
       expected = setOf(
           "Main.kt" to "lastName =",
       ),

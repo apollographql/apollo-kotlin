@@ -5,6 +5,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLTypeCondition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.psi.PsiElement
@@ -46,7 +47,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("AnimalsQuery()") },
       toFile = "src/main/graphql/AnimalsQuery.graphql",
-      toElement = { elementAt<GraphQLTypedOperationDefinition>("query Animals") }
+      toElement = { elementAt<GraphQLTypedOperationDefinition>("query animals") }
   )
 
   @Test
@@ -54,7 +55,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("ComputerFields(") },
       toFile = "src/main/graphql/ComputerFields.graphql",
-      toElement = { elementAt<GraphQLFragmentDefinition>("fragment ComputerFields") }
+      toElement = { elementAt<GraphQLFragmentDefinition>("fragment computerFields") }
   )
 
   @Test
@@ -62,7 +63,15 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("fieldOnDogAndCat") },
       toFile = "src/main/graphql/AnimalsQuery.graphql",
-      toElement = { elementAt<GraphQLField>("fieldOnDogAndCat", afterText = "... on Dog {") }
+      toElement = { elementAt<GraphQLField>("fieldOnDogAndCat", afterText = "... on dog {") }
+  )
+
+  @Test
+  fun goToFragmentTypeCondition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Main.kt",
+      fromElement = { elementAt<PsiElement>("onDog") },
+      toFile = "src/main/graphql/AnimalsQuery.graphql",
+      toElement = { elementAt<GraphQLTypeCondition>("on dog") }
   )
 
   @Test
@@ -70,7 +79,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("MyEnum", afterText = "Optional.present(MyEnum.VALUE_C)") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {") }
+      toElement = { elementAt<GraphQLTypeNameDefinition>("myEnum", afterText = "enum myEnum {") }
   )
 
   @Test
@@ -78,7 +87,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("VALUE_C") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLEnumValue>("VALUE_C", afterText = "enum MyEnum {") }
+      toElement = { elementAt<GraphQLEnumValue>("VALUE_C", afterText = "enum myEnum {") }
   )
 
   @Test
@@ -86,7 +95,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("PersonInput") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput") }
+      toElement = { elementAt<GraphQLTypeNameDefinition>("personInput", afterText = "input personInput") }
   )
 
   @Test
@@ -94,7 +103,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("lastName = ") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLInputValueDefinition>("lastName", afterText = "input PersonInput {") }
+      toElement = { elementAt<GraphQLInputValueDefinition>("lastName", afterText = "input personInput {") }
   )
 }
 

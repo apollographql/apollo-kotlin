@@ -1,4 +1,4 @@
-query Animals {
+query animals {
     animals {
         id
         name
@@ -6,7 +6,7 @@ query Animals {
             meowVolume
             fieldOnDogAndCat
         }
-        ... on Dog {
+        ... on dog {
             barkVolume
             fieldOnDogAndCat
         }

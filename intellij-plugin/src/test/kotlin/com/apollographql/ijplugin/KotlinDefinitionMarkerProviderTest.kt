@@ -27,7 +27,7 @@ class KotlinDefinitionMarkerProviderTest : ApolloTestCase() {
   fun operationMarker() {
     val (operationSource, operationTarget) = infoList[0].sourceAndTarget()
     operationSource.assertTypeAndText<PsiElement>("AnimalsQuery")
-    operationTarget.assertTypeAndText<GraphQLTypedOperationDefinition>("query Animals {")
+    operationTarget.assertTypeAndText<GraphQLTypedOperationDefinition>("query animals {")
   }
 
   @Test

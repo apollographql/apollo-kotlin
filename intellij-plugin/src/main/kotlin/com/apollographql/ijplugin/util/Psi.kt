@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.util
 
+import com.intellij.openapi.progress.JobCanceledException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
@@ -47,5 +48,7 @@ fun PsiElement.resolveKtName(): PsiElement? = runCatching {
   references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
 }.onFailure { t ->
   // Sometimes KotlinIdeaResolutionException is thrown
-  logw(t, "Could not resolve $this")
+  @Suppress("UnstableApiUsage")
+  // JobCanceledException is a normal thing to happen though so no need to log
+  if (t !is JobCanceledException) logw(t, "Could not resolve $this")
 }.getOrNull()

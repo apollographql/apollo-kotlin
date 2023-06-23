@@ -47,7 +47,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToOperationClass() = testNavigation(
       fromFile = "src/main/graphql/AnimalsQuery.graphql",
-      fromElement = { elementAt<PsiElement>("Animals")!! },
+      fromElement = { elementAt<PsiElement>("animals")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/AnimalsQuery.kt",
       toElement = { elementAt<KtClass>("class AnimalsQuery")!! },
   )
@@ -55,7 +55,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToFragmentClass() = testNavigation(
       fromFile = "src/main/graphql/ComputerFields.graphql",
-      fromElement = { elementAt<PsiElement>("ComputerFields")!! },
+      fromElement = { elementAt<PsiElement>("computerFields")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtClass>("class ComputerFields")!! },
   )
@@ -72,7 +72,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToEnumType() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
-      fromElement = { elementAt<PsiElement>("MyEnum", afterText = "enum MyEnum {")!! },
+      fromElement = { elementAt<PsiElement>("myEnum", afterText = "enum myEnum {")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/type/MyEnum.kt",
       toElement = { elementAt<KtClass>("class MyEnum")!! },
   )
@@ -80,7 +80,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToEnumValue() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
-      fromElement = { elementAt<PsiElement>("VALUE_D", afterText = "enum MyEnum {")!! },
+      fromElement = { elementAt<PsiElement>("VALUE_D", afterText = "enum myEnum {")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/type/MyEnum.kt",
       toElement = { elementAt<KtEnumEntry>("VALUE_D")!! },
   )
@@ -88,7 +88,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToInputType() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
-      fromElement = { elementAt<PsiElement>("PersonInput", afterText = "input PersonInput {")!! },
+      fromElement = { elementAt<PsiElement>("personInput", afterText = "input personInput {")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/type/PersonInput.kt",
       toElement = { elementAt<KtClass>("class PersonInput")!! },
   )
@@ -96,7 +96,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   @Test
   fun goToInputField() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
-      fromElement = { elementAt<PsiElement>("lastName", afterText = "input PersonInput {")!! },
+      fromElement = { elementAt<PsiElement>("lastName", afterText = "input personInput {")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/type/PersonInput.kt",
       toElement = { elementAt<KtParameter>("lastName")!! },
   )

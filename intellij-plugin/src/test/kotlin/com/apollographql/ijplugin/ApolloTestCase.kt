@@ -66,8 +66,14 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
   }
 
   protected inline fun <reified T> PsiElement.assertTypeAndText(prefix: String) {
-    assertInstanceOf(this, T::class.java)
-    assertTrue(text.startsWith(prefix))
+    try { assertInstanceOf(this, T::class.java) } catch (e: AssertionError) {
+      throw AssertionError("Expected ${T::class.java.simpleName} but was ${this::class.java.simpleName}", e)
+    }
+    try {
+      assertTrue(text.startsWith(prefix))
+    } catch (e: AssertionError) {
+      throw AssertionError("Expected text to start with $prefix but was $text", e)
+    }
   }
 
   protected fun moveCaret(text: String, afterText: String? = null) {

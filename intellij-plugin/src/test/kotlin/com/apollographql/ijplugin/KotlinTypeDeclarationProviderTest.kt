@@ -47,7 +47,7 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<KtProperty>("animalsQuery") },
       toFile = "src/main/graphql/AnimalsQuery.graphql",
-      toElement = { elementAt<GraphQLTypedOperationDefinition>("query Animals") }
+      toElement = { elementAt<GraphQLTypedOperationDefinition>("query animals") }
   )
 
   @Test
@@ -55,7 +55,7 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<KtProperty>("computerFields") },
       toFile = "src/main/graphql/ComputerFields.graphql",
-      toElement = { elementAt<GraphQLFragmentDefinition>("fragment ComputerFields") }
+      toElement = { elementAt<GraphQLFragmentDefinition>("fragment computerFields") }
   )
 
   @Test
@@ -63,7 +63,7 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<KtReferenceExpression>("fieldOnDogAndCat")!!.resolveKtName() },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLIdentifier>("fieldOnDogAndCat", afterText = "type Dog implements Animal {") }
+      toElement = { elementAt<GraphQLIdentifier>("fieldOnDogAndCat", afterText = "type dog implements Animal {") }
   )
 
   @Test
@@ -71,7 +71,7 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<KtProperty>("val myEnum") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLTypeNameDefinition>("MyEnum", afterText = "enum MyEnum {") }
+      toElement = { elementAt<GraphQLTypeNameDefinition>("myEnum", afterText = "enum myEnum {") }
   )
 
   @Test
@@ -79,7 +79,7 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<KtProperty>("val personInput") },
       toFile = "src/main/graphql/schema.graphqls",
-      toElement = { elementAt<GraphQLTypeNameDefinition>("PersonInput", afterText = "input PersonInput") }
+      toElement = { elementAt<GraphQLTypeNameDefinition>("personInput", afterText = "input personInput") }
   )
 }
 
