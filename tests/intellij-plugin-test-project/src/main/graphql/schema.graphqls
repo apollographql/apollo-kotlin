@@ -1,11 +1,11 @@
 type Query {
   animals: [Animal!]!
   computers: [Computer!]!
-  myEnum(inputEnum: MyEnum): MyEnum
+  myEnum(inputEnum: myEnum): myEnum
 }
 
 type Mutation {
-  createPerson(personInput: PersonInput): Boolean
+  createPerson(personInput: personInput): Boolean
 }
 
 
@@ -14,7 +14,7 @@ interface Animal {
   name: String!
 }
 
-type Dog implements Animal {
+type dog implements Animal {
   id: ID!
   name: String!
   barkVolume: Int!
@@ -43,7 +43,7 @@ type Screen {
 
 scalar Date
 
-enum MyEnum {
+enum myEnum {
   VALUE_A
   VALUE_B
   VALUE_C
@@ -53,7 +53,7 @@ enum MyEnum {
   VALUE_G
 }
 
-input PersonInput {
+input personInput {
   firstName: String
   lastName: String
   age: Int

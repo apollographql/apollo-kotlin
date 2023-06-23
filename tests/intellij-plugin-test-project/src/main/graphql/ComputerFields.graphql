@@ -1,4 +1,4 @@
-fragment ComputerFields on Computer {
+fragment computerFields on Computer {
     cpu
     screen {
         resolution

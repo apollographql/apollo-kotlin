@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
@@ -158,15 +159,15 @@ private fun findGraphQLDefinitions(project: Project, predicate: (GraphQLDefiniti
 fun findOperationOrFragmentGraphQLDefinitions(project: Project, name: String): List<GraphQLDefinition> {
   return findGraphQLDefinitions(project) { graphQLDefinition ->
     // Look for operation definitions
-    graphQLDefinition is GraphQLOperationDefinition && (graphQLDefinition.name == name || graphQLDefinition.name == name.minusOperationTypeSuffix()) ||
+    graphQLDefinition is GraphQLOperationDefinition && (graphQLDefinition.name?.capitalizeFirstLetter() == name || graphQLDefinition.name?.capitalizeFirstLetter() == name.minusOperationTypeSuffix()) ||
         // Fallback: look for fragment definitions
-        graphQLDefinition is GraphQLFragmentDefinition && graphQLDefinition.name == name
+        graphQLDefinition is GraphQLFragmentDefinition && graphQLDefinition.name?.capitalizeFirstLetter() == name
   }
 }
 
 fun findEnumTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
   return findGraphQLDefinitions(project) {
-    it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name == name
+    it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name?.capitalizeFirstLetter() == name.capitalizeFirstLetter()
   }
       .mapNotNull { (it as GraphQLEnumTypeDefinition).typeNameDefinition }
 }
@@ -194,7 +195,7 @@ fun findEnumValueGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpr
 
 fun findInputTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
   return findGraphQLDefinitions(project) {
-    it is GraphQLInputObjectTypeDefinition && it.typeNameDefinition?.name == name
+    it is GraphQLInputObjectTypeDefinition && it.typeNameDefinition?.name?.capitalizeFirstLetter() == name
   }
       .mapNotNull { (it as GraphQLInputObjectTypeDefinition).typeNameDefinition }
 }
@@ -305,7 +306,7 @@ private fun GraphQLDefinition.findElementAtPath(path: List<String>): GraphQLElem
         if (selection.fragmentSelection!!.inlineFragment != null) {
           // Inline
           val inlineFragment = selection.fragmentSelection!!.inlineFragment!!
-          if (inlineFragment.typeCondition?.typeName?.name?.let { "on$it" } == pathElement) {
+          if (inlineFragment.typeCondition?.typeName?.name?.let { "on${it.capitalizeFirstLetter()}" } == pathElement) {
             // Point to the type condition
             element = inlineFragment.typeCondition
             inlineFragment.selectionSet?.let { selectionSet = it }
@@ -345,7 +346,7 @@ private fun GraphQLDefinition.findElementsNamed(name: String): List<GraphQLEleme
       } +
       // Inline fragments
       findChildrenOfType<GraphQLInlineFragment> { inlineFragment ->
-        inlineFragment.typeCondition?.typeName?.name?.let { "on$it" } == name
+        inlineFragment.typeCondition?.typeName?.name?.let { "on${it.capitalizeFirstLetter()}" } == name
       }
           .map { inlineFragment ->
             // Point to the type condition
