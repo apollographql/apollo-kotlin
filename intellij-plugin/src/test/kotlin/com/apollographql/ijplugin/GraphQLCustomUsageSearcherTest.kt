@@ -47,7 +47,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
           "Main.kt" to "import com.example.generated.AnimalsQuery",
           "Main.kt" to "val animalsQuery = AnimalsQuery()",
           "Markers.kt" to "import com.example.generated.AnimalsQuery",
-          "Markers.kt" to "val animalsQuery = AnimalsQuery()",
+          "Markers.kt" to "val animalsQuery = AliasedAnimalsQuery()",
       ),
   )
 

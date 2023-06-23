@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.asKtClass
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
-import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.apollographql.ijplugin.util.resolveKtName
@@ -30,7 +30,6 @@ import org.jetbrains.kotlin.idea.base.utils.fqname.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
@@ -50,10 +49,7 @@ private val APOLLO_FRAGMENT_TYPE = FqName("com.apollographql.apollo3.api.Fragmen
 private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo3.api.EnumType")
 
 fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
-  val resolvedElement = resolveKtName()
-  return (resolvedElement.cast<KtClass>()
-      ?: resolvedElement.cast<KtConstructor<*>>()?.containingClass())
-      ?.isApolloOperationOrFragment() == true
+  return resolveKtName()?.asKtClass()?.isApolloOperationOrFragment() == true
 }
 
 fun KtNameReferenceExpression.isApolloModelFieldReference(): Boolean {
@@ -114,10 +110,7 @@ fun KtNameReferenceExpression.isApolloEnumValueReference(): Boolean {
 }
 
 fun KtNameReferenceExpression.isApolloInputClassReference(): Boolean {
-  val resolvedElement = resolveKtName()
-  return (resolvedElement.cast<KtClass>()
-      ?: resolvedElement.cast<KtConstructor<*>>()?.containingClass())
-      ?.isApolloInputClass() == true
+  return resolveKtName()?.asKtClass()?.isApolloInputClass() == true
 }
 
 fun KtClass.isApolloInputClass(): Boolean {

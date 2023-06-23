@@ -51,6 +51,14 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
   )
 
   @Test
+  fun goToAliasedOperationDefinition() = testNavigation(
+      fromFile = "src/main/kotlin/com/example/Markers.kt",
+      fromElement = { elementAt<PsiElement>("AliasedAnimalsQuery()") },
+      toFile = "src/main/graphql/AnimalsQuery.graphql",
+      toElement = { elementAt<GraphQLTypedOperationDefinition>("query animals") }
+  )
+
+  @Test
   fun goToFragmentDefinition() = testNavigation(
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("ComputerFields(") },

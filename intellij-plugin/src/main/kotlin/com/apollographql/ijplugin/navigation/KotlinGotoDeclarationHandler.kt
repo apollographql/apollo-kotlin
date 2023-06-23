@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.originalClassName
 import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler
 import com.intellij.openapi.editor.Editor
@@ -25,7 +26,7 @@ class KotlinGotoDeclarationHandler : GotoDeclarationHandler {
 
     val graphQLDefinitions = when {
       nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
-        findOperationOrFragmentGraphQLDefinitions(sourceElement.project, psiLeaf.text)
+        findOperationOrFragmentGraphQLDefinitions(sourceElement.project, nameReferenceExpression.originalClassName() ?: psiLeaf.text)
       }
 
       nameReferenceExpression.isApolloModelFieldReference() -> {

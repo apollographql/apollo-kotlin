@@ -4,8 +4,11 @@ import com.intellij.openapi.progress.JobCanceledException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
@@ -52,3 +55,7 @@ fun PsiElement.resolveKtName(): PsiElement? = runCatching {
   // JobCanceledException is a normal thing to happen though so no need to log
   if (t !is JobCanceledException) logw(t, "Could not resolve $this")
 }.getOrNull()
+
+fun PsiElement.asKtClass(): KtClass? = cast<KtClass>() ?: cast<KtConstructor<*>>()?.containingClass()
+
+fun PsiElement.originalClassName(): String? = resolveKtName()?.asKtClass()?.name

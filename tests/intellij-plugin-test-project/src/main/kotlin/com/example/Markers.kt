@@ -2,10 +2,10 @@
 
 package com.example
 
-import com.example.generated.AnimalsQuery
+import com.example.generated.AnimalsQuery as AliasedAnimalsQuery
 import com.example.generated.fragment.ScreenFields
 
 fun markers() {
-  val animalsQuery = AnimalsQuery()
+  val animalsQuery = AliasedAnimalsQuery()
   val screenFields = ScreenFields(true)
 }
