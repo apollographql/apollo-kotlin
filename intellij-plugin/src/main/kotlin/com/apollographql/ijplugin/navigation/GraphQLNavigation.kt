@@ -159,15 +159,15 @@ private fun findGraphQLDefinitions(project: Project, predicate: (GraphQLDefiniti
 fun findOperationOrFragmentGraphQLDefinitions(project: Project, name: String): List<GraphQLDefinition> {
   return findGraphQLDefinitions(project) { graphQLDefinition ->
     // Look for operation definitions
-    graphQLDefinition is GraphQLOperationDefinition && (graphQLDefinition.name.equals(name, ignoreCase = true) || graphQLDefinition.name.equals(name.minusOperationTypeSuffix(), ignoreCase = true)) ||
+    graphQLDefinition is GraphQLOperationDefinition && (graphQLDefinition.name?.capitalizeFirstLetter() == name || graphQLDefinition.name?.capitalizeFirstLetter() == name.minusOperationTypeSuffix()) ||
         // Fallback: look for fragment definitions
-        graphQLDefinition is GraphQLFragmentDefinition && graphQLDefinition.name.equals(name, ignoreCase = true)
+        graphQLDefinition is GraphQLFragmentDefinition && graphQLDefinition.name?.capitalizeFirstLetter() == name
   }
 }
 
 fun findEnumTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
   return findGraphQLDefinitions(project) {
-    it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name?.equals(name, ignoreCase = true) == true
+    it is GraphQLEnumTypeDefinition && it.typeNameDefinition?.name?.capitalizeFirstLetter() == name.capitalizeFirstLetter()
   }
       .mapNotNull { (it as GraphQLEnumTypeDefinition).typeNameDefinition }
 }
@@ -195,7 +195,7 @@ fun findEnumValueGraphQLDefinitions(nameReferenceExpression: KtNameReferenceExpr
 
 fun findInputTypeGraphQLDefinitions(project: Project, name: String): List<GraphQLTypeNameDefinition> {
   return findGraphQLDefinitions(project) {
-    it is GraphQLInputObjectTypeDefinition && it.typeNameDefinition?.name.equals(name, ignoreCase = true) == true
+    it is GraphQLInputObjectTypeDefinition && it.typeNameDefinition?.name?.capitalizeFirstLetter() == name
   }
       .mapNotNull { (it as GraphQLInputObjectTypeDefinition).typeNameDefinition }
 }
