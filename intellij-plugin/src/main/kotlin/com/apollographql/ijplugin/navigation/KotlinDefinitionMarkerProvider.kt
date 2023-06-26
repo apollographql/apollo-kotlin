@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.navigation
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.originalClassName
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -26,7 +27,7 @@ class KotlinDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
     val psiLeaf = PsiTreeUtil.getDeepestFirst(element)
     val graphQLDefinitions = when {
       nameReferenceExpression.isApolloOperationOrFragmentReference() -> {
-        findOperationOrFragmentGraphQLDefinitions(element.project, psiLeaf.text)
+        findOperationOrFragmentGraphQLDefinitions(element.project, nameReferenceExpression.originalClassName() ?: psiLeaf.text)
       }
 
       else -> return
