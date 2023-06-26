@@ -79,10 +79,15 @@
     <!-- Studio / Sandbox -->
     <projectService serviceImplementation="com.apollographql.ijplugin.studio.sandbox.SandboxService" />
 
-    <!-- Fields insights inlay provider -->
-    <codeInsight.inlayProvider
-        implementationClass="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsInlayHintsProvider"
-        language="GraphQL"
+    <!-- Fields insights inspection ("expensive field") -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection language="GraphQL"
+                     implementationClass="com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection"
+                     groupPathKey="inspection.group.graphql"
+                     groupKey="inspection.group.graphql.studio"
+                     key="inspection.fieldInsights.displayName"
+                     enabledByDefault="true"
+                     level="WEAK WARNING"
     />
 
     <!-- Fields insights service (fetch and cache data) -->
