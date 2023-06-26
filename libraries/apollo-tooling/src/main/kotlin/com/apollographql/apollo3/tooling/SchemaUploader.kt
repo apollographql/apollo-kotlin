@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.public.PublishMonolithSchemaMutation
 import com.apollographql.apollo3.tooling.platformapi.public.PublishSubgraphSchemaMutation
@@ -72,20 +72,30 @@ object SchemaUploader {
         )
     )
         .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
-    val response = try {
-      runBlocking { call.execute() }
-    } catch (e: ApolloHttpException) {
-      val body = e.body?.use { it.readUtf8() } ?: ""
-      throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
-    }
-    check(!response.hasErrors()) {
-      "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
-    }
-    val code = response.data?.graph?.uploadSchema?.code
-    val message = response.data?.graph?.uploadSchema?.message
-    val success = response.data?.graph?.uploadSchema?.success
-    check(success == true) {
-      "Cannot upload schema (code: $code): $message"
+    val response = runBlocking { call.execute() }
+    val data = response.data
+    if (data == null) {
+      when (val e = response.exception!!) {
+        is ApolloHttpException -> {
+          val body = e.body?.use { it.readUtf8() } ?: ""
+          throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
+        }
+
+        is ApolloGraphQLException -> {
+          throw Exception("Cannot upload schema: ${e.errors.joinToString { it.message }}")
+        }
+
+        else -> {
+          throw Exception("Cannot upload schema: ${e.message}", e)
+        }
+      }
+    } else {
+      val code = data.graph?.uploadSchema?.code
+      val message = data.graph?.uploadSchema?.message
+      val success = data.graph?.uploadSchema?.success
+      check(success == true) {
+        "Cannot upload schema (code: $code): $message"
+      }
     }
   }
 
@@ -108,18 +118,28 @@ object SchemaUploader {
         )
     )
         .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
-    val response = try {
-      runBlocking { call.execute() }
-    } catch (e: ApolloHttpException) {
-      val body = e.body?.use { it.readUtf8() } ?: ""
-      throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
-    }
-    check(!response.hasErrors()) {
-      "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
-    }
-    val errors = response.data?.graph?.publishSubgraph?.errors?.filterNotNull()?.joinToString("\n") { it.code + ": " + it.message }
-    check(errors.isNullOrEmpty()) {
-      "Cannot upload schema:\n$errors"
+    val response = runBlocking { call.execute() }
+    val data = response.data
+    if (data == null) {
+      when (val e = response.exception!!) {
+        is ApolloHttpException -> {
+          val body = e.body?.use { it.readUtf8() } ?: ""
+          throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
+        }
+
+        is ApolloGraphQLException -> {
+          throw Exception("Cannot upload schema: ${e.errors.joinToString { it.message }}")
+        }
+
+        else -> {
+          throw Exception("Cannot upload schema: ${e.message}", e)
+        }
+      }
+    } else {
+      val errors = data.graph?.publishSubgraph?.errors?.filterNotNull()?.joinToString("\n") { it.code + ": " + it.message }
+      check(errors.isNullOrEmpty()) {
+        "Cannot upload schema:\n$errors"
+      }
     }
   }
 }

@@ -14,7 +14,7 @@ antlr = "4.12.0"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-alpha.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "3.8.0"
+apollo-published = "4.0.0-alpha.1"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.4.3"
