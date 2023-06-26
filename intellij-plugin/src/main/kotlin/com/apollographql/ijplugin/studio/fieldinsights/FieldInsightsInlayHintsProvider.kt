@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.studio.fieldinsights
 
+import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
@@ -7,8 +8,12 @@ import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsCollector
 import com.intellij.codeInsight.hints.InlayHintsProvider
 import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.InlayProviderDisablingAction
 import com.intellij.codeInsight.hints.NoSettings
 import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.MenuOnClickPresentation
+import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
+import com.intellij.lang.jsgraphql.GraphQLLanguage
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.lang.jsgraphql.ide.config.model.GraphQLProjectConfig
 import com.intellij.lang.jsgraphql.psi.GraphQLField
@@ -21,39 +26,64 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.panel
+import org.jetbrains.kotlin.idea.codeInsight.hints.ShowInlayHintsSettings
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import javax.swing.JComponent
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @Suppress("UnstableApiUsage")
 class FieldInsightsInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
-  override val key: SettingsKey<NoSettings> = SettingsKey("FieldInsightsInlayHintsProvider")
+  override val key = SettingsKey<NoSettings>("FieldInsightsInlayHintsProvider")
 
-  override val name: String = "Apollo Field Insights"
+  override val name = ApolloBundle.message("FieldInsightsInlayHintsProvider.settings.name")
 
-  // TODO
-  override val previewText = "query MyQuery { computers { id cpu year releaseDate } }"
+  override val description = ApolloBundle.message("FieldInsightsInlayHintsProvider.settings.description")
+
+  override val previewText = """
+    query MyQuery {
+      hero {
+        name
+        homeWorld {
+          name
+          climate
+        }
+      }
+    }""".trimIndent()
 
   override fun createSettings() = NoSettings()
 
   override fun getCollectorFor(file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): InlayHintsCollector {
     return object : FactoryInlayHintsCollector(editor) {
       override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
-        val latency = getLatency(element)
+        val isSettingsEditor = isInlaySettingsEditor(editor)
+        val latency = (if (isSettingsEditor) getFakeLatency(element) else getLatency(element))
             // Only report latencies > 1ms
             ?.takeIf { it > 1 }
             ?: return true
-        // TODO add click action to go to settings
+        val presentation = MenuOnClickPresentation(
+            presentation = factory.roundWithBackground(factory.text(latency.toFormattedString())),
+            project = element.project,
+        ) {
+          listOf(
+              InlayProviderDisablingAction(name, GraphQLLanguage.INSTANCE, element.project, key),
+              ShowInlayHintsSettings(key),
+          )
+        }
         sink.addInlineElement(
             offset = element.endOffset,
             relatesToPrecedingText = true,
-            presentation = factory.roundWithBackground(factory.text(latency.toFormattedString())),
+            presentation = presentation,
             placeAtTheEndOfLine = false,
         )
         return true
       }
     }
+  }
+
+  private fun getFakeLatency(element: PsiElement): Double? {
+    return if (element is GraphQLIdentifier && element.parent is GraphQLField) Random.nextDouble(0.0, 100.0) else null
   }
 
   private fun getLatency(element: PsiElement): Double? {
