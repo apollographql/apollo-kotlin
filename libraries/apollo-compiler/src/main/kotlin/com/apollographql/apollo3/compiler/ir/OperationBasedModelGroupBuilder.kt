@@ -64,7 +64,7 @@ internal class OperationBasedModelGroupBuilder(
     )
 
 
-    val mergedSelections = fragmentDefinition.selectionSet.selections
+    val mergedSelections = fragmentDefinition.selections
 
     val field = buildField(
         path = "${MODEL_FRAGMENT_DATA}.$fragmentName",
@@ -136,7 +136,6 @@ internal class OperationBasedModelGroupBuilder(
 
     val selfPath = path + "." + info.responseName
 
-
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
      *
@@ -171,7 +170,7 @@ internal class OperationBasedModelGroupBuilder(
      */
     val inlineFragmentsFields = selections.filterIsInstance<GQLInlineFragment>()
         .groupBy {
-          it.typeCondition.name
+          it.typeCondition?.name ?: parentType
         }.entries.flatMap {
           val typeCondition = it.key
 
@@ -234,7 +233,7 @@ internal class OperationBasedModelGroupBuilder(
                 )
 
                 val childSelections = entry.value.flatMap {
-                  it.selectionSet.selections
+                  it.selections
                 }
 
                 buildField(

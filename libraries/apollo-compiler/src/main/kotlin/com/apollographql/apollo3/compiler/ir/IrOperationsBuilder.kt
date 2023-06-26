@@ -263,7 +263,7 @@ internal class IrOperationsBuilder(
     val usedFragments = usedFragments(
         schema = schema,
         allFragmentDefinitions,
-        selections = selectionSet.selections,
+        selections = selections,
         rawTypename = typeDefinition.name,
     )
 
@@ -274,7 +274,7 @@ internal class IrOperationsBuilder(
     }).trimEnd('\n')
 
     val (dataProperty, dataModelGroup) = builder.buildOperationData(
-        selections = selectionSet.selections,
+        selections = selections,
         rawTypeName = typeDefinition.name,
         operationName = name!!
     )
@@ -291,7 +291,7 @@ internal class IrOperationsBuilder(
         operationType = operationType.toIrOperationType(schema.rootTypeNameFor(operationType)),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeDefinition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeDefinition.name),
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
         dataProperty = dataProperty,
@@ -328,7 +328,7 @@ internal class IrOperationsBuilder(
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = inferredVariables.map { it.toIr() },
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeCondition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeCondition.name),
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
@@ -440,7 +440,7 @@ internal class IrOperationsBuilder(
           name = gqlField.name,
           alias = gqlField.alias,
           condition = gqlField.directives.toIncludeBooleanExpression(),
-          selections = gqlField.selectionSet?.selections ?: emptyList(),
+          selections = gqlField.selections,
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
@@ -680,11 +680,11 @@ internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVaria
     // not a condition directive
     return null
   }
-  if (arguments?.arguments?.size != 1) {
-    throw IllegalStateException("Apollo: wrong number of arguments for '$name' directive: ${arguments?.arguments?.size}")
+  if (arguments.size != 1) {
+    throw IllegalStateException("Apollo: wrong number of arguments for '$name' directive: ${arguments.size}")
   }
 
-  val argument = arguments!!.arguments.first()
+  val argument = arguments.first()
 
   return when (val value = argument.value) {
     is GQLBooleanValue -> {
@@ -718,9 +718,9 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BTerm> 
 
 internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? {
   if (name != "defer") return null
-  val ifArgumentValue = arguments?.arguments?.firstOrNull { it.name == "if" }?.value ?: GQLBooleanValue(value = true)
+  val ifArgumentValue = arguments.firstOrNull { it.name == "if" }?.value ?: GQLBooleanValue(value = true)
 
-  val labelArgumentValue = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
+  val labelArgumentValue = arguments.firstOrNull { it.name == "label" }?.value
   if (labelArgumentValue != null && labelArgumentValue !is GQLStringValue) throw IllegalStateException("Apollo: cannot pass ${labelArgumentValue.toUtf8()} to 'label' argument of 'defer' directive")
   val label = (labelArgumentValue as GQLStringValue?)?.value
   return when (ifArgumentValue) {

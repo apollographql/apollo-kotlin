@@ -76,7 +76,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
     )
 
 
-    val mergedSelections = fragmentDefinition.selectionSet.selections
+    val mergedSelections = fragmentDefinition.selections
 
     val field = buildNode(
         path = "${MODEL_FRAGMENT_DATA}.$fragmentName",
@@ -138,7 +138,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
      * We do not support `@include`/`@skip` directives here
      */
     val inlineFragmentsFields = selections.filterIsInstance<GQLInlineFragment>()
-        .groupBy { it.typeCondition.name }
+        .groupBy { it.typeCondition?.name ?: parentType }
         .entries.map { entry ->
           val name = "on${entry.key.capitalizeFirstLetter()}"
           val typeCondition = entry.key
@@ -168,7 +168,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
           )
 
           val childSelections = entry.value.flatMap {
-            it.selectionSet.selections
+            it.selections
           }
 
           buildNode(

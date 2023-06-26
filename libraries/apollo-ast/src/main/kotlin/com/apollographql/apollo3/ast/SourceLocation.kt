@@ -3,7 +3,7 @@ package com.apollographql.apollo3.ast
 /**
  * @param line the line number of the source location, starting at 1
  *
- * @param column the position in the current line, starting at 0
+ * @param position the position in the current line, starting at 0
  *
  * @param filePath The path to the document containing the node
  * Might be null if the document origin is not known
@@ -18,7 +18,9 @@ class SourceLocation(
     return "($line:$position)"
   }
 
-  // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
+  // line starts at 1
+  // column starts at 0
+  // The reasons are mainly historical. I think Antlr used to return this
   fun pretty(): String = "$filePath: ($line, ${position + 1})"
 
   companion object {

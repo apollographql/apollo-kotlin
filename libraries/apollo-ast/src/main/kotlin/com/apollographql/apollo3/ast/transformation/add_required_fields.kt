@@ -5,7 +5,7 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLSelectionSet
+import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.definitionFromScope
@@ -21,7 +21,7 @@ fun addRequiredFields(
 ): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
-      selectionSet = operation.selectionSet.addRequiredFields(schema, addTypename, fragments, parentType, emptySet(), false)
+      selections = operation.selections.addRequiredFields(schema, addTypename, fragments, parentType, emptySet(), false)
   )
 }
 
@@ -31,25 +31,28 @@ fun addRequiredFields(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
 ): GQLFragmentDefinition {
-  val newSelectionSet = fragmentDefinition.selectionSet.addRequiredFields(schema, addTypename, fragments, fragmentDefinition.typeCondition.name, emptySet(), true)
+  val newSelectionSet = fragmentDefinition.selections.addRequiredFields(schema, addTypename, fragments, fragmentDefinition.typeCondition.name, emptySet(), true)
 
   return fragmentDefinition.copy(
-      selectionSet = newSelectionSet,
+      selections = newSelectionSet,
   )
 }
 
-private fun GQLSelectionSet.isPolymorphic(schema: Schema, fragments: Map<String, GQLFragmentDefinition>, rootType: String): Boolean {
-  return selections.any {
+private fun List<GQLSelection>.isPolymorphic(schema: Schema, fragments: Map<String, GQLFragmentDefinition>, rootType: String): Boolean {
+  return any {
     when (it) {
       is GQLField -> false
-      is GQLInlineFragment -> !schema.isTypeASuperTypeOf(it.typeCondition.name, rootType) || it.selectionSet.isPolymorphic(schema, fragments, rootType)
+      is GQLInlineFragment -> {
+        val tc = it.typeCondition?.name ?: rootType
+        !schema.isTypeASuperTypeOf(tc, rootType) || it.selections.isPolymorphic(schema, fragments, rootType)
+      }
       is GQLFragmentSpread -> {
         val fragmentDefinition = fragments[it.name] ?: error("cannot find fragment ${it.name}")
         /**
          * If we were only looking at operationBased codegen, we wouldn't need to look inside fragment definitions but responseBased requires
          * the __typename at the root of the field to determine the shape
          */
-        !schema.isTypeASuperTypeOf(fragmentDefinition.typeCondition.name, rootType) || fragmentDefinition.selectionSet.isPolymorphic(schema, fragments, rootType)
+        !schema.isTypeASuperTypeOf(fragmentDefinition.typeCondition.name, rootType) || fragmentDefinition.selections.isPolymorphic(schema, fragments, rootType)
       }
     }
   }
@@ -59,19 +62,23 @@ private fun GQLSelectionSet.isPolymorphic(schema: Schema, fragments: Map<String,
  * @param isRoot: whether this selection set is considered a valid root for adding __typename
  * This is the case for field selection sets but also fragments since fragments can be executed from the cache
  */
-private fun GQLSelectionSet.addRequiredFields(
+private fun List<GQLSelection>.addRequiredFields(
     schema: Schema,
     addTypename: String,
     fragments: Map<String, GQLFragmentDefinition>,
     parentType: String,
     parentFields: Set<String>,
     isRoot: Boolean,
-): GQLSelectionSet {
+): List<GQLSelection> {
+  if (isEmpty()) {
+    return this
+  }
+
   val selectionSet = this
 
   val requiresTypename = when(addTypename) {
     "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
-    "ifFragments" -> selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+    "ifFragments" -> selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()
     "always" -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
@@ -82,17 +89,17 @@ private fun GQLSelectionSet.addRequiredFields(
     requiredFieldNames.add("__typename")
   }
 
-  val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
+  val fieldNames = parentFields + selectionSet.filterIsInstance<GQLField>().map { it.name }.toSet()
 
-  var newSelections = selectionSet.selections.map {
+  var newSelections = selectionSet.map {
     when (it) {
       is GQLInlineFragment -> {
         it.copy(
-            selectionSet = it.selectionSet.addRequiredFields(
+            selections = it.selections.addRequiredFields(
                 schema,
                 addTypename,
                 fragments,
-                it.typeCondition.name,
+                it.typeCondition?.name ?: parentType,
                 fieldNames + requiredFieldNames,
                 false
             )
@@ -131,14 +138,12 @@ private fun GQLSelectionSet.addRequiredFields(
     newSelections
   }
 
-  return selectionSet.copy(
-      selections = newSelections
-  )
+  return newSelections
 }
 
 private fun GQLField.addRequiredFields(schema: Schema, addTypename: String, fragments: Map<String, GQLFragmentDefinition>, parentType: String): GQLField {
   val typeDefinition = definitionFromScope(schema, parentType)!!
-  val newSelectionSet = selectionSet?.addRequiredFields(
+  val newSelectionSet = selections.addRequiredFields(
       schema,
       addTypename,
       fragments,
@@ -148,15 +153,15 @@ private fun GQLField.addRequiredFields(schema: Schema, addTypename: String, frag
   )
 
   return copy(
-      selectionSet = newSelectionSet,
+      selections = newSelectionSet,
   )
 }
 
 private fun buildField(name: String): GQLField {
   return GQLField(
       name = name,
-      arguments = null,
-      selectionSet = null,
+      arguments = emptyList(),
+      selections = emptyList(),
       sourceLocation = SourceLocation.UNKNOWN,
       directives = emptyList(),
       alias = null

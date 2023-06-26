@@ -19,8 +19,8 @@ internal fun checkConditionalFragments(definitions: List<GQLDefinition>): List<I
 
   definitions.forEach {
     when (it) {
-      is GQLOperationDefinition -> scope.checkConditionalFragments(it.selectionSet.selections)
-      is GQLFragmentDefinition -> scope.checkConditionalFragments(it.selectionSet.selections)
+      is GQLOperationDefinition -> scope.checkConditionalFragments(it.selections)
+      is GQLFragmentDefinition -> scope.checkConditionalFragments(it.selections)
     }
   }
 
@@ -34,7 +34,7 @@ internal fun checkConditionalFragments(definitions: List<GQLDefinition>): List<I
 private fun IssuesScope.checkConditionalFragments(selections: List<GQLSelection>) {
   selections.forEach {
     when (it) {
-      is GQLField -> checkConditionalFragments(it.selectionSet?.selections ?: emptyList())
+      is GQLField -> checkConditionalFragments(it.selections)
       is GQLInlineFragment -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
@@ -44,7 +44,7 @@ private fun IssuesScope.checkConditionalFragments(selections: List<GQLSelection>
               )
           )
         }
-        checkConditionalFragments(it.selectionSet.selections)
+        checkConditionalFragments(it.selections)
       }
       is GQLFragmentSpread -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {

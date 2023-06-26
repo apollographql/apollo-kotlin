@@ -83,7 +83,7 @@ internal fun GQLOperationTypeDefinition.removeLocation() = copy(
 internal fun GQLSchemaExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
-    operationTypesDefinition =operationTypesDefinition.map { it.removeLocation() },
+    operationTypesDefinition =operationTypeDefinitions.map { it.removeLocation() },
 )
 
 internal fun GQLInterfaceTypeExtension.removeLocation() = copy(
@@ -107,7 +107,7 @@ internal fun GQLObjectTypeExtension.removeLocation() = copy(
 internal fun GQLOperationDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
-    selectionSet = selectionSet.removeLocation(),
+    selections = selections.removeSelectionsLocation(),
     variableDefinitions = variableDefinitions.map { it.removeLocation() }
 )
 
@@ -122,24 +122,18 @@ internal fun GQLFragmentDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     typeCondition = typeCondition.removeLocation(),
-    selectionSet = selectionSet.removeLocation()
+    selections = selections.removeSelectionsLocation()
 )
 
-internal fun GQLSelectionSet.removeLocation(): GQLSelectionSet = copy(
-    selections = selections.map { it.removeLocation() },
-    sourceLocation = SourceLocation.UNKNOWN,
-)
+private fun List<GQLSelection>.removeSelectionsLocation() = map { it.removeLocation() }
 
-internal fun GQLArguments.removeLocation() = copy(
-    sourceLocation = SourceLocation.UNKNOWN,
-    arguments =  arguments.map { it.removeLocation() }
-)
+private fun List<GQLArgument>.removeArgumentsLocation() = map { it.removeLocation() }
 
 internal fun GQLSelection.removeLocation(): GQLSelection = when(this) {
   is GQLField -> copy(
       sourceLocation = SourceLocation.UNKNOWN,
-      arguments = arguments?.removeLocation(),
-      selectionSet = selectionSet?.removeLocation(),
+      arguments = arguments.removeArgumentsLocation(),
+      selections = selections.removeSelectionsLocation(),
       directives = directives.map { it.removeLocation() }
   )
 
@@ -149,9 +143,9 @@ internal fun GQLSelection.removeLocation(): GQLSelection = when(this) {
   )
   is GQLInlineFragment -> copy(
       sourceLocation = SourceLocation.UNKNOWN,
-      typeCondition = typeCondition.removeLocation(),
+      typeCondition = typeCondition?.removeLocation(),
       directives = directives.map { it.removeLocation() },
-      selectionSet = selectionSet.removeLocation()
+      selections = selections.removeSelectionsLocation()
   )
 }
 
@@ -172,7 +166,7 @@ internal fun GQLEnumValue.removeLocation() = copy(
 
 internal fun GQLDirective.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
-    arguments = arguments?.copy(arguments = arguments.arguments.map { it.removeLocation() })
+    arguments = arguments.removeArgumentsLocation()
 )
 
 internal fun GQLArgument.removeLocation() = copy(

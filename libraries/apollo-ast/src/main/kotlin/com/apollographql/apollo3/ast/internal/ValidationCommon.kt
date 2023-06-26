@@ -151,7 +151,7 @@ internal fun ValidationScope.validateDirective(
   }
 
   validateArguments(
-      directive.arguments?.arguments ?: emptyList(),
+      directive.arguments,
       directive.sourceLocation,
       directiveDefinition.arguments,
       "directive '${directiveDefinition.name}'",
@@ -173,18 +173,18 @@ internal fun ValidationScope.validateDirective(
  * Extra Apollo-specific validation for @nonnull
  */
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
-  if (directiveContext is GQLField && (directive.arguments?.arguments?.size ?: 0) > 0) {
+  if (directiveContext is GQLField && directive.arguments.isNotEmpty()) {
     registerIssue(
         message = "'${directive.name}' cannot have arguments when applied on a field",
         sourceLocation = directive.sourceLocation
     )
 
-  } else if (directiveContext is GQLObjectTypeDefinition && (directive.arguments?.arguments?.size ?: 0) == 0) {
+  } else if (directiveContext is GQLObjectTypeDefinition && directive.arguments.isEmpty()) {
     registerIssue(
         message = "'${directive.name}' must contain a selection of fields",
         sourceLocation = directive.sourceLocation
     )
-    val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
+    val stringValue = (directive.arguments.first().value as GQLStringValue).value
 
     val selections = stringValue.buffer().parseAsGQLSelections().getOrThrow()
 
@@ -207,10 +207,10 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
-  (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().getOrThrow().forEach {
+  (directive.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().getOrThrow().forEach {
     if (it !is GQLField) {
       registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
-    } else if (it.selectionSet != null) {
+    } else if (it.selections.isNotEmpty()) {
       registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", it.sourceLocation)
     }
   }

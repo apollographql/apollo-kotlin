@@ -3,7 +3,6 @@ package com.apollographql.apollo3.tooling
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.ast.GQLArgument
-import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDocument
@@ -16,7 +15,6 @@ import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.NodeContainer
@@ -96,7 +94,7 @@ private fun printDocument(gqlNode: GQLNode): String {
            *
            * If it's bigger than 80, replace ', ' with ' '
            */
-          val lineString = gqlNode.copy(directives = emptyList(), selectionSet = null).toUtf8()
+          val lineString = gqlNode.copy(directives = emptyList(), selections = emptyList()).toUtf8()
           if (lineString.length > 80) {
             write(lineString.replace(", ", " "))
           } else {
@@ -106,9 +104,11 @@ private fun printDocument(gqlNode: GQLNode): String {
             write(" ")
             gqlNode.directives.join(this)
           }
-          if (gqlNode.selectionSet != null) {
+          if (gqlNode.selections.isNotEmpty()) {
             write(" ")
-            write(gqlNode.selectionSet!!)
+            write("{")
+            gqlNode.selections.join(this)
+            write("}")
           } else {
             write("\n")
           }
@@ -131,15 +131,11 @@ private fun GQLNode.copyWithSortedChildren(): GQLNode {
     }
 
     is GQLOperationDefinition -> {
-      copy(variableDefinitions = variableDefinitions.sortedBy { it.score() })
-    }
-
-    is GQLSelectionSet -> {
-      copy(selections = selections.sortedBy { it.score() })
+      copy(variableDefinitions = variableDefinitions.sortedBy { it.score() }, selections = selections.sortedBy { it.score() })
     }
 
     is GQLField -> {
-      copy(arguments = arguments)
+      copy(arguments = arguments.sortedBy { it.score() }, selections = selections.sortedBy { it.score() })
     }
 
     is GQLFragmentSpread -> {
@@ -147,18 +143,14 @@ private fun GQLNode.copyWithSortedChildren(): GQLNode {
     }
 
     is GQLInlineFragment -> {
-      copy(directives = directives.sortedBy { it.score() })
+      copy(directives = directives.sortedBy { it.score() }, selections = selections.sortedBy { it.score() })
     }
 
     is GQLFragmentDefinition -> {
-      copy(directives = directives.sortedBy { it.score() })
+      copy(directives = directives.sortedBy { it.score() }, selections = selections.sortedBy { it.score() })
     }
 
     is GQLDirective -> {
-      copy(arguments = arguments)
-    }
-
-    is GQLArguments -> {
       copy(arguments = arguments.sortedBy { it.score() })
     }
 

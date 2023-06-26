@@ -56,7 +56,7 @@ internal class SelectionSetsBuilder(
   private fun GQLSelection.walk(parentType: String): WalkResult? {
     return when (this) {
       is GQLField -> walk(parentType)
-      is GQLInlineFragment -> walk()
+      is GQLInlineFragment -> walk(parentType)
       is GQLFragmentSpread -> walk()
     }
   }
@@ -84,7 +84,7 @@ internal class SelectionSetsBuilder(
             name = name,
             alias = alias,
             type = fieldDefinition.type.toIrTypeRef(),
-            arguments = arguments?.arguments.orEmpty().let { gqlArguments ->
+            arguments = arguments.let { gqlArguments ->
               val typeDefinition = schema.typeDefinition(parentType)
               val keyArgs = typeDefinition.keyArgs(name, schema)
               val paginationArgs = typeDefinition.paginationArgs(name, schema)
@@ -93,9 +93,9 @@ internal class SelectionSetsBuilder(
               }
             },
             condition = expression,
-            selectionSetName = if (selectionSet != null) selectionSetName else null
+            selectionSetName = if (selections.isNotEmpty()) selectionSetName else null
         ),
-        nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.rawType().name).orEmpty()
+        nested = if (selections.isEmpty()) emptyList() else selections.walk(selectionSetName, false, fieldDefinition.type.rawType().name)
     )
   }
 
@@ -108,24 +108,25 @@ internal class SelectionSetsBuilder(
     is GQLNamedType -> IrNamedTypeRef(name)
   }
 
-  private fun GQLInlineFragment.walk(): WalkResult? {
+  private fun GQLInlineFragment.walk(parentType: String): WalkResult? {
     val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }
 
-    val name = "on${typeCondition.name.capitalizeFirstLetter()}"
+    val tc = typeCondition?.name ?: parentType
+    val name = "on${tc.capitalizeFirstLetter()}"
     val selectionSetName = resolveNameClashes(usedNames, name)
     return WalkResult(
         self = IrFragment(
-            typeCondition = typeCondition.name,
+            typeCondition = tc,
             // TODO: restrict the possible types to the possible types in the context of this selection
-            possibleTypes = schema.possibleTypes(typeCondition.name).toList(),
+            possibleTypes = schema.possibleTypes(tc).toList(),
             condition = expression,
             selectionSetName = selectionSetName,
             name = null
         ),
-        nested = selectionSet.selections.walk(selectionSetName, false, typeCondition.name)
+        nested = selections.walk(selectionSetName, false, tc)
     )
   }
 

@@ -19,14 +19,15 @@ internal fun usedFragments(
     when (it) {
       is GQLField -> {
         val fieldDefinition = it.definitionFromScope(schema, rawTypename)!!
-        usedFragments(schema, allFragmentDefinitions, it.selectionSet?.selections ?: emptyList(), fieldDefinition.type.rawType().name)
+        usedFragments(schema, allFragmentDefinitions, it.selections, fieldDefinition.type.rawType().name)
       }
       is GQLInlineFragment -> {
-        usedFragments(schema, allFragmentDefinitions, it.selectionSet.selections, it.typeCondition.name)
+        val tc = it.typeCondition?.name ?: rawTypename
+        usedFragments(schema, allFragmentDefinitions, it.selections, tc)
       }
       is GQLFragmentSpread -> {
         val fragmentDefinition = allFragmentDefinitions[it.name]!!
-        usedFragments(schema, allFragmentDefinitions, fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name) + it.name
+        usedFragments(schema, allFragmentDefinitions, fragmentDefinition.selections, fragmentDefinition.typeCondition.name) + it.name
       }
     }
   }.toSet()

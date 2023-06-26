@@ -103,13 +103,13 @@ private fun List<GQLSelection>.collectUserTypeSets(
   return listOf(currentTypeSet) + flatMap {
     when (it) {
       is GQLField -> emptyList()
-      is GQLInlineFragment -> it.selectionSet.selections.collectUserTypeSets(
+      is GQLInlineFragment -> it.selections.collectUserTypeSets(
           allGQLFragmentDefinitions,
-          currentTypeSet + it.typeCondition.name
+          currentTypeSet + it.typeCondition?.name.orEmpty()
       )
       is GQLFragmentSpread -> {
         val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
-        fragmentDefinition.selectionSet.selections.collectUserTypeSets(
+        fragmentDefinition.selections.collectUserTypeSets(
             allGQLFragmentDefinitions,
             currentTypeSet + fragmentDefinition.typeCondition.name
         )
