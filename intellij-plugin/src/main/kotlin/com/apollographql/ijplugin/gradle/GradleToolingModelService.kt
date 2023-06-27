@@ -162,7 +162,7 @@ class GradleToolingModelService(
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
       indicator.isIndeterminate = false
       val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
-        if (isAbortRequested())          return@run
+        if (isAbortRequested()) return@run
         indicator.fraction = (index + 1).toDouble() / allApolloGradleProjects.size
         gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
           gradleCancellation = GradleConnector.newCancellationTokenSource()
