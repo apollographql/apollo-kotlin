@@ -41,17 +41,30 @@ class SettingsComponent(private val project: Project) {
           override fun addItem(): ServiceConfiguration? {
             val apiKeyDialog = ApiKeyDialog(project)
             if (!apiKeyDialog.showAndGet()) return null
-            val serviceConfiguration = ServiceConfiguration(apiKeyDialog.apiKey)
-            serviceConfiguration.apiKey = apiKeyDialog.apiKey
-            return serviceConfiguration
+            return ServiceConfiguration(
+                graphqlProjectName = apiKeyDialog.graphqlProjectName,
+                graphOsServiceName = apiKeyDialog.graphOsServiceName,
+            ).apply {
+              graphOsApiKey = apiKeyDialog.graphOsApiKey
+
+            }
           }
 
           override fun editItem(o: ServiceConfiguration): ServiceConfiguration? {
-            val apiKeyDialog = ApiKeyDialog(project, serviceName = o.serviceName, apiKey = o.apiKey ?: "")
+            val apiKeyDialog = ApiKeyDialog(
+                project,
+                graphqlProjectName = o.graphqlProjectName,
+                graphOsApiKey = o.graphOsApiKey ?: "",
+                graphOsServiceName = o.graphOsServiceName
+            )
             if (!apiKeyDialog.showAndGet()) return null
-            val serviceConfiguration = ServiceConfiguration(apiKeyDialog.apiKey)
-            serviceConfiguration.apiKey = apiKeyDialog.apiKey
-            return serviceConfiguration
+            return ServiceConfiguration(
+                graphqlProjectName = apiKeyDialog.graphqlProjectName,
+                graphOsServiceName = apiKeyDialog.graphOsServiceName,
+            ).apply {
+              graphOsApiKey = apiKeyDialog.graphOsApiKey
+
+            }
           }
 
           override fun removeItem(o: ServiceConfiguration?): Boolean {
@@ -85,24 +98,26 @@ class SettingsComponent(private val project: Project) {
     }
 
   var serviceConfigurations: List<ServiceConfiguration>
-    get() = addEditRemovePanel.data
+    get() = addEditRemovePanel.data.toList()
     set(value) {
       addEditRemovePanel.data = value.toMutableList()
     }
 }
 
 class ApiKeysModel : AddEditRemovePanel.TableModel<ServiceConfiguration>() {
-  override fun getColumnCount() = 2
+  override fun getColumnCount() = 3
 
   override fun getColumnName(columnIndex: Int) = when (columnIndex) {
-    0 -> ApolloBundle.message("settings.studio.apiKeys.table.columnService")
-    1 -> ApolloBundle.message("settings.studio.apiKeys.table.columnApiKey")
+    0 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphqlProject")
+    1 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsApiKey")
+    2 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsServiceName")
     else -> throw IllegalArgumentException()
   }
 
   override fun getField(o: ServiceConfiguration, columnIndex: Int) = when (columnIndex) {
-    0 -> o.serviceName
+    0 -> o.graphqlProjectName
     1 -> "••••••••"
+    2 -> o.graphOsServiceName
     else -> throw IllegalArgumentException()
   }
 }

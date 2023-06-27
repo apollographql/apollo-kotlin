@@ -82,15 +82,18 @@ interface SettingsState {
 
 data class ServiceConfiguration(
     @Attribute
-    val serviceName: String = "",
+    val graphqlProjectName: String = "",
+
+    @Attribute
+    val graphOsServiceName: String = "",
 ) {
   // API key is not stored as an attribute, but via PasswordSafe
-  var apiKey: String?
+  var graphOsApiKey: String?
     @Transient
-    get() = PasswordSafe.instance.getPassword(credentialAttributesForService(serviceName))
+    get() = PasswordSafe.instance.getPassword(credentialAttributesForService(graphqlProjectName))
     @Transient
     set(value) {
-      PasswordSafe.instance.setPassword(credentialAttributesForService(serviceName), value)
+      PasswordSafe.instance.setPassword(credentialAttributesForService(graphqlProjectName), value)
     }
 
   private fun credentialAttributesForService(serviceName: String): CredentialAttributes {
