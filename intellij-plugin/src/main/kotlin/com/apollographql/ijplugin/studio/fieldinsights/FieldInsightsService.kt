@@ -20,6 +20,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
+
+private const val FETCH_PERIOD_HOURS = 12L
 
 @OptIn(ApolloExperimental::class)
 class FieldInsightsService(private val project: Project) : Disposable {
@@ -29,6 +35,8 @@ class FieldInsightsService(private val project: Project) : Disposable {
    */
   private var fieldLatenciesByService = mapOf<String, FieldInsights.FieldLatencies>()
   private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+  private val executor : ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+  private var fetchLatenciesFuture: ScheduledFuture<*>? = null
 
   init {
     logd("project=${project.name}")
@@ -44,7 +52,9 @@ class FieldInsightsService(private val project: Project) : Disposable {
         val serviceConfigurationChanged = serviceConfigurations != settingsState.apolloKotlinServiceConfigurations
         serviceConfigurations = settingsState.apolloKotlinServiceConfigurations
         logd("serviceConfigurationChanged=$serviceConfigurationChanged")
-        if (serviceConfigurationChanged) fetchAllLatencies()
+        if (serviceConfigurationChanged) {
+          scheduleFetchLatencies()
+        }
       }
     })
   }
@@ -53,12 +63,17 @@ class FieldInsightsService(private val project: Project) : Disposable {
     project.messageBus.connect(this).subscribe(ApolloKotlinServiceListener.TOPIC, object : ApolloKotlinServiceListener {
       override fun apolloKotlinServicesAvailable() {
         logd()
-        fetchAllLatencies()
+        scheduleFetchLatencies()
       }
     })
   }
 
-  private fun fetchAllLatencies() {
+  private fun scheduleFetchLatencies() {
+    fetchLatenciesFuture?.cancel(false)
+    fetchLatenciesFuture = executor.scheduleAtFixedRate(::fetchLatencies, 0, FETCH_PERIOD_HOURS, TimeUnit.HOURS)
+  }
+
+  private fun fetchLatencies() {
     logd()
     val graphQLProjectFiles = GradleToolingModelService.getApolloKotlinServices(project)
     val graphQLProjectFilesToApiKey: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = graphQLProjectFiles.associateWith { gqlProject ->
@@ -110,6 +125,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
   override fun dispose() {
     logd("project=${project.name}")
     coroutineScope.cancel()
+    executor.shutdown()
   }
 }
 
