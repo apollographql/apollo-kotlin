@@ -101,9 +101,15 @@ class GradleToolingModelService(
   private fun startObservingSettings() {
     logd()
     project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      private var contributeConfigurationToGraphqlPlugin: Boolean = project.settingsState.contributeConfigurationToGraphqlPlugin
+
       override fun settingsChanged(settingsState: SettingsState) {
-        logd("settingsState=$settingsState")
-        startOrAbortFetchToolingModels()
+        val contributeConfigurationToGraphqlPluginChanged = contributeConfigurationToGraphqlPlugin != settingsState.contributeConfigurationToGraphqlPlugin
+        contributeConfigurationToGraphqlPlugin = settingsState.contributeConfigurationToGraphqlPlugin
+        logd("contributeConfigurationToGraphqlPluginChanged=$contributeConfigurationToGraphqlPluginChanged")
+        if (contributeConfigurationToGraphqlPluginChanged) {
+          startOrAbortFetchToolingModels()
+        }
       }
     })
   }

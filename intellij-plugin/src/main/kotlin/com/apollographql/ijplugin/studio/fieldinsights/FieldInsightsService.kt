@@ -11,6 +11,7 @@ import com.apollographql.ijplugin.settings.SettingsState
 import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +28,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
    * in [com.apollographql.ijplugin.graphql.GraphQLProjectFiles.name]
    */
   private var fieldLatenciesByService = mapOf<String, FieldInsights.FieldLatencies>()
-  private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+  private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
   init {
     logd("project=${project.name}")
@@ -38,7 +39,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
   private fun startObservingSettings() {
     logd()
     project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      var serviceConfigurations: List<ApolloKotlinServiceConfiguration>? = null
+      var serviceConfigurations: List<ApolloKotlinServiceConfiguration> = project.settingsState.apolloKotlinServiceConfigurations
       override fun settingsChanged(settingsState: SettingsState) {
         val serviceConfigurationChanged = serviceConfigurations != settingsState.apolloKotlinServiceConfigurations
         serviceConfigurations = settingsState.apolloKotlinServiceConfigurations
@@ -51,6 +52,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
   private fun startObservingGraphQLProjectFiles() {
     project.messageBus.connect(this).subscribe(ApolloKotlinServiceListener.TOPIC, object : ApolloKotlinServiceListener {
       override fun apolloKotlinServicesAvailable() {
+        logd()
         fetchAllLatencies()
       }
     })
@@ -59,17 +61,17 @@ class FieldInsightsService(private val project: Project) : Disposable {
   private fun fetchAllLatencies() {
     logd()
     val graphQLProjectFiles = GradleToolingModelService.getApolloKotlinServices(project)
-    val graphQLProjectFilesToApiKey: Map<ApolloKotlinService, String> = graphQLProjectFiles.associateWith { gqlProject ->
+    val graphQLProjectFilesToApiKey: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = graphQLProjectFiles.associateWith { gqlProject ->
       project.settingsState.apolloKotlinServiceConfigurations.firstOrNull { serviceConfiguration ->
         serviceConfiguration.id == gqlProject.id.toString()
-      }?.graphOsApiKey
+      }
     }.filterValues { it != null }.mapValues { it.value!! }
-    val deferredLatenciesByProject = graphQLProjectFilesToApiKey.mapNotNull { (gqlProject, apiKey) ->
-      apiKey.getServiceId()?.let { serviceId ->
+    val deferredLatenciesByProject = graphQLProjectFilesToApiKey.mapNotNull { (gqlProject, serviceConfiguration) ->
+      serviceConfiguration.graphOsApiKey?.let { apiKey ->
         gqlProject.id.toString() to coroutineScope.async {
           FieldInsights.fetchFieldLatencies(
               apiKey = apiKey,
-              serviceId = serviceId
+              serviceId = serviceConfiguration.graphOsGraphName,
           )
         }
       }
@@ -77,7 +79,11 @@ class FieldInsightsService(private val project: Project) : Disposable {
     coroutineScope.launch {
       val fieldLatenciesByProject = mutableMapOf<String, FieldInsights.FieldLatencies>()
       for ((projectName, deferred) in deferredLatenciesByProject) {
-        val result = deferred.await()
+        val result = try {
+          deferred.await()
+        } catch (e: Exception) {
+          FieldInsights.FieldLatenciesResult.Error(e)
+        }
         when (result) {
           is FieldInsights.FieldLatenciesResult.Error -> {
             logw(result.cause, "Could not fetch field latencies for project $projectName")
@@ -98,7 +104,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
   }
 
   private fun refreshInspections() {
-    // TODO
+    DaemonCodeAnalyzer.getInstance(project).restart()
   }
 
   override fun dispose() {
@@ -107,7 +113,3 @@ class FieldInsightsService(private val project: Project) : Disposable {
   }
 }
 
-private fun String.getServiceId(): String? {
-  // Keys are in this form: `service:<service name>:<key>`
-  return split(":").getOrNull(1)
-}
