@@ -1,7 +1,6 @@
 package com.apollographql.ijplugin.settings
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -43,28 +42,26 @@ class SettingsComponent(private val project: Project) {
             val apiKeyDialog = ApiKeyDialog(project)
             if (!apiKeyDialog.showAndGet()) return null
             return ApolloKotlinServiceConfiguration(
-                id = ApolloKotlinService.Id.fromString(apiKeyDialog.graphqlProjectName)!!,
+                id = apiKeyDialog.apolloKotlinServiceId,
                 graphOsGraphName = apiKeyDialog.graphOsServiceName,
             ).apply {
               graphOsApiKey = apiKeyDialog.graphOsApiKey
-
             }
           }
 
           override fun editItem(o: ApolloKotlinServiceConfiguration): ApolloKotlinServiceConfiguration? {
             val apiKeyDialog = ApiKeyDialog(
                 project,
-                graphqlProjectName = o.apolloKotlinServiceId.toString(),
+                apolloKotlinServiceId = o.apolloKotlinServiceId,
                 graphOsApiKey = o.graphOsApiKey ?: "",
                 graphOsServiceName = o.graphOsGraphName
             )
             if (!apiKeyDialog.showAndGet()) return null
             return ApolloKotlinServiceConfiguration(
-                id = ApolloKotlinService.Id.fromString(apiKeyDialog.graphqlProjectName)!!,
+                id = apiKeyDialog.apolloKotlinServiceId,
                 graphOsGraphName = apiKeyDialog.graphOsServiceName,
             ).apply {
               graphOsApiKey = apiKeyDialog.graphOsApiKey
-
             }
           }
 

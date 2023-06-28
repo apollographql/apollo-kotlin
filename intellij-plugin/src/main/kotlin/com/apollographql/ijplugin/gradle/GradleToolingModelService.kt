@@ -13,6 +13,7 @@ import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.service
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
@@ -273,5 +274,12 @@ class GradleToolingModelService(
   override fun dispose() {
     logd("project=${project.name}")
     abortFetchToolingModels()
+  }
+
+  companion object {
+    fun getApolloKotlinServices(project: Project): List<ApolloKotlinService> {
+      if (!project.apolloProjectService.isInitialized) return emptyList()
+      return project.service<GradleToolingModelService>().apolloKotlinServices
+    }
   }
 }
