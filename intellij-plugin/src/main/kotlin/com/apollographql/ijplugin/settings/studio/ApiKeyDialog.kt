@@ -69,7 +69,7 @@ class ApiKeyDialog(
 
   private fun getGraphqlProjectNames(): List<String> {
     if (!project.apolloProjectService.isInitialized) return emptyList()
-    return project.service<GradleToolingModelService>().graphQLProjectFiles.map { it.name }
+    return project.service<GradleToolingModelService>().apolloKotlinServices.map { it.id.toString() }
   }
 
   private fun String.extractServiceName(): String? {

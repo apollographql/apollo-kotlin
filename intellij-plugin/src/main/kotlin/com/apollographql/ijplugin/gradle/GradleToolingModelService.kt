@@ -2,8 +2,6 @@ package com.apollographql.ijplugin.gradle
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
-import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
@@ -44,7 +42,7 @@ class GradleToolingModelService(
 
   private var fetchToolingModelsTask: FetchToolingModelsTask? = null
 
-  var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
+  var apolloKotlinServices: List<ApolloKotlinService> = emptyList()
 
   init {
     logd("project=${project.name}")
@@ -191,7 +189,7 @@ class GradleToolingModelService(
 
       logd("allToolingModels=$allToolingModels")
       if (isAbortRequested()) return
-      computeGraphQLProjectFiles(allToolingModels)
+      computeApolloKotlinServices(allToolingModels)
     }
 
     private fun isAbortRequested(): Boolean {
@@ -218,21 +216,22 @@ class GradleToolingModelService(
     }
   }
 
-  private fun computeGraphQLProjectFiles(toolingModels: List<ApolloGradleToolingModel>) {
-    // Compute the GraphQLProjectFiles, taking into account the dependencies between projects
+  private fun computeApolloKotlinServices(toolingModels: List<ApolloGradleToolingModel>) {
+    // Compute the ApolloKotlinServices, taking into account the dependencies between projects
     val allKnownProjectNames = toolingModels.map { it.projectName }
-    val projectServiceToGraphQLProjectFiles = mutableMapOf<String, GraphQLProjectFiles>()
-    fun getGraphQLProjectFiles(projectName: String, serviceName: String): GraphQLProjectFiles {
+    val projectServiceToApolloKotlinServices = mutableMapOf<String, ApolloKotlinService>()
+    fun getApolloKotlinService(projectName: String, serviceName: String): ApolloKotlinService {
       val key = "$projectName/$serviceName"
-      return projectServiceToGraphQLProjectFiles.getOrPut(key) {
+      return projectServiceToApolloKotlinServices.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
         val dependenciesProjectFiles = serviceInfo.upstreamProjects
             // The tooling model for some upstream projects might not have been fetched successfully - filter them out
             .filter { upstreamProject -> upstreamProject in allKnownProjectNames }
-            .map { getGraphQLProjectFiles(it, serviceName) }
-        GraphQLProjectFiles(
-            name = key,
+            .map { getApolloKotlinService(it, serviceName) }
+        ApolloKotlinService(
+            gradleProjectName = projectName,
+            serviceName = serviceName,
             schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
                 dependenciesProjectFiles.flatMap { it.schemaPaths })
                 .distinct(),
@@ -245,17 +244,17 @@ class GradleToolingModelService(
       }
     }
 
-    val graphQLProjectFiles = mutableListOf<GraphQLProjectFiles>()
+    val apolloKotlinServices = mutableListOf<ApolloKotlinService>()
     for (toolingModel in toolingModels) {
       for (serviceInfo in toolingModel.serviceInfos) {
-        graphQLProjectFiles += getGraphQLProjectFiles(toolingModel.projectName, serviceInfo.name)
+        apolloKotlinServices += getApolloKotlinService(toolingModel.projectName, serviceInfo.name)
       }
     }
-    this.graphQLProjectFiles = graphQLProjectFiles
-    logd("graphQLProjectFiles=$graphQLProjectFiles")
+    this.apolloKotlinServices = apolloKotlinServices
+    logd("apolloKotlinServices=$apolloKotlinServices")
 
     // Project files are available, notify interested parties
-    project.messageBus.syncPublisher(GraphQLProjectFilesListener.TOPIC).projectFilesAvailable()
+    project.messageBus.syncPublisher(ApolloKotlinServiceListener.TOPIC).apolloKotlinServicesAvailable()
   }
 
   private fun File.toProjectLocalPathOrNull(): String? {
