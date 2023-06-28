@@ -30,7 +30,7 @@ class ApiKeyDialog(
   init {
     title = ApolloBundle.message(if (isEdit) "settings.studio.apiKeyDialog.title.edit" else "settings.studio.apiKeyDialog.title.add")
     if (!isEdit) {
-      val alreadyConfiguredServiceNames = project.settingsState.serviceConfigurations.map { it.graphqlProjectName }
+      val alreadyConfiguredServiceNames = project.settingsState.apolloKotlinServiceConfigurations.map { it.id }
       graphqlProjectName = getGraphqlProjectNames().firstOrNull { it !in alreadyConfiguredServiceNames } ?: ""
     }
     init()
@@ -43,11 +43,13 @@ class ApiKeyDialog(
           .horizontalAlign(HorizontalAlign.FILL)
           .bindItem(::graphqlProjectName.toNullableProperty())
           .focused()
-
     }
     row {
       textField()
           .label(ApolloBundle.message("settings.studio.apiKeyDialog.graphOsApiKey.label"), LabelPosition.TOP)
+          .applyToComponent {
+            emptyText.text = ApolloBundle.message("settings.studio.apiKeyDialog.graphOsApiKey.emptyText")
+          }
           .horizontalAlign(HorizontalAlign.FILL)
           .bindText(::graphOsApiKey)
           .validationOnApplyNotBlank()

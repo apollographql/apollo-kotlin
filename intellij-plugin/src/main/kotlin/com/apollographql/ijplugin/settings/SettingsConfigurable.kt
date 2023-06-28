@@ -18,19 +18,19 @@ class SettingsConfigurable(private val project: Project) : Configurable {
   override fun isModified(): Boolean {
     return settingsComponent!!.automaticCodegenTriggering != project.settingsState.automaticCodegenTriggering ||
         settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.settingsState.contributeConfigurationToGraphqlPlugin ||
-        settingsComponent!!.serviceConfigurations != project.settingsState.serviceConfigurations
+        settingsComponent!!.apolloKotlinServiceConfigurations != project.settingsState.apolloKotlinServiceConfigurations
   }
 
   override fun apply() {
     project.settingsState.automaticCodegenTriggering = settingsComponent!!.automaticCodegenTriggering
     project.settingsState.contributeConfigurationToGraphqlPlugin = settingsComponent!!.contributeConfigurationToGraphqlPlugin
-    project.settingsState.serviceConfigurations = settingsComponent!!.serviceConfigurations
+    project.settingsState.apolloKotlinServiceConfigurations = settingsComponent!!.apolloKotlinServiceConfigurations
   }
 
   override fun reset() {
     settingsComponent!!.automaticCodegenTriggering = project.settingsState.automaticCodegenTriggering
     settingsComponent!!.contributeConfigurationToGraphqlPlugin = project.settingsState.contributeConfigurationToGraphqlPlugin
-    settingsComponent!!.serviceConfigurations = project.settingsState.serviceConfigurations
+    settingsComponent!!.apolloKotlinServiceConfigurations = project.settingsState.apolloKotlinServiceConfigurations
   }
 
   override fun getPreferredFocusedComponent() = settingsComponent!!.preferredFocusedComponent

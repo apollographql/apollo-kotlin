@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.settings
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -14,7 +15,7 @@ import javax.swing.JPanel
 class SettingsComponent(private val project: Project) {
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
   private lateinit var chkContributeConfigurationToGraphqlPlugin: JCheckBox
-  private lateinit var addEditRemovePanel: AddEditRemovePanel<ServiceConfiguration>
+  private lateinit var addEditRemovePanel: AddEditRemovePanel<ApolloKotlinServiceConfiguration>
 
   val panel: JPanel = panel {
     group(ApolloBundle.message("settings.codegen.title")) {
@@ -33,41 +34,41 @@ class SettingsComponent(private val project: Project) {
     }
     group(ApolloBundle.message("settings.studio.title")) {
       row {
-        addEditRemovePanel = object : AddEditRemovePanel<ServiceConfiguration>(
+        addEditRemovePanel = object : AddEditRemovePanel<ApolloKotlinServiceConfiguration>(
             ApiKeysModel(),
             emptyList(),
             ApolloBundle.message("settings.studio.apiKeys.text")
         ) {
-          override fun addItem(): ServiceConfiguration? {
+          override fun addItem(): ApolloKotlinServiceConfiguration? {
             val apiKeyDialog = ApiKeyDialog(project)
             if (!apiKeyDialog.showAndGet()) return null
-            return ServiceConfiguration(
-                graphqlProjectName = apiKeyDialog.graphqlProjectName,
-                graphOsServiceName = apiKeyDialog.graphOsServiceName,
+            return ApolloKotlinServiceConfiguration(
+                id = ApolloKotlinService.Id.fromString(apiKeyDialog.graphqlProjectName)!!,
+                graphOsGraphName = apiKeyDialog.graphOsServiceName,
             ).apply {
               graphOsApiKey = apiKeyDialog.graphOsApiKey
 
             }
           }
 
-          override fun editItem(o: ServiceConfiguration): ServiceConfiguration? {
+          override fun editItem(o: ApolloKotlinServiceConfiguration): ApolloKotlinServiceConfiguration? {
             val apiKeyDialog = ApiKeyDialog(
                 project,
-                graphqlProjectName = o.graphqlProjectName,
+                graphqlProjectName = o.apolloKotlinServiceId.toString(),
                 graphOsApiKey = o.graphOsApiKey ?: "",
-                graphOsServiceName = o.graphOsServiceName
+                graphOsServiceName = o.graphOsGraphName
             )
             if (!apiKeyDialog.showAndGet()) return null
-            return ServiceConfiguration(
-                graphqlProjectName = apiKeyDialog.graphqlProjectName,
-                graphOsServiceName = apiKeyDialog.graphOsServiceName,
+            return ApolloKotlinServiceConfiguration(
+                id = ApolloKotlinService.Id.fromString(apiKeyDialog.graphqlProjectName)!!,
+                graphOsGraphName = apiKeyDialog.graphOsServiceName,
             ).apply {
               graphOsApiKey = apiKeyDialog.graphOsApiKey
 
             }
           }
 
-          override fun removeItem(o: ServiceConfiguration?): Boolean {
+          override fun removeItem(o: ApolloKotlinServiceConfiguration?): Boolean {
             return true
           }
         }.apply {
@@ -97,27 +98,29 @@ class SettingsComponent(private val project: Project) {
       chkContributeConfigurationToGraphqlPlugin.isSelected = value
     }
 
-  var serviceConfigurations: List<ServiceConfiguration>
+  var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
     get() = addEditRemovePanel.data.toList()
     set(value) {
       addEditRemovePanel.data = value.toMutableList()
     }
 }
 
-class ApiKeysModel : AddEditRemovePanel.TableModel<ServiceConfiguration>() {
-  override fun getColumnCount() = 3
+class ApiKeysModel : AddEditRemovePanel.TableModel<ApolloKotlinServiceConfiguration>() {
+  override fun getColumnCount() = 4
 
   override fun getColumnName(columnIndex: Int) = when (columnIndex) {
-    0 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphqlProject")
-    1 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsApiKey")
-    2 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsServiceName")
+    0 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGradleProjectName")
+    1 -> ApolloBundle.message("settings.studio.apiKeys.table.columnApolloKotlinServiceName")
+    2 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsApiKey")
+    3 -> ApolloBundle.message("settings.studio.apiKeys.table.columnGraphOsGraphName")
     else -> throw IllegalArgumentException()
   }
 
-  override fun getField(o: ServiceConfiguration, columnIndex: Int) = when (columnIndex) {
-    0 -> o.graphqlProjectName
-    1 -> "••••••••"
-    2 -> o.graphOsServiceName
+  override fun getField(o: ApolloKotlinServiceConfiguration, columnIndex: Int) = when (columnIndex) {
+    0 -> o.apolloKotlinServiceId.gradleProjectName
+    1 -> o.apolloKotlinServiceId.serviceName
+    2 -> "••••••••"
+    3 -> o.graphOsGraphName
     else -> throw IllegalArgumentException()
   }
 }

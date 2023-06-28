@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.settings
 
+import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.generateServiceName
 import com.intellij.ide.passwordSafe.PasswordSafe
@@ -49,10 +50,10 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       notifySettingsChanged()
     }
 
-  override var serviceConfigurations: List<ServiceConfiguration>
-    get() = _state.serviceConfigurations
+  override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
+    get() = _state.apolloKotlinServiceConfigurations
     set(value) {
-      _state.serviceConfigurations = value
+      _state.apolloKotlinServiceConfigurations = value
       notifySettingsChanged()
     }
 
@@ -77,27 +78,33 @@ interface SettingsState {
   var automaticCodegenTriggering: Boolean
   var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
   var contributeConfigurationToGraphqlPlugin: Boolean
-  var serviceConfigurations: List<ServiceConfiguration>
+  var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
 }
 
-data class ServiceConfiguration(
+data class ApolloKotlinServiceConfiguration(
     @Attribute
-    val graphqlProjectName: String = "",
+    val id: String = "",
 
     @Attribute
-    val graphOsServiceName: String = "",
+    val graphOsGraphName: String = "",
 ) {
+  constructor(id: ApolloKotlinService.Id, graphOsGraphName: String) : this(id.toString(), graphOsGraphName)
+
   // API key is not stored as an attribute, but via PasswordSafe
   var graphOsApiKey: String?
     @Transient
-    get() = PasswordSafe.instance.getPassword(credentialAttributesForService(graphqlProjectName))
+    get() = PasswordSafe.instance.getPassword(credentialAttributesForService(id))
     @Transient
     set(value) {
-      PasswordSafe.instance.setPassword(credentialAttributesForService(graphqlProjectName), value)
+      PasswordSafe.instance.setPassword(credentialAttributesForService(id), value)
     }
 
-  private fun credentialAttributesForService(serviceName: String): CredentialAttributes {
-    return CredentialAttributes(generateServiceName("Apollo/Service", serviceName))
+  val apolloKotlinServiceId: ApolloKotlinService.Id
+    @Transient
+    get() = ApolloKotlinService.Id.fromString(id)!!
+
+  private fun credentialAttributesForService(id: String): CredentialAttributes {
+    return CredentialAttributes(generateServiceName("Apollo/Service", id))
   }
 }
 
@@ -105,7 +112,7 @@ data class SettingsStateImpl(
     override var automaticCodegenTriggering: Boolean = true,
     override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false,
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
-    override var serviceConfigurations: List<ServiceConfiguration> = emptyList(),
+    override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
 ) : SettingsState
 
 
