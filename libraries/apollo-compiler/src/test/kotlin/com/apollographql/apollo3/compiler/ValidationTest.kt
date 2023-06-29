@@ -20,7 +20,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->
     // Don't use absolute path for filePath because it depends on the machine where the test is run
-    val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(filePath = graphQLFile.name)
+    val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(filePath = graphQLFile.name, useAntlr = false)
 
     val issues = if (graphQLFile.parentFile.name == "operation" || graphQLFile.parentFile.parentFile.name == "operation") {
       if (parseResult.issues.isNotEmpty()) {

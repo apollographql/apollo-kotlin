@@ -34,7 +34,7 @@ private fun GQLDefinition.walk(issues: MutableList<Issue>) {
 private fun GQLSelection.walk(issues: MutableList<Issue>) {
   when (this) {
     is GQLField -> {
-      selections.forEach { walk(issues) }
+      selections.forEach { it.walk(issues) }
     }
     is GQLInlineFragment -> {
       if (typeCondition == null) {

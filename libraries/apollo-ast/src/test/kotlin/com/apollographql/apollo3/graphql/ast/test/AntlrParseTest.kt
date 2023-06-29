@@ -18,7 +18,7 @@ class AntlrParseTest {
       ab bc
       """.trimIndent()
           .buffer()
-          .parseAsGQLDocument()
+          .parseAsGQLDocument(useAntlr = false)
           .getOrThrow()
       fail("An exception was expected")
     } catch (e: Exception) {
