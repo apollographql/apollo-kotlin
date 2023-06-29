@@ -81,7 +81,8 @@ class MetadataTest {
         logger = defaultLogger,
         addTypename = defaultAddTypename,
         generateOptionalOperationVariables = defaultGenerateOptionalOperationVariables,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        useAntlr = true
     )
     val irOperations = ApolloCompiler.buildIrOperations(irOptions)
 
@@ -150,7 +151,7 @@ class MetadataTest {
         generateResponseFields = defaultGenerateResponseFields,
         generateQueryDocument = defaultGenerateQueryDocument,
         generateSchema = defaultGenerateSchema,
-        generatedSchemaName = defaultGeneratedSchemaName
+        generatedSchemaName = defaultGeneratedSchemaName,
     )
 
     val kotlinCodegenOptions = KotlinCodegenOptions(

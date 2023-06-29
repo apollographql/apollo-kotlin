@@ -423,6 +423,7 @@ object ApolloCompiler {
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
         generateOptionalOperationVariables = generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        useAntlr = true
     )
 
     val irOperations = buildIrOperations(irOptions)

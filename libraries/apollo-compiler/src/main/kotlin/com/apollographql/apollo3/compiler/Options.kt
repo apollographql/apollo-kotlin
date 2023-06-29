@@ -145,6 +145,8 @@ class IrOptions(
      * For input types, this will recursively add all input fields types/enums.
      */
     val alwaysGenerateTypesMatching: Set<String>,
+
+    val useAntlr: Boolean
 )
 
 @ApolloExperimental

@@ -544,6 +544,7 @@ abstract class DefaultApolloExtension(
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching())
 
       task.outputFile.set(BuildDirLayout.ir(project, service))
+      task.useAntlr.set(useAntlr)
     }
   }
 
@@ -715,6 +716,7 @@ abstract class DefaultApolloExtension(
       task.generateDataBuilders.set(service.generateDataBuilders)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)
+      task.useAntlr.set(useAntlr)
 
       configureBaseCodegenTask(project, task, service)
     }
