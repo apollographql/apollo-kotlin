@@ -105,11 +105,11 @@ object ApolloCompiler {
   /**
    * Parses the given files. Throws if there are parsing errors
    */
-  private fun Collection<File>.definitions(): List<GQLDefinition> {
+  private fun Collection<File>.definitions(useAntlr: Boolean): List<GQLDefinition> {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.source().buffer().parseAsGQLDocument(file.path)
+      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, useAntlr = useAntlr)
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {
@@ -133,7 +133,7 @@ object ApolloCompiler {
     /**
      * Step 1: parse the documents
      */
-    val definitions = executableFiles.definitions()
+    val definitions = executableFiles.definitions(options.useAntlr)
 
     val incomingFragments = options.incomingFragments
 
