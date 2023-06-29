@@ -27,12 +27,14 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitIdentifier(o: GraphQLIdentifier) {
+        if (!o.project.service<FieldInsightsService>().hasLatencies()) return
         val latency = getLatency(o) ?: return
         val field = o.parent as? GraphQLField ?: return
         reportIfHighLatency(o, field.name ?: "", latency)
       }
 
       override fun visitFieldDefinition(o: GraphQLFieldDefinition) {
+        if (!o.project.service<FieldInsightsService>().hasLatencies()) return
         val latency = getLatency(o) ?: return
         reportIfHighLatency(o, o.name ?: "", latency)
       }

@@ -127,7 +127,8 @@
       <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>
 
-    <!-- Refactor / Apollo / Migrate to operationBased codegen -->
+    <!-- Refactor / Apollo / Migrate to operationBased Codegen -->
+    <!--suppress PluginXmlCapitalization -->
     <action
         id="CompatToOperationBasedCodegenMigrationAction"
         class="com.apollographql.ijplugin.action.CompatToOperationBasedCodegenMigrationAction"
@@ -160,6 +161,13 @@
       <override-text place="FavoritesPopup" use-text-of-place="EditorTabPopup" />
     </action>
 
+    <!-- Tools / Apollo / Fetch Field Latencies -->
+    <action
+        id="RefreshFieldInsightsAction"
+        class="com.apollographql.ijplugin.studio.fieldinsights.RefreshFieldInsightsAction"
+    >
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
   </actions>
 
 </idea-plugin>
