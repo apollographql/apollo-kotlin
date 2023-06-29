@@ -70,7 +70,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
     fetchLatenciesFuture = executor.scheduleAtFixedRate(::fetchLatencies, 0, FETCH_PERIOD_HOURS, TimeUnit.HOURS)
   }
 
-  private fun fetchLatencies() {
+  fun fetchLatencies() {
     logd()
     val apolloKotlinServices = GradleToolingModelService.getApolloKotlinServices(project)
     val apolloKotlinServicesWithConfigurations: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = apolloKotlinServices.associateWith { service ->
@@ -92,6 +92,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
       val fieldLatenciesByService = mutableMapOf<ApolloKotlinService.Id, FieldInsights.FieldLatencies>()
       for ((service, deferred) in deferredLatenciesByService) {
         val result = try {
+          logd("Fetch field latencies for service ${service.id}")
           deferred.await()
         } catch (e: Exception) {
           FieldInsights.FieldLatenciesResult.Error(e)
@@ -109,6 +110,10 @@ class FieldInsightsService(private val project: Project) : Disposable {
       this@FieldInsightsService.fieldLatenciesByService = fieldLatenciesByService
       refreshInspections()
     }
+  }
+
+  fun hasLatencies(): Boolean {
+    return fieldLatenciesByService.isNotEmpty()
   }
 
   fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double? {
