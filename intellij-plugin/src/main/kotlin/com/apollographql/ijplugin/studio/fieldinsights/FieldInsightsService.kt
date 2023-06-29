@@ -29,37 +29,34 @@ private const val FETCH_PERIOD_HOURS = 12L
 
 @OptIn(ApolloExperimental::class)
 class FieldInsightsService(private val project: Project) : Disposable {
-  /**
-   * Keys are the project name in the form "projectName/apolloServiceName", same format used
-   * in [com.apollographql.ijplugin.graphql.GraphQLProjectFiles.name]
-   */
-  private var fieldLatenciesByService = mapOf<String, FieldInsights.FieldLatencies>()
+  private var fieldLatenciesByService = mapOf<ApolloKotlinService.Id, FieldInsights.FieldLatencies>()
+
   private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-  private val executor : ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
   private var fetchLatenciesFuture: ScheduledFuture<*>? = null
 
   init {
     logd("project=${project.name}")
     startObservingSettings()
-    startObservingGraphQLProjectFiles()
+    startObservingApolloKotlinServices()
   }
 
   private fun startObservingSettings() {
     logd()
     project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      var serviceConfigurations: List<ApolloKotlinServiceConfiguration> = project.settingsState.apolloKotlinServiceConfigurations
+      var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = project.settingsState.apolloKotlinServiceConfigurations
       override fun settingsChanged(settingsState: SettingsState) {
-        val serviceConfigurationChanged = serviceConfigurations != settingsState.apolloKotlinServiceConfigurations
-        serviceConfigurations = settingsState.apolloKotlinServiceConfigurations
-        logd("serviceConfigurationChanged=$serviceConfigurationChanged")
-        if (serviceConfigurationChanged) {
+        val apolloKotlinServiceConfigurationsChanged = apolloKotlinServiceConfigurations != settingsState.apolloKotlinServiceConfigurations
+        apolloKotlinServiceConfigurations = settingsState.apolloKotlinServiceConfigurations
+        logd("apolloKotlinServiceConfigurationsChanged=$apolloKotlinServiceConfigurationsChanged")
+        if (apolloKotlinServiceConfigurationsChanged) {
           scheduleFetchLatencies()
         }
       }
     })
   }
 
-  private fun startObservingGraphQLProjectFiles() {
+  private fun startObservingApolloKotlinServices() {
     project.messageBus.connect(this).subscribe(ApolloKotlinServiceListener.TOPIC, object : ApolloKotlinServiceListener {
       override fun apolloKotlinServicesAvailable() {
         logd()
@@ -75,25 +72,25 @@ class FieldInsightsService(private val project: Project) : Disposable {
 
   private fun fetchLatencies() {
     logd()
-    val graphQLProjectFiles = GradleToolingModelService.getApolloKotlinServices(project)
-    val graphQLProjectFilesToApiKey: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = graphQLProjectFiles.associateWith { gqlProject ->
-      project.settingsState.apolloKotlinServiceConfigurations.firstOrNull { serviceConfiguration ->
-        serviceConfiguration.id == gqlProject.id.toString()
+    val apolloKotlinServices = GradleToolingModelService.getApolloKotlinServices(project)
+    val apolloKotlinServicesWithConfigurations: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = apolloKotlinServices.associateWith { service ->
+      project.settingsState.apolloKotlinServiceConfigurations.firstOrNull { configuration ->
+        service.id == configuration.apolloKotlinServiceId
       }
     }.filterValues { it != null }.mapValues { it.value!! }
-    val deferredLatenciesByProject = graphQLProjectFilesToApiKey.mapNotNull { (gqlProject, serviceConfiguration) ->
-      serviceConfiguration.graphOsApiKey?.let { apiKey ->
-        gqlProject.id.toString() to coroutineScope.async {
+    val deferredLatenciesByService = apolloKotlinServicesWithConfigurations.mapNotNull { (service, configuration) ->
+      configuration.graphOsApiKey?.let { apiKey ->
+        service to coroutineScope.async {
           FieldInsights.fetchFieldLatencies(
               apiKey = apiKey,
-              serviceId = serviceConfiguration.graphOsGraphName,
+              serviceId = configuration.graphOsGraphName,
           )
         }
       }
     }
     coroutineScope.launch {
-      val fieldLatenciesByProject = mutableMapOf<String, FieldInsights.FieldLatencies>()
-      for ((projectName, deferred) in deferredLatenciesByProject) {
+      val fieldLatenciesByService = mutableMapOf<ApolloKotlinService.Id, FieldInsights.FieldLatencies>()
+      for ((service, deferred) in deferredLatenciesByService) {
         val result = try {
           deferred.await()
         } catch (e: Exception) {
@@ -101,21 +98,21 @@ class FieldInsightsService(private val project: Project) : Disposable {
         }
         when (result) {
           is FieldInsights.FieldLatenciesResult.Error -> {
-            logw(result.cause, "Could not fetch field latencies for project $projectName")
+            logw(result.cause, "Could not fetch field latencies for service ${service.id}")
           }
 
           is FieldInsights.FieldLatencies -> {
-            fieldLatenciesByProject[projectName] = result
+            fieldLatenciesByService[service.id] = result
           }
         }
       }
-      this@FieldInsightsService.fieldLatenciesByService = fieldLatenciesByProject
+      this@FieldInsightsService.fieldLatenciesByService = fieldLatenciesByService
       refreshInspections()
     }
   }
 
   fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double? {
-    return fieldLatenciesByService[serviceId.toString()]?.getLatency(parentType = typeName, fieldName = fieldName)
+    return fieldLatenciesByService[serviceId]?.getLatency(parentType = typeName, fieldName = fieldName)
   }
 
   private fun refreshInspections() {
@@ -128,4 +125,3 @@ class FieldInsightsService(private val project: Project) : Disposable {
     executor.shutdown()
   }
 }
-
