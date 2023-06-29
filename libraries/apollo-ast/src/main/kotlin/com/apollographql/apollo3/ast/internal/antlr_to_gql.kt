@@ -129,7 +129,7 @@ private class AntlrToGQLScope(val filePath: String?) {
     return GQLSchemaExtension(
         sourceLocation = sourceLocation(start),
         directives = directives().parse(),
-        operationTypesDefinition = operationTypesDefinition().parse()
+        operationTypeDefinitions = operationTypesDefinition().parse()
     )
   }
 
@@ -250,7 +250,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         description = description()?.parse(),
         directives = directives().parse(),
         typeCondition = typeCondition().namedType().parse(),
-        selectionSet = selectionSet().parse()
+        selections = selectionSet().parse().selections
     )
   }
 
@@ -262,7 +262,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         description = description()?.parse(),
         variableDefinitions = variableDefinitions().parse(),
         directives = directives().parse(),
-        selectionSet = selectionSet().parse()
+        selections = selectionSet().parse().selections
     )
   }
 
@@ -287,7 +287,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         sourceLocation = sourceLocation(start),
         typeCondition = typeCondition().namedType().parse(),
         directives = directives().parse(),
-        selectionSet = selectionSet().parse()
+        selections = selectionSet().parse().selections
     )
   }
 
@@ -296,9 +296,9 @@ private class AntlrToGQLScope(val filePath: String?) {
         sourceLocation = sourceLocation(start),
         alias = alias()?.name()?.text,
         name = name().text,
-        arguments = arguments()?.parse(),
+        arguments = arguments()?.parse()?.arguments.orEmpty(),
         directives = directives().parse(),
-        selectionSet = selectionSet()?.parse()
+        selections = selectionSet()?.parse()?.selections.orEmpty()
     )
   }
 
@@ -324,9 +324,11 @@ private class AntlrToGQLScope(val filePath: String?) {
   private fun GraphQLParser.OperationTypesDefinitionContext?.parse() = this?.operationTypeDefinition()?.map { it.parse() } ?: emptyList()
   private fun GraphQLParser.DirectiveLocationsContext?.parse() = this?.directiveLocation()?.map { it.parse() } ?: emptyList()
 
+  @Suppress("DEPRECATION")
   private fun GraphQLParser.SelectionSetContext.parse() = GQLSelectionSet(this.selection()?.map { it.parse() }
       ?: emptyList(), sourceLocation(start))
 
+  @Suppress("DEPRECATION")
   private fun GraphQLParser.ArgumentsContext.parse() = GQLArguments(this.argument()?.map { it.parse() }
       ?: emptyList(), sourceLocation(start))
 
@@ -371,7 +373,7 @@ private class AntlrToGQLScope(val filePath: String?) {
     return GQLDirective(
         sourceLocation = sourceLocation(start),
         name = name().text,
-        arguments = arguments()?.parse()
+        arguments = arguments()?.parse()?.arguments.orEmpty()
     )
   }
 
