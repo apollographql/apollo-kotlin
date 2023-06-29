@@ -92,7 +92,7 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.get(),
-        useAntlr = useAntlr.getOrElse(true)
+        useAntlr = useAntlr.getOrElse(false)
     )
 
     ApolloCompiler.buildIrOperations(options).writeTo(outputFile.asFile.get())

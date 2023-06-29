@@ -54,7 +54,7 @@ private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Pars
  * @return a [GQLResult] with either a non-null [GQLDocument] or a list of issues.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true, useAntlr: Boolean = true): GQLResult<GQLDocument> {
+fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true, useAntlr: Boolean = false): GQLResult<GQLDocument> {
   return if (useAntlr) {
     use { source -> antlrParse(source, filePath, { it.document() }, { it.toGQLDocument(filePath) }) }
   } else {

@@ -115,7 +115,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
-        useAntlr = useAntlr.getOrElse(true)
+        useAntlr = useAntlr.getOrElse(false)
     )
 
     val irOperations = ApolloCompiler.buildIrOperations(irOptions)
