@@ -19,7 +19,7 @@ internal fun GraphQLParser.TypeContext.toGQLType(filePath: String? = null) = Ant
 private class AntlrToGQLScope(val filePath: String?) {
   private fun sourceLocation(token: Token) = SourceLocation(
       line = token.line,
-      position = token.charPositionInLine,
+      column = token.charPositionInLine + 1,
       filePath = filePath
   )
 

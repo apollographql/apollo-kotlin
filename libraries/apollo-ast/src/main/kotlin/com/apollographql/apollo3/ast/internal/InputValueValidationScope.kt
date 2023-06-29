@@ -149,7 +149,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
       issues.add(
           Issue.DeprecatedUsage(
               message = "Use of deprecated input field `${inputValueDefinition.name}`",
-              sourceLocation = value.sourceLocation
+              sourceLocation = field.sourceLocation
           )
       )
     }

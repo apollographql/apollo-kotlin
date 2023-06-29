@@ -895,6 +895,7 @@ public final class com/apollographql/apollo3/ast/SourceAwareException$Companion 
 public final class com/apollographql/apollo3/ast/SourceLocation {
 	public static final field Companion Lcom/apollographql/apollo3/ast/SourceLocation$Companion;
 	public fun <init> (IILjava/lang/String;)V
+	public final fun getColumn ()I
 	public final fun getFilePath ()Ljava/lang/String;
 	public final fun getLine ()I
 	public final fun getPosition ()I

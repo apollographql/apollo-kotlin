@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.toExecutableDefinitions
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
@@ -22,7 +23,6 @@ class TypenameTest(
     @TestParameter(valuesProvider = GraphQLFileValuesProvider::class) private val graphQLFile: File,
     @TestParameter("always", "ifFragments", "ifAbstract", "ifPolymorphic") private val addTypename: String,
 ) {
-
   @Test
   fun testTypename() {
     val schemaFile = File("src/test/graphql/schema.sdl")

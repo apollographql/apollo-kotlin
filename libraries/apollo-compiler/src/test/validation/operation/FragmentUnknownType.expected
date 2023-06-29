@@ -1,2 +1,2 @@
-ERROR: ValidationError (7:25)
+ERROR: ValidationError (7:26)
 Cannot find type `Banana` for fragment `HeroFragment`
