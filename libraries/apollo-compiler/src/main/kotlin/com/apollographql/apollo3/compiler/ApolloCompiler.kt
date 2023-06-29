@@ -154,6 +154,7 @@ object ApolloCompiler {
 
     checkApolloReservedEnumValueNames(schema).checkNoErrors()
     checkApolloTargetNameClashes(schema).checkNoErrors()
+    checkApolloInlineFragmentsHaveTypeCondition(definitions).checkNoErrors()
 
     if (!options.decapitalizeFields) {
       // When flattenModels is true, we still must check capitalized fields inside fragment spreads

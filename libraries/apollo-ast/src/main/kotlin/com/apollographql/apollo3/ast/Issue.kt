@@ -51,6 +51,12 @@ sealed class Issue(
   class UpperCaseField(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
+   * The GraphQL spec allows inline fragments without a type condition, but we currently forbid this because we need the type condition
+   * to name the models in operation based codegen.
+   */
+  class InlineFragmentWithoutTypeCondition(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+
+  /**
    * Certain enum value names such as `type` are reserved for Apollo.
    *
    * This error is an Apollo Kotlin specific error
