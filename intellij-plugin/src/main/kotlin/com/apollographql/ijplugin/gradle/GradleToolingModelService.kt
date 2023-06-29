@@ -101,9 +101,15 @@ class GradleToolingModelService(
   private fun startObservingSettings() {
     logd()
     project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      private var contributeConfigurationToGraphqlPlugin: Boolean = project.settingsState.contributeConfigurationToGraphqlPlugin
+
       override fun settingsChanged(settingsState: SettingsState) {
-        logd("settingsState=$settingsState")
-        startOrAbortFetchToolingModels()
+        val contributeConfigurationToGraphqlPluginChanged = contributeConfigurationToGraphqlPlugin != settingsState.contributeConfigurationToGraphqlPlugin
+        contributeConfigurationToGraphqlPlugin = settingsState.contributeConfigurationToGraphqlPlugin
+        logd("contributeConfigurationToGraphqlPluginChanged=$contributeConfigurationToGraphqlPluginChanged")
+        if (contributeConfigurationToGraphqlPluginChanged) {
+          startOrAbortFetchToolingModels()
+        }
       }
     })
   }
@@ -162,7 +168,7 @@ class GradleToolingModelService(
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
       indicator.isIndeterminate = false
       val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
-        if (isAbortRequested())          return@run
+        if (isAbortRequested()) return@run
         indicator.fraction = (index + 1).toDouble() / allApolloGradleProjects.size
         gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
           gradleCancellation = GradleConnector.newCancellationTokenSource()
