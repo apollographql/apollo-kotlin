@@ -8,6 +8,11 @@ import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo3.ast.internal.Parser
 import com.apollographql.apollo3.ast.internal.ParserException
 import com.apollographql.apollo3.ast.internal.ScannerException
+import com.apollographql.apollo3.ast.internal.antlrParse
+import com.apollographql.apollo3.ast.internal.toGQLDocument
+import com.apollographql.apollo3.ast.internal.toGQLSelection
+import com.apollographql.apollo3.ast.internal.toGQLType
+import com.apollographql.apollo3.ast.internal.toGQLValue
 import com.apollographql.apollo3.ast.internal.validateSchema
 import okio.BufferedSource
 import java.nio.charset.Charset
@@ -49,25 +54,37 @@ private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Pars
  * @return a [GQLResult] with either a non-null [GQLDocument] or a list of issues.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true): GQLResult<GQLDocument> = parseInternal(filePath) { parseDocument(allowEmpty) }
+fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true, useAntlr: Boolean = true): GQLResult<GQLDocument> {
+  return if (useAntlr) {
+    use { source -> antlrParse(source, filePath, { it.document() }, { it.toGQLDocument(filePath) }) }
+  } else {
+    parseInternal(filePath) { parseDocument(allowEmpty) }
+  }
+}
 
 /**
  * Parses the source to a [GQLValue], validating the syntax but not the contents of the value.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLValue(filePath: String? = null): GQLResult<GQLValue> = parseInternal(filePath, Parser::parseValue)
+fun BufferedSource.parseAsGQLValue(filePath: String? = null): GQLResult<GQLValue> = use { source ->
+  return antlrParse(source, filePath, { it.value() }, { it.toGQLValue(filePath) })
+}
 
 /**
  * Parses the source to a [GQLType], validating the syntax but not the contents of the value.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLType(filePath: String? = null): GQLResult<GQLType> = parseInternal(filePath, Parser::parseType)
+fun BufferedSource.parseAsGQLType(filePath: String? = null): GQLResult<GQLType> = use { source ->
+  return antlrParse(source, filePath, { it.type() }, { it.toGQLType(filePath) })
+}
 
 /**
  * Parses the source to a [List]<[GQLSelection]>, validating the syntax but not the contents of the selections.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLSelections(filePath: String? = null): GQLResult<List<GQLSelection>> = parseInternal(filePath, Parser::parseSelections)
+fun BufferedSource.parseAsGQLSelections(filePath: String? = null): GQLResult<List<GQLSelection>> = use { source ->
+  return antlrParse(source, filePath, { it.selections() }, { it.selection().map { it.toGQLSelection(filePath) } })
+}
 
 /**
  * Validate the given document as a schema:
