@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.studio.fieldinsights
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -58,14 +59,14 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
     val typeDefinition = fieldDefinition.parent.parent as? GraphQLTypeDefinition ?: return null
     val typeName = typeDefinition.findChildrenOfType<GraphQLTypeNameDefinition>().firstOrNull()?.name ?: return null
     val fieldName = fieldDefinition.name ?: return null
-    val graphQLProjectFilesName = fieldDefinition.containingFile.getGraphQLProjectFilesName() ?: return null
-    return fieldDefinition.project.service<FieldInsightsService>().getLatency(graphQLProjectFilesName, typeName, fieldName)
+    val serviceId = fieldDefinition.containingFile.getApolloKotlinServiceId() ?: return null
+    return fieldDefinition.project.service<FieldInsightsService>().getLatency(serviceId, typeName, fieldName)
   }
 
-  private fun PsiFile.getGraphQLProjectFilesName(): String? {
+  private fun PsiFile.getApolloKotlinServiceId(): ApolloKotlinService.Id? {
     val config: GraphQLProjectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(this)
         ?: return null
-    return config.name
+    return ApolloKotlinService.Id.fromString(config.name)
   }
 
   private fun Double.toFormattedString() = "~${roundToInt()} ms"
