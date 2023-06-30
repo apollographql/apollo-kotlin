@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.action
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.project.ApolloProjectService.ApolloVersion
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.ApolloV2ToV3MigrationProcessor
 import com.apollographql.ijplugin.util.logd
@@ -28,7 +29,7 @@ class ApolloV2ToV3MigrationAction : AnAction() {
   }
 
   override fun update(e: AnActionEvent) {
-    e.presentation.isEnabled = e.project?.apolloProjectService?.isApolloAndroid2Project == true
+    e.presentation.isEnabled = e.project?.apolloProjectService?.apolloVersion == ApolloVersion.V2
     e.presentation.isVisible = !ActionPlaces.isPopupPlace(e.place)
   }
 

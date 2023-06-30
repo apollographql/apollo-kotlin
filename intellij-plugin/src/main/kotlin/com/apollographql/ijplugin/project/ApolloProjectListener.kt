@@ -8,5 +8,5 @@ interface ApolloProjectListener {
     val TOPIC: Topic<ApolloProjectListener> = Topic.create("Apollo project", ApolloProjectListener::class.java)
   }
 
-  fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean)
+  fun apolloProjectChanged(apolloVersion: ApolloProjectService.ApolloVersion)
 }

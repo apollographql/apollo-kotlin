@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
 import com.apollographql.ijplugin.gradle.getGradleRootPath
 import com.apollographql.ijplugin.project.ApolloProjectListener
+import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
 import com.apollographql.ijplugin.settings.SettingsState
@@ -69,8 +70,8 @@ class ApolloCodegenService(
   private fun startObserveApolloProject() {
     logd()
     project.messageBus.connect(this).subscribe(ApolloProjectListener.TOPIC, object : ApolloProjectListener {
-      override fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean) {
-        logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
+      override fun apolloProjectChanged(apolloVersion: ApolloProjectService.ApolloVersion) {
+        logd("apolloVersion=$apolloVersion")
         startOrStopCodegenObservers()
       }
     })
@@ -86,7 +87,7 @@ class ApolloCodegenService(
     })
   }
 
-  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.isApolloKotlin3Project && project.settingsState.automaticCodegenTriggering
+  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.apolloVersion.isAtLeastV3 && project.settingsState.automaticCodegenTriggering
 
   private fun startOrStopCodegenObservers() {
     if (shouldTriggerCodegenAutomatically()) {

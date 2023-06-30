@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.project
 
-import com.apollographql.ijplugin.util.isApolloAndroid2Project
-import com.apollographql.ijplugin.util.isApolloKotlin3Project
+import com.apollographql.ijplugin.project.ApolloProjectService.ApolloVersion
+import com.apollographql.ijplugin.util.getApolloVersion
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
 import com.intellij.openapi.Disposable
@@ -13,8 +13,7 @@ class ApolloProjectServiceImpl(
     private val project: Project,
 ) : ApolloProjectService, Disposable {
 
-  override var isApolloAndroid2Project: Boolean = false
-  override var isApolloKotlin3Project: Boolean = false
+  override var apolloVersion: ApolloVersion = ApolloVersion.NONE
   override var isInitialized: Boolean = false
 
   init {
@@ -35,15 +34,13 @@ class ApolloProjectServiceImpl(
 
   private fun onLibrariesChanged() {
     logd()
-    val previousIsApolloAndroid2Project  = isApolloAndroid2Project
-    val previousIsApolloKotlin3Project = isApolloKotlin3Project
+    val previousApolloVersion  = apolloVersion
     synchronized(this) {
-      isApolloAndroid2Project = project.isApolloAndroid2Project()
-      isApolloKotlin3Project = project.isApolloKotlin3Project()
+      apolloVersion = project.getApolloVersion()
     }
-    logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
-    if (previousIsApolloAndroid2Project != isApolloAndroid2Project || previousIsApolloKotlin3Project != isApolloKotlin3Project) {
-      project.messageBus.syncPublisher(ApolloProjectListener.TOPIC).apolloProjectChanged(isApolloAndroid2Project = isApolloAndroid2Project, isApolloKotlin3Project = isApolloKotlin3Project)
+    logd("apolloVersion=$apolloVersion")
+    if (previousApolloVersion != apolloVersion) {
+      project.messageBus.syncPublisher(ApolloProjectListener.TOPIC).apolloProjectChanged(apolloVersion = apolloVersion)
     }
   }
 

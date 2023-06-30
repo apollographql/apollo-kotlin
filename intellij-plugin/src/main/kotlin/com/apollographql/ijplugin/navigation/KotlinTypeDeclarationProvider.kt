@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.psi.KtElement
  */
 class KotlinTypeDeclarationProvider : TypeDeclarationProvider {
   override fun getSymbolTypeDeclarations(symbol: PsiElement): Array<PsiElement>? {
-    if (!symbol.project.apolloProjectService.isApolloKotlin3Project) return null
+    if (!symbol.project.apolloProjectService.apolloVersion.isAtLeastV3) return null
 
     // Only care about Kotlin
     if (symbol !is KtElement) return null
