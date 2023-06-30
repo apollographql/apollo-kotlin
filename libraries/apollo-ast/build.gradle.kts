@@ -3,10 +3,19 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("apollo.library")
   id("org.jetbrains.kotlin.plugin.serialization")
+  id("org.jetbrains.kotlinx.benchmark")
 }
 
 apolloLibrary {
   javaModuleName("com.apollographql.apollo3.ast")
+}
+
+sourceSets.create("jmh")
+
+benchmark {
+  targets {
+    register("jmh")
+  }
 }
 
 dependencies {
@@ -18,6 +27,9 @@ dependencies {
   implementation(golatac.lib("kotlinx.serialization.json"))
 
   testImplementation(golatac.lib("kotlin.test.junit"))
+
+  add("jmhImplementation", golatac.lib("kotlinx.benchmark.runtime"))
+  add("jmhImplementation", sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath)
 }
 
 // Only expose the antlr runtime dependency
@@ -32,4 +44,7 @@ tasks.named("compileKotlin") {
 }
 tasks.named("compileTestKotlin") {
   dependsOn("generateTestGrammarSource")
+}
+tasks.named("compileJmhKotlin") {
+  dependsOn("generateJmhGrammarSource")
 }

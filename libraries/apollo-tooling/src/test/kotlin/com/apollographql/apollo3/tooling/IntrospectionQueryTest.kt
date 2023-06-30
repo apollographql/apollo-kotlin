@@ -3,7 +3,7 @@ package com.apollographql.apollo3.tooling
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLSelectionSet
+import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import okio.Buffer
@@ -114,11 +114,11 @@ class IntrospectionQueryTest {
                     .map {
                       when (it) {
                         is GQLOperationDefinition -> {
-                          it.copy(selectionSet = it.selectionSet.withoutTypenames())
+                          it.copy(selections = it.selections.withoutTypenames())
                         }
 
                         is GQLFragmentDefinition -> {
-                          it.copy(selectionSet = it.selectionSet.withoutTypenames())
+                          it.copy(selections = it.selections.withoutTypenames())
                         }
 
                         else -> it
@@ -146,19 +146,18 @@ class IntrospectionQueryTest {
     }
   }
 
-  private fun GQLSelectionSet.withoutTypenames(): GQLSelectionSet = copy(
-      selections = selections.mapNotNull {
+  private fun List<GQLSelection>.withoutTypenames(): List<GQLSelection> = mapNotNull {
         if (it is GQLField) {
           if (it.name == "__typename") {
             null
           } else {
-            it.copy(selectionSet = it.selectionSet?.withoutTypenames())
+            it.copy(selections = it.selections.withoutTypenames())
           }
         } else {
           it
         }
       }
-  )
+
 
   @Test
   fun canUseTheSameIntrospectionQueryAsVersion3() {

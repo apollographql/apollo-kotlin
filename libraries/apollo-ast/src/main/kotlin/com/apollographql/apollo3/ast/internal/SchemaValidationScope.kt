@@ -261,7 +261,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
           return@eachDirective
         }
 
-        val arguments = gqlDirective.arguments!!.arguments
+        val arguments = gqlDirective.arguments
         val url = (arguments.first { it.name == "url" }.value as GQLStringValue).value
         var prefix = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
         val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
@@ -496,7 +496,7 @@ private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> 
     return emptySet()
   }
   return flatMap {
-    val value = it.arguments?.arguments?.firstOrNull {
+    val value = it.arguments.firstOrNull {
       it.name == argumentName
     }?.value
 

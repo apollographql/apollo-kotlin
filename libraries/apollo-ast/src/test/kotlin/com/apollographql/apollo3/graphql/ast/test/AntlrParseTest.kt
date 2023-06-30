@@ -18,11 +18,11 @@ class AntlrParseTest {
       ab bc
       """.trimIndent()
           .buffer()
-          .parseAsGQLDocument()
+          .parseAsGQLDocument(useAntlr = false)
           .getOrThrow()
       fail("An exception was expected")
     } catch (e: Exception) {
-      check(e.message?.contains("Extra token at end of file") == true)
+      check(e.message?.contains("Unexpected token: 'name: ab'") == true)
     }
   }
 

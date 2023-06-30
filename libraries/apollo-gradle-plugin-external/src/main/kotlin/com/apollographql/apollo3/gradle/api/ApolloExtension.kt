@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import org.gradle.api.Action
 import org.gradle.api.provider.Property
 
@@ -88,4 +89,12 @@ interface ApolloExtension {
    * Default: true.
    */
   val generateSourcesDuringGradleSync: Property<Boolean>
+
+  /**
+   * Whether to use Antlr to parse GraphQL document or a custom parser
+   *
+   * Default: true
+   */
+  @ApolloExperimental
+  val useAntlr: Property<Boolean>
 }

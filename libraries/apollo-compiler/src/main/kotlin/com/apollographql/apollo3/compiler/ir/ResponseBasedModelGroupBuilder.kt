@@ -155,7 +155,7 @@ private class FieldNodeBuilder(
       return buildFieldNode(
           modelPath = "${MODEL_FRAGMENT_INTERFACE}.$name",
           info = info,
-          selections = fragment.selectionSet.selections,
+          selections = fragment.selections,
           rawTypename = fragment.typeCondition.name,
           condition = BooleanExpression.True,
           superResponseFields = emptyList(),
@@ -180,7 +180,7 @@ private class FieldNodeBuilder(
     return buildFieldNode(
         modelPath = "${MODEL_FRAGMENT_DATA}.$name",
         info = info,
-        selections = fragment.selectionSet.selections,
+        selections = fragment.selections,
         rawTypename = fragment.typeCondition.name,
         condition = BooleanExpression.True,
         superResponseFields = listOf(ifaceFieldNode),
@@ -534,7 +534,7 @@ private fun List<GQLSelection>.collectFragments(): Set<String> {
     when (it) {
       is GQLField -> emptySet()
       is GQLInlineFragment -> {
-        it.selectionSet.selections.collectFragments()
+        it.selections.collectFragments()
       }
       // We do not recurse here as inheriting the first namedFragment will
       // inherit nested ones as well

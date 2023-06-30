@@ -22,7 +22,7 @@ import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLSelectionSet
+import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
@@ -173,7 +173,7 @@ internal class ExecutableValidationScope(
     }
 
     validateArguments(
-        arguments?.arguments ?: emptyList(),
+        arguments,
         sourceLocation,
         fieldDefinition.arguments,
         "field `${fieldDefinition.name}`"
@@ -193,7 +193,7 @@ internal class ExecutableValidationScope(
 
     if (typeDefinition !is GQLScalarTypeDefinition
         && typeDefinition !is GQLEnumTypeDefinition) {
-      if (selectionSet == null) {
+      if (selections.isEmpty()) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must have a selection of sub-fields",
             sourceLocation = sourceLocation
@@ -201,9 +201,9 @@ internal class ExecutableValidationScope(
         return
       }
       val fieldPath = if (path.isEmpty()) name else "$path.$name"
-      selectionSet.validate(typeDefinition, this@validate, fieldPath)
+      selections.validate(typeDefinition, this@validate, fieldPath)
     } else {
-      if (selectionSet != null) {
+      if (selections.isNotEmpty()) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must not have a selection of sub-fields",
             sourceLocation = sourceLocation
@@ -221,24 +221,25 @@ internal class ExecutableValidationScope(
 
 
   private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
-    val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
+    val tc = typeCondition?.name ?: parentTypeDefinition.name
+    val inlineFragmentTypeDefinition = typeDefinitions[tc]
     if (inlineFragmentTypeDefinition == null) {
       registerIssue(
-          message = "Cannot find type `${typeCondition.name}` for inline fragment",
-          sourceLocation = typeCondition.sourceLocation
+          message = "Cannot find type `${tc}` for inline fragment",
+          sourceLocation = typeCondition?.sourceLocation ?: sourceLocation
       )
       return
     }
 
     if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = parentTypeDefinition, schema = schema)) {
       registerIssue(
-          message = "Inline fragment cannot be spread here as result can never be of type `${typeCondition.name}`",
-          sourceLocation = typeCondition.sourceLocation
+          message = "Inline fragment cannot be spread here as result can never be of type `${tc}`",
+          sourceLocation = typeCondition?.sourceLocation ?: sourceLocation
       )
       return
     }
 
-    selectionSet.validate(inlineFragmentTypeDefinition, this@validate, path)
+    selections.validate(inlineFragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
       validateDirective(it, this) {
@@ -275,7 +276,7 @@ internal class ExecutableValidationScope(
       return
     }
 
-    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, this@validate, path)
+    fragmentDefinition.selections.validate(fragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
       validateDirective(it, this) {
@@ -311,9 +312,9 @@ internal class ExecutableValidationScope(
      * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
      * context of an operation.
      */
-    selectionSet.validate(fragmentRootTypeDefinition, this, path = "-")
+    selections.validate(fragmentRootTypeDefinition, this, path = "-")
 
-    fieldsInSetCanMerge(selectionSet.collectFields(fragmentRootTypeDefinition.name))
+    fieldsInSetCanMerge(selections.collectFields(fragmentRootTypeDefinition.name))
   }
 
   private fun GQLOperationDefinition.validate() {
@@ -331,9 +332,9 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selectionSet.validate(rootTypeDefinition, this)
+    selections.validate(rootTypeDefinition, this)
 
-    fieldsInSetCanMerge(selectionSet.collectFields(rootTypeDefinition.name))
+    fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
 
     variableUsages.forEach {
       validateVariable(this, it)
@@ -388,7 +389,7 @@ internal class ExecutableValidationScope(
    * ```
    */
   private fun GQLDirective.validateDeferDirective(selectionSetParent: GQLNode, path: String) {
-    val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
+    val label = arguments.firstOrNull { it.name == "label" }?.value
     if (label is GQLVariableValue) {
       registerIssue(
           message = "@defer label argument must not be a variable",
@@ -442,17 +443,17 @@ internal class ExecutableValidationScope(
     deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
   }
 
-  private fun GQLSelectionSet.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
-    if (selections.isEmpty()) {
+  private fun List<GQLSelection>.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
+    if (isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
           message = "Selection of type `${parentTypeDefinition.name}` must have a selection of sub-fields",
-          sourceLocation = sourceLocation
+          sourceLocation = SourceLocation.UNKNOWN
       )
       return
     }
 
-    selections.forEach {
+    forEach {
       when (it) {
         is GQLField -> it.validate(parentTypeDefinition, path)
         is GQLInlineFragment -> it.validate(parentTypeDefinition, selectionSetParent, path)
@@ -491,9 +492,7 @@ internal class ExecutableValidationScope(
       return
     }
 
-    if (!areArgumentsEqual(
-            fieldA.arguments?.arguments ?: emptyList(),
-            fieldB.arguments?.arguments ?: emptyList())) {
+    if (!areArgumentsEqual(fieldA.arguments, fieldB.arguments)) {
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different arguments")
       return
     }
@@ -504,8 +503,8 @@ internal class ExecutableValidationScope(
       return
     }
 
-    val setA = fieldA.selectionSet?.collectFields(typeA.rawType().name) ?: emptyList()
-    val setB = fieldB.selectionSet?.collectFields(typeB.rawType().name) ?: emptyList()
+    val setA = fieldA.selections.collectFields(typeA.rawType().name)
+    val setB = fieldB.selections.collectFields(typeB.rawType().name)
 
     fieldsInSetCanMerge(setA + setB)
   }
@@ -521,7 +520,7 @@ internal class ExecutableValidationScope(
               // This field is unknown. Let other validation rules catch this
               return@forEach
             }
-            val set = first.field.selectionSet?.collectFields(fieldDefinition.type.rawType().name) ?: emptyList()
+            val set = first.field.selections.collectFields(fieldDefinition.type.rawType().name)
             // recurse in subfields
             fieldsInSetCanMerge(set)
           } else {
@@ -627,8 +626,8 @@ internal class ExecutableValidationScope(
     val parentTypeDefinitionA = fieldWithParentA.parentTypeDefinition
     val parentTypeDefinitionB = fieldWithParentB.parentTypeDefinition
 
-    val setA = fieldWithParentA.field.selectionSet?.collectFields(parentTypeDefinitionA.name) ?: emptyList()
-    val setB = fieldWithParentB.field.selectionSet?.collectFields(parentTypeDefinitionB.name) ?: emptyList()
+    val setA = fieldWithParentA.field.selections.collectFields(parentTypeDefinitionA.name)
+    val setB = fieldWithParentB.field.selections.collectFields(parentTypeDefinitionB.name)
 
     (setA + setB).groupBy { it.field.responseName() }.values.forEach { fieldsForName ->
       if (fieldsForName.pairs().firstOrNull { sameResponseShapeRecursive(it.first, it.second) } != null) {
@@ -714,21 +713,21 @@ internal class ExecutableValidationScope(
 
   private class FieldWithParent(val field: GQLField, val parentTypeDefinition: GQLTypeDefinition)
 
-  private fun GQLSelectionSet.collectFields(parentType: String): List<FieldWithParent> {
-    return selections.flatMap { selection ->
+  private fun List<GQLSelection>.collectFields(parentType: String): List<FieldWithParent> {
+    return flatMap { selection ->
       when (selection) {
         is GQLField -> listOf(typeDefinitions[parentType]).mapNotNull { typeDefinition ->
           // typeDefinition should never be null here
           // if it is, we just skip this field and let other validation report the error
           typeDefinition?.let { FieldWithParent(selection, it) }
         }
-        is GQLInlineFragment -> selection.collectFields()
+        is GQLInlineFragment -> selection.collectFields(parentType)
         is GQLFragmentSpread -> selection.collectFields()
       }
     }
   }
 
-  private fun GQLInlineFragment.collectFields() = selectionSet.collectFields(typeCondition.name)
+  private fun GQLInlineFragment.collectFields(parentType: String) = selections.collectFields(typeCondition?.name ?: parentType)
 
   private fun GQLFragmentSpread.collectFields(): List<FieldWithParent> {
     val fragmentDefinition = fragmentDefinitions[name]
@@ -738,7 +737,7 @@ internal class ExecutableValidationScope(
     }
 
     return fragmentDefinition
-        .selectionSet
+        .selections
         .collectFields(fragmentDefinition.typeCondition.name)
   }
 

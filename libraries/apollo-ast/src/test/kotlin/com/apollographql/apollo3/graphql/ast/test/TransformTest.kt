@@ -23,7 +23,6 @@ class TransformTest {
 
   @Test
   fun stripFieldsWithDirective() {
-
     val document = query.buffer().parseAsGQLDocument().getOrThrow()
 
     val currentVersion = 4
@@ -55,7 +54,7 @@ class TransformTest {
       return null
     }
 
-    val argument = directive.arguments?.arguments?.first()
+    val argument = directive.arguments.firstOrNull()
 
     check(argument != null && argument.name == "version") {
       "@since requires a single 'version' argument"
@@ -84,15 +83,13 @@ class TransformTest {
         val newField = GQLField(
             alias = null,
             name = "newField",
-            arguments = null,
+            arguments = emptyList(),
             directives = emptyList(),
-            selectionSet = null,
+            selections = emptyList(),
         )
         TransformResult.Replace(
             it.copy(
-                selectionSet = it.selectionSet!!.copy(
-                    selections = it.selectionSet!!.children + newField
-                )
+                selections = it.selections + newField
             )
         )
       } else {

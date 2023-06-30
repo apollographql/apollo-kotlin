@@ -199,6 +199,10 @@ The normalized cache must be configured before the auto persisted queries, confi
 
 The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/).
 
+`GQLSelectionSet` and `GQLArguments` are deprecated and removed from `GQLField`, `GQLInlineFragment` and other constructors. Use `.selections` directly
+
+`GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition
+
 ## Gradle configuration
 
 * Publishing is no longer configured automatically.

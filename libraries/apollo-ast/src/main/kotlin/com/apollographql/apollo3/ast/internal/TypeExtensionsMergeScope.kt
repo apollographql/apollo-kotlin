@@ -17,13 +17,11 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeExtension
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
-import com.apollographql.apollo3.ast.GQLTypeExtension
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeExtension
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.SourceLocation
-import com.apollographql.apollo3.ast.UnrecognizedAntlrRule
 
 
 internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>, extensions: List<GQLTypeSystemExtension>): List<GQLDefinition> {
@@ -174,7 +172,7 @@ private fun ValidationScope.merge(
 ): GQLSchemaDefinition = with(schemaDefinition) {
   return copy(
       directives = mergeDirectives(directives, extension.directives),
-      rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypesDefinition) { it.operationType }
+      rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypeDefinitions) { it.operationType }
   )
 }
 

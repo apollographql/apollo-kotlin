@@ -5,8 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
     ?.let {
       it.arguments
-          ?.arguments
-          ?.firstOrNull { it.name == "reason" }
+          .firstOrNull { it.name == "reason" }
           ?.value
           ?.let { value ->
             if (value !is GQLStringValue) {
@@ -21,8 +20,7 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
 fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { schema.originalDirectiveName(it.name) == Schema.REQUIRES_OPT_IN }
     .map {
       it.arguments
-          ?.arguments
-          ?.firstOrNull { it.name == "feature" }
+          .firstOrNull { it.name == "feature" }
           ?.value
           ?.let { value ->
             if (value !is GQLStringValue) {
@@ -41,8 +39,7 @@ fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { sche
 fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { schema.originalDirectiveName(it.name) == "targetName" }
     ?.let {
       it.arguments
-          ?.arguments
-          ?.firstOrNull { it.name == "name" }
+          .firstOrNull { it.name == "name" }
           ?.value
           ?.let { value ->
             if (value !is GQLStringValue) {
@@ -55,7 +52,7 @@ fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { s
 @ApolloInternal
 fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
   val directive = firstOrNull { (schema?.originalDirectiveName(it.name) ?: it.name) == Schema.OPTIONAL } ?: return null
-  val argument = directive.arguments?.arguments?.firstOrNull { it.name == "if" }
+  val argument = directive.arguments.firstOrNull { it.name == "if" }
   // "if" argument defaults to true
   return argument == null || argument.name == "if" && (argument.value as GQLBooleanValue).value
 }

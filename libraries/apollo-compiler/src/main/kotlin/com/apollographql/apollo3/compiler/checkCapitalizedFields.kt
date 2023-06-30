@@ -22,8 +22,8 @@ fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly:
 
   definitions.forEach { definition ->
     when {
-      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selectionSet.selections)
-      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selectionSet.selections)
+      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selections)
+      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selections)
     }
   }
 
@@ -53,15 +53,13 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
               sourceLocation = it.sourceLocation)
           )
         }
-        it.selectionSet?.let { selectionSet ->
-          checkCapitalizedFields(selectionSet.selections)
-        }
+        checkCapitalizedFields(it.selections)
       }
 
-      is GQLInlineFragment -> checkCapitalizedFields(it.selectionSet.selections)
+      is GQLInlineFragment -> checkCapitalizedFields(it.selections)
       // it might be that the fragment is defined in an upstream module. In that case, it is validated
       // already, no need to check it again
-      is GQLFragmentSpread -> fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selectionSet.selections) }
+      is GQLFragmentSpread -> fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selections) }
     }
   }
 }

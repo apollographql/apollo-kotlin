@@ -26,6 +26,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExten
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;
 	public abstract fun getLinkSqlite ()Lorg/gradle/api/provider/Property;
+	public abstract fun getUseAntlr ()Lorg/gradle/api/provider/Property;
 	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V
 }
 

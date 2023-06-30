@@ -35,8 +35,9 @@ internal fun collectFields(
     when (it) {
       is GQLField -> listOf(FieldWithParent(it, parentTypeDefinition))
       is GQLInlineFragment -> {
-        if (typeSet.contains(it.typeCondition.name)) {
-          collectFields(allFragmentDefinitions, it.selectionSet.selections, it.typeCondition.name, typeSet)
+        val tc = it.typeCondition?.name ?: parentTypeDefinition
+        if (typeSet.contains(tc)) {
+          collectFields(allFragmentDefinitions, it.selections, tc, typeSet)
         } else {
           emptyList()
         }
@@ -44,7 +45,7 @@ internal fun collectFields(
       is GQLFragmentSpread -> {
         val fragment = allFragmentDefinitions[it.name]!!
         if (typeSet.contains(fragment.typeCondition.name)) {
-          collectFields(allFragmentDefinitions, fragment.selectionSet.selections, fragment.typeCondition.name, typeSet)
+          collectFields(allFragmentDefinitions, fragment.selections, fragment.typeCondition.name, typeSet)
         } else {
           emptyList()
         }

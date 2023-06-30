@@ -19,6 +19,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("org.gradle.kotlin.embedded-kotlin", "org.gradle.kotlin.embedded-kotlin.gradle.plugin")
         includeModule("org.gradle.kotlin", "gradle-kotlin-dsl-plugins")
         includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
+        includeModule("org.jetbrains.kotlinx", "kotlinx-benchmark-plugin")
         includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         includeModule("com.gradle", "gradle-enterprise-gradle-plugin")

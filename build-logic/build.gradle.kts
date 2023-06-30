@@ -23,6 +23,7 @@ dependencies {
 
   implementation(golatac.lib("okhttp"))
 
+  implementation(golatac.lib("kotlinx.benchmark"))
   implementation(golatac.lib("dokka.plugin"))
   implementation(golatac.lib("dokka.base"))
 

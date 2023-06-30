@@ -3,7 +3,6 @@ package com.apollographql.apollo3.ast.introspection
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.ConversionException
 import com.apollographql.apollo3.ast.GQLArgument
-import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
@@ -178,9 +177,9 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     return listOf(
         GQLDirective(
             name = "deprecated",
-            arguments = GQLArguments(listOf(
+            arguments = listOf(
                 GQLArgument(name = "reason", value = GQLStringValue(value = deprecationReason))
-            ))
+            )
         )
     )
   }

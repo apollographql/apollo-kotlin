@@ -5,6 +5,9 @@ package com.apollographql.apollo3.ast
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
+import com.apollographql.apollo3.ast.internal.Parser
+import com.apollographql.apollo3.ast.internal.ParserException
+import com.apollographql.apollo3.ast.internal.ScannerException
 import com.apollographql.apollo3.ast.internal.antlrParse
 import com.apollographql.apollo3.ast.internal.toGQLDocument
 import com.apollographql.apollo3.ast.internal.toGQLSelection
@@ -12,6 +15,7 @@ import com.apollographql.apollo3.ast.internal.toGQLType
 import com.apollographql.apollo3.ast.internal.toGQLValue
 import com.apollographql.apollo3.ast.internal.validateSchema
 import okio.BufferedSource
+import java.nio.charset.Charset
 
 /**
  * Parses the source to a [Schema], throwing on parsing or validation errors.
@@ -32,6 +36,15 @@ fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = n
     .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
     .getOrThrow()
 
+private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Parser.() -> T): GQLResult<T>  = use { source ->
+  return try {
+    GQLResult(Parser(source.readString(Charset.forName("utf-8")), filePath).run(block), emptyList())
+  } catch (e: ParserException) {
+    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, filePath))))
+  } catch (e: ScannerException) {
+    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.line, e.column, filePath))))
+  }
+}
 /**
  * Parses the source to a [GQLDocument], validating the syntax but not the contents of the document.
  *
@@ -41,8 +54,12 @@ fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = n
  * @return a [GQLResult] with either a non-null [GQLDocument] or a list of issues.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLDocument(filePath: String? = null): GQLResult<GQLDocument> = use { source ->
-  return antlrParse(source, filePath, { it.document() }, { it.toGQLDocument(filePath) })
+fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true, useAntlr: Boolean = false): GQLResult<GQLDocument> {
+  return if (useAntlr) {
+    use { source -> antlrParse(source, filePath, { it.document() }, { it.toGQLDocument(filePath) }) }
+  } else {
+    parseInternal(filePath) { parseDocument(allowEmpty) }
+  }
 }
 
 /**

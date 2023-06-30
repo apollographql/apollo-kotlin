@@ -17,7 +17,7 @@ private class CheckKeyFieldsScope(
 
 fun checkKeyFields(operation: GQLOperationDefinition, schema: Schema, allFragmentDefinitions: Map<String, GQLFragmentDefinition>) {
   val parentType = operation.rootTypeDefinition(schema)!!.name
-  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Operation(${operation.name})", operation.selectionSet.selections, parentType)
+  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Operation(${operation.name})", operation.selections, parentType)
 }
 
 fun checkKeyFields(
@@ -25,7 +25,7 @@ fun checkKeyFields(
     schema: Schema,
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) {
-  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Fragment(${fragmentDefinition.name})", fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name)
+  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Fragment(${fragmentDefinition.name})", fragmentDefinition.selections, fragmentDefinition.typeCondition.name)
 }
 
 private fun CheckKeyFieldsScope.checkField(
@@ -61,7 +61,7 @@ private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQL
   mergedFields.forEach {
     val first = it.first()
     val rawTypeName = first.field.definitionFromScope(schema, first.parentType)!!.type.rawType().name
-    checkField(path + "." + first.field.name, it.flatMap { it.field.selectionSet?.selections ?: emptyList() }, rawTypeName)
+    checkField(path + "." + first.field.name, it.flatMap { it.field.selections }, rawTypeName)
   }
 }
 
@@ -92,7 +92,7 @@ private fun CheckKeyFieldsScope.collectFields(
           return@flatMap emptyList()
         }
 
-        collectFields(it.selectionSet.selections, it.typeCondition.name, implementedTypes)
+        collectFields(it.selections, it.typeCondition?.name ?: parentType, implementedTypes)
       }
       is GQLFragmentSpread -> {
         if (it.directives.hasCondition()) {
@@ -100,7 +100,7 @@ private fun CheckKeyFieldsScope.collectFields(
         }
 
         val fragmentDefinition = allFragmentDefinitions[it.name]!!
-        collectFields(fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name, implementedTypes)
+        collectFields(fragmentDefinition.selections, fragmentDefinition.typeCondition.name, implementedTypes)
       }
     }
   }
@@ -108,7 +108,7 @@ private fun CheckKeyFieldsScope.collectFields(
 
 private fun List<GQLDirective>?.hasCondition(): Boolean {
   return this?.any {
-    it.name == "skip" && (it.arguments!!.arguments.first().value as? GQLStringValue)?.value != "false"
-        || it.name == "include" && (it.arguments!!.arguments.first().value as? GQLStringValue)?.value != "true"
+    it.name == "skip" && (it.arguments.first().value as? GQLStringValue)?.value != "false"
+        || it.name == "include" && (it.arguments.first().value as? GQLStringValue)?.value != "true"
   } ?: false
 }

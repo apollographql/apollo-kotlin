@@ -22,9 +22,9 @@ internal fun GQLTypeDefinition.paginationArgs(
 
 private fun GQLTypeDefinition.fieldPolicyArgs(argumentName: String, fieldName: String, schema: Schema): Set<String> {
   return directives.filter { schema.originalDirectiveName(it.name) == Schema.FIELD_POLICY }.filter {
-    (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
+    (it.arguments.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }.value as GQLStringValue).value == fieldName
   }.flatMap {
-    val argValue = it.arguments?.arguments?.singleOrNull { it.name == argumentName }?.value ?: return emptySet()
+    val argValue = it.arguments.singleOrNull { it.name == argumentName }?.value ?: return emptySet()
 
     if (argValue !is GQLStringValue) {
       throw SourceAwareException("Apollo: no $argumentName found or wrong $argumentName type", it.sourceLocation)
@@ -37,7 +37,7 @@ private fun GQLTypeDefinition.fieldPolicyArgs(argumentName: String, fieldName: S
           if (it !is GQLField) {
             throw SourceAwareException("Apollo: fragments are not supported in $argumentName", it.sourceLocation)
           }
-          if (it.selectionSet != null) {
+          if (it.selections.isNotEmpty()) {
             throw SourceAwareException("Apollo: composite fields are not supported in $argumentName", it.sourceLocation)
           }
           it.name

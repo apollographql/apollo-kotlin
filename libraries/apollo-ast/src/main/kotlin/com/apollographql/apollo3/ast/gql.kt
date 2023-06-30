@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 /**
  * The GraphQL AST definition
  */
@@ -162,10 +164,21 @@ class GQLOperationDefinition(
     val name: String?,
     val variableDefinitions: List<GQLVariableDefinition>,
     val directives: List<GQLDirective>,
-    val selectionSet: GQLSelectionSet,
-    override val description: String?,
+    val selections: List<GQLSelection>,
+    override val description: String?, // spec extension
 ) : GQLExecutableDefinition, GQLDescribed {
-  override val children = variableDefinitions + directives + selectionSet
+  @Suppress("DEPRECATION")
+  @Deprecated("Use selections directly")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val selectionSet: GQLSelectionSet
+    get() {
+      return GQLSelectionSet(
+          sourceLocation = SourceLocation.UNKNOWN,
+          selections = selections
+      )
+    }
+
+  override val children = variableDefinitions + directives + selections
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
@@ -181,9 +194,9 @@ class GQLOperationDefinition(
         write(" ")
         directives.join(writer)
       }
-      if (selectionSet.selections.isNotEmpty()) {
+      if (selections.isNotEmpty()) {
         write(" ")
-        writer.write(selectionSet)
+        selections.writeSelections(writer)
       }
     }
   }
@@ -194,7 +207,7 @@ class GQLOperationDefinition(
       name: String? = this.name,
       variableDefinitions: List<GQLVariableDefinition> = this.variableDefinitions,
       directives: List<GQLDirective> = this.directives,
-      selectionSet: GQLSelectionSet = this.selectionSet,
+      selections: List<GQLSelection> = this.selections,
       description: String? = this.description,
   ): GQLOperationDefinition {
     return GQLOperationDefinition(
@@ -203,7 +216,7 @@ class GQLOperationDefinition(
         name = name,
         variableDefinitions = variableDefinitions,
         directives = directives,
-        selectionSet = selectionSet,
+        selections = selections,
         description = description,
     )
   }
@@ -212,7 +225,7 @@ class GQLOperationDefinition(
     return copy(
         variableDefinitions = container.take(),
         directives = container.take(),
-        selectionSet = container.take<GQLSelectionSet>().single(),
+        selections = container.take(),
     )
   }
 }
@@ -222,11 +235,21 @@ class GQLFragmentDefinition(
     override val name: String,
     val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,
-    val selectionSet: GQLSelectionSet,
-    override val description: String?,
+    val selections: List<GQLSelection>,
+    override val description: String?, // spec extension
 ) : GQLExecutableDefinition, GQLNamed, GQLDescribed {
+  @Suppress("DEPRECATION")
+  @Deprecated("Use selections directly")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val selectionSet: GQLSelectionSet
+    get() {
+      return GQLSelectionSet(
+          sourceLocation = SourceLocation.UNKNOWN,
+          selections = selections
+      )
+    }
 
-  override val children = directives + selectionSet + typeCondition
+  override val children = directives + selections + typeCondition
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
@@ -235,9 +258,9 @@ class GQLFragmentDefinition(
         write(" ")
         directives.join(writer)
       }
-      if (selectionSet.selections.isNotEmpty()) {
+      if (selections.isNotEmpty()) {
         write(" ")
-        writer.write(selectionSet)
+        selections.writeSelections(writer)
       }
     }
   }
@@ -247,7 +270,7 @@ class GQLFragmentDefinition(
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
       typeCondition: GQLNamedType = this.typeCondition,
-      selectionSet: GQLSelectionSet = this.selectionSet,
+      selections: List<GQLSelection> = this.selections,
       description: String? = this.description,
   ): GQLFragmentDefinition {
     return GQLFragmentDefinition(
@@ -255,7 +278,7 @@ class GQLFragmentDefinition(
         name = name,
         directives = directives,
         typeCondition = typeCondition,
-        selectionSet = selectionSet,
+        selections = selections,
         description = description,
     )
   }
@@ -264,7 +287,7 @@ class GQLFragmentDefinition(
     return copy(
         directives = container.take(),
         typeCondition = container.take<GQLNamedType>().single(),
-        selectionSet = container.take<GQLSelectionSet>().single(),
+        selections = container.take(),
     )
   }
 }
@@ -364,14 +387,12 @@ class GQLInterfaceTypeDefinition(
         write(" ")
         directives.join(writer)
       }
-      if (fields.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        fields.join(writer, separator = "\n\n")
-        unindent()
-        write("\n}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      fields.join(writer, separator = "\n\n")
+      unindent()
+      write("\n}\n")
     }
   }
 
@@ -570,14 +591,12 @@ class GQLEnumTypeDefinition(
         write(" ")
         directives.join(writer)
       }
-      if (enumValues.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        enumValues.join(writer, separator = "\n")
-        unindent()
-        write("}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      enumValues.join(writer, separator = "\n")
+      unindent()
+      write("}\n")
     }
   }
 
@@ -657,7 +676,6 @@ class GQLDirectiveDefinition(
     val repeatable: Boolean,
     val locations: List<GQLDirectiveLocation>,
 ) : GQLDefinition, GQLNamed {
-
   override val children: List<GQLNode> = arguments
 
   override fun writeInternal(writer: SDLWriter) {
@@ -714,10 +732,10 @@ class GQLDirectiveDefinition(
 class GQLSchemaExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val directives: List<GQLDirective>,
-    val operationTypesDefinition: List<GQLOperationTypeDefinition>,
+    val operationTypeDefinitions: List<GQLOperationTypeDefinition>,
 ) : GQLDefinition, GQLTypeSystemExtension {
 
-  override val children = directives + operationTypesDefinition
+  override val children = directives + operationTypeDefinitions
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
@@ -726,22 +744,24 @@ class GQLSchemaExtension(
         directives.join(writer)
         write(" ")
       }
-      write("{\n")
-      indent()
-      operationTypesDefinition.join(writer, separator = "")
-      unindent()
-      write("}\n")
+      if (operationTypeDefinitions.isNotEmpty()) {
+        write("{\n")
+        indent()
+        operationTypeDefinitions.join(writer, separator = "")
+        unindent()
+        write("}\n")
+      }
     }
   }
 
   fun copy(
       sourceLocation: SourceLocation = this.sourceLocation,
       directives: List<GQLDirective> = this.directives,
-      operationTypesDefinition: List<GQLOperationTypeDefinition> = this.operationTypesDefinition,
+      operationTypesDefinition: List<GQLOperationTypeDefinition> = this.operationTypeDefinitions,
   ): GQLSchemaExtension = GQLSchemaExtension(
       sourceLocation = sourceLocation,
       directives = directives,
-      operationTypesDefinition = operationTypesDefinition,
+      operationTypeDefinitions = operationTypesDefinition,
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
@@ -769,11 +789,13 @@ class GQLEnumTypeExtension(
         directives.join(writer)
       }
       write(" ")
-      write("{\n")
-      indent()
-      enumValues.join(writer, separator = "\n")
-      unindent()
-      write("}\n")
+      if (enumValues.isNotEmpty()) {
+        write("{\n")
+        indent()
+        enumValues.join(writer, separator = "\n")
+        unindent()
+        write("}\n")
+      }
     }
   }
 
@@ -818,12 +840,14 @@ class GQLObjectTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
-      write("{\n")
-      indent()
-      fields.join(writer, separator = "\n\n")
-      unindent()
-      write("\n}\n")
+      if (fields.isNotEmpty()) {
+        write(" ")
+        write("{\n")
+        indent()
+        fields.join(writer, separator = "\n\n")
+        unindent()
+        write("\n}\n")
+      }
     }
   }
 
@@ -865,12 +889,14 @@ class GQLInputObjectTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
-      write("{\n")
-      indent()
-      inputFields.join(writer, separator = "\n")
-      unindent()
-      write("}\n")
+      if (inputFields.isNotEmpty()) {
+        write(" ")
+        write("{\n")
+        indent()
+        inputFields.join(writer, separator = "\n")
+        unindent()
+        write("}\n")
+      }
     }
   }
 
@@ -951,12 +977,14 @@ class GQLInterfaceTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
-      write("{\n")
-      indent()
-      fields.join(writer, separator = "\n\n")
-      unindent()
-      write("\n}\n")
+      if (fields.isNotEmpty()) {
+        write(" ")
+        write("{\n")
+        indent()
+        fields.join(writer, separator = "\n\n")
+        unindent()
+        write("\n}\n")
+      }
     }
   }
 
@@ -1283,16 +1311,16 @@ class GQLOperationTypeDefinition(
 class GQLDirective(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
-    val arguments: GQLArguments?,
+    val arguments: List<GQLArgument>,
 ) : GQLNode, GQLNamed {
 
-  override val children = listOfNotNull(arguments)
+  override val children = arguments
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("@$name")
-      if (arguments != null) {
-        writer.write(arguments)
+      if (arguments.isNotEmpty()) {
+        arguments.writeArguments(writer)
       }
     }
   }
@@ -1300,7 +1328,7 @@ class GQLDirective(
   fun copy(
       sourceLocation: SourceLocation = this.sourceLocation,
       name: String = this.name,
-      arguments: GQLArguments? = this.arguments,
+      arguments: List<GQLArgument> = this.arguments,
   ): GQLDirective {
     return GQLDirective(
         sourceLocation = sourceLocation,
@@ -1311,7 +1339,7 @@ class GQLDirective(
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
-        arguments = container.takeSingle()
+        arguments = container.take()
     )
   }
 }
@@ -1384,6 +1412,8 @@ class GQLArgument(
   }
 }
 
+@Deprecated("For brevity, GQLSelectionSet has been removed. Use `selections` directly")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLSelectionSet(
     val selections: List<GQLSelection>,
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
@@ -1391,15 +1421,10 @@ class GQLSelectionSet(
   override val children = selections
 
   override fun writeInternal(writer: SDLWriter) {
-    with(writer) {
-      write("{\n")
-      indent()
-      selections.join(writer, separator = "")
-      unindent()
-      write("}\n")
-    }
+    selections.writeSelections(writer)
   }
 
+  @Suppress("DEPRECATION")
   fun copy(
       selections: List<GQLSelection> = this.selections,
       sourceLocation: SourceLocation = this.sourceLocation,
@@ -1417,6 +1442,8 @@ class GQLSelectionSet(
   }
 }
 
+@Deprecated("For brevity, GQLArguments has been removed. Use `arguments` directly")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLArguments(
     val arguments: List<GQLArgument>,
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
@@ -1427,6 +1454,7 @@ class GQLArguments(
     arguments.join(writer, prefix = "(", separator = ", ", postfix = ")")
   }
 
+  @Suppress("DEPRECATION")
   fun copy(
       arguments: List<GQLArgument> = this.arguments,
       sourceLocation: SourceLocation = this.sourceLocation,
@@ -1444,16 +1472,46 @@ class GQLArguments(
   }
 }
 
+private fun List<GQLSelection>.writeSelections(writer: SDLWriter) {
+  if (isEmpty()) {
+    return
+  }
+  with(writer) {
+    write("{\n")
+    indent()
+    join(writer, separator = "")
+    unindent()
+    write("}\n")
+  }
+}
+
+private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
+  if (isEmpty()) {
+    return
+  }
+  join(writer, prefix = "(", separator = ", ", postfix = ")")
+}
+
 class GQLField(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val alias: String?,
     val name: String,
-    val arguments: GQLArguments?,
+    val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
-    val selectionSet: GQLSelectionSet?,
+    val selections: List<GQLSelection>,
 ) : GQLSelection() {
+  @Suppress("DEPRECATION")
+  @Deprecated("Use selections directly")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val selectionSet: GQLSelectionSet
+    get() {
+      return GQLSelectionSet(
+          sourceLocation = SourceLocation.UNKNOWN,
+          selections = selections
+      )
+    }
 
-  override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments) + directives
+  override val children: List<GQLNode> = selections + arguments + directives
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
@@ -1461,16 +1519,16 @@ class GQLField(
         write("$alias: ")
       }
       write(name)
-      if (arguments != null) {
-        writer.write(arguments)
+      if (arguments.isNotEmpty()) {
+        arguments.writeArguments(writer)
       }
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
       }
-      if (selectionSet != null) {
+      if (selections.isNotEmpty()) {
         write(" ")
-        writer.write(selectionSet)
+        selections.writeSelections(writer)
       } else {
         write("\n")
       }
@@ -1481,22 +1539,22 @@ class GQLField(
       sourceLocation: SourceLocation = this.sourceLocation,
       alias: String? = this.alias,
       name: String = this.name,
-      arguments: GQLArguments? = this.arguments,
+      arguments: List<GQLArgument> = this.arguments,
       directives: List<GQLDirective> = this.directives,
-      selectionSet: GQLSelectionSet? = this.selectionSet,
+      selections: List<GQLSelection> = this.selections,
   ) = GQLField(
       sourceLocation = sourceLocation,
       alias = alias,
       name = name,
       arguments = arguments,
       directives = directives,
-      selectionSet = selectionSet,
+      selections = selections,
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
-        selectionSet = container.takeSingle(),
-        arguments = container.takeSingle(),
+        selections = container.take(),
+        arguments = container.take(),
         directives = container.take(),
     )
   }
@@ -1504,44 +1562,57 @@ class GQLField(
 
 class GQLInlineFragment(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val typeCondition: GQLNamedType,
+    val typeCondition: GQLNamedType?,
     val directives: List<GQLDirective>,
-    val selectionSet: GQLSelectionSet,
+    val selections: List<GQLSelection>,
 ) : GQLSelection() {
+  @Suppress("DEPRECATION")
+  @Deprecated("Use selections directly")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val selectionSet: GQLSelectionSet
+    get() {
+      return GQLSelectionSet(
+          sourceLocation = SourceLocation.UNKNOWN,
+          selections = selections
+      )
+    }
 
-  override val children = directives + selectionSet + typeCondition
+  override val children = directives + selections + listOfNotNull(typeCondition)
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
-      write("... on ${typeCondition.name}")
+      write("...")
+      if (typeCondition != null) {
+        write(" on ${typeCondition.name}")
+      }
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
       }
-      if (selectionSet.selections.isNotEmpty()) {
+      if (selections.isNotEmpty()) {
         write(" ")
-        writer.write(selectionSet)
+        selections.writeSelections(writer)
       }
     }
   }
 
   fun copy(
       sourceLocation: SourceLocation = this.sourceLocation,
-      typeCondition: GQLNamedType = this.typeCondition,
+      typeCondition: GQLNamedType? = this.typeCondition,
       directives: List<GQLDirective> = this.directives,
-      selectionSet: GQLSelectionSet = this.selectionSet,
+      selections: List<GQLSelection> = this.selections,
   ) = GQLInlineFragment(
       sourceLocation = sourceLocation,
       typeCondition = typeCondition,
       directives = directives,
-      selectionSet = selectionSet,
+      selections = selections,
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        selectionSet = container.takeSingle()!!,
-        typeCondition = container.takeSingle()!!,
+        selections = container.take(),
+        typeCondition = container.takeSingle(),
     )
   }
 }

@@ -1,2 +1,2 @@
 ERROR: ParsingError (2:23)
-Unsupported token `{`
+Unexpected token: '{'

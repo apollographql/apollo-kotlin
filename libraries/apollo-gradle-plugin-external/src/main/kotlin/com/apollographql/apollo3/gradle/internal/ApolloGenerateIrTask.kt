@@ -71,6 +71,10 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
   @get:OutputFile
   abstract val outputFile: RegularFileProperty
 
+  @get:Input
+  @get:Optional
+  abstract val useAntlr: Property<Boolean>
+
   @TaskAction
   fun taskAction() {
     val irOperations = upstreamIrFiles.map { it.absolutePath to it.toIrOperations() }
@@ -88,6 +92,7 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.get(),
+        useAntlr = useAntlr.getOrElse(false)
     )
 
     ApolloCompiler.buildIrOperations(options).writeTo(outputFile.asFile.get())
