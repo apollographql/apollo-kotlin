@@ -90,7 +90,7 @@
                      level="WEAK WARNING"
     />
 
-    <!-- TODO -->
+    <!-- "Schema in .graphql file" inspection -->
     <!--suppress PluginXmlCapitalization -->
     <localInspection language="GraphQL"
                      implementationClass="com.apollographql.ijplugin.inspection.ApolloSchemaInGraphqlFileInspection"
