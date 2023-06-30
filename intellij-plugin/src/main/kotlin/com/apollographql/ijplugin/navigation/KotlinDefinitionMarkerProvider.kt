@@ -21,7 +21,7 @@ class KotlinDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
   override fun getIcon() = ApolloIcons.Gutter.GraphQL
 
   override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-    if (!element.project.apolloProjectService.isApolloKotlin3Project) return
+    if (!element.project.apolloProjectService.apolloVersion.isAtLeastV3) return
 
     val nameReferenceExpression = element as? KtNameReferenceExpression ?: return
     val psiLeaf = PsiTreeUtil.getDeepestFirst(element)

@@ -26,7 +26,7 @@ import com.intellij.psi.PsiElement
 class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
     val gqlElement = sourceElement?.parent?.parent as? GraphQLElement ?: return null
-    if (!gqlElement.project.apolloProjectService.isApolloKotlin3Project) return null
+    if (!gqlElement.project.apolloProjectService.apolloVersion.isAtLeastV3) return null
 
     val kotlinDefinitions = when (gqlElement) {
       is GraphQLTypedOperationDefinition -> {

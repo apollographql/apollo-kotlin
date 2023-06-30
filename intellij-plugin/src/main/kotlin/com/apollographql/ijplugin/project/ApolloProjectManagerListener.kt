@@ -19,7 +19,7 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
     // Initialize all services on project open.
     // But wait for 'smart mode' to do it.
     DumbService.getInstance(project).runWhenSmart {
-      logd("isApolloKotlin3Project=" + project.apolloProjectService.isApolloKotlin3Project)
+      logd("apolloVersion=" + project.apolloProjectService.apolloVersion)
       project.service<ApolloCodegenService>()
       project.service<GradleToolingModelService>()
       project.service<SettingsService>()

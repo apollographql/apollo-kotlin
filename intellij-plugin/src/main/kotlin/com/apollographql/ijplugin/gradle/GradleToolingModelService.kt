@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.gradle
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.ApolloProjectListener
+import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
 import com.apollographql.ijplugin.settings.SettingsState
@@ -56,15 +57,15 @@ class GradleToolingModelService(
   private fun startObserveApolloProject() {
     logd()
     project.messageBus.connect(this).subscribe(ApolloProjectListener.TOPIC, object : ApolloProjectListener {
-      override fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean) {
-        logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
+      override fun apolloProjectChanged(apolloVersion: ApolloProjectService.ApolloVersion) {
+        logd("apolloVersion=$apolloVersion")
         startOrStopObserveGradleHasSynced()
         startOrAbortFetchToolingModels()
       }
     })
   }
 
-  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project &&
+  private fun shouldFetchToolingModels() = project.apolloProjectService.apolloVersion.isAtLeastV4 &&
       project.settingsState.contributeConfigurationToGraphqlPlugin
 
   private fun startOrStopObserveGradleHasSynced() {

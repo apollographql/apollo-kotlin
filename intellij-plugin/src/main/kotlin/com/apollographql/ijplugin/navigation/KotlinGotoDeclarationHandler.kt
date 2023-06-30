@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 class KotlinGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
     if (sourceElement == null) return null
-    if (!sourceElement.project.apolloProjectService.isApolloKotlin3Project) return null
+    if (!sourceElement.project.apolloProjectService.apolloVersion.isAtLeastV3) return null
 
     val nameReferenceExpression = sourceElement.parent as? KtNameReferenceExpression ?: return null
     val psiLeaf = PsiTreeUtil.getDeepestFirst(sourceElement)

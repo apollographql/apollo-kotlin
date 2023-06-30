@@ -34,7 +34,7 @@ class GraphQLCustomUsageSearcher : CustomUsageSearcher() {
     if (element !is GraphQLElement) return
 
     runReadAction {
-      if (!element.project.apolloProjectService.isApolloKotlin3Project) return@runReadAction
+      if (!element.project.apolloProjectService.apolloVersion.isAtLeastV3) return@runReadAction
 
       var isProperty = false
       val kotlinDefinitions = when (val parent = element.parent) {

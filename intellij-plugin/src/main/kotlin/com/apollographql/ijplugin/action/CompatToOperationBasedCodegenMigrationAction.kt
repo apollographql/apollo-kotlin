@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.action
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.project.ApolloProjectService.ApolloVersion
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.refactoring.migration.compattooperationbased.CompatToOperationBasedCodegenMigrationProcessor
 import com.apollographql.ijplugin.util.logd
@@ -16,6 +17,7 @@ class CompatToOperationBasedCodegenMigrationAction : AnAction() {
     val okCancelResult = Messages.showOkCancelDialog(
         e.project,
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.message"),
+        @Suppress("DialogTitleCapitalization")
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.title"),
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.ok"),
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.cancel"),
@@ -28,7 +30,7 @@ class CompatToOperationBasedCodegenMigrationAction : AnAction() {
   }
 
   override fun update(e: AnActionEvent) {
-    e.presentation.isEnabled = e.project?.apolloProjectService?.isApolloKotlin3Project == true
+    e.presentation.isEnabled = e.project?.apolloProjectService?.apolloVersion == ApolloVersion.V3
     e.presentation.isVisible = !ActionPlaces.isPopupPlace(e.place)
   }
 
