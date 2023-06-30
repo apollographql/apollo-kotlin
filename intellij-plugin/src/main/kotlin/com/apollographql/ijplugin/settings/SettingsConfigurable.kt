@@ -10,24 +10,27 @@ class SettingsConfigurable(private val project: Project) : Configurable {
   override fun getDisplayName() = "Apollo GraphQL"
 
   override fun createComponent(): JComponent {
-    val settingsComponent = SettingsComponent()
+    val settingsComponent = SettingsComponent(project)
     this.settingsComponent = settingsComponent
     return settingsComponent.panel
   }
 
   override fun isModified(): Boolean {
     return settingsComponent!!.automaticCodegenTriggering != project.settingsState.automaticCodegenTriggering ||
-        settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.settingsState.contributeConfigurationToGraphqlPlugin
+        settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.settingsState.contributeConfigurationToGraphqlPlugin ||
+        settingsComponent!!.apolloKotlinServiceConfigurations != project.settingsState.apolloKotlinServiceConfigurations
   }
 
   override fun apply() {
     project.settingsState.automaticCodegenTriggering = settingsComponent!!.automaticCodegenTriggering
     project.settingsState.contributeConfigurationToGraphqlPlugin = settingsComponent!!.contributeConfigurationToGraphqlPlugin
+    project.settingsState.apolloKotlinServiceConfigurations = settingsComponent!!.apolloKotlinServiceConfigurations
   }
 
   override fun reset() {
     settingsComponent!!.automaticCodegenTriggering = project.settingsState.automaticCodegenTriggering
     settingsComponent!!.contributeConfigurationToGraphqlPlugin = project.settingsState.contributeConfigurationToGraphqlPlugin
+    settingsComponent!!.apolloKotlinServiceConfigurations = project.settingsState.apolloKotlinServiceConfigurations
   }
 
   override fun getPreferredFocusedComponent() = settingsComponent!!.preferredFocusedComponent

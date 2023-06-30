@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.graphql
 
+import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.logd
@@ -25,21 +26,21 @@ class ApolloGraphQLConfigContributor : GraphQLConfigContributor {
             dir = projectDir,
             file = null,
             rawData = GraphQLRawConfig(
-                projects = project.service<GradleToolingModelService>().graphQLProjectFiles.map { graphQLProjectFiles ->
-                  graphQLProjectFiles.name to graphQLProjectFiles.toGraphQLRawProjectConfig()
+                projects = project.service<GradleToolingModelService>().apolloKotlinServices.map { apolloKotlinService ->
+                  apolloKotlinService.id.toString() to apolloKotlinService.toGraphQLRawProjectConfig()
                 }.toMap()
             )
         )
     )
   }
 
-  private fun GraphQLProjectFiles.toGraphQLRawProjectConfig() = GraphQLRawProjectConfig(
+  private fun ApolloKotlinService.toGraphQLRawProjectConfig() = GraphQLRawProjectConfig(
       schema = schemaPaths.map { GraphQLRawSchemaPointer(it) },
       include = operationPaths.map { "$it/*.graphql" },
       extensions = endpointUrl?.let {
         mapOf(
             GraphQLConfigKeys.EXTENSION_ENDPOINTS to mapOf(
-                name to buildMap {
+                serviceName to buildMap {
                   put(GraphQLConfigKeys.EXTENSION_ENDPOINT_URL, endpointUrl)
                   if (endpointHeaders != null) {
                     put(GraphQLConfigKeys.HEADERS, endpointHeaders)

@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.graphql
 
+import com.apollographql.ijplugin.gradle.ApolloKotlinServiceListener
 import com.apollographql.ijplugin.util.logd
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.openapi.Disposable
@@ -11,8 +12,8 @@ class GraphQLConfigService(
 ) : Disposable {
   init {
     logd("project=${project.name}")
-    project.messageBus.connect(this).subscribe(GraphQLProjectFilesListener.TOPIC, object : GraphQLProjectFilesListener {
-      override fun projectFilesAvailable() {
+    project.messageBus.connect(this).subscribe(ApolloKotlinServiceListener.TOPIC, object : ApolloKotlinServiceListener {
+      override fun apolloKotlinServicesAvailable() {
         logd("Calling scheduleConfigurationReload")
         project.service<GraphQLConfigProvider>().scheduleConfigurationReload()
       }
