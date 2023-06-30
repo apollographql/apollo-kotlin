@@ -90,6 +90,17 @@
                      level="WEAK WARNING"
     />
 
+    <!-- TODO -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection language="GraphQL"
+                     implementationClass="com.apollographql.ijplugin.inspection.ApolloSchemaInGraphqlFileInspection"
+                     groupPathKey="inspection.group.graphql"
+                     groupKey="inspection.group.graphql.apolloKotlin"
+                     key="inspection.schemaInGraphqlFile.displayName"
+                     enabledByDefault="true"
+                     level="ERROR"
+    />
+
     <!-- Fields insights service (fetch and cache data) -->
     <projectService serviceImplementation="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService" />
 
