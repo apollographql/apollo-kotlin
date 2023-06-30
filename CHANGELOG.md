@@ -9,7 +9,7 @@ _2023-06-30_
 
 You can now navigate from Kotlin both GraphQL or Generated code:
 
-https://www.apollographql.com/blog/static/2c821de0846796c314e319672a800916/03-go-to-declaration.mov
+https://github.com/apollographql/apollo-kotlin/assets/3974977/acd4bf34-db35-4442-a7af-b6151701620c
 
 See [blog the blog post](https://www.apollographql.com/blog/mobile/kotlin/announcing-the-apollo-kotlin-plugin-for-android-studio-and-intellij-idea/) and [installation instructions](https://github.com/apollographql/apollo-kotlin/blob/main/intellij-plugin/README.md#installation-instructions) for more information.
 
