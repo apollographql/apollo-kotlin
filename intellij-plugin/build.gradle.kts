@@ -76,7 +76,7 @@ tasks {
 
     changeNotes.set(
         if (isSnapshotBuild()) {
-          "Snapshot builds contain the latest changes from the <code>main</code> branch."
+          "Weekly snapshot builds contain the latest changes from the <code>main</code> branch."
         } else {
           "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/v${project.version}\">release notes</a>."
         }
@@ -181,7 +181,7 @@ tasks.register("updatePluginsXml") {
               url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
               version="$version">
             <idea-version since-build="$pluginSinceBuild" until-build="$pluginUntilBuild"/>
-            <name>Apollo GraphQL (Snapshot)</name>
+            <name>Apollo GraphQL (Weekly Snapshots)</name>
           </plugin>
         </plugins>
         """.trimIndent()
