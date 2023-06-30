@@ -1,6 +1,54 @@
 Change Log
 ==========
 
+# Version 4.0.0-alpha.2
+
+_2023-06-30_
+
+## 🧩Navigate to GraphQL
+
+You can now navigate from Kotlin both GraphQL or Generated code:
+
+![GraphQL navigation](https://www.apollographql.com/blog/static/2c821de0846796c314e319672a800916/03-go-to-declaration.mov)
+
+See [blog the blog post](https://www.apollographql.com/blog/mobile/kotlin/announcing-the-apollo-kotlin-plugin-for-android-studio-and-intellij-idea/) and [installation instructions](https://github.com/apollographql/apollo-kotlin/blob/main/intellij-plugin/README.md#installation-instructions) for more information.
+
+## 🧩Field insights
+
+You can now connect the IJ/AS plugin to your GraphOS account. If your backend is configured to report field traces, the plugin will display a warning for expensive fields that may be slow to fetch.
+
+![Field insights](https://github.com/apollographql/apollo-kotlin/assets/3974977/efb9e813-bcc4-4b0f-99ed-f32257c28b14)
+
+You can configure it in your IJ/AS settings `Languages & Frameworks` -> `GraphQL` -> `Apollo Kotlin`. See also [#5048](https://github.com/apollographql/apollo-kotlin/pull/5048) for a video of the setup.
+
+## 🌐`@jsExport`
+
+`responseBased` codegen can now generate models annotated with [@jsExport](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.js/-js-export/). This allows to fetch your response using faster JS-only APIs and cast them to the generated models. See [the JS interoperability documentation](https://www.apollographql.com/docs/kotlin/v4/advanced/js-interop#jsexport) for more information. Many thanks to @baconz for the deep dive 💙
+
+## 👷‍ All changes
+
+* [IJ plugin] FieldInsights (#5034)
+* [IJ plugin] Keep navigation working when using import aliases for operations and fragments (#5041)
+* [IJ plugin] Make navigation more robust when gql elements are lowercase (#5037)
+* Refactor custom scalar adapters (#4905)
+* [IJ plugin] Add an 'Open in Apollo Sandbox' action (#5022)
+* [IJ plugin] Update v3 version and codegen wording (#5015)
+* add encodeDefaults to introspection schema serializer (#5016)
+* Better error message for Kotlin objects that cannot be converted to JSON (#5011)
+* Http cache: do not cache mutations (#5014)
+* [IJ plugin] Find usages GQL -> Kotlin (#5006)
+* [IJ plugin] Add GQL -> generated Kotlin navigation (#4999)
+* [IJ plugin] Override GraphQL icons (#4980)
+* add `Service.operationManifestFormat` (#4981)
+* [WebSockets] Fix fan out in websocket network transport (#4972)
+* Throw inside flow in MapTestNetworkTransport (#4982)
+* [IJ plugin] Add navigation to type declaration (cmd shift b) (#4978)
+* [IJ plugin] Add navigation to input types / fields (#4968)
+* Fix jsExport Gradle annotation mismatch (#4975)
+* Generate response based code with jsExport (#4907)
+* [IJ plugin] Navigate to enum declaration (#4965)
+* remove Built-By attribute in generated jars (#4961)
+
 # Version 3.8.2
 
 _2023-05-25_
