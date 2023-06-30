@@ -46,8 +46,7 @@ Then:
 
 <img src="assets/instructions-3-search-and-install.png" width="600" />
 
-### Snapshots
+### Weekly snapshots
 
-Latest development changes are available in a specific **snapshots** repository. To use it, follow the instructions
-above with this repository URL
-instead: <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>.
+The plugin is published every Sunday in a specific **snapshots** repository. To use it, follow the instructions
+above with this repository URL instead: <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>.
