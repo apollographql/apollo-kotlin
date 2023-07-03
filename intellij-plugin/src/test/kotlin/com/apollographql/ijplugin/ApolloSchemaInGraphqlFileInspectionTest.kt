@@ -25,8 +25,8 @@ class ApolloSchemaInGraphqlFileInspectionTest : ApolloTestCase() {
   fun testInspection() {
     myFixture.configureByFile("SchemaInGraphqlFile.graphql")
     val highlightInfos = myFixture.doHighlighting()
-    assertTrue(highlightInfos.any { it.description == "Schema definitions must reside in a .graphqls file" })
-    val quickFixAction = myFixture.findSingleIntention("Rename file with .graphqls extension");
+    assertTrue(highlightInfos.any { it.description == "The Apollo Kotlin compiler requires type definitions to reside in a .graphqls file" })
+    val quickFixAction = myFixture.findSingleIntention("Rename file to SchemaInGraphqlFile.graphqls");
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
     TestCase.assertEquals("SchemaInGraphqlFile.graphqls", myFixture.editor.cast<EditorEx>()!!.virtualFile.name)

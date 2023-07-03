@@ -14,8 +14,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 
 class ApolloSchemaInGraphqlFileInspection : LocalInspectionTool() {
-  private val quickFix = RenameToGraphqlsQuickFix()
-
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitSchemaDefinition(o: GraphQLSchemaDefinition) {
@@ -31,15 +29,19 @@ class ApolloSchemaInGraphqlFileInspection : LocalInspectionTool() {
       }
 
       private fun checkForInvalidFile(o: GraphQLElement) {
-        if (o.containingFile.name.endsWith(".graphql")) {
-          holder.registerProblem(o, ApolloBundle.message("inspection.schemaInGraphqlFile.reportText"), quickFix)
+        val currentFileName = o.containingFile.name
+        if (currentFileName.endsWith(".graphql")) {
+          holder.registerProblem(o, ApolloBundle.message("inspection.schemaInGraphqlFile.reportText"), RenameToGraphqlsQuickFix(currentFileName))
         }
       }
     }
   }
 
-  private class RenameToGraphqlsQuickFix : LocalQuickFix {
-    override fun getName() = ApolloBundle.message("inspection.schemaInGraphqlFile.quickFix")
+  private class RenameToGraphqlsQuickFix(private val currentFileName: String) : LocalQuickFix {
+    override fun getName(): String {
+      val newFileName = currentFileName.replace(".graphql", ".graphqls")
+      return ApolloBundle.message("inspection.schemaInGraphqlFile.quickFix", newFileName)
+    }
     override fun getFamilyName() = name
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
