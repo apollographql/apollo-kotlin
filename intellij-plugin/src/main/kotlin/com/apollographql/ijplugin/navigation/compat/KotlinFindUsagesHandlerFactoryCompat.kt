@@ -15,12 +15,11 @@ class KotlinFindUsagesHandlerFactoryCompat(project: Project) : FindUsagesHandler
     // Try with the recent version first (changed package since platform 231)
     Class.forName(POST_231_CLASS_NAME)
   }
-      .onFailure { logw(it, "Could not load $POST_231_CLASS_NAME") }
       .recoverCatching {
         // Fallback to the old version
         Class.forName(PRE_231_CLASS_NAME)
       }
-      .onFailure { logw(it, "Could not load <231 KotlinFindUsagesHandlerFactory") }
+      .onFailure { logw(it, "Could not load either $POST_231_CLASS_NAME nor $PRE_231_CLASS_NAME") }
       .getOrNull()
 
   private val delegate: FindUsagesHandlerFactory? = delegateClass?.let { it.getConstructor(Project::class.java).newInstance(project) as FindUsagesHandlerFactory }

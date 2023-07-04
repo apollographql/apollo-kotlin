@@ -101,6 +101,18 @@
                      level="WARNING"
     />
 
+    <!-- Unused operation inspection -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection language="GraphQL"
+                     implementationClass="com.apollographql.ijplugin.inspection.ApolloUnusedOperationInspection"
+                     groupPathKey="inspection.group.graphql"
+                     groupKey="inspection.group.graphql.apolloKotlin"
+                     key="inspection.unusedOperation.displayName"
+                     enabledByDefault="true"
+                     level="WARNING"
+                     editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
+    />
+
     <!-- Fields insights service (fetch and cache data) -->
     <projectService
         serviceInterface="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService"
