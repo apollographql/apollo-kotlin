@@ -98,7 +98,7 @@
                      groupKey="inspection.group.graphql.apolloKotlin"
                      key="inspection.schemaInGraphqlFile.displayName"
                      enabledByDefault="true"
-                     level="ERROR"
+                     level="WARNING"
     />
 
     <!-- Fields insights service (fetch and cache data) -->
