@@ -21,12 +21,12 @@ import com.intellij.lang.jsgraphql.psi.GraphQLSelectionSetOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.findParentOfType
+import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import kotlin.math.roundToInt
 
 class ApolloFieldInsightsInspection : LocalInspectionTool() {
@@ -36,7 +36,7 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitIdentifier(o: GraphQLIdentifier) {
-        if (!o.project.service<FieldInsightsService>().hasLatencies()) return
+        if (!o.project.fieldInsightsService.hasLatencies()) return
         val latency = getLatency(o) ?: return
         val field = o.parent as? GraphQLField ?: return
         if (field.isDeferred()) return
@@ -44,7 +44,7 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
       }
 
       override fun visitFieldDefinition(o: GraphQLFieldDefinition) {
-        if (!o.project.service<FieldInsightsService>().hasLatencies()) return
+        if (!o.project.fieldInsightsService.hasLatencies()) return
         val latency = getLatency(o) ?: return
         reportIfHighLatency(o, o.name ?: "", latency, withQuickFix = false)
       }
@@ -77,7 +77,7 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
     val typeName = typeDefinition.findChildrenOfType<GraphQLTypeNameDefinition>().firstOrNull()?.name ?: return null
     val fieldName = fieldDefinition.name ?: return null
     val serviceId = fieldDefinition.containingFile.getApolloKotlinServiceId() ?: return null
-    return fieldDefinition.project.service<FieldInsightsService>().getLatency(serviceId, typeName, fieldName)
+    return fieldDefinition.project.fieldInsightsService.getLatency(serviceId, typeName, fieldName)
   }
 
   private fun GraphQLField.isDeferred(): Boolean {
@@ -85,6 +85,7 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
   }
 
   private fun PsiFile.getApolloKotlinServiceId(): ApolloKotlinService.Id? {
+    if (isUnitTestMode()) return ApolloKotlinService.Id("dummy", "dummy")
     val config: GraphQLProjectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(this)
         ?: return null
     return ApolloKotlinService.Id.fromString(config.name)

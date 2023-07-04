@@ -7,7 +7,6 @@ import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.ui.Messages
 
@@ -32,8 +31,7 @@ class RefreshFieldInsightsAction : AnAction() {
       return
     }
 
-    val fieldInsightsService = project.service<FieldInsightsService>()
-    fieldInsightsService.fetchLatencies()
+    project.fieldInsightsService.fetchLatencies()
   }
 
   override fun getActionUpdateThread() = ActionUpdateThread.BGT

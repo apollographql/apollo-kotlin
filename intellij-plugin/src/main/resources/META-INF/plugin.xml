@@ -102,7 +102,10 @@
     />
 
     <!-- Fields insights service (fetch and cache data) -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService" />
+    <projectService
+        serviceInterface="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService"
+        serviceImplementation="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsServiceImpl"
+    />
 
   </extensions>
 
