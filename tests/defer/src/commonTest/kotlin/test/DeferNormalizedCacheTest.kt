@@ -7,10 +7,13 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -21,6 +24,7 @@ import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
+import defer.SimpleDeferQuery
 import defer.WithFragmentSpreadsMutation
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
@@ -29,7 +33,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -456,4 +464,17 @@ class DeferNormalizedCacheTest {
     assertEquals("Apollo: optimistic updates can only be applied with one network response", exception.message)
   }
 
+  @Test
+  fun intermediatePayloadsAreCached() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val jsonList = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
+    )
+    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = 100)
+    val recordFields = apolloClient.query(SimpleDeferQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().map {
+      apolloClient.apolloStore.accessCache { it.loadRecord("computers.0", CacheHeaders.NONE)!!.fields }
+    }.toList()
+    assertEquals(mapOf("__typename" to "Computer", "id" to "Computer1"), recordFields[0])
+    assertEquals(mapOf("__typename" to "Computer", "id" to "Computer1", "cpu" to "386"), recordFields[1])
+  }
 }
