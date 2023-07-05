@@ -11,3 +11,4 @@ fun String.unquoted(): String {
 }
 
 fun String.capitalizeFirstLetter() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+fun String.decapitalizeFirstLetter() = replaceFirstChar { if (it.isUpperCase()) it.lowercase(Locale.ROOT) else it.toString() }

@@ -1,12 +1,15 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
+import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findChildrenOfType
+import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
+import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
@@ -36,22 +39,41 @@ fun findKotlinOperationDefinitions(operationDefinition: GraphQLTypedOperationDef
 }
 
 fun findKotlinFieldDefinitions(graphQLField: GraphQLField): List<PsiElement> {
-  // TODO We can disambiguate fields with the same name by using the path to the field
-  return (
-      // Try operation first
-      graphQLField.parentOfType<GraphQLTypedOperationDefinition>()?.let { operationDefinition ->
-        findKotlinOperationDefinitions(operationDefinition)
-      }
-      // Fallback to fragment
-          ?: graphQLField.parentOfType<GraphQLFragmentDefinition>()?.let { fragmentDefinition ->
-            findKotlinFragmentClassDefinitions(fragmentDefinition)
-          }
-      )
+  return findKotlinClassOfParent(graphQLField)
       ?.flatMap { psiClass ->
         psiClass.findChildrenOfType<KtParameter> { it.name == graphQLField.name }
       }
       ?: emptyList()
 }
+
+fun findKotlinFragmentSpreadDefinitions(graphQLFragmentSpread: GraphQLFragmentSpread): List<PsiElement> {
+  return findKotlinClassOfParent(graphQLFragmentSpread)
+      ?.flatMap { psiClass ->
+        psiClass.findChildrenOfType<KtParameter> { it.name == graphQLFragmentSpread.name?.decapitalizeFirstLetter() }
+      }
+      ?: emptyList()
+}
+
+fun findKotlinInlineFragmentDefinitions(graphQLFragmentSpread: GraphQLInlineFragment): List<PsiElement> {
+  return findKotlinClassOfParent(graphQLFragmentSpread)
+      ?.flatMap { psiClass ->
+        psiClass.findChildrenOfType<KtParameter> { it.name == graphQLFragmentSpread.typeCondition?.typeName?.name?.capitalizeFirstLetter()?.let { "on$it" } }
+      }
+      ?: emptyList()
+}
+
+private fun findKotlinClassOfParent(gqlElement: GraphQLElement): List<KtClass>? {
+  // TODO We can disambiguate fields with the same name by using the path to the field
+  // Try operation first
+  return gqlElement.parentOfType<GraphQLTypedOperationDefinition>()?.let { operationDefinition ->
+    findKotlinOperationDefinitions(operationDefinition)
+  }
+  // Fallback to fragment
+      ?: gqlElement.parentOfType<GraphQLFragmentDefinition>()?.let { fragmentDefinition ->
+        findKotlinFragmentClassDefinitions(fragmentDefinition)
+      }
+}
+
 
 fun findKotlinFragmentClassDefinitions(fragmentSpread: GraphQLFragmentSpread): List<KtClass> {
   val fragmentName = fragmentSpread.nameIdentifier.referenceName ?: return emptyList()

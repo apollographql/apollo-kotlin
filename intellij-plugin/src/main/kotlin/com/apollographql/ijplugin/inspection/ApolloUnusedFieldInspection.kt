@@ -3,11 +3,17 @@ package com.apollographql.ijplugin.inspection
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.navigation.compat.KotlinFindUsagesHandlerFactoryCompat
 import com.apollographql.ijplugin.navigation.findKotlinFieldDefinitions
+import com.apollographql.ijplugin.navigation.findKotlinFragmentSpreadDefinitions
+import com.apollographql.ijplugin.navigation.findKotlinInlineFragmentDefinitions
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLField
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
+import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
+import com.intellij.lang.jsgraphql.psi.GraphQLSelection
+import com.intellij.lang.jsgraphql.psi.GraphQLTypeName
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.psi.PsiElementVisitor
@@ -26,14 +32,25 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
           isUnusedOperation = true
           return
         }
-        val field = o.parent as? GraphQLField ?: return
-        val ktClasses = findKotlinFieldDefinitions(field).ifEmpty {
-          // Didn't find any generated class: maybe in the middle of writing a new operation, let's not report an error yet.
-          return@visitIdentifier
+
+        var isFragment = false
+        val ktDefinitions  = when (val parent = o.parent) {
+          is GraphQLField -> findKotlinFieldDefinitions(parent)
+          is GraphQLFragmentSpread -> {
+            isFragment = true
+            findKotlinFragmentSpreadDefinitions(parent)
+          }
+          is GraphQLTypeName -> {
+            val inlineFragment = parent.parent?.parent as? GraphQLInlineFragment ?: return
+            isFragment = true
+            findKotlinInlineFragmentDefinitions(inlineFragment)
+          }
+          else -> return
         }
+
         val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(o.project)
         val hasUsageProcessor = HasUsageProcessor()
-        for (kotlinDefinition in ktClasses) {
+        for (kotlinDefinition in ktDefinitions) {
           if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
             val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
                 ?: return
@@ -43,9 +60,9 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
           }
         }
         holder.registerProblem(
-            o,
+            if (isFragment) o.findParentOfType<GraphQLSelection>()!! else o,
             ApolloBundle.message("inspection.unusedField.reportText"),
-            DeleteElementQuickFix("inspection.unusedField.quickFix") { it.parent.parent },
+            DeleteElementQuickFix("inspection.unusedField.quickFix") { it.findParentOfType<GraphQLSelection>(strict = false)!! },
         )
       }
     }
