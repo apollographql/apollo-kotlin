@@ -4,20 +4,29 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.ui.SingleIntegerFieldOptionsPanel
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.lang.jsgraphql.ide.config.model.GraphQLProjectConfig
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
+import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFieldDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
+import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
+import com.intellij.lang.jsgraphql.psi.GraphQLSelection
+import com.intellij.lang.jsgraphql.psi.GraphQLSelectionSetOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.util.findParentOfType
 import kotlin.math.roundToInt
 
 class ApolloFieldInsightsInspection : LocalInspectionTool() {
@@ -30,18 +39,24 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
         if (!o.project.service<FieldInsightsService>().hasLatencies()) return
         val latency = getLatency(o) ?: return
         val field = o.parent as? GraphQLField ?: return
-        reportIfHighLatency(o, field.name ?: "", latency)
+        if (field.isDeferred()) return
+        reportIfHighLatency(o, field.name ?: "", latency, withQuickFix = true)
       }
 
       override fun visitFieldDefinition(o: GraphQLFieldDefinition) {
         if (!o.project.service<FieldInsightsService>().hasLatencies()) return
         val latency = getLatency(o) ?: return
-        reportIfHighLatency(o, o.name ?: "", latency)
+        reportIfHighLatency(o, o.name ?: "", latency, withQuickFix = false)
       }
 
-      private fun reportIfHighLatency(element: GraphQLElement, fieldName: String, latency: Double) {
+      private fun reportIfHighLatency(element: GraphQLElement, fieldName: String, latency: Double, withQuickFix: Boolean) {
         if (latency < thresholdMs) return
-        holder.registerProblem(element, ApolloBundle.message("inspection.fieldInsights.reportText", fieldName, latency.toFormattedString()))
+        val message = ApolloBundle.message("inspection.fieldInsights.reportText", fieldName, latency.toFormattedString())
+        if (withQuickFix) {
+          holder.registerProblem(element, message, EncloseInDeferredFragmentQuickFix())
+        } else {
+          holder.registerProblem(element, message)
+        }
       }
     }
   }
@@ -65,6 +80,10 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
     return fieldDefinition.project.service<FieldInsightsService>().getLatency(serviceId, typeName, fieldName)
   }
 
+  private fun GraphQLField.isDeferred(): Boolean {
+    return findParentOfType<GraphQLInlineFragment>()?.directives?.any { it.name == "defer" } == true
+  }
+
   private fun PsiFile.getApolloKotlinServiceId(): ApolloKotlinService.Id? {
     val config: GraphQLProjectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(this)
         ?: return null
@@ -74,4 +93,24 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
   private fun Double.toFormattedString() = "~${roundToInt()} ms"
 
   override fun createOptionsPanel() = SingleIntegerFieldOptionsPanel(ApolloBundle.message("inspection.fieldInsights.settings.threshold"), this, "thresholdMs")
+
+  private class EncloseInDeferredFragmentQuickFix : LocalQuickFix {
+    override fun getName() = ApolloBundle.message("inspection.fieldInsights.quickFix")
+    override fun getFamilyName() = name
+
+    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+      val resolvedIdentifier = descriptor.psiElement.reference?.resolve() as? GraphQLIdentifier ?: return
+      val typeDefinition = resolvedIdentifier.findParentOfType<GraphQLTypeDefinition>() ?: return
+      val typeName = typeDefinition.findChildrenOfType<GraphQLTypeNameDefinition>().firstOrNull()?.name ?: return
+
+      val originalSelection = descriptor.psiElement.findParentOfType<GraphQLSelection>() ?: return
+
+      val graphQLFile = GraphQLElementFactory.createFile(project, "{ ... on $typeName @defer {\n${originalSelection.text}\n} }")
+      val newSelection = (graphQLFile.firstChild as GraphQLSelectionSetOperationDefinition).selectionSet.selectionList[0] as GraphQLSelection
+
+      originalSelection.replace(newSelection)
+
+      CodeStyleManager.getInstance(project).reformat(newSelection.parent)
+    }
+  }
 }
