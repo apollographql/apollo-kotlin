@@ -470,7 +470,7 @@ class DeferNormalizedCacheTest {
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
         """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = 100)
+    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = 500)
     val recordFields = apolloClient.query(SimpleDeferQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().map {
       apolloClient.apolloStore.accessCache { it.loadRecord("computers.0", CacheHeaders.NONE)!!.fields }
     }.toList()

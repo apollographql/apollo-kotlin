@@ -13,6 +13,7 @@ import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +28,17 @@ import java.util.concurrent.TimeUnit
 
 private const val FETCH_PERIOD_HOURS = 12L
 
+interface FieldInsightsService {
+  fun fetchLatencies()
+  fun hasLatencies(): Boolean
+  fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double?
+}
+
+val Project.fieldInsightsService get() = service<FieldInsightsService>()
+
+
 @OptIn(ApolloExperimental::class)
-class FieldInsightsService(private val project: Project) : Disposable {
+class FieldInsightsServiceImpl(private val project: Project) : FieldInsightsService, Disposable {
   private var fieldLatenciesByService = mapOf<ApolloKotlinService.Id, FieldInsights.FieldLatencies>()
 
   private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -70,7 +80,7 @@ class FieldInsightsService(private val project: Project) : Disposable {
     fetchLatenciesFuture = executor.scheduleAtFixedRate(::fetchLatencies, 0, FETCH_PERIOD_HOURS, TimeUnit.HOURS)
   }
 
-  fun fetchLatencies() {
+  override fun fetchLatencies() {
     logd()
     val apolloKotlinServices = GradleToolingModelService.getApolloKotlinServices(project)
     val apolloKotlinServicesWithConfigurations: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = apolloKotlinServices.associateWith { service ->
@@ -107,16 +117,16 @@ class FieldInsightsService(private val project: Project) : Disposable {
           }
         }
       }
-      this@FieldInsightsService.fieldLatenciesByService = fieldLatenciesByService
+      this@FieldInsightsServiceImpl.fieldLatenciesByService = fieldLatenciesByService
       refreshInspections()
     }
   }
 
-  fun hasLatencies(): Boolean {
+  override fun hasLatencies(): Boolean {
     return fieldLatenciesByService.isNotEmpty()
   }
 
-  fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double? {
+  override fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double? {
     return fieldLatenciesByService[serviceId]?.getLatency(parentType = typeName, fieldName = fieldName)
   }
 

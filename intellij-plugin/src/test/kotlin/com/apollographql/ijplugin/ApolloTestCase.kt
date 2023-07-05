@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin
 
 import com.intellij.application.options.CodeStyle
+import com.intellij.lang.jsgraphql.GraphQLLanguage
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.DependencyScope
@@ -44,6 +45,8 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     val codeStyleSettings = CodeStyle.getSettings(project)
     val kotlinSettings = codeStyleSettings.getCommonSettings(KotlinLanguage.INSTANCE)
     kotlinSettings.indentOptions!!.INDENT_SIZE = 2
+    val graphQLSettings = codeStyleSettings.getCommonSettings(GraphQLLanguage.INSTANCE)
+    graphQLSettings.indentOptions!!.INDENT_SIZE = 2
 
     // Copy the 'project' test project to the virtual project dir
     if (testDataPath == "../tests/intellij-plugin-test-project") {

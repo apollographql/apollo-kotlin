@@ -1,0 +1,10 @@
+query MyQuery {
+  person {
+    identity {
+      ... on Identity @defer {
+        firstName
+      }
+      lastName
+    }
+  }
+}
