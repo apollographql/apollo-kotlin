@@ -211,7 +211,7 @@ private inline fun <reified T> IssuesScope.mergeUniquesOrThrow(
 private fun IssuesScope.mergeUniqueInterfacesOrThrow(
     list: List<String>,
     others: List<String>,
-    sourceLocation: SourceLocation,
+    sourceLocation: SourceLocation?,
 ): List<String> = with(list) {
   return (this + others).apply {
     groupBy { it }.entries.firstOrNull { it.value.size > 1 }?.let {

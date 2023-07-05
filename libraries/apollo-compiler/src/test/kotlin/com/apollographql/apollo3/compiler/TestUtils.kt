@@ -117,7 +117,7 @@ internal object TestUtils {
   }
 
   fun List<Issue>.serialize() = joinToString(separator) {
-    "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.column})\n${it.message}"
+    "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation?.line}:${it.sourceLocation?.column})\n${it.message}"
   }
 }
 

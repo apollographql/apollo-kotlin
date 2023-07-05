@@ -56,7 +56,7 @@ class IncomingOptions(
 
       result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
         // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-        println("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+        println("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
       }
       return result.getOrThrow() to mainSchemaDocument.filePath!!
     }

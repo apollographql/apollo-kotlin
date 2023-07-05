@@ -36,7 +36,7 @@ internal fun checkApolloTargetNameClashes(schema: Schema): List<Issue> {
       val typeForUsedName = usedNames[name]!!
       issues.add(
           Issue.ReservedEnumValueName(
-              message = "'${targetName}' cannot be used as a target name for '${type.name}' because it clashes with '${typeForUsedName.name}' defined at ${typeForUsedName.sourceLocation.pretty()}",
+              message = "'${targetName}' cannot be used as a target name for '${type.name}' because it clashes with '${typeForUsedName.name}' defined at ${typeForUsedName.sourceLocation?.pretty()}",
               sourceLocation = type.sourceLocation
           )
       )

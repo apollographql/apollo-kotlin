@@ -33,6 +33,8 @@ class SourceLocation(
   fun pretty(): String = "$filePath: ($line, $column)"
 
   companion object {
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+    @Deprecated("SourceLocation is now nullable and this is replaced by null", ReplaceWith("null"), level = DeprecationLevel.ERROR)
     val UNKNOWN = SourceLocation(-1, -1, -1, -1, null)
   }
 }

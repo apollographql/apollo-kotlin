@@ -20,7 +20,7 @@ class ParserTest {
       ab bc
       """.trimIndent()
           .buffer()
-          .parseAsGQLDocument(useAntlr = false)
+          .parseAsGQLDocument()
           .getOrThrow()
       fail("An exception was expected")
     } catch (e: Exception) {
@@ -74,7 +74,7 @@ query Test {
       """
     string.trimIndent()
         .buffer()
-        .parseAsGQLDocument(useAntlr = false)
+        .parseAsGQLDocument()
         .getOrThrow()
         .definitions
         .first()
@@ -82,7 +82,7 @@ query Test {
         .selections
         .first()
         .cast<GQLField>()
-        .sourceLocation
+        .sourceLocation!!
         .apply {
           assertEquals(4, line)
           assertEquals(6, endLine)

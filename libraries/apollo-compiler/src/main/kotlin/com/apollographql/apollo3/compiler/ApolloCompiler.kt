@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
@@ -86,7 +87,7 @@ object ApolloCompiler {
 
     result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      logger.warning("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
     }
 
     val schema = result.getOrThrow()
@@ -109,7 +110,7 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, useAntlr = useAntlr)
+      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, options = ParserOptions(useAntlr = useAntlr))
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {
@@ -167,7 +168,7 @@ object ApolloCompiler {
 
     warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      options.logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      options.logger.warning("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
     }
     if (options.failOnWarnings && warnings.isNotEmpty()) {
       throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")

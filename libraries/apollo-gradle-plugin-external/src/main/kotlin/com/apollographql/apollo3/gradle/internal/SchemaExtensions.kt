@@ -24,7 +24,7 @@ internal fun Iterable<File>.toSchema(logger: Logger): Schema {
 
     result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      logger.warn("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      logger.warn("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
     }
 
     result.getOrThrow()

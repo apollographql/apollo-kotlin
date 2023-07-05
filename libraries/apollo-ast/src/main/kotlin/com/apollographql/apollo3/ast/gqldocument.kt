@@ -81,7 +81,7 @@ internal fun combineDefinitions(left: List<GQLDefinition>, right: List<GQLDefini
     if (existingDefinition != null) {
       if (conflictResolution == ConflictResolution.Error) {
         error("Apollo: definition '${builtInTypeDefinition.name}' is already in the schema at " +
-            "'${existingDefinition.sourceLocation.filePath}:${existingDefinition.sourceLocation}'")
+            "'${existingDefinition.sourceLocation?.filePath}:${existingDefinition.sourceLocation}'")
       }
     } else {
       mergedDefinitions.add(builtInTypeDefinition)

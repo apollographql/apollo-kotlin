@@ -51,7 +51,7 @@ import com.apollographql.apollo3.ast.SourceLocation
 import okio.BufferedSource
 import okio.Closeable
 
-internal class Parser(source: BufferedSource, val filePath: String?) : Closeable {
+internal class Parser(source: BufferedSource, val withSourceLocation: Boolean, val filePath: String?) : Closeable {
   private val lexer = Lexer(source)
   private var token = lexer.nextToken()
   private var lastToken = token
@@ -271,7 +271,9 @@ internal class Parser(source: BufferedSource, val filePath: String?) : Closeable
     )
   }
 
-  private fun sourceLocation(from: Token): SourceLocation {
+  private fun sourceLocation(from: Token): SourceLocation? {
+    if (!withSourceLocation) return null
+
     return SourceLocation(
         from.line, from.column, lastToken.endLine, lastToken.endColumn, filePath
     )
@@ -901,7 +903,9 @@ internal class Parser(source: BufferedSource, val filePath: String?) : Closeable
     }
   }
 
-  private fun sourceLocation(): SourceLocation {
+  private fun sourceLocation(): SourceLocation? {
+    if (!withSourceLocation) return null
+
     return SourceLocation(
         token.line,
         token.column,

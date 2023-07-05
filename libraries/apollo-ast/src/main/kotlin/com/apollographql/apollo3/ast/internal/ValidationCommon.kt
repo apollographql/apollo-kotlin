@@ -66,7 +66,7 @@ internal interface ValidationScope : IssuesScope {
 
   fun registerIssue(
       message: String,
-      sourceLocation: SourceLocation,
+      sourceLocation: SourceLocation?,
       severity: Issue.Severity = Issue.Severity.ERROR,
       details: ValidationDetails = ValidationDetails.Other,
   ) {
@@ -249,7 +249,7 @@ private fun ValidationScope.validateArgument(
  */
 internal fun ValidationScope.validateArguments(
     arguments: List<GQLArgument>,
-    sourceLocation: SourceLocation,
+    sourceLocation: SourceLocation?,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
     registerVariableUsage: (VariableUsage) -> Unit,

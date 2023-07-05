@@ -35,15 +35,26 @@ fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = n
     .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
     .getOrThrow()
 
-private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Parser.() -> T): GQLResult<T> {
+private fun <T: Any> BufferedSource.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
   return try {
-    GQLResult(Parser(this, filePath).use(block), emptyList())
+    GQLResult(Parser(this, withSourceLocation, filePath).use(block), emptyList())
   } catch (e: ParserException) {
     GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, -1, -1, filePath))))
   } catch (e: LexerException) {
     GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.line, e.column, -1, -1, filePath))))
   }
 }
+
+class ParserOptions(
+    val useAntlr: Boolean = false,
+    val allowEmpty: Boolean = true,
+    val withSourceLocation: Boolean = true
+) {
+  companion object {
+    val Default = ParserOptions()
+  }
+}
+
 /**
  * Parses the source to a [GQLDocument], validating the syntax but not the contents of the document.
  *
@@ -55,11 +66,11 @@ private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Pars
  * @return a [GQLResult] with either a non-null [GQLDocument] or a list of issues.
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLDocument(filePath: String? = null, allowEmpty: Boolean = true, useAntlr: Boolean = false): GQLResult<GQLDocument> {
-  return if (useAntlr) {
+fun BufferedSource.parseAsGQLDocument(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
+  return if (options.useAntlr) {
     antlrParse(this, filePath, { it.document() }, { it.toGQLDocument(filePath) })
   } else {
-    parseInternal(filePath) { parseDocument(allowEmpty) }
+    parseInternal(filePath, options.withSourceLocation) { parseDocument(options.allowEmpty) }
   }
 }
 

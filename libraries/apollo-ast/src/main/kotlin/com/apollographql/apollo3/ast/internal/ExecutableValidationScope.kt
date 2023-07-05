@@ -66,8 +66,8 @@ internal class ExecutableValidationScope(
    */
   private val variableUsages = mutableListOf<VariableUsage>()
 
-  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
-  private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
+  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation?>()
+  private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation?>()
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
@@ -136,13 +136,13 @@ internal class ExecutableValidationScope(
   @Suppress("KotlinConstantConditions")
   private fun GQLType.mergeWith(other: GQLType): GQLType? {
     return if (this is GQLNonNullType && other is GQLNonNullType) {
-      type.mergeWith(other.type)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+      type.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
     } else if (this is GQLNonNullType && other !is GQLNonNullType) {
-      type.mergeWith(other)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+      type.mergeWith(other)?.let { GQLNonNullType(null, it) }
     } else if (this !is GQLNonNullType && other is GQLNonNullType) {
-      this.mergeWith(other.type)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+      this.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
     } else if (this is GQLListType && other is GQLListType) {
-      this.type.mergeWith(other.type)?.let { GQLListType(SourceLocation.UNKNOWN, it) }
+      this.type.mergeWith(other.type)?.let { GQLListType(null, it) }
     } else if (this is GQLListType && other !is GQLListType) {
       null
     } else if (this !is GQLListType && other is GQLListType) {
@@ -448,7 +448,7 @@ internal class ExecutableValidationScope(
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
           message = "Selection of type `${parentTypeDefinition.name}` must have a selection of sub-fields",
-          sourceLocation = SourceLocation.UNKNOWN
+          sourceLocation = null
       )
       return
     }
@@ -562,7 +562,7 @@ internal class ExecutableValidationScope(
   }
 
   private fun buildMessage(fieldA: GQLField, fieldB: GQLField, message: String): String {
-    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation.pretty()}): " +
+    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation?.pretty()}): " +
         "$message. Use different aliases on the fields to fetch both if this was intentional."
   }
 

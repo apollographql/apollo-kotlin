@@ -18,7 +18,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
 sealed interface GQLNode {
-  val sourceLocation: SourceLocation
+  val sourceLocation: SourceLocation?
 
   /**
    * The children of this node.
@@ -130,7 +130,7 @@ sealed class GQLSelection : GQLNode
 class GQLDocument(
     val definitions: List<GQLDefinition>,
     val filePath: String?,
-    override val sourceLocation: SourceLocation = SourceLocation(0, 0, -1, -1, filePath),
+    override val sourceLocation: SourceLocation? = SourceLocation(0, 0, -1, -1, filePath),
 ) : GQLNode {
   override val children = definitions
 
@@ -159,7 +159,7 @@ class GQLDocument(
 }
 
 class GQLOperationDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val operationType: String,
     val name: String?,
     val variableDefinitions: List<GQLVariableDefinition>,
@@ -173,7 +173,7 @@ class GQLOperationDefinition(
   val selectionSet: GQLSelectionSet
     get() {
       return GQLSelectionSet(
-          sourceLocation = SourceLocation.UNKNOWN,
+          sourceLocation = null,
           selections = selections
       )
     }
@@ -202,7 +202,7 @@ class GQLOperationDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       operationType: String = this.operationType,
       name: String? = this.name,
       variableDefinitions: List<GQLVariableDefinition> = this.variableDefinitions,
@@ -231,7 +231,7 @@ class GQLOperationDefinition(
 }
 
 class GQLFragmentDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,
@@ -244,7 +244,7 @@ class GQLFragmentDefinition(
   val selectionSet: GQLSelectionSet
     get() {
       return GQLSelectionSet(
-          sourceLocation = SourceLocation.UNKNOWN,
+          sourceLocation = null,
           selections = selections
       )
     }
@@ -266,7 +266,7 @@ class GQLFragmentDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
       typeCondition: GQLNamedType = this.typeCondition,
@@ -293,7 +293,7 @@ class GQLFragmentDefinition(
 }
 
 class GQLSchemaDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val description: String?,
     val directives: List<GQLDirective>,
     val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>,
@@ -318,7 +318,7 @@ class GQLSchemaDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       directives: List<GQLDirective> = this.directives,
       rootOperationTypeDefinitions: List<GQLOperationTypeDefinition> = this.rootOperationTypeDefinitions,
@@ -365,7 +365,7 @@ sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed, GQLHasDi
 }
 
 class GQLInterfaceTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     val implementsInterfaces: List<String>,
@@ -397,7 +397,7 @@ class GQLInterfaceTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       implementsInterfaces: List<String> = this.implementsInterfaces,
@@ -421,7 +421,7 @@ class GQLInterfaceTypeDefinition(
 }
 
 class GQLObjectTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     val implementsInterfaces: List<String>,
@@ -455,7 +455,7 @@ class GQLObjectTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       implementsInterfaces: List<String> = this.implementsInterfaces,
@@ -481,7 +481,7 @@ class GQLObjectTypeDefinition(
 }
 
 class GQLInputObjectTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     override val directives: List<GQLDirective>,
@@ -510,7 +510,7 @@ class GQLInputObjectTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -534,7 +534,7 @@ class GQLInputObjectTypeDefinition(
 }
 
 class GQLScalarTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     override val directives: List<GQLDirective>,
@@ -555,7 +555,7 @@ class GQLScalarTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -574,7 +574,7 @@ class GQLScalarTypeDefinition(
 }
 
 class GQLEnumTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     override val directives: List<GQLDirective>,
@@ -601,7 +601,7 @@ class GQLEnumTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -623,7 +623,7 @@ class GQLEnumTypeDefinition(
 }
 
 class GQLUnionTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     override val directives: List<GQLDirective>,
@@ -647,7 +647,7 @@ class GQLUnionTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -669,7 +669,7 @@ class GQLUnionTypeDefinition(
 }
 
 class GQLDirectiveDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val description: String?,
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
@@ -697,7 +697,7 @@ class GQLDirectiveDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       arguments: List<GQLInputValueDefinition> = this.arguments,
@@ -730,7 +730,7 @@ class GQLDirectiveDefinition(
 }
 
 class GQLSchemaExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val directives: List<GQLDirective>,
     val operationTypeDefinitions: List<GQLOperationTypeDefinition>,
 ) : GQLDefinition, GQLTypeSystemExtension {
@@ -755,7 +755,7 @@ class GQLSchemaExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       directives: List<GQLDirective> = this.directives,
       operationTypesDefinition: List<GQLOperationTypeDefinition> = this.operationTypeDefinitions,
   ): GQLSchemaExtension = GQLSchemaExtension(
@@ -773,7 +773,7 @@ class GQLSchemaExtension(
 }
 
 class GQLEnumTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val directives: List<GQLDirective>,
     val enumValues: List<GQLEnumValueDefinition>,
@@ -800,7 +800,7 @@ class GQLEnumTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
       enumValues: List<GQLEnumValueDefinition> = this.enumValues,
@@ -820,7 +820,7 @@ class GQLEnumTypeExtension(
 }
 
 class GQLObjectTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val implementsInterfaces: List<String>,
     val directives: List<GQLDirective>,
@@ -852,7 +852,7 @@ class GQLObjectTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       implementsInterfaces: List<String> = this.implementsInterfaces,
       directives: List<GQLDirective> = this.directives,
@@ -874,7 +874,7 @@ class GQLObjectTypeExtension(
 }
 
 class GQLInputObjectTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val directives: List<GQLDirective>,
     val inputFields: List<GQLInputValueDefinition>,
@@ -901,7 +901,7 @@ class GQLInputObjectTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
       inputFields: List<GQLInputValueDefinition> = this.inputFields,
@@ -921,7 +921,7 @@ class GQLInputObjectTypeExtension(
 }
 
 class GQLScalarTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val directives: List<GQLDirective>,
 ) : GQLDefinition, GQLTypeExtension {
@@ -940,7 +940,7 @@ class GQLScalarTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
   ): GQLScalarTypeExtension = GQLScalarTypeExtension(
@@ -957,7 +957,7 @@ class GQLScalarTypeExtension(
 }
 
 class GQLInterfaceTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val implementsInterfaces: List<String>,
     val directives: List<GQLDirective>,
@@ -989,7 +989,7 @@ class GQLInterfaceTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       implementsInterfaces: List<String> = this.implementsInterfaces,
       directives: List<GQLDirective> = this.directives,
@@ -1010,7 +1010,7 @@ class GQLInterfaceTypeExtension(
 }
 
 class GQLUnionTypeExtension(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val directives: List<GQLDirective>,
     val memberTypes: List<GQLNamedType>,
@@ -1032,7 +1032,7 @@ class GQLUnionTypeExtension(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
       memberTypes: List<GQLNamedType> = this.memberTypes,
@@ -1052,7 +1052,7 @@ class GQLUnionTypeExtension(
 }
 
 class GQLEnumValueDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -1073,7 +1073,7 @@ class GQLEnumValueDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -1094,7 +1094,7 @@ class GQLEnumValueDefinition(
 }
 
 class GQLFieldDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val description: String?,
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
@@ -1123,7 +1123,7 @@ class GQLFieldDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       arguments: List<GQLInputValueDefinition> = this.arguments,
@@ -1149,7 +1149,7 @@ class GQLFieldDefinition(
 }
 
 class GQLInputValueDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -1194,7 +1194,7 @@ class GQLInputValueDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
@@ -1223,7 +1223,7 @@ class GQLInputValueDefinition(
  * have a description
  */
 class GQLVariableDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val name: String,
     val type: GQLType,
     val defaultValue: GQLValue?,
@@ -1247,7 +1247,7 @@ class GQLVariableDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       type: GQLType = this.type,
       defaultValue: GQLValue? = this.defaultValue,
@@ -1275,7 +1275,7 @@ class GQLVariableDefinition(
  * @param namedType the name of the root object type, i.e. "Query", ...
  */
 class GQLOperationTypeDefinition(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val operationType: String,
     val namedType: String,
 ) : GQLNode {
@@ -1289,7 +1289,7 @@ class GQLOperationTypeDefinition(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       operationType: String = this.operationType,
       namedType: String = this.namedType,
   ): GQLOperationTypeDefinition {
@@ -1309,7 +1309,7 @@ class GQLOperationTypeDefinition(
  * @param name the name of the directive without the '@'. Example: "include"
  */
 class GQLDirective(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val arguments: List<GQLArgument>,
 ) : GQLNode, GQLNamed {
@@ -1326,7 +1326,7 @@ class GQLDirective(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       arguments: List<GQLArgument> = this.arguments,
   ): GQLDirective {
@@ -1345,7 +1345,7 @@ class GQLDirective(
 }
 
 class GQLObjectField(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val name: String,
     val value: GQLValue,
 ) : GQLNode {
@@ -1360,7 +1360,7 @@ class GQLObjectField(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       value: GQLValue = this.value,
   ): GQLObjectField {
@@ -1379,7 +1379,7 @@ class GQLObjectField(
 }
 
 class GQLArgument(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val name: String,
     val value: GQLValue,
 ) : GQLNode {
@@ -1394,7 +1394,7 @@ class GQLArgument(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       value: GQLValue = this.value,
   ): GQLArgument {
@@ -1416,7 +1416,7 @@ class GQLArgument(
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLSelectionSet(
     val selections: List<GQLSelection>,
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
 ) : GQLNode {
   override val children = selections
 
@@ -1427,7 +1427,7 @@ class GQLSelectionSet(
   @Suppress("DEPRECATION")
   fun copy(
       selections: List<GQLSelection> = this.selections,
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
   ): GQLSelectionSet {
     return GQLSelectionSet(
         selections = selections,
@@ -1446,7 +1446,7 @@ class GQLSelectionSet(
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLArguments(
     val arguments: List<GQLArgument>,
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
 ) : GQLNode {
   override val children: List<GQLNode> = arguments
 
@@ -1457,7 +1457,7 @@ class GQLArguments(
   @Suppress("DEPRECATION")
   fun copy(
       arguments: List<GQLArgument> = this.arguments,
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
   ): GQLArguments {
     return GQLArguments(
         arguments = arguments,
@@ -1493,7 +1493,7 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 }
 
 class GQLField(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val alias: String?,
     val name: String,
     val arguments: List<GQLArgument>,
@@ -1506,7 +1506,7 @@ class GQLField(
   val selectionSet: GQLSelectionSet
     get() {
       return GQLSelectionSet(
-          sourceLocation = SourceLocation.UNKNOWN,
+          sourceLocation = null,
           selections = selections
       )
     }
@@ -1536,7 +1536,7 @@ class GQLField(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       alias: String? = this.alias,
       name: String = this.name,
       arguments: List<GQLArgument> = this.arguments,
@@ -1561,7 +1561,7 @@ class GQLField(
 }
 
 class GQLInlineFragment(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val typeCondition: GQLNamedType?,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
@@ -1572,7 +1572,7 @@ class GQLInlineFragment(
   val selectionSet: GQLSelectionSet
     get() {
       return GQLSelectionSet(
-          sourceLocation = SourceLocation.UNKNOWN,
+          sourceLocation = null,
           selections = selections
       )
     }
@@ -1597,7 +1597,7 @@ class GQLInlineFragment(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       typeCondition: GQLNamedType? = this.typeCondition,
       directives: List<GQLDirective> = this.directives,
       selections: List<GQLSelection> = this.selections,
@@ -1618,7 +1618,7 @@ class GQLInlineFragment(
 }
 
 class GQLFragmentSpread(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val name: String,
     val directives: List<GQLDirective>,
 ) : GQLSelection() {
@@ -1637,7 +1637,7 @@ class GQLFragmentSpread(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
   ) = GQLFragmentSpread(
@@ -1656,7 +1656,7 @@ class GQLFragmentSpread(
 sealed class GQLType : GQLNode
 
 class GQLNamedType(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     override val name: String,
 ) : GQLType(), GQLNamed {
 
@@ -1669,7 +1669,7 @@ class GQLNamedType(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
   ) = GQLNamedType(
       sourceLocation = sourceLocation,
@@ -1682,7 +1682,7 @@ class GQLNamedType(
 }
 
 class GQLNonNullType(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val type: GQLType,
 ) : GQLType() {
 
@@ -1696,7 +1696,7 @@ class GQLNonNullType(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       type: GQLType = this.type,
   ) = GQLNonNullType(
       sourceLocation = sourceLocation,
@@ -1711,7 +1711,7 @@ class GQLNonNullType(
 }
 
 class GQLListType(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val type: GQLType,
 ) : GQLType() {
 
@@ -1726,7 +1726,7 @@ class GQLListType(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       type: GQLType = this.type,
   ) = GQLListType(
       sourceLocation = sourceLocation,
@@ -1743,7 +1743,7 @@ class GQLListType(
 
 sealed class GQLValue : GQLNode
 class GQLVariableValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val name: String,
 ) : GQLValue() {
 
@@ -1756,7 +1756,7 @@ class GQLVariableValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
   ) = GQLVariableValue(
       sourceLocation = sourceLocation,
@@ -1769,7 +1769,7 @@ class GQLVariableValue(
 }
 
 class GQLIntValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val value: Int,
 ) : GQLValue() {
 
@@ -1782,7 +1782,7 @@ class GQLIntValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       value: Int = this.value,
   ) = GQLIntValue(
       sourceLocation = sourceLocation,
@@ -1795,7 +1795,7 @@ class GQLIntValue(
 }
 
 class GQLFloatValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val value: Double,
 ) : GQLValue() {
 
@@ -1808,7 +1808,7 @@ class GQLFloatValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       value: Double = this.value,
   ) = GQLFloatValue(
       sourceLocation = sourceLocation,
@@ -1821,7 +1821,7 @@ class GQLFloatValue(
 }
 
 class GQLStringValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val value: String,
 ) : GQLValue() {
 
@@ -1834,7 +1834,7 @@ class GQLStringValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       value: String = this.value,
   ) = GQLStringValue(
       sourceLocation = sourceLocation,
@@ -1847,7 +1847,7 @@ class GQLStringValue(
 }
 
 class GQLBooleanValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val value: Boolean,
 ) : GQLValue() {
 
@@ -1860,7 +1860,7 @@ class GQLBooleanValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       value: Boolean = this.value,
   ) = GQLBooleanValue(
       sourceLocation = sourceLocation,
@@ -1873,7 +1873,7 @@ class GQLBooleanValue(
 }
 
 class GQLEnumValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val value: String,
 ) : GQLValue() {
 
@@ -1886,7 +1886,7 @@ class GQLEnumValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       value: String = this.value,
   ) = GQLEnumValue(
       sourceLocation = sourceLocation,
@@ -1899,7 +1899,7 @@ class GQLEnumValue(
 }
 
 class GQLListValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val values: List<GQLValue>,
 ) : GQLValue() {
 
@@ -1914,7 +1914,7 @@ class GQLListValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       values: List<GQLValue> = this.values,
   ) = GQLListValue(
       sourceLocation = sourceLocation,
@@ -1929,7 +1929,7 @@ class GQLListValue(
 }
 
 class GQLObjectValue(
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
+    override val sourceLocation: SourceLocation? = null,
     val fields: List<GQLObjectField>,
 ) : GQLValue() {
 
@@ -1946,7 +1946,7 @@ class GQLObjectValue(
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
       fields: List<GQLObjectField> = this.fields,
   ) = GQLObjectValue(
       sourceLocation = sourceLocation,
@@ -1960,7 +1960,7 @@ class GQLObjectValue(
   }
 }
 
-class GQLNullValue(override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : GQLValue() {
+class GQLNullValue(override val sourceLocation: SourceLocation? = null) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
 
@@ -1971,7 +1971,7 @@ class GQLNullValue(override val sourceLocation: SourceLocation = SourceLocation.
   }
 
   fun copy(
-      sourceLocation: SourceLocation = this.sourceLocation,
+      sourceLocation: SourceLocation? = this.sourceLocation,
   ) = GQLNullValue(
       sourceLocation = sourceLocation,
   )

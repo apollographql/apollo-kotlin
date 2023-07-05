@@ -1,5 +1,6 @@
 package benchmark
 
+import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import okio.buffer
 import okio.source
@@ -31,14 +32,14 @@ open class Benchmark {
   @Benchmark
   fun antlrTest(): Double {
     return testFiles.sumOf {
-      it.source().buffer().parseAsGQLDocument(useAntlr = true).getOrThrow().definitions.size.toDouble()
+      it.source().buffer().parseAsGQLDocument(options = ParserOptions(useAntlr = true)).getOrThrow().definitions.size.toDouble()
     }
   }
 
   @Benchmark
   fun parserTest(): Double {
     return testFiles.sumOf {
-      it.source().buffer().parseAsGQLDocument(useAntlr = false).getOrThrow().definitions.size.toDouble()
+      it.source().buffer().parseAsGQLDocument(options = ParserOptions(useAntlr = true)).getOrThrow().definitions.size.toDouble()
     }
   }
 }
