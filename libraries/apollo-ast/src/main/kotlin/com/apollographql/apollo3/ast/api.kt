@@ -39,9 +39,9 @@ private fun <T: Any> BufferedSource.parseInternal(filePath: String?, block: Pars
   return try {
     GQLResult(Parser(this, filePath).use(block), emptyList())
   } catch (e: ParserException) {
-    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, filePath))))
+    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, -1, -1, filePath))))
   } catch (e: LexerException) {
-    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.line, e.column, filePath))))
+    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.line, e.column, -1, -1, filePath))))
   }
 }
 /**

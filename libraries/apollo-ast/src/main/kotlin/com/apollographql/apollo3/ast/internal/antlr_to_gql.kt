@@ -20,6 +20,8 @@ private class AntlrToGQLScope(val filePath: String?) {
   private fun sourceLocation(token: Token) = SourceLocation(
       line = token.line,
       column = token.charPositionInLine + 1,
+      endLine = -1,
+      endColumn = -1,
       filePath = filePath
   )
 

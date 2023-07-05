@@ -130,8 +130,8 @@ sealed class GQLSelection : GQLNode
 class GQLDocument(
     val definitions: List<GQLDefinition>,
     val filePath: String?,
+    override val sourceLocation: SourceLocation = SourceLocation(0, 0, -1, -1, filePath),
 ) : GQLNode {
-  override val sourceLocation: SourceLocation = SourceLocation(0, 0, filePath)
   override val children = definitions
 
   override fun writeInternal(writer: SDLWriter) {

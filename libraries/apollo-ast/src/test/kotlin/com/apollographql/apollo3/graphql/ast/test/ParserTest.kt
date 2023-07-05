@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.graphql.ast.test
 
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
@@ -28,14 +30,14 @@ class ParserTest {
 
   @Test
   fun extraCommentsAtEndOfFileAreOk() {
-      """
+    """
       # comment before
       query Test { field }
       # comment after
       """.trimIndent()
-          .buffer()
-          .parseAsGQLDocument()
-          .getOrThrow()
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
   }
 
   @Test
@@ -55,5 +57,37 @@ class ParserTest {
         "\"\"\"").buffer().parseAsGQLValue().getOrThrow()
 
     assertEquals("first line\n \nsecond line", (value as GQLStringValue).value)
+  }
+
+  private inline fun <reified T> Any.cast() = this as T
+
+  @Test
+  fun endLineAndColumn() {
+    val string = """
+      # comment before
+query Test {
+  # comment here
+  field(
+    first: 100
+    )
+}
+      """
+    string.trimIndent()
+        .buffer()
+        .parseAsGQLDocument(useAntlr = false)
+        .getOrThrow()
+        .definitions
+        .first()
+        .cast<GQLOperationDefinition>()
+        .selections
+        .first()
+        .cast<GQLField>()
+        .sourceLocation
+        .apply {
+          assertEquals(4, line)
+          assertEquals(6, endLine)
+          assertEquals(3, column)
+          assertEquals(5, endColumn)
+        }
   }
 }

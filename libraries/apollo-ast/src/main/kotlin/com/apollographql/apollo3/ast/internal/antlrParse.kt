@@ -26,7 +26,7 @@ import com.apollographql.apollo3.generated.antlr.GraphQLParser as AntlrGraphQLPa
  *
  * @param startRule returns the start rule and consumes the stream. It is expected that startRule
  * consumes the whole source
- * @param convert converts startRule to something else, most of the times a GQLNode. Not called if there are
+ * @param convert converts startRule to something else, most of the time a GQLNode. Not called if there are
  * any parsing issues
  */
 internal fun <T : RuleContext, R: Any> antlrParse(
@@ -60,7 +60,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
           ) {
             issues.add(Issue.ParsingError(
                 message = "Unsupported token `${(offendingSymbol as? Token)?.text ?: offendingSymbol.toString()}`",
-                sourceLocation = SourceLocation(line, position, filePath)
+                sourceLocation = SourceLocation(line, position, -1, -1, filePath)
             ))
           }
         }
@@ -74,7 +74,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
     issues.add(
         Issue.ParsingError(
             "Extra token at end of file `${currentToken.text}`",
-            SourceLocation(currentToken.line, currentToken.charPositionInLine, filePath)
+            SourceLocation(currentToken.line, currentToken.charPositionInLine, -1, -1, filePath)
         )
     )
   }

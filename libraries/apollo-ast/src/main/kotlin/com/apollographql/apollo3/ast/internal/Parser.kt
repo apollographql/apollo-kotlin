@@ -51,12 +51,13 @@ import com.apollographql.apollo3.ast.SourceLocation
 import okio.BufferedSource
 import okio.Closeable
 
-internal class Parser(source: BufferedSource, val filePath: String?): Closeable {
+internal class Parser(source: BufferedSource, val filePath: String?) : Closeable {
   private val lexer = Lexer(source)
   private var token = lexer.nextToken()
+  private var lastToken = token
   private var lookaheadToken: Token? = null
 
-  fun parseDocument(allowEmpty: Boolean): GQLDocument  {
+  fun parseDocument(allowEmpty: Boolean): GQLDocument {
     return GQLDocument(
         definitions = if (allowEmpty) {
           parseList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
@@ -67,14 +68,14 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     )
   }
 
-  fun parseValue(): GQLValue  {
+  fun parseValue(): GQLValue {
     return parseTopLevel {
       parseValueInternal(false)
     }
   }
 
   fun parseSelections(): List<GQLSelection> {
-   return parseList<Token.StartOfFile, Token.EndOfFile, GQLSelection>(::parseSelection)
+    return parseList<Token.StartOfFile, Token.EndOfFile, GQLSelection>(::parseSelection)
   }
 
   fun parseType(): GQLType {
@@ -86,6 +87,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun advance() {
+    lastToken = token
     if (lookaheadToken != null) {
       token = lookaheadToken!!
       lookaheadToken = null
@@ -175,10 +177,6 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLSelection>(::parseSelection).orEmpty()
   }
 
-  private fun sourceLocation(): SourceLocation {
-    return token.sourceLocation()
-  }
-
   private fun parseSelection(): GQLSelection {
     return when (token) {
       is Token.Spread -> parseFragment()
@@ -190,7 +188,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val start = token
     if (start is Token.Name && start.value == keyword) {
       advance()
-      return start;
+      return start
     }
     return null
   }
@@ -211,35 +209,43 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseNamedType(): GQLNamedType {
+    val start = token
+    val name = parseName()
+    val sourceLocation = sourceLocation(start)
     return GQLNamedType(
-        sourceLocation = sourceLocation(),
-        name = parseName()
+        sourceLocation = sourceLocation,
+        name = name
     )
   }
 
   private fun parseFragment(): GQLSelection {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectToken<Token.Spread>()
 
     val on = expectOptionalKeyword("on")
     return if (on == null && peek<Token.Name>()) {
+      val name = parseFragmentName()
+      val directives = parseDirectives(const = false)
       GQLFragmentSpread(
-          sourceLocation = sourceLocation,
-          name = parseFragmentName(),
-          directives = parseDirectives(const = false)
+          sourceLocation = sourceLocation(start),
+          name = name,
+          directives = directives
       )
     } else {
+      val typeCondition = if (on != null) parseNamedType() else null
+      val directives = parseDirectives(const = false)
+      val selections = parseSelectionSet()
       GQLInlineFragment(
-          sourceLocation = sourceLocation,
-          typeCondition = if (on != null) parseNamedType() else null,
-          directives = parseDirectives(const = false),
-          selections = parseSelectionSet()
+          sourceLocation = sourceLocation(start),
+          typeCondition = typeCondition,
+          directives = directives,
+          selections = selections
       )
     }
   }
 
   private fun parseField(): GQLField {
-    val sourceLocation = sourceLocation()
+    val start = token
     val nameOrAlias = parseName()
 
     val alias: String?
@@ -252,19 +258,24 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
       name = nameOrAlias
     }
 
+    val arguments = parseArguments(const = false)
+    val directives = parseDirectives(const = false)
+    val selections = parseOptionalSelectionSet()
     return GQLField(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         alias = alias,
         name = name,
-        arguments = parseArguments(const = false),
-        directives = parseDirectives(const = false),
-        selections = parseOptionalSelectionSet()
+        arguments = arguments,
+        directives = directives,
+        selections = selections
     )
   }
 
-  private fun Token.sourceLocation(): SourceLocation = SourceLocation(
-      line, column, filePath
-  )
+  private fun sourceLocation(from: Token): SourceLocation {
+    return SourceLocation(
+        from.line, from.column, lastToken.endLine, lastToken.endColumn, filePath
+    )
+  }
 
   private fun lookaheadToken(): Token {
     if (token !is Token.EndOfFile) {
@@ -282,37 +293,40 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseOperationDefinition(): GQLOperationDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = expectOptionalToken<Token.String>()?.value
 
     if (peek<Token.LeftBrace>()) {
+      val selections = parseSelectionSet()
       return GQLOperationDefinition(
-          sourceLocation = sourceLocation,
+          sourceLocation = sourceLocation(start),
           operationType = "query",
           name = null,
           variableDefinitions = emptyList(),
           directives = emptyList(),
-          selections = parseSelectionSet(),
+          selections = selections,
           description = description
       )
     }
 
     val operationType = parseOperationType()
 
-    val name: String?
-    if (token is Token.Name) {
-      name = parseName()
+    val name = if (token is Token.Name) {
+      parseName()
     } else {
-      name = null
+      null
     }
 
+    val variableDefinitions = parseVariableDefinitions()
+    val directives = parseDirectives(const = false)
+    val selections = parseSelectionSet()
     return GQLOperationDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         operationType = operationType,
         name = name,
-        variableDefinitions = parseVariableDefinitions(),
-        directives = parseDirectives(const = false),
-        selections = parseSelectionSet(),
+        variableDefinitions = variableDefinitions,
+        directives = directives,
+        selections = selections,
         description = description
     )
   }
@@ -324,7 +338,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseVariableDefinition(): GQLVariableDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectToken<Token.Dollar>()
     val name = parseName()
     expectToken<Token.Colon>()
@@ -336,7 +350,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
     val directives = parseDirectives(const = true)
     return GQLVariableDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         type = type,
         defaultValue = defaultValue,
@@ -358,20 +372,20 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseOperationTypeDefinition(): GQLOperationTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val operationType = parseOperationType()
     expectToken<Token.Colon>()
     val namedType = parseNamedType()
 
     return GQLOperationTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         operationType = operationType,
         namedType = namedType.name
     )
   }
 
   private fun parseSchemaDefinition(): GQLSchemaDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
 
     expectKeyword("schema")
@@ -381,7 +395,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLSchemaDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         directives = directives,
         rootOperationTypeDefinitions = operationTypeDefinitions
@@ -389,7 +403,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseSchemaExtension(): GQLSchemaExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectKeyword("extend")
     expectKeyword("schema")
     val directives = parseDirectives(const = true)
@@ -402,21 +416,21 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLSchemaExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         directives = directives,
         operationTypeDefinitions = operationTypeDefinitions
     )
   }
 
   private fun parseScalarTypeDefinition(): GQLScalarTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("scalar")
     val name = parseName()
     val directives = parseDirectives(const = true)
 
     return GQLScalarTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives
@@ -424,7 +438,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseScalarTypeExtension(): GQLScalarTypeExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectKeyword("extend")
     expectKeyword("scalar")
     val name = parseName()
@@ -435,7 +449,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLScalarTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         directives = directives
     )
@@ -443,7 +457,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
 
 
   private fun parseFieldDefinition(): GQLFieldDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     val name = parseName()
     val argumentDefinitions = parseArgumentDefinitions()
@@ -452,7 +466,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val directives = parseDirectives(const = true)
 
     return GQLFieldDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives,
@@ -466,7 +480,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseObjectTypeDefinition(): GQLTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     this.expectKeyword("type")
     val name = parseName()
@@ -475,7 +489,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val fields = parseFieldDefinitions()
 
     return GQLObjectTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         implementsInterfaces = interfaces,
@@ -485,7 +499,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseObjectTypeExtension(): GQLObjectTypeExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     this.expectKeyword("extend")
     this.expectKeyword("type")
     val name = parseName()
@@ -498,7 +512,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLObjectTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         implementsInterfaces = interfaces,
         directives = directives,
@@ -507,7 +521,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseInterfaceTypeDefinition(): GQLInterfaceTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("interface")
     val name = parseName()
@@ -516,7 +530,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val fields = parseFieldDefinitions()
 
     return GQLInterfaceTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         implementsInterfaces = interfaces,
@@ -526,7 +540,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseInterfaceTypeExtension(): GQLInterfaceTypeExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectKeyword("extend")
     expectKeyword("interface")
     val name = parseName()
@@ -539,7 +553,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLInterfaceTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         implementsInterfaces = interfaces,
         directives = directives,
@@ -548,7 +562,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseUnionTypeDefinition(): GQLUnionTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("union")
     val name = parseName()
@@ -556,7 +570,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val memberTypes = parseUnionMemberTypes()
 
     return GQLUnionTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives,
@@ -565,7 +579,6 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseUnionTypeExtension(): GQLUnionTypeExtension {
-    val sourceLocation = sourceLocation()
     val start = token
     expectKeyword("extend")
     expectKeyword("union")
@@ -578,7 +591,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLUnionTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         directives = directives,
         memberTypes = memberTypes
@@ -594,7 +607,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("input")
     val name = parseName()
@@ -602,7 +615,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val inputFields = parseInputFieldDefinitions()
 
     return GQLInputObjectTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives,
@@ -611,7 +624,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseInputObjectTypeExtension(): GQLInputObjectTypeExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectKeyword("extend")
     expectKeyword("input")
     val name = parseName()
@@ -623,7 +636,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLInputObjectTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         directives = directives,
         inputFields = inputFields,
@@ -635,7 +648,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseEnumTypeDefinition(): GQLEnumTypeDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("enum")
     val name = parseName()
@@ -643,7 +656,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val values = parseEnumValueDefinitions()
 
     return GQLEnumTypeDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives,
@@ -652,7 +665,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseEnumTypeExtension(): GQLEnumTypeExtension {
-    val sourceLocation = sourceLocation()
+    val start = token
     expectKeyword("extend")
     expectKeyword("enum")
     val name = parseName()
@@ -664,7 +677,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
 
     return GQLEnumTypeExtension(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         directives = directives,
         enumValues = values
@@ -676,13 +689,13 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseEnumValueDefinition(): GQLEnumValueDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     val name = parseEnumValueName()
     val directives = parseDirectives(const = true)
 
     return GQLEnumValueDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         directives = directives
@@ -705,7 +718,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseDirectiveDefinition(): GQLDirectiveDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("directive")
     expectToken<Token.At>()
@@ -716,7 +729,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val locations = parseDirectiveLocations()
 
     return GQLDirectiveDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         arguments = arguments,
@@ -776,7 +789,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseFragmentDefinition(): GQLFragmentDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     expectKeyword("fragment")
     val name = parseFragmentName()
@@ -785,7 +798,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val directives = parseDirectives(const = false)
     val selections = parseSelectionSet()
     return GQLFragmentDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         typeCondition = typeCondition,
@@ -799,7 +812,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseInputValueDefinition(): GQLInputValueDefinition {
-    val sourceLocation = sourceLocation()
+    val start = token
     val description = parseDescription()
     val name = parseName()
     expectToken<Token.Colon>()
@@ -812,7 +825,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     val directives = parseDirectives(const = true)
 
     return GQLInputValueDefinition(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         description = description,
         name = name,
         type = type,
@@ -851,12 +864,12 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseDirective(const: Boolean): GQLDirective {
-    val sourceLocation = sourceLocation()
+    val start = token
 
     expectToken<Token.At>()
     val name = parseName()
     val args = parseArguments(const)
-    return GQLDirective(sourceLocation, name, args)
+    return GQLDirective(sourceLocation(start), name, args)
   }
 
   private fun parseArguments(const: Boolean): List<GQLArgument> {
@@ -864,14 +877,15 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseArgument(const: Boolean): GQLArgument {
-    val sourceLocation = sourceLocation()
+    val start = token
     val name = parseName()
 
     expectToken<Token.Colon>()
+    val value = parseValueInternal(const)
     return GQLArgument(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
-        value = parseValueInternal(const)
+        value = value
     )
   }
 
@@ -887,24 +901,33 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     }
   }
 
+  private fun sourceLocation(): SourceLocation {
+    return SourceLocation(
+        token.line,
+        token.column,
+        token.endLine,
+        token.endColumn,
+        filePath
+    )
+  }
 
   private fun parseValueInternal(const: Boolean): GQLValue {
-    val sourceLocation = sourceLocation()
     return when (val t = token) {
       is Token.LeftBracket -> parseList(const)
       is Token.LeftBrace -> parseObject(const)
 
-      is Token.Int -> GQLIntValue(sourceLocation, t.value).also { advance() }
-      is Token.Float -> GQLFloatValue(sourceLocation, t.value).also { advance() }
-      is Token.String -> GQLStringValue(sourceLocation, t.value).also { advance() }
+      is Token.Int -> GQLIntValue(sourceLocation(), t.value).also { advance() }
+      is Token.Float -> GQLFloatValue(sourceLocation(), t.value).also { advance() }
+      is Token.String -> GQLStringValue(sourceLocation(), t.value).also { advance() }
       is Token.Name -> when (t.value) {
-        "true" -> GQLBooleanValue(sourceLocation, true).also { advance() }
-        "false" -> GQLBooleanValue(sourceLocation, false).also { advance() }
-        "null" -> GQLNullValue(sourceLocation).also { advance() }
-        else -> GQLEnumValue(sourceLocation, t.value).also { advance() }
+        "true" -> GQLBooleanValue(sourceLocation(), true).also { advance() }
+        "false" -> GQLBooleanValue(sourceLocation(), false).also { advance() }
+        "null" -> GQLNullValue(sourceLocation()).also { advance() }
+        else -> GQLEnumValue(sourceLocation(), t.value).also { advance() }
       }
 
       is Token.Dollar -> {
+        val start = token
         advance()
         if (const) {
           val n = expectOptionalToken<Token.Name>()
@@ -914,9 +937,10 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
             unexpected(n)
           }
         }
+        val name = parseName()
         return GQLVariableValue(
-            sourceLocation = sourceLocation,
-            name = parseName()
+            sourceLocation = sourceLocation(start),
+            name = name
         )
       }
 
@@ -934,12 +958,12 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseObjectField(const: Boolean): GQLObjectField {
-    val sourceLocation = sourceLocation()
+    val start = token
     val name = parseName()
     expectToken<Token.Colon>()
     val value = parseValueInternal(const)
     return GQLObjectField(
-        sourceLocation = sourceLocation,
+        sourceLocation = sourceLocation(start),
         name = name,
         value = value
     )
@@ -955,14 +979,14 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
   }
 
   private fun parseTypeInternal(): GQLType {
-    val sourceLocation = sourceLocation()
+    val start = token
 
     val type = if (expectOptionalToken<Token.LeftBracket>() != null) {
       val ofType = parseTypeInternal()
       expectToken<Token.RightBracket>()
 
       GQLListType(
-          sourceLocation = sourceLocation,
+          sourceLocation = sourceLocation(start),
           type = ofType
       )
     } else {
@@ -972,7 +996,7 @@ internal class Parser(source: BufferedSource, val filePath: String?): Closeable 
     return if (token is Token.ExclamationPoint) {
       advance()
       GQLNonNullType(
-          sourceLocation = sourceLocation,
+          sourceLocation = sourceLocation(start),
           type
       )
     } else {
