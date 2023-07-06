@@ -8,7 +8,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class AntlrParseTest {
+class ParserTest {
   @Test
   fun extraTokensAtEndOfFileAreDetected() {
     try {

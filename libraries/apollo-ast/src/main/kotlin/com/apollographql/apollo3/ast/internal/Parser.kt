@@ -48,22 +48,15 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.SourceLocation
+import okio.BufferedSource
+import okio.Closeable
 
-internal class Parser(val src: String, val filePath: String?) {
-  private val scanner = Scanner(src)
-  private var token = scanner.scan()
+internal class Parser(source: BufferedSource, val filePath: String?): Closeable {
+  private val lexer = Lexer(source)
+  private var token = lexer.nextToken()
   private var lookaheadToken: Token? = null
 
-  private fun advance() {
-    if (lookaheadToken != null) {
-      token = lookaheadToken!!
-      lookaheadToken = null
-    } else {
-      token = scanner.scan()
-    }
-  }
-
-  fun parseDocument(allowEmpty: Boolean): GQLDocument {
+  fun parseDocument(allowEmpty: Boolean): GQLDocument  {
     return GQLDocument(
         definitions = if (allowEmpty) {
           parseList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
@@ -72,6 +65,33 @@ internal class Parser(val src: String, val filePath: String?) {
         },
         filePath
     )
+  }
+
+  fun parseValue(): GQLValue  {
+    return parseTopLevel {
+      parseValueInternal(false)
+    }
+  }
+
+  fun parseSelections(): List<GQLSelection> {
+   return parseList<Token.StartOfFile, Token.EndOfFile, GQLSelection>(::parseSelection)
+  }
+
+  fun parseType(): GQLType {
+    return parseTopLevel(::parseTypeInternal)
+  }
+
+  override fun close() {
+    lexer.close()
+  }
+
+  private fun advance() {
+    if (lookaheadToken != null) {
+      token = lookaheadToken!!
+      lookaheadToken = null
+    } else {
+      token = lexer.nextToken()
+    }
   }
 
   private inline fun <reified T : Token> expectToken(): T {
@@ -249,7 +269,7 @@ internal class Parser(val src: String, val filePath: String?) {
   private fun lookaheadToken(): Token {
     if (token !is Token.EndOfFile) {
       if (lookaheadToken == null) {
-        lookaheadToken = scanner.scan()
+        lookaheadToken = lexer.nextToken()
       }
       return lookaheadToken!!
     }
@@ -867,15 +887,6 @@ internal class Parser(val src: String, val filePath: String?) {
     }
   }
 
-  fun parseValue(): GQLValue {
-    return parseTopLevel {
-      parseValueInternal(false)
-    }
-  }
-
-  fun parseSelections(): List<GQLSelection> {
-    return parseList<Token.StartOfFile, Token.EndOfFile, GQLSelection>(::parseSelection)
-  }
 
   private fun parseValueInternal(const: Boolean): GQLValue {
     val sourceLocation = sourceLocation()
@@ -942,8 +953,6 @@ internal class Parser(val src: String, val filePath: String?) {
         }
     )
   }
-
-  fun parseType(): GQLType = parseTopLevel(::parseTypeInternal)
 
   private fun parseTypeInternal(): GQLType {
     val sourceLocation = sourceLocation()

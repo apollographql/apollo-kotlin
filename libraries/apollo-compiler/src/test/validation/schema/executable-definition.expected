@@ -1,4 +1,4 @@
-ERROR: ValidationError (1:0)
+ERROR: ValidationError (1:1)
 Found an executable definition. Schemas should only contain type system definitions.
 ------------
 ERROR: ValidationError (-1:-1)

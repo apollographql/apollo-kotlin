@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
 import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth

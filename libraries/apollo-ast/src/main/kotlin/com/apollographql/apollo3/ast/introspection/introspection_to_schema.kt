@@ -44,7 +44,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   private val sourceLocation = SourceLocation(
       filePath = filePath,
       line = -1,
-      position = -1
+      column = -1
   )
 
   fun toGQLDocument(): GQLDocument {

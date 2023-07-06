@@ -203,6 +203,8 @@ The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes ar
 
 `GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition
 
+`SourceLocation.position` is renamed `SourceLocation.column` and is now 1-indexed
+
 ## Gradle configuration
 
 * Publishing is no longer configured automatically.
