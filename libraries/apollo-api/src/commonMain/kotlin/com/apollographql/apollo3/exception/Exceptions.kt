@@ -23,10 +23,9 @@ class DefaultApolloException(message: String? = null, cause: Throwable? = null):
  * A network error happened: socket closed, DNS issue, TLS problem, etc...
  *
  * @param message a message indicating what the error was.
- * @param platformCause the underlying cause. Might be null. When not null, it can be cast to:
- * - a [Throwable] on JVM platforms.
- * - a [NSError] on Darwin platforms.
- * to get more details about what went wrong.
+ * @param platformCause the underlying cause to get more details about what went wrong. Might be null. When not null, it can either be:
+ * - a [Throwable].
+ * - or a [NSError] on Darwin platforms.
  */
 class ApolloNetworkException(
     message: String? = null,
@@ -96,6 +95,9 @@ class JsonDataException(message: String) : ApolloException(message)
  */
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
+/**
+ * The response was successfully parsed but contained errors and partial data was explicitly disabled
+ */
 class ApolloGraphQLException(val errors: List<Error>): ApolloException("GraphQL error(s)")
 
 /**

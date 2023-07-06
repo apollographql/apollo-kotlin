@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import okio.IOException
 import okio.use
 
 class HttpNetworkTransport
@@ -100,14 +102,25 @@ private constructor(
       operation: Operation<D>,
       throwable: Throwable,
   ): ApolloResponse<D> {
-    val apolloException = if (throwable is ApolloException) {
-      throwable
-    } else {
-      // This happens for null pointer exceptions on missing fields
-      ApolloParseException(
-          message = "Failed to parse GraphQL http network response",
-          cause = throwable
-      )
+    val apolloException = when(throwable) {
+      is ApolloException -> {
+        // This happens for malformed JSON
+        throwable
+      }
+      is IOException -> {
+        // This happens when JsonReader returns an IO error
+        ApolloNetworkException(
+            message = "IOError while parsing the HTTP network response",
+            platformCause = throwable
+        )
+      }
+      else -> {
+        // This happens for null pointer exceptions on missing fields
+        ApolloParseException(
+            message = "Failed to parse GraphQL http network response",
+            cause = throwable
+        )
+      }
     }
     return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, exception = apolloException)
         .isLast(true)
