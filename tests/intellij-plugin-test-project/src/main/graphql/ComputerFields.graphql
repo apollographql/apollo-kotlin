@@ -1,7 +1,7 @@
 fragment computerFields on Computer {
-    cpu
-    screen {
-        resolution
-    }
-    releaseDate
+  cpu
+  screen {
+    resolution
+  }
+  releaseDate
 }

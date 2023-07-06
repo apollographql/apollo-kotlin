@@ -19,7 +19,7 @@ class KotlinDefinitionMarkerProviderTest : ApolloTestCase() {
   override fun setUp() {
     super.setUp()
     myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/Markers.kt")
-    myFixture.doHighlighting()
+    doHighlighting()
     infoList = DaemonCodeAnalyzerImpl.getLineMarkers(editor.document, project)
   }
 

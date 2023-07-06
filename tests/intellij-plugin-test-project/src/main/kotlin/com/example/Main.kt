@@ -20,6 +20,7 @@ suspend fun main() {
   val response = apolloClient.query(animalsQuery).execute()
   println(response.data!!.animals[0].name)
   println(response.data!!.animals[0].onDog?.fieldOnDogAndCat)
+  println(response.data!!.animals[0].onDog?.id)
 
   val computerFields = ComputerFields(
       cpu = "386",

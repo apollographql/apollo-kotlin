@@ -36,14 +36,14 @@ class ApolloFieldInsightsInspectionTest : ApolloTestCase() {
   fun testInspection() {
     myFixture.copyFileToProject("FieldInsights.graphqls", "FieldInsights.graphqls")
     myFixture.configureByFile("FieldInsights.graphql")
-    var highlightInfos = myFixture.doHighlighting()
+    var highlightInfos = doHighlighting()
     assertTrue(highlightInfos.any { it.description == "firstName has a high latency: ~150 ms" })
     val quickFixAction = myFixture.findSingleIntention("Enclose in @defer fragment");
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
     myFixture.checkResultByFile("FieldInsights.after.graphql");
 
-    highlightInfos = myFixture.doHighlighting()
+    highlightInfos = doHighlighting()
     assertTrue(highlightInfos.none { it.description == "firstName has a high latency: ~150 ms" })
   }
 }

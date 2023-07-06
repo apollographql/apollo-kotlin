@@ -15,5 +15,5 @@ fun Project.findPsiFilesByName(fileName: String, searchScope: GlobalSearchScope)
 }
 
 fun VirtualFile.isGenerated(project: Project): Boolean {
-  return GeneratedSourcesFilter.isGeneratedSourceByAnyFilter(this, project) || isApolloGenerated()
+  return GeneratedSourcesFilter.isGeneratedSourceByAnyFilter(this, project) || isApolloGenerated() || name.endsWith(".keystream")
 }

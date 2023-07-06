@@ -1,12 +1,15 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
+import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findChildrenOfType
+import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
+import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
@@ -17,9 +20,13 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.parentOfType
 import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
+import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
+import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry
+import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtParameter
+import org.jetbrains.kotlin.psi.KtProperty
 
 fun findKotlinOperationDefinitions(operationDefinition: GraphQLTypedOperationDefinition): List<KtClass> {
   val operationName = operationDefinition.name ?: return emptyList()
@@ -36,22 +43,101 @@ fun findKotlinOperationDefinitions(operationDefinition: GraphQLTypedOperationDef
 }
 
 fun findKotlinFieldDefinitions(graphQLField: GraphQLField): List<PsiElement> {
-  // TODO We can disambiguate fields with the same name by using the path to the field
-  return (
-      // Try operation first
-      graphQLField.parentOfType<GraphQLTypedOperationDefinition>()?.let { operationDefinition ->
-        findKotlinOperationDefinitions(operationDefinition)
+  val path = graphQLField.pathFromRoot()
+  val ktClasses = findKotlinClassOfParent(graphQLField)
+  return ktClasses?.mapNotNull { ktClass ->
+    // Try Data class first (operations)
+    var c = ktClass.findChildrenOfType<KtClass> { it.name == "Data" }.firstOrNull()
+    // Fallback to class itself (fragments)
+        ?: ktClass
+    var ktFieldDefinition: KtNamedDeclaration? = null
+    for ((i, pathElement) in path.withIndex()) {
+      // Look for the element in the constructor parameters (for data classes) and in the properties (for interfaces)
+      val properties = c.primaryConstructor?.valueParameters.orEmpty() + c.getProperties()
+      ktFieldDefinition = properties.firstOrNull { it.name == pathElement } ?: continue
+      val parameterType = ktFieldDefinition.type()
+      val parameterTypeFqName =
+          // Try Lists first
+          parameterType?.arguments?.firstOrNull()?.type?.fqName
+          // Fallback to regular type
+              ?: parameterType?.fqName
+              ?: break
+      if (i != path.lastIndex) {
+        c = ktClass.findChildrenOfType<KtClass> { it.fqName == parameterTypeFqName }.firstOrNull() ?: return@mapNotNull null
       }
-      // Fallback to fragment
-          ?: graphQLField.parentOfType<GraphQLFragmentDefinition>()?.let { fragmentDefinition ->
-            findKotlinFragmentClassDefinitions(fragmentDefinition)
-          }
-      )
-      ?.flatMap { psiClass ->
-        psiClass.findChildrenOfType<KtParameter> { it.name == graphQLField.name }
+    }
+    ktFieldDefinition
+  }
+  // Fallback to just finding any property with the name (for responseBased)
+      ?: ktClasses?.flatMap { ktClass ->
+        ktClass.findChildrenOfType<KtProperty> { it.name == graphQLField.name }
       }
       ?: emptyList()
 }
+
+/**
+ * Ex:
+ * ```graphql
+ * a {
+ *   b
+ *   ... on MyType {
+ *     c
+ *   }
+ * }
+ * ```
+ * returns `["a", "b", "onMyType", "c"]`
+ */
+private fun GraphQLField.pathFromRoot(): List<String> {
+  val path = mutableListOf<String>()
+  var element: GraphQLElement = this
+  while (true) {
+    element = when (element) {
+      is GraphQLInlineFragment -> {
+        path.add(0,element.kotlinFieldName() ?: break)
+        element.parent?.parent?.parent?.parent as? GraphQLElement ?: break
+      }
+
+      is GraphQLField -> {
+        path.add(0,element.name!!)
+        element.parent?.parent?.parent as? GraphQLElement ?: break
+      }
+
+      else -> break
+    }
+    if (element !is GraphQLField && element !is GraphQLInlineFragment) break
+  }
+  return path
+}
+
+fun findKotlinFragmentSpreadDefinitions(graphQLFragmentSpread: GraphQLFragmentSpread): List<PsiElement> {
+  return findKotlinClassOfParent(graphQLFragmentSpread)
+      ?.flatMap { psiClass ->
+        psiClass.findChildrenOfType<KtParameter> { it.name == graphQLFragmentSpread.name?.decapitalizeFirstLetter() }
+      }
+      ?: emptyList()
+}
+
+fun findKotlinInlineFragmentDefinitions(graphQLFragmentSpread: GraphQLInlineFragment): List<PsiElement> {
+  return findKotlinClassOfParent(graphQLFragmentSpread)
+      ?.flatMap { psiClass ->
+        psiClass.findChildrenOfType<KtParameter> { it.name == graphQLFragmentSpread.kotlinFieldName() }
+      }
+      ?: emptyList()
+}
+
+private fun GraphQLInlineFragment.kotlinFieldName() = typeCondition?.typeName?.name?.capitalizeFirstLetter()?.let { "on$it" }
+
+private fun findKotlinClassOfParent(gqlElement: GraphQLElement): List<KtClass>? {
+  // Try operation first
+  return gqlElement.parentOfType<GraphQLTypedOperationDefinition>()?.let { operationDefinition ->
+    findKotlinOperationDefinitions(operationDefinition)
+  }
+  // Fallback to fragment
+      ?: gqlElement.parentOfType<GraphQLFragmentDefinition>()?.let { fragmentDefinition ->
+        findKotlinFragmentClassDefinitions(fragmentDefinition)
+      }
+}
+
 
 fun findKotlinFragmentClassDefinitions(fragmentSpread: GraphQLFragmentSpread): List<KtClass> {
   val fragmentName = fragmentSpread.nameIdentifier.referenceName ?: return emptyList()
