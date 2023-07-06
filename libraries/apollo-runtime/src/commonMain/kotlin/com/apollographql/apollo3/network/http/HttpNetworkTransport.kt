@@ -110,7 +110,7 @@ private constructor(
       is IOException -> {
         // This happens when JsonReader returns an IO error
         ApolloNetworkException(
-            message = "IOError while parsing the HTTP network response",
+            message = "IOException while parsing the HTTP network response",
             platformCause = throwable
         )
       }
