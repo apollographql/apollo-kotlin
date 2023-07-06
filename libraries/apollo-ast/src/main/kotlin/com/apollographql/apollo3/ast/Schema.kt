@@ -131,7 +131,7 @@ class Schema internal constructor(
   @ApolloInternal
   fun toMap(): Map<String, Any> {
     return mapOf(
-        "sdl" to GQLDocument(definitions, null).toUtf8(),
+        "sdl" to GQLDocument(definitions, sourceLocation = null).toUtf8(),
         "keyFields" to keyFields.mapValues { it.value.toList().sorted() },
         "foreignNames" to foreignNames,
         "directivesToStrip" to directivesToStrip,

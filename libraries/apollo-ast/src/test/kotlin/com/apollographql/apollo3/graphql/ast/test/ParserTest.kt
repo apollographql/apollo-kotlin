@@ -1,6 +1,12 @@
 package com.apollographql.apollo3.graphql.ast.test
 
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
@@ -18,7 +24,7 @@ class ParserTest {
       ab bc
       """.trimIndent()
           .buffer()
-          .parseAsGQLDocument(useAntlr = false)
+          .parseAsGQLDocument()
           .getOrThrow()
       fail("An exception was expected")
     } catch (e: Exception) {
@@ -28,14 +34,14 @@ class ParserTest {
 
   @Test
   fun extraCommentsAtEndOfFileAreOk() {
-      """
+    """
       # comment before
       query Test { field }
       # comment after
       """.trimIndent()
-          .buffer()
-          .parseAsGQLDocument()
-          .getOrThrow()
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
   }
 
   @Test
@@ -55,5 +61,61 @@ class ParserTest {
         "\"\"\"").buffer().parseAsGQLValue().getOrThrow()
 
     assertEquals("first line\n \nsecond line", (value as GQLStringValue).value)
+  }
+
+  private inline fun <reified T> Any.cast() = this as T
+
+  @Test
+  fun endLineAndColumn() {
+    """
+      # comment before
+query Test {
+  # comment here
+  field(
+    first: 100
+    )
+}
+      """.trimIndent()
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
+        .definitions
+        .first()
+        .cast<GQLOperationDefinition>()
+        .selections
+        .first()
+        .cast<GQLField>()
+        .sourceLocation!!
+        .apply {
+          assertEquals(4, line)
+          assertEquals(6, endLine)
+          assertEquals(3, column)
+          assertEquals(5, endColumn)
+        }
+  }
+
+  @Test
+  fun endLineAndColumn2() {
+    """
+      type Something { 
+        fieldA: String
+      }
+    """.trimIndent()
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
+        .definitions
+        .first()
+        .cast<GQLObjectTypeDefinition>()
+        .fields
+        .first()
+        .cast<GQLFieldDefinition>()
+        .sourceLocation!!
+        .apply {
+          assertEquals(2, line)
+          assertEquals(2, endLine)
+          assertEquals(3, column)
+          assertEquals(16, endColumn)
+        }
   }
 }

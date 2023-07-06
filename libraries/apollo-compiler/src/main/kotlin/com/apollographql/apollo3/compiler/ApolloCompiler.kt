@@ -9,12 +9,14 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
@@ -65,7 +67,7 @@ object ApolloCompiler {
     }
 
     if (mainSchemaDocuments.size > 1) {
-      error("Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
+      error("Multiple schemas found:\n${mainSchemaDocuments.map { it.sourceLocation?.filePath }.joinToString("\n")}\n" +
           "Use different services for different schemas")
     } else if (mainSchemaDocuments.isEmpty()) {
       error("Schema(s) found:\n${schemaFiles.map { it.absolutePath }.joinToString("\n")}\n" +
@@ -94,7 +96,7 @@ object ApolloCompiler {
     checkScalars(schema, scalarMapping)
     return CodegenSchema(
         schema = schema,
-        packageName = packageNameGenerator.packageName(mainSchemaDocument.filePath!!),
+        packageName = packageNameGenerator.packageName(mainSchemaDocument.sourceLocation?.filePath!!),
         codegenModels = codegenModels,
         scalarMapping = scalarMapping,
         targetLanguage = targetLanguage,
@@ -109,7 +111,7 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, useAntlr = useAntlr)
+      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, options = ParserOptions(useAntlr = useAntlr))
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {

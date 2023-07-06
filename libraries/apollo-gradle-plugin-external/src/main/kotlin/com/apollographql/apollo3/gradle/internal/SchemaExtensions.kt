@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import org.gradle.api.logging.Logger
 import java.io.File

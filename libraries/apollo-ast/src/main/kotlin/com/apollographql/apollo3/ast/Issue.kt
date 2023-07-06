@@ -6,20 +6,20 @@ package com.apollographql.apollo3.ast
  */
 sealed class Issue(
     val message: String,
-    val sourceLocation: SourceLocation,
+    val sourceLocation: SourceLocation?,
     val severity: Severity,
 ) {
   /**
    * A grammar error
    */
-  class ParsingError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class ParsingError(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * A GraphqQL validation error as per the spec
    */
   class ValidationError(
       message: String,
-      sourceLocation: SourceLocation,
+      sourceLocation: SourceLocation?,
       severity: Severity = Severity.ERROR,
       val details: ValidationDetails = ValidationDetails.Other,
   ) : Issue(message, sourceLocation, severity)
@@ -27,17 +27,17 @@ sealed class Issue(
   /**
    * A deprecated field/enum is used
    */
-  class DeprecatedUsage(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+  class DeprecatedUsage(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.WARNING)
 
   /**
    * A variable is unused
    */
-  class UnusedVariable(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+  class UnusedVariable(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.WARNING)
 
   /**
    * A fragment has an @include or @skip directive. While this is valid GraphQL, the responseBased codegen does not support that
    */
-  class ConditionalFragment(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class ConditionalFragment(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * When models are nested, upper case fields are not supported as Kotlin doesn't allow a property name
@@ -48,20 +48,20 @@ sealed class Issue(
    *
    * This error is an Apollo Kotlin specific error
    */
-  class UpperCaseField(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class UpperCaseField(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * The GraphQL spec allows inline fragments without a type condition, but we currently forbid this because we need the type condition
    * to name the models in operation based codegen.
    */
-  class InlineFragmentWithoutTypeCondition(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class InlineFragmentWithoutTypeCondition(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * Certain enum value names such as `type` are reserved for Apollo.
    *
    * This error is an Apollo Kotlin specific error
    */
-  class ReservedEnumValueName(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class ReservedEnumValueName(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
 
   enum class Severity {
     WARNING,

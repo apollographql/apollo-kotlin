@@ -69,7 +69,7 @@ class KeyFieldsTest {
         .let { issue ->
           assertContains(issue.message, "Type 'Foo' cannot have key fields since it implements")
           assertContains(issue.message, "Node")
-          assertEquals(13, issue.sourceLocation.line)
+          assertEquals(13, issue.sourceLocation?.line)
         }
   }
 
@@ -89,7 +89,7 @@ class KeyFieldsTest {
         """.trimIndent(),
               issue.message
           )
-          assertEquals(15, issue.sourceLocation.line)
+          assertEquals(15, issue.sourceLocation?.line)
         }
   }
 

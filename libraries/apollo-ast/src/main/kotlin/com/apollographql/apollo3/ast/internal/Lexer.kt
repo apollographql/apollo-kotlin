@@ -291,7 +291,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
 
       when (c) {
         '\\'.code -> builder.appendCodePoint(readEscapeCharacter())
-        '\"'.code -> return Token.String(line, column(start), builder.toString())
+        '\"'.code -> return Token.String(line, column(start), line, column(position - 1), builder.toString())
         else -> builder.appendCodePoint(c)
       }
     }
@@ -353,6 +353,8 @@ internal class Lexer(val source: BufferedSource) : Closeable {
             return Token.String(
                 startLine,
                 column(start),
+                line,
+                column(position - 1),
                 blockLines.dedentBlockStringLines().joinToString("\n")
             )
           } else {
@@ -467,9 +469,9 @@ internal class Lexer(val source: BufferedSource) : Closeable {
     position += (i - 1).toInt()
 
     return if (isFloat) {
-      Token.Float(line, column(start), asString.toDouble())
+      Token.Float(line, column(start), column(position - 1), asString.toDouble())
     } else {
-      Token.Int(line, column(start), asString.toInt())
+      Token.Int(line, column(start), column(position - 1), asString.toInt())
     }
   }
 
@@ -509,7 +511,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
         break
       }
     }
-    return Token.Name(line = line, column = column(start), value = builder.toString())
+    return Token.Name(line = line, column = column(start), endColumn = column(position - 1), value = builder.toString())
   }
 
   private fun column(pos: Int): Int {
@@ -548,7 +550,7 @@ internal fun List<String>.dedentBlockStringLines(): List<String> {
     if (index == 0) {
       line
     } else {
-      line.substring(Math.min(commonIndent, line.length))
+      line.substring(commonIndent.coerceAtMost(line.length))
     }
   }.subList(firstNonEmptyLine ?: 0, lastNonEmptyLine + 1)
 }

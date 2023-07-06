@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 
 /**

@@ -27,7 +27,6 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
@@ -35,6 +34,7 @@ import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.transform2
 
@@ -203,7 +203,7 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
     val typeDefinition = typeDefinitions[typeName]
     if (typeDefinition == null) {
       if (it == "query") {
-        registerIssue("No schema definition and not 'Query' type found", sourceLocation = SourceLocation.UNKNOWN)
+        registerIssue("No schema definition and not 'Query' type found", sourceLocation = null)
       }
       return@mapNotNull null
     }

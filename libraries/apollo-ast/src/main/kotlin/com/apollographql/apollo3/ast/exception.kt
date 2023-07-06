@@ -5,23 +5,23 @@ import java.io.IOException
 
 open class SourceAwareException(
     val error: String,
-    val sourceLocation: SourceLocation,
+    val sourceLocation: SourceLocation?,
 ) : RuntimeException(preview(
     error = error,
     sourceLocation = sourceLocation
 )) {
 
   companion object {
-    private fun formatForIdea(sourceLocation: SourceLocation, description: String): String {
+    private fun formatForIdea(sourceLocation: SourceLocation?, description: String): String {
       // Idea understands a certain format and makes logs clickable
       // It's not 100% clear where this is specified but it at least works with
       // 2020.3
       return "e: ${sourceLocation.pretty()}: $description"
     }
 
-    private fun preview(error: String, sourceLocation: SourceLocation): String {
-      val filePath = sourceLocation.filePath
-      val preview = if (filePath != null && sourceLocation.line >= 1 && sourceLocation.column >= 1) {
+    private fun preview(error: String, sourceLocation: SourceLocation?): String {
+      val preview = if (sourceLocation?.filePath != null && sourceLocation.line >= 1 && sourceLocation.column >= 1) {
+        val filePath = sourceLocation.filePath
         val document = try {
           File(filePath).readText()
         } catch (e: IOException) {
@@ -53,18 +53,18 @@ open class SourceAwareException(
  *
  * This most likely a bug. For an example, an Antlr rule was added to the grammar but the Kotlin code does not handle it
  */
-class UnrecognizedAntlrRule(error: String, sourceLocation: SourceLocation) : SourceAwareException(error, sourceLocation)
+class UnrecognizedAntlrRule(error: String, sourceLocation: SourceLocation?) : SourceAwareException(error, sourceLocation)
 
 /**
  * An exception while converting to/from introspection
  *
  * This most likely means the json/sdl was inconsistent or corrupted
  */
-class ConversionException(error: String, sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : SourceAwareException(error, sourceLocation)
+class ConversionException(error: String, sourceLocation: SourceLocation? = null) : SourceAwareException(error, sourceLocation)
 
 /**
  * The schema is invalid
  *
  * TODO: transform this into issues
  */
-class SchemaValidationException(error: String, sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : SourceAwareException(error, sourceLocation)
+class SchemaValidationException(error: String, sourceLocation: SourceLocation? = null) : SourceAwareException(error, sourceLocation)

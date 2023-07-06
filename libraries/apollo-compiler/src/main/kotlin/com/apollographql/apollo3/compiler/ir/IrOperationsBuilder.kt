@@ -293,7 +293,7 @@ internal class IrOperationsBuilder(
         variables = variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeDefinition.name),
         sourceWithFragments = sourceWithFragments,
-        filePath = sourceLocation.filePath!!,
+        filePath = sourceLocation!!.filePath!!,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
         responseBasedDataModelGroup = responseBasedModelGroup
@@ -325,7 +325,7 @@ internal class IrOperationsBuilder(
     return IrFragmentDefinition(
         name = name,
         description = description,
-        filePath = sourceLocation.filePath!!,
+        filePath = sourceLocation!!.filePath!!,
         typeCondition = typeDefinition.name,
         variables = inferredVariables.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeCondition.name),
