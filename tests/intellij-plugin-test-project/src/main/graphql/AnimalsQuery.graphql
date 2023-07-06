@@ -1,14 +1,15 @@
 query animals {
-    animals {
-        id
-        name
-        ... on Cat {
-            meowVolume
-            fieldOnDogAndCat
-        }
-        ... on dog {
-            barkVolume
-            fieldOnDogAndCat
-        }
+  animals {
+    id
+    name
+    ... on Cat {
+      meowVolume
+      fieldOnDogAndCat
     }
+    ... on dog {
+      id
+      barkVolume
+      fieldOnDogAndCat
+    }
+  }
 }

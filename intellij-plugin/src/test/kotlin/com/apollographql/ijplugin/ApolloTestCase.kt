@@ -1,11 +1,15 @@
 package com.apollographql.ijplugin
 
+import com.apollographql.ijplugin.util.logw
 import com.intellij.application.options.CodeStyle
+import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.lang.jsgraphql.GraphQLLanguage
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.openapi.util.Segment
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightProjectDescriptor
@@ -69,7 +73,9 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
   }
 
   protected inline fun <reified T> PsiElement.assertTypeAndText(prefix: String) {
-    try { assertInstanceOf(this, T::class.java) } catch (e: AssertionError) {
+    try {
+      assertInstanceOf(this, T::class.java)
+    } catch (e: AssertionError) {
       throw AssertionError("Expected ${T::class.java.simpleName} but was ${this::class.java.simpleName}", e)
     }
     try {
@@ -89,4 +95,25 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     myFixture.editor.caretModel.moveToOffset(index)
   }
 
+  protected fun doHighlighting(): List<HighlightInfo> {
+    // Hack: sometimes doHighlighting fails with "AssertionError: PSI/document/model changes are not allowed during highlighting"
+    // Wait a bit for project to settle and try again
+    var attempt = 1
+    while (true) {
+      try {
+        return myFixture.doHighlighting()
+      } catch (e: AssertionError) {
+        if (attempt <= 3) {
+          logw(e, "Highlighting attempt #$attempt failed, retrying")
+          Thread.sleep(1000)
+          attempt++
+        } else {
+          throw e
+        }
+      }
+    }
+  }
+
+  protected val Segment.line: Int
+    get() = StringUtil.offsetToLineNumber(myFixture.editor.document.text, startOffset) + 1
 }

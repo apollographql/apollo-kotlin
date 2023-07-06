@@ -16,7 +16,7 @@ class ApolloUnusedOperationInspectionTest : ApolloTestCase() {
   @Test
   fun testNoUsageAndQuickFix() {
     myFixture.configureFromTempProjectFile("src/main/graphql/ComputersQuery.graphql")
-    var highlightInfos = myFixture.doHighlighting()
+    var highlightInfos = doHighlighting()
     assertTrue(highlightInfos.any { it.description == "Unused operation" })
 
     val quickFixAction = myFixture.findSingleIntention("Delete operation");
@@ -24,20 +24,19 @@ class ApolloUnusedOperationInspectionTest : ApolloTestCase() {
     myFixture.launchAction(quickFixAction)
     myFixture.checkResult("""
       fragment ScreenFields on Screen {
-          isColor
+        isColor
       }
 
     """.trimIndent());
 
-    highlightInfos = myFixture.doHighlighting()
+    highlightInfos = doHighlighting()
     assertTrue(highlightInfos.none { it.description == "Unused operation" })
-
   }
 
   @Test
   fun testUsage() {
     myFixture.configureFromTempProjectFile("src/main/graphql/AnimalsQuery.graphql")
-    val highlightInfos = myFixture.doHighlighting()
+    val highlightInfos = doHighlighting()
     assertTrue(highlightInfos.none { it.description == "Unused operation" })
   }
 }
