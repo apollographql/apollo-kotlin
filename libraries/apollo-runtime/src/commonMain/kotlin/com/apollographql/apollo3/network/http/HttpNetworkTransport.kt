@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import okio.EOFException
 import okio.IOException
 import okio.use
 
@@ -106,6 +107,13 @@ private constructor(
       is ApolloException -> {
         // This happens for malformed JSON
         throwable
+      }
+      is EOFException -> {
+        // This happens for premature end of file
+        ApolloParseException(
+            message = "EOFException while parsing the HTTP network response",
+            cause = throwable
+        )
       }
       is IOException -> {
         // This happens when JsonReader returns an IO error
