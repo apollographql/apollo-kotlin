@@ -3,13 +3,13 @@ package com.apollographql.apollo3.ast
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 
 /**
- * @param line the line number where the symbol starts, starting at 1
+ * @param line the line where the symbol starts, starting at 1
  *
- * @param column the column in the current line where the symbol starts, starting at 1
+ * @param column the column where the symbol starts, starting at 1
  *
- * @param endLine the line number where the symbol end, inclusive, starting at 1
+ * @param endLine the line where the symbol ends, inclusive, starting at 1
  *
- * @param endColumn the column in the current line where the symbol end, inclusive, starting at 1
+ * @param endColumn the column where the symbol ends, inclusive, starting at 1
  * *
  * @param filePath The path to the document containing the node
  * Might be null if the document origin is not known
