@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.navigation.compat.KotlinFindUsagesHandlerFactoryCompat
 import com.apollographql.ijplugin.navigation.findKotlinOperationDefinitions
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.isProcessCanceled
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
@@ -27,6 +28,7 @@ class ApolloUnusedOperationInspection : LocalInspectionTool() {
 
   companion object {
     fun isUnusedOperation(operationDefinition: GraphQLTypedOperationDefinition): Boolean {
+      if (isProcessCanceled()) return false
       if (!operationDefinition.project.apolloProjectService.apolloVersion.isAtLeastV3) return false
       val ktClasses = findKotlinOperationDefinitions(operationDefinition).ifEmpty {
         // Didn't find any generated class: maybe in the middle of writing a new operation, let's not report an error yet.

@@ -6,6 +6,7 @@ import com.apollographql.ijplugin.navigation.findKotlinFieldDefinitions
 import com.apollographql.ijplugin.navigation.findKotlinFragmentSpreadDefinitions
 import com.apollographql.ijplugin.navigation.findKotlinInlineFragmentDefinitions
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.isProcessCanceled
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLField
@@ -24,6 +25,7 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
     var isUnusedOperation = false
     return object : GraphQLVisitor() {
       override fun visitIdentifier(o: GraphQLIdentifier) {
+        if (isProcessCanceled()) return
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         if (isUnusedOperation) return
         val operation = o.findParentOfType<GraphQLTypedOperationDefinition>()
