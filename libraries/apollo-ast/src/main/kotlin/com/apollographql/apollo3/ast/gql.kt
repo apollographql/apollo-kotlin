@@ -129,9 +129,10 @@ sealed class GQLSelection : GQLNode
  */
 class GQLDocument(
     val definitions: List<GQLDefinition>,
-    val filePath: String?,
-    override val sourceLocation: SourceLocation? = SourceLocation(0, 0, -1, -1, filePath),
+    override val sourceLocation: SourceLocation?,
 ) : GQLNode {
+  constructor(definitions: List<GQLDefinition>, filePath: String?): this(definitions, SourceLocation(0, 0, -1, -1, filePath))
+
   override val children = definitions
 
   override fun writeInternal(writer: SDLWriter) {
@@ -140,18 +141,18 @@ class GQLDocument(
 
   fun copy(
       definitions: List<GQLDefinition> = this.definitions,
-      filePath: String? = this.filePath,
+      sourceLocation: SourceLocation? = this.sourceLocation,
   ): GQLDocument {
     return GQLDocument(
         definitions = definitions,
-        filePath = filePath
+        sourceLocation = sourceLocation
     )
   }
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         definitions = container.take(),
-        filePath = filePath
+        sourceLocation = sourceLocation
     )
   }
 

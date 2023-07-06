@@ -58,13 +58,15 @@ internal class Parser(source: BufferedSource, val withSourceLocation: Boolean, v
   private var lookaheadToken: Token? = null
 
   fun parseDocument(allowEmpty: Boolean): GQLDocument {
+    val start = token
+    val definitions = if (allowEmpty) {
+      parseList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
+    } else {
+      parseNonEmptyList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
+    }
     return GQLDocument(
-        definitions = if (allowEmpty) {
-          parseList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
-        } else {
-          parseNonEmptyList<Token.StartOfFile, Token.EndOfFile, GQLDefinition>(::parseDefinition)
-        },
-        filePath
+        definitions = definitions,
+        sourceLocation = sourceLocation(start)
     )
   }
 

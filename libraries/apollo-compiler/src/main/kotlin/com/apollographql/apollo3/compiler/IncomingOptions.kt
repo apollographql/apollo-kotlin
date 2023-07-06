@@ -36,7 +36,7 @@ class IncomingOptions(
       }
 
       if (mainSchemaDocuments.size > 1) {
-        error("Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
+        error("Multiple schemas found:\n${mainSchemaDocuments.map { it.sourceLocation?.filePath }.joinToString("\n")}\n" +
             "Use different services for different schemas")
       } else if (mainSchemaDocuments.isEmpty()) {
         error("Schema(s) found:\n${schemaFiles.map { it.absolutePath }.joinToString("\n")}\n" +
@@ -59,7 +59,7 @@ class IncomingOptions(
         // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
         println("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
       }
-      return result.getOrThrow() to mainSchemaDocument.filePath!!
+      return result.getOrThrow() to mainSchemaDocument.sourceLocation?.filePath!!
     }
   }
 }

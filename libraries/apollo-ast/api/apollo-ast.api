@@ -116,14 +116,13 @@ public final class com/apollographql/apollo3/ast/GQLDirectiveLocation : java/lan
 
 public final class com/apollographql/apollo3/ast/GQLDocument : com/apollographql/apollo3/ast/GQLNode {
 	public static final field Companion Lcom/apollographql/apollo3/ast/GQLDocument$Companion;
-	public fun <init> (Ljava/util/List;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-	public synthetic fun <init> (Ljava/util/List;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun copy (Ljava/util/List;Ljava/lang/String;)Lcom/apollographql/apollo3/ast/GQLDocument;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/GQLDocument;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
+	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo3/ast/SourceLocation;)Lcom/apollographql/apollo3/ast/GQLDocument;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/GQLDocument;Ljava/util/List;Lcom/apollographql/apollo3/ast/SourceLocation;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo3/ast/NodeContainer;)Lcom/apollographql/apollo3/ast/GQLNode;
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDefinitions ()Ljava/util/List;
-	public final fun getFilePath ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 	public fun writeInternal (Lcom/apollographql/apollo3/ast/SDLWriter;)V
 }
