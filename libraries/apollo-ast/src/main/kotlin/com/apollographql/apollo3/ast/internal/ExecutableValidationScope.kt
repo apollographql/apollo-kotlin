@@ -562,7 +562,7 @@ internal class ExecutableValidationScope(
   }
 
   private fun buildMessage(fieldA: GQLField, fieldB: GQLField, message: String): String {
-    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation?.pretty()}): " +
+    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation.pretty()}): " +
         "$message. Use different aliases on the fields to fetch both if this was intentional."
   }
 

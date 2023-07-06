@@ -924,6 +924,10 @@ public final class com/apollographql/apollo3/ast/SourceLocation$Companion {
 	public final fun getUNKNOWN ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
+public final class com/apollographql/apollo3/ast/SourceLocationKt {
+	public static final fun pretty (Lcom/apollographql/apollo3/ast/SourceLocation;)Ljava/lang/String;
+}
+
 public abstract interface class com/apollographql/apollo3/ast/TransformResult {
 }
 

@@ -34,6 +34,7 @@ import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.transform2
 
@@ -76,7 +77,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
     when (gqlDefinition) {
       is GQLSchemaDefinition -> {
         if (schemaDefinition != null) {
-          issues.add(Issue.ValidationError("schema is already defined. First definition was ${schemaDefinition!!.sourceLocation?.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(Issue.ValidationError("schema is already defined. First definition was ${schemaDefinition!!.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           schemaDefinition = gqlDefinition
         }
@@ -86,7 +87,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = directiveDefinitions[gqlDefinition.name]
         if (existing != null) {
           var severity: Issue.Severity = Issue.Severity.ERROR
-          val message = "Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation?.pretty()}"
+          val message = "Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
 
           if (gqlDefinition.name in apolloDefinitions.mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()) {
             // We override the definition to stay compatible with previous versions
@@ -107,7 +108,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       is GQLTypeDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
-          issues.add(Issue.ValidationError("Type '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation?.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(Issue.ValidationError("Type '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           typeDefinitions[gqlDefinition.name] = gqlDefinition
         }

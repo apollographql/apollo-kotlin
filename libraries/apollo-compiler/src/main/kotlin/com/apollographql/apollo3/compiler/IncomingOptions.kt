@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import java.io.File
 
@@ -56,7 +57,7 @@ class IncomingOptions(
 
       result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
         // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-        println("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
+        println("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
       }
       return result.getOrThrow() to mainSchemaDocument.filePath!!
     }

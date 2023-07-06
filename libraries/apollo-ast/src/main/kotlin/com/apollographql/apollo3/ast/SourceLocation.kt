@@ -38,3 +38,5 @@ class SourceLocation(
     val UNKNOWN = SourceLocation(-1, -1, -1, -1, null)
   }
 }
+
+fun SourceLocation?.pretty() = this?.pretty() ?: "(unknown location)"

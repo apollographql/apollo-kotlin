@@ -16,6 +16,7 @@ import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
@@ -87,7 +88,7 @@ object ApolloCompiler {
 
     result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      logger.warning("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
+      logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
     val schema = result.getOrThrow()
@@ -168,7 +169,7 @@ object ApolloCompiler {
 
     warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      options.logger.warning("w: ${it.sourceLocation?.pretty()}: Apollo: ${it.message}")
+      options.logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
     if (options.failOnWarnings && warnings.isNotEmpty()) {
       throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
