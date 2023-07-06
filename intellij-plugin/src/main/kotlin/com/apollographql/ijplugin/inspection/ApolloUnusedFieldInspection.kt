@@ -26,8 +26,8 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
       override fun visitIdentifier(o: GraphQLIdentifier) {
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         if (isUnusedOperation) return
-        val operation = o.findParentOfType<GraphQLTypedOperationDefinition>() ?: return
-        if (ApolloUnusedOperationInspection.isUnusedOperation(operation)) {
+        val operation = o.findParentOfType<GraphQLTypedOperationDefinition>()
+        if (operation != null && ApolloUnusedOperationInspection.isUnusedOperation(operation)) {
           // The whole operation is unused, no need to check the fields
           isUnusedOperation = true
           return
@@ -46,7 +46,7 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
             findKotlinInlineFragmentDefinitions(inlineFragment)
           }
           else -> return
-        }
+        }.ifEmpty { return }
 
         val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(o.project)
         val hasUsageProcessor = HasUsageProcessor()
