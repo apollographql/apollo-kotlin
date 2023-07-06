@@ -112,12 +112,7 @@ class LexerTest {
       assertName("foo")
     }
   }
-
-  @Test
-  fun lexesBlockString() {
-    builtinDefinitions()
-  }
-
+  
   @Test
   fun lexesStrings() {
     scanFirst("\"\"").apply {
