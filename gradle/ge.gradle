@@ -6,7 +6,6 @@ gradleEnterprise {
   allowUntrustedServer = false
 
   buildScan {
-    publishAlways()
     publishIfAuthenticated()
 
     uploadInBackground = !isCI
