@@ -2,28 +2,28 @@ package com.apollographql.apollo3.graphql.ast.test.keyfields
 
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.checkKeyFields
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.ast.introspection.toSchema
-import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.graphql.ast.test.CWD
+import okio.Path.Companion.toPath
 import okio.buffer
-import okio.source
-import org.junit.Assert.fail
 import kotlin.test.Test
-import java.io.File
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class KeyFieldsTest {
   @Test
   fun testAddRequiredFields() {
-    val schema = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/schema.graphqls").toSchema()
+    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/schema.graphqls".toPath().toSchema()
 
-    val definitions = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/operations.graphql")
-        .source()
+    val definitions = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/operations.graphql".toPath()
+        .let { HOST_FILESYSTEM.source(it) }
         .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
@@ -39,7 +39,7 @@ class KeyFieldsTest {
       checkKeyFields(operation, schema, emptyMap())
       fail("an exception was expected")
     } catch (e: Exception) {
-      assert(e.message?.contains("are not queried") == true)
+      assertTrue(e.message?.contains("are not queried") == true)
     }
 
     val operationWithKeyFields = addRequiredFields(operation, "ifFragments", schema, fragments)
@@ -48,21 +48,25 @@ class KeyFieldsTest {
 
   @Test
   fun testExtendInterfaceTypePolicyDirective() {
-    val schema = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls").toSchema()
+    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls".toPath().toSchema()
     schema.toGQLDocument().validateAsSchema()
     assertEquals(setOf("id"), schema.keyFields("Node"))
   }
 
   @Test
   fun testExtendUnionTypePolicyDirective() {
-    val schema = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls").toSchema()
+    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls".toPath().toSchema()
     assertEquals(setOf("x"), schema.keyFields("Foo"))
   }
 
   @Test
   fun testObjectWithTypePolicyAndInterfaceTypePolicyErrors() {
-    File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectAndInterfaceTypePolicySchema.graphqls")
-        .toSchemaGQLDocument()
+    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
+        .toPath()
+        .let { HOST_FILESYSTEM.source(it) }
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
         .validateAsSchema()
         .issues
         .first()
@@ -75,8 +79,12 @@ class KeyFieldsTest {
 
   @Test
   fun testObjectInheritingTwoInterfacesWithDifferentKeyFields() {
-    File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectInheritingTwoInterfaces.graphqls")
-        .toSchemaGQLDocument()
+    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectInheritingTwoInterfaces.graphqls"
+        .toPath()
+        .let { HOST_FILESYSTEM.source(it) }
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
         .validateAsSchema()
         .issues
         .first()
@@ -95,8 +103,12 @@ class KeyFieldsTest {
 
   @Test
   fun testInterfacesWithoutKeyFields() {
-    File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/interfacesWithoutKeyFields.graphqls")
-        .toSchemaGQLDocument()
+    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/interfacesWithoutKeyFields.graphqls"
+        .toPath()
+        .let { HOST_FILESYSTEM.source(it) }
+        .buffer()
+        .parseAsGQLDocument()
+        .getOrThrow()
         .validateAsSchema()
         .issues
         .let { issues ->

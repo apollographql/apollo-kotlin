@@ -4,12 +4,9 @@ import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLType
-import com.apollographql.apollo3.ast.removeLocation
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import okio.Buffer
-import org.junit.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

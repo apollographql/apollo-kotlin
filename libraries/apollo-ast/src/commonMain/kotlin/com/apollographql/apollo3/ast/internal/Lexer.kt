@@ -144,7 +144,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
             position += 2
             return Token.Spread(line, column(start))
           } else {
-            throw LexerException("Unfinished spread operator", line, column(start), null)
+            throw LexerException("Unterminated spread operator", line, column(start), null)
           }
         }
 
@@ -166,7 +166,9 @@ internal class Lexer(val source: BufferedSource) : Closeable {
           }
         }
 
-        else -> throw LexerException("Unexpected symbol '${b.asChar()}' (${b.toInt().and(0xff).toString(16)})", line, column(start), null)
+        else -> {
+          throw LexerException("Unexpected symbol '${b.asChar()}' (0x${b.toInt().and(0xff).toString(16)})", line, column(start), null)
+        }
       }
     }
 
@@ -180,7 +182,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
   // we are just after '\'
   private fun readUnicodeEscape(): Int {
     if (!source.request(1)) {
-      throw LexerException("Unfinished Unicode escape", line, column(position), null)
+      throw LexerException("Unterminated Unicode escape", line, column(position), null)
     }
 
     return when (buffer[0]) {
@@ -204,7 +206,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
     // An int32 has 8 hex digits max
     while (i < 8) {
       if (!source.request(1)) {
-        throw LexerException("Unfinished Unicode escape", line, column(position), null)
+        throw LexerException("Unterminated Unicode escape", line, column(position), null)
       }
       val b = buffer.readByte()
       position++
@@ -239,7 +241,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
         this - 0x57
       }
 
-      else -> throw LexerException("Invalid Unicode escape '$this", line, column(position), null)
+      else -> throw LexerException("Invalid Unicode escape '$this'", line, column(position), null)
     }
   }
 
@@ -249,7 +251,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
 
   private fun readFixedUnicodeEscape(): Int {
     if (!source.request(4)) {
-      throw LexerException("Unfinished Unicode escape", line, column(position), null)
+      throw LexerException("Unterminated Unicode escape", line, column(position), null)
     }
 
     return (buffer.readHexDigit().shl(12))
@@ -260,7 +262,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
 
   private fun readEscapeCharacter(): Int {
     if (!source.request(1)) {
-      throw LexerException("Unfinished escape", line, column(position), null)
+      throw LexerException("Unterminated escape", line, column(position), null)
     }
     val b = buffer.readByte()
     position++
@@ -275,7 +277,7 @@ internal class Lexer(val source: BufferedSource) : Closeable {
       'r'.code.toByte() -> '\r'.code
       't'.code.toByte() -> '\t'.code
       'u'.code.toByte() -> readUnicodeEscape()
-      else -> throw LexerException("Invalid escape character '\\${b.asChar()}'", line, column(position), null)
+      else -> throw LexerException("Invalid escape character '\\${b.asChar()}'", line, column(position - 2), null)
     }
   }
 
@@ -286,12 +288,13 @@ internal class Lexer(val source: BufferedSource) : Closeable {
     while (true) {
       val c = readUtf8CodePointOrEof()
       if (c == -1) {
-        throw LexerException("Unfinished string", line, column(position), null)
+        throw LexerException("Unterminated string", line, column(position), null)
       }
 
       when (c) {
         '\\'.code -> builder.appendCodePointMpp(readEscapeCharacter())
         '\"'.code -> return Token.String(line, column(start), line, column(position - 1), builder.toString())
+        '\r'.code, '\n'.code -> throw LexerException("Unterminated string", line, column(position - 1), null)
         else -> builder.appendCodePointMpp(c)
       }
     }

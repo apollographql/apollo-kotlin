@@ -1,23 +1,25 @@
 package com.apollographql.apollo3.graphql.ast.test.introspection
 
+import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.graphql.ast.test.CWD
 import okio.Buffer
+import okio.Path.Companion.toPath
 import kotlin.test.Test
-import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class IntrospectionTest {
   @Test
   fun parseSchema() {
     try {
-      File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json").toSchemaGQLDocument().validateAsSchema().getOrThrow()
+      "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json".toPath().toSchema()
     } catch (e: SourceAwareException) {
-      assert(e.message!!.contains("is defined multiple times"))
+      assertTrue(e.message!!.contains("is defined multiple times"))
     }
   }
 
