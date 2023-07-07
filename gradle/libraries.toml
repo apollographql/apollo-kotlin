@@ -140,7 +140,8 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.14.0" }
-okio = "com.squareup.okio:okio-jvm:3.3.0"
+okio = "com.squareup.okio:okio:3.3.0"
+okio-nodefilesystem = "com.squareup.okio:okio-nodefilesystem:3.3.0"
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "1.12.0" }
 rx-java2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java2" }

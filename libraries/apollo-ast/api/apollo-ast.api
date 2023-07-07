@@ -835,7 +835,7 @@ public final class com/apollographql/apollo3/ast/ParserOptions {
 	public fun <init> ()V
 	public fun <init> (ZZZ)V
 	public synthetic fun <init> (ZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getAllowEmpty ()Z
+	public final fun getAllowEmptyDocuments ()Z
 	public final fun getUseAntlr ()Z
 	public final fun getWithSourceLocation ()Z
 }

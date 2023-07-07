@@ -12,7 +12,7 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(okio())
+        api(golatac.lib("okio"))
         api(golatac.lib("uuid"))
         api(project(":apollo-annotations"))
       }
