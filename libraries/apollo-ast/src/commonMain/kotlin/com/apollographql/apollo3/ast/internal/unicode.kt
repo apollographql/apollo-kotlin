@@ -11,6 +11,9 @@ private const val MIN_LOW_SURROGATE = 0xDC00
 private const val HIGH_SURROGATE_ENCODE_OFFSET =
     (MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10))
 
+private const val SURROGATE_DECODE_OFFSET =
+    MIN_SUPPLEMENTARY_CODE_POINT - (MIN_HIGH_SURROGATE shl 10) - MIN_LOW_SURROGATE
+
 internal fun isBmpCodePoint(codePoint: Int): Boolean {
   return codePoint ushr 16 == 0
 }
@@ -21,6 +24,10 @@ internal fun highSurrogate(codePoint: Int): Char {
 
 internal fun lowSurrogate(codePoint: Int): Char {
   return ((codePoint and 0x3FF) + MIN_LOW_SURROGATE).toChar()
+}
+
+internal fun codePoint(highSurrogate: Int, lowSurrogate: Int): Int {
+  return (highSurrogate shl 10) + lowSurrogate + SURROGATE_DECODE_OFFSET
 }
 
 internal fun StringBuilder.appendCodePointMpp(codePoint: Int) {
