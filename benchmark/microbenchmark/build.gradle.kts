@@ -49,11 +49,11 @@ dependencies {
   ).forEach {
     val ga = it.key
     val platform = it.value
-    implementation("$ga-$platform")
+    implementation(ga)
     /**
      * Because we want to test both artifacts and they contain the same symbols, relocate the incubating ones
      */
-    implementation("$ga-incubating-$platform") {
+    implementation("$ga-incubating") {
       attributes {
         attribute(relocated, true)
       }
