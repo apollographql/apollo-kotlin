@@ -1465,6 +1465,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final fun toIntrospectionSchema (Ljava/io/File;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
 	public static final fun toIntrospectionSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
 	public static final fun toIntrospectionSchema (Lokio/BufferedSource;Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
+	public static final fun toIntrospectionSchema (Lokio/Path;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
 	public static synthetic fun toIntrospectionSchema$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
 	public static final fun toJson (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;)Ljava/lang/String;
 	public static final fun writeTo (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Ljava/io/File;)V
