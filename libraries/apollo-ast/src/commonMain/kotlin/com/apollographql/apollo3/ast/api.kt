@@ -34,7 +34,7 @@ fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = n
 
 private fun <T: Any> BufferedSource.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
   return try {
-    GQLResult(Parser(this, withSourceLocation, filePath).use(block), emptyList())
+    GQLResult(Parser(this.use { it.readUtf8() }, withSourceLocation, filePath).block(), emptyList())
   } catch (e: ParserException) {
     GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, -1, -1, filePath))))
   } catch (e: LexerException) {

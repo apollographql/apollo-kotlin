@@ -37,6 +37,13 @@ open class Benchmark {
   }
 
   @Benchmark
+  fun graphqlJava(): Double {
+    return testFiles.sumOf {
+      graphql.parser.Parser.parse(it.readText()).definitions.size.toDouble()
+    }
+  }
+
+  @Benchmark
   fun antlrTest(): Double {
     return testFiles.sumOf {
       it.source().buffer().parseAsGQLDocument(options = ParserOptions(useAntlr = true)).getOrThrow().definitions.size.toDouble()
@@ -50,10 +57,4 @@ open class Benchmark {
     }
   }
 
-  @Benchmark
-  fun graphqlJava(): Double {
-    return testFiles.sumOf {
-      graphql.parser.Parser.parse(it.readText()).definitions.size.toDouble()
-    }
-  }
 }

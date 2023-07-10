@@ -1,7 +1,10 @@
 @file:JvmMultifileClass
 @file:JvmName("IntrospectionSchemaKt")
+
 package com.apollographql.apollo3.ast.introspection
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,6 +12,8 @@ import kotlinx.serialization.json.Json
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.decodeHex
+import okio.Path
+import okio.buffer
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -243,3 +248,9 @@ fun IntrospectionSchema.toJson(): String {
   return json.encodeToString(IntrospectionSchema.serializer(), this)
 }
 
+@ApolloExperimental
+fun Path.toIntrospectionSchema(): IntrospectionSchema {
+  return HOST_FILESYSTEM
+      .source(this)
+      .buffer().toIntrospectionSchema("from `$this`")
+}

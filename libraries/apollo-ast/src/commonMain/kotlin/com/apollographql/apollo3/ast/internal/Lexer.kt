@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.ast.internal
 
-import okio.Buffer
 import okio.BufferedSource
-import okio.Closeable
-import okio.EOFException
 
 /**
  * A GraphQL lexer that emits [Token]s from a [BufferedSource]
@@ -21,53 +18,49 @@ import okio.EOFException
  * - [okio.IOException] on I/O error
  * - most likely [kotlin.IndexOutOfBoundsException] if trying to lex a large file
  */
-internal class Lexer(val source: BufferedSource) : Closeable {
-  private var position = 0
+internal class Lexer(val src: String) {
+  /**
+   *  Char position in the String (UTF-16)
+   *  Because other tools use unicode position, this might create a disconnect. If that becomes an issue, we'll need to add a second
+   *  property for tracking the unicode position
+   */
+  private var pos = 0
+  private val len = src.length
   private var line = 1
   private var lineStart = 0
   private var started = false
-  private val buffer = source.buffer
-
-  private fun readUtf8CodePointOrEof(): Int {
-    return try {
-      source.readUtf8CodePoint().also { position++ }
-    } catch (e: EOFException) {
-      -1
-    }
-  }
 
   private fun discardComment() {
     while (true) {
-      val c = readUtf8CodePointOrEof()
-      if (c == -1) {
+      if (pos == len) {
         return // EOF will be caught by the main loop
       }
+      val c = src[pos++]
 
       when (c) {
-        '\n'.code -> {
+        '\n' -> {
           line++
-          lineStart = position
+          lineStart = pos
           break
         }
 
-        '\r'.code -> {
-          if (source.request(1) && buffer[0] == '\n'.code.toByte()) {
-            source.skip(1)
-            position++
+        '\r' -> {
+          if (pos < len && src[pos] == '\n') {
+            pos++
           }
           line++
-          lineStart = position
+          lineStart = pos
           break
         }
       }
     }
   }
 
-  private fun Byte.isNameStart(): Boolean {
+  private fun Char.isNameStart(): Boolean {
     return when (this) {
-      '_'.code.toByte(),
-      in 'A'.code.toByte()..'Z'.code.toByte(),
-      in 'a'.code.toByte()..'z'.code.toByte(),
+      '_',
+      in 'A'..'Z',
+      in 'a'..'z',
       -> true
 
       else -> false
@@ -80,273 +73,311 @@ internal class Lexer(val source: BufferedSource) : Closeable {
       return Token.StartOfFile
     }
 
-    while (source.request(1)) {
-      val b = buffer[0]
+    while (pos < len) {
+      val c = src[pos]
 
       // do not consume the byte just yet, names and numbers need the first by
-      if (b.isNameStart()) {
+      if (c.isNameStart()) {
         return readName()
       }
-      if (b.isDigit() || b == '-'.code.toByte()) {
+      if (c.isDigit() || c == '-') {
         return readNumber()
       }
 
       // everything else can consume the byte
-      val start = position
-      buffer.skip(1)
-      position++
+      val start = pos
+      pos++
 
-      when (b) {
-        // BOM https://www.unicode.org/glossary/#byte_order_mark
-        0xef.toByte() -> {
-          if (!source.request(2) || buffer[0] != 0xbb.toByte() || buffer[1] != 0xbf.toByte()) {
-            throw LexerException("Invalid BOM", line, column(start), null)
-          }
-          buffer.skip(2)
-          position += 1
-          continue
-        }
-
+      when (c) {
         // whitespace
-        '\t'.code.toByte(),
-        ' '.code.toByte(),
-        ','.code.toByte(),
+        0xfeff.toChar(), // BOM https://www.unicode.org/glossary/#byte_order_mark
+        '\t',
+        ' ',
+        ',',
         -> {
           continue
         }
 
-        '\n'.code.toByte() -> {
+        '\n' -> {
           line++
-          lineStart = position
+          lineStart = pos
         }
 
-        '\r'.code.toByte() -> {
-          if (source.request(1) && buffer[0] == '\n'.code.toByte()) {
-            source.skip(1)
-            position++
+        '\r' -> {
+          if (pos < len && src[pos] == '\n') {
+            pos++
           }
           line++
-          lineStart = position
+          lineStart = pos
         }
 
-        '#'.code.toByte() -> {
+        '#' -> {
           discardComment()
         }
 
-        '!'.code.toByte() -> return Token.ExclamationPoint(line, column(start))
-        '$'.code.toByte() -> return Token.Dollar(line, column(start))
-        '&'.code.toByte() -> return Token.Ampersand(line, column(start))
-        '('.code.toByte() -> return Token.LeftParenthesis(line, column(start))
-        ')'.code.toByte() -> return Token.RightParenthesis(line, column(start))
-        '.'.code.toByte() -> {
-          if (source.request(2) && buffer[0] == '.'.code.toByte() && buffer[1] == '.'.code.toByte()) {
-            buffer.skip(2)
-            position += 2
+        '!' -> return Token.ExclamationPoint(line, column(start))
+        '$' -> return Token.Dollar(line, column(start))
+        '&' -> return Token.Ampersand(line, column(start))
+        '(' -> return Token.LeftParenthesis(line, column(start))
+        ')' -> return Token.RightParenthesis(line, column(start))
+        '.' -> {
+          if (pos + 1 < len && src[pos] == '.' && src[pos + 1] == '.') {
+            pos += 2
             return Token.Spread(line, column(start))
           } else {
-            throw LexerException("Unfinished spread operator", line, column(start), null)
+            throw LexerException("Unterminated spread operator", line, column(start), null)
           }
         }
 
-        ':'.code.toByte() -> return Token.Colon(line, column(start))
-        '='.code.toByte() -> return Token.Equals(line, column(start))
-        '@'.code.toByte() -> return Token.At(line, column(start))
-        '['.code.toByte() -> return Token.LeftBracket(line, column(start))
-        ']'.code.toByte() -> return Token.RightBracket(line, column(start))
-        '{'.code.toByte() -> return Token.LeftBrace(line, column(start))
-        '}'.code.toByte() -> return Token.RightBrace(line, column(start))
-        '|'.code.toByte() -> return Token.Pipe(line, column(start))
-        '"'.code.toByte() -> {
-          return if (source.request(2) && buffer[0] == '"'.code.toByte() && buffer[1] == '"'.code.toByte()) {
-            buffer.skip(2)
-            position += 2
+        ':' -> return Token.Colon(line, column(start))
+        '=' -> return Token.Equals(line, column(start))
+        '@' -> return Token.At(line, column(start))
+        '[' -> return Token.LeftBracket(line, column(start))
+        ']' -> return Token.RightBracket(line, column(start))
+        '{' -> return Token.LeftBrace(line, column(start))
+        '}' -> return Token.RightBrace(line, column(start))
+        '|' -> return Token.Pipe(line, column(start))
+        '"' -> {
+          return if (pos + 1 < len && src[pos] == '"' && src[pos + 1] == '"') {
+            pos += 2
             readBlockString()
           } else {
             readString()
           }
         }
 
-        else -> throw LexerException("Unexpected symbol '${b.asChar()}' (${b.toInt().and(0xff).toString(16)})", line, column(start), null)
+        else -> {
+          throw LexerException("Unexpected symbol '${c}' (0x${c.code.toString(16)})", line, column(start), null)
+        }
       }
     }
 
-    return Token.EndOfFile(line, column(position))
+    return Token.EndOfFile(line, column(pos))
   }
 
-  private fun Byte.asChar(): Char {
-    return Char(toInt().and(0xffff))
-  }
-
-  // we are just after '\'
+  // we are just after "\u"
   private fun readUnicodeEscape(): Int {
-    if (!source.request(1)) {
-      throw LexerException("Unfinished Unicode escape", line, column(position), null)
+    if (pos == len) {
+      throw LexerException("Unterminated Unicode escape", line, column(pos), null)
     }
 
-    return when (buffer[0]) {
-      '{'.code.toByte() -> {
-        buffer.skip(1)
-        position++
-        readVariableUnicodeEscape()
+    when (src[pos]) {
+      '{' -> {
+        pos++
+        return readVariableUnicodeEscape()
       }
 
       else -> {
-        // TODO verify that 2 consecutive surrogates form a valid pair
-        readFixedUnicodeEscape()
+        val c1 = readFixedUnicodeEscape()
+
+        if (c1.isUnicodeScalar()) {
+          return c1
+        }
+
+        val start = pos - 6
+
+        // GraphQL allows JSON-style surrogate pair escape sequences, but only when
+        // a valid pair is formed.
+
+        if (c1.isLeadingSurrogate()) {
+          if (pos + 1 < len
+              && src[pos] == '\\'
+              && src[pos + 1] == 'u') {
+            pos += 2
+            val c2 = readFixedUnicodeEscape()
+            if (c2.isTrailingSurrogate()) {
+              return codePoint(c1, c2)
+            }
+          }
+        }
+
+        throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
       }
     }
+  }
+
+
+  private fun Int.isLeadingSurrogate(): Boolean {
+    return this in 0xd800..0xdbff;
+  }
+
+  private fun Int.isTrailingSurrogate(): Boolean {
+    return this in 0xdc00..0xdfff;
+  }
+
+  private fun Int.isUnicodeScalar(): Boolean {
+    return this in 0x0000..0xd7ff || this in 0xe000..0x10ffff
   }
 
   // we are just after '{'
   private fun readVariableUnicodeEscape(): Int {
     var i = 0
     var result = 0
-    // An int32 has 8 hex digits max
-    while (i < 8) {
-      if (!source.request(1)) {
-        throw LexerException("Unfinished Unicode escape", line, column(position), null)
-      }
-      val b = buffer.readByte()
-      position++
 
-      if (b == '}'.code.toByte()) {
+    // An int32 has 8 hex digits max
+    while (i < 9) {
+      if (pos == len) {
+        throw LexerException("Unterminated Unicode escape", line, column(pos), null)
+      }
+      val c = src[pos++]
+
+      if (c == '}') {
         if (i == 0) {
-          throw LexerException("Invalid Unicode escape", line, column(position), null)
+          val start = pos - i - 4
+          // empty unicode escape?
+          throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
+        }
+
+        if (!result.isUnicodeScalar()) {
+          val start = pos - i - 4
+          throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
         }
 
         // Verify that the code point is valid?
         return result
       }
 
-      result = result.shl(4).or(b.decodeHex())
+      val h = c.decodeHex()
+      if (h == -1) {
+        val start = pos - i - 4
+        throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
+      }
+
+      result = result.shl(4).or(h)
       i++
     }
 
-    throw LexerException("Invalid Unicode escape", line, column(position), null)
+    val start = pos - i - 3
+    throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
   }
 
-  private fun Byte.decodeHex(): Int {
-    return when (this) {
+  private fun Char.decodeHex(): Int {
+    return when (this.code) {
       in 0x30..0x39 -> {
-        this - 0x30
+        this.code - 0x30
       }
 
       in 0x41..0x46 -> {
-        this - 0x37
+        this.code - 0x37
       }
 
       in 0x61..0x66 -> {
-        this - 0x57
+        this.code - 0x57
       }
 
-      else -> throw LexerException("Invalid Unicode escape '$this", line, column(position), null)
+      else -> -1
     }
-  }
-
-  private fun Buffer.readHexDigit(): Int {
-    return readByte().decodeHex().also { position++ }
   }
 
   private fun readFixedUnicodeEscape(): Int {
-    if (!source.request(4)) {
-      throw LexerException("Unfinished Unicode escape", line, column(position), null)
+    if (pos + 4 >= len) {
+      throw LexerException("Unterminated Unicode escape", line, column(pos), null)
     }
 
-    return (buffer.readHexDigit().shl(12))
-        .or(buffer.readHexDigit().shl(8))
-        .or(buffer.readHexDigit().shl(4))
-        .or(buffer.readHexDigit())
+    var result = 0
+    for (i in 0..3) {
+      val h = src[pos++].decodeHex()
+      if (h == -1) {
+        val start = pos - i - 3
+        throw LexerException("Invalid Unicode escape '${src.substring(start, pos)}'", line, column(start), null)
+      }
+      result = result.shl(4).or(h)
+    }
+
+    return result
   }
 
   private fun readEscapeCharacter(): Int {
-    if (!source.request(1)) {
-      throw LexerException("Unfinished escape", line, column(position), null)
+    if (pos == len) {
+      throw LexerException("Unterminated escape", line, column(pos), null)
     }
-    val b = buffer.readByte()
-    position++
+    val c = src[pos++]
 
-    return when (b) {
-      '"'.code.toByte() -> '"'.code
-      '\\'.code.toByte() -> '\\'.code
-      '/'.code.toByte() -> '/'.code
-      'b'.code.toByte() -> '\b'.code
-      'f'.code.toByte() -> '\u000C'.code
-      'n'.code.toByte() -> '\n'.code
-      'r'.code.toByte() -> '\r'.code
-      't'.code.toByte() -> '\t'.code
-      'u'.code.toByte() -> readUnicodeEscape()
-      else -> throw LexerException("Invalid escape character '\\${b.asChar()}'", line, column(position), null)
+    return when (c) {
+      '"' -> '"'.code
+      '\\' -> '\\'.code
+      '/' -> '/'.code
+      'b' -> '\b'.code
+      'f' -> '\u000C'.code
+      'n' -> '\n'.code
+      'r' -> '\r'.code
+      't' -> '\t'.code
+      'u' -> readUnicodeEscape()
+      else -> throw LexerException("Invalid escape character '\\${c}'", line, column(pos - 2), null)
     }
   }
 
   private fun readString(): Token {
     val builder = StringBuilder()
-    val start = position - 1 // because of "
+    val start = pos - 1 // because of "
 
     while (true) {
-      val c = readUtf8CodePointOrEof()
-      if (c == -1) {
-        throw LexerException("Unfinished string", line, column(position), null)
+      if (pos == len) {
+        throw LexerException("Unterminated string", line, column(pos), null)
       }
+      val c = src[pos++]
 
       when (c) {
-        '\\'.code -> builder.appendCodePointMpp(readEscapeCharacter())
-        '\"'.code -> return Token.String(line, column(start), line, column(position - 1), builder.toString())
-        else -> builder.appendCodePointMpp(c)
+        '\\' -> builder.appendCodePointMpp(readEscapeCharacter())
+        '\"' -> return Token.String(line, column(start), line, column(pos - 1), builder.toString())
+        '\r', '\n' -> throw LexerException("Unterminated string", line, column(pos - 1), null)
+        else -> {
+          // TODO: we are lenient here and allow potentially invalid chars like invalid surrogate pairs
+          builder.append(c)
+        }
       }
     }
   }
 
   private fun readBlockString(): Token {
-    val start = position - 3 // because of """
+    val start = pos - 3 // because of """
     val startLine = line
     val blockLines = mutableListOf<String>()
     val currentLine = StringBuilder()
 
     while (true) {
-      val c = readUtf8CodePointOrEof()
-      if (c == -1) {
-        throw LexerException("Unterminated block string", line, column(position), null)
+      if (pos == len) {
+        throw LexerException("Unterminated block string", line, column(pos), null)
       }
+      val c = src[pos++]
 
       when (c) {
-        '\n'.code -> {
+        '\n' -> {
           line++
-          lineStart = position
+          lineStart = pos
           blockLines.add(currentLine.toString())
           currentLine.clear()
         }
 
-        '\r'.code -> {
-          if (source.request(1) && buffer[0] == '\n'.code.toByte()) {
-            source.skip(1)
-            position++
+        '\r' -> {
+          if (pos + 1 < len && src[pos] == '\n') {
+            pos++
           }
           line++
-          lineStart = position
+          lineStart = pos
           blockLines.add(currentLine.toString())
           currentLine.clear()
         }
 
-        '\\'.code -> {
-          if (source.request(3) &&
-              buffer[0] == '\"'.code.toByte() &&
-              buffer[1] == '\"'.code.toByte() &&
-              buffer[2] == '\"'.code.toByte()
+        '\\' -> {
+          if (pos + 2 < len &&
+              src[pos] == '\"' &&
+              src[pos + 1] == '\"' &&
+              src[pos + 2] == '\"'
           ) {
-            buffer.skip(3)
-            position += 3
+            pos += 3
             currentLine.append("\"\"\"")
+          } else {
+            currentLine.append(c)
           }
         }
 
-        '\"'.code -> {
-          if (source.request(2) &&
-              buffer[0] == '\"'.code.toByte() &&
-              buffer[1] == '\"'.code.toByte()
+        '\"' -> {
+          if (pos + 1 < len &&
+              src[pos] == '\"' &&
+              src[pos + 1] == '\"'
           ) {
-            buffer.skip(2)
-            position += 2
+            pos += 2
 
             blockLines.add(currentLine.toString())
 
@@ -354,172 +385,208 @@ internal class Lexer(val source: BufferedSource) : Closeable {
                 startLine,
                 column(start),
                 line,
-                column(position - 1),
+                column(pos - 1),
                 blockLines.dedentBlockStringLines().joinToString("\n")
             )
           } else {
-            currentLine.appendCodePointMpp(c)
+            currentLine.append(c)
           }
         }
 
-        else -> currentLine.appendCodePointMpp(c)
+        else -> {
+          // TODO: we are lenient here and allow potentially invalid chars like invalid surrogate pairs
+          currentLine.append(c)
+        }
       }
     }
   }
 
-  private fun Byte.isDigit(): Boolean {
+  private fun Char.isDigit(): Boolean {
     return when (this) {
-      in '0'.code.toByte()..'9'.code.toByte() -> true
+      in '0'..'9' -> true
       else -> false
     }
   }
 
-  private fun readDigits(from: Long, firstByte: Byte): Long {
-    if (!firstByte.isDigit()) {
-      throw LexerException("Invalid number, expected digit but got '${firstByte.asChar()}'", line, column(position + from.toInt()), null)
-    }
-
-    var i = from
-    while (true) {
-      if (!buffer.request(i + 1)) {
-        throw LexerException("Unterminated number", line, column(position + i.toInt()), null)
-      }
-      if (!buffer[i].isDigit()) {
-        break
-      }
-      i++
-    }
-
-    return i
-  }
+  private val STATE_NEGATIVE_SIGN = 1
+  private val STATE_ZERO = 2
+  private val STATE_DOT_EXP = 3
+  private val STATE_INTEGER_DIGIT = 4
+  private val STATE_FRACTIONAL_DIGIT = 5
+  private val STATE_SIGN = 6
+  private val STATE_EXP_DIGIT = 7
+  private val STATE_EXP = 8
 
   private fun readNumber(): Token {
-    val start = position
+    val start = pos
     var isFloat = false
 
-    var b = buffer[0] // no need to request, this was done by the caller
-    var i = 1L // index of the next char to check
+    var state = STATE_NEGATIVE_SIGN
 
-    if (b == '-'.code.toByte()) {
-      if (!buffer.request(i + 1)) {
-        throw LexerException("Unterminated number", line, column(start), null)
-      }
-      b = buffer[i]
-      i++
-    }
-
-    if (b == '0'.code.toByte()) {
-      if (!buffer.request(i + 1)) {
-        throw LexerException("Unterminated number", line, column(start), null)
-      }
-      b = buffer[i]
-      i++
-      if (b.isDigit()) {
-        throw LexerException("Invalid number, unexpected digit after 0: '${b.asChar()}'", line, column(start), null)
-      }
-    } else {
-      i = readDigits(i, b)
-      b = buffer[i]
-      i++
-    }
-
-    if (b == '.'.code.toByte()) {
-      isFloat = true
-
-      if (!buffer.request(i + 1)) {
-        throw LexerException("Unterminated number", line, column(start), null)
-      }
-      b = buffer[i]
-      i++
-
-      i = readDigits(i, b)
-      b = buffer[i]
-      i++
-    }
-
-    if (b == 'e'.code.toByte() || b == 'E'.code.toByte()) {
-      isFloat = true
-
-      if (!buffer.request(i + 1)) {
-        throw LexerException("Unterminated number", line, column(start), null)
-      }
-      b = buffer[i]
-      i++
-
-      if (b == '-'.code.toByte() || b == '+'.code.toByte()) {
-        if (!buffer.request(i + 1)) {
-          throw LexerException("Unterminated number", line, column(start), null)
+    while (pos < len) {
+      when (state) {
+        STATE_NEGATIVE_SIGN -> {
+          when (src[pos]) {
+            '-' -> {
+              pos++
+              state = STATE_ZERO
+            }
+            else -> {
+              state = STATE_ZERO
+            }
+          }
         }
-        b = buffer[i]
-        i++
-      }
+        STATE_ZERO -> {
+          var c = src[pos]
+          when  {
+            c == '0' -> {
+              pos++
+              state = STATE_DOT_EXP
 
-      i = readDigits(i, b)
-      b = buffer[i]
-      i++
+              if (pos == len) {
+                break
+              }
+              c = src[pos]
+              if (pos < len && c.isDigit()) {
+                throw LexerException("Invalid number, unexpected digit after 0: '${c}'", line, column(pos), null)
+              }
+            }
+            c.isDigit() -> {
+              pos++
+              state = STATE_INTEGER_DIGIT
+            }
+            else -> {
+              throw LexerException("Invalid number, expected digit but got '${c}'", line, column(pos), null)
+            }
+          }
+        }
+        STATE_INTEGER_DIGIT -> {
+          if (src[pos].isDigit()) {
+            pos++
+          } else {
+            state = STATE_DOT_EXP
+          }
+        }
+        STATE_DOT_EXP -> {
+          when(src[pos]) {
+            '.' -> {
+              isFloat = true
+              pos++
+
+              if (pos == len) {
+                throw LexerException("Unterminated number", line, column(start), null)
+              }
+              val c = src[pos]
+              if (!c.isDigit()) {
+                throw LexerException("Invalid number, expected digit but got '${c}'", line, column(pos), null)
+              }
+              pos++
+              state = STATE_FRACTIONAL_DIGIT
+            }
+            else -> {
+              state = STATE_EXP
+            }
+          }
+        }
+        STATE_EXP -> {
+          when(src[pos]) {
+            'e', 'E' -> {
+              isFloat = true
+              pos++
+              if (pos == len) {
+                throw LexerException("Unterminated number", line, column(start), null)
+              }
+              state = STATE_SIGN
+            }
+            else -> break
+          }
+        }
+        STATE_SIGN -> {
+          var c = src[pos]
+          when (c) {
+            '-', '+' -> {
+              pos++
+              if (pos == len) {
+                throw LexerException("Unterminated number", line, column(start), null)
+              }
+              c = src[pos]
+              if (!c.isDigit()) {
+                throw LexerException("Invalid number, expected digit but got '${c}'", line, column(pos), null)
+              }
+              pos++
+              state = STATE_EXP_DIGIT
+            }
+            else -> {
+              if (!c.isDigit()) {
+                throw LexerException("Invalid number, expected digit but got '${c}'", line, column(pos), null)
+              }
+              pos++
+              state = STATE_EXP_DIGIT
+            }
+          }
+        }
+        STATE_EXP_DIGIT -> {
+          if (src[pos].isDigit()) {
+            pos++
+          } else {
+            break
+          }
+        }
+        STATE_FRACTIONAL_DIGIT -> {
+          if (src[pos].isDigit()) {
+            pos++
+          } else {
+            state = STATE_EXP
+          }
+        }
+      }
     }
 
     // Numbers cannot be followed by . or NameStart
-    if (b == '.'.code.toByte() || b.isNameStart()) {
-      throw LexerException("Invalid number, unexpected char after digit '${b.asChar()}'", line, column(start), null)
+    if (pos < len && (src[pos] == '.' || src[pos].isNameStart())) {
+      throw LexerException("Invalid number, expected digit but got '${src[pos]}'", line, column(pos), null)
     }
 
-    // the last byte is one byte too far, backtrack
-    val asString = buffer.readUtf8(i - 1)
-    position += (i - 1).toInt()
+    val asString = src.substring(start, pos)
 
     return if (isFloat) {
-      Token.Float(line, column(start), column(position - 1), asString.toDouble())
+      Token.Float(line, column(start), column(pos), asString.toDouble())
     } else {
-      Token.Int(line, column(start), column(position - 1), asString.toInt())
+      Token.Int(line, column(start), column(pos), asString.toInt())
     }
   }
 
-  private fun Byte.isNameContinue(): Boolean {
+  private fun Char.isNameContinue(): Boolean {
     return when (this) {
-      '_'.code.toByte(),
-      in '0'.code.toByte()..'9'.code.toByte(),
-      in 'A'.code.toByte()..'Z'.code.toByte(),
-      in 'a'.code.toByte()..'z'.code.toByte(),
+      '_',
+      in '0'..'9',
+      in 'A'..'Z',
+      in 'a'..'z',
       -> true
 
       else -> false
     }
   }
 
-  // Assumes Byte is > 0 (which is the case for names)
-  private fun Byte.asNameChar(): Char {
-    return Char(toInt())
-  }
-
   private fun readName(): Token {
-    val start = position
-    val builder = StringBuilder()
+    val start = pos
 
     // we're guaranteed this is a name start
-    builder.append(buffer[0].asNameChar())
-    buffer.skip(1)
-    position++
+    pos++
 
-    while (source.request(1)) {
-      val c = buffer[0]
+    while (pos < len) {
+      val c = src[pos]
       if (c.isNameContinue()) {
-        builder.append(c.asNameChar())
-        buffer.skip(1)
-        position++
+        pos++
       } else {
         break
       }
     }
-    return Token.Name(line = line, column = column(start), endColumn = column(position - 1), value = builder.toString())
+    return Token.Name(line = line, column = column(start), endColumn = column(pos - 1), value = src.substring(start, pos))
   }
 
   private fun column(pos: Int): Int {
     return pos - lineStart + 1
-  }
-
-  override fun close() {
-    source.close()
   }
 }
 

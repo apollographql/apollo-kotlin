@@ -1,22 +1,24 @@
 package com.apollographql.apollo3.graphql.ast.test.validation
 
+import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.validateAsExecutable
+import com.apollographql.apollo3.graphql.ast.test.CWD
+import okio.Path.Companion.toPath
 import okio.buffer
-import okio.source
 import kotlin.test.Test
-import java.io.File
 import kotlin.test.assertEquals
 
 class OperationValidationTest {
   @Test
   fun testAddRequiredFields() {
-    val schema = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphqls").toSchema()
-    val operations = File("src/jvmTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphql")
-        .source()
+    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphqls".toPath().toSchema()
+    val operations = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphql"
+        .toPath()
+        .let { HOST_FILESYSTEM.source(it) }
         .buffer()
         .parseAsGQLDocument()
         .getOrThrow()

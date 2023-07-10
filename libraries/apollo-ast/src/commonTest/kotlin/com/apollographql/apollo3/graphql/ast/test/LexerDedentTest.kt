@@ -2,9 +2,6 @@ package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.ast.internal.dedentBlockStringLines
 import kotlin.test.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import java.io.File
 import kotlin.test.assertEquals
 
 /**
