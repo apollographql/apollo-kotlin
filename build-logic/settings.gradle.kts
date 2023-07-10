@@ -6,5 +6,13 @@ plugins {
 
 rootProject.name = "build-logic"
 
+dependencyResolutionManagement {
+  versionCatalogs {
+    create("libs") {
+      from(files("../gradle/libraries.toml"))
+    }
+  }
+}
+
 apply(from = "../gradle/repositories.gradle.kts")
 apply(from = "../gradle/ge.gradle")

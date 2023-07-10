@@ -23,6 +23,13 @@ rootProject.projectDir
 
 include(":intellij-plugin")
 
+dependencyResolutionManagement {
+  versionCatalogs {
+    create("libs") {
+      from(files("gradle/libraries.toml"))
+    }
+  }
+}
 
 apply(from = "./gradle/repositories.gradle.kts")
 apply(from = "./gradle/ge.gradle")

@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugi
 plugins {
   `embedded-kotlin`
   id("java-gradle-plugin")
-  id("net.mbonnin.golatac") version "0.0.3"
 }
 
 plugins.apply(SamWithReceiverGradleSubplugin::class.java)
@@ -14,8 +13,6 @@ extensions.configure(SamWithReceiverExtension::class.java) {
 }
 
 group = "com.apollographql.apollo3.build"
-
-golatac.init(file("../gradle/libraries.toml"))
 
 dependencies {
   compileOnly(gradleApi())
