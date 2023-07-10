@@ -16,7 +16,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
-        implementation(okio())
+        implementation(golatac.lib("okio"))
         api(golatac.lib("uuid"))
       }
     }

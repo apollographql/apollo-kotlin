@@ -34,7 +34,7 @@ kotlin {
       dependencies {
         implementation(golatac.lib("kotlinx.nodejs"))
         implementation(golatac.lib("kotlin.test.js"))
-        api(okioNodeJs())
+        api(golatac.lib("okio.nodefilesystem"))
       }
     }
     findByName("jsTest")?.apply {

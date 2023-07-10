@@ -1,50 +1,68 @@
 plugins {
   antlr
-  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.multiplatform")
   id("apollo.library")
   id("org.jetbrains.kotlin.plugin.serialization")
-  id("org.jetbrains.kotlinx.benchmark")
 }
 
 apolloLibrary {
   javaModuleName("com.apollographql.apollo3.ast")
+  mpp {}
 }
 
-sourceSets.create("jmh")
+kotlin {
+  jvm {
+    withJava()
+  }
+  sourceSets {
+    getByName("commonMain") {
+      dependencies {
+        api(golatac.lib("okio"))
+        api(project(":apollo-annotations"))
+        implementation(golatac.lib("kotlinx.serialization.json"))
+      }
+    }
 
-benchmark {
-  targets {
-    register("jmh")
+    getByName("jsMain") {
+      dependencies {
+        implementation(golatac.lib("okio.nodefilesystem"))
+      }
+    }
+    getByName("jvmMain") {
+      dependencies {
+        implementation(golatac.lib("antlr.runtime"))
+      }
+    }
   }
 }
 
 dependencies {
   antlr(golatac.lib("antlr"))
-  implementation(golatac.lib("antlr.runtime"))
-  api(okio())
-  api(project(":apollo-annotations"))
-
-  implementation(golatac.lib("kotlinx.serialization.json"))
-
-  testImplementation(golatac.lib("kotlin.test.junit"))
-
-  add("jmhImplementation", golatac.lib("kotlinx.benchmark.runtime"))
-  add("jmhImplementation", sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath)
 }
 
 // Only expose the antlr runtime dependency
 // See https://github.com/gradle/gradle/issues/820#issuecomment-288838412
-configurations[JavaPlugin.API_CONFIGURATION_NAME].let { apiConfiguration ->
-  apiConfiguration.setExtendsFrom(apiConfiguration.extendsFrom.filter { it.name != "antlr" })
+configurations["jvmMainApi"].apply {
+  setExtendsFrom(extendsFrom.filter { it.name != "antlr" })
 }
 
+/**
+ * By default, antlr doesn't know about MPP, so we wire everything manually
+ */
+kotlin.sourceSets.getByName("jvmMain").kotlin.srcDir(file("build/generated-src/antlr/main"))
+sourceSets.getByName("main").java.srcDir(file("build/generated-src/antlr/main"))
+
 // See https://github.com/gradle/gradle/issues/19555
-tasks.named("compileKotlin") {
+tasks.named("compileKotlinJvm") {
   dependsOn("generateGrammarSource")
 }
-tasks.named("compileTestKotlin") {
+// See https://github.com/gradle/gradle/issues/19555
+tasks.named("compileJava") {
+  dependsOn("generateGrammarSource")
+}
+tasks.named("compileKotlinJvm") {
   dependsOn("generateTestGrammarSource")
 }
-tasks.named("compileJmhKotlin") {
-  dependsOn("generateJmhGrammarSource")
+tasks.named("jvmSourcesJar") {
+  dependsOn("generateGrammarSource")
 }

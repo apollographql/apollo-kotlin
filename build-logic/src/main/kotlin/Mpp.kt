@@ -116,24 +116,6 @@ fun Project.configureMpp(
   }
 }
 
-fun Project.okio(): String {
-  val okioVersion = when (getKotlinPluginVersion()) {
-    "1.6.10" -> "3.0.0"
-    else -> "3.2.0"
-  }
-
-  return "com.squareup.okio:okio:$okioVersion"
-}
-
-fun Project.okioNodeJs(): String {
-  val okioVersion = when (getKotlinPluginVersion()) {
-    "1.6.10" -> "3.0.0"
-    else -> "3.2.0"
-  }
-
-  return "com.squareup.okio:okio-nodefilesystem:$okioVersion"
-}
-
 private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNames: Collection<String>) {
   if (presetNames.isEmpty()) {
     return
