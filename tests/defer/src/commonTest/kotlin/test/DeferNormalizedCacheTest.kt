@@ -13,14 +13,16 @@ import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mpp.Platform
+import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
@@ -34,10 +36,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -53,7 +52,7 @@ class DeferNormalizedCacheTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
+    apolloClient = ApolloClient.Builder().httpEngine(getStreamingHttpEngine()).serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {
@@ -466,13 +465,21 @@ class DeferNormalizedCacheTest {
 
   @Test
   fun intermediatePayloadsAreCached() = runTest(before = { setUp() }, after = { tearDown() }) {
+    if (platform() == Platform.Js) {
+      // TODO For now chunked is not supported on JS - remove this check when it is
+      return@runTest
+    }
+    val chunkedResponse = ChunkedResponse()
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
         """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = 500)
+    mockServer.enqueue(chunkedResponse.response)
+    chunkedResponse.send(jsonList[0], isFirst = true)
     val recordFields = apolloClient.query(SimpleDeferQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().map {
-      apolloClient.apolloStore.accessCache { it.loadRecord("computers.0", CacheHeaders.NONE)!!.fields }
+      apolloClient.apolloStore.accessCache { it.loadRecord("computers.0", CacheHeaders.NONE)!!.fields }.also {
+        chunkedResponse.send(jsonList[1], isLast = true)
+      }
     }.toList()
     assertEquals(mapOf("__typename" to "Computer", "id" to "Computer1"), recordFields[0])
     assertEquals(mapOf("__typename" to "Computer", "id" to "Computer1", "cpu" to "386"), recordFields[1])
