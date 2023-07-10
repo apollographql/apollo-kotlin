@@ -24,11 +24,8 @@ fun Project.configureJavaAndKotlinCompilers() {
         // TODO for v4, set "-Xjvm-default=all" to remove all DefaultImpls
         freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
       }
-      apiVersion = "1.5"
-      languageVersion = "1.5"
-
-      // languageVersion 1.5 is deprecated which produces a warning
-      freeCompilerArgs = freeCompilerArgs + "-Xsuppress-version-warnings"
+      apiVersion = "1.6"
+      languageVersion = "1.6"
 
       (this as? KotlinJvmOptions)?.let {
         it.jvmTarget = "1.8"
