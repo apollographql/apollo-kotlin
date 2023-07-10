@@ -14,7 +14,7 @@ android {
     minSdkVersion(libs.versions.android.sdkversion.min.get())
     targetSdkVersion(libs.versions.android.sdkversion.target.get())
   }
-  
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
