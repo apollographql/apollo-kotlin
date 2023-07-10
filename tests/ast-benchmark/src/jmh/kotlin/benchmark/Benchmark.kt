@@ -26,6 +26,13 @@ open class Benchmark {
     testFiles = File(".").resolve("../../libraries/apollo-compiler/src/test/graphql")
         .walk()
         .filter { it.extension in setOf("graphql", "graphqls") }
+        .filter {
+          when (it.parentFile.name) {
+            "empty", "__schema" -> false // contains empty document which are not spec compliant
+            "simple_fragment" -> false // contains operation/fragment descriptions which are not spec compliant
+            else -> true
+          }
+        }
         .toList()
   }
 
@@ -40,6 +47,13 @@ open class Benchmark {
   fun parserTest(): Double {
     return testFiles.sumOf {
       it.source().buffer().parseAsGQLDocument(options = ParserOptions(useAntlr = false)).getOrThrow().definitions.size.toDouble()
+    }
+  }
+
+  @Benchmark
+  fun graphqlJava(): Double {
+    return testFiles.sumOf {
+      graphql.parser.Parser.parse(it.readText()).definitions.size.toDouble()
     }
   }
 }
