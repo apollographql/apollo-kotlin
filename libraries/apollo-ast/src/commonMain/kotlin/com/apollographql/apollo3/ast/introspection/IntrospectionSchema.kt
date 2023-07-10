@@ -3,6 +3,7 @@
 
 package com.apollographql.apollo3.ast.introspection
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -247,7 +248,7 @@ fun IntrospectionSchema.toJson(): String {
   return json.encodeToString(IntrospectionSchema.serializer(), this)
 }
 
-
+@ApolloExperimental
 fun Path.toIntrospectionSchema(): IntrospectionSchema {
   return HOST_FILESYSTEM
       .source(this)
