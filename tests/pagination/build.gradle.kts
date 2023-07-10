@@ -20,6 +20,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
+        implementation(golatac.lib("atomicfu"))
         implementation(golatac.lib("apollo.testingsupport"))
         implementation(golatac.lib("apollo.normalizedcache.incubating"))
         implementation(golatac.lib("apollo.normalizedcache.sqlite.incubating"))
