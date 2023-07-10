@@ -12,15 +12,15 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(golatac.lib("kotlin.stdlib"))
-        api(golatac.lib("jetbrains.annotations"))
+        api(libs.kotlin.stdlib)
+        api(libs.jetbrains.annotations)
       }
     }
 
     findByName("jsMain")?.apply {
       dependencies {
         // See https://youtrack.jetbrains.com/issue/KT-53471
-        api(golatac.lib("kotlin.stdlib.js"))
+        api(libs.kotlin.stdlib.js)
       }
     }
   }

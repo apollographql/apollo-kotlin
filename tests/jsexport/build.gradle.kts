@@ -19,7 +19,7 @@ kotlin {
 
     findByName("commonMain")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.runtime"))
+        implementation(libs.apollo.runtime)
       }
     }
 

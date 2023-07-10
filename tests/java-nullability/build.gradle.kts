@@ -5,10 +5,10 @@ plugins {
 }
 
 dependencies {
-  implementation(golatac.lib("apollo.api.java"))
-  implementation(golatac.lib("guava.jre"))
-  implementation(golatac.lib("androidx.annotation"))
-  testImplementation(golatac.lib("junit"))
+  implementation(libs.apollo.api.java)
+  implementation(libs.guava.jre)
+  implementation(libs.androidx.annotation)
+  testImplementation(libs.junit)
 }
 
 apollo {

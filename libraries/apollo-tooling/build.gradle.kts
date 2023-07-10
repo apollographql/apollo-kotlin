@@ -14,14 +14,14 @@ dependencies {
   }
 
   implementation(project(":apollo-ast"))
-  implementation(golatac.lib("apollo-runtime-published"))
-  implementation(golatac.lib("okhttp"))
-  implementation(golatac.lib("kotlinx.serialization.json"))
+  implementation(libs.apollo.runtime.published)
+  implementation(libs.okhttp)
+  implementation(libs.kotlinx.serialization.json)
 
-  testImplementation(golatac.lib("junit"))
-  testImplementation(golatac.lib("truth"))
-  testImplementation(golatac.lib("apollo-mockserver-published"))
-  testImplementation(golatac.lib("apollo-testingsupport-published"))
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
+  testImplementation(libs.apollo.mockserver.published)
+  testImplementation(libs.apollo.testingsupport.published)
 }
 
 apollo {

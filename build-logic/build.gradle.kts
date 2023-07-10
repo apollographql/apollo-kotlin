@@ -16,38 +16,38 @@ group = "com.apollographql.apollo3.build"
 
 dependencies {
   compileOnly(gradleApi())
-  compileOnly(golatac.lib("gegp"))
+  compileOnly(libs.gegp)
 
-  implementation(golatac.lib("okhttp"))
+  implementation(libs.okhttp)
 
-  implementation(golatac.lib("kotlinx.benchmark"))
-  implementation(golatac.lib("dokka.plugin"))
-  implementation(golatac.lib("dokka.base"))
+  implementation(libs.kotlinx.benchmark)
+  implementation(libs.dokka.plugin)
+  implementation(libs.dokka.base)
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
-  implementation(golatac.lib("android.plugin"))
-  implementation(golatac.lib("gradle.japicmp.plugin"))
-  implementation(golatac.lib("vespene"))
-  implementation(golatac.lib("poet.java"))
-  implementation(golatac.lib("poet.kotlin"))
-  implementation(golatac.lib("intellij.plugin"))
-  implementation(golatac.lib("intellij.changelog"))
+  implementation(libs.android.plugin)
+  implementation(libs.gradle.japicmp.plugin)
+  implementation(libs.vespene)
+  implementation(libs.poet.java)
+  implementation(libs.poet.kotlin)
+  implementation(libs.intellij.plugin)
+  implementation(libs.intellij.changelog)
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin
-  implementation(golatac.lib("kotlin.plugin"))
-  runtimeOnly(golatac.lib("ksp"))
+  implementation(libs.kotlin.plugin)
+  runtimeOnly(libs.ksp)
   // XXX: This is only needed for tests. We could have different build logic for different
   // builds but this seems just overkill for now
-  runtimeOnly(golatac.lib("kotlin.allopen"))
-  runtimeOnly(golatac.lib("kotlinx.serialization.plugin"))
+  runtimeOnly(libs.kotlin.allopen)
+  runtimeOnly(libs.kotlinx.serialization.plugin)
 
-  runtimeOnly(golatac.lib("sqldelight.plugin"))
-  runtimeOnly(golatac.lib("gradle.publish.plugin"))
-  runtimeOnly(golatac.lib("benmanes.versions"))
-  runtimeOnly(golatac.lib("gr8"))
-  runtimeOnly(golatac.lib("kotlinx.binarycompatibilityvalidator"))
+  runtimeOnly(libs.sqldelight.plugin)
+  runtimeOnly(libs.gradle.publish.plugin)
+  runtimeOnly(libs.benmanes.versions)
+  runtimeOnly(libs.gr8)
+  runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }
 
 // Keep in sync with CompilerOptions.kt

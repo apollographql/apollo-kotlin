@@ -16,30 +16,30 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-runtime"))
         api(project(":apollo-mockserver"))
-        api(golatac.lib("kotlinx.coroutines"))
-        implementation(golatac.lib("atomicfu")) {
+        api(libs.kotlinx.coroutines)
+        implementation(libs.atomicfu.get().toString()) {
           because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
         }
-        implementation(golatac.lib("kotlinx.coroutines.test"))
+        implementation(libs.kotlinx.coroutines.test)
       }
     }
 
     findByName("jvmTest")?.apply {
       dependencies {
-        implementation(golatac.lib("truth"))
+        implementation(libs.truth)
       }
     }
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(golatac.lib("kotlinx.nodejs"))
-        implementation(golatac.lib("kotlin.test.js"))
-        api(golatac.lib("okio.nodefilesystem"))
+        implementation(libs.kotlinx.nodejs)
+        implementation(libs.kotlin.test.js)
+        api(libs.okio.nodefilesystem)
       }
     }
     findByName("jsTest")?.apply {
       dependencies {
-        implementation(golatac.lib("kotlin.test.js"))
+        implementation(libs.kotlin.test.js)
       }
     }
   }

@@ -14,16 +14,16 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.runtime"))
+        implementation(libs.apollo.runtime)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(golatac.lib("atomicfu"))
-        implementation(golatac.lib("apollo.testingsupport"))
-        implementation(golatac.lib("apollo.normalizedcache.incubating"))
-        implementation(golatac.lib("apollo.normalizedcache.sqlite.incubating"))
+        implementation(libs.atomicfu)
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache.incubating)
+        implementation(libs.apollo.normalizedcache.sqlite.incubating)
       }
     }
   }

@@ -15,17 +15,17 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         api(project(":apollo-annotations"))
-        api(golatac.lib("okio"))
-        implementation(golatac.lib("atomicfu")) {
+        api(libs.okio)
+        implementation(libs.atomicfu.get().toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        api(golatac.lib("kotlinx.coroutines"))
+        api(libs.kotlinx.coroutines)
       }
     }
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(golatac.lib("kotlinx.nodejs"))
+        implementation(libs.kotlinx.nodejs)
       }
     }
 

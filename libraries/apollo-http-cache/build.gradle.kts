@@ -8,13 +8,13 @@ apolloLibrary {
 }
 
 dependencies {
-  api(golatac.lib("okhttp"))
+  api(libs.okhttp)
   api(project(":apollo-api"))
   api(project(":apollo-runtime"))
-  implementation(golatac.lib("moshi"))
-  implementation(golatac.lib("kotlinx.datetime"))
+  implementation(libs.moshi)
+  implementation(libs.kotlinx.datetime)
 
   testImplementation(project(":apollo-mockserver"))
-  testImplementation(golatac.lib("kotlin.test.junit"))
-  testImplementation(golatac.lib("truth"))
+  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.truth)
 }

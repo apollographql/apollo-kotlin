@@ -29,11 +29,11 @@ dependencies {
   add("shade", project(":apollo-gradle-plugin-external"))
 
   testImplementation(project(":apollo-ast"))
-  testImplementation(golatac.lib("junit"))
-  testImplementation(golatac.lib("truth"))
-  testImplementation(golatac.lib("assertj"))
-  testImplementation(golatac.lib("okhttp.mockwebserver"))
-  testImplementation(golatac.lib("okhttp.tls"))
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
+  testImplementation(libs.assertj)
+  testImplementation(libs.okhttp.mockwebserver)
+  testImplementation(libs.okhttp.tls)
 }
 
 if (relocateJar) {

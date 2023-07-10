@@ -5,12 +5,12 @@ plugins {
 }
 
 dependencies {
-  implementation(golatac.lib("apollo.api"))
+  implementation(libs.apollo.api)
   implementation(project(":sample-server"))
-  implementation(golatac.lib("apollo.testingsupport"))
-  testImplementation(golatac.lib("kotlin.test"))
-  testImplementation(golatac.lib("junit"))
-  testImplementation(golatac.lib("okhttp"))
+  implementation(libs.apollo.testingsupport)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.junit)
+  testImplementation(libs.okhttp)
 }
 
 apollo {

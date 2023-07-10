@@ -9,8 +9,8 @@ apolloLibrary {
 
 dependencies {
   implementation(project(":apollo-api"))
-  api(golatac.lib("rx.java2"))
-  api(golatac.lib("kotlinx.coroutines.rx2"))
+  api(libs.rx.java2)
+  api(libs.kotlinx.coroutines.rx2)
 
   api(project(":apollo-runtime"))
   api(project(":apollo-normalized-cache"))

@@ -12,24 +12,24 @@ apolloLibrary {
 
 dependencies {
   implementation(project(":apollo-ast"))
-  api(golatac.lib("poet.kotlin")) {
+  api(libs.poet.kotlin) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
   }
-  api(golatac.lib("poet.java"))
+  api(libs.poet.java)
 
-  implementation(golatac.lib("kotlinx.serialization.json"))
-  implementation(golatac.lib("kotlinx.serialization.json.okio"))
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.kotlinx.serialization.json.okio)
 
-  testImplementation(golatac.lib("kotlin.compiletesting"))
-  testImplementation(golatac.lib("google.testing.compile"))
-  testImplementation(golatac.lib("truth"))
-  testImplementation(golatac.lib("kotlin.test.junit"))
-  testImplementation(golatac.lib("google.testparameterinjector"))
+  testImplementation(libs.kotlin.compiletesting)
+  testImplementation(libs.google.testing.compile)
+  testImplementation(libs.truth)
+  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.google.testparameterinjector)
   testImplementation(project(":apollo-api-java")) {
     because("Generated Java code references Java and Guava Optionals")
   }
-  testImplementation(golatac.lib("androidx.annotation")) {
+  testImplementation(libs.androidx.annotation) {
     because("Used in the Java generated code")
   }
 }

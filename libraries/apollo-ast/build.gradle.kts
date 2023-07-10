@@ -21,27 +21,27 @@ kotlin {
   sourceSets {
     getByName("commonMain") {
       dependencies {
-        api(golatac.lib("okio"))
+        api(libs.okio)
         api(project(":apollo-annotations"))
-        implementation(golatac.lib("kotlinx.serialization.json"))
+        implementation(libs.kotlinx.serialization.json)
       }
     }
 
     getByName("jsMain") {
       dependencies {
-        implementation(golatac.lib("okio.nodefilesystem"))
+        implementation(libs.okio.nodefilesystem)
       }
     }
     getByName("jvmMain") {
       dependencies {
-        implementation(golatac.lib("antlr.runtime"))
+        implementation(libs.antlr.runtime)
       }
     }
   }
 }
 
 dependencies {
-  antlr(golatac.lib("antlr"))
+  antlr(libs.antlr)
 }
 
 // Only expose the antlr runtime dependency

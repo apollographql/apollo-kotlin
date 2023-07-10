@@ -22,10 +22,10 @@ plugins {
 }
 
 dependencies {
-  implementation(golatac.lib("apollo.runtime"))
-  testImplementation(golatac.lib("kotlin.test"))
-  testImplementation(golatac.lib("junit"))
-  testImplementation(golatac.lib("kotlin.reflect"))
+  implementation(libs.apollo.runtime)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.junit)
+  testImplementation(libs.kotlin.reflect)
 }
 
 apollo {
