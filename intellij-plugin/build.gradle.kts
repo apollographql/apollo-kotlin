@@ -140,6 +140,7 @@ val mockJdkRoot = buildDir.resolve("mockJDK")
 // Setup fake JDK for maven dependencies to work
 // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
 tasks.register("downloadMockJdk") {
+  val mockJdkRoot = mockJdkRoot
   doLast {
     val rtJar = mockJdkRoot.resolve("java/mockJDK-1.7/jre/lib/rt.jar")
     if (!rtJar.exists()) {
