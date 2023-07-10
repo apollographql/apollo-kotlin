@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(plugin = "com.android.library")
-apply(plugin = "com.squareup.sqldelight")
+apply(plugin = "app.cash.sqldelight")
 
 apolloLibrary {
   javaModuleName("com.apollographql.apollo3.cache.normalized.sql")
@@ -16,11 +16,11 @@ apolloLibrary {
   }
 }
 
-configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
-  database("JsonDatabase") {
+configure<app.cash.sqldelight.gradle.SqlDelightExtension> {
+  databases.create("JsonDatabase") {
     packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.json"
     schemaOutputDirectory = file("sqldelight/json/schema")
-    sourceFolders = listOf("sqldelight/json/")
+    srcDirs("src/commonMain/sqldelight/json/")
   }
 }
 
@@ -81,23 +81,7 @@ configure<com.android.build.gradle.LibraryExtension> {
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()
-    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
-}
-
-
-tasks.named("lint") {
-  /**
-   * lint warns with:
-   *
-   * ```
-   * Could not load custom lint check jar file /Users/mbonnin/.gradle/caches/transforms-3/a58c406cc84b74815c738fa583c867e0/transformed/startup-runtime-1.1.1/jars/lint.jar
-   * java.lang.NoClassDefFoundError: com/android/tools/lint/client/api/Vendor
-   * ```
-   *
-   * In general, there is so little Android code here, it's not really worth running lint
-   */
-  enabled = false
 }
 
 tasks.configureEach {

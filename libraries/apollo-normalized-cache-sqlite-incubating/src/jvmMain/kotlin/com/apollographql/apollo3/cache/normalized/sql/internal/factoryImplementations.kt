@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.db.use
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
+import app.cash.sqldelight.db.use
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.io.File
 import java.util.Properties
 
@@ -22,22 +24,28 @@ internal fun createDriver(name: String?, baseDir: String?, properties: Propertie
   return JdbcSqliteDriver(name.toUrl(baseDir), properties)
 }
 
-internal actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
+internal actual fun createDriver(name: String?, baseDir: String?, schema: SqlSchema<QueryResult.Value<Unit>>): SqlDriver {
   return createDriver(name, baseDir, Properties())
 }
 
-internal actual fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
-  val oldVersion = driver.executeQuery(null, "PRAGMA $versionPragma", 0).use { cursor ->
-    if (cursor.next()) {
-      cursor.getLong(0)?.toInt()
-    } else {
-      null
-    }
-  } ?: 0
+internal actual fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlSchema<QueryResult.Value<Unit>>) {
+  val oldVersion = driver.executeQuery(
+      null,
+      "PRAGMA $versionPragma",
+      { cursor ->
+        val ret = if (cursor.next().value) {
+          cursor.getLong(0)?.toInt()
+        } else {
+          null
+        }
+        QueryResult.Value(ret ?: 0)
+      },
+      0
+  ).value.toLong()
 
   val newVersion = schema.version
 
-  if (oldVersion == 0) {
+  if (oldVersion == 0L) {
     schema.create(driver)
     driver.execute(null, "PRAGMA $versionPragma=$newVersion", 0)
   } else if (oldVersion < newVersion) {

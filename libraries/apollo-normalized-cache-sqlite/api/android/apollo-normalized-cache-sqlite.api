@@ -9,13 +9,6 @@ public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitiali
 public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitializer$Companion {
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache : com/apollographql/apollo3/cache/normalized/api/NormalizedCache {
 	public fun clearAll ()V
 	public fun dump ()Ljava/util/Map;

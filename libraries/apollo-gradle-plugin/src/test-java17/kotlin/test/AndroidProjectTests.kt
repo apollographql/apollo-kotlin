@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.gradle.test
+package test
 
+import com.google.common.truth.Truth
 import util.TestUtils
 import util.TestUtils.executeTaskAndAssertSuccess
 import util.TestUtils.withProject
@@ -34,7 +35,6 @@ class AndroidProjectTests {
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
-
 
   @Test
   fun `android application compiles and produces an apk`() {
@@ -87,10 +87,36 @@ class AndroidProjectTests {
     }
   }
 
+  /**
+   * Using the minimum supported versions of Kotlin for Android should work.
+   */
+  @Test
+  fun `kotlin Android min version succeeds`() {
+    withTestProject("kotlin-android-plugin-version") { dir ->
+      val result = TestUtils.executeTask("build", dir)
+
+      Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
+    }
+  }
+
   @Test
   fun `android with java`() {
     withTestProject("android-java") { dir ->
       executeTaskAndAssertSuccess(":assembleDebug", dir)
+    }
+  }
+
+  /**
+   * Using the maximum supported versions of Kotlin for Android should work.
+   */
+  @Test
+  fun `kotlin Android max version succeeds`() {
+    withTestProject("kotlin-android-plugin-version") { dir ->
+      val gradleScript = dir.resolve("build.gradle.kts")
+      gradleScript.writeText(gradleScript.readText().replace("libs.plugins.kotlin.android.min", "libs.plugins.kotlin.android.max"))
+      val result = TestUtils.executeTask("build", dir)
+
+      Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
     }
   }
 }

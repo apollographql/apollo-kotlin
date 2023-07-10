@@ -8,14 +8,16 @@ plugins {
 
 android {
   compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
+  namespace = "com.example"
 
   defaultConfig {
     minSdkVersion(libs.versions.android.sdkversion.min.get())
     targetSdkVersion(libs.versions.android.sdkversion.target.get())
   }
-
-  kotlinOptions {
-    jvmTarget = "1.8"
+  
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
   }
 }
 
@@ -29,3 +31,6 @@ apollo {
   }
 }
 
+java.toolchain {
+  languageVersion.set(JavaLanguageVersion.of(11))
+}

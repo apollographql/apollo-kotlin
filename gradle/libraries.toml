@@ -1,12 +1,12 @@
 [versions]
 # The version we use by default in tests
-android-plugin = "7.4.0"
+android-plugin = "8.0.0"
 # The version we compile against
 android-plugin-min = "3.4.2"
 # The latest version that has been tested to work
 android-plugin-max = "8.2.0-alpha03"
 android-sdkversion-compile = "33"
-android-sdkversion-min = "15"
+android-sdkversion-min = "16"
 android-sdkversion-compose-min = "21"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
@@ -36,7 +36,7 @@ okhttp = "4.10.0"
 rx-android = "2.0.1"
 rx-java2 = "2.2.21"
 rx-java3 = "3.1.6"
-sqldelight = "1.5.5"
+sqldelight = "2.0.0-rc02"
 truth = "1.1.3"
 
 [libraries]
@@ -149,11 +149,13 @@ poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet
 poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "1.12.0" }
 rx-java2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java2" }
 rx-java3 = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java3" }
-sqldelight-android = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqldelight" }
-sqldelight-jvm = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
-sqldelight-native = { group = "com.squareup.sqldelight", name = "native-driver", version.ref = "sqldelight" }
-sqldelight-plugin = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
-sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqldelight" }
+sqldelight-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
+sqldelight-jvm = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
+sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqldelight" }
+sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
+sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
+sqldelight-sqlite = "app.cash.sqldelight:sqlite-dialect:2.0.0-alpha01"
+
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "0.7.0" }
 # Not updating to 0.7.0 because it pulls kotlin-stdlib 1.8 and consumers using 1.6 fail with:
