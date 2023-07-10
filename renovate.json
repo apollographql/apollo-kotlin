@@ -4,7 +4,8 @@
   "includePaths": [
     "settings.gradle.kts",
     "tests/settings.gradle.kts",
-    "build-logic/settings.gradle.kts"
+    "build-logic/settings.gradle.kts",
+    "benchmark/settings.gradle.kts"
   ],
   "timeout": 600,
   "extends": ["config:base"]
