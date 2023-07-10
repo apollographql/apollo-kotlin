@@ -114,11 +114,12 @@ configure<PublishingExtension> {
 }
 
 tasks.register("cleanStaleTestProjects") {
+  /**
+   * Remove stale testProject directories
+   */
+  val buildFiles = buildDir.listFiles()
   doFirst {
-    /**
-     * Remove stale testProject directories
-     */
-    buildDir.listFiles()?.forEach {
+    buildFiles?.forEach {
       if (it.isDirectory && it.name.startsWith("testProject")) {
         it.deleteRecursively()
       }
@@ -181,9 +182,10 @@ listOf(11, 17).forEach { javaVersion ->
 }
 
 tasks.register("acceptAndroidLicenses") {
+  val source = rootProject.file("android-licenses/android-sdk-preview-license")
+  val target = rootProject.file("${System.getenv("ANDROID_HOME")}/licenses/android-sdk-preview-license")
   doLast {
-    rootProject.file("android-licenses/android-sdk-preview-license")
-        .copyTo(rootProject.file("${System.getenv("ANDROID_HOME")}/licenses/android-sdk-preview-license"), overwrite = true)
+    source.copyTo(target, overwrite = true)
   }
 }
 
