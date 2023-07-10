@@ -21,6 +21,7 @@ internal fun checkConditionalFragments(definitions: List<GQLDefinition>): List<I
     when (it) {
       is GQLOperationDefinition -> scope.checkConditionalFragments(it.selections)
       is GQLFragmentDefinition -> scope.checkConditionalFragments(it.selections)
+      else -> {}
     }
   }
 

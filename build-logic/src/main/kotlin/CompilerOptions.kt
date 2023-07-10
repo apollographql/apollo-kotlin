@@ -24,8 +24,8 @@ fun Project.configureJavaAndKotlinCompilers() {
         // TODO for v4, set "-Xjvm-default=all" to remove all DefaultImpls
         freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
       }
-      apiVersion = "1.5"
-      languageVersion = "1.5"
+      apiVersion = "1.6"
+      languageVersion = "1.6"
 
       (this as? KotlinJvmOptions)?.let {
         it.jvmTarget = "1.8"
@@ -35,6 +35,7 @@ fun Project.configureJavaAndKotlinCompilers() {
   tasks.withType(KotlinNativeCompile::class.java).configureEach {
     kotlinOptions {
       this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.UnsafeNumber"
+      this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.ExperimentalForeignApi"
     }
   }
 

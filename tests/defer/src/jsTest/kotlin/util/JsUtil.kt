@@ -1,7 +1,10 @@
 package util
 
-import tsstdlib.Symbol
 import kotlin.js.Promise
+
+external object Symbol {
+  val asyncIterator: dynamic
+}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun dynamicObject(noinline init: dynamic.() -> Unit): dynamic {

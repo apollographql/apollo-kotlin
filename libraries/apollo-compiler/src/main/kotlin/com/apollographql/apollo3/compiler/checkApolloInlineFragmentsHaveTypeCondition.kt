@@ -27,6 +27,7 @@ private fun GQLDefinition.walk(issues: MutableList<Issue>) {
   when (this) {
     is GQLOperationDefinition -> selections.forEach { it.walk(issues) }
     is GQLFragmentDefinition -> selections.forEach { it.walk(issues) }
+    else -> {}
   }
 }
 
@@ -36,10 +37,13 @@ private fun GQLSelection.walk(issues: MutableList<Issue>) {
     is GQLField -> {
       selections.forEach { it.walk(issues) }
     }
+
     is GQLInlineFragment -> {
       if (typeCondition == null) {
         issues.add(Issue.InlineFragmentWithoutTypeCondition("Inline fragments without a type condition are not supported. Add the parent type to inline fragment.", this.sourceLocation))
       }
     }
+
+    else -> {}
   }
 }

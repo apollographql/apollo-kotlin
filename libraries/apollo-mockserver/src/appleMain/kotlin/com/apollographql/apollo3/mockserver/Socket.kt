@@ -84,7 +84,7 @@ class Socket(
 
         val one = alloc<IntVar>()
         one.value = 1
-        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4)
+        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4u)
 
         handleConnection(connectionFd)
         close(connectionFd)
@@ -162,7 +162,7 @@ class Socket(
     memScoped {
       val buf = allocArray<ByteVar>(1)
       // Write a placeholder byte to unblock the reader if needed
-      write(pipeFd[1], buf, 1)
+      write(pipeFd[1], buf, 1u)
     }
     nativeHeap.free(pipeFd.rawValue)
   }
@@ -172,8 +172,8 @@ class Socket(
       check(recordedRequests.count.toInt() > 0) {
         "no recorded request"
       }
-      recordedRequests.objectAtIndex(0).also {
-        recordedRequests.removeObjectAtIndex(0)
+      recordedRequests.objectAtIndex(0u).also {
+        recordedRequests.removeObjectAtIndex(0u)
       } as MockRequest
     }
   }
