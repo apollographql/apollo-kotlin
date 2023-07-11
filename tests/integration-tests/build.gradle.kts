@@ -182,9 +182,11 @@ configurations.named("javaCodegenSourcesElements").configure {
 
 val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
   dependsOn("generateApolloSources")
+  val buildFile = file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json")
+  val fixtureFile = file("testFixtures/manifest.json")
   doLast {
     check(
-        file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText() == file("testFixtures/manifest.json").readText()
+        buildFile.readText() == fixtureFile.readText()
     ) {
       "Persisted Query Manifest has changed"
     }
