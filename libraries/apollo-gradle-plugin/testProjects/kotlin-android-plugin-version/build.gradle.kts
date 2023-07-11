@@ -1,4 +1,5 @@
 import com.android.build.gradle.BaseExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   alias(libs.plugins.android.application)
@@ -33,4 +34,12 @@ apollo {
 
 java.toolchain {
   languageVersion.set(JavaLanguageVersion.of(11))
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions {
+    // Required for Kotlin < 1.6.10
+    // See https://kotlinlang.org/docs/whatsnew1620.html#compatibility-changes-in-the-xjvm-default-modes
+    freeCompilerArgs += "-Xjvm-default=all"
+  }
 }
