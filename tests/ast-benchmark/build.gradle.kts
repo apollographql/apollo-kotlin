@@ -20,3 +20,4 @@ dependencies {
   add("jmhImplementation", libs.kotlinx.benchmark.runtime)
   add("jmhImplementation", sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath)
 }
+
