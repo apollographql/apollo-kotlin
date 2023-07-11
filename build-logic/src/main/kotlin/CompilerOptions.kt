@@ -16,11 +16,11 @@ fun Project.configureJavaAndKotlinCompilers() {
       freeCompilerArgs = freeCompilerArgs + listOf(
           "-opt-in=kotlin.RequiresOptIn",
       )
-      freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
       apiVersion = "1.6"
       languageVersion = "1.6"
 
       (this as? KotlinJvmOptions)?.let {
+        freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
         it.jvmTarget = "1.8"
       }
     }
