@@ -36,7 +36,7 @@ class GradleVersionTests {
     withTestProject("gradle-min-version") { dir ->
       dir.setApolloPluginVersion()
       try {
-        TestUtils.executeGradleWithVersion(dir, "5.4","generateApolloSources")
+        TestUtils.executeGradleWithVersion(dir, "6.8","generateApolloSources")
         Assert.fail("Compiling with an old version of Gradle should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater")

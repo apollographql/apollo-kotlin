@@ -839,10 +839,11 @@ abstract class DefaultApolloExtension(
 
   abstract override val linkSqlite: Property<Boolean>
   abstract override val generateSourcesDuringGradleSync: Property<Boolean>
+  abstract override val useAntlr: Property<Boolean>
 
   companion object {
     private const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "5.6"
+    const val MIN_GRADLE_VERSION = "6.8"
 
     private const val USAGE_APOLLO_METADATA = "apollo-metadata"
     private const val USAGE_APOLLO_IR = "apollo-ir"
