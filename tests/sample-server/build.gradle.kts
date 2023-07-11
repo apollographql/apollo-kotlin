@@ -6,15 +6,15 @@ plugins {
 }
 
 dependencies {
-  implementation(golatac.lib("graphqlkotlin"))
-  implementation(golatac.lib("kotlin.reflect")) {
+  implementation(libs.graphqlkotlin)
+  implementation(libs.kotlin.reflect) {
     because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
         "Runtime JAR files in the classpath should have the same version.")
   }
-  implementation(golatac.lib("kotlinx.coroutines.reactor")) {
+  implementation(libs.kotlinx.coroutines.reactor) {
     because("reactor must have the same version as the coroutines version")
   }
-  compileOnly(golatac.lib("apollo.annotations")) {
+  compileOnly(libs.apollo.annotations) {
     because("""
       We unconditionally opt-in ApolloExperimental in all the tests and we need the symbol in the 
       classpath to prevent a warning

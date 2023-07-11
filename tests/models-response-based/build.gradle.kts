@@ -12,15 +12,15 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.runtime"))
-        implementation(golatac.lib("apollo.normalizedcache"))
-        implementation(golatac.lib("apollo.adapters"))
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.adapters)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(libs.apollo.testingsupport)
       }
     }
   }

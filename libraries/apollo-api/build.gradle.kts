@@ -12,16 +12,17 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(golatac.lib("okio"))
-        api(golatac.lib("uuid"))
+        api(libs.okio)
+        api(libs.uuid)
         api(project(":apollo-annotations"))
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        //implementation(golatac.lib("kotlin.test.junit"))
-        implementation(golatac.lib("kotlin.test"))
+        //implementation(libs.kotlin.test.junit)
+        //implementation("org.jetbrains.kotlin:kotlin-test")
+        implementation(libs.kotlin.test.asProvider().get().toString())
       }
     }
   }

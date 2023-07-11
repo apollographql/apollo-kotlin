@@ -7,17 +7,17 @@ plugins {
 }
 
 dependencies {
-  api(golatac.lib("compose-runtime"))
+  api(libs.compose.runtime)
   api(project(":apollo-runtime"))
   api(project(":apollo-normalized-cache"))
 }
 
 android {
-  compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
   namespace = "com.apollographql.apollo3.compose.support"
 
   defaultConfig {
-    minSdk = golatac.version("android.sdkversion.compose.min").toInt()
+    minSdk = libs.versions.android.sdkversion.compose.min.get().toInt()
   }
 
   buildFeatures {
@@ -25,7 +25,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = golatac.version("compose.compiler")
+    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
   }
 }
 

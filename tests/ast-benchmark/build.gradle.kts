@@ -14,9 +14,9 @@ benchmark {
 
 dependencies {
   implementation("com.apollographql.apollo3:apollo-ast")
-  implementation(golatac.lib("graphql.java"))
+  implementation(libs.graphql.java)
   implementation("org.jetbrains.kotlin:kotlin-test")
 
-  add("jmhImplementation", golatac.lib("kotlinx.benchmark.runtime"))
+  add("jmhImplementation", libs.kotlinx.benchmark.runtime)
   add("jmhImplementation", sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath)
 }

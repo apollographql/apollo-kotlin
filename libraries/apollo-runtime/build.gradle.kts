@@ -16,9 +16,9 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
-        api(golatac.lib("okio"))
-        api(golatac.lib("uuid"))
-        api(golatac.lib("kotlinx.coroutines"))
+        api(libs.okio)
+        api(libs.uuid)
+        api(libs.kotlinx.coroutines)
       }
     }
 
@@ -38,13 +38,13 @@ kotlin {
 
     findByName("jvmMain")?.apply {
       dependencies {
-        api(golatac.lib("okhttp"))
+        api(libs.okhttp)
       }
     }
 
     findByName("jsMain")?.apply {
       dependencies {
-        api(golatac.lib("ktor.client.js"))
+        api(libs.ktor.client.js)
       }
     }
 
@@ -55,9 +55,9 @@ kotlin {
 
     findByName("jvmTest")?.apply {
       dependencies {
-        implementation(golatac.lib("kotlin.test.junit"))
-        implementation(golatac.lib("truth"))
-        implementation(golatac.lib("okhttp"))
+        implementation(libs.kotlin.test.junit)
+        implementation(libs.truth)
+        implementation(libs.okhttp)
       }
     }
   }

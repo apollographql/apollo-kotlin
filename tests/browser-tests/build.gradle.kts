@@ -16,8 +16,8 @@ kotlin {
   sourceSets {
     val commonTest by getting {
       dependencies {
-        implementation(golatac.lib("apollo.runtime"))
-        implementation(golatac.lib("kotlinx.coroutines.test"))
+        implementation(libs.apollo.runtime)
+        implementation(libs.kotlinx.coroutines.test)
       }
     }
   }

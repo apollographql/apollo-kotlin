@@ -16,14 +16,14 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.runtime"))
-        implementation(golatac.lib("apollo.mockserver"))
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.mockserver)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(libs.apollo.testingsupport)
       }
     }
   }

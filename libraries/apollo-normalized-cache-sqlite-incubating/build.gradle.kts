@@ -44,39 +44,39 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api-incubating"))
         api(project(":apollo-normalized-cache-incubating"))
-        api(golatac.lib("sqldelight.runtime"))
+        api(libs.sqldelight.runtime)
       }
     }
 
     findByName("jvmMain")?.apply {
       dependencies {
-        implementation(golatac.lib("sqldelight.jvm"))
+        implementation(libs.sqldelight.jvm)
       }
     }
 
     findByName("appleMain")?.apply {
       dependencies {
-        implementation(golatac.lib("sqldelight.native"))
+        implementation(libs.sqldelight.native)
       }
     }
 
     findByName("jvmTest")?.apply {
       dependencies {
-        implementation(golatac.lib("truth"))
+        implementation(libs.truth)
       }
     }
 
     findByName("androidMain")?.apply {
       dependencies {
-        api(golatac.lib("androidx.sqlite"))
-        implementation(golatac.lib("sqldelight.android"))
-        implementation(golatac.lib("androidx.sqlite.framework"))
-        implementation(golatac.lib("androidx.startup.runtime"))
+        api(libs.androidx.sqlite)
+        implementation(libs.sqldelight.android)
+        implementation(libs.androidx.sqlite.framework)
+        implementation(libs.androidx.startup.runtime)
       }
     }
     findByName("androidTest")?.apply {
       dependencies {
-        implementation(golatac.lib("kotlin.test.junit"))
+        implementation(libs.kotlin.test.junit)
       }
     }
     findByName("commonTest")?.apply {
@@ -88,11 +88,11 @@ kotlin {
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
   namespace = "com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
-    minSdk = golatac.version("android.sdkversion.min").toInt()
+    minSdk = libs.versions.android.sdkversion.min.get().toInt()
   }
 }
 

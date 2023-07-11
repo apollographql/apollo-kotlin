@@ -15,7 +15,7 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         api(project(":apollo-api"))
-        api(golatac.lib("kotlinx.datetime"))
+        api(libs.kotlinx.datetime)
       }
     }
     findByName("jsMain")?.apply {

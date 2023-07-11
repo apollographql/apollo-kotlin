@@ -12,11 +12,11 @@ dependencies {
 }
 
 android {
-  compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
   namespace = "com.apollographql.apollo3.compose.paging.support"
 
   defaultConfig {
-    minSdk = golatac.version("android.sdkversion.compose.min").toInt()
+    minSdk = libs.versions.android.sdkversion.compose.min.get().toInt()
   }
 
   buildFeatures {
@@ -24,7 +24,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = golatac.version("compose.compiler")
+    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
   }
 
   // TODO: compiling fails only with the debug variant currently, due to using a version of Kotlin non supported by Compose.
