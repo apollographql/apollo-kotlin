@@ -52,6 +52,7 @@ fun Project.configureDokka() {
   tasks.withType(DokkaTaskPartial::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
     dependsOn("assemble")
+    notCompatibleWithConfigurationCache("See https://github.com/Kotlin/dokka/issues/1217")
   }
 
   tasks.withType(AbstractDokkaTask::class.java).configureEach {
