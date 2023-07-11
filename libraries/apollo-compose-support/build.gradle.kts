@@ -14,10 +14,10 @@ dependencies {
 
 android {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  namespace = "com.apollographql.apollo3.compose.support"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.compose.min").toInt()
-    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 
   buildFeatures {

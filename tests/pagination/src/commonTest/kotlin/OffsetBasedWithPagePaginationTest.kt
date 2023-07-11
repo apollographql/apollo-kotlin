@@ -13,7 +13,7 @@ import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerato
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
-import com.squareup.sqldelight.internal.AtomicBoolean
+import kotlinx.atomicfu.atomic
 import pagination.type.buildUser
 import pagination.type.buildUserPage
 import kotlin.math.max
@@ -233,12 +233,12 @@ class OffsetBasedWithPagePaginationTest {
 }
 
 internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
-  val hasNextCache = AtomicBoolean(false)
+  val hasNextCache = atomic(false)
   apolloStore.accessCache { cache ->
     // First cache is always OptimisticCache
-    hasNextCache.set(cache.nextCache!!.nextCache != null)
+    hasNextCache.value = cache.nextCache!!.nextCache != null
   }
-  if (!hasNextCache.get()) return
+  if (!hasNextCache.value) return
   val dump = apolloStore.dump().filterKeys { it != OptimisticCache::class }
   val caches = dump.values.toList()
   val cache1: Map<String, Record> = caches[0]

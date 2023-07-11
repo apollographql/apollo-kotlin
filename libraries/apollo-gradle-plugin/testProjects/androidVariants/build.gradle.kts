@@ -24,10 +24,14 @@ android {
     create("demo")
     create("full")
   }
-
-  kotlinOptions {
-    jvmTarget = "1.8"
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
   }
+}
+
+java.toolchain {
+  languageVersion.set(JavaLanguageVersion.of(11))
 }
 
 apollo {

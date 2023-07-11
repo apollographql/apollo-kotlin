@@ -71,6 +71,10 @@ object TestUtils {
         dependencies {
           add("implementation", libs.apollo.api)
         }
+        
+        java.toolchain {
+          languageVersion.set(JavaLanguageVersion.of(11))
+        }
       """.trimIndent())
 
       appendLine()

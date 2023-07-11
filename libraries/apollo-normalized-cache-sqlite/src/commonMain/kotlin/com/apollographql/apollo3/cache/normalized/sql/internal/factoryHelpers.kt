@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlCursor
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.db.use
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
+import app.cash.sqldelight.db.use
 
 internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
   maybeCreateOrMigrateSchema(driver, getSchema())
@@ -13,11 +16,17 @@ internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
   try {
     // https://sqlite.org/forum/info/d90adfbb0a6eea88
     // The name is sqlite_schema these days but older versions use sqlite_master and sqlite_master is recognized everywhere so use that
-    driver.executeQuery(null, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;", 0).use { cursor ->
-      while (cursor.next()) {
-        tableNames.add(cursor.getString(0) ?: "")
-      }
-    }
+    driver.executeQuery(
+        null,
+        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;",
+        { cursor ->
+          while (cursor.next().value) {
+            tableNames.add(cursor.getString(0) ?: "")
+          }
+          QueryResult.Unit
+        },
+        0
+    )
   } catch (e: Exception) {
     apolloExceptionHandler(Exception("An exception occurred while looking up the table names", e))
     /**
@@ -25,7 +34,7 @@ internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
      */
   }
 
-  val expectedTableName ="records"
+  val expectedTableName = "records"
 
   check(tableNames.isEmpty() || tableNames.contains(expectedTableName)) {
     "Apollo: Cannot find the '$expectedTableName' table? (found '$tableNames' instead)"
@@ -34,4 +43,4 @@ internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
   return JsonRecordDatabase(JsonDatabase(driver).jsonQueries)
 }
 
-internal fun getSchema(): SqlDriver.Schema = JsonDatabase.Schema
+internal fun getSchema(): SqlSchema<QueryResult.Value<Unit>> = JsonDatabase.Schema

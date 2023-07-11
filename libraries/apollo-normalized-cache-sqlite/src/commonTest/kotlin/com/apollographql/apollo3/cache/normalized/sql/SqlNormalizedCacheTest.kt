@@ -12,9 +12,14 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordForKey
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.Records
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordsForKeys
 import com.apollographql.apollo3.exception.apolloExceptionHandler
-import com.squareup.sqldelight.Query
-import com.squareup.sqldelight.TransactionWithReturn
-import com.squareup.sqldelight.TransactionWithoutReturn
+import app.cash.sqldelight.Query
+import app.cash.sqldelight.Transacter
+import app.cash.sqldelight.TransactionWithReturn
+import app.cash.sqldelight.TransactionWithoutReturn
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlCursor
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlPreparedStatement
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -284,10 +289,49 @@ class SqlNormalizedCacheTest {
     cache.merge(records, CacheHeaders.NONE)
   }
 
+  private val BadDriver = object : SqlDriver {
+    override fun close() {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun addListener(vararg queryKeys: String, listener: Query.Listener) {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun currentTransaction(): Transacter.Transaction? {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun execute(identifier: Int?, sql: String, parameters: Int, binders: (SqlPreparedStatement.() -> Unit)?): QueryResult<Long> {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun <R> executeQuery(
+        identifier: Int?,
+        sql: String,
+        mapper: (SqlCursor) -> QueryResult<R>,
+        parameters: Int,
+        binders: (SqlPreparedStatement.() -> Unit)?,
+    ): QueryResult<R> {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun newTransaction(): QueryResult<Transacter.Transaction> {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun notifyListeners(vararg queryKeys: String) {
+      throw IllegalStateException("bad cache")
+    }
+
+    override fun removeListener(vararg queryKeys: String, listener: Query.Listener) {
+      throw IllegalStateException("bad cache")
+    }
+  }
 
   @Test
   fun exceptionCallsExceptionHandler() {
-    val badCache = SqlNormalizedCache(JsonRecordDatabase(BadCacheQueries()))
+    val badCache = SqlNormalizedCache(JsonRecordDatabase(JsonQueries(BadDriver)))
     var throwable: Throwable? = null
     apolloExceptionHandler = {
       throwable = it
@@ -310,68 +354,6 @@ class SqlNormalizedCacheTest {
     )
     assertEquals("Unable to merge a record from the database", throwable!!.message)
     assertEquals("bad cache", throwable!!.cause!!.message)
-  }
-
-  private class BadCacheQueries : JsonQueries {
-    override fun <T : Any> recordForKey(key: String, mapper: (key: String, record: String) -> T): Query<T> {
-      TODO("Not yet implemented")
-    }
-
-    override fun recordForKey(key: String): Query<RecordForKey> {
-      throw Exception("bad cache")
-    }
-
-    override fun <T : Any> recordsForKeys(key: Collection<String>, mapper: (key: String, record: String) -> T): Query<T> {
-      TODO("Not yet implemented")
-    }
-
-    override fun recordsForKeys(key: Collection<String>): Query<RecordsForKeys> {
-      TODO("Not yet implemented")
-    }
-
-    override fun <T : Any> selectRecords(mapper: (_id: Long, key: String, record: String) -> T): Query<T> {
-      TODO("Not yet implemented")
-    }
-
-    override fun selectRecords(): Query<Records> {
-      TODO("Not yet implemented")
-    }
-
-    override fun changes(): Query<Long> {
-      TODO("Not yet implemented")
-    }
-
-    override fun insert(key: String, record: String) {
-      TODO("Not yet implemented")
-    }
-
-    override fun update(record: String, key: String) {
-      TODO("Not yet implemented")
-    }
-
-    override fun delete(key: String) {
-      TODO("Not yet implemented")
-    }
-
-    override fun deleteRecords(key: Collection<String>) {
-      TODO("Not yet implemented")
-    }
-
-    override fun deleteRecordsWithKeyMatching(value: String, value_: String) {
-      TODO("Not yet implemented")
-    }
-
-    override fun deleteAll() {
-      TODO("Not yet implemented")
-    }
-
-    override fun transaction(noEnclosing: Boolean, body: TransactionWithoutReturn.() -> Unit) {
-      throw Exception("bad cache")
-    }
-
-    override fun <R> transactionWithResult(noEnclosing: Boolean, bodyWithReturn: TransactionWithReturn<R>.() -> R): R {
-      throw Exception("bad cache")
-    }
   }
 
   private fun createRecord(key: String) {

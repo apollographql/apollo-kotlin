@@ -4,8 +4,8 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.sql.internal.createDriver
 import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.util.Properties
 
 actual class SqlNormalizedCacheFactory actual constructor(

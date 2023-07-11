@@ -11,10 +11,9 @@ dependencies {
 
 android {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
-  namespace = "com.apollographql.apollo3.android"
+  namespace = "com.apollographql.apollo3.idling.resource"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()
-    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 }

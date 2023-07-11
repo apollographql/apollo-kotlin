@@ -10,6 +10,8 @@ dependencies {
 }
 
 configure<BaseExtension> {
+  namespace = "com.example"
+
   compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
 
   defaultConfig {
@@ -17,6 +19,11 @@ configure<BaseExtension> {
     targetSdkVersion(libs.versions.android.sdkversion.target.get())
   }
 }
+
+java.toolchain {
+  languageVersion.set(JavaLanguageVersion.of(11))
+}
+
 
 apollo {
   service("service") {

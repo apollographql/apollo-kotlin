@@ -5,7 +5,7 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.blob2.Blob2Databa
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.sql.internal.Blob2RecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.maybeCreateOrMigrateSchema
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.io.File
 
 /**
