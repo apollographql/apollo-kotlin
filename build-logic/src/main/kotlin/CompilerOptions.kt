@@ -16,14 +16,7 @@ fun Project.configureJavaAndKotlinCompilers() {
       freeCompilerArgs = freeCompilerArgs + listOf(
           "-opt-in=kotlin.RequiresOptIn",
       )
-      if (getKotlinPluginVersion() == "1.6.10") {
-        // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Kotlin 1.6.20)
-        // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
-        // See also https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
-        // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-        // TODO for v4, set "-Xjvm-default=all" to remove all DefaultImpls
-        freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
-      }
+      freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
       apiVersion = "1.6"
       languageVersion = "1.6"
 
