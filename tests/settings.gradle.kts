@@ -23,10 +23,7 @@ rootProject.projectDir
       include(project)
     }
 
-includeBuild("../") {
-  // See https://youtrack.jetbrains.com/issue/KT-56536
-  name = "apollo-kotlin"
-}
+includeBuild("../")
 
 dependencyResolutionManagement {
   versionCatalogs {

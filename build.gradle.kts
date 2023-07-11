@@ -1,4 +1,5 @@
 import JapiCmp.configureJapiCmp
+import java.util.Locale
 
 plugins {
   id("apollo.library") apply false
@@ -107,7 +108,7 @@ tasks.named("dokkaHtmlMultiModule").configure {
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
   rejectVersionIf {
-    listOf("alpha", "beta", "rc").any { candidate.version.toLowerCase().contains(it) }
+    listOf("alpha", "beta", "rc").any { candidate.version.lowercase().contains(it) }
   }
 }
 
@@ -147,8 +148,9 @@ configure<kotlinx.validation.ApiValidationExtension> {
 }
 
 tasks.register("rmbuild") {
+  val root = file(".")
   doLast {
-    file(".").walk().onEnter {
+    root.walk().onEnter {
       if (it.isDirectory && it.name == "build") {
         println("deleting: $it")
         it.deleteRecursively()

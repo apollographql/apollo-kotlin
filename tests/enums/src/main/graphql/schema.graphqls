@@ -44,7 +44,7 @@ enum Gravity {
   type,
 }
 
-# See https://youtrack.jetbrains.com/issue/KT-52315
+# See https://youtrack.jetbrains.com/issue/KT-52315 for why this test
 enum Foo {
   header,
   footer,

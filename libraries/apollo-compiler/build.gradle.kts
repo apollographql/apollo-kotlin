@@ -32,6 +32,9 @@ dependencies {
   testImplementation(libs.androidx.annotation) {
     because("Used in the Java generated code")
   }
+  testImplementation(libs.jetbrains.annotations) {
+    because("Used in the Java generated code")
+  }
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {
