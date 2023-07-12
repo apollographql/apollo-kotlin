@@ -95,7 +95,7 @@ gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.8" }
 # to avoid leaking the Kotlin stdlib on the classpath
 #
 # Keep in sync with MIN_GRADLE_VERSION
-gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "5.6" }
+gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "6.8" }
 gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-plugin", version = "0.2.8" }
 gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-plugin", version = "1.1.0" }
 graphqlkotlin = { group = "com.expediagroup", name = "graphql-kotlin-spring-server", version = "5.3.0" }
@@ -133,7 +133,7 @@ kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-serialization-json-okio = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json-okio", version.ref = "kotlinx-serialization-runtime" }
-kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.10.1" }
+kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.13.2" }
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }

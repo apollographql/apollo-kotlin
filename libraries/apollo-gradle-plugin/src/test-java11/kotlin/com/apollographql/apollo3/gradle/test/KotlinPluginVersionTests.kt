@@ -13,7 +13,7 @@ class KotlinPluginVersionTests {
    */
   @Test
   fun `kotlin JVM min version succeeds`() {
-    TestUtils.withTestProject("kotlin-plugin-version") { dir ->
+    TestUtils.withTestProject("kotlin-plugin-version-min") { dir ->
       val result = TestUtils.executeTask("build", dir)
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)

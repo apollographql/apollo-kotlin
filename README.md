@@ -151,15 +151,15 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 ## Requirements
 
-Some platforms have specific requirements:
+Some platforms have specific runtime requirements:
 
+* JVM 8+
 * Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
-* JDK 8+ (JDK 11+ when using Android Gradle Plugin 7.0+)
 * iOS 13+
 
 For building, it requires:
 
-* Gradle 5.6+
+* Gradle 6.8+
 * Kotlin 1.6+ (1.7+ for native)
 
 ## Proguard / R8 configuration
