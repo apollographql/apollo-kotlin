@@ -141,7 +141,9 @@ internal object KotlinCodeGen {
               )
           )
 
-          builders.add(FragmentSelectionsBuilder(context, fragment))
+          if (commonCodegenOptions.generateCompiledField) {
+            builders.add(FragmentSelectionsBuilder(context, fragment))
+          }
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
             builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten))
@@ -155,7 +157,8 @@ internal object KotlinCodeGen {
                     fragment,
                     flatten,
                     addJvmOverloads,
-                    generateDataBuilders
+                    generateDataBuilders,
+                    commonCodegenOptions.generateCompiledField
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -170,7 +173,9 @@ internal object KotlinCodeGen {
             builders.add(OperationVariablesAdapterBuilder(context, operation))
           }
 
-          builders.add(OperationSelectionsBuilder(context, operation))
+          if (commonCodegenOptions.generateCompiledField) {
+            builders.add(OperationSelectionsBuilder(context, operation))
+          }
           builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
 
           builders.add(
@@ -183,6 +188,7 @@ internal object KotlinCodeGen {
                   flatten,
                   addJvmOverloads,
                   generateDataBuilders,
+                  commonCodegenOptions.generateCompiledField
               )
           )
         }

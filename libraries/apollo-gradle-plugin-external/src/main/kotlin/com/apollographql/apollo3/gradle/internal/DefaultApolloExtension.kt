@@ -645,6 +645,7 @@ abstract class DefaultApolloExtension(
     task.generateFragmentImplementations.set(service.generateFragmentImplementations)
     task.generateQueryDocument.set(service.generateQueryDocument)
     task.generateSchema.set(service.generateSchema)
+    task.generateCompiledField.set(service.generateCompiledField)
     task.generatedSchemaName.set(service.generatedSchemaName)
     task.generateModelBuilders.set(service.generateModelBuilders)
     task.addJvmOverloads.set(service.addJvmOverloads)

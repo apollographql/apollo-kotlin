@@ -458,6 +458,7 @@ object ApolloCompiler {
         generatedSchemaName = generatedSchemaName,
         generateResponseFields = generateResponseFields,
         incomingCodegenMetadata = emptyList(),
+        generateCompiledField = true,
     )
 
     return when (targetLanguage) {

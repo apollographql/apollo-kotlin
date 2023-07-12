@@ -21,7 +21,7 @@ fun addRequiredFields(
 ): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
-      selections = operation.selections.addRequiredFields(schema, addTypename, fragments, parentType, emptySet(), false)
+      selections = operation.selections.addRequiredFields(schema, addTypename, fragments, parentType, emptySet(), true)
   )
 }
 

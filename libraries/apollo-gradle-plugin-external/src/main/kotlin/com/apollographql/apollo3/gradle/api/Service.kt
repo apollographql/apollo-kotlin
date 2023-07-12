@@ -449,6 +449,11 @@ interface Service {
   val generateModelBuilders: Property<Boolean>
 
   /**
+   */
+  @ApolloExperimental
+  val generateCompiledField: Property<Boolean>
+
+  /**
    * What codegen to use. One of "operationBased", "responseBased" or "experimental_operationBasedWithInterfaces"
    *
    * - "operationBased" generates models that map 1:1 with the GraphQL operation

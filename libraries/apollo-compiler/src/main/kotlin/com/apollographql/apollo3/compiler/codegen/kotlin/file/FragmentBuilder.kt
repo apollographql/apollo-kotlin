@@ -26,6 +26,7 @@ internal class FragmentBuilder(
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
     private val generateDataBuilders: Boolean,
+    private val generateCompiledField: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
@@ -99,7 +100,7 @@ internal class FragmentBuilder(
 
   private fun IrFragmentDefinition.rootFieldFunSpec(): FunSpec {
     return rootFieldFunSpec(
-        context, fragment.typeCondition, context.resolver.resolveFragmentSelections(name)
+        context, fragment.typeCondition, if (generateCompiledField) context.resolver.resolveFragmentSelections(name) else null
     )
   }
 

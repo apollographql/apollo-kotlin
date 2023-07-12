@@ -1,0 +1,15 @@
+query GetAnimal {
+  animal {
+    species
+    ... on Lion {
+      roar
+      owner {
+        name
+      }
+    }
+    ... on Cat {
+      meow
+    }
+  }
+}
+

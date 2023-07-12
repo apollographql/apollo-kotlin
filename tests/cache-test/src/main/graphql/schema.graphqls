@@ -1,0 +1,23 @@
+type Query {
+  animal: Animal!
+}
+
+interface Animal {
+  species: String!
+}
+
+type Owner {
+  name: String!
+}
+
+type Lion implements Animal {
+  species: String!
+  roar: String!
+  owner: Owner!
+}
+
+type Cat implements Animal {
+  species: String!
+  meow: String!
+  owner: Owner!
+}

@@ -82,6 +82,10 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val generateCompiledField: Property<Boolean>
+
+  @get:Input
+  @get:Optional
   abstract val generatedSchemaName: Property<String>
 
   @get:Input
@@ -176,6 +180,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
+        generateCompiledField = generateCompiledField.getOrElse(true),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         incomingCodegenMetadata = upstreamMetadata,

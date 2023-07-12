@@ -63,21 +63,25 @@ internal fun adapterFunSpec(
     .build()
 }
 
-internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName): FunSpec {
+internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName?): FunSpec {
   return FunSpec.builder(rootField)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.CompiledField)
+      .returns(KotlinSymbols.CompiledField.copy(nullable = true))
       .addCode(
-          CodeBlock.builder()
-              .add("return·%T(\n", KotlinSymbols.CompiledFieldBuilder)
-              .indent()
-              .add("name·=·%S,\n", Identifier.data)
-              .add("type·=·%L\n", context.resolver.resolveCompiledType(parentType))
-              .unindent()
-              .add(")\n")
-              .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)
-              .add(".build()\n")
-              .build()
+          if (selectionsClassName != null) {
+            CodeBlock.builder()
+                .add("return·%T(\n", KotlinSymbols.CompiledFieldBuilder)
+                .indent()
+                .add("name·=·%S,\n", Identifier.data)
+                .add("type·=·%L\n", context.resolver.resolveCompiledType(parentType))
+                .unindent()
+                .add(")\n")
+                .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)
+                .add(".build()\n")
+                .build()
+          } else {
+            CodeBlock.of("return·null")
+          }
       )
       .build()
 }

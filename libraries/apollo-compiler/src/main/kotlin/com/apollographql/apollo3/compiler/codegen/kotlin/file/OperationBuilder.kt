@@ -37,7 +37,8 @@ internal class OperationBuilder(
     private val operation: IrOperation,
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
-    val generateDataBuilders: Boolean,
+    private val generateDataBuilders: Boolean,
+    private val generateCompiledField: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -166,7 +167,7 @@ internal class OperationBuilder(
               .build()
           )
         }
-        .applyIf(generateDataBuilders) {
+        .applyIf(generateDataBuilders && generateCompiledField) {
           addFunction(
               dataBuilderCtor(
                   context = context,
@@ -198,7 +199,8 @@ internal class OperationBuilder(
     return rootFieldFunSpec(
         context,
         operation.typeCondition,
-        context.resolver.resolveOperationSelections(operation.name)
+        if (generateCompiledField) context.resolver.resolveOperationSelections(operation.name) else null,
+
     )
   }
 }

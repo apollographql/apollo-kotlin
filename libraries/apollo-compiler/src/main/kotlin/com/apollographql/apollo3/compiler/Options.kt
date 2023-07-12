@@ -211,6 +211,8 @@ data class CommonCodegenOptions(
      * Default: "__Schema"
      */
     val generatedSchemaName: String,
+
+    val generateCompiledField: Boolean
 )
 
 class KotlinCodegenOptions(
@@ -358,7 +360,7 @@ const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
 const val defaultRequiresOptInAnnotation = "none"
 const val defaultFlattenModels = true
 val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
-const val defaultGenerateSchema = false
+const val defaultGenerateSchema = true
 const val defaultGeneratedSchemaName = "__Schema"
 const val defaultGenerateDataBuilders = false
 const val defaultGenerateModelBuilders = false
