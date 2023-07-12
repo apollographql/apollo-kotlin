@@ -9,7 +9,7 @@ dependencies {
   implementation(libs.androidx.espresso.idlingresource)
   implementation(libs.apollo.idlingresource)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.android.support.annotations)
+  testImplementation(libs.androidx.annotation)
   testImplementation(libs.android.test.runner)
 }
 
@@ -19,7 +19,6 @@ android {
 
   defaultConfig {
     minSdk = libs.versions.android.sdkversion.min.get().toInt()
-    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
   }
 }
 

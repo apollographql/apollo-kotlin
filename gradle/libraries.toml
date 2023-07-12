@@ -42,8 +42,7 @@ truth = "1.1.3"
 [libraries]
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
 android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
-android-support-annotations = { group = "com.android.support", name = "support-annotations", version = "28.0.0" }
-android-test-runner = { group = "com.android.support.test", name = "runner", version = "1.0.2" }
+android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.6.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.1.0" }
 androidx-espresso-idlingresource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version = "3.5.1" }
@@ -113,7 +112,8 @@ kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
 kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-max" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # the Kotlin plugin resolves the version
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib" }
+kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common", version.ref = "kotlin-stdlib" }
+kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib" }
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-stdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kotlin plugin resolves the version
 kotlin-test-annotations-common = { group = "org.jetbrains.kotlin", name = "kotlin-test-annotations-common" } # the Kotlin plugin resolves the version

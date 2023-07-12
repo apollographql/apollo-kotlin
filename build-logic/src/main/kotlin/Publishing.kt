@@ -298,13 +298,6 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
 
 private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
   return tasks.register("javaSourcesJar", Jar::class.java) {
-    /**
-     * Add a dependency on the compileKotlin task to make sure the generated sources like
-     * antlr or SQLDelight get included
-     * See also https://youtrack.jetbrains.com/issue/KT-47936
-     */
-    dependsOn("compileKotlin")
-
     archiveClassifier.set("sources")
     val sourceSets = project.extensions.getByType(JavaPluginExtension::class.java).sourceSets
     from(sourceSets.getByName("main").allSource)

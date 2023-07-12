@@ -8,6 +8,8 @@ dependencies {
   implementation(libs.apollo.api.java)
   implementation(libs.guava.jre)
   implementation(libs.androidx.annotation)
+  implementation(libs.jetbrains.annotations)
+
   testImplementation(libs.junit)
 }
 
