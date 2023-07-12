@@ -270,10 +270,10 @@ class InterfaceType internal constructor(
 }
 
 abstract class CompiledSchema {
-  abstract val types: List<CompiledNamedType>
+  abstract val all: List<CompiledNamedType>
 
   fun superTypes(typename: String): Set<String>? {
-    val objectType =types.filterIsInstance<ObjectType>().firstOrNull()
+    val objectType =all.filterIsInstance<ObjectType>().firstOrNull()
     if (objectType == null) {
       return null
     }
@@ -281,7 +281,7 @@ abstract class CompiledSchema {
         .implements
         .map { it.name }
 
-    val unions = types.filterIsInstance<UnionType>()
+    val unions = all.filterIsInstance<UnionType>()
         .filter {
           it.members.any { it.name == typename }
         }

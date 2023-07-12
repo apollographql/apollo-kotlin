@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
+import com.apollographql.apollo3.compiler.codegen.Identifier.schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.withBooleanDefaultValues
@@ -80,6 +81,15 @@ internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, select
       )
       .build()
 }
+
+internal fun schemaFunSpec(context: KotlinContext): FunSpec {
+  return FunSpec.builder(schema)
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(KotlinSymbols.CompiledSchema)
+      .addCode("return·%T", context.resolver.resolveSchema())
+      .build()
+}
+
 
 internal fun TypeSpec.maybeAddFilterNotNull(generateFilterNotNull: Boolean): TypeSpec {
   if (!generateFilterNotNull) {

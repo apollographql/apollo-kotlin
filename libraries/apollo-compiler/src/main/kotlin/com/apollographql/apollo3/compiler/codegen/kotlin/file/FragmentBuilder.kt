@@ -74,6 +74,7 @@ internal class FragmentBuilder(
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context, dataProperty))
         .addFunction(rootFieldFunSpec())
+        .addFunction(schemaFunSpec(context))
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
         .maybeAddJsExport(context)

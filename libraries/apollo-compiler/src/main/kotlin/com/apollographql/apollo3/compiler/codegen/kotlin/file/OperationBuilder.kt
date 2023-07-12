@@ -91,6 +91,7 @@ internal class OperationBuilder(
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context, operation.dataProperty))
         .addFunction(rootFieldFunSpec())
+        .addFunction(schemaFunSpec(context))
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
         .build()

@@ -24,6 +24,7 @@ internal object Identifier {
   const val toJson = "toJson"
   const val fields = "fields"
   const val rootField = "rootField"
+  const val schema = "schema"
 
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
