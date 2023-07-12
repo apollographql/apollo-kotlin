@@ -41,7 +41,7 @@ Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatf
 
 Here's the current matrix of supported features per platform:
 
-|  | `jvm` | Apple¹ | `js` | `linuxX64`
+|  | `jvm` | `Apple¹` | `js` | `linuxX64`
 | --- | :---: | :---: |:----:| :---: |
 | `apollo-api` (models)|✅|✅|  ✅   |✅|
 | `apollo-runtime` (network, query batching, apq, ...) |✅|✅|  ✅   |🚫|
