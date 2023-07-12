@@ -14,7 +14,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
    * - Apollo client directives like `@nonnull` removed
    * - `typename` fields added for polymorphic/fragment cases
    */
-  fun document(): String
+  override fun document(): String
 
   /**
    * The GraphQL operation name as in the `*.graphql` file.
@@ -34,7 +34,9 @@ interface Operation<D : Operation.Data> : Executable<D> {
   @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withBooleanDefaultValues: Boolean)
 
-  override fun rootField(): CompiledField
+  override fun rootField(): CompiledField?
+
+  override fun schema(): CompiledSchema
 
   /**
    * Marker interface for generated models built from data returned by the server in response to this operation.

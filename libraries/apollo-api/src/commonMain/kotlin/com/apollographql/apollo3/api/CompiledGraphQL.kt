@@ -133,7 +133,6 @@ class CompiledFragment internal constructor(
   }
 }
 
-
 data class CompiledCondition(val name: String, val inverted: Boolean)
 
 sealed class CompiledType {
@@ -270,7 +269,7 @@ class InterfaceType internal constructor(
   }
 }
 
-abstract class Schema {
+abstract class CompiledSchema {
   abstract val types: List<CompiledNamedType>
 
   fun superTypes(typename: String): Set<String>? {
@@ -278,7 +277,7 @@ abstract class Schema {
     if (objectType == null) {
       return null
     }
-    val ifaces = objectType
+    val interfaces = objectType
         .implements
         .map { it.name }
 
@@ -289,7 +288,7 @@ abstract class Schema {
         .map { it.name }
 
     return buildSet {
-      addAll(ifaces)
+      addAll(interfaces)
       addAll(unions)
       add(typename)
     }

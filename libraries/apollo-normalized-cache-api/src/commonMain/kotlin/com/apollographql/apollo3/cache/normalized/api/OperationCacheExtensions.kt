@@ -10,8 +10,9 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
+import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader2
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
-
+import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer2
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
@@ -29,8 +30,15 @@ fun <D : Executable.Data> Executable<D>.normalize(
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters, true)
-  return Normalizer(variables, rootKey, cacheKeyGenerator)
-      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType().name)
+
+  val rootField = rootField()
+  if (rootField != null) {
+    return Normalizer(variables, rootKey, cacheKeyGenerator)
+        .normalize(writer.root() as Map<String, Any?>, rootField.selections, rootField.type.rawType().name)
+  } else {
+    return Normalizer2(variables, rootKey, cacheKeyGenerator, this.document(), this.schema())
+        .normalize(writer.root() as Map<String, Any?>)
+  }
 }
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
@@ -67,15 +75,29 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
 ): D {
-  val map = CacheBatchReader(
-      cache = cache,
-      cacheHeaders = cacheHeaders,
-      cacheResolver = cacheResolver,
-      variables = variables(customScalarAdapters, true),
-      rootKey = cacheKey.key,
-      rootSelections = rootField().selections,
-      rootTypename = rootField().type.rawType().name
-  ).toMap()
+  val rootField = rootField()
+  val map = if (rootField != null) {
+    CacheBatchReader(
+        cache = cache,
+        cacheHeaders = cacheHeaders,
+        cacheResolver = cacheResolver,
+        variables = variables(customScalarAdapters, true),
+        rootKey = cacheKey.key,
+        rootSelections = rootField.selections,
+        rootTypename = rootField.type.rawType().name
+    ).toMap()
+  } else {
+    CacheBatchReader2(
+        cache = cache,
+        cacheHeaders = cacheHeaders,
+        cacheResolver = cacheResolver,
+        variables = variables(customScalarAdapters, true),
+        rootKey = cacheKey.key,
+        graphqlDocument = document(),
+        compiledSchema = schema()
+    ).toMap()
+
+  }
 
   val reader = MapJsonReader(
       root = map,

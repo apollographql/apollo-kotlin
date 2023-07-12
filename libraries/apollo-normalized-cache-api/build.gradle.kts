@@ -16,6 +16,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
+        implementation(project(":apollo-ast"))
         implementation(libs.okio)
         api(libs.uuid)
       }
