@@ -270,6 +270,32 @@ class InterfaceType internal constructor(
   }
 }
 
+abstract class Schema {
+  abstract val types: List<CompiledNamedType>
+
+  fun superTypes(typename: String): Set<String>? {
+    val objectType =types.filterIsInstance<ObjectType>().firstOrNull()
+    if (objectType == null) {
+      return null
+    }
+    val ifaces = objectType
+        .implements
+        .map { it.name }
+
+    val unions = types.filterIsInstance<UnionType>()
+        .filter {
+          it.members.any { it.name == typename }
+        }
+        .map { it.name }
+
+    return buildSet {
+      addAll(ifaces)
+      addAll(unions)
+      add(typename)
+    }
+  }
+}
+
 class UnionType(
     name: String,
     vararg val members: ObjectType,
