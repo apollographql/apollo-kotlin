@@ -48,7 +48,6 @@ dependencies {
       "com.apollographql.apollo3:apollo-normalized-cache" to "jvm"
   ).forEach {
     val ga = it.key
-    val platform = it.value
     implementation(ga)
     /**
      * Because we want to test both artifacts and they contain the same symbols, relocate the incubating ones
@@ -94,6 +93,12 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
   service("benchmark") {
     sourceFolder.set("benchmark")
     packageName.set("com.apollographql.apollo3.benchmark")
+  }
+  service("benchmark2") {
+    sourceFolder.set("benchmark2")
+    addTypename.set("always")
+    generateCompiledField.set(false)
+    packageName.set("com.apollographql.apollo3.benchmark2")
   }
   service("calendar-response") {
     sourceFolder.set("calendar")

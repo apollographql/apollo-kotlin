@@ -1,0 +1,40 @@
+query GetResponse {
+    users {
+        _id
+        index
+        guid
+        is_active
+        balance
+        picture
+        age
+        eye_color
+        name {
+            first
+            last
+        }
+        company
+        email
+        phone
+        address
+        about
+        registered
+        latitude
+        longitude
+        tags
+        range
+        friends {
+            id
+            name
+        }
+        images {
+            id
+            format
+            url
+            description
+        }
+        greeting
+        favorite_fruit
+    }
+    status
+    is_real_json
+}
