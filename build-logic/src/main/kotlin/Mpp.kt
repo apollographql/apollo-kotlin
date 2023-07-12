@@ -1,7 +1,8 @@
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
 private val allAppleTargets = setOf(
     "macosX64",
@@ -81,20 +82,20 @@ fun Project.configureMpp(
       js(IR) {
         if (browserTest) {
           browser {
-            testTask {
+            testTask(Action {
               useKarma {
                 useChromeHeadless()
               }
-            }
+            })
           }
         } else {
           nodejs {
-            testTask {
+            testTask(Action {
               useMocha {
                 // Override default 2s timeout
                 timeout = "120s"
               }
-            }
+            })
           }
         }
       }
@@ -113,6 +114,13 @@ fun Project.configureMpp(
     createAndConfigureAppleTargets(appleTargets.toSet().intersect(enabledAppleTargets))
 
     addTestDependencies()
+
+    tasks.withType(KotlinJsIrLink::class.java).configureEach {
+      notCompatibleWithConfigurationCache("https://youtrack.jetbrains.com/issue/KT-60311/")
+    }
+    tasks.withType(KotlinNativeLink::class.java).configureEach {
+      notCompatibleWithConfigurationCache("https://youtrack.jetbrains.com/issue/KT-60311/")
+    }
   }
 }
 
