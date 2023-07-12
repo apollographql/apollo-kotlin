@@ -85,9 +85,9 @@ tasks.register("ciTestsNoGradle") {
    * Update the database schemas in CI
    */
   dependsOn(":apollo-normalized-cache-sqlite:generateCommonMainJsonDatabaseSchema")
-//  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainJsonDatabaseSchema")
-//  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlobDatabaseSchema")
-//  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlob2DatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainJsonDatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlobDatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlob2DatabaseSchema")
 
   doLast {
     checkGitStatus()
@@ -133,9 +133,9 @@ configure<kotlinx.validation.ApiValidationExtension> {
   )
   ignoredProjects.addAll(
       listOf(
-//          "apollo-normalized-cache-api-incubating",
-//          "apollo-normalized-cache-incubating",
-//          "apollo-normalized-cache-sqlite-incubating",
+          "apollo-normalized-cache-api-incubating",
+          "apollo-normalized-cache-incubating",
+          "apollo-normalized-cache-sqlite-incubating",
           "intellij-plugin",
       )
   )

@@ -14,7 +14,7 @@ rootProject.projectDir
     .resolve("libraries")
     .listFiles()!!
     .filter { it.isDirectory }
-    .filter { it.name.startsWith("apollo-") && !it.name.endsWith("-incubating") }
+    .filter { it.name.startsWith("apollo-") }
     .filter { File(it, "build.gradle.kts").exists() }
     .forEach {
       include(it.name)
