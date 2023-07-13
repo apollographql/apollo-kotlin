@@ -32,7 +32,6 @@ import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.model.GradleProject
 import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
-import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
@@ -145,14 +144,14 @@ class GradleToolingModelService(
 
     override fun run(indicator: ProgressIndicator) {
       val rootProjectPath = project.getGradleRootPath() ?: return
-      val gradleExecutionHelper = GradleExecutionHelper()
+      val gradleExecutionHelper = GradleExecutionHelperCompat()
       val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
       val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
         gradleCancellation = GradleConnector.newCancellationTokenSource()
         logd("Fetch Gradle project model")
         return@execute try {
           val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.RESOLVE_PROJECT, project)
-          gradleExecutionHelper.getModelBuilder(GradleProject::class.java, id, executionSettings, connection, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+          gradleExecutionHelper.getModelBuilder(GradleProject::class.java, connection, id, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
               .withCancellationToken(gradleCancellation!!.token())
               .get()
         } catch (t: Throwable) {
@@ -176,7 +175,7 @@ class GradleToolingModelService(
           logd("Fetch tooling model for :${gradleProject.name}")
           return@execute try {
             val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.RESOLVE_PROJECT, project)
-            gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, id, executionSettings, connection, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+            gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, connection,id, executionSettings,  ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
                 .withCancellationToken(gradleCancellation!!.token())
                 .get()
                 .takeIf {
