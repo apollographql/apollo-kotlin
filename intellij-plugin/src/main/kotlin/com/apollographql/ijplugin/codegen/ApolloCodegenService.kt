@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.codegen
 
 import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
+import com.apollographql.ijplugin.gradle.GradleExecutionHelperCompat
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
 import com.apollographql.ijplugin.gradle.getGradleRootPath
 import com.apollographql.ijplugin.project.ApolloProjectListener
@@ -42,7 +43,6 @@ import org.gradle.tooling.events.ProgressListener
 import org.gradle.tooling.events.StartEvent
 import org.gradle.tooling.events.SuccessResult
 import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
-import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.util.concurrent.Executors
@@ -187,13 +187,13 @@ class ApolloCodegenService(
     val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
 
     gradleExecutorService.submit {
-      val gradleExecutionHelper = GradleExecutionHelper()
+      val gradleExecutionHelper = GradleExecutionHelperCompat()
       gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
         gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
         logd("Start Gradle")
         try {
           val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
-          gradleExecutionHelper.getBuildLauncher(id, connection, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+          gradleExecutionHelper.getBuildLauncher(connection, id, listOf(CODEGEN_GRADLE_TASK_NAME), executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(gradleCodegenCancellation!!.token())
               .addArguments("--continuous")
