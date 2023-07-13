@@ -50,7 +50,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
   }.listen()
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
-    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"
+    url = "http://127.0.0.1:${server.address().unsafeCast<AddressInfo>().port}/"
     server.on("listening") { _ ->
       cont.resume(url!!)
     }
