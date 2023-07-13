@@ -19,6 +19,7 @@ kotlin {
         api(libs.okio)
         api(libs.uuid)
         api(libs.kotlinx.coroutines)
+        api(libs.ktor.client.core)
       }
     }
 
