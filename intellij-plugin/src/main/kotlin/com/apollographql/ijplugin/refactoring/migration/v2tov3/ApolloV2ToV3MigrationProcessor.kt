@@ -2,6 +2,8 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
+import com.apollographql.ijplugin.refactoring.migration.apollo2
+import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.CommentDependenciesInToml
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodImport
@@ -15,9 +17,9 @@ import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateAddCus
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateEnumValueUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateFileUpload
-import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateGradleDependenciesBuildKts
-import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateGradleDependenciesInToml
-import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateGradlePluginInBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateGraphqlSourceDirectorySet
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateHttpCache
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateIdlingResource
@@ -27,8 +29,6 @@ import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateOkHttp
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateSqlNormalizedCacheFactory
 import com.intellij.openapi.project.Project
 
-private const val apollo2 = "com.apollographql.apollo"
-private const val apollo3 = "com.apollographql.apollo3"
 private const val apollo3LatestVersion = "3.8.2"
 
 /**

@@ -165,6 +165,14 @@
       <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>
 
+    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 4 -->
+    <action
+        id="ApolloV3ToV4MigrationAction"
+        class="com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction"
+    >
+      <add-to-group group-id="ApolloRefactorActionGroup" />
+    </action>
+
     <!-- Refactor / Apollo / Migrate to operationBased Codegen -->
     <!--suppress PluginXmlCapitalization -->
     <action
