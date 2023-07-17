@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest />
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="INTERNET" />
+  <!-- Storage permissions required to run the macrobenchmark on my Pixel 3, not sure why -->
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <application >
+    <profileable android:shell="true"
+        tools:targetApi="q" />
+
+    <activity android:name=".MainActivity"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

@@ -6,8 +6,10 @@ android-plugin-min = "3.4.2"
 # The latest version that has been tested to work
 android-plugin-max = "8.2.0-alpha03"
 android-sdkversion-compile = "33"
+android-sdkversion-compilebenchmark = "34"
 android-sdkversion-min = "16"
 android-sdkversion-compose-min = "21"
+android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 antlr = "4.12.0"
@@ -18,6 +20,7 @@ apollo-published = "4.0.0-alpha.1"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.0-dev-k1.9.0-6a60475e07f"
+compose = "1.3.3"
 dokka = "1.8.10"
 guava = "31.1-jre"
 javaPoet = "1.13.0"
@@ -32,20 +35,24 @@ kotlinx-datetime = "0.4.0"
 kotlinx-serialization-runtime = "1.5.0"
 ksp = "1.9.0-1.0.11"
 ktor = "2.2.2"
-okhttp = "4.10.0"
+okhttp = "4.11.0"
 rx-android = "2.0.1"
 rx-java2 = "2.2.21"
 rx-java3 = "3.1.6"
 sqldelight = "2.0.0-rc02"
 truth = "1.1.3"
+moshix = "0.14.1"
 
 [libraries]
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
 android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
+androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+androidx-activity = "androidx.activity:activity-ktx:1.7.2"
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.6.0" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.1.0" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 androidx-espresso-idlingresource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version = "3.5.1" }
+androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
@@ -79,7 +86,8 @@ assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
 atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version = "0.20.1" }
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "3.5.2" }
-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version = "1.3.3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref = "dokka" }
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 gegp = "com.gradle:gradle-enterprise-gradle-plugin:3.13.4" # // sync with settings.gradle.kts
@@ -122,6 +130,7 @@ kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # t
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.8"
+androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
@@ -141,9 +150,7 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.14.0" }
-# okio is pinned to 3.2.0 to stay compatible with Kotlin 1.5.
-# bump it whenever we bump Kotlin
-okio = "com.squareup.okio:okio:3.2.0"
+okio = "com.squareup.okio:okio:3.2.0" # okio is pinned to 3.2.0 to stay compatible with Kotlin 1.5, bump it whenever we bump Kotlin
 okio-nodefilesystem = "com.squareup.okio:okio-nodefilesystem:3.2.0"
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "1.12.0" }
@@ -155,12 +162,17 @@ sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", ver
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
 sqldelight-sqlite = "app.cash.sqldelight:sqlite-dialect:2.0.0-alpha01"
-
+jar-relocator = "me.lucko:jar-relocator:1.5"
+benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
+asm = "org.ow2.asm:asm-commons:9.3"
+moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
+benchmark-junit4 = "androidx.benchmark:benchmark-junit4:1.1.1"
+androidx-test-core = "androidx.test:core:1.5.0"
+androidx-test-rules = "androidx.test:rules:1.5.0"
+androidx-test-runner = "androidx.test:runner:1.5.2"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "0.7.0" }
-# Not updating to 0.7.0 because it pulls kotlin-stdlib 1.8 and consumers using 1.6 fail with:
-# Class 'kotlin.Unit' was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.8.0, expected version is 1.6.0
-uuid = { group = "com.benasher44", name = "uuid", version = "0.6.0" }
+uuid = { group = "com.benasher44", name = "uuid", version = "0.6.0" } # Not updating to 0.7.0 because it pulls kotlin-stdlib 1.8 and consumers using 1.6 fail with: Class 'kotlin.Unit' was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.8.0, expected version is 1.6.0
 vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5" }
 
 [plugins]
