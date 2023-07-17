@@ -7,6 +7,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.PsiReference
@@ -49,16 +50,17 @@ fun findMethodReferences(
     className: String,
     methodName: String,
     extensionTargetClassName: String? = null,
+    methodPredicate: (PsiMethod) -> Boolean = { true },
 ): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val methods = psiLookupClass.findMethodsByName(methodName, false)
       .filter { method ->
-        if (extensionTargetClassName == null) return@filter true
+        if (extensionTargetClassName == null) return@filter methodPredicate(method)
         // In Kotlin extensions, the target is passed to the first parameter
         if (method.parameterList.parametersCount < 1) return@filter false
         val firstParameter = method.parameterList.parameters.first()
         val firstParameterType = (firstParameter.type as? PsiClassType)?.rawType()?.canonicalText
-        firstParameterType == extensionTargetClassName
+        firstParameterType == extensionTargetClassName && methodPredicate(method)
       }
   return methods.flatMap { method ->
     val processor = RenamePsiElementProcessor.forElement(method)
@@ -69,7 +71,7 @@ fun findMethodReferences(
 fun findFieldReferences(project: Project, className: String, fieldName: String): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val field = psiLookupClass.findFieldByName(fieldName, true)
-      // Fallback to methods as in Kotlin, properties with getters are compiled as Java methods
+  // Fallback to methods as in Kotlin, properties with getters are compiled as Java methods
       ?: psiLookupClass.findMethodsByName(fieldName, true).firstOrNull()
       ?: return emptyList()
   val processor = RenamePsiElementProcessor.forElement(field)

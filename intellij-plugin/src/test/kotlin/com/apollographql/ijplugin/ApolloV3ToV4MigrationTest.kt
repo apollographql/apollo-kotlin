@@ -11,8 +11,11 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class ApolloV3ToV4MigrationTest : ApolloTestCase() {
   override val mavenLibraries = listOf(
-      "com.apollographql.apollo3:apollo-api:3.8.2",
-      "com.apollographql.apollo3:apollo-runtime:3.8.2",
+      "com.apollographql.apollo3:apollo-annotations-jvm:3.8.2",
+      "com.apollographql.apollo3:apollo-api-jvm:3.8.2",
+      "com.apollographql.apollo3:apollo-mpp-utils-jvm:3.8.2",
+      "com.apollographql.apollo3:apollo-runtime-jvm:3.8.2",
+      "com.apollographql.apollo3:apollo-normalized-cache-jvm:3.8.2",
   )
 
   override fun getTestDataPath() = "src/test/testData/migration/v3-to-v4"
@@ -25,6 +28,9 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
 
   @Test
   fun testUpdateGradleDependenciesInLibsVersionsToml() = runMigration(extension = "versions.toml", fileNameInProject = "libs.versions.toml")
+
+  @Test
+  fun deprecations() = runMigration()
 
   private fun runMigration(extension: String = "kt", fileNameInProject: String? = null) {
     val fileBaseName = getTestName(true)

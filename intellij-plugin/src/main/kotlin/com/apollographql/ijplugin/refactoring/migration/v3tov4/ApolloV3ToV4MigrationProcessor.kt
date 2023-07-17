@@ -3,10 +3,13 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
 import com.apollographql.ijplugin.refactoring.migration.apollo3
+import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
 import com.intellij.openapi.project.Project
 
 private const val apollo4LatestVersion = "4.0.0-alpha.2"
@@ -21,8 +24,10 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
 
   override val migrationItems = listOf(
       // Deprecations / renames
-      UpdateFieldName("com.apollographql.apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow", isMethodCall = true),
-
+      UpdateFieldName("$apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow", isMethodCall = true),
+      UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
+      RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
+      RemoveWatchMethodArguments(),
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
