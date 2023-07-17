@@ -68,7 +68,10 @@ fun findMethodReferences(
 
 fun findFieldReferences(project: Project, className: String, fieldName: String): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
-  val field = psiLookupClass.findFieldByName(fieldName, true) ?: return emptyList()
+  val field = psiLookupClass.findFieldByName(fieldName, true)
+      // Fallback to methods as in Kotlin, properties with getters are compiled as Java methods
+      ?: psiLookupClass.findMethodsByName(fieldName, true).firstOrNull()
+      ?: return emptyList()
   val processor = RenamePsiElementProcessor.forElement(field)
   return processor.findReferences(field, GlobalSearchScope.projectScope(project), false)
 }

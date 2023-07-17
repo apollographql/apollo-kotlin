@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
 import com.apollographql.ijplugin.refactoring.migration.apollo3
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
@@ -19,6 +20,10 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
   override val noUsageMessage = ApolloBundle.message("ApolloV3ToV4MigrationProcessor.noUsage")
 
   override val migrationItems = listOf(
+      // Deprecations / renames
+      UpdateFieldName("com.apollographql.apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow", isMethodCall = true),
+
+
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
       UpdateGradleDependenciesInToml(apollo3, apollo3, apollo4LatestVersion),
