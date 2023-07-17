@@ -15,6 +15,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
+import org.jetbrains.kotlin.asJava.classes.KtLightClass
+import org.jetbrains.kotlin.psi.psiUtil.findPropertyByName
 
 fun findOrCreatePackage(project: Project, migration: PsiMigration, qName: String): PsiPackage {
   val aPackage = JavaPsiFacade.getInstance(project).findPackage(qName)
@@ -71,8 +73,8 @@ fun findMethodReferences(
 fun findFieldReferences(project: Project, className: String, fieldName: String): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val field = psiLookupClass.findFieldByName(fieldName, true)
-  // Fallback to methods as in Kotlin, properties with getters are compiled as Java methods
-      ?: psiLookupClass.findMethodsByName(fieldName, true).firstOrNull()
+      // Fallback to Kotlin property
+      ?: (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findPropertyByName(fieldName)
       ?: return emptyList()
   val processor = RenamePsiElementProcessor.forElement(field)
   return processor.findReferences(field, GlobalSearchScope.projectScope(project), false)
