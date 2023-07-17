@@ -10,6 +10,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDepende
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.ReplaceExecuteCacheAndNetwork
 import com.intellij.openapi.project.Project
 
 private const val apollo4LatestVersion = "4.0.0-alpha.2"
@@ -29,7 +30,8 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
-      RemoveWatchMethodArguments(),
+      RemoveWatchMethodArguments,
+      ReplaceExecuteCacheAndNetwork,
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),

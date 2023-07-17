@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.emitCacheMisses
+import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
 
@@ -25,4 +26,6 @@ suspend fun test() {
   val compositeException: ApolloCompositeException? = null
   println(compositeException!!.first)
   println(compositeException!!.second)
+
+  apolloClient!!.query(query!!).executeCacheAndNetwork()
 }
