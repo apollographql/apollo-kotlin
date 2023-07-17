@@ -332,6 +332,7 @@ internal class Lexer(val src: String) {
   private fun readBlockString(): Token {
     val start = pos - 3 // because of """
     val startLine = line
+    val startColumn = column(start)
     val blockLines = mutableListOf<String>()
     val currentLine = StringBuilder()
 
@@ -383,7 +384,7 @@ internal class Lexer(val src: String) {
 
             return Token.String(
                 startLine,
-                column(start),
+                startColumn,
                 line,
                 column(pos - 1),
                 blockLines.dedentBlockStringLines().joinToString("\n")
