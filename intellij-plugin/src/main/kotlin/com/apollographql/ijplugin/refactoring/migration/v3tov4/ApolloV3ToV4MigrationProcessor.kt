@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
 import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateClassName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
@@ -28,6 +29,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldName("$apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "first", "suppressedExceptions.first()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
+      UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
       RemoveWatchMethodArguments,
