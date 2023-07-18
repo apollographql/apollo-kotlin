@@ -169,7 +169,7 @@ private fun GQLNode.sort(): GQLNode {
 @ApolloExperimental
 object RegisterOperations {
   private fun String.normalize(): String {
-    val gqlDocument = Buffer().writeUtf8(this).parseAsGQLDocument().getOrThrow()
+    val gqlDocument = parseAsGQLDocument().getOrThrow()
 
     // From https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/operationId.ts#L84
 

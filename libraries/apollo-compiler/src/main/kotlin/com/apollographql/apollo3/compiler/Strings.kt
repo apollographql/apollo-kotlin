@@ -41,5 +41,3 @@ fun String.decapitalizeFirstLetter(): String {
   }
   return builder.toString()
 }
-
-internal fun String.buffer() = Buffer().writeUtf8(this)

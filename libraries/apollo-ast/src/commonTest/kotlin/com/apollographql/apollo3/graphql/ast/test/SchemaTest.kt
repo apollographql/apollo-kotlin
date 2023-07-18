@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.graphql.ast.test
 
-import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.toSchema
 import kotlin.test.Test
 
@@ -19,6 +18,6 @@ class SchemaTest {
       }
     """.trimIndent()
 
-    schemaString.buffer().toSchema()
+    schemaString.toSchema()
   }
 }

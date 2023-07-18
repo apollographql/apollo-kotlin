@@ -20,7 +20,7 @@ class OperationValidationTest {
         .toPath()
         .let { HOST_FILESYSTEM.source(it) }
         .buffer()
-        .parseAsGQLDocument()
+        .parseAsGQLDocument(null) // Use filePath = null to remove the absolute path above
         .getOrThrow()
     val operationIssues = operations.validateAsExecutable(schema).issues
     assertEquals(1, operationIssues.size)

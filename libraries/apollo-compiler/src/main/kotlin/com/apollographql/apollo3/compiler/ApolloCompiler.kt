@@ -35,8 +35,6 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.writeTo
 import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
 import com.apollographql.apollo3.compiler.pqm.writeTo
-import okio.buffer
-import okio.source
 import java.io.File
 
 @ApolloExperimental
@@ -111,7 +109,7 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.source().buffer().parseAsGQLDocument(filePath = file.path, options = ParserOptions(useAntlr = useAntlr))
+      val parseResult = file.parseAsGQLDocument(options = ParserOptions(useAntlr = useAntlr))
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {

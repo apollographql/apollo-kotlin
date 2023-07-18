@@ -2,7 +2,6 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.Schema.Companion.NONNULL
-import com.apollographql.apollo3.ast.internal.buffer
 
 // 5.5.2.3 Fragment spread is possible
 internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition, schema: Schema): Boolean {
@@ -27,7 +26,7 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String, schema: Schema? = null):
 
   val stringValue = (directive.arguments.first().value as GQLStringValue).value
 
-  val selections = stringValue.buffer().parseAsGQLSelections().getOrThrow()
+  val selections = stringValue.parseAsGQLSelections().getOrThrow()
 
   return selections.filterIsInstance<GQLField>()
       .map { it.name }
