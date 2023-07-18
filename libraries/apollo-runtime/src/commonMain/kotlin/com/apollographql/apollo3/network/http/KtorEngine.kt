@@ -22,7 +22,7 @@ class KtorHttpEngine(
 
   var disposed = false
 
-  constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
+  constructor(timeoutMillis: Long = 60_000) : this(timeoutMillis, timeoutMillis)
 
   constructor(connectTimeout: Long, requestTimeout: Long) : this(
       HttpClient {

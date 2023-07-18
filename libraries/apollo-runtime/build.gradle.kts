@@ -40,6 +40,7 @@ kotlin {
     findByName("jvmMain")?.apply {
       dependencies {
         api(libs.okhttp)
+        api(libs.ktor.client.okhttp)
       }
     }
 
@@ -51,6 +52,7 @@ kotlin {
 
     findByName("appleMain")?.apply {
       dependencies {
+        api(libs.ktor.client.darwin)
       }
     }
 
