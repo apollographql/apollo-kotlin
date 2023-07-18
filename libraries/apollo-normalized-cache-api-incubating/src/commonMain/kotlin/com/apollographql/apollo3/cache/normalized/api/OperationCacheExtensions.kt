@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
+import com.apollographql.apollo3.cache.normalized.api.internal.CacheDataTransformer
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
 
 fun <D : Operation.Data> Operation<D>.normalize(
@@ -56,7 +57,6 @@ fun <D : Executable.Data> Executable<D>.normalize(
   return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
 }
-
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
@@ -106,8 +106,8 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
     cache: ReadOnlyNormalizedCache,
     cacheResolver: Any,
     cacheHeaders: CacheHeaders,
-): D {
-  val map = CacheBatchReader(
+): CacheDataTransformer<D> {
+  return CacheBatchReader(
       cache = cache,
       cacheHeaders = cacheHeaders,
       cacheResolver = cacheResolver,
@@ -115,12 +115,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
       rootTypename = rootField().type.rawType().name
-  ).toMap()
-
-  val reader = MapJsonReader(
-      root = map,
-  )
-  return adapter().fromJson(reader, customScalarAdapters)
+  ).collectData(adapter())
 }
 
 fun Collection<Record>?.dependentKeys(): Set<String> {

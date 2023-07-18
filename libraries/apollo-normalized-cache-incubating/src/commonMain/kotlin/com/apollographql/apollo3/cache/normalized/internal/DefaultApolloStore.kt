@@ -16,6 +16,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
+import com.apollographql.apollo3.cache.normalized.api.internal.CacheDataTransformer
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
@@ -115,7 +116,7 @@ internal class DefaultApolloStore(
           cacheHeaders = cacheHeaders,
           cacheKey = CacheKey.rootKey()
       )
-    }
+    }.toData(customScalarAdapters)
   }
 
   override suspend fun <D : Fragment.Data> readFragment(
@@ -132,7 +133,7 @@ internal class DefaultApolloStore(
           cacheHeaders = cacheHeaders,
           cacheKey = cacheKey
       )
-    }
+    }.toData(customScalarAdapters)
   }
 
 
@@ -167,15 +168,15 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = lock.write {
-      val records = fragment.normalize(
-          data = fragmentData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator,
-          metadataGenerator = metadataGenerator,
-          rootKey = cacheKey.key
-      ).values
+    val records = fragment.normalize(
+        data = fragmentData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator,
+        metadataGenerator = metadataGenerator,
+        rootKey = cacheKey.key
+    ).values
 
+    val changedKeys = lock.write {
       cache.merge(records, cacheHeaders, recordMerger)
     }
 
@@ -193,21 +194,22 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-    val (records, changedKeys) = lock.write {
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator,
-          metadataGenerator = metadataGenerator,
-      )
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator,
+        metadataGenerator = metadataGenerator,
+    ).values.toSet()
 
-      records to cache.merge(records.values.toList(), cacheHeaders, recordMerger)
+    val changedKeys = lock.write {
+      cache.merge(records, cacheHeaders, recordMerger)
     }
+
     if (publish) {
       publish(changedKeys)
     }
 
-    return records.values.toSet() to changedKeys
+    return records to changedKeys
   }
 
 
@@ -218,20 +220,20 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = lock.write {
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator,
-          metadataGenerator = metadataGenerator,
-      ).values.map { record ->
-        Record(
-            key = record.key,
-            fields = record.fields,
-            mutationId = mutationId
-        )
-      }
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator,
+        metadataGenerator = metadataGenerator,
+    ).values.map { record ->
+      Record(
+          key = record.key,
+          fields = record.fields,
+          mutationId = mutationId
+      )
+    }
 
+    val changedKeys = lock.write {
       /**
        * TODO: should we forward the cache headers to the optimistic store?
        */
@@ -281,7 +283,7 @@ internal class DefaultApolloStore(
         cache: ReadOnlyNormalizedCache,
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
-    ): D {
+    ): CacheDataTransformer<D> {
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCache(
             cacheKey,
@@ -304,4 +306,3 @@ internal class DefaultApolloStore(
     }
   }
 }
-

@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -83,7 +83,7 @@ internal class CacheBatchReader(
     }
   }
 
-  fun toMap(): Map<String, Any?> {
+  fun <D: Executable.Data> collectData(adapter: CompositeAdapter<D>): CacheDataTransformer<D> {
     pendingReferences.add(
         PendingReference(
             key = rootKey,
@@ -132,8 +132,7 @@ internal class CacheBatchReader(
       }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    return data[emptyList()].replaceCacheKeys(emptyList()) as Map<String, Any?>
+    return CacheDataTransformer(adapter, data)
   }
 
   /**
@@ -179,28 +178,4 @@ internal class CacheBatchReader(
       }
     }
   }
-
-  private fun Any?.replaceCacheKeys(path: List<Any>): Any? {
-    return when (this) {
-      is CacheKey -> {
-        data[path].replaceCacheKeys(path)
-      }
-      is List<*> -> {
-        mapIndexed { index, src ->
-          src.replaceCacheKeys(path + index)
-        }
-      }
-      is Map<*, *> -> {
-        // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
-        mapValues {
-          it.value.replaceCacheKeys(path + (it.key as String))
-        }
-      }
-      else -> {
-        // Scalar value
-        this
-      }
-    }
-  }
 }
-
