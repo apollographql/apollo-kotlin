@@ -5,13 +5,16 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloCanceledException
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloGenericException
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 
 suspend fun test() {
@@ -60,4 +63,12 @@ suspend fun test() {
       .reconnectWhen { true }
       .reconnectWhen { a -> true }
       .build()
+
+  try {
+  } catch (e1: ApolloGenericException) {
+  } catch (e2: ApolloCanceledException) {
+  }
+
+  val diskLruHttpCache: DiskLruHttpCache? = null
+  diskLruHttpCache!!.delete()
 }

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.apolloStore
@@ -60,4 +61,12 @@ suspend fun test() {
       .reopenWhen { it, _ -> true }
       .reopenWhen { a, _ -> true }
       .build()
+
+  try {
+  } catch (e1: ApolloException) {
+  } catch (e2: ApolloException) {
+  }
+
+  val diskLruHttpCache: DiskLruHttpCache? = null
+  diskLruHttpCache!!.clearAll()
 }

@@ -32,6 +32,8 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "first", "suppressedExceptions.first()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
       UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
+      UpdateClassName("$apollo3.exception.ApolloCanceledException", "$apollo3.exception.ApolloException"),
+      UpdateClassName("$apollo3.exception.ApolloGenericException", "$apollo3.exception.ApolloException"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       UpdateMethodName("$apollo3.cache.normalized.api.CacheHeaders", "toBuilder", "newBuilder"),
       UpdateMethodName("$apollo3.ApolloClient", "dispose", "close"),
@@ -39,6 +41,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateMethodName("$apollo3.ApolloClient", "subscribe", "subscription"),
       UpdateMethodName("$apollo3.ApolloClient.Companion", "builder", "Builder"),
       UpdateMethodName("$apollo3.ApolloClient.Builder", "requestedDispatcher", "dispatcher"),
+      UpdateMethodName("$apollo3.cache.http.DiskLruHttpCache", "delete", "clearAll"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
       UpdateMethodCall(
           "$apollo3.cache.normalized.NormalizedCache",
