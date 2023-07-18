@@ -19,6 +19,8 @@ suspend fun test() {
 
   val apolloClient: ApolloClient? = ApolloClient.Builder()
       .dispatcher(null)
+      .webSocketReopenWhen { it, _ -> true }
+      .webSocketReopenWhen { a, _ -> true }
       .build()
   val query: Query<*>? = null
 
