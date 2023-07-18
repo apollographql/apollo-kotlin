@@ -99,7 +99,7 @@ internal object GQLTypeSerializer : KSerializer<GQLType> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("GQLFragmentDefinition", PrimitiveKind.STRING)
 
   override fun deserialize(decoder: Decoder): GQLType {
-    return decoder.decodeString().buffer().parseAsGQLType().getOrThrow()
+    return decoder.decodeString().parseAsGQLType().getOrThrow()
   }
 
   override fun serialize(encoder: Encoder, value: GQLType) {
@@ -111,7 +111,7 @@ internal object GQLFragmentDefinitionSerializer : KSerializer<GQLFragmentDefinit
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("GQLFragmentDefinition", PrimitiveKind.STRING)
 
   override fun deserialize(decoder: Decoder): GQLFragmentDefinition {
-    return decoder.decodeString().buffer().parseAsGQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
+    return decoder.decodeString().parseAsGQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
   }
 
   override fun serialize(encoder: Encoder, value: GQLFragmentDefinition) {

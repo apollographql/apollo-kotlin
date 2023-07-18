@@ -32,16 +32,13 @@ import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
-import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.validateAsSchema
 import okio.Buffer
 import okio.Path
-import okio.buffer
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -344,7 +341,7 @@ fun Path.toSchemaGQLDocument(): GQLDocument {
   return if (name.endsWith("json")) {
     toIntrospectionSchema().toGQLDocument(filePath = name)
   } else {
-    HOST_FILESYSTEM.source(this).buffer().parseAsGQLDocument(this.toString()).getOrThrow()
+    parseAsGQLDocument().getOrThrow()
   }
 }
 

@@ -2,7 +2,6 @@ package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
@@ -44,7 +43,7 @@ class SDLWriterTest {
 
     """.trimIndent()
 
-    val schema: Schema = schemaString.buffer().toSchema()
+    val schema: Schema = schemaString.toSchema()
     val writerBuffer = Buffer()
     val sdlWriter = SDLWriter(writerBuffer, "    ")
     sdlWriter.write(schema.toGQLDocument())
@@ -107,11 +106,11 @@ class SDLWriterTest {
       
     """.trimIndent()
 
-    val expected = Buffer().writeUtf8(schemaString).parseAsGQLDocument().getOrThrow()
+    val expected = schemaString.parseAsGQLDocument().getOrThrow()
 
     val serialized = expected.toUtf8()
 
-    Buffer().writeUtf8(serialized).parseAsGQLDocument().getOrThrow()
+    serialized.parseAsGQLDocument().getOrThrow()
     // Enable when we have hashCode and equals on GQLNode
     //assertEquals(expected.removeLocation(), actual.removeLocation())
   }

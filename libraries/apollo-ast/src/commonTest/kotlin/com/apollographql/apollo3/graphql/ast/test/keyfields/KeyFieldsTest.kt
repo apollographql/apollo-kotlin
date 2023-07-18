@@ -2,7 +2,6 @@ package com.apollographql.apollo3.graphql.ast.test.keyfields
 
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
@@ -10,7 +9,6 @@ import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.graphql.ast.test.CWD
 import okio.Path.Companion.toPath
-import okio.buffer
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -23,8 +21,6 @@ class KeyFieldsTest {
     val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/schema.graphqls".toPath().toSchema()
 
     val definitions = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/operations.graphql".toPath()
-        .let { HOST_FILESYSTEM.source(it) }
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .definitions
@@ -63,8 +59,6 @@ class KeyFieldsTest {
   fun testObjectWithTypePolicyAndInterfaceTypePolicyErrors() {
     "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
         .toPath()
-        .let { HOST_FILESYSTEM.source(it) }
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .validateAsSchema()
@@ -81,8 +75,6 @@ class KeyFieldsTest {
   fun testObjectInheritingTwoInterfacesWithDifferentKeyFields() {
     "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectInheritingTwoInterfaces.graphqls"
         .toPath()
-        .let { HOST_FILESYSTEM.source(it) }
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .validateAsSchema()
@@ -105,8 +97,6 @@ class KeyFieldsTest {
   fun testInterfacesWithoutKeyFields() {
     "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/interfacesWithoutKeyFields.graphqls"
         .toPath()
-        .let { HOST_FILESYSTEM.source(it) }
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .validateAsSchema()

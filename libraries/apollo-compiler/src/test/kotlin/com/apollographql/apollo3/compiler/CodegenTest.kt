@@ -162,7 +162,7 @@ class CodegenTest {
             check(queryFile != null) {
               "Cannot find query file in ${file.absolutePath}"
             }
-            val hasFragments = queryFile.source().buffer().parseAsGQLDocument().getOrThrow().hasFragments()
+            val hasFragments = queryFile.parseAsGQLDocument().getOrThrow().hasFragments()
 
             when {
               file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
