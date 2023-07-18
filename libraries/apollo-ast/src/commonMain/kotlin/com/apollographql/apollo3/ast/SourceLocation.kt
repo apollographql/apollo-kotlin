@@ -44,7 +44,7 @@ class SourceLocation(
     /**
      * Constructs a [SourceLocation] that only contains a filePath for the moments when we're constructing nodes programmatically
      * but still want to carry around the path of the original nodes for debugging purposes.
-     * TODO: I'm not sure how much this is helping vs confusing. Why might want to remove that and just set a null sourceLocation in those cases
+     * TODO: I'm not sure how much this is helping vs confusing. We might want to remove that and just set a null sourceLocation in those cases
      */
     internal fun forPath(filePath: String?): SourceLocation {
       return SourceLocation(
