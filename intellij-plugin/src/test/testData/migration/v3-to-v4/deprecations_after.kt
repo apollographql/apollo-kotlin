@@ -3,6 +3,8 @@ package com.example.myapplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
@@ -33,4 +35,9 @@ suspend fun test() {
   apolloClient!!.apolloStore.clearAll()
 
   apolloClient!!.apolloStore.clearAll()
+
+  val cacheHeaders: CacheHeaders = CacheHeaders.NONE.newBuilder().build()
+
+  val cacheKey1 = CacheKey("typeName", listOf("a"))
+  val cacheKey2 = CacheKey("typeName", "a", "b")
 }
