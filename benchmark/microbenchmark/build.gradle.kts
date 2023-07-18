@@ -60,10 +60,10 @@ dependencies {
     }
   }
   implementation(libs.moshi)
-  ksp(benchmarks.moshix.ksp)
+  ksp(libs.moshix.ksp)
 
-  androidTestImplementation(benchmarks.benchmark.junit4)
-  androidTestImplementation(benchmarks.androidx.test.core)
+  androidTestImplementation(libs.benchmark.junit4)
+  androidTestImplementation(libs.androidx.test.core)
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
