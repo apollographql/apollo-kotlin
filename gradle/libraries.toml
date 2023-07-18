@@ -150,7 +150,7 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.14.0" }
-okio = "com.squareup.okio:okio:3.2.0" # okio is pinned to 3.2.0 to stay compatible with Kotlin 1.5, bump it whenever we bump Kotlin
+okio = "com.squareup.okio:okio:3.2.0" # okio was pinned to 3.2.0 to stay compatible with Kotlin 1.5. Now that we have 1.6 as a minimum version, we could certainly update
 okio-nodefilesystem = "com.squareup.okio:okio-nodefilesystem:3.2.0"
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "1.12.0" }
