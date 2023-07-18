@@ -60,7 +60,13 @@ internal fun <T : RuleContext, R: Any> antlrParse(
           ) {
             issues.add(Issue.ParsingError(
                 message = "Unsupported token `${(offendingSymbol as? Token)?.text ?: offendingSymbol.toString()}`",
-                sourceLocation = SourceLocation(line, position, -1, -1, filePath)
+                sourceLocation = SourceLocation(
+                    start = 0,
+                    end = 1,
+                    line = line,
+                    column = position + 1,
+                    filePath = filePath
+                )
             ))
           }
         }
@@ -74,7 +80,12 @@ internal fun <T : RuleContext, R: Any> antlrParse(
     issues.add(
         Issue.ParsingError(
             "Extra token at end of file `${currentToken.text}`",
-            SourceLocation(currentToken.line, currentToken.charPositionInLine, -1, -1, filePath)
+            SourceLocation(
+                start = 0,
+                end = 1,
+                line = currentToken.line,
+                column = currentToken.charPositionInLine,
+                filePath = filePath)
         )
     )
   }

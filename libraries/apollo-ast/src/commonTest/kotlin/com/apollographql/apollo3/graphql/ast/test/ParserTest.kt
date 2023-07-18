@@ -87,10 +87,10 @@ query Test {
         .cast<GQLField>()
         .sourceLocation!!
         .apply {
+          assertEquals(55, start)
+          assertEquals(82, end)
           assertEquals(4, line)
-          assertEquals(6, endLine)
           assertEquals(3, column)
-          assertEquals(5, endColumn)
         }
   }
 
@@ -112,10 +112,10 @@ query Test {
         .cast<GQLFieldDefinition>()
         .sourceLocation!!
         .apply {
+          assertEquals(20, start)
+          assertEquals(34, end)
           assertEquals(2, line)
-          assertEquals(2, endLine)
           assertEquals(3, column)
-          assertEquals(16, endColumn)
         }
   }
 }

@@ -131,7 +131,7 @@ class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
 ) : GQLNode {
-  constructor(definitions: List<GQLDefinition>, filePath: String?): this(definitions, SourceLocation(0, 0, -1, -1, filePath))
+  constructor(definitions: List<GQLDefinition>, filePath: String?): this(definitions, SourceLocation.forPath(filePath))
 
   override val children = definitions
 

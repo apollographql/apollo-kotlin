@@ -47,13 +47,7 @@ import kotlin.jvm.JvmName
 
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema, filePath: String?) {
-  private val sourceLocation = SourceLocation(
-      filePath = filePath,
-      line = -1,
-      column = -1,
-      endLine = -1,
-      endColumn = -1,
-  )
+  private val sourceLocation = SourceLocation.forPath(filePath)
 
   fun toGQLDocument(): GQLDocument {
     return with(introspectionSchema.__schema) {
