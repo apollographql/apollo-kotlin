@@ -9,14 +9,14 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
 class UpdateFieldName(
     private val className: String,
     private val oldFieldName: String,
-    private val newFieldName: String,
+    private val replacementExpression: String,
 ) : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
     return findFieldReferences(project = project, className = className, fieldName = oldFieldName).toMigrationItemUsageInfo()
   }
 
   override fun performRefactoring(project: Project, migration: PsiMigration, usage: MigrationItemUsageInfo) {
-    val newFieldReference = KtPsiFactory(project).createExpression(newFieldName)
+    val newFieldReference = KtPsiFactory(project).createExpression(replacementExpression)
     usage.element.replace(newFieldReference)
   }
 }
