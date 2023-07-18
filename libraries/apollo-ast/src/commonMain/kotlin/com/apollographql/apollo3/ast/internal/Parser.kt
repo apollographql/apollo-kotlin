@@ -271,7 +271,11 @@ internal class Parser(src: String, private val withSourceLocation: Boolean, val 
     if (!withSourceLocation) return null
 
     return SourceLocation(
-        from.line, from.column, lastToken.endLine, lastToken.endColumn, filePath
+        start = from.start,
+        end = lastToken.end,
+        line = from.line,
+        column = from.column,
+        filePath = filePath
     )
   }
 
@@ -893,10 +897,10 @@ internal class Parser(src: String, private val withSourceLocation: Boolean, val 
     if (!withSourceLocation) return null
 
     return SourceLocation(
+        token.start,
+        token.end,
         token.line,
         token.column,
-        token.endLine,
-        token.endColumn,
         filePath
     )
   }
