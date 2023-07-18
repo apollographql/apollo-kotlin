@@ -3,6 +3,7 @@ package com.apollographql.apollo3.network
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.KtorHttpEngine
 import com.apollographql.apollo3.network.http.get
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -38,6 +39,32 @@ class HttpEngineTest {
           .build())
 
       val engine = DefaultHttpEngine()
+
+      val response = engine.get(mockServer.url())
+          .execute()
+
+      val result = response.body?.readUtf8()
+      assertEquals("Hello World", result)
+
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+
+    mockServer.stop()
+  }
+
+  @Test
+  fun ktorEngineGzipTest() = runTest {
+    val mockServer = MockServer()
+
+    try {
+      mockServer.enqueue(MockResponse.Builder()
+          .addHeader("content-type", "application/text")
+          .addHeader("content-encoding", "gzip")
+          .body(gzipData.toByteString())
+          .build())
+
+      val engine = KtorHttpEngine()
 
       val response = engine.get(mockServer.url())
           .execute()
