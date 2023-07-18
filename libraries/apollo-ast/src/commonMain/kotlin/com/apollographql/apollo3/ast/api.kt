@@ -27,25 +27,57 @@ fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocume
  * See [parseAsGQLDocument] and [validateAsExecutable] for more granular error reporting
  */
 @ApolloExperimental
-fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = null, fieldsOnDisjointTypesMustMerge: Boolean = true): List<GQLDefinition> = parseAsGQLDocument(filePath)
+fun BufferedSource.toExecutableDefinitions(
+    schema: Schema,
+    filePath: String? = null,
+    fieldsOnDisjointTypesMustMerge: Boolean = true,
+): List<GQLDefinition> = parseAsGQLDocument(filePath)
     .getOrThrow()
     .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
     .getOrThrow()
 
-private fun <T: Any> BufferedSource.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
+private fun <T : Any> BufferedSource.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
   return try {
     GQLResult(Parser(this.use { it.readUtf8() }, withSourceLocation, filePath).block(), emptyList())
   } catch (e: ParserException) {
-    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.token.line, e.token.column, -1, -1, filePath))))
+    GQLResult(
+        null,
+        listOf(
+            Issue.ParsingError(
+                e.message,
+                SourceLocation(
+                    start = e.token.start,
+                    end = e.token.end,
+                    line = e.token.line,
+                    column = e.token.column,
+                    filePath = filePath
+                )
+            )
+        )
+    )
   } catch (e: LexerException) {
-    GQLResult(null, listOf(Issue.ParsingError(e.message, SourceLocation(e.line, e.column, -1, -1, filePath))))
+    GQLResult(
+        null,
+        listOf(
+            Issue.ParsingError(
+                e.message,
+                SourceLocation(
+                    start = e.pos,
+                    end = e.pos + 1,
+                    line = e.line,
+                    column = e.column,
+                    filePath = filePath
+                )
+            )
+        )
+    )
   }
 }
 
 class ParserOptions(
     val useAntlr: Boolean = false,
     val allowEmptyDocuments: Boolean = true,
-    val withSourceLocation: Boolean = true
+    val withSourceLocation: Boolean = true,
 ) {
   companion object {
     val Default = ParserOptions()
@@ -96,7 +128,7 @@ fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOpti
  * Closes [BufferedSource]
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLType>  {
+fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
   return if (options.useAntlr) {
     parseTypeWithAntlr(this, filePath)
   } else {
@@ -110,7 +142,10 @@ fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptio
  * Closes [BufferedSource]
  */
 @ApolloExperimental
-fun BufferedSource.parseAsGQLSelections(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
+fun BufferedSource.parseAsGQLSelections(
+    filePath: String? = null,
+    options: ParserOptions = ParserOptions.Default,
+): GQLResult<List<GQLSelection>> {
   return if (options.useAntlr) {
     parseSelectionsWithAntlr(this, filePath)
   } else {
@@ -164,7 +199,7 @@ fun GQLDocument.validateAsExecutable(schema: Schema, fieldsOnDisjointTypesMustMe
 fun GQLFragmentDefinition.inferVariables(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-    fieldsOnDisjointTypesMustMerge: Boolean
+    fieldsOnDisjointTypesMustMerge: Boolean,
 ) = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).inferFragmentVariables(this)
 
 

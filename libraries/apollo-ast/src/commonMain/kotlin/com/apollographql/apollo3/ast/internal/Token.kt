@@ -1,83 +1,89 @@
 package com.apollographql.apollo3.ast.internal
 
-internal sealed class Token(val line: kotlin.Int, val column: kotlin.Int, val endLine: kotlin.Int, val endColumn: kotlin.Int) {
-  object StartOfFile : Token(1, 1, 1, 1) {
+/**
+ * @param start: the 0-indexed offset in the string where the token starts (inclusive)
+ * @param end: the 0-indexed offset in the string where the token ends (exclusive)
+ * @param line: the 1-indexed line in the string where the token starts (inclusive)
+ * @param column: the 1-indexed column in the string where the token starts (inclusive)
+ */
+internal sealed class Token(val start: kotlin.Int, val end: kotlin.Int, val line: kotlin.Int, val column: kotlin.Int) {
+  object StartOfFile : Token(0, 0, 1, 1) {
     override fun toString() = "SOF"
   }
 
-  class EndOfFile(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class EndOfFile(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start, line, column) {
     override fun toString() = "EOF"
   }
 
-  class ExclamationPoint(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class ExclamationPoint(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "!"
   }
 
-  class Dollar(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class Dollar(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "$"
   }
 
-  class Ampersand(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class Ampersand(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "&"
   }
 
-  class LeftParenthesis(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class LeftParenthesis(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "("
   }
 
-  class RightParenthesis(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class RightParenthesis(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = ")"
   }
 
-  class Spread(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column + 3) {
+  class Spread(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 3, line, column ) {
     override fun toString() = "..."
   }
 
-  class Colon(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class Colon(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = ":"
   }
 
-  class Equals(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class Equals(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "="
   }
 
-  class At(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class At(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "@"
   }
 
-  class LeftBracket(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class LeftBracket(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "["
   }
 
-  class RightBracket(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class RightBracket(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "]"
   }
 
-  class LeftBrace(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class LeftBrace(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "{"
   }
 
-  class RightBrace(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class RightBrace(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "}"
   }
 
-  class Pipe(line: kotlin.Int, column: kotlin.Int) : Token(line, column, line, column) {
+  class Pipe(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "|"
   }
 
-  class Name(line: kotlin.Int, column: kotlin.Int, endColumn: kotlin.Int, val value: kotlin.String) : Token(line, column, line, endColumn) {
+  class Name(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.String) : Token(start, end, line, column) {
     override fun toString() = "name: $value"
   }
 
-  class Int(line: kotlin.Int, column: kotlin.Int, endColumn: kotlin.Int, val value: kotlin.Int) : Token(line, column, line, endColumn) {
+  class Int(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.Int) : Token(start, end, line, column) {
     override fun toString() = "int: $value"
   }
 
-  class Float(line: kotlin.Int, column: kotlin.Int, endColumn: kotlin.Int, val value: Double) : Token(line, column, line, endColumn) {
+  class Float(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: Double) : Token(start, end, line, column) {
     override fun toString() = "float: $value"
   }
 
-  class String(line: kotlin.Int, column: kotlin.Int, endLine: kotlin.Int, endColumn: kotlin.Int, val value: kotlin.String) : Token(line, column, endLine, endColumn) {
+  class String(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.String) : Token(start, end, line, column) {
     override fun toString() = "string: \"$value\""
   }
 }
