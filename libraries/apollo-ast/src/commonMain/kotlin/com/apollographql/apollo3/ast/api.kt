@@ -27,7 +27,6 @@ import kotlin.jvm.JvmName
 @ApolloExperimental
 fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocument(filePath).getOrThrow().validateAsSchema().getOrThrow()
 
-@ApolloExperimental
 fun String.toSchema(): Schema = parseAsGQLDocument().getOrThrow().validateAsSchema().getOrThrow()
 
 /**
@@ -139,15 +138,6 @@ fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default):
 
 fun Path.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
   return HOST_FILESYSTEM.source(this).buffer().parseAsGQLDocument(filePath = toString(), options = options)
-}
-fun Path.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
-  return HOST_FILESYSTEM.source(this).buffer().parseAsGQLValue(filePath = toString(), options = options)
-}
-fun Path.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
-  return HOST_FILESYSTEM.source(this).buffer().parseAsGQLType(filePath = toString(), options = options)
-}
-fun Path.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
-  return HOST_FILESYSTEM.source(this).buffer().parseAsGQLSelections(filePath = toString(), options = options)
 }
 
 /**

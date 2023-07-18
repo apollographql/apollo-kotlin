@@ -5,24 +5,13 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun parseAsGQLDocument$default (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun parseAsGQLDocument$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun parseAsGQLDocument$default (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLSelections (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static final fun parseAsGQLSelections (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLSelections (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLSelections$default (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun parseAsGQLSelections$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLSelections$default (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLType (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static final fun parseAsGQLType (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLType (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLType$default (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun parseAsGQLType$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLType$default (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLValue (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static final fun parseAsGQLValue (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static final fun parseAsGQLValue (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLValue$default (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun parseAsGQLValue$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLValue$default (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
+	public static final fun toSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/Schema;
 }
 
 public final class com/apollographql/apollo3/ast/Check_key_fieldsKt {
