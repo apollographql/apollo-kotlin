@@ -10,6 +10,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 
@@ -54,4 +55,9 @@ suspend fun test() {
 
   val subscription: Subscription<*>? = null
   apolloClient.subscription(subscription!!)
+
+  val webSocketNetworkTransport = WebSocketNetworkTransport.Builder()
+      .reopenWhen { it, _ -> true }
+      .reopenWhen { a, _ -> true }
+      .build()
 }

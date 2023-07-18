@@ -20,7 +20,13 @@ object UpdateWebSocketReconnectWhen : MigrationItem() {
         className = "$apollo3.ApolloClient.Builder",
         methodName = "webSocketReconnectWhen",
     )
-        .toMigrationItemUsageInfo()
+        .map { it.toMigrationItemUsageInfo("webSocketReopenWhen") } +
+        findMethodReferences(
+            project = project,
+            className = "$apollo3.network.ws.WebSocketNetworkTransport.Builder",
+            methodName = "reconnectWhen",
+        )
+            .map { it.toMigrationItemUsageInfo("reopenWhen") }
   }
 
   override fun performRefactoring(project: Project, migration: PsiMigration, usage: MigrationItemUsageInfo) {
@@ -30,7 +36,7 @@ object UpdateWebSocketReconnectWhen : MigrationItem() {
     val lambdaExpression = lambdaArgument.getLambdaExpression() ?: return
     val lambdaParameters = lambdaExpression.functionLiteral.valueParameterList
     val psiFactory = KtPsiFactory(project)
-    element.replace(psiFactory.createExpression("webSocketReopenWhen"))
+    element.replace(psiFactory.createExpression(usage.attachedData()))
     if (lambdaParameters == null) {
       // { ... } -> { it, _ -> ...}
       val newLambdaExpression = psiFactory.createLambdaExpression("it, _", lambdaExpression.bodyExpression!!.text)

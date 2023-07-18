@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 
 suspend fun test() {
   val response: ApolloResponse<*>? = null
@@ -54,4 +55,9 @@ suspend fun test() {
 
   val subscription: Subscription<*>? = null
   apolloClient.subscribe(subscription!!)
+
+  val webSocketNetworkTransport = WebSocketNetworkTransport.Builder()
+      .reconnectWhen { true }
+      .reconnectWhen { a -> true }
+      .build()
 }
