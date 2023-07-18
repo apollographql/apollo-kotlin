@@ -2,7 +2,9 @@ package com.example.myapplication
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.apolloStore
@@ -15,7 +17,9 @@ suspend fun test() {
   val response: ApolloResponse<*>? = null
   println(response?.dataOrThrow())
 
-  val apolloClient: ApolloClient? = null
+  val apolloClient: ApolloClient? = ApolloClient.Builder()
+      .dispatcher(null)
+      .build()
   val query: Query<*>? = null
 
   apolloClient!!.query(query!!).toFlow()
@@ -40,4 +44,12 @@ suspend fun test() {
 
   val cacheKey1 = CacheKey("typeName", listOf("a"))
   val cacheKey2 = CacheKey("typeName", "a", "b")
+
+  apolloClient.close()
+
+  val mutation: Mutation<*>? = null
+  apolloClient.mutation(mutation!!)
+
+  val subscription: Subscription<*>? = null
+  apolloClient.subscription(subscription!!)
 }

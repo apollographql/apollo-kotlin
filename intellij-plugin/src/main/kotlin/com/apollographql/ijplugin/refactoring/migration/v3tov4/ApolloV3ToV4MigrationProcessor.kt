@@ -33,6 +33,11 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       UpdateMethodName("$apollo3.cache.normalized.api.CacheHeaders", "toBuilder", "newBuilder"),
+      UpdateMethodName("$apollo3.ApolloClient", "dispose", "close"),
+      UpdateMethodName("$apollo3.ApolloClient", "mutate", "mutation"),
+      UpdateMethodName("$apollo3.ApolloClient", "subscribe", "subscription"),
+      UpdateMethodName("$apollo3.ApolloClient.Companion", "builder", "Builder"),
+      UpdateMethodName("$apollo3.ApolloClient.Builder", "requestedDispatcher", "dispatcher"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
       UpdateMethodCall(
           "$apollo3.cache.normalized.NormalizedCache",
