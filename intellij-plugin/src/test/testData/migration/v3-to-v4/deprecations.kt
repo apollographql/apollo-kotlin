@@ -3,6 +3,7 @@ package com.example.myapplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.watch
@@ -28,4 +29,8 @@ suspend fun test() {
   println(compositeException!!.second)
 
   apolloClient!!.query(query!!).executeCacheAndNetwork()
+
+  apolloClient!!.apolloStore.clearAll()
+
+  apolloClient!!.apolloStore().clearAll()
 }

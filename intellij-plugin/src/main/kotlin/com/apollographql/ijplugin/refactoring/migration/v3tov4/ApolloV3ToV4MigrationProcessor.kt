@@ -9,9 +9,9 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
-import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.ReplaceExecuteCacheAndNetwork
 import com.intellij.openapi.project.Project
 
 private const val apollo4LatestVersion = "4.0.0-alpha.2"
@@ -32,8 +32,29 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
+      UpdateMethodCall(
+          "$apollo3.cache.normalized.NormalizedCache",
+          "executeCacheAndNetwork",
+          "fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()",
+          extensionTargetClassName = "$apollo3.ApolloCall",
+          "$apollo3.cache.normalized.fetchPolicy",
+          "$apollo3.cache.normalized.FetchPolicy",
+      ),
+      UpdateMethodCall(
+          "$apollo3.cache.normalized.NormalizedCache",
+          "clearNormalizedCache",
+          replacementExpression = "apolloStore.clearAll()",
+          extensionTargetClassName = "$apollo3.ApolloClient",
+          "$apollo3.cache.normalized.apolloStore",
+      ),
+      UpdateMethodCall(
+          "$apollo3.cache.normalized.NormalizedCache",
+          "apolloStore",
+          replacementExpression = "apolloStore",
+          extensionTargetClassName = "$apollo3.ApolloClient",
+          "$apollo3.cache.normalized.apolloStore",
+      ),
       RemoveWatchMethodArguments,
-      ReplaceExecuteCacheAndNetwork,
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
