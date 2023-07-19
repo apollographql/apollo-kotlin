@@ -45,7 +45,10 @@ object EncloseInService : MigrationItem() {
   }
 
   private val apolloServiceSymbols: Set<String> by lazy {
-    Service::class.java.declaredMethods.map { it.name.withoutGetter() }.toSet()
+    Service::class.java.declaredMethods.map { it.name.withoutGetter() }.toMutableSet().apply {
+      // Include the fields that existed in v3, otherwise they'll be removed from the service block
+      add("generateModelBuilder")
+    }
   }
 
   private fun String.withoutGetter() = if (startsWith("get")) {
