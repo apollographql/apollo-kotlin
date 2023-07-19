@@ -16,6 +16,7 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
       "com.apollographql.apollo3:apollo-mpp-utils-jvm:3.8.2",
       "com.apollographql.apollo3:apollo-runtime-jvm:3.8.2",
       "com.apollographql.apollo3:apollo-normalized-cache-jvm:3.8.2",
+      "com.apollographql.apollo3:apollo-http-cache:3.8.2",
   )
 
   override fun getTestDataPath() = "src/test/testData/migration/v3-to-v4"
