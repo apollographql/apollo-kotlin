@@ -16,10 +16,11 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
-import com.apollographql.apollo3.cache.normalized.api.internal.CacheDataTransformer
+import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.api.toData
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -116,7 +117,7 @@ internal class DefaultApolloStore(
           cacheHeaders = cacheHeaders,
           cacheKey = CacheKey.rootKey()
       )
-    }.toData(customScalarAdapters)
+    }.toData(operation.adapter(), customScalarAdapters)
   }
 
   override suspend fun <D : Fragment.Data> readFragment(
@@ -133,7 +134,7 @@ internal class DefaultApolloStore(
           cacheHeaders = cacheHeaders,
           cacheKey = cacheKey
       )
-    }.toData(customScalarAdapters)
+    }.toData(fragment.adapter(), customScalarAdapters)
   }
 
 
@@ -283,7 +284,7 @@ internal class DefaultApolloStore(
         cache: ReadOnlyNormalizedCache,
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
-    ): CacheDataTransformer<D> {
+    ): CacheData {
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCache(
             cacheKey,

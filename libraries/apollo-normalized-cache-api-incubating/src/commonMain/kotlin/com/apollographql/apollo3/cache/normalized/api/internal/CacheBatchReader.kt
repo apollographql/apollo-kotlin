@@ -3,9 +3,9 @@ package com.apollographql.apollo3.cache.normalized.api.internal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
+import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
@@ -83,7 +83,7 @@ internal class CacheBatchReader(
     }
   }
 
-  fun <D: Executable.Data> collectData(adapter: CompositeAdapter<D>): CacheDataTransformer<D> {
+  fun collectData(): CacheData {
     pendingReferences.add(
         PendingReference(
             key = rootKey,
@@ -132,7 +132,7 @@ internal class CacheBatchReader(
       }
     }
 
-    return CacheDataTransformer(adapter, data)
+    return CacheBatchReaderData(data)
   }
 
   /**
@@ -175,6 +175,38 @@ internal class CacheBatchReader(
 
           it.responseName to value
         }.toMap()
+      }
+    }
+  }
+
+  private data class CacheBatchReaderData(
+      private val data: Map<List<Any>, Map<String, Any?>>,
+  ): CacheData {
+    @Suppress("UNCHECKED_CAST")
+    override fun toMap(): Map<String, Any?> {
+      return data[emptyList()].replaceCacheKeys(emptyList()) as Map<String, Any?>
+    }
+
+    private fun Any?.replaceCacheKeys(path: List<Any>): Any? {
+      return when (this) {
+        is CacheKey -> {
+          data[path].replaceCacheKeys(path)
+        }
+        is List<*> -> {
+          mapIndexed { index, src ->
+            src.replaceCacheKeys(path + index)
+          }
+        }
+        is Map<*, *> -> {
+          // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
+          mapValues {
+            it.value.replaceCacheKeys(path + (it.key as String))
+          }
+        }
+        else -> {
+          // Scalar value
+          this
+        }
       }
     }
   }
