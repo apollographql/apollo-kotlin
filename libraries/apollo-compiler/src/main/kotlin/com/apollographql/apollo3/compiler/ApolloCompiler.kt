@@ -58,6 +58,10 @@ object ApolloCompiler {
       it.toSchemaGQLDocument()
     }
 
+    if (schemaDocuments.isEmpty()) {
+      error("No schema found. Apollo needs a `.graphqls` or a `.json` schema.")
+    }
+
     // Locate the mainSchemaDocument. It's the one that contains the operation roots
     val mainSchemaDocuments = schemaDocuments.filter {
       it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
