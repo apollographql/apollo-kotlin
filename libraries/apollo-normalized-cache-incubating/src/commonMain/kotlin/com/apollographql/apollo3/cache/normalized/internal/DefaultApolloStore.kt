@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
+import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
@@ -16,10 +17,9 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
-import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.api.readDataFromCacheInternal
 import com.apollographql.apollo3.cache.normalized.api.toData
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
@@ -110,7 +110,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
   ): D {
     return lock.read {
-      operation.readDataFromCacheInternal(
+      operation.readDataFromCachePrivate(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
@@ -127,7 +127,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
   ): D {
     return lock.read {
-      fragment.readDataFromCacheInternal(
+      fragment.readDataFromCachePrivate(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
@@ -278,7 +278,7 @@ internal class DefaultApolloStore(
   override fun dispose() {}
 
   companion object {
-    private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
+    private fun <D : Executable.Data> Executable<D>.readDataFromCachePrivate(
         cacheKey: CacheKey,
         customScalarAdapters: CustomScalarAdapters,
         cache: ReadOnlyNormalizedCache,
@@ -286,7 +286,7 @@ internal class DefaultApolloStore(
         cacheHeaders: CacheHeaders,
     ): CacheData {
       return when (cacheResolver) {
-        is CacheResolver -> readDataFromCache(
+        is CacheResolver -> readDataFromCacheInternal(
             cacheKey,
             customScalarAdapters,
             cache,
@@ -294,7 +294,7 @@ internal class DefaultApolloStore(
             cacheHeaders
         )
 
-        is ApolloResolver -> readDataFromCache(
+        is ApolloResolver -> readDataFromCacheInternal(
             cacheKey,
             customScalarAdapters,
             cache,

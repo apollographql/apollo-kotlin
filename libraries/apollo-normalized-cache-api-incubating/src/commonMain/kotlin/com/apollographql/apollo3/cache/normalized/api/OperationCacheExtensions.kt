@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -63,7 +65,7 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
-) = readInternal(
+): D = readDataFromCache(
     cacheKey = CacheKey.rootKey(),
     customScalarAdapters = customScalarAdapters,
     cache = cache,
@@ -77,6 +79,35 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
+): D = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+).toData(adapter(), customScalarAdapters)
+
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: ApolloResolver,
+    cacheHeaders: CacheHeaders,
+): D = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+).toData(adapter(), customScalarAdapters)
+
+@ApolloInternal
+fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
 ) = readInternal(
     cacheKey = cacheKey,
     customScalarAdapters = customScalarAdapters,
@@ -85,7 +116,8 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-fun <D : Executable.Data> Executable<D>.readDataFromCache(
+@ApolloInternal
+fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
@@ -124,6 +156,7 @@ fun Collection<Record>?.dependentKeys(): Set<String> {
   }?.toSet() ?: emptySet()
 }
 
+@ApolloInternal
 fun <D: Executable.Data> CacheData.toData(
     adapter: CompositeAdapter<D>,
     customScalarAdapters: CustomScalarAdapters,
