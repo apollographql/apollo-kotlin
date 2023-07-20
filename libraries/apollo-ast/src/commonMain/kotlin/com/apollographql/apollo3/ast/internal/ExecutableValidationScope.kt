@@ -35,8 +35,8 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
@@ -336,6 +336,11 @@ internal class ExecutableValidationScope(
 
     fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
 
+    directives.forEach {
+      validateDirective(it, this) {
+        variableUsages.add(it)
+      }
+    }
     variableUsages.forEach {
       validateVariable(this, it)
     }
