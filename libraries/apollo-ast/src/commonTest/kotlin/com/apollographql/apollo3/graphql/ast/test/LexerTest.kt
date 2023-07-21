@@ -631,4 +631,23 @@ class LexerTest {
       assertEquals(6, column)
     }
   }
+
+  @Test
+  fun blockStringColumn() {
+    val currentVariantSdl = """
+	""${'"'}
+	Directive description
+	""${'"'}
+	directive @someDirective(
+	    ""${'"'}Argument desedcription""${'"'}
+		arg1: String @deprecated(reason: "directive on argument")
+	) repeatable on ENUM | SCHEMA
+	type Query { fieldA: String }
+""".trimIndent()
+
+    Lexer(currentVariantSdl).apply {
+      nextToken()
+      assertEquals(1, nextToken().column)
+    }
+  }
 }

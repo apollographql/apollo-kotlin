@@ -50,7 +50,7 @@ fun Array<UsageInfo>.toMigrationItemUsageInfo(): List<MigrationItemUsageInfo> {
 }
 
 context(MigrationItem)
-fun PsiReference.toMigrationItemUsageInfo() = MigrationItemUsageInfo(migrationItem = this@MigrationItem, reference = this)
+fun PsiReference.toMigrationItemUsageInfo(attachedData: Any? = null) = MigrationItemUsageInfo(migrationItem = this@MigrationItem, reference = this, attachedData = attachedData)
 
 context(MigrationItem)
 fun Collection<PsiReference>.toMigrationItemUsageInfo(): List<MigrationItemUsageInfo> {

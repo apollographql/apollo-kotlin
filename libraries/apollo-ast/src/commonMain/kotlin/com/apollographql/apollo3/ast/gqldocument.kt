@@ -43,8 +43,8 @@ fun apolloDefinitions(version: String): List<GQLDefinition> {
 }
 
 private fun definitionsFromString(string: String): List<GQLDefinition> {
-  return Buffer().writeUtf8(string)
-      .parseAsGQLDocument(null)
+  return string
+      .parseAsGQLDocument()
       .getOrThrow()
       .definitions
 }

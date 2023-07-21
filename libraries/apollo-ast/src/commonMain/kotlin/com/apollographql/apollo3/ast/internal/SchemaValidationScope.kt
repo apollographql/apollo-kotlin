@@ -502,7 +502,7 @@ private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> 
 
     val selectionSet = (value as? GQLStringValue)?.value ?: return@flatMap emptyList()
 
-    selectionSet.buffer().parseAsGQLSelections().getOrThrow().map { gqlSelection ->
+    selectionSet.parseAsGQLSelections().getOrThrow().map { gqlSelection ->
       // No need to check here, this should be done during validation
       (gqlSelection as GQLField).name
     }

@@ -101,18 +101,6 @@ public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializ
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/apollographql/apollo3/compiler/IncomingOptions {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/IncomingOptions$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;)V
-	public final fun getCodegenModels ()Ljava/lang/String;
-	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
-	public final fun getSchemaPackageName ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion {
-	public final fun resolveSchema (Ljava/util/Collection;)Lkotlin/Pair;
-}
-
 public final class com/apollographql/apollo3/compiler/JavaCodegenOptions {
 	public fun <init> (ZLjava/util/List;ZLcom/apollographql/apollo3/compiler/JavaNullable;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks;)V
 	public final fun getClassesForEnumsMatching ()Ljava/util/List;

@@ -5,9 +5,6 @@ import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.SourceLocation
-import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import kotlin.test.Test
@@ -23,7 +20,6 @@ class ParserTest {
       query Test { field }
       ab bc
       """.trimIndent()
-          .buffer()
           .parseAsGQLDocument()
           .getOrThrow()
       fail("An exception was expected")
@@ -39,14 +35,13 @@ class ParserTest {
       query Test { field }
       # comment after
       """.trimIndent()
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
   }
 
   @Test
   fun blockString() {
-    val value = "\"\"\" \\\"\"\" \"\"\"".buffer().parseAsGQLValue().getOrThrow()
+    val value = "\"\"\" \\\"\"\" \"\"\"".parseAsGQLValue().getOrThrow()
 
     assertEquals(" \"\"\" ", (value as GQLStringValue).value)
   }
@@ -58,7 +53,7 @@ class ParserTest {
         "   \n" +
         "  second line\n" +
         "   \n" +
-        "\"\"\"").buffer().parseAsGQLValue().getOrThrow()
+        "\"\"\"").parseAsGQLValue().getOrThrow()
 
     assertEquals("first line\n \nsecond line", (value as GQLStringValue).value)
   }
@@ -76,7 +71,6 @@ query Test {
     )
 }
       """.trimIndent()
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .definitions
@@ -87,10 +81,10 @@ query Test {
         .cast<GQLField>()
         .sourceLocation!!
         .apply {
+          assertEquals(55, start)
+          assertEquals(82, end)
           assertEquals(4, line)
-          assertEquals(6, endLine)
           assertEquals(3, column)
-          assertEquals(5, endColumn)
         }
   }
 
@@ -101,7 +95,6 @@ query Test {
         fieldA: String
       }
     """.trimIndent()
-        .buffer()
         .parseAsGQLDocument()
         .getOrThrow()
         .definitions
@@ -112,10 +105,10 @@ query Test {
         .cast<GQLFieldDefinition>()
         .sourceLocation!!
         .apply {
+          assertEquals(20, start)
+          assertEquals(34, end)
           assertEquals(2, line)
-          assertEquals(2, endLine)
           assertEquals(3, column)
-          assertEquals(16, endColumn)
         }
   }
 }

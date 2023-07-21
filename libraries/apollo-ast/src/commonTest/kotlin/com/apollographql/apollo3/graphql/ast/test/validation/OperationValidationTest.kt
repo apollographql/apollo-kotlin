@@ -20,11 +20,20 @@ class OperationValidationTest {
         .toPath()
         .let { HOST_FILESYSTEM.source(it) }
         .buffer()
-        .parseAsGQLDocument()
+        .parseAsGQLDocument(null) // Use filePath = null to remove the absolute path above
         .getOrThrow()
     val operationIssues = operations.validateAsExecutable(schema).issues
     assertEquals(1, operationIssues.size)
     assertEquals("Use of deprecated input field `deprecatedParameter`", operationIssues[0].message)
-    assertEquals(SourceLocation(12, 41, -1, -1, null).pretty(), operationIssues[0].sourceLocation.pretty())
+    assertEquals(
+        SourceLocation(
+            start = 0,
+            end = 1,
+            line = 12,
+            column = 41,
+            null
+        ).pretty(),
+        operationIssues[0].sourceLocation.pretty()
+    )
   }
 }

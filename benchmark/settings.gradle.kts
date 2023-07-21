@@ -1,10 +1,19 @@
+pluginManagement {
+  includeBuild("build-logic")
+}
 plugins {
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.6.0"
 }
 
-include(":app", ":microbenchmark")
+include(":app", ":microbenchmark", ":macrobenchmark")
 
-includeBuild("build-logic")
+dependencyResolutionManagement {
+  versionCatalogs {
+    create("libs") {
+      from(files("../gradle/libraries.toml"))
+    }
+  }
+}
 
 apply(from = "../gradle/repositories.gradle.kts")
 
@@ -12,18 +21,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
   it.apply {
     maven {
       url = uri("../build/localMaven")
-    }
-  }
-}
-
-
-dependencyResolutionManagement {
-  versionCatalogs {
-    create("benchmarks") {
-      from(files("gradle/benchmarks.versions.toml"))
-    }
-    create("libs") {
-      from(files("../gradle/libraries.toml"))
     }
   }
 }

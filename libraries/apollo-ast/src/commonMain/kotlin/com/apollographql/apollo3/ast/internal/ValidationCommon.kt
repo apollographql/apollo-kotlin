@@ -19,7 +19,6 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
@@ -37,7 +36,6 @@ import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.isVariableUsageAllowed
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
-import okio.Buffer
 
 interface IssuesScope {
   val issues: MutableList<Issue>
@@ -105,7 +103,7 @@ internal fun ValidationScope.validateDirective(
     is GQLInlineFragment -> GQLDirectiveLocation.INLINE_FRAGMENT
     is GQLFragmentSpread -> GQLDirectiveLocation.FRAGMENT_SPREAD
     is GQLObjectTypeDefinition -> GQLDirectiveLocation.OBJECT
-    is GQLOperationTypeDefinition -> {
+    is GQLOperationDefinition -> {
       when (directiveContext.operationType) {
         "query" -> GQLDirectiveLocation.QUERY
         "mutation" -> GQLDirectiveLocation.MUTATION
@@ -186,7 +184,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
     )
     val stringValue = (directive.arguments.first().value as GQLStringValue).value
 
-    val selections = stringValue.buffer().parseAsGQLSelections().getOrThrow()
+    val selections = stringValue.parseAsGQLSelections().getOrThrow()
 
     val badSelection = selections.firstOrNull { it !is GQLField }
     check(badSelection == null) {
@@ -207,7 +205,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
-  (directive.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().getOrThrow().forEach {
+  (directive.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach {
     if (it !is GQLField) {
       registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
     } else if (it.selections.isNotEmpty()) {
@@ -215,8 +213,6 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
     }
   }
 }
-
-internal fun String.buffer() = Buffer().writeUtf8(this)
 
 private fun ValidationScope.validateArgument(
     argument: GQLArgument,

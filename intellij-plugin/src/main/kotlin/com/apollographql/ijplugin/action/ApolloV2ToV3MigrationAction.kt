@@ -18,8 +18,8 @@ class ApolloV2ToV3MigrationAction : AnAction() {
         e.project,
         ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.message"),
         ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.title"),
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.ok"),
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.cancel"),
+        ApolloBundle.message("action.MigrationAction.confirmDialog.ok"),
+        ApolloBundle.message("action.MigrationAction.confirmDialog.cancel"),
         Messages.getQuestionIcon()
     )
 

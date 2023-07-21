@@ -217,7 +217,7 @@ class Schema internal constructor(
     @ApolloInternal
     fun fromMap(map: Map<String, Any>): Schema {
       return Schema(
-          definitions = Buffer().writeUtf8(map["sdl"] as String).parseAsGQLDocument().getOrThrow().definitions,
+          definitions = (map["sdl"] as String).parseAsGQLDocument().getOrThrow().definitions,
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
           foreignNames = map["foreignNames"]!! as Map<String, String>,
           directivesToStrip = map["directivesToStrip"]!! as List<String>,

@@ -5,11 +5,11 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     mavenCentral()
 
     exclusiveContent {
-      // TODO comment when a stable version of Compose is available for Kotlin 1.9
-      forRepository {
-        // Androidx "dev" repository for Compose
-        maven { url = uri("https://androidx.dev/storage/compose-compiler/repository/") }
-      }
+      // Uncomment to use a "dev" version of Compose when bumping Kotlin versions
+      // forRepository {
+      //   // Androidx "dev" repository for Compose
+      //   maven { url = uri("https://androidx.dev/storage/compose-compiler/repository/") }
+      // }
       forRepository(::google)
       filter {
         includeModuleByRegex("com\\.android.*", ".*")

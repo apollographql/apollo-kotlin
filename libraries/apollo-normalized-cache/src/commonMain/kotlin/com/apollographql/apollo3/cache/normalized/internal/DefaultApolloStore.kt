@@ -13,7 +13,8 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.api.readDataFromCacheInternal
+import com.apollographql.apollo3.cache.normalized.api.toData
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -100,13 +101,13 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
   ): D {
     return lock.read {
-      operation.readDataFromCache(
+      operation.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
       )
-    }
+    }.toData(operation.adapter(), customScalarAdapters)
   }
 
   override suspend fun <D : Fragment.Data> readFragment(
@@ -115,15 +116,15 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    return lock.read {
-      fragment.readDataFromCache(
-          customScalarAdapters = customScalarAdapters,
-          cache = cache,
-          cacheResolver = cacheResolver,
-          cacheHeaders = cacheHeaders,
-          cacheKey = cacheKey
-      )
-    }
+      return lock.read {
+        fragment.readDataFromCacheInternal(
+            customScalarAdapters = customScalarAdapters,
+            cache = cache,
+            cacheResolver = cacheResolver,
+            cacheHeaders = cacheHeaders,
+            cacheKey = cacheKey
+        )
+      }.toData(fragment.adapter(), customScalarAdapters)
   }
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
@@ -157,15 +158,15 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = lock.write {
-      val records = fragment.normalize(
-          data = fragmentData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator,
-          rootKey = cacheKey.key
-      ).values
+    val records = fragment.normalize(
+        data = fragmentData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator,
+        rootKey = cacheKey.key
+    ).values
 
-      cache.merge(records, cacheHeaders)
+    val changedKeys = lock.write {
+        cache.merge(records, cacheHeaders)
     }
 
     if (publish) {
@@ -182,20 +183,21 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-    val (records, changedKeys) = lock.write {
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator
-      )
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator
+    ).values.toSet()
 
-      records to cache.merge(records.values.toList(), cacheHeaders)
+    val changedKeys = lock.write {
+      cache.merge(records, cacheHeaders)
     }
+
     if (publish) {
       publish(changedKeys)
     }
 
-    return records.values.toSet() to changedKeys
+    return records to changedKeys
   }
 
 
@@ -206,19 +208,18 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator
+    ).values.map { record ->
+      Record(
+          key = record.key,
+          fields = record.fields,
+          mutationId = mutationId
+      )
+    }
     val changedKeys = lock.write {
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator
-      ).values.map { record ->
-        Record(
-            key = record.key,
-            fields = record.fields,
-            mutationId = mutationId
-        )
-      }
-
       /**
        * TODO: should we forward the cache headers to the optimistic store?
        */

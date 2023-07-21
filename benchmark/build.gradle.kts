@@ -1,6 +1,4 @@
-buildscript {
-  dependencies {
-    classpath("com.apollographql.apollo3.benchmark:build-logic")
-  }
+plugins {
+  id("apollo.benchmark").apply(false)
+  alias(libs.plugins.apollo).apply(false)
 }
-

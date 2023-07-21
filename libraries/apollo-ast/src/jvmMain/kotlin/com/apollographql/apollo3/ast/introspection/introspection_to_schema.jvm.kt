@@ -7,8 +7,6 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchema
-import okio.buffer
-import okio.source
 import java.io.File
 
 /**
@@ -19,7 +17,7 @@ fun File.toSchemaGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)
   } else {
-    source().buffer().parseAsGQLDocument(filePath = path).getOrThrow()
+    parseAsGQLDocument().getOrThrow()
   }
 }
 

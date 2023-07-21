@@ -48,10 +48,8 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.SourceLocation
-import okio.BufferedSource
-import okio.Closeable
 
-internal class Parser(src: String, val withSourceLocation: Boolean, val filePath: String?) {
+internal class Parser(src: String, private val withSourceLocation: Boolean, val filePath: String?) {
   private val lexer = Lexer(src)
   private var token = lexer.nextToken()
   private var lastToken = token
@@ -273,7 +271,11 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     if (!withSourceLocation) return null
 
     return SourceLocation(
-        from.line, from.column, lastToken.endLine, lastToken.endColumn, filePath
+        start = from.start,
+        end = lastToken.end,
+        line = from.line,
+        column = from.column,
+        filePath = filePath
     )
   }
 
@@ -292,8 +294,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     return expectToken<Token.Name>().value
   }
 
-  private fun parseOperationDefinition(): GQLOperationDefinition {
-    val start = token
+  private fun parseOperationDefinition(start: Token): GQLOperationDefinition {
     val description = expectOptionalToken<Token.String>()?.value
 
     if (peek<Token.LeftBrace>()) {
@@ -384,8 +385,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     )
   }
 
-  private fun parseSchemaDefinition(): GQLSchemaDefinition {
-    val start = token
+  private fun parseSchemaDefinition(start: Token): GQLSchemaDefinition {
     val description = parseDescription()
 
     expectKeyword("schema")
@@ -422,8 +422,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     )
   }
 
-  private fun parseScalarTypeDefinition(): GQLScalarTypeDefinition {
-    val start = token
+  private fun parseScalarTypeDefinition(start: Token): GQLScalarTypeDefinition {
     val description = parseDescription()
     expectKeyword("scalar")
     val name = parseName()
@@ -479,8 +478,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition).orEmpty()
   }
 
-  private fun parseObjectTypeDefinition(): GQLTypeDefinition {
-    val start = token
+  private fun parseObjectTypeDefinition(start: Token): GQLTypeDefinition {
     val description = parseDescription()
     this.expectKeyword("type")
     val name = parseName()
@@ -520,8 +518,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     )
   }
 
-  private fun parseInterfaceTypeDefinition(): GQLInterfaceTypeDefinition {
-    val start = token
+  private fun parseInterfaceTypeDefinition(start: Token): GQLInterfaceTypeDefinition {
     val description = parseDescription()
     expectKeyword("interface")
     val name = parseName()
@@ -561,8 +558,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     )
   }
 
-  private fun parseUnionTypeDefinition(): GQLUnionTypeDefinition {
-    val start = token
+  private fun parseUnionTypeDefinition(start: Token): GQLUnionTypeDefinition {
     val description = parseDescription()
     expectKeyword("union")
     val name = parseName()
@@ -606,8 +602,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     }
   }
 
-  private fun parseInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
-    val start = token
+  private fun parseInputObjectTypeDefinition(start: Token): GQLInputObjectTypeDefinition {
     val description = parseDescription()
     expectKeyword("input")
     val name = parseName()
@@ -647,8 +642,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLInputValueDefinition>(::parseInputValueDefinition).orEmpty()
   }
 
-  private fun parseEnumTypeDefinition(): GQLEnumTypeDefinition {
-    val start = token
+  private fun parseEnumTypeDefinition(start: Token): GQLEnumTypeDefinition {
     val description = parseDescription()
     expectKeyword("enum")
     val name = parseName()
@@ -717,8 +711,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     return name
   }
 
-  private fun parseDirectiveDefinition(): GQLDirectiveDefinition {
-    val start = token
+  private fun parseDirectiveDefinition(start: Token): GQLDirectiveDefinition {
     val description = parseDescription()
     expectKeyword("directive")
     expectToken<Token.At>()
@@ -758,27 +751,27 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
   }
 
   private fun parseDefinition(): GQLDefinition {
-
+    val start = token
     val hasDescription = peek<Token.String>()
     val t = if (hasDescription) lookaheadToken() else token
 
     return when (t) {
-      is Token.LeftBrace -> parseOperationDefinition()
+      is Token.LeftBrace -> parseOperationDefinition(start)
       is Token.Name -> {
         if (t.value == "extend" && hasDescription) {
           throw ParserException("Type system extensions cannot have a description", t)
         }
         when (t.value) {
-          "schema" -> parseSchemaDefinition()
-          "scalar" -> parseScalarTypeDefinition()
-          "type" -> parseObjectTypeDefinition()
-          "interface" -> parseInterfaceTypeDefinition()
-          "union" -> parseUnionTypeDefinition()
-          "enum" -> parseEnumTypeDefinition()
-          "input" -> parseInputObjectTypeDefinition()
-          "directive" -> parseDirectiveDefinition()
-          "query", "mutation", "subscription" -> parseOperationDefinition()
-          "fragment" -> parseFragmentDefinition()
+          "schema" -> parseSchemaDefinition(start)
+          "scalar" -> parseScalarTypeDefinition(start)
+          "type" -> parseObjectTypeDefinition(start)
+          "interface" -> parseInterfaceTypeDefinition(start)
+          "union" -> parseUnionTypeDefinition(start)
+          "enum" -> parseEnumTypeDefinition(start)
+          "input" -> parseInputObjectTypeDefinition(start)
+          "directive" -> parseDirectiveDefinition(start)
+          "query", "mutation", "subscription" -> parseOperationDefinition(start)
+          "fragment" -> parseFragmentDefinition(start)
           "extend" -> parseTypeSystemExtension()
           else -> unexpected(t)
         }
@@ -788,8 +781,7 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     }
   }
 
-  private fun parseFragmentDefinition(): GQLFragmentDefinition {
-    val start = token
+  private fun parseFragmentDefinition(start: Token): GQLFragmentDefinition {
     val description = parseDescription()
     expectKeyword("fragment")
     val name = parseFragmentName()
@@ -905,10 +897,10 @@ internal class Parser(src: String, val withSourceLocation: Boolean, val filePath
     if (!withSourceLocation) return null
 
     return SourceLocation(
+        token.start,
+        token.end,
         token.line,
         token.column,
-        token.endLine,
-        token.endColumn,
         filePath
     )
   }

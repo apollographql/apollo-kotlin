@@ -19,8 +19,8 @@ class CompatToOperationBasedCodegenMigrationAction : AnAction() {
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.message"),
         @Suppress("DialogTitleCapitalization")
         ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.title"),
-        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.ok"),
-        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.cancel"),
+        ApolloBundle.message("action.MigrationAction.confirmDialog.ok"),
+        ApolloBundle.message("action.MigrationAction.confirmDialog.cancel"),
         Messages.getQuestionIcon()
     )
 

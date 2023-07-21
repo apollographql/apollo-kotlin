@@ -1,0 +1,5 @@
+type Query {
+    random: String
+}
+
+directive @inContext(country: String) on QUERY
