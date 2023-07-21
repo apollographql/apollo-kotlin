@@ -19,7 +19,6 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
@@ -104,7 +103,7 @@ internal fun ValidationScope.validateDirective(
     is GQLInlineFragment -> GQLDirectiveLocation.INLINE_FRAGMENT
     is GQLFragmentSpread -> GQLDirectiveLocation.FRAGMENT_SPREAD
     is GQLObjectTypeDefinition -> GQLDirectiveLocation.OBJECT
-    is GQLOperationTypeDefinition -> {
+    is GQLOperationDefinition -> {
       when (directiveContext.operationType) {
         "query" -> GQLDirectiveLocation.QUERY
         "mutation" -> GQLDirectiveLocation.MUTATION

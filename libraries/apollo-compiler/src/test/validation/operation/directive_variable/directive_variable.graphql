@@ -1,0 +1,4 @@
+# See https://github.com/apollographql/apollo-kotlin/issues/5112
+query Collection($country: String) @inContext(country: $country) {
+    random
+}
