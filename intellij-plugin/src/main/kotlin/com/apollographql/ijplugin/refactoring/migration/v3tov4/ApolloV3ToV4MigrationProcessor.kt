@@ -16,6 +16,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
@@ -80,6 +81,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
       UpdateFieldNameInService("generateTestBuilders", "generateDataBuilders"),
       UpdateCustomTypeMappingInBuildKts,
+      UpdateMultiModuleConfiguration,
       EncloseInService,
   )
 }

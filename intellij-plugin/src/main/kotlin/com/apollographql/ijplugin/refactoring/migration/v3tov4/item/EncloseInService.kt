@@ -4,10 +4,10 @@ import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
-import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.getMethodName
+import com.apollographql.ijplugin.util.lambdaBlockExpression
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
@@ -16,7 +16,6 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
@@ -30,8 +29,7 @@ object EncloseInService : MigrationItem() {
         override fun visitCallExpression(expression: KtCallExpression) {
           super.visitCallExpression(expression)
           if (expression.getMethodName() == "apollo") {
-            val blockExpression = expression.valueArguments.firstOrNull()?.cast<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
-                ?: return
+            val blockExpression = expression.lambdaBlockExpression() ?: return
             val statements = blockExpression.statements
             // If there's already a service call, we can't automatically refactor
             if (statements.none { it is KtCallExpression && it.getMethodName() == "service" }) {
