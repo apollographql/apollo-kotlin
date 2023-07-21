@@ -6,6 +6,7 @@ import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.ConstructorInsteadOfBuilder
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateClassName
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
@@ -77,6 +78,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateGradleDependenciesBuildKts(apollo3, apollo3),
 
       UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
+      UpdateCustomTypeMappingInBuildKts,
       EncloseInService,
   )
 }

@@ -14,7 +14,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdatePackageName
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.AddUseVersion2Compat
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.RemoveDependenciesInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateAddCustomTypeAdapter
-import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateCustomTypeMappingInBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateEnumValueUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateFileUpload
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts

@@ -48,6 +48,7 @@ object EncloseInService : MigrationItem() {
     Service::class.java.declaredMethods.map { it.name.withoutGetter() }.toMutableSet().apply {
       // Include the fields that existed in v3, otherwise they'll be removed from the service block
       add("generateModelBuilder")
+      add("customScalarsMapping")
     }
   }
 
