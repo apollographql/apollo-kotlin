@@ -5,11 +5,13 @@ dependencies {
 apollo {
   service("service") {
     generateModelBuilders.set(true)
+    generateDataBuilders.set(true)
   }
 }
 
 apollo {
   service("xxx") {
     generateModelBuilders.set(true)
+    generateDataBuilders.set(true)
   }
 }

@@ -78,6 +78,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateGradleDependenciesBuildKts(apollo3, apollo3),
 
       UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
+      UpdateFieldNameInService("generateTestBuilders", "generateDataBuilders"),
       UpdateCustomTypeMappingInBuildKts,
       EncloseInService,
   )

@@ -4,10 +4,12 @@ dependencies {
 
 apollo {
   generateModelBuilder.set(true)
+  generateTestBuilders.set(true)
 }
 
 apollo {
   service("xxx") {
     generateModelBuilder.set(true)
+    generateTestBuilders.set(true)
   }
 }
