@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
@@ -11,7 +13,6 @@ import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
-
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
@@ -38,6 +39,34 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
+):D = readInternal(
+    cacheKey = CacheKey.rootKey(),
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+).toData(adapter(), customScalarAdapters)
+
+fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
+): D = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+).toData(adapter(), customScalarAdapters)
+
+@ApolloInternal
+fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
 ) = readInternal(
     cacheKey = CacheKey.rootKey(),
     customScalarAdapters = customScalarAdapters,
@@ -46,7 +75,8 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
+@ApolloInternal
+fun <D : Fragment.Data> Fragment<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
@@ -66,8 +96,8 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
-): D {
-  val map = CacheBatchReader(
+): CacheData {
+  return CacheBatchReader(
       cache = cache,
       cacheHeaders = cacheHeaders,
       cacheResolver = cacheResolver,
@@ -75,16 +105,22 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
       rootTypename = rootField().type.rawType().name
-  ).toMap()
-
-  val reader = MapJsonReader(
-      root = map,
-  )
-  return adapter().fromJson(reader, customScalarAdapters)
+  ).collectData()
 }
 
 fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
     it.fieldKeys()
   }?.toSet() ?: emptySet()
+}
+
+@ApolloInternal
+fun <D: Executable.Data> CacheData.toData(
+    adapter: CompositeAdapter<D>,
+    customScalarAdapters: CustomScalarAdapters,
+): D {
+  val reader = MapJsonReader(
+      root = toMap(),
+  )
+  return adapter.fromJson(reader, customScalarAdapters)
 }
