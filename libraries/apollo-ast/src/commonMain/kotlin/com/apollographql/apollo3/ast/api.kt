@@ -44,13 +44,13 @@ fun BufferedSource.toExecutableDefinitions(
     .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
     .getOrThrow()
 
-private fun <T : Any> BufferedSource.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
-  return this.use { readUtf8() }.parseInternal(filePath, withSourceLocation, block)
+private fun <T : Any> BufferedSource.parseInternal(filePath: String?, options: ParserOptions, block: Parser.() -> T): GQLResult<T> {
+  return this.use { readUtf8() }.parseInternal(filePath, options, block)
 }
 
-private fun <T : Any> String.parseInternal(filePath: String?, withSourceLocation: Boolean, block: Parser.() -> T): GQLResult<T> {
+private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOptions, block: Parser.() -> T): GQLResult<T> {
   return try {
-    GQLResult(Parser(this, withSourceLocation, filePath).block(), emptyList())
+    GQLResult(Parser(this, options, filePath).block(), emptyList())
   } catch (e: ParserException) {
     GQLResult(
         null,
@@ -91,6 +91,7 @@ class ParserOptions(
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val useAntlr: Boolean = false,
     val allowEmptyDocuments: Boolean = true,
+    val allowClientControlledNullability: Boolean = true,
     val withSourceLocation: Boolean = true,
 ) {
   companion object {
@@ -108,7 +109,7 @@ fun String.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): G
   return if (options.useAntlr) {
     Buffer().writeUtf8(this).parseAsGQLDocument(options = options)
   } else {
-    parseInternal(null, options.withSourceLocation) { parseDocument(options.allowEmptyDocuments) }
+    parseInternal(null, options) { parseDocument() }
   }
 }
 fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
@@ -116,7 +117,7 @@ fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLR
   return if (options.useAntlr) {
     Buffer().writeUtf8(this).parseAsGQLValue(options = options)
   } else {
-    parseInternal(null, options.withSourceLocation) { parseValue() }
+    parseInternal(null, options) { parseValue() }
   }
 }
 fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
@@ -124,7 +125,7 @@ fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLRe
   return if (options.useAntlr) {
     Buffer().writeUtf8(this).parseAsGQLType(options = options)
   } else {
-    parseInternal(null, options.withSourceLocation) { parseType() }
+    parseInternal(null, options) { parseType() }
   }
 }
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
@@ -132,7 +133,7 @@ fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default):
   return if (options.useAntlr) {
     Buffer().writeUtf8(this).parseAsGQLSelections(options = options)
   } else {
-    parseInternal(null, options.withSourceLocation) { parseSelections() }
+    parseInternal(null, options) { parseSelections() }
   }
 }
 
@@ -156,7 +157,7 @@ fun BufferedSource.parseAsGQLDocument(filePath: String? = null, options: ParserO
   return if (options.useAntlr) {
     parseDocumentWithAntlr(this, filePath)
   } else {
-    parseInternal(filePath, options.withSourceLocation) { parseDocument(options.allowEmptyDocuments) }
+    parseInternal(filePath, options) { parseDocument() }
   }
 }
 
@@ -171,7 +172,7 @@ fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOpti
   return if (options.useAntlr) {
     parseValueWithAntlr(this, filePath)
   } else {
-    parseInternal(filePath, options.withSourceLocation) { parseValue() }
+    parseInternal(filePath, options) { parseValue() }
   }
 }
 
@@ -186,7 +187,7 @@ fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptio
   return if (options.useAntlr) {
     parseTypeWithAntlr(this, filePath)
   } else {
-    parseInternal(filePath, options.withSourceLocation) { parseType() }
+    parseInternal(filePath, options) { parseType() }
   }
 }
 
@@ -204,7 +205,7 @@ fun BufferedSource.parseAsGQLSelections(
   return if (options.useAntlr) {
     parseSelectionsWithAntlr(this, filePath)
   } else {
-    parseInternal(filePath, options.withSourceLocation) { parseSelections() }
+    parseInternal(filePath, options) { parseSelections() }
   }
 }
 

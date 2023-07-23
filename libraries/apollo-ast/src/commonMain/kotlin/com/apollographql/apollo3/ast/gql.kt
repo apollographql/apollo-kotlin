@@ -1493,6 +1493,71 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
   join(writer, prefix = "(", separator = ", ", postfix = ")")
 }
 
+
+sealed interface GQLNullability: GQLNode
+
+class GQLRequired(override val sourceLocation: SourceLocation?): GQLNullability {
+  override val children: List<GQLNode>
+    get() = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("!")
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return this
+  }
+}
+
+class GQLOptional(override val sourceLocation: SourceLocation?): GQLNullability {
+  override val children: List<GQLNode>
+    get() = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("?")
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return this
+  }
+}
+
+class GQLListNullability(
+    override val sourceLocation: SourceLocation?,
+    val itemNullability: GQLNullability,
+    val selfNullability: GQLNullability?,
+): GQLNullability {
+  override val children: List<GQLNode>
+    get() = listOf(itemNullability)
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("[")
+    writer.write(itemNullability)
+    writer.write("]")
+    if (selfNullability != null) {
+      writer.write(selfNullability)
+    }
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        ofNullability = container.takeSingle()!!
+    )
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      ofNullability: GQLNullability = this.itemNullability,
+      selfNullability: GQLNullability? = this.selfNullability,
+  ): GQLListNullability {
+    return GQLListNullability(
+        sourceLocation,
+        ofNullability,
+        selfNullability
+    )
+  }
+}
+
 class GQLField(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
@@ -1500,6 +1565,7 @@ class GQLField(
     val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
+    val nullability: GQLNullability?
 ) : GQLSelection() {
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
@@ -1527,6 +1593,9 @@ class GQLField(
         write(" ")
         directives.join(writer)
       }
+      if (nullability != null) {
+        writer.write(nullability)
+      }
       if (selections.isNotEmpty()) {
         write(" ")
         selections.writeSelections(writer)
@@ -1543,6 +1612,7 @@ class GQLField(
       arguments: List<GQLArgument> = this.arguments,
       directives: List<GQLDirective> = this.directives,
       selections: List<GQLSelection> = this.selections,
+      nullability: GQLNullability? = this.nullability
   ) = GQLField(
       sourceLocation = sourceLocation,
       alias = alias,
@@ -1550,6 +1620,7 @@ class GQLField(
       arguments = arguments,
       directives = directives,
       selections = selections,
+      nullability = nullability
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {

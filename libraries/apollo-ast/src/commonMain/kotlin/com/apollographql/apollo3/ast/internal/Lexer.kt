@@ -101,6 +101,7 @@ internal class Lexer(val src: String) {
         }
 
         '!' -> return Token.ExclamationPoint(start, line, column(start))
+        '?' -> return Token.QuestionMark(start, line, column(start))
         '$' -> return Token.Dollar(start, line, column(start))
         '&' -> return Token.Ampersand(start, line, column(start))
         '(' -> return Token.LeftParenthesis(start, line, column(start))

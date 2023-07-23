@@ -1,0 +1,7 @@
+type Query {
+    nullable: String
+    nonNullable: String!
+    nullableListOfNullable: [String]
+    nullableListOfNonNullable: [String!]
+    nonNullableListOfNullable: [String]!
+}

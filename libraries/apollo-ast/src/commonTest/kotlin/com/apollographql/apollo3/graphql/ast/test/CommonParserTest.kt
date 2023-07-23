@@ -11,7 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class ParserTest {
+class CommonParserTest {
   @Test
   fun extraTokensAtEndOfFileAreDetected() {
     try {
