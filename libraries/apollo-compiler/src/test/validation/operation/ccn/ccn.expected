@@ -1,5 +1,5 @@
 ERROR: ValidationError (5:13)
-Field 'nullable' nullability doesn't match the list dimension of its type
+Cannot apply nullability on 'nullable', the nullability list dimension exceeds the one of the field type.
 ------------
-ERROR: ValidationError (6:13)
-Field 'deepList' nullability doesn't match the list dimension of its type
+ERROR: ValidationError (6:17)
+Cannot apply nullability on 'deepList', the nullability list dimension exceeds the one of the field type.

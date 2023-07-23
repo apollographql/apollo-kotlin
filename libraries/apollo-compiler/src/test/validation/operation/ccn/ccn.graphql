@@ -3,7 +3,8 @@ query Foo {
     nonNullable?
     # too much nesting
     nullable[!]!
-    deepList[[[[!]]]]
+    a0: deepList[[[[!]]]]
     # this is ok
-    deepList[[!]]
+    a1: deepList[[!]]
 }
+

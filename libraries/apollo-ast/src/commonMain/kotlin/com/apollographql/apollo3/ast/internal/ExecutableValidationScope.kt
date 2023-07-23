@@ -44,6 +44,7 @@ import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
+import com.apollographql.apollo3.ast.withCcn
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
@@ -151,7 +152,7 @@ internal class ExecutableValidationScope(
       null
     } else if (this !is GQLListType && other is GQLListType) {
       null
-    } else if (this is GQLNamedType && other is GQLNamedType){
+    } else if (this is GQLNamedType && other is GQLNamedType) {
       if (name != other.name) {
         null
       } else {
@@ -221,7 +222,7 @@ internal class ExecutableValidationScope(
       val nullabilityListDimension = nullability.listDimension()
       if (typeListDimension < nullabilityListDimension) {
         registerIssue(
-            message = "Field '$name' nullability doesn't match the list dimension of its type",
+            message = "Cannot apply nullability on '$name', the nullability list dimension exceeds the one of the field type.",
             sourceLocation = nullability.sourceLocation
         )
         return
@@ -236,7 +237,7 @@ internal class ExecutableValidationScope(
   }
 
   private fun GQLType.listDimension(): Int {
-    return when(this) {
+    return when (this) {
       is GQLNonNullType -> this.type.listDimension()
       is GQLListType -> 1 + this.type.listDimension()
       else -> 0
@@ -244,7 +245,7 @@ internal class ExecutableValidationScope(
   }
 
   private fun GQLNullability.listDimension(): Int {
-    return when(this) {
+    return when (this) {
       is GQLListNullability -> 1 + this.itemNullability.listDimension()
       is GQLOptional -> 0
       is GQLRequired -> 0
@@ -516,8 +517,8 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type
+    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withCcn(fieldA.nullability)
+    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withCcn(fieldB.nullability)
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return
@@ -634,6 +635,7 @@ internal class ExecutableValidationScope(
         }
         true
       }
+
       is GQLObjectValue -> {
         if (valueB !is GQLObjectValue) {
           return false
@@ -649,6 +651,7 @@ internal class ExecutableValidationScope(
         }
         true
       }
+
       is GQLVariableValue -> (valueB as? GQLVariableValue)?.name == valueA.name
     }
   }
@@ -757,6 +760,7 @@ internal class ExecutableValidationScope(
           // if it is, we just skip this field and let other validation report the error
           typeDefinition?.let { FieldWithParent(selection, it) }
         }
+
         is GQLInlineFragment -> selection.collectFields(parentType)
         is GQLFragmentSpread -> selection.collectFields()
       }

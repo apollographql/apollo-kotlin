@@ -1497,7 +1497,7 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 
 sealed interface GQLNullability : GQLNode
 
-class GQLRequired(override val sourceLocation: SourceLocation?) : GQLNullability {
+class GQLRequired(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 
@@ -1510,7 +1510,7 @@ class GQLRequired(override val sourceLocation: SourceLocation?) : GQLNullability
   }
 }
 
-class GQLOptional(override val sourceLocation: SourceLocation?) : GQLNullability {
+class GQLOptional(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 
@@ -1524,7 +1524,7 @@ class GQLOptional(override val sourceLocation: SourceLocation?) : GQLNullability
 }
 
 class GQLListNullability(
-    override val sourceLocation: SourceLocation?,
+    override val sourceLocation: SourceLocation? = null,
     val itemNullability: GQLNullability,
     val selfNullability: GQLNullability?,
 ) : GQLNullability {

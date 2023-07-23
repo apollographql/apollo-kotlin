@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
 fun GQLType.leafType(): GQLNamedType = rawType()
 
@@ -79,5 +81,47 @@ internal fun GQLType.isOutputType(typeDefinitions: Map<String, GQLTypeDefinition
         || it is GQLInterfaceTypeDefinition
         || it is GQLScalarTypeDefinition
         || it is GQLEnumTypeDefinition
+  }
+}
+
+private fun GQLNullability?.selfNullability(): GQLNullability? {
+  return when (this) {
+    is GQLListNullability -> this.selfNullability
+    else -> this
+  }
+}
+
+private fun GQLType.withListCcn(nullability: GQLNullability?): GQLType {
+  if (this is GQLListType && nullability is GQLListNullability) {
+    return copy(type = type.withCcn(nullability.itemNullability))
+  } else if (this is GQLListType && nullability !is GQLListNullability) {
+    return this
+  } else if (this !is GQLListType && nullability is GQLListNullability) {
+    return this
+  } else if (this !is GQLListType && nullability !is GQLListNullability) {
+    return this
+  } else {
+    error("")
+  }
+}
+
+@ApolloExperimental
+fun GQLType.withCcn(nullability: GQLNullability?): GQLType {
+  val selfNullability = nullability.selfNullability()
+
+  if (this is GQLNonNullType && selfNullability == null) {
+    return this.copy(type = type.withListCcn(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLRequired) {
+    return this.copy(type = type.withListCcn(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLOptional) {
+    return this.type.withListCcn(nullability)
+  } else if (this !is GQLNonNullType && selfNullability == null) {
+    return this.withListCcn(nullability)
+  } else if (this !is GQLNonNullType && selfNullability is GQLRequired) {
+    return GQLNonNullType(type = this.withListCcn(nullability))
+  } else if (this !is GQLNonNullType && selfNullability is GQLOptional) {
+    return this.withListCcn(nullability)
+  } else {
+    error("")
   }
 }
