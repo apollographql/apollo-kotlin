@@ -1,7 +1,0 @@
-{
-    nullable!
-    nonNullable?
-    nullableListOfNullable[!]!
-    nullableListOfNonNullable[?]!
-    nonNullableListOfNullable[!]?
-}

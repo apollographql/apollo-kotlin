@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 
 /**
  * The GraphQL AST definition
@@ -131,7 +132,7 @@ class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
 ) : GQLNode {
-  constructor(definitions: List<GQLDefinition>, filePath: String?): this(definitions, SourceLocation.forPath(filePath))
+  constructor(definitions: List<GQLDefinition>, filePath: String?) : this(definitions, SourceLocation.forPath(filePath))
 
   override val children = definitions
 
@@ -1494,9 +1495,9 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 }
 
 
-sealed interface GQLNullability: GQLNode
+sealed interface GQLNullability : GQLNode
 
-class GQLRequired(override val sourceLocation: SourceLocation?): GQLNullability {
+class GQLRequired(override val sourceLocation: SourceLocation?) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 
@@ -1509,7 +1510,7 @@ class GQLRequired(override val sourceLocation: SourceLocation?): GQLNullability 
   }
 }
 
-class GQLOptional(override val sourceLocation: SourceLocation?): GQLNullability {
+class GQLOptional(override val sourceLocation: SourceLocation?) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 
@@ -1526,7 +1527,7 @@ class GQLListNullability(
     override val sourceLocation: SourceLocation?,
     val itemNullability: GQLNullability,
     val selfNullability: GQLNullability?,
-): GQLNullability {
+) : GQLNullability {
   override val children: List<GQLNode>
     get() = listOf(itemNullability)
 
@@ -1558,15 +1559,24 @@ class GQLListNullability(
   }
 }
 
-class GQLField(
+class GQLField @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
     val name: String,
     val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
-    val nullability: GQLNullability?
+    val nullability: GQLNullability?,
 ) : GQLSelection() {
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      alias: String?,
+      name: String,
+      arguments: List<GQLArgument>,
+      directives: List<GQLDirective>,
+      selections: List<GQLSelection>,
+  ) : this(sourceLocation, alias, name, arguments, directives, selections, null)
+
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -1612,7 +1622,7 @@ class GQLField(
       arguments: List<GQLArgument> = this.arguments,
       directives: List<GQLDirective> = this.directives,
       selections: List<GQLSelection> = this.selections,
-      nullability: GQLNullability? = this.nullability
+      nullability: GQLNullability? = this.nullability,
   ) = GQLField(
       sourceLocation = sourceLocation,
       alias = alias,

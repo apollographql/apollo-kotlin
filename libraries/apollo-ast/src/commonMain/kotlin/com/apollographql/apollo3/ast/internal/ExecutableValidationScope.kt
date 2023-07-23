@@ -12,15 +12,19 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLListNullability
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLOptional
+import com.apollographql.apollo3.ast.GQLRequired
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
@@ -212,6 +216,18 @@ internal class ExecutableValidationScope(
       }
     }
 
+    if (nullability != null) {
+      val typeListDimension = fieldDefinition.type.listDimension()
+      val nullabilityListDimension = nullability.listDimension()
+      if (typeListDimension < nullabilityListDimension) {
+        registerIssue(
+            message = "Field '$name' nullability doesn't match the list dimension of its type",
+            sourceLocation = nullability.sourceLocation
+        )
+        return
+      }
+    }
+
     directives.forEach {
       validateDirective(it, this) {
         variableUsages.add(it)
@@ -219,6 +235,21 @@ internal class ExecutableValidationScope(
     }
   }
 
+  private fun GQLType.listDimension(): Int {
+    return when(this) {
+      is GQLNonNullType -> this.type.listDimension()
+      is GQLListType -> 1 + this.type.listDimension()
+      else -> 0
+    }
+  }
+
+  private fun GQLNullability.listDimension(): Int {
+    return when(this) {
+      is GQLListNullability -> 1 + this.itemNullability.listDimension()
+      is GQLOptional -> 0
+      is GQLRequired -> 0
+    }
+  }
 
   private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val tc = typeCondition?.name ?: parentTypeDefinition.name

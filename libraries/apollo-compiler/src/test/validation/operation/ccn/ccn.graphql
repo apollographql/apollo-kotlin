@@ -1,0 +1,9 @@
+query Foo {
+    nullable!
+    nonNullable?
+    # too much nesting
+    nullable[!]!
+    deepList[[[[!]]]]
+    # this is ok
+    deepList[[!]]
+}
