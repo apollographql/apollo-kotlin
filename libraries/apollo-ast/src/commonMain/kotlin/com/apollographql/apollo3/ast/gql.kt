@@ -1634,17 +1634,15 @@ class GQLField @ApolloExperimental constructor(
       arguments = arguments,
       directives = directives,
       selections = selections,
-      nullability = null
+      nullability = this.nullability
   )
 
+  /**
+   * This is in a separate method from the copy() above so that we can more easily remove it if we need to
+   */
+  @ApolloExperimental
   fun copy(
-      sourceLocation: SourceLocation? = this.sourceLocation,
-      alias: String? = this.alias,
-      name: String = this.name,
-      arguments: List<GQLArgument> = this.arguments,
-      directives: List<GQLDirective> = this.directives,
-      selections: List<GQLSelection> = this.selections,
-      nullability: GQLNullability? = this.nullability,
+      nullability: GQLNullability?,
   ) = GQLField(
       sourceLocation = sourceLocation,
       alias = alias,
