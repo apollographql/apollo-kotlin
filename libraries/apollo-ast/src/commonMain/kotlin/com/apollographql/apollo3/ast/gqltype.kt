@@ -91,9 +91,9 @@ private fun GQLNullability?.selfNullability(): GQLNullability? {
   }
 }
 
-private fun GQLType.withListCcn(nullability: GQLNullability?): GQLType {
+private fun GQLType.withListNullability(nullability: GQLNullability?): GQLType {
   if (this is GQLListType && nullability is GQLListNullability) {
-    return copy(type = type.withCcn(nullability.itemNullability))
+    return copy(type = type.withNullability(nullability.itemNullability))
   } else if (this is GQLListType && nullability !is GQLListNullability) {
     return this
   } else if (this !is GQLListType && nullability is GQLListNullability) {
@@ -106,21 +106,21 @@ private fun GQLType.withListCcn(nullability: GQLNullability?): GQLType {
 }
 
 @ApolloExperimental
-fun GQLType.withCcn(nullability: GQLNullability?): GQLType {
+fun GQLType.withNullability(nullability: GQLNullability?): GQLType {
   val selfNullability = nullability.selfNullability()
 
   if (this is GQLNonNullType && selfNullability == null) {
-    return this.copy(type = type.withListCcn(nullability))
-  } else if (this is GQLNonNullType && selfNullability is GQLRequired) {
-    return this.copy(type = type.withListCcn(nullability))
-  } else if (this is GQLNonNullType && selfNullability is GQLOptional) {
-    return this.type.withListCcn(nullability)
+    return this.copy(type = type.withListNullability(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
+    return this.copy(type = type.withListNullability(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLNullDesignator) {
+    return this.type.withListNullability(nullability)
   } else if (this !is GQLNonNullType && selfNullability == null) {
-    return this.withListCcn(nullability)
-  } else if (this !is GQLNonNullType && selfNullability is GQLRequired) {
-    return GQLNonNullType(type = this.withListCcn(nullability))
-  } else if (this !is GQLNonNullType && selfNullability is GQLOptional) {
-    return this.withListCcn(nullability)
+    return this.withListNullability(nullability)
+  } else if (this !is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
+    return GQLNonNullType(type = this.withListNullability(nullability))
+  } else if (this !is GQLNonNullType && selfNullability is GQLNullDesignator) {
+    return this.withListNullability(nullability)
   } else {
     error("")
   }

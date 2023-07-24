@@ -113,7 +113,7 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.parseAsGQLDocument(options = ParserOptions(useAntlr = useAntlr))
+      val parseResult = file.parseAsGQLDocument(options = ParserOptions.Builder().useAntlr(useAntlr).build())
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {

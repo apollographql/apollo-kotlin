@@ -86,16 +86,48 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
   }
 }
 
-class ParserOptions(
+class ParserOptions private constructor(
     @Deprecated("This is used as a fallback the time to stabilize the new parser but will be removed")
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    val useAntlr: Boolean = false,
-    val allowEmptyDocuments: Boolean = true,
-    val allowClientControlledNullability: Boolean = true,
-    val withSourceLocation: Boolean = true,
+    val useAntlr: Boolean,
+    val allowEmptyDocuments: Boolean,
+    val allowClientControlledNullability: Boolean,
+    val withSourceLocation: Boolean,
 ) {
+  class Builder {
+    var useAntlr: Boolean = false
+    var allowEmptyDocuments = true
+    var allowClientControlledNullability = true
+    var withSourceLocation = true
+
+    fun useAntlr(useAntlr: Boolean) = apply {
+      this.useAntlr = useAntlr
+    }
+
+    fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
+      this.allowEmptyDocuments = allowEmptyDocuments
+    }
+
+    fun allowClientControlledNullability(allowClientControlledNullability: Boolean) = apply {
+      this.allowClientControlledNullability = allowClientControlledNullability
+    }
+
+    fun withSourceLocation(withSourceLocation: Boolean) = apply {
+      this.withSourceLocation = withSourceLocation
+    }
+
+    fun build(): ParserOptions {
+      return ParserOptions(
+          useAntlr = useAntlr,
+          allowEmptyDocuments = allowEmptyDocuments,
+          allowClientControlledNullability = allowClientControlledNullability,
+          withSourceLocation = withSourceLocation
+      )
+    }
+  }
+
   companion object {
-    val Default = ParserOptions()
+    val Default = Builder().build()
   }
 }
 
@@ -112,6 +144,7 @@ fun String.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): G
     parseInternal(null, options) { parseDocument() }
   }
 }
+
 fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
   @Suppress("DEPRECATION")
   return if (options.useAntlr) {
@@ -120,6 +153,7 @@ fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLR
     parseInternal(null, options) { parseValue() }
   }
 }
+
 fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
   @Suppress("DEPRECATION")
   return if (options.useAntlr) {
@@ -128,6 +162,7 @@ fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLRe
     parseInternal(null, options) { parseType() }
   }
 }
+
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
   @Suppress("DEPRECATION")
   return if (options.useAntlr) {

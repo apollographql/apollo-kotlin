@@ -23,8 +23,8 @@ import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLOptional
-import com.apollographql.apollo3.ast.GQLRequired
+import com.apollographql.apollo3.ast.GQLNullDesignator
+import com.apollographql.apollo3.ast.GQLNonNullDesignator
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
@@ -44,7 +44,7 @@ import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
-import com.apollographql.apollo3.ast.withCcn
+import com.apollographql.apollo3.ast.withNullability
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
@@ -247,8 +247,8 @@ internal class ExecutableValidationScope(
   private fun GQLNullability.listDimension(): Int {
     return when (this) {
       is GQLListNullability -> 1 + this.itemNullability.listDimension()
-      is GQLOptional -> 0
-      is GQLRequired -> 0
+      is GQLNullDesignator -> 0
+      is GQLNonNullDesignator -> 0
     }
   }
 
@@ -517,8 +517,8 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withCcn(fieldA.nullability)
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withCcn(fieldB.nullability)
+    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withNullability(fieldA.nullability)
+    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withNullability(fieldB.nullability)
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return

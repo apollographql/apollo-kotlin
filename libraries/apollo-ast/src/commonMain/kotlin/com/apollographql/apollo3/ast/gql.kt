@@ -1499,7 +1499,7 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 sealed interface GQLNullability : GQLNode
 
 @ApolloExperimental
-class GQLRequired(override val sourceLocation: SourceLocation? = null) : GQLNullability {
+class GQLNonNullDesignator(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 
@@ -1513,7 +1513,7 @@ class GQLRequired(override val sourceLocation: SourceLocation? = null) : GQLNull
 }
 
 @ApolloExperimental
-class GQLOptional(override val sourceLocation: SourceLocation? = null) : GQLNullability {
+class GQLNullDesignator(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
 

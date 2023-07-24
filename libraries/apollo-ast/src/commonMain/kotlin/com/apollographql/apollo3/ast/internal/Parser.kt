@@ -215,12 +215,11 @@ internal class Parser(
     }
 
     val arguments = parseArguments(const = false)
-    val directives = parseDirectives(const = false)
     var nullability: GQLNullability? = null
-
     if (allowClientControlledNullability) {
       nullability = parseNullability()
     }
+    val directives = parseDirectives(const = false)
 
     val selections = parseOptionalSelectionSet()
     return GQLField(
@@ -239,13 +238,13 @@ internal class Parser(
       is Token.ExclamationPoint -> {
         val sourceLocation = sourceLocation()
         advance()
-        GQLRequired(sourceLocation)
+        GQLNonNullDesignator(sourceLocation)
       }
 
       is Token.QuestionMark -> {
         val sourceLocation = sourceLocation()
         advance()
-        GQLOptional(sourceLocation)
+        GQLNullDesignator(sourceLocation)
       }
 
       else -> {

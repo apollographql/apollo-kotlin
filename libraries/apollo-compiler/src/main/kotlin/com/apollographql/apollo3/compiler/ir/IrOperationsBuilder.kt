@@ -43,7 +43,7 @@ import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.ast.withCcn
+import com.apollographql.apollo3.ast.withNullability
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -525,7 +525,7 @@ internal class IrOperationsBuilder(
        */
       usedFields.putType(first.type.rawType().name)
 
-      var irType = first.type.withCcn(first.nullability).toIr()
+      var irType = first.type.withNullability(first.nullability).toIr()
       if (forceNonNull) {
         irType = irType.makeNonNull()
       } else if (forceOptional) {
