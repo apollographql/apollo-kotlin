@@ -2,9 +2,9 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.internal.ChannelWrapper
 import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -25,7 +25,7 @@ actual class DefaultWebSocketEngine(
       url: String,
       headers: List<HttpHeader>,
   ): WebSocketConnection {
-    val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
+    val messageChannel = Channel<String>(Channel.UNLIMITED)
     val webSocketOpenResult = CompletableDeferred<Unit>()
 
     //println("opening $url")
@@ -71,7 +71,8 @@ actual class DefaultWebSocketEngine(
 
     webSocketOpenResult.await()
 
-    messageChannel.setInvokeOnClose {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    messageChannel.invokeOnClose {
       // I think this is not necessary. The caller must call [WebSocketConnection.close] in all cases.
       // This should either trigger onClose or onFailure which should close the messageChannel
       //
