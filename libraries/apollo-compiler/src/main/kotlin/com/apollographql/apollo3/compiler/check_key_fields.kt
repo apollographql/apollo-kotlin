@@ -1,4 +1,18 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.compiler
+
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.rawType
+import com.apollographql.apollo3.ast.rootTypeDefinition
 
 private class CheckKeyFieldsScope(
     val schema: Schema,
@@ -15,12 +29,12 @@ private class CheckKeyFieldsScope(
   }
 }
 
-fun checkKeyFields(operation: GQLOperationDefinition, schema: Schema, allFragmentDefinitions: Map<String, GQLFragmentDefinition>) {
+internal fun checkKeyFields(operation: GQLOperationDefinition, schema: Schema, allFragmentDefinitions: Map<String, GQLFragmentDefinition>) {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Operation(${operation.name})", operation.selections, parentType)
 }
 
-fun checkKeyFields(
+internal fun checkKeyFields(
     fragmentDefinition: GQLFragmentDefinition,
     schema: Schema,
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
