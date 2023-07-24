@@ -37,11 +37,22 @@ kotlin {
         implementation(libs.antlr.runtime)
       }
     }
+    getByName("jvmTest") {
+      dependencies {
+        implementation(libs.google.testparameterinjector)
+      }
+    }
   }
 }
 
 dependencies {
   antlr(libs.antlr)
+}
+
+tasks.named("jvmTest") {
+  inputs.dir("test-fixtures/parser")
+      .withPropertyName("testFixtures")
+      .withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
 // Only expose the antlr runtime dependency

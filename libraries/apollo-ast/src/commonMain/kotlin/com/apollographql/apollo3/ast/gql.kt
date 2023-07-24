@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 
 /**
  * The GraphQL AST definition
@@ -131,7 +132,7 @@ class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
 ) : GQLNode {
-  constructor(definitions: List<GQLDefinition>, filePath: String?): this(definitions, SourceLocation.forPath(filePath))
+  constructor(definitions: List<GQLDefinition>, filePath: String?) : this(definitions, SourceLocation.forPath(filePath))
 
   override val children = definitions
 
@@ -1493,14 +1494,94 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
   join(writer, prefix = "(", separator = ", ", postfix = ")")
 }
 
-class GQLField(
+
+@ApolloExperimental
+sealed interface GQLNullability : GQLNode
+
+@ApolloExperimental
+class GQLNonNullDesignator(override val sourceLocation: SourceLocation? = null) : GQLNullability {
+  override val children: List<GQLNode>
+    get() = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("!")
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return this
+  }
+}
+
+@ApolloExperimental
+class GQLNullDesignator(override val sourceLocation: SourceLocation? = null) : GQLNullability {
+  override val children: List<GQLNode>
+    get() = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("?")
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return this
+  }
+}
+
+@ApolloExperimental
+class GQLListNullability(
+    override val sourceLocation: SourceLocation? = null,
+    val itemNullability: GQLNullability,
+    val selfNullability: GQLNullability?,
+) : GQLNullability {
+  override val children: List<GQLNode>
+    get() = listOf(itemNullability)
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("[")
+    writer.write(itemNullability)
+    writer.write("]")
+    if (selfNullability != null) {
+      writer.write(selfNullability)
+    }
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        ofNullability = container.takeSingle()!!
+    )
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      ofNullability: GQLNullability = this.itemNullability,
+      selfNullability: GQLNullability? = this.selfNullability,
+  ): GQLListNullability {
+    return GQLListNullability(
+        sourceLocation,
+        ofNullability,
+        selfNullability
+    )
+  }
+}
+
+class GQLField @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
     val name: String,
     val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
+    @property:ApolloExperimental
+    val nullability: GQLNullability?,
 ) : GQLSelection() {
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      alias: String?,
+      name: String,
+      arguments: List<GQLArgument>,
+      directives: List<GQLDirective>,
+      selections: List<GQLSelection>,
+  ) : this(sourceLocation, alias, name, arguments, directives, selections, null)
+
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -1527,6 +1608,9 @@ class GQLField(
         write(" ")
         directives.join(writer)
       }
+      if (nullability != null) {
+        writer.write(nullability)
+      }
       if (selections.isNotEmpty()) {
         write(" ")
         selections.writeSelections(writer)
@@ -1550,6 +1634,23 @@ class GQLField(
       arguments = arguments,
       directives = directives,
       selections = selections,
+      nullability = this.nullability
+  )
+
+  /**
+   * This is in a separate method from the copy() above so that we can more easily remove it if we need to
+   */
+  @ApolloExperimental
+  fun copy(
+      nullability: GQLNullability?,
+  ) = GQLField(
+      sourceLocation = sourceLocation,
+      alias = alias,
+      name = name,
+      arguments = arguments,
+      directives = directives,
+      selections = selections,
+      nullability = nullability
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {

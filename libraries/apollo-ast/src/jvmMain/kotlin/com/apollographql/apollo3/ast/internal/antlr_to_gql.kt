@@ -300,7 +300,8 @@ private class AntlrToGQLScope(val filePath: String?) {
         name = name().text,
         arguments = arguments()?.parse()?.arguments.orEmpty(),
         directives = directives().parse(),
-        selections = selectionSet()?.parse()?.selections.orEmpty()
+        selections = selectionSet()?.parse()?.selections.orEmpty(),
+        nullability = null
     )
   }
 

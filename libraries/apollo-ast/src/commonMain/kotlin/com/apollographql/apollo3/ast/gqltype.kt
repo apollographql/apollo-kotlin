@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
 fun GQLType.leafType(): GQLNamedType = rawType()
 
@@ -79,5 +81,47 @@ internal fun GQLType.isOutputType(typeDefinitions: Map<String, GQLTypeDefinition
         || it is GQLInterfaceTypeDefinition
         || it is GQLScalarTypeDefinition
         || it is GQLEnumTypeDefinition
+  }
+}
+
+private fun GQLNullability?.selfNullability(): GQLNullability? {
+  return when (this) {
+    is GQLListNullability -> this.selfNullability
+    else -> this
+  }
+}
+
+private fun GQLType.withListNullability(nullability: GQLNullability?): GQLType {
+  if (this is GQLListType && nullability is GQLListNullability) {
+    return copy(type = type.withNullability(nullability.itemNullability))
+  } else if (this is GQLListType && nullability !is GQLListNullability) {
+    return this
+  } else if (this !is GQLListType && nullability is GQLListNullability) {
+    return this
+  } else if (this !is GQLListType && nullability !is GQLListNullability) {
+    return this
+  } else {
+    error("")
+  }
+}
+
+@ApolloExperimental
+fun GQLType.withNullability(nullability: GQLNullability?): GQLType {
+  val selfNullability = nullability.selfNullability()
+
+  if (this is GQLNonNullType && selfNullability == null) {
+    return this.copy(type = type.withListNullability(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
+    return this.copy(type = type.withListNullability(nullability))
+  } else if (this is GQLNonNullType && selfNullability is GQLNullDesignator) {
+    return this.type.withListNullability(nullability)
+  } else if (this !is GQLNonNullType && selfNullability == null) {
+    return this.withListNullability(nullability)
+  } else if (this !is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
+    return GQLNonNullType(type = this.withListNullability(nullability))
+  } else if (this !is GQLNonNullType && selfNullability is GQLNullDesignator) {
+    return this.withListNullability(nullability)
+  } else {
+    error("")
   }
 }

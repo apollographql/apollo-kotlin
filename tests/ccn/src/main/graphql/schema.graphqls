@@ -1,0 +1,14 @@
+type Query {
+  nullable: Int
+  nonNullable: Int!
+  deep: [[[Int]]]
+  user: User
+}
+
+type User {
+  name: String!
+  friends: [User!]!
+  enemies: [User]
+}
+
+

@@ -19,6 +19,10 @@ internal sealed class Token(val start: kotlin.Int, val end: kotlin.Int, val line
     override fun toString() = "!"
   }
 
+  class QuestionMark(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
+    override fun toString() = "?"
+  }
+
   class Dollar(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
     override fun toString() = "$"
   }
