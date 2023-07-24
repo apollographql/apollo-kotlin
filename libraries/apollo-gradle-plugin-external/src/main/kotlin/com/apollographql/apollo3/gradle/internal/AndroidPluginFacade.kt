@@ -4,7 +4,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
@@ -47,13 +46,11 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
     else -> error("Unsupported extension: $extension")
   }
 
-  if (extension is TestedExtension) {
-    extension.testVariants.all { variant ->
-      container.add(variant)
-    }
-    extension.unitTestVariants.all { variant ->
-      container.add(variant)
-    }
+  extension.testVariants.all { variant ->
+    container.add(variant)
+  }
+  extension.unitTestVariants.all { variant ->
+    container.add(variant)
   }
   return container
 }
