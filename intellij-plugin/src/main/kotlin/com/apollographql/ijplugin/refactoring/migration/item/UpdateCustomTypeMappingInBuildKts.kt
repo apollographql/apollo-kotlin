@@ -1,7 +1,5 @@
-package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
+package com.apollographql.ijplugin.refactoring.migration.item
 
-import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
-import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.util.addSiblingAfter
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.unquoted
@@ -27,25 +25,35 @@ object UpdateCustomTypeMappingInBuildKts : MigrationItem() {
       file.accept(object : KtTreeVisitorVoid() {
         override fun visitReferenceExpression(expression: KtReferenceExpression) {
           super.visitReferenceExpression(expression)
-          if (expression.text == "customTypeMapping") {
+          if (expression.text == "customTypeMapping" || expression.text == "customScalarsMapping") {
             // `customTypeMapping.set(mapOf(...))`
             val qualifiedExpression = expression.parent as? KtQualifiedExpression ?: return
             // `set(mapOf(...))`
             val setCallExpression = qualifiedExpression.selectorExpression
-                ?.findDescendantOfType<KtCallExpression> { it.calleeExpression?.text == "set" } ?: return
-            // `mapOf(...)`
-            val mapOfCallExpression = setCallExpression.valueArguments.firstOrNull()
-                ?.findDescendantOfType<KtCallExpression> { it.calleeExpression?.text == "mapOf" } ?: return
+                ?.findDescendantOfType<KtCallExpression> { it.calleeExpression?.text == "set" }
+            if (setCallExpression != null) {
+              // `mapOf(...)`
+              val mapOfCallExpression = setCallExpression.valueArguments.firstOrNull()
+                  ?.findDescendantOfType<KtCallExpression> { it.calleeExpression?.text == "mapOf" } ?: return
 
-            @Suppress("UNCHECKED_CAST")
-            val map: Map<String, String> = mapOfCallExpression.valueArguments.associate { argument ->
-              val binaryExpression = argument.getArgumentExpression() as? KtBinaryExpression ?: return@associate null to null
-              val key = binaryExpression.left?.text?.unquoted()
-              val value = binaryExpression.right?.text?.unquoted()
-              key to value
+              @Suppress("UNCHECKED_CAST")
+              val map: Map<String, String> = mapOfCallExpression.valueArguments.associate { argument ->
+                val binaryExpression = argument.getArgumentExpression() as? KtBinaryExpression ?: return@associate null to null
+                val key = binaryExpression.left?.text?.unquoted()
+                val value = binaryExpression.right?.text?.unquoted()
+                key to value
+              }
+                  .filterNot { it.key == null || it.value == null } as Map<String, String>
+              usages.add(MigrationItemUsageInfo(this@UpdateCustomTypeMappingInBuildKts, qualifiedExpression, map))
+              return
             }
-                .filterNot { it.key == null || it.value == null } as Map<String, String>
-            usages.add(MigrationItemUsageInfo(this@UpdateCustomTypeMappingInBuildKts, qualifiedExpression, map))
+
+            // `put("LocalDate", "java.time.LocalDate")`
+            val putCallExpression = qualifiedExpression.selectorExpression
+                ?.findDescendantOfType<KtCallExpression> { it.calleeExpression?.text == "put" } ?: return
+            val key = putCallExpression.valueArguments.getOrNull(0)?.text?.unquoted()?: return
+            val value = putCallExpression.valueArguments.getOrNull(1)?.text?.unquoted()?: return
+            usages.add(MigrationItemUsageInfo(this@UpdateCustomTypeMappingInBuildKts, qualifiedExpression, mapOf(key to  value)))
           }
         }
       })
