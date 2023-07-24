@@ -14,11 +14,6 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static final fun toSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/Schema;
 }
 
-public final class com/apollographql/apollo3/ast/Check_key_fieldsKt {
-	public static final fun checkKeyFields (Lcom/apollographql/apollo3/ast/GQLFragmentDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
-	public static final fun checkKeyFields (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
-}
-
 public final class com/apollographql/apollo3/ast/ConversionException : com/apollographql/apollo3/ast/SourceAwareException {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1504,11 +1499,6 @@ public final class com/apollographql/apollo3/ast/introspection/Introspection_to_
 
 public final class com/apollographql/apollo3/ast/introspection/Schema_to_introspectionKt {
 	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
-}
-
-public final class com/apollographql/apollo3/ast/transformation/Add_required_fieldsKt {
-	public static final fun addRequiredFields (Lcom/apollographql/apollo3/ast/GQLFragmentDefinition;Ljava/lang/String;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)Lcom/apollographql/apollo3/ast/GQLFragmentDefinition;
-	public static final fun addRequiredFields (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Ljava/lang/String;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)Lcom/apollographql/apollo3/ast/GQLOperationDefinition;
 }
 
 public class com/apollographql/apollo3/generated/antlr/GraphQLBaseListener : com/apollographql/apollo3/generated/antlr/GraphQLListener {
