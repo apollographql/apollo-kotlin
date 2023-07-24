@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
+import commonSetup
 import configureJavaAndKotlinCompilers
 import configureMppDefaults
 import configurePublishing
@@ -19,6 +20,7 @@ class LibraryConventionPlugin : Plugin<Project> {
       group = property("GROUP")!!
       version = property("VERSION_NAME")!!
 
+      commonSetup()
       extensions.create("apolloLibrary", Extension::class.java, project)
 
       configureJavaAndKotlinCompilers()
