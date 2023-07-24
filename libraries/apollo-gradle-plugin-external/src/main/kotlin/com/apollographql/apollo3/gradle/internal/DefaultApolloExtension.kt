@@ -234,7 +234,7 @@ abstract class DefaultApolloExtension(
     }
 
     codegenOnGradleSyncConfigured = true
-    if (this.generateSourcesDuringGradleSync.getOrElse(true)) {
+    if (this.generateSourcesDuringGradleSync.getOrElse(false)) {
       project.tasks.maybeCreate("prepareKotlinIdeaImport").dependsOn(generateApolloSources)
     }
   }
