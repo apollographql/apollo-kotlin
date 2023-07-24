@@ -12,6 +12,8 @@ plugins {
   id("maven-publish")
 }
 
+commonSetup()
+
 // XXX: this should use the settings repositories instead
 repositories {
   // Uncomment this one to use the Kotlin "dev" repository

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
+import commonSetup
 import configureJavaAndKotlinCompilers
 import configureMppTestsDefaults
 import configureTesting
@@ -16,6 +17,7 @@ class TestConventionPlugin : Plugin<Project> {
     with(project) {
       extensions.create("apolloTest", Extension::class.java)
 
+      commonSetup()
       configureJavaAndKotlinCompilers()
       optIn(
           "com.apollographql.apollo3.annotations.ApolloExperimental",
