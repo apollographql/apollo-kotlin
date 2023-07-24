@@ -1495,8 +1495,10 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 }
 
 
+@ApolloExperimental
 sealed interface GQLNullability : GQLNode
 
+@ApolloExperimental
 class GQLRequired(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
@@ -1510,6 +1512,7 @@ class GQLRequired(override val sourceLocation: SourceLocation? = null) : GQLNull
   }
 }
 
+@ApolloExperimental
 class GQLOptional(override val sourceLocation: SourceLocation? = null) : GQLNullability {
   override val children: List<GQLNode>
     get() = emptyList()
@@ -1523,6 +1526,7 @@ class GQLOptional(override val sourceLocation: SourceLocation? = null) : GQLNull
   }
 }
 
+@ApolloExperimental
 class GQLListNullability(
     override val sourceLocation: SourceLocation? = null,
     val itemNullability: GQLNullability,
@@ -1566,6 +1570,7 @@ class GQLField @ApolloExperimental constructor(
     val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
+    @property:ApolloExperimental
     val nullability: GQLNullability?,
 ) : GQLSelection() {
   constructor(
@@ -1614,6 +1619,23 @@ class GQLField @ApolloExperimental constructor(
       }
     }
   }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      alias: String? = this.alias,
+      name: String = this.name,
+      arguments: List<GQLArgument> = this.arguments,
+      directives: List<GQLDirective> = this.directives,
+      selections: List<GQLSelection> = this.selections,
+  ) = GQLField(
+      sourceLocation = sourceLocation,
+      alias = alias,
+      name = name,
+      arguments = arguments,
+      directives = directives,
+      selections = selections,
+      nullability = null
+  )
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
