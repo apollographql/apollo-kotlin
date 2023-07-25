@@ -25,7 +25,7 @@ fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
       // val majorMinor = project.getKotlinPluginVersion()!!.take(3)
       TargetLanguage.KOTLIN_1_5
     }
-    else -> error("Apollo: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
+    else -> error("Apollo: languageVersion '$userSpecified' is not supported, Apollo Kotlin always generate Kotlin '1.5' source files")
   }
 }
 
