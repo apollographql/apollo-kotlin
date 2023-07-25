@@ -71,4 +71,6 @@ suspend fun test() {
 
   val diskLruHttpCache: DiskLruHttpCache? = null
   diskLruHttpCache!!.delete()
+
+  languageVersion.set("1.4")
 }
