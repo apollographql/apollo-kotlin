@@ -1,13 +1,12 @@
-package com.apollographql.apollo3.graphql.ast.test.keyfields
+package com.apollographql.apollo3.compiler.keyfields
 
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.graphql.ast.test.CWD
+import com.apollographql.apollo3.compiler.addRequiredFields
+import com.apollographql.apollo3.compiler.checkKeyFields
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -18,9 +17,9 @@ import kotlin.test.fail
 class KeyFieldsTest {
   @Test
   fun testAddRequiredFields() {
-    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/schema.graphqls".toPath().toSchema()
+    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/schema.graphqls".toPath().toSchema()
 
-    val definitions = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/operations.graphql".toPath()
+    val definitions = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/operations.graphql".toPath()
         .parseAsGQLDocument()
         .getOrThrow()
         .definitions
@@ -44,20 +43,20 @@ class KeyFieldsTest {
 
   @Test
   fun testExtendInterfaceTypePolicyDirective() {
-    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls".toPath().toSchema()
+    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/extendsSchema.graphqls".toPath().toSchema()
     schema.toGQLDocument().validateAsSchema()
     assertEquals(setOf("id"), schema.keyFields("Node"))
   }
 
   @Test
   fun testExtendUnionTypePolicyDirective() {
-    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/extendsSchema.graphqls".toPath().toSchema()
+    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/extendsSchema.graphqls".toPath().toSchema()
     assertEquals(setOf("x"), schema.keyFields("Foo"))
   }
 
   @Test
   fun testObjectWithTypePolicyAndInterfaceTypePolicyErrors() {
-    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
+    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
@@ -73,7 +72,7 @@ class KeyFieldsTest {
 
   @Test
   fun testObjectInheritingTwoInterfacesWithDifferentKeyFields() {
-    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/objectInheritingTwoInterfaces.graphqls"
+    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/objectInheritingTwoInterfaces.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
@@ -95,7 +94,7 @@ class KeyFieldsTest {
 
   @Test
   fun testInterfacesWithoutKeyFields() {
-    "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/keyfields/interfacesWithoutKeyFields.graphqls"
+    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/interfacesWithoutKeyFields.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
