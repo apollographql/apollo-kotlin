@@ -31,7 +31,7 @@ class RemoveFieldInService(
               override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
                 super.visitDotQualifiedExpression(expression)
                 if (expression.receiverExpression.cast<KtNameReferenceExpression>()?.getReferencedName() == fieldName) {
-                  usages.add(expression.receiverExpression.toMigrationItemUsageInfo())
+                  usages.add(expression.toMigrationItemUsageInfo())
                 }
               }
             })
