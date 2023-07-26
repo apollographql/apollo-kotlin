@@ -12,6 +12,7 @@ import com.intellij.psi.PsiMigration
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.AllClassesSearch
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
@@ -95,4 +96,8 @@ fun findInheritorsOfClass(project: Project, className: String): Collection<PsiCl
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   // Using allScope for the search so all inheritors are found even if some of them are not in the project
   return ClassInheritorsSearch.search(psiLookupClass, GlobalSearchScope.allScope(project), true).toList()
+}
+
+fun findAllClasses(project: Project): Collection<PsiClass> {
+  return AllClassesSearch.search(GlobalSearchScope.projectScope(project), project).findAll()
 }

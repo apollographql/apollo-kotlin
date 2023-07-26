@@ -31,7 +31,7 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
   fun testUpdateGradleDependenciesInLibsVersionsToml() = runMigration(extension = "versions.toml", fileNameInProject = "libs.versions.toml")
 
   @Test
-  fun deprecations() = runMigration()
+  fun testDeprecations() = runMigration()
 
   @Test
   fun testEncloseInService() = runMigration(extension = "gradle.kts", fileNameInProject = "build.gradle.kts")
@@ -44,6 +44,9 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
 
   @Test
   fun testMultiModule() = runMigration(extension = "gradle.kts", fileNameInProject = "build.gradle.kts")
+
+  @Test
+  fun testUpdateEnumClassUpperCase() = runMigration()
 
   private fun runMigration(extension: String = "kt", fileNameInProject: String? = null) {
     val fileBaseName = getTestName(true)
