@@ -1,10 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
-import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
@@ -81,7 +79,7 @@ internal class ModelBuilder(
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(simpleName)
           // All interfaces can be sealed except if implementations exist in different packages (not allowed in Kotlin)
-          .applyIf(context.isTargetLanguageVersionAtLeast(KOTLIN_1_5) && hasSubclassesInSamePackage) {
+          .applyIf(hasSubclassesInSamePackage) {
             addModifiers(KModifier.SEALED)
           }
           .addProperties(properties)
