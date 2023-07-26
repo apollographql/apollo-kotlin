@@ -16,6 +16,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
@@ -73,6 +74,8 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       RemoveWatchMethodArguments,
       ConstructorInsteadOfBuilder("$apollo3.cache.normalized.api.CacheKey.Companion", "from"),
       UpdateWebSocketReconnectWhen,
+
+      UpdateEnumClassUpperCase,
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
