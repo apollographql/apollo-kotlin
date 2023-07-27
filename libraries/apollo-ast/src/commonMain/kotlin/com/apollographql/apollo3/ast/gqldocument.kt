@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.apollo_v0_1_definitionsStr
 import com.apollographql.apollo3.ast.internal.apollo_v0_2_definitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
@@ -123,6 +124,7 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
  *
  * See https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
  */
+@ApolloExperimental
 fun GQLDocument.toSDL(indent: String = "  "): String {
   return this.copy(
       definitions = definitions.filter {
