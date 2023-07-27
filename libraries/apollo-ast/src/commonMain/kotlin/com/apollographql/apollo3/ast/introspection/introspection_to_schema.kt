@@ -315,10 +315,6 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
 /**
  * Parses the [IntrospectionSchema] into a [GQLDocument]
- *
- * The returned [GQLDocument] does not contain any of the builtin definitions (scalars, directives, introspection)
- *
- * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
  */
 @ApolloExperimental
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
