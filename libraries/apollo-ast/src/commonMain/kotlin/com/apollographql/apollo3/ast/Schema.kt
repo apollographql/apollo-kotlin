@@ -2,7 +2,6 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
-import okio.Buffer
 
 /**
  * A wrapper around a schema [GQLDocument] that ensures the [GQLDocument] is valid and caches
@@ -49,7 +48,7 @@ class Schema internal constructor(
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = definitions,
       filePath = null
-  ).withoutBuiltinDefinitions()
+  )
 
   /**
    * @param name the current name of the directive (like "kotlin_labs__nonnull")
@@ -131,7 +130,7 @@ class Schema internal constructor(
   @ApolloInternal
   fun toMap(): Map<String, Any> {
     return mapOf(
-        "sdl" to GQLDocument(definitions, sourceLocation = null).toUtf8(),
+        "sdl" to GQLDocument(definitions, sourceLocation = null).toSDL(),
         "keyFields" to keyFields.mapValues { it.value.toList().sorted() },
         "foreignNames" to foreignNames,
         "directivesToStrip" to directivesToStrip,
@@ -217,7 +216,7 @@ class Schema internal constructor(
     @ApolloInternal
     fun fromMap(map: Map<String, Any>): Schema {
       return Schema(
-          definitions = (map["sdl"] as String).parseAsGQLDocument().getOrThrow().definitions,
+          definitions = combineDefinitions((map["sdl"] as String).parseAsGQLDocument().getOrThrow().definitions, builtinDefinitions(), ConflictResolution.TakeLeft),
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
           foreignNames = map["foreignNames"]!! as Map<String, String>,
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
