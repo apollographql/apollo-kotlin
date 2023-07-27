@@ -133,9 +133,13 @@
 
   </extensions>
 
-  <!-- Contribute configuration to the GraphQL plugin -->
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
+    <!-- Contribute configuration to the GraphQL plugin -->
     <configContributor implementation="com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor" />
+
+    <!-- Suppress redefinition errors for built-in GraphQL types/directives. -->
+    <!-- TODO: remove this once https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665 is fixed -->
+    <errorFilter implementation="com.apollographql.ijplugin.graphql.BuiltInRedefinitionErrorFilter" />
   </extensions>
 
   <applicationListeners>
