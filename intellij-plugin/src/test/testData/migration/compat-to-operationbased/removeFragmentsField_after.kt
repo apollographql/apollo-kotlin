@@ -57,15 +57,16 @@ suspend fun main() {
   val id2 = data.launches.launches[0]!!.apply { launchFields.id }
   val id3 = data.launches.launches[0]?.launchFields.id
 
+  //@formatter:off
   val launch = MyQuery.Launch(
       __typename = "Launch",
-      launchFields = LaunchFields(
-          id = "id",
-          site = "site",
-          mission = LaunchFields.Mission(
-              name = "name",
-              missionPatch = "missionPatch",
+          launchFields = LaunchFields(
+              id = "id",
+              site = "site",
+              mission = LaunchFields.Mission(
+                  name = "name",
+                  missionPatch = "missionPatch",
+              ),
           ),
-      ),
   )
 }
