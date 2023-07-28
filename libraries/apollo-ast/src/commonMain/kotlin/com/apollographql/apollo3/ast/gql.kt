@@ -296,10 +296,10 @@ class GQLFragmentDefinition(
 
 class GQLSchemaDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val description: String?,
+    override val description: String?,
     val directives: List<GQLDirective>,
     val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>,
-) : GQLDefinition {
+) : GQLDefinition, GQLDescribed {
 
   override val children = directives + rootOperationTypeDefinitions
 
@@ -672,12 +672,12 @@ class GQLUnionTypeDefinition(
 
 class GQLDirectiveDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val description: String?,
+    override val description: String?,
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val repeatable: Boolean,
     val locations: List<GQLDirectiveLocation>,
-) : GQLDefinition, GQLNamed {
+) : GQLDefinition, GQLDescribed, GQLNamed {
   override val children: List<GQLNode> = arguments
 
   override fun writeInternal(writer: SDLWriter) {
@@ -1055,10 +1055,10 @@ class GQLUnionTypeExtension(
 
 class GQLEnumValueDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val description: String?,
+    override val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
-) : GQLNode, GQLNamed {
+) : GQLNode, GQLDescribed, GQLNamed {
 
   override val children = directives
 
@@ -1097,12 +1097,12 @@ class GQLEnumValueDefinition(
 
 class GQLFieldDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val description: String?,
+    override val description: String?,
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val type: GQLType,
     val directives: List<GQLDirective>,
-) : GQLNode, GQLNamed {
+) : GQLNode, GQLDescribed, GQLNamed {
 
   override val children: List<GQLNode> = directives + arguments
 
@@ -1152,12 +1152,12 @@ class GQLFieldDefinition(
 
 class GQLInputValueDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val description: String?,
+    override val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
     val type: GQLType,
     val defaultValue: GQLValue?,
-) : GQLNode, GQLNamed {
+) : GQLNode, GQLDescribed, GQLNamed {
 
   override val children = directives
 
@@ -1226,11 +1226,11 @@ class GQLInputValueDefinition(
  */
 class GQLVariableDefinition(
     override val sourceLocation: SourceLocation? = null,
-    val name: String,
+    override val name: String,
     val type: GQLType,
     val defaultValue: GQLValue?,
     val directives: List<GQLDirective>,
-) : GQLNode {
+) : GQLNode, GQLNamed {
 
   override val children = listOfNotNull(defaultValue) + directives
 
@@ -1348,9 +1348,9 @@ class GQLDirective(
 
 class GQLObjectField(
     override val sourceLocation: SourceLocation? = null,
-    val name: String,
+    override val name: String,
     val value: GQLValue,
-) : GQLNode {
+) : GQLNode, GQLNamed {
 
   override val children = listOf(value)
 
@@ -1382,9 +1382,9 @@ class GQLObjectField(
 
 class GQLArgument(
     override val sourceLocation: SourceLocation? = null,
-    val name: String,
+    override val name: String,
     val value: GQLValue,
-) : GQLNode {
+) : GQLNode, GQLNamed {
 
   override val children = listOf(value)
 
@@ -1566,13 +1566,13 @@ class GQLListNullability(
 class GQLField @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
-    val name: String,
+    override val name: String,
     val arguments: List<GQLArgument>,
     val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
     @property:ApolloExperimental
     val nullability: GQLNullability?,
-) : GQLSelection() {
+) : GQLSelection(), GQLNamed {
   constructor(
       sourceLocation: SourceLocation? = null,
       alias: String?,
@@ -1721,9 +1721,9 @@ class GQLInlineFragment(
 
 class GQLFragmentSpread(
     override val sourceLocation: SourceLocation? = null,
-    val name: String,
+    override val name: String,
     val directives: List<GQLDirective>,
-) : GQLSelection() {
+) : GQLSelection(), GQLNamed {
 
   override val children = directives
 
@@ -1846,8 +1846,8 @@ class GQLListType(
 sealed class GQLValue : GQLNode
 class GQLVariableValue(
     override val sourceLocation: SourceLocation? = null,
-    val name: String,
-) : GQLValue() {
+    override val name: String,
+) : GQLValue(), GQLNamed {
 
   override val children = emptyList<GQLNode>()
 
