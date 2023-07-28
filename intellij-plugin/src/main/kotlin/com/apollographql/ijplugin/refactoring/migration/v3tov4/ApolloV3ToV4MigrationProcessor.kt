@@ -13,6 +13,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDepende
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.AddUseV3ExceptionHandling
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveMethodInService
@@ -77,6 +78,9 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateWebSocketReconnectWhen,
 
       UpdateEnumClassUpperCase,
+
+      // Exception handling
+      AddUseV3ExceptionHandling,
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
