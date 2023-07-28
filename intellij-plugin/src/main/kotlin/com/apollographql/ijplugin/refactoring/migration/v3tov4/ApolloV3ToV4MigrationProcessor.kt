@@ -15,6 +15,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveMethodInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
@@ -85,6 +86,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
       UpdateFieldNameInService("generateTestBuilders", "generateDataBuilders"),
       RemoveFieldInService("languageVersion"),
+      RemoveMethodInService("testDirConnection"),
       UpdateCustomTypeMappingInBuildKts,
       UpdateMultiModuleConfiguration,
       EncloseInService,
