@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.refactoring.migration.item
 
-import com.apollographql.ijplugin.util.findPsiFilesByName
+import com.apollographql.ijplugin.util.findPsiFilesByExtension
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInspection.SuppressionUtil.createComment
 import com.intellij.openapi.project.Project
@@ -20,7 +20,7 @@ class CommentDependenciesInToml(
     private vararg val artifactId: String,
 ) : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
-    val libsVersionTomlFiles: List<PsiFile> = project.findPsiFilesByName("libs.versions.toml", searchScope)
+    val libsVersionTomlFiles: List<PsiFile> = project.findPsiFilesByExtension("versions.toml", searchScope)
     val usages = mutableListOf<MigrationItemUsageInfo>()
     for (file in libsVersionTomlFiles) {
       if (file !is TomlFile) continue

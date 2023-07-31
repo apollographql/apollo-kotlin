@@ -101,6 +101,18 @@
                      level="WARNING"
     />
 
+    <!-- "Apollo Kotlin 4 is available" (toml files) inspection -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection language="TOML"
+                     implementationClass="com.apollographql.ijplugin.inspection.Apollo4AvailableTomlInspection"
+                     groupPathKey="inspection.group.graphql"
+                     groupKey="inspection.group.graphql.apolloKotlin"
+                     key="inspection.apollo4AvailableToml.displayName"
+                     enabledByDefault="true"
+                     level="WARNING"
+                     editorAttributes="DEPRECATED_ATTRIBUTES"
+    />
+
     <!-- Unused operation inspection -->
     <!--suppress PluginXmlCapitalization -->
     <localInspection language="GraphQL"
