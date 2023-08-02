@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast.transformation
+package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -7,13 +7,12 @@ import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.isAbstract
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.rootTypeDefinition
 
-fun addRequiredFields(
+internal fun addRequiredFields(
     operation: GQLOperationDefinition,
     addTypename: String,
     schema: Schema,
@@ -25,7 +24,7 @@ fun addRequiredFields(
   )
 }
 
-fun addRequiredFields(
+internal fun addRequiredFields(
     fragmentDefinition: GQLFragmentDefinition,
     addTypename: String,
     schema: Schema,
@@ -164,6 +163,7 @@ private fun buildField(name: String): GQLField {
       selections = emptyList(),
       sourceLocation = null,
       directives = emptyList(),
-      alias = null
+      alias = null,
+      nullability = null
   )
 }

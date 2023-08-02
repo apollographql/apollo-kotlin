@@ -12,15 +12,19 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLListNullability
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLNullDesignator
+import com.apollographql.apollo3.ast.GQLNonNullDesignator
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
@@ -40,6 +44,7 @@ import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
+import com.apollographql.apollo3.ast.withNullability
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
@@ -147,7 +152,7 @@ internal class ExecutableValidationScope(
       null
     } else if (this !is GQLListType && other is GQLListType) {
       null
-    } else if (this is GQLNamedType && other is GQLNamedType){
+    } else if (this is GQLNamedType && other is GQLNamedType) {
       if (name != other.name) {
         null
       } else {
@@ -212,6 +217,18 @@ internal class ExecutableValidationScope(
       }
     }
 
+    if (nullability != null) {
+      val typeListDimension = fieldDefinition.type.listDimension()
+      val nullabilityListDimension = nullability.listDimension()
+      if (typeListDimension < nullabilityListDimension) {
+        registerIssue(
+            message = "Cannot apply nullability on '$name', the nullability list dimension exceeds the one of the field type.",
+            sourceLocation = nullability.sourceLocation
+        )
+        return
+      }
+    }
+
     directives.forEach {
       validateDirective(it, this) {
         variableUsages.add(it)
@@ -219,6 +236,21 @@ internal class ExecutableValidationScope(
     }
   }
 
+  private fun GQLType.listDimension(): Int {
+    return when (this) {
+      is GQLNonNullType -> this.type.listDimension()
+      is GQLListType -> 1 + this.type.listDimension()
+      else -> 0
+    }
+  }
+
+  private fun GQLNullability.listDimension(): Int {
+    return when (this) {
+      is GQLListNullability -> 1 + this.itemNullability.listDimension()
+      is GQLNullDesignator -> 0
+      is GQLNonNullDesignator -> 0
+    }
+  }
 
   private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val tc = typeCondition?.name ?: parentTypeDefinition.name
@@ -485,8 +517,8 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type
+    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withNullability(fieldA.nullability)
+    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withNullability(fieldB.nullability)
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return
@@ -603,6 +635,7 @@ internal class ExecutableValidationScope(
         }
         true
       }
+
       is GQLObjectValue -> {
         if (valueB !is GQLObjectValue) {
           return false
@@ -618,6 +651,7 @@ internal class ExecutableValidationScope(
         }
         true
       }
+
       is GQLVariableValue -> (valueB as? GQLVariableValue)?.name == valueA.name
     }
   }
@@ -726,6 +760,7 @@ internal class ExecutableValidationScope(
           // if it is, we just skip this field and let other validation report the error
           typeDefinition?.let { FieldWithParent(selection, it) }
         }
+
         is GQLInlineFragment -> selection.collectFields(parentType)
         is GQLFragmentSpread -> selection.collectFields()
       }

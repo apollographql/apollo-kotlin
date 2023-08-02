@@ -12,12 +12,10 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
-import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
@@ -113,7 +111,7 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.parseAsGQLDocument(options = ParserOptions(useAntlr = useAntlr))
+      val parseResult = file.parseAsGQLDocument(options = ParserOptions.Builder().useAntlr(useAntlr).build())
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {

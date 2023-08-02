@@ -1,0 +1,15 @@
+query Get1 {
+  nullable!
+  nonNullable?
+}
+
+query GetList {
+  user {
+    friends[?] {
+      name
+    }
+    enemies[!]! {
+      name
+    }
+  }
+}

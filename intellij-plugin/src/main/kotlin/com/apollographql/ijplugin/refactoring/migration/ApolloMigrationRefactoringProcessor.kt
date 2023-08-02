@@ -84,10 +84,12 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
       val usageInfos = migrationItems
           .flatMap { migrationItem ->
             migrationItem.findUsages(myProject, migration!!, searchScope)
-                .filterNot { usageInfo ->
+                .filter { usageInfo ->
                   // Filter out all generated code usages. We don't want generated code to come up in findUsages.
-                  // TODO: how to mark Apollo generated code as generated per this method?
-                  usageInfo.virtualFile?.isGenerated(myProject) == true
+                  usageInfo.virtualFile?.isGenerated(myProject) != true //&&
+
+                  // Also filter out usages outside of projects (see https://youtrack.jetbrains.com/issue/KTIJ-26411)
+                  usageInfo.virtualFile?.let { searchScope.contains(it) } == true
                 }
           }
           .toMutableList()

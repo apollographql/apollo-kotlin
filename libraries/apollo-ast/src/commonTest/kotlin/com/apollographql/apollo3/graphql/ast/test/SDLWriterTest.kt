@@ -1,17 +1,14 @@
 package com.apollographql.apollo3.graphql.ast.test
 
-import com.apollographql.apollo3.ast.SDLWriter
-import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.toUtf8
-import okio.Buffer
+import com.apollographql.apollo3.ast.toSDL
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SDLWriterTest {
   @Test
-  fun schemaMayContainBuiltinDirectives() {
+  fun simpleTest() {
     val schemaString = """
       schema {
           query: Query
@@ -43,11 +40,9 @@ class SDLWriterTest {
 
     """.trimIndent()
 
-    val schema: Schema = schemaString.toSchema()
-    val writerBuffer = Buffer()
-    val sdlWriter = SDLWriter(writerBuffer, "    ")
-    sdlWriter.write(schema.toGQLDocument())
-    assertEquals(writerBuffer.readUtf8(), schemaString)
+    val schema: GQLDocument = schemaString.parseAsGQLDocument().getOrThrow()
+    val sdl = schema.toSDL("    ")
+    assertEquals(schemaString, sdl)
   }
 
   @Test
@@ -108,7 +103,7 @@ class SDLWriterTest {
 
     val expected = schemaString.parseAsGQLDocument().getOrThrow()
 
-    val serialized = expected.toUtf8()
+    val serialized = expected.toSDL()
 
     serialized.parseAsGQLDocument().getOrThrow()
     // Enable when we have hashCode and equals on GQLNode

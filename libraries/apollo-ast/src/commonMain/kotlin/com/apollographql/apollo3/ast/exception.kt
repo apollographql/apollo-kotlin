@@ -5,8 +5,7 @@ import okio.IOException
 import okio.Path.Companion.toPath
 import okio.buffer
 
-
-expect internal val HOST_FILESYSTEM: FileSystem
+internal expect val HOST_FILESYSTEM: FileSystem
 
 open class SourceAwareException(
     val error: String,

@@ -133,9 +133,13 @@
 
   </extensions>
 
-  <!-- Contribute configuration to the GraphQL plugin -->
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
+    <!-- Contribute configuration to the GraphQL plugin -->
     <configContributor implementation="com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor" />
+
+    <!-- Suppress redefinition errors for built-in GraphQL types/directives. -->
+    <!-- TODO: remove this once https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665 is fixed -->
+    <errorFilter implementation="com.apollographql.ijplugin.graphql.BuiltInRedefinitionErrorFilter" />
   </extensions>
 
   <applicationListeners>
@@ -145,6 +149,7 @@
         topic="com.intellij.openapi.project.ProjectManagerListener"
     />
   </applicationListeners>
+
 
   <actions>
     <!-- Refactor / Apollo -->
@@ -157,32 +162,6 @@
       <add-to-group group-id="RefactoringMenu" anchor="last" />
     </group>
 
-    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 3 -->
-    <action
-        id="ApolloV2ToV3MigrationAction"
-        class="com.apollographql.ijplugin.action.ApolloV2ToV3MigrationAction"
-    >
-      <add-to-group group-id="ApolloRefactorActionGroup" />
-    </action>
-
-    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 4 -->
-    <action
-        id="ApolloV3ToV4MigrationAction"
-        class="com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction"
-    >
-      <add-to-group group-id="ApolloRefactorActionGroup" />
-    </action>
-
-    <!-- Refactor / Apollo / Migrate to operationBased Codegen -->
-    <!--suppress PluginXmlCapitalization -->
-    <action
-        id="CompatToOperationBasedCodegenMigrationAction"
-        class="com.apollographql.ijplugin.action.CompatToOperationBasedCodegenMigrationAction"
-    >
-      <add-to-group group-id="ApolloRefactorActionGroup" />
-    </action>
-
-
     <!-- Tools / Apollo -->
     <!--suppress PluginXmlCapitalization -->
     <group
@@ -193,6 +172,34 @@
     >
       <add-to-group group-id="ToolsMenu" anchor="last" />
     </group>
+
+    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 3 (also in Tools / Apollo) -->
+    <action
+        id="ApolloV2ToV3MigrationAction"
+        class="com.apollographql.ijplugin.action.ApolloV2ToV3MigrationAction"
+    >
+      <add-to-group group-id="ApolloRefactorActionGroup" />
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
+
+    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 4 (also in Tools / Apollo) -->
+    <action
+        id="ApolloV3ToV4MigrationAction"
+        class="com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction"
+    >
+      <add-to-group group-id="ApolloRefactorActionGroup" />
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
+
+    <!-- Refactor / Apollo / Migrate to operationBased Codegen (also in Tools / Apollo) -->
+    <!--suppress PluginXmlCapitalization -->
+    <action
+        id="CompatToOperationBasedCodegenMigrationAction"
+        class="com.apollographql.ijplugin.action.CompatToOperationBasedCodegenMigrationAction"
+    >
+      <add-to-group group-id="ApolloRefactorActionGroup" />
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
 
     <!-- Tools / Apollo / Open in Apollo Sandbox -->
     <action

@@ -1,16 +1,28 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.apollo_v0_1_definitionsStr
 import com.apollographql.apollo3.ast.internal.apollo_v0_2_definitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
-import okio.Buffer
 
+/**
+ * Add builtin definitions from the latest spec version to the [GQLDocument]
+ *
+ * SDL representations must skip scalars and may skip directive definitions. This function adds them back to form a full schema.
+ *
+ * If a definition already exists, it is kept as is
+ *
+ * Scalars: https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
+ * Directives: https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
+ */
 fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   return withDefinitions(builtinDefinitions())
 }
 
+@Deprecated("Use GQLDocument.toSDL() to write a GQLDocument without the scalar directives")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return withoutDefinitions(builtinDefinitions())
 }
@@ -99,17 +111,24 @@ internal fun combineDefinitions(left: List<GQLDefinition>, right: List<GQLDefini
 
   return mergedDefinitions
 }
-
-/**
- * Adds [definitions] to the [GQLDocument]
- *
- * If a definition already exists, it is kept as is and a warning is logged
- * See https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
- *
- * A better implementation might verify that the definitions match or are compatible
- */
 private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDocument {
   return copy(
       definitions = combineDefinitions(this.definitions, definitions, ConflictResolution.TakeLeft)
   )
+}
+
+/**
+ * Outputs a schema document to SDL. For executable documents, use toUtf8()
+ *
+ * SDL representations must skip scalars definitions.
+ *
+ * See https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
+ */
+@ApolloExperimental
+fun GQLDocument.toSDL(indent: String = "  "): String {
+  return this.copy(
+      definitions = definitions.filter {
+        it !is GQLScalarTypeDefinition || it.name !in GQLTypeDefinition.builtInTypes
+      }
+  ).toUtf8(indent)
 }

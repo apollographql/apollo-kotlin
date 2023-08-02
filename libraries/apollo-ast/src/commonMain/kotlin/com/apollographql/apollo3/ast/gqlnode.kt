@@ -17,4 +17,3 @@ fun GQLNode.toUtf8(indent: String = "  "): String {
   toUtf8(buffer, indent)
   return buffer.readUtf8()
 }
-

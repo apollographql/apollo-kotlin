@@ -6,13 +6,19 @@ import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.ConstructorInsteadOfBuilder
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateClassName
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
@@ -69,9 +75,18 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       ConstructorInsteadOfBuilder("$apollo3.cache.normalized.api.CacheKey.Companion", "from"),
       UpdateWebSocketReconnectWhen,
 
+      UpdateEnumClassUpperCase,
+
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
       UpdateGradleDependenciesInToml(apollo3, apollo3, apollo4LatestVersion),
       UpdateGradleDependenciesBuildKts(apollo3, apollo3),
+
+      UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
+      UpdateFieldNameInService("generateTestBuilders", "generateDataBuilders"),
+      RemoveFieldInService("languageVersion"),
+      UpdateCustomTypeMappingInBuildKts,
+      UpdateMultiModuleConfiguration,
+      EncloseInService,
   )
 }

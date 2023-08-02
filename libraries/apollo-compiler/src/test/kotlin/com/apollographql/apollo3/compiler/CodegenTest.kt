@@ -16,8 +16,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
-import okio.buffer
-import okio.source
 import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -151,7 +149,6 @@ class CodegenTest {
   }
 
   class ParametersProvider : TestParameter.TestParameterValuesProvider {
-    @OptIn(ExperimentalStdlibApi::class)
     override fun provideValues(): List<Parameters> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!

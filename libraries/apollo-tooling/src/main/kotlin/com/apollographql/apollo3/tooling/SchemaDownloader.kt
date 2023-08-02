@@ -7,13 +7,12 @@ import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
+import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
-import okio.Buffer
 import java.io.File
 import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
 import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
@@ -121,7 +120,7 @@ object SchemaDownloader {
       if (introspectionSchema == null) {
         check(sdlSchema != null)
         // Convert from SDL to JSON
-        Buffer().writeUtf8(sdlSchema)
+        sdlSchema
             .toSchema()
             .toIntrospectionSchema()
             .writeTo(schema)
@@ -134,7 +133,7 @@ object SchemaDownloader {
       if (sdlSchema == null) {
         check(introspectionSchema != null)
         // Convert from JSON to SDL
-        schema.writeText(introspectionSchema.toGQLDocument().toUtf8(indent = "  "))
+        schema.writeText(introspectionSchema.toGQLDocument().toSDL(indent = "  "))
       } else {
         // Copy SDL verbatim
         schema.writeText(sdlSchema)

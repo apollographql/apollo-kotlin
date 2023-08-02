@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 
 class OperationValidationTest {
   @Test
-  fun testAddRequiredFields() {
+  fun deprecatedInputField() {
     val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphqls".toPath().toSchema()
     val operations = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphql"
         .toPath()
