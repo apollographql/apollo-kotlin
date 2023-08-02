@@ -17,14 +17,14 @@ import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLNonNullDesignator
 import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullDesignator
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLNullDesignator
-import com.apollographql.apollo3.ast.GQLNonNullDesignator
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
@@ -246,7 +246,7 @@ internal class ExecutableValidationScope(
 
   private fun GQLNullability.listDimension(): Int {
     return when (this) {
-      is GQLListNullability -> 1 + this.itemNullability.listDimension()
+      is GQLListNullability -> 1 + (this.itemNullability?.listDimension() ?: 0)
       is GQLNullDesignator -> 0
       is GQLNonNullDesignator -> 0
     }

@@ -265,16 +265,11 @@ internal class Parser(
   }
 
   private fun parseListNullability(): GQLListNullability {
-    val start = token
     val sourceLocation = sourceLocation()
 
     expectToken<Token.LeftBracket>()
     val ofNullability = parseNullability()
     expectToken<Token.RightBracket>()
-
-    if (ofNullability == null) {
-      throw ParserException("List nullability must not be empty", start)
-    }
 
     return GQLListNullability(
         sourceLocation = sourceLocation,

@@ -35,7 +35,7 @@ internal fun isVariableUsageAllowed(variableDefinition: GQLVariableDefinition, u
 }
 
 internal fun areTypesCompatible(variableType: GQLType, locationType: GQLType): Boolean {
-  return if(locationType is GQLNonNullType) {
+  return if (locationType is GQLNonNullType) {
     if (variableType !is GQLNonNullType) {
       false
     } else {
@@ -43,7 +43,7 @@ internal fun areTypesCompatible(variableType: GQLType, locationType: GQLType): B
     }
   } else if (variableType is GQLNonNullType) {
     areTypesCompatible(variableType.type, locationType)
-  } else if (locationType is GQLListType){
+  } else if (locationType is GQLListType) {
     if (variableType !is GQLListType) {
       false
     } else {
@@ -84,43 +84,43 @@ internal fun GQLType.isOutputType(typeDefinitions: Map<String, GQLTypeDefinition
   }
 }
 
-private fun GQLNullability?.selfNullability(): GQLNullability? {
-  return when (this) {
-    is GQLListNullability -> this.selfNullability
-    else -> this
+private fun GQLType.withItemNullability(itemNullability: GQLNullability?): GQLType {
+  if (itemNullability == null) {
+    return this
   }
-}
 
-private fun GQLType.withListNullability(nullability: GQLNullability?): GQLType {
-  if (this is GQLListType && nullability is GQLListNullability) {
-    return copy(type = type.withNullability(nullability.itemNullability))
-  } else if (this is GQLListType && nullability !is GQLListNullability) {
-    return this
-  } else if (this !is GQLListType && nullability is GQLListNullability) {
-    return this
-  } else if (this !is GQLListType && nullability !is GQLListNullability) {
-    return this
-  } else {
-    error("")
-  }
+  check(this is GQLListType)
+
+  return this.copy(type = type.withNullability(itemNullability))
 }
 
 @ApolloExperimental
 fun GQLType.withNullability(nullability: GQLNullability?): GQLType {
-  val selfNullability = nullability.selfNullability()
+  val selfNullability: GQLNullability?
+  val itemNullability: GQLNullability?
 
-  if (this is GQLNonNullType && selfNullability == null) {
-    return this.copy(type = type.withListNullability(nullability))
+  when(nullability) {
+    is GQLListNullability -> {
+      selfNullability = nullability.selfNullability
+      itemNullability = nullability.itemNullability
+    }
+    else -> {
+      selfNullability = nullability
+      itemNullability = null
+    }
+  }
+  return if (this is GQLNonNullType && selfNullability == null) {
+    this.copy(type = type.withItemNullability(itemNullability))
   } else if (this is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
-    return this.copy(type = type.withListNullability(nullability))
+    this.copy(type = type.withItemNullability(itemNullability))
   } else if (this is GQLNonNullType && selfNullability is GQLNullDesignator) {
-    return this.type.withListNullability(nullability)
+    this.type.withItemNullability(itemNullability)
   } else if (this !is GQLNonNullType && selfNullability == null) {
-    return this.withListNullability(nullability)
+    this.withItemNullability(itemNullability)
   } else if (this !is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
-    return GQLNonNullType(type = this.withListNullability(nullability))
+    GQLNonNullType(type = this.withItemNullability(itemNullability))
   } else if (this !is GQLNonNullType && selfNullability is GQLNullDesignator) {
-    return this.withListNullability(nullability)
+    this.withItemNullability(itemNullability)
   } else {
     error("")
   }

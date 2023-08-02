@@ -11,5 +11,8 @@ query GetList {
     enemies[!]! {
       name
     }
+    frenemies: enemies[]! {
+      name
+    }
   }
 }

@@ -1529,15 +1529,17 @@ class GQLNullDesignator(override val sourceLocation: SourceLocation? = null) : G
 @ApolloExperimental
 class GQLListNullability(
     override val sourceLocation: SourceLocation? = null,
-    val itemNullability: GQLNullability,
+    val itemNullability: GQLNullability?,
     val selfNullability: GQLNullability?,
 ) : GQLNullability {
   override val children: List<GQLNode>
-    get() = listOf(itemNullability)
+    get() = listOfNotNull(itemNullability)
 
   override fun writeInternal(writer: SDLWriter) {
     writer.write("[")
-    writer.write(itemNullability)
+    if (itemNullability != null) {
+      writer.write(itemNullability)
+    }
     writer.write("]")
     if (selfNullability != null) {
       writer.write(selfNullability)
@@ -1552,7 +1554,7 @@ class GQLListNullability(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      ofNullability: GQLNullability = this.itemNullability,
+      ofNullability: GQLNullability? = this.itemNullability,
       selfNullability: GQLNullability? = this.selfNullability,
   ): GQLListNullability {
     return GQLListNullability(
