@@ -5,12 +5,13 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NlsContexts
+import com.intellij.openapi.util.NlsContexts.NotificationContent
+import com.intellij.openapi.util.NlsContexts.NotificationTitle
 
 @Suppress("UnstableApiUsage")
 fun createNotification(
-    @NlsContexts.NotificationTitle title: String = "",
-    @NlsContexts.NotificationContent content: String,
+    @NotificationTitle title: String = "",
+    @NotificationContent content: String,
     type: NotificationType,
     vararg actions: AnAction,
 ): Notification = NotificationGroupManager.getInstance()
@@ -25,8 +26,8 @@ fun createNotification(
 @Suppress("UnstableApiUsage")
 fun showNotification(
     project: Project,
-    @NlsContexts.NotificationTitle title: String = "",
-    @NlsContexts.NotificationContent content: String,
+    @NotificationTitle title: String = "",
+    @NotificationContent content: String,
     type: NotificationType,
     vararg actions: AnAction,
 ) = createNotification(
