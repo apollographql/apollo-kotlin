@@ -19,6 +19,7 @@ Please check the [plugin page](https://plugins.jetbrains.com/plugin/20645-apollo
 ## Features
 
 ### Automatic code generation
+<img src="images/ij-plugin-on-the-fly-codegen.webp" alt="Automatic code generation"/>
 
 The plugin automatically generates models whenever GraphQL files change.
 This means you don't need to manually run `./gradlew generateApolloSources` after editing the files.
@@ -39,9 +40,17 @@ Clicking on them will navigate to the corresponding GraphQL definition.
 
 You can also go to the GraphQL definition with <kbd>Cmd</kbd> Click (Mac) or <kbd>Ctrl</kbd> Click (Windows / Linux) on an operation, field, enum, etc.
 
+<img src="images/ij-plugin-go-to-declaration.webp" alt="Go to declaration"/>
+
+Going to a field's **type** declaration (<kbd>Cmd</kbd> <kbd>Shift</kbd> Click on Mac, <kbd>Ctrl</kbd> <kbd>Shift</kbd> Click on Windows / Linux) will navigate to its definition in the GraphQL schema. 
+
+<img src="images/ij-plugin-go-to-type-declaration.webp" alt="Go to type declaration"/>
+
 #### GraphQL → Kotlin
 
 You can search for code usages of a GraphQL operation, fragment, enum type/value and input type/field, with right click | <kbd>Find Usages</kbd>.
+
+<img src="images/ij-plugin-find-usages.webp" alt="Find usages"/>
 
 ### Unused operations / fields
 
