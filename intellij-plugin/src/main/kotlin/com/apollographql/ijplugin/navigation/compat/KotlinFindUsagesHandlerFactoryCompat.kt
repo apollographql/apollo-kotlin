@@ -22,7 +22,13 @@ class KotlinFindUsagesHandlerFactoryCompat(project: Project) : FindUsagesHandler
       .onFailure { logw(it, "Could not load either $POST_231_CLASS_NAME nor $PRE_231_CLASS_NAME") }
       .getOrNull()
 
-  private val delegate: FindUsagesHandlerFactory? = delegateClass?.let { it.getConstructor(Project::class.java).newInstance(project) as FindUsagesHandlerFactory }
+  private val delegate: FindUsagesHandlerFactory? = try {
+    delegateClass?.let { it.getConstructor(Project::class.java).newInstance(project) as FindUsagesHandlerFactory }
+  } catch (e: Exception) {
+    // ProcessCanceledException can sometimes happen here
+    logw(e, "Could not instantiate KotlinFindUsagesHandlerFactory")
+    null
+  }
 
 
   override fun canFindUsages(element: PsiElement): Boolean {
