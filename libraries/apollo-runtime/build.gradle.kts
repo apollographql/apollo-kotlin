@@ -20,6 +20,7 @@ kotlin {
         api(libs.uuid)
         api(libs.kotlinx.coroutines)
         api(libs.ktor.client.core)
+        api(libs.ktor.client.websockets)
       }
     }
 
