@@ -55,4 +55,20 @@ suspend fun main() {
 
   val id = data.launches.launches[0]!!.fragments.launchFields.id
   val id2 = data.launches.launches[0]!!.apply { fragments.launchFields.id }
+  val id3 = data.launches.launches[0]?.fragments?.launchFields.id
+
+  //@formatter:off
+  val launch = MyQuery.Launch(
+      __typename = "Launch",
+      fragments = Launch.Fragments(
+          launchFields = LaunchFields(
+              id = "id",
+              site = "site",
+              mission = LaunchFields.Mission(
+                  name = "name",
+                  missionPatch = "missionPatch",
+              ),
+          ),
+      ),
+  )
 }
