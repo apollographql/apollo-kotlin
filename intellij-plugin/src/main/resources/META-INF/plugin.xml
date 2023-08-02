@@ -81,48 +81,63 @@
 
     <!-- Fields insights inspection ("expensive field") -->
     <!--suppress PluginXmlCapitalization -->
-    <localInspection language="GraphQL"
-                     implementationClass="com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection"
-                     groupPathKey="inspection.group.graphql"
-                     groupKey="inspection.group.graphql.studio"
-                     key="inspection.fieldInsights.displayName"
-                     enabledByDefault="true"
-                     level="WEAK WARNING"
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.studio"
+        key="inspection.fieldInsights.displayName"
+        enabledByDefault="true"
+        level="WEAK WARNING"
     />
 
     <!-- "Schema in .graphql file" inspection -->
     <!--suppress PluginXmlCapitalization -->
-    <localInspection language="GraphQL"
-                     implementationClass="com.apollographql.ijplugin.inspection.ApolloSchemaInGraphqlFileInspection"
-                     groupPathKey="inspection.group.graphql"
-                     groupKey="inspection.group.graphql.apolloKotlin"
-                     key="inspection.schemaInGraphqlFile.displayName"
-                     enabledByDefault="true"
-                     level="WARNING"
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloSchemaInGraphqlFileInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.schemaInGraphqlFile.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+    />
+
+    <!-- "Apollo Kotlin 4 is available" inspection -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.Apollo4AvailableInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.apollo4Available.displayName"
+        enabledByDefault="true"
+        level="WARNING"
     />
 
     <!-- Unused operation inspection -->
     <!--suppress PluginXmlCapitalization -->
-    <localInspection language="GraphQL"
-                     implementationClass="com.apollographql.ijplugin.inspection.ApolloUnusedOperationInspection"
-                     groupPathKey="inspection.group.graphql"
-                     groupKey="inspection.group.graphql.apolloKotlin"
-                     key="inspection.unusedOperation.displayName"
-                     enabledByDefault="true"
-                     level="WARNING"
-                     editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloUnusedOperationInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.unusedOperation.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
     />
 
     <!-- Unused field inspection -->
     <!--suppress PluginXmlCapitalization -->
-    <localInspection language="GraphQL"
-                     implementationClass="com.apollographql.ijplugin.inspection.ApolloUnusedFieldInspection"
-                     groupPathKey="inspection.group.graphql"
-                     groupKey="inspection.group.graphql.apolloKotlin"
-                     key="inspection.unusedField.displayName"
-                     enabledByDefault="true"
-                     level="WARNING"
-                     editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloUnusedFieldInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.unusedField.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
     />
 
     <!-- Fields insights service (fetch and cache data) -->

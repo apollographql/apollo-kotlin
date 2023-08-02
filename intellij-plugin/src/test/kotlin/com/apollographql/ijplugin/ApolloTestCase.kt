@@ -17,6 +17,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import com.intellij.util.ui.UIUtil
+import junit.framework.AssertionFailedError
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 
@@ -98,13 +99,23 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
   protected fun doHighlighting(): List<HighlightInfo> {
     // Hack: sometimes doHighlighting fails with "AssertionError: PSI/document/model changes are not allowed during highlighting"
     // Wait a bit for project to settle and try again
+    return attempt(3) { myFixture.doHighlighting() }
+  }
+
+  protected fun checkHighlighting() {
+    attempt(3) { myFixture.checkHighlighting() }
+  }
+
+  private fun <T> attempt(times: Int, block: () -> T): T {
     var attempt = 1
     while (true) {
       try {
-        return myFixture.doHighlighting()
+        return block()
+      } catch (e: AssertionFailedError) {
+        throw e
       } catch (e: AssertionError) {
-        if (attempt <= 3) {
-          logw(e, "Highlighting attempt #$attempt failed, retrying")
+        if (attempt <= times) {
+          logw(e, "Attempt #$attempt failed, retrying")
           Thread.sleep(1000)
           attempt++
         } else {

@@ -12,6 +12,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 
 class ApolloV3ToV4MigrationAction : AnAction() {
+  companion object {
+    val ACTION_ID: String = ApolloV3ToV4MigrationAction::class.java.simpleName
+  }
+
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val okCancelResult = Messages.showOkCancelDialog(

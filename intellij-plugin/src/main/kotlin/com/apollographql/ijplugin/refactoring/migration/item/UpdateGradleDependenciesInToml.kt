@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.refactoring.migration.item
 
-import com.apollographql.ijplugin.util.findPsiFilesByName
+import com.apollographql.ijplugin.util.findPsiFilesByExtension
 import com.apollographql.ijplugin.util.quoted
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.openapi.project.Project
@@ -22,7 +22,7 @@ class UpdateGradleDependenciesInToml(
     private val newVersion: String,
 ) : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
-    val libsVersionTomlFiles: List<PsiFile> = project.findPsiFilesByName("libs.versions.toml", searchScope)
+    val libsVersionTomlFiles: List<PsiFile> = project.findPsiFilesByExtension("versions.toml", searchScope)
     val usages = mutableListOf<MigrationItemUsageInfo>()
     for (file in libsVersionTomlFiles) {
       if (file !is TomlFile) continue
