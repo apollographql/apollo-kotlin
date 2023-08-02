@@ -27,10 +27,11 @@ class Apollo4AvailableInspectionTest : ApolloTestCase() {
   @Test
   fun testInspectionBuildGradleKts() {
     myFixture.openFileInEditor(myFixture.copyFileToProject("Apollo4Available.gradle.kts", "build.gradle.kts"))
-    val highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.any { it.description == "Apollo Kotlin 4 is available" && it.line == 6 })
-    assertTrue(highlightInfos.any { it.description == "Apollo Kotlin 4 is available" && it.line == 11 })
-    assertTrue(highlightInfos.any { it.description == "Apollo Kotlin 4 is available" && it.line == 22 })
-    assertTrue(highlightInfos.any { it.description == "Apollo Kotlin 4 is available" && it.line == 28 })
+    val highlightInfos = doHighlighting().filter { it.description == "Apollo Kotlin 4 is available" }
+    assertSize(4, highlightInfos)
+    assertTrue(highlightInfos[0].line == 6)
+    assertTrue(highlightInfos[1].line == 11)
+    assertTrue(highlightInfos[2].line == 24)
+    assertTrue(highlightInfos[3].line == 31)
   }
 }

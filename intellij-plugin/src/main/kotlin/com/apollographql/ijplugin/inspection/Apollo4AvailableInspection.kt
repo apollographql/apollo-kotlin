@@ -70,7 +70,7 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
     when (callExpression.getMethodName()) {
       "id" -> {
         // id("xxx")
-        val dependencyText = (callExpression.valueArguments.firstOrNull()?.getArgumentExpression() as? KtStringTemplateExpression)?.entries?.first()?.text
+        val dependencyText = callExpression.getArgumentAsStringTemplateEntries(0)?.getSingleEntry() ?: return
         if (dependencyText != apollo3) return
         when (val element = callExpression.parent) {
           is KtBinaryExpression -> {
@@ -99,6 +99,8 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
             val dependency = callExpression.getArgumentAsStringTemplateEntries(0)?.getSingleEntry() ?: return
             val dependencyElements = dependency.split(":")
             if (dependencyElements.size != 3) return
+            val groupId = dependencyElements[0]
+            if (groupId != apollo3) return
             val version = dependencyElements[2]
             if (!version.startsWith("4")) {
               holder.registerProblem(callExpression, ApolloBundle.message("inspection.apollo4Available.reportText"), Apollo4AvailableQuickFix)
@@ -108,6 +110,8 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
 
           // implementation("xxx", "yyy", "zzz")
           3 -> {
+            val groupId = callExpression.getArgumentAsStringTemplateEntries(0)?.getSingleEntry() ?: return
+            if (groupId != apollo3) return
             val version = callExpression.getArgumentAsStringTemplateEntries(2)?.getSingleEntry() ?: return
             if (!version.startsWith("4")) {
               holder.registerProblem(callExpression, ApolloBundle.message("inspection.apollo4Available.reportText"), Apollo4AvailableQuickFix)
