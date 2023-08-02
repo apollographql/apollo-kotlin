@@ -24,12 +24,12 @@ class KtorHttpEngine(
 
   constructor(timeoutMillis: Long = 60_000) : this(timeoutMillis, timeoutMillis)
 
-  constructor(connectTimeout: Long, requestTimeout: Long) : this(
+  constructor(connectTimeoutMillis: Long, requestTimeoutMillis: Long) : this(
       HttpClient {
         expectSuccess = false
         install(HttpTimeout) {
-          this.connectTimeoutMillis = connectTimeout
-          this.requestTimeoutMillis = requestTimeout
+          this.connectTimeoutMillis = connectTimeoutMillis
+          this.requestTimeoutMillis = requestTimeoutMillis
         }
       }
   )
