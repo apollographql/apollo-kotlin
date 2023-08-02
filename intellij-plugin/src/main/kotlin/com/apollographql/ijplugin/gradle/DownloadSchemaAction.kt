@@ -17,11 +17,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
-import org.gradle.tooling.events.FailureResult
-import org.gradle.tooling.events.FinishEvent
-import org.gradle.tooling.events.ProgressListener
-import org.gradle.tooling.events.StartEvent
-import org.gradle.tooling.events.SuccessResult
+import org.gradle.tooling.Failure
 import org.gradle.tooling.model.GradleProject
 import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
@@ -90,36 +86,26 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
         val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
         gradleExecutionHelper.getBuildLauncher(connection, id, allDownloadSchemaTasks, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
             .forTasks(*allDownloadSchemaTasks.toTypedArray())
-            .addProgressListener(ProgressListener { event ->
-              when {
-                event is StartEvent && event.descriptor.name == "Run build" -> {
-                  logd("Gradle build started")
-                }
+            .addProgressListener(object : SimpleProgressListener() {
+              override fun onFailure(failures: List<Failure>) {
+                super.onFailure(failures)
+                showNotification(
+                    project = project,
+                    title = ApolloBundle.message("action.DownloadSchemaAction.buildFail.title"),
+                    content = ApolloBundle.message("action.DownloadSchemaAction.buildFail.content", failures.firstOrNull()?.message
+                        ?: "(no message)", allDownloadSchemaTasks.joinToString(" ")),
+                    type = NotificationType.WARNING
+                )
+              }
 
-                event is FinishEvent && event.descriptor.name == "Run build" -> {
-                  when (val result = event.result) {
-                    is FailureResult -> {
-                      logd("Gradle build failed: ${result.failures.map { it.message }}")
-                      showNotification(
-                          project = project,
-                          title = ApolloBundle.message("action.DownloadSchemaAction.buildFail.title"),
-                          content = ApolloBundle.message("action.DownloadSchemaAction.buildFail.content", result.failures.firstOrNull()?.message
-                              ?: "(no message)", allDownloadSchemaTasks.joinToString(" ")),
-                          type = NotificationType.WARNING
-                      )
-                    }
-
-                    is SuccessResult -> {
-                      logd("Gradle build success")
-                      val schemas = if (allDownloadSchemaTasks.size > 1) ApolloBundle.message("action.DownloadSchemaAction.schema.plural") else ApolloBundle.message("action.DownloadSchemaAction.schema.singular")
-                      showNotification(
-                          project = project,
-                          content = ApolloBundle.message("action.DownloadSchemaAction.buildSuccess.content", schemas),
-                          type = NotificationType.INFORMATION
-                      )
-                    }
-                  }
-                }
+              override fun onSuccess() {
+                super.onSuccess()
+                val schemas = if (allDownloadSchemaTasks.size > 1) ApolloBundle.message("action.DownloadSchemaAction.schema.plural") else ApolloBundle.message("action.DownloadSchemaAction.schema.singular")
+                showNotification(
+                    project = project,
+                    content = ApolloBundle.message("action.DownloadSchemaAction.buildSuccess.content", schemas),
+                    type = NotificationType.INFORMATION
+                )
               }
             })
             .run()
