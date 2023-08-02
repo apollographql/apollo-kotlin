@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.inspection
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -43,6 +44,8 @@ class ApolloSchemaInGraphqlFileInspection : LocalInspectionTool() {
       return ApolloBundle.message("inspection.schemaInGraphqlFile.quickFix", newFileName)
     }
     override fun getFamilyName() = name
+
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
       val psiFile = descriptor.psiElement.containingFile
