@@ -146,6 +146,13 @@
         serviceImplementation="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsServiceImpl"
     />
 
+    <!-- Notifications -->
+    <notificationGroup
+        id="Apollo"
+        displayType="BALLOON"
+        key="notification.group.apollo"
+    />
+
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
@@ -233,6 +240,14 @@
     <action
         id="RefreshFieldInsightsAction"
         class="com.apollographql.ijplugin.studio.fieldinsights.RefreshFieldInsightsAction"
+    >
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
+
+    <!-- Tools / Apollo / Download schema -->
+    <action
+        id="DownloadSchemaAction"
+        class="com.apollographql.ijplugin.gradle.DownloadSchemaAction"
     >
       <add-to-group group-id="ApolloToolsActionGroup" />
     </action>
