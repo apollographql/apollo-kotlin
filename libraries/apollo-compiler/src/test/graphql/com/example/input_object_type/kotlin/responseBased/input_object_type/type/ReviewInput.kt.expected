@@ -104,4 +104,251 @@ public data class ReviewInput(
    * for test purpose only
    */
   public val CapitalizedInt: Optional<Int?> = Optional.Absent,
-)
+) {
+  public class Builder {
+    private var stars: Int? = null
+
+    private var nullableIntFieldWithDefaultValue: Optional<Int?> = Optional.Absent
+
+    private var commentary: Optional<String?> = Optional.Absent
+
+    private var favoriteColor: ColorInput? = null
+
+    private var enumWithDefaultValue: Optional<Episode?> = Optional.Absent
+
+    private var nonNullableEnumWithDefaultValue: Optional<Episode> = Optional.Absent
+
+    private var nullableEnum: Optional<Episode?> = Optional.Absent
+
+    private var listOfCustomScalar: Optional<List<Date?>?> = Optional.Absent
+
+    private var customScalar: Optional<Date?> = Optional.Absent
+
+    private var listOfEnums: Optional<List<Episode?>?> = Optional.Absent
+
+    private var listOfInt: Optional<List<Int?>?> = Optional.Absent
+
+    private var listOfString: Optional<List<String?>?> = Optional.Absent
+
+    private var listOfStringNonOptional: List<String?>? = null
+
+    private var listOfInputTypes: Optional<List<ColorInput?>?> = Optional.Absent
+
+    private var booleanWithDefaultValue: Optional<Boolean?> = Optional.Absent
+
+    private var booleanNonOptional: Optional<Boolean?> = Optional.Absent
+
+    private var listOfListOfString: Optional<List<List<String>>?> = Optional.Absent
+
+    private var listOfListOfEnum: Optional<List<List<Episode>>?> = Optional.Absent
+
+    private var listOfListOfCustom: Optional<List<List<Date>>?> = Optional.Absent
+
+    private var listOfListOfObject: Optional<List<List<ColorInput>>?> = Optional.Absent
+
+    private var CapitalizedField: Optional<String?> = Optional.Absent
+
+    private var CapitalizedInt: Optional<Int?> = Optional.Absent
+
+    /**
+     * 0-5 stars
+     */
+    public fun stars(stars: Int): Builder {
+      this.stars = stars
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun nullableIntFieldWithDefaultValue(nullableIntFieldWithDefaultValue: Int?): Builder {
+      this.nullableIntFieldWithDefaultValue = Optional.Present(nullableIntFieldWithDefaultValue)
+      return this
+    }
+
+    /**
+     * Comment about the movie, optional
+     */
+    public fun commentary(commentary: String?): Builder {
+      this.commentary = Optional.Present(commentary)
+      return this
+    }
+
+    /**
+     * Favorite color, optional
+     */
+    public fun favoriteColor(favoriteColor: ColorInput): Builder {
+      this.favoriteColor = favoriteColor
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun enumWithDefaultValue(enumWithDefaultValue: Episode?): Builder {
+      this.enumWithDefaultValue = Optional.Present(enumWithDefaultValue)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun nonNullableEnumWithDefaultValue(nonNullableEnumWithDefaultValue: Episode): Builder {
+      this.nonNullableEnumWithDefaultValue = Optional.Present(nonNullableEnumWithDefaultValue)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun nullableEnum(nullableEnum: Episode?): Builder {
+      this.nullableEnum = Optional.Present(nullableEnum)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfCustomScalar(listOfCustomScalar: List<Date?>?): Builder {
+      this.listOfCustomScalar = Optional.Present(listOfCustomScalar)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun customScalar(customScalar: Date?): Builder {
+      this.customScalar = Optional.Present(customScalar)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfEnums(listOfEnums: List<Episode?>?): Builder {
+      this.listOfEnums = Optional.Present(listOfEnums)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfInt(listOfInt: List<Int?>?): Builder {
+      this.listOfInt = Optional.Present(listOfInt)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfString(listOfString: List<String?>?): Builder {
+      this.listOfString = Optional.Present(listOfString)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfStringNonOptional(listOfStringNonOptional: List<String?>): Builder {
+      this.listOfStringNonOptional = listOfStringNonOptional
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfInputTypes(listOfInputTypes: List<ColorInput?>?): Builder {
+      this.listOfInputTypes = Optional.Present(listOfInputTypes)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun booleanWithDefaultValue(booleanWithDefaultValue: Boolean?): Builder {
+      this.booleanWithDefaultValue = Optional.Present(booleanWithDefaultValue)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun booleanNonOptional(booleanNonOptional: Boolean?): Builder {
+      this.booleanNonOptional = Optional.Present(booleanNonOptional)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfListOfString(listOfListOfString: List<List<String>>?): Builder {
+      this.listOfListOfString = Optional.Present(listOfListOfString)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfListOfEnum(listOfListOfEnum: List<List<Episode>>?): Builder {
+      this.listOfListOfEnum = Optional.Present(listOfListOfEnum)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfListOfCustom(listOfListOfCustom: List<List<Date>>?): Builder {
+      this.listOfListOfCustom = Optional.Present(listOfListOfCustom)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun listOfListOfObject(listOfListOfObject: List<List<ColorInput>>?): Builder {
+      this.listOfListOfObject = Optional.Present(listOfListOfObject)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun CapitalizedField(CapitalizedField: String?): Builder {
+      this.CapitalizedField = Optional.Present(CapitalizedField)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun CapitalizedInt(CapitalizedInt: Int?): Builder {
+      this.CapitalizedInt = Optional.Present(CapitalizedInt)
+      return this
+    }
+
+    public fun build(): ReviewInput = ReviewInput(
+      stars = stars ?: error("missing value for stars"),
+      nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue,
+      commentary = commentary,
+      favoriteColor = favoriteColor ?: error("missing value for favoriteColor"),
+      enumWithDefaultValue = enumWithDefaultValue,
+      nonNullableEnumWithDefaultValue = nonNullableEnumWithDefaultValue,
+      nullableEnum = nullableEnum,
+      listOfCustomScalar = listOfCustomScalar,
+      customScalar = customScalar,
+      listOfEnums = listOfEnums,
+      listOfInt = listOfInt,
+      listOfString = listOfString,
+      listOfStringNonOptional = listOfStringNonOptional ?: error("missing value for listOfStringNonOptional"),
+      listOfInputTypes = listOfInputTypes,
+      booleanWithDefaultValue = booleanWithDefaultValue,
+      booleanNonOptional = booleanNonOptional,
+      listOfListOfString = listOfListOfString,
+      listOfListOfEnum = listOfListOfEnum,
+      listOfListOfCustom = listOfListOfCustom,
+      listOfListOfObject = listOfListOfObject,
+      CapitalizedField = CapitalizedField,
+      CapitalizedInt = CapitalizedInt,
+    )
+  }
+}

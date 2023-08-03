@@ -36,6 +36,14 @@ internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): Pa
   return addKdoc("%L", description)
 }
 
+internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.Builder {
+  if (description.isNullOrBlank()) {
+    return this
+  }
+
+  return addKdoc("%L", description)
+}
+
 
 internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): TypeSpec.Builder {
   if (deprecationReason.isNullOrBlank()) {
@@ -54,6 +62,14 @@ internal fun PropertySpec.Builder.maybeAddDeprecation(deprecationReason: String?
 }
 
 internal fun ParameterSpec.Builder.maybeAddDeprecation(deprecationReason: String?): ParameterSpec.Builder {
+  if (deprecationReason.isNullOrBlank()) {
+    return this
+  }
+
+  return addAnnotation(deprecatedAnnotation(deprecationReason))
+}
+
+internal fun FunSpec.Builder.maybeAddDeprecation(deprecationReason: String?): FunSpec.Builder {
   if (deprecationReason.isNullOrBlank()) {
     return this
   }
@@ -80,6 +96,15 @@ internal fun PropertySpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver
 }
 
 internal fun ParameterSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): ParameterSpec.Builder {
+  if (optInFeature.isNullOrBlank()) {
+    return this
+  }
+
+  val annotation = resolver.resolveRequiresOptInAnnotation() ?: return this
+  return addAnnotation(AnnotationSpec.builder(annotation).build())
+}
+
+internal fun FunSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): FunSpec.Builder {
   if (optInFeature.isNullOrBlank()) {
     return this
   }

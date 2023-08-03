@@ -40,6 +40,7 @@ internal class OperationBuilder(
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
     val generateDataBuilders: Boolean,
+    val generateInputBuilders: Boolean
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -90,11 +91,17 @@ internal class OperationBuilder(
   }
 
   fun typeSpec(): TypeSpec {
+    val namedTypes = operation.variables.map { it.toNamedType() }
     return TypeSpec.classBuilder(layout.operationName(operation))
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
+        .makeDataClass(namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
         .maybeAddJsExport(context)
+        .apply {
+          if (namedTypes.isNotEmpty() && generateInputBuilders) {
+            addType(namedTypes.builderTypeSpec(context, ClassName(packageName, simpleName)))
+          }
+        }
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())

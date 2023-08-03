@@ -72,6 +72,7 @@ internal object KotlinCodeGen {
     val hooks = kotlinCodegenOptions.compilerKotlinHooks
     val generateSchema = commonCodegenOptions.generateSchema || generateDataBuilders
     val outputDir = commonCodegenOptions.outputDir
+    val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
@@ -108,7 +109,7 @@ internal object KotlinCodeGen {
         builders.add(EnumResponseAdapterBuilder(context, irEnum))
       }
       irSchema.irInputObjects.forEach { irInputObject ->
-        builders.add(InputObjectBuilder(context, irInputObject))
+        builders.add(InputObjectBuilder(context, irInputObject, generateInputBuilders))
         builders.add(InputObjectAdapterBuilder(context, irInputObject))
       }
       irSchema.irUnions.forEach {irUnion ->
@@ -156,7 +157,8 @@ internal object KotlinCodeGen {
                     fragment,
                     flatten,
                     addJvmOverloads,
-                    generateDataBuilders
+                    generateDataBuilders,
+                    generateInputBuilders,
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -184,6 +186,7 @@ internal object KotlinCodeGen {
                   flatten,
                   addJvmOverloads,
                   generateDataBuilders,
+                  generateInputBuilders
               )
           )
         }

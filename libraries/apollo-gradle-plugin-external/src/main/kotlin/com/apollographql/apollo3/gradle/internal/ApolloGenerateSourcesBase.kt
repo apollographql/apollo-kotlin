@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.defaultGenerateInputBuilders
 import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
 import com.apollographql.apollo3.compiler.defaultGeneratePrimitiveTypes
 import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
@@ -94,6 +95,10 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateFilterNotNull: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateInputBuilders: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -206,7 +211,8 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
             requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
             compilerKotlinHooks = compilerKotlinHooks,
             languageVersion = codegenSchema.targetLanguage,
-            jsExport = jsExport.getOrElse(defaultJsExport)
+            jsExport = jsExport.getOrElse(defaultJsExport),
+            generateInputBuilders = generateInputBuilders.getOrElse(defaultGenerateInputBuilders)
         )
         ApolloCompiler.writeKotlin(
             commonCodegenOptions = commonCodegenOptions,

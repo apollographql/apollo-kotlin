@@ -303,6 +303,8 @@ class CodegenTest {
 
       val generateSchema = folder.name == "__schema"
 
+      val generateInputBuilders = folder.name == "input_object_type"
+
       val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
           ?: File("src/test/graphql/schema.sdl")
 
@@ -404,7 +406,8 @@ class CodegenTest {
           requiresOptInAnnotation = requiresOptInAnnotation,
           compilerKotlinHooks = compilerKotlinHooks,
           generatePrimitiveTypes = generatePrimitiveTypes,
-          generateFilterNotNull = true
+          generateFilterNotNull = true,
+          generateInputBuilders = generateInputBuilders,
       )
       return outputDir
     }

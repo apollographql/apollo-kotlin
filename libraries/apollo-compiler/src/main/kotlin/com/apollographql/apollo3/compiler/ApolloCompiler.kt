@@ -394,6 +394,7 @@ object ApolloCompiler {
       addJvmOverloads: Boolean = defaultAddJvmOverloads,
       requiresOptInAnnotation: String = defaultRequiresOptInAnnotation,
       compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
+      generateInputBuilders: Boolean = false
   ): CodegenMetadata {
     /**
      * Inject all built-in scalars
@@ -484,7 +485,8 @@ object ApolloCompiler {
             addJvmOverloads = addJvmOverloads,
             requiresOptInAnnotation = requiresOptInAnnotation,
             compilerKotlinHooks = compilerKotlinHooks,
-            languageVersion = targetLanguage
+            languageVersion = targetLanguage,
+            generateInputBuilders = generateInputBuilders
         )
         writeKotlin(
             commonCodegenOptions = commonCodegenOptions,
