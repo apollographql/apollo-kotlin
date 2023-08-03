@@ -18,14 +18,13 @@ import com.example.suppressed_warnings.type.Direction
 import com.example.suppressed_warnings.type.adapter.Direction_ResponseAdapter
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
   public object Data : CompositeAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search", "direction")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         CatQuery.Data {
       var _search: CatQuery.Data.Search? = null
       var _direction: Direction? = null
@@ -44,11 +43,11 @@ public object CatQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: CatQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("search")
       Search.obj().nullable().toJson(writer, value.search, adapterContext)
 
@@ -60,7 +59,7 @@ public object CatQuery_ResponseAdapter {
     private object Search : CompositeAdapter<CatQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("mustaches")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           CatQuery.Data.Search {
         var _mustaches: Int? = null
 
@@ -76,11 +75,11 @@ public object CatQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: CatQuery.Data.Search,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("mustaches")
         IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.mustaches)
       }

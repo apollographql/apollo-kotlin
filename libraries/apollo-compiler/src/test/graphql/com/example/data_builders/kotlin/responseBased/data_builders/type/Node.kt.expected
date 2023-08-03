@@ -19,7 +19,7 @@ public class Node {
   public companion object : BuilderFactory<OtherNodeBuilder> {
     public val type: InterfaceType = InterfaceType.Builder(name = "Node").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherNodeBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherNodeBuilder =
         OtherNodeBuilder(customScalarAdapters)
   }
 }
@@ -31,7 +31,7 @@ public class OtherNodeBuilder(
 ) : ObjectBuilder<OtherNodeMap>(customScalarAdapters) {
   public var id: String by __fields
 
-  public override fun build(): OtherNodeMap = OtherNodeMap(__fields)
+  override fun build(): OtherNodeMap = OtherNodeMap(__fields)
 }
 
 public class OtherNodeMap(

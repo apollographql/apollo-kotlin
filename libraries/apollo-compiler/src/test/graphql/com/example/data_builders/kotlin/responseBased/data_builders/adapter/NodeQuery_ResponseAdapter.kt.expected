@@ -16,14 +16,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.data_builders.NodeQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object NodeQuery_ResponseAdapter {
   public object Data : CompositeAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
@@ -39,17 +38,17 @@ public object NodeQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: NodeQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("node")
       Node.obj().toJson(writer, value.node, adapterContext)
     }
 
     private object Node : CompositeAdapter<NodeQuery.Data.Node> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           NodeQuery.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -62,11 +61,11 @@ public object NodeQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: NodeQuery.Data.Node,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, value, adapterContext)
           is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, value, adapterContext)
@@ -107,7 +106,7 @@ public object NodeQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: NodeQuery.Data.HumanNode,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -151,7 +150,7 @@ public object NodeQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: NodeQuery.Data.DroidNode,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -192,7 +191,7 @@ public object NodeQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: NodeQuery.Data.OtherNode,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

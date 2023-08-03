@@ -21,14 +21,13 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.apollographql.apollo3.api.variable
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferAndInclude
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
   public object Data : CompositeAdapter<InlineMultipleWithDeferAndInclude.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         InlineMultipleWithDeferAndInclude.Data {
       var _hero: InlineMultipleWithDeferAndInclude.Data.Hero? = null
 
@@ -44,11 +43,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: InlineMultipleWithDeferAndInclude.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -56,7 +55,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
     private object Hero : CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           InlineMultipleWithDeferAndInclude.Data.Hero {
         var __typename: String? = null
 
@@ -125,11 +124,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: InlineMultipleWithDeferAndInclude.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -168,7 +167,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1 {
           var _name: String? = null
 
@@ -184,11 +183,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -198,7 +197,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2 {
           var _id: String? = null
 
@@ -214,11 +213,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("id")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
@@ -228,7 +227,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first {
           var _name: String? = null
 
@@ -244,11 +243,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -258,7 +257,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second {
           var _id: String? = null
 
@@ -274,11 +273,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("id")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
@@ -288,7 +287,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third {
           var _name: String? = null
 
@@ -304,11 +303,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -318,7 +317,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth {
           var _id: String? = null
 
@@ -334,11 +333,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("id")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }

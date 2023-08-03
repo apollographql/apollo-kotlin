@@ -18,14 +18,13 @@ import com.example.data_builders.CharacterQuery
 import com.example.data_builders.fragment.DroidFragment
 import com.example.data_builders.fragment.HumanFragment
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterQuery_ResponseAdapter {
   public object Data : CompositeAdapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         CharacterQuery.Data {
       var _character: CharacterQuery.Data.Character? = null
 
@@ -41,11 +40,11 @@ public object CharacterQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: CharacterQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("character")
       Character.obj(true).toJson(writer, value.character, adapterContext)
     }
@@ -53,7 +52,7 @@ public object CharacterQuery_ResponseAdapter {
     private object Character : CompositeAdapter<CharacterQuery.Data.Character> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           CharacterQuery.Data.Character {
         var __typename: String? = null
         var _id: String? = null
@@ -95,11 +94,11 @@ public object CharacterQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: CharacterQuery.Data.Character,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

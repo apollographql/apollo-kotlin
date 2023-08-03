@@ -20,14 +20,13 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.SpreadSingleWithDefer
 import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
   public object Data : CompositeAdapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         SpreadSingleWithDefer.Data {
       var _hero: SpreadSingleWithDefer.Data.Hero? = null
 
@@ -43,11 +42,11 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: SpreadSingleWithDefer.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -55,7 +54,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
     private object Hero : CompositeAdapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
@@ -84,11 +83,11 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: SpreadSingleWithDefer.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

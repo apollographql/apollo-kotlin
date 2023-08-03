@@ -15,14 +15,13 @@ import com.example.enums_as_sealed.TestQuery
 import com.example.enums_as_sealed.type.Enum
 import com.example.enums_as_sealed.type.adapter.Enum_ResponseAdapter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("enum")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _enum: Enum? = null
 
@@ -38,11 +37,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("enum")
       Enum_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty, value.`enum`)
     }

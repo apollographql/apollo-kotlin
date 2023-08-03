@@ -19,17 +19,16 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.input_object_type.type.ColorInput
 import kotlin.IllegalStateException
-import kotlin.Unit
 
 public object ColorInput_InputAdapter : CompositeAdapter<ColorInput> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
-      ColorInput = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): ColorInput =
+      throw IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: ColorInput,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     if (value.red is Optional.Present) {
       writer.name("red")
       IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.red)

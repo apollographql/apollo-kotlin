@@ -14,12 +14,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<AnimalFragmentImpl.Data> {
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         AnimalFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
@@ -32,11 +31,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       when(value) {
         is AnimalFragmentImpl.CatData -> CatData.toJson(writer, value, adapterContext)
         is AnimalFragmentImpl.DogData -> DogData.toJson(writer, value, adapterContext)
@@ -74,7 +73,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.CatData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -112,7 +111,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.DogData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -147,7 +146,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.OtherData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
     }

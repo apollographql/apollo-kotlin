@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.subscriptions.TestSubscription
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestSubscription_ResponseAdapter {
   public object Data : CompositeAdapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
@@ -40,11 +39,11 @@ public object TestSubscription_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestSubscription.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("commentAdded")
       CommentAdded.obj().nullable().toJson(writer, value.commentAdded, adapterContext)
     }
@@ -52,7 +51,7 @@ public object TestSubscription_ResponseAdapter {
     private object CommentAdded : CompositeAdapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestSubscription.Data.CommentAdded {
         var _id: Int? = null
         var _content: String? = null
@@ -71,11 +70,11 @@ public object TestSubscription_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestSubscription.Data.CommentAdded,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("id")
         IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 

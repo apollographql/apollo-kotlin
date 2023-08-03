@@ -16,14 +16,13 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object StarshipFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<StarshipFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         StarshipFragmentImpl.Data {
       var _id: String? = null
       var _name: String? = null
@@ -45,11 +44,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: StarshipFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("id")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
@@ -63,7 +62,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     private object PilotConnection : CompositeAdapter<StarshipFragmentImpl.Data.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           StarshipFragmentImpl.Data.PilotConnection {
         var _edges: List<StarshipFragmentImpl.Data.PilotConnection.Edge?>? = null
 
@@ -79,11 +78,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: StarshipFragmentImpl.Data.PilotConnection,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
       }
@@ -91,7 +90,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       private object Edge : CompositeAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             StarshipFragmentImpl.Data.PilotConnection.Edge {
           var _node: StarshipFragmentImpl.Data.PilotConnection.Edge.Node? = null
 
@@ -107,11 +106,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: StarshipFragmentImpl.Data.PilotConnection.Edge,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("node")
           Node.obj().nullable().toJson(writer, value.node, adapterContext)
         }
@@ -120,7 +119,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               StarshipFragmentImpl.Data.PilotConnection.Edge.Node {
             var __typename: String? = null
             var _name: String? = null
@@ -142,11 +141,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -161,8 +160,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
               CompositeAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld {
               var __typename: String? = null
               var _name: String? = null
@@ -181,11 +179,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("__typename")
               StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

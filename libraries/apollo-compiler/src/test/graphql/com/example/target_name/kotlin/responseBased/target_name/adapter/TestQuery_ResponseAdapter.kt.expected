@@ -22,7 +22,6 @@ import com.example.target_name.type.renamedEnum
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
@@ -30,7 +29,7 @@ public object TestQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
         "enum")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
@@ -58,11 +57,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("object")
       Object.obj().nullable().toJson(writer, value.`object`, adapterContext)
 
@@ -83,7 +82,7 @@ public object TestQuery_ResponseAdapter {
     private object Object : CompositeAdapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Object {
         var _field: String? = null
 
@@ -99,11 +98,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Object,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("field")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`field`)
       }
@@ -112,7 +111,7 @@ public object TestQuery_ResponseAdapter {
     private object Interface : CompositeAdapter<TestQuery.Data.Interface> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Interface {
         var _field: String? = null
 
@@ -128,18 +127,18 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Interface,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("field")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.`field`)
       }
     }
 
     private object Union : CompositeAdapter<TestQuery.Data.Union> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Union {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -150,11 +149,11 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Union,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is TestQuery.Data.ReservedObjectUnion -> ReservedObjectUnion.toJson(writer, value,
               adapterContext)
@@ -192,7 +191,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.ReservedObjectUnion,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -227,7 +226,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherUnion,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }

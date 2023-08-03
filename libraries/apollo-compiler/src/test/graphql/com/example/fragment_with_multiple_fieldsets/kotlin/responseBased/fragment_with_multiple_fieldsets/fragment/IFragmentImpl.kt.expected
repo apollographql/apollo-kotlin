@@ -17,24 +17,24 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = IFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = IFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = I.type
   )
@@ -42,19 +42,20 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
   .build()
 
   public sealed interface Data : IFragment, Fragment.Data {
-    public override val __typename: String
+    override val __typename: String
 
     public companion object {
-      public fun Data.asA() = this as? AData
+      @Suppress("USELESS_CAST")
+      public fun Data.asA(): AData? = this as? AData
     }
   }
 
   public data class AData(
-    public override val __typename: String,
-    public override val fieldA: String?,
+    override val __typename: String,
+    override val fieldA: String?,
   ) : Data, AIFragment
 
   public data class OtherData(
-    public override val __typename: String,
+    override val __typename: String,
   ) : Data, IFragment
 }

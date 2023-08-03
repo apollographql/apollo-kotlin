@@ -24,17 +24,16 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.IllegalStateException
-import kotlin.Unit
 
 public object ReviewInput_InputAdapter : CompositeAdapter<ReviewInput> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
-      ReviewInput = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): ReviewInput =
+      throw IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: ReviewInput,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     writer.name("stars")
     IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Optional.Present) {

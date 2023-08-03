@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.fragment_with_multiple_fieldsets.TestQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("i")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _i: TestQuery.Data.I? = null
 
@@ -41,17 +40,17 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("i")
       I.obj().nullable().toJson(writer, value.i, adapterContext)
     }
 
     private object I : CompositeAdapter<TestQuery.Data.I> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.I {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -62,11 +61,11 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.I,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is TestQuery.Data.AI -> AI.toJson(writer, value, adapterContext)
           is TestQuery.Data.OtherI -> OtherI.toJson(writer, value, adapterContext)
@@ -103,7 +102,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.AI,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -138,7 +137,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherI,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }

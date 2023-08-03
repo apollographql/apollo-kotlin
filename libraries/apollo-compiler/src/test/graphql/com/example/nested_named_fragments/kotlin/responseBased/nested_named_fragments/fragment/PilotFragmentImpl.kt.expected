@@ -17,25 +17,24 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class PilotFragmentImpl() : Fragment<PilotFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      PilotFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = PilotFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Person.type
   )
@@ -46,21 +45,22 @@ public class PilotFragmentImpl() : Fragment<PilotFragmentImpl.Data> {
     /**
      * The name of this person.
      */
-    public override val name: String?,
+    override val name: String?,
     /**
      * A planet that this person was born on or inhabits.
      */
-    public override val homeworld: Homeworld?,
+    override val homeworld: Homeworld?,
   ) : PilotFragment, Fragment.Data {
     public data class Homeworld(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of this planet.
        */
-      public override val name: String?,
+      override val name: String?,
     ) : PlanetFragment, PilotFragment.Homeworld {
       public companion object {
-        public fun Homeworld.planetFragment() = this as? PlanetFragment
+        @Suppress("USELESS_CAST")
+        public fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
       }
     }
   }

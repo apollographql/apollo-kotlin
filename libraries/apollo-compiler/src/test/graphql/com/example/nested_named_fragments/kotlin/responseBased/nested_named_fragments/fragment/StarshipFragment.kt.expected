@@ -6,6 +6,7 @@
 package com.example.nested_named_fragments.fragment
 
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public interface StarshipFragment {
@@ -39,28 +40,30 @@ public interface StarshipFragment {
         /**
          * The name of this person.
          */
-        public override val name: String?
+        override val name: String?
 
         /**
          * A planet that this person was born on or inhabits.
          */
-        public override val homeworld: Homeworld?
+        override val homeworld: Homeworld?
 
         public interface Homeworld : PlanetFragment, PilotFragment.Homeworld {
-          public override val __typename: String
+          override val __typename: String
 
           /**
            * The name of this planet.
            */
-          public override val name: String?
+          override val name: String?
 
           public companion object {
-            public fun Homeworld.planetFragment() = this as? PlanetFragment
+            @Suppress("USELESS_CAST")
+            public fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
           }
         }
 
         public companion object {
-          public fun Node.pilotFragment() = this as? PilotFragment
+          @Suppress("USELESS_CAST")
+          public fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
         }
       }
     }

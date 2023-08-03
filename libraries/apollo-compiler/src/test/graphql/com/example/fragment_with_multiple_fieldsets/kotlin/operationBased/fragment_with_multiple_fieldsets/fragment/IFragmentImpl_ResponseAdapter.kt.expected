@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
@@ -23,7 +22,7 @@ public object IFragmentImpl_ResponseAdapter {
       CompositeAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
       var __typename: String? = null
 
@@ -51,11 +50,11 @@ public object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -69,7 +68,7 @@ public object IFragmentImpl_ResponseAdapter {
         CompositeAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
       public val RESPONSE_NAMES: List<String> = listOf("fieldA")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
         var _fieldA: String? = null
 
@@ -85,11 +84,11 @@ public object IFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("fieldA")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA)
       }

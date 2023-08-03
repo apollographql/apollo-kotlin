@@ -20,7 +20,7 @@ public class Dog {
     public val type: ObjectType =
         ObjectType.Builder(name = "Dog").interfaces(listOf(Node.type)).build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DogBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DogBuilder =
         DogBuilder(customScalarAdapters)
   }
 }
@@ -35,7 +35,7 @@ public class DogBuilder(
   init {
     __typename = "Dog"}
 
-  public override fun build(): DogMap = DogMap(__fields)
+  override fun build(): DogMap = DogMap(__fields)
 }
 
 public class DogMap(

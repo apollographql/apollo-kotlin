@@ -21,14 +21,13 @@ import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.adapter.Episode_ResponseAdapter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
@@ -44,11 +43,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("search")
       Search.obj(true).nullable().list().nullable().toJson(writer, value.search, adapterContext)
     }
@@ -56,7 +55,7 @@ public object TestQuery_ResponseAdapter {
     private object Search : CompositeAdapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Search {
         var __typename: String? = null
 
@@ -92,11 +91,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Search,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -114,7 +113,7 @@ public object TestQuery_ResponseAdapter {
       private object OnCharacter : CompositeAdapter<TestQuery.Data.Search.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("id", "name", "friends")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Search.OnCharacter {
           var _id: String? = null
           var _name: String? = null
@@ -136,11 +135,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Search.OnCharacter,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("id")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
@@ -155,7 +154,7 @@ public object TestQuery_ResponseAdapter {
         private object Friend : CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
 
@@ -196,11 +195,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Search.OnCharacter.Friend,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -222,8 +221,7 @@ public object TestQuery_ResponseAdapter {
               CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend.OnCharacter> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Search.OnCharacter.Friend.OnCharacter {
               var _name: String? = null
 
@@ -239,11 +237,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("name")
               StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
             }
@@ -253,8 +251,7 @@ public object TestQuery_ResponseAdapter {
               CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman> {
             public val RESPONSE_NAMES: List<String> = listOf("homePlanet", "friends")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Search.OnCharacter.Friend.OnHuman {
               var _homePlanet: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>? = null
@@ -273,11 +270,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("homePlanet")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.homePlanet)
 
@@ -290,8 +287,7 @@ public object TestQuery_ResponseAdapter {
                 CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend> {
               public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-              public override fun fromJson(reader: JsonReader,
-                  adapterContext: CompositeAdapterContext):
+              override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                   TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend {
                 var __typename: String? = null
 
@@ -312,11 +308,11 @@ public object TestQuery_ResponseAdapter {
                 )
               }
 
-              public override fun toJson(
+              override fun toJson(
                 writer: JsonWriter,
                 `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend,
                 adapterContext: CompositeAdapterContext,
-              ): Unit {
+              ) {
                 writer.name("__typename")
                 StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -329,8 +325,7 @@ public object TestQuery_ResponseAdapter {
                   {
                 public val RESPONSE_NAMES: List<String> = listOf("firstAppearsIn")
 
-                public override fun fromJson(reader: JsonReader,
-                    adapterContext: CompositeAdapterContext):
+                override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                     TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter {
                   var _firstAppearsIn: Episode? = null
 
@@ -346,11 +341,11 @@ public object TestQuery_ResponseAdapter {
                   )
                 }
 
-                public override fun toJson(
+                override fun toJson(
                   writer: JsonWriter,
                   `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter,
                   adapterContext: CompositeAdapterContext,
-                ): Unit {
+                ) {
                   writer.name("firstAppearsIn")
                   Episode_ResponseAdapter.toJson(writer, CustomScalarAdapters.Empty,
                       value.firstAppearsIn)
@@ -363,8 +358,7 @@ public object TestQuery_ResponseAdapter {
               CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid> {
             public val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Search.OnCharacter.Friend.OnDroid {
               var _primaryFunction: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>? = null
@@ -383,11 +377,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("primaryFunction")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty,
                   value.primaryFunction)
@@ -401,8 +395,7 @@ public object TestQuery_ResponseAdapter {
                 CompositeAdapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend> {
               public val RESPONSE_NAMES: List<String> = listOf("id")
 
-              public override fun fromJson(reader: JsonReader,
-                  adapterContext: CompositeAdapterContext):
+              override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                   TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend {
                 var _id: String? = null
 
@@ -418,11 +411,11 @@ public object TestQuery_ResponseAdapter {
                 )
               }
 
-              public override fun toJson(
+              override fun toJson(
                 writer: JsonWriter,
                 `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend,
                 adapterContext: CompositeAdapterContext,
-              ): Unit {
+              ) {
                 writer.name("id")
                 StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
               }
@@ -434,7 +427,7 @@ public object TestQuery_ResponseAdapter {
       private object OnStarship : CompositeAdapter<TestQuery.Data.Search.OnStarship> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Search.OnStarship {
           var _name: String? = null
 
@@ -450,11 +443,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Search.OnStarship,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }

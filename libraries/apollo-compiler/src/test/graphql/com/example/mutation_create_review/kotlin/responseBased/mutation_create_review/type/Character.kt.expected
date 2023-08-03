@@ -23,8 +23,8 @@ internal class Character {
   public companion object : BuilderFactory<OtherCharacterBuilder> {
     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
-        OtherCharacterBuilder = OtherCharacterBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherCharacterBuilder =
+        OtherCharacterBuilder(customScalarAdapters)
   }
 }
 
@@ -35,7 +35,7 @@ internal class OtherCharacterBuilder(
 ) : ObjectBuilder<OtherCharacterMap>(customScalarAdapters) {
   public var name: String by BuilderProperty(com.example.MyStringAdapter())
 
-  public override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
+  override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
 
 internal class OtherCharacterMap(

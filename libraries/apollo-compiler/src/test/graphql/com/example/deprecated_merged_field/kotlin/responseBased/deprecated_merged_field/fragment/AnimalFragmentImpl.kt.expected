@@ -18,25 +18,24 @@ import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      AnimalFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = AnimalFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Animal.type
   )
@@ -44,27 +43,29 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
   .build()
 
   public sealed interface Data : AnimalFragment, Fragment.Data {
-    public override val __typename: String
+    override val __typename: String
 
     public companion object {
-      public fun Data.asCat() = this as? CatData
+      @Suppress("USELESS_CAST")
+      public fun Data.asCat(): CatData? = this as? CatData
 
-      public fun Data.asDog() = this as? DogData
+      @Suppress("USELESS_CAST")
+      public fun Data.asDog(): DogData? = this as? DogData
     }
   }
 
   public data class CatData(
-    public override val __typename: String,
-    public override val name: String,
+    override val __typename: String,
+    override val name: String,
   ) : Data, CatAnimalFragment
 
   public data class DogData(
-    public override val __typename: String,
+    override val __typename: String,
     @Deprecated(message = "No longer supported")
-    public override val name: String,
+    override val name: String,
   ) : Data, DogAnimalFragment
 
   public data class OtherData(
-    public override val __typename: String,
+    override val __typename: String,
   ) : Data, AnimalFragment
 }

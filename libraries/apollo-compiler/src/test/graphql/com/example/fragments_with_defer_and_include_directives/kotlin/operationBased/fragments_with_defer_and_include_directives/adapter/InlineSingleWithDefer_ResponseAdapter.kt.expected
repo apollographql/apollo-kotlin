@@ -19,14 +19,13 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.InlineSingleWithDefer
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineSingleWithDefer_ResponseAdapter {
   public object Data : CompositeAdapter<InlineSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         InlineSingleWithDefer.Data {
       var _hero: InlineSingleWithDefer.Data.Hero? = null
 
@@ -42,11 +41,11 @@ public object InlineSingleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: InlineSingleWithDefer.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -54,7 +53,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
     private object Hero : CompositeAdapter<InlineSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           InlineSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
@@ -83,11 +82,11 @@ public object InlineSingleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: InlineSingleWithDefer.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -100,7 +99,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
       private object OnDroid : CompositeAdapter<InlineSingleWithDefer.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineSingleWithDefer.Data.Hero.OnDroid {
           var _name: String? = null
 
@@ -116,11 +115,11 @@ public object InlineSingleWithDefer_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineSingleWithDefer.Data.Hero.OnDroid,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }

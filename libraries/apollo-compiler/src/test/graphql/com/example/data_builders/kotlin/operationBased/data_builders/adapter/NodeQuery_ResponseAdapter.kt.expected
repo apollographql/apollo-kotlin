@@ -18,14 +18,13 @@ import com.example.data_builders.NodeQuery
 import com.example.data_builders.fragment.DroidFragment
 import com.example.data_builders.fragment.HumanFragment
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object NodeQuery_ResponseAdapter {
   public object Data : CompositeAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
@@ -41,11 +40,11 @@ public object NodeQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: NodeQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("node")
       Node.obj(true).toJson(writer, value.node, adapterContext)
     }
@@ -53,7 +52,7 @@ public object NodeQuery_ResponseAdapter {
     private object Node : CompositeAdapter<NodeQuery.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           NodeQuery.Data.Node {
         var __typename: String? = null
         var _id: String? = null
@@ -92,11 +91,11 @@ public object NodeQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: NodeQuery.Data.Node,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

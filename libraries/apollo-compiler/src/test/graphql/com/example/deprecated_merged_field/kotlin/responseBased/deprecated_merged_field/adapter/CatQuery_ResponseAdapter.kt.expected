@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.deprecated_merged_field.CatQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
   public object Data : CompositeAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
@@ -40,17 +39,17 @@ public object CatQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: CatQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("cat")
       Cat.obj().nullable().toJson(writer, value.cat, adapterContext)
     }
 
     private object Cat : CompositeAdapter<CatQuery.Data.Cat> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           CatQuery.Data.Cat {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -61,11 +60,11 @@ public object CatQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: CatQuery.Data.Cat,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, value, adapterContext)
           is CatQuery.Data.OtherCat -> OtherCat.toJson(writer, value, adapterContext)
@@ -99,7 +98,7 @@ public object CatQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: CatQuery.Data.OtherCat,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }
@@ -134,7 +133,7 @@ public object CatQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: CatQuery.Data.OtherAnimalCat,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

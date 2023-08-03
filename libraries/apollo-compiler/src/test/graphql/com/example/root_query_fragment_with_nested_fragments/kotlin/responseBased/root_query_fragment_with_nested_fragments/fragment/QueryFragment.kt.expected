@@ -6,6 +6,7 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import kotlin.String
+import kotlin.Suppress
 
 public interface QueryFragment {
   public val __typename: String
@@ -22,10 +23,11 @@ public interface QueryFragment {
     /**
      * The name of the character
      */
-    public override val name: String
+    override val name: String
 
     public companion object {
-      public fun Hero.heroFragment() = this as? HeroFragment
+      @Suppress("USELESS_CAST")
+      public fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
     }
   }
 
@@ -35,15 +37,16 @@ public interface QueryFragment {
     /**
      * What others call this droid
      */
-    public override val name: String
+    override val name: String
 
     /**
      * This droid's primary function
      */
-    public override val primaryFunction: String?
+    override val primaryFunction: String?
 
     public companion object {
-      public fun Droid.droidFragment() = this as? DroidFragment
+      @Suppress("USELESS_CAST")
+      public fun Droid.droidFragment(): DroidFragment? = this as? DroidFragment
     }
   }
 

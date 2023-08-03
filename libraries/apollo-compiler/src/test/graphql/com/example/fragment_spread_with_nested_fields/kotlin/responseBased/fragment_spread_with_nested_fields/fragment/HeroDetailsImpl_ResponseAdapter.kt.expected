@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object Data : CompositeAdapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         HeroDetailsImpl.Data {
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.Data.FriendsConnection? = null
@@ -43,11 +42,11 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -58,7 +57,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     private object FriendsConnection : CompositeAdapter<HeroDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           HeroDetailsImpl.Data.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.Data.FriendsConnection.Edge?>? = null
@@ -77,11 +76,11 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.FriendsConnection,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
@@ -92,7 +91,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       private object Edge : CompositeAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             HeroDetailsImpl.Data.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
@@ -108,11 +107,11 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: HeroDetailsImpl.Data.FriendsConnection.Edge,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("node")
           Node.obj().nullable().toJson(writer, value.node, adapterContext)
         }
@@ -120,7 +119,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         private object Node : CompositeAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               HeroDetailsImpl.Data.FriendsConnection.Edge.Node {
             var _name: String? = null
 
@@ -136,11 +135,11 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: HeroDetailsImpl.Data.FriendsConnection.Edge.Node,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("name")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }

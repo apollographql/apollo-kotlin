@@ -14,7 +14,6 @@ import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 internal object CreateReviewForEpisode_VariablesAdapter {
   @Suppress(
@@ -26,7 +25,7 @@ internal object CreateReviewForEpisode_VariablesAdapter {
     `value`: CreateReviewForEpisode,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("ep")

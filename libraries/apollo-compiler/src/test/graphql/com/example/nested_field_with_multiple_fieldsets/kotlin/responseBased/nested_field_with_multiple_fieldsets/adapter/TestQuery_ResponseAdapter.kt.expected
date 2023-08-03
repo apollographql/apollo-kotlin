@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
@@ -41,17 +40,17 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("iface1")
       Iface1.obj().nullable().toJson(writer, value.iface1, adapterContext)
     }
 
     private object Iface1 : CompositeAdapter<TestQuery.Data.Iface1> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Iface1 {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -62,11 +61,11 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Iface1,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, value, adapterContext)
           is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, value, adapterContext)
@@ -103,7 +102,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.Impl1Iface1,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -112,7 +111,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : CompositeAdapter<TestQuery.Data.Impl1Iface1.Iface2> {
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Impl1Iface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
@@ -123,11 +122,11 @@ public object TestQuery_ResponseAdapter {
           }
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Impl1Iface1.Iface2,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           when(value) {
             is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value,
                 adapterContext)
@@ -176,7 +175,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.Impl1Iface1.Impl2Iface2,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -226,7 +225,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.Impl1Iface1.OtherIface2,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -268,7 +267,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherIface1,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -277,7 +276,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : CompositeAdapter<TestQuery.Data.OtherIface1.Iface2> {
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.OtherIface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
@@ -288,11 +287,11 @@ public object TestQuery_ResponseAdapter {
           }
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.OtherIface1.Iface2,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           when(value) {
             is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value,
                 adapterContext)
@@ -334,7 +333,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.OtherIface1.Impl2Iface2,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -375,7 +374,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.OtherIface1.OtherIface2,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

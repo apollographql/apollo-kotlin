@@ -7,6 +7,7 @@ package com.example.operationbased2_ex8.fragment
 
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 
 public interface AnimalFragment {
   public val species: String
@@ -19,24 +20,26 @@ public interface AnimalFragment {
     public val species: String
 
     public companion object {
-      public fun Parent.asLion() = this as? LionParent
+      @Suppress("USELESS_CAST")
+      public fun Parent.asLion(): LionParent? = this as? LionParent
 
-      public fun Parent.asCat() = this as? CatParent
+      @Suppress("USELESS_CAST")
+      public fun Parent.asCat(): CatParent? = this as? CatParent
     }
   }
 
   public interface LionParent : Parent {
-    public override val __typename: String
+    override val __typename: String
 
-    public override val species: String
+    override val species: String
 
     public val temperature: Int
   }
 
   public interface CatParent : Parent {
-    public override val __typename: String
+    override val __typename: String
 
-    public override val species: String
+    override val species: String
 
     public val name: String
   }

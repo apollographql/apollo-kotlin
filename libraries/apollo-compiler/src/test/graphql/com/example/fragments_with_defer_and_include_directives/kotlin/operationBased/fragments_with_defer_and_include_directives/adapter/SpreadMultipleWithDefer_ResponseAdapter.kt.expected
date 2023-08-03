@@ -21,14 +21,13 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDefer
 import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadMultipleWithDefer_ResponseAdapter {
   public object Data : CompositeAdapter<SpreadMultipleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         SpreadMultipleWithDefer.Data {
       var _hero: SpreadMultipleWithDefer.Data.Hero? = null
 
@@ -44,11 +43,11 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: SpreadMultipleWithDefer.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -56,7 +55,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
     private object Hero : CompositeAdapter<SpreadMultipleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           SpreadMultipleWithDefer.Data.Hero {
         var __typename: String? = null
 
@@ -85,11 +84,11 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: SpreadMultipleWithDefer.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

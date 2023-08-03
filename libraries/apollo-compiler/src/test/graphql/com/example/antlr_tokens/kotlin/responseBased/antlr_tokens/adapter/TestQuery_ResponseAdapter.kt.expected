@@ -15,14 +15,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.antlr_tokens.TestQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
@@ -38,11 +37,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("typeWithGraphQLKeywords")
       TypeWithGraphQLKeywords.obj().nullable().toJson(writer, value.typeWithGraphQLKeywords,
           adapterContext)
@@ -52,7 +51,7 @@ public object TestQuery_ResponseAdapter {
         CompositeAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.TypeWithGraphQLKeywords {
         var _on: String? = null
         var _null: String? = null
@@ -74,11 +73,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.TypeWithGraphQLKeywords,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("on")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.on)
 

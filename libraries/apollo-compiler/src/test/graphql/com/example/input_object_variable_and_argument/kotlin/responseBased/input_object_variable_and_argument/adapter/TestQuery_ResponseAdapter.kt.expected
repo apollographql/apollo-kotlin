@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.input_object_variable_and_argument.TestQuery
 import kotlin.Double
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroWithReview")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _heroWithReview: TestQuery.Data.HeroWithReview? = null
 
@@ -40,11 +39,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("heroWithReview")
       HeroWithReview.obj().nullable().toJson(writer, value.heroWithReview, adapterContext)
     }
@@ -52,7 +51,7 @@ public object TestQuery_ResponseAdapter {
     private object HeroWithReview : CompositeAdapter<TestQuery.Data.HeroWithReview> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.HeroWithReview {
         var _name: String? = null
         var _height: Double? = null
@@ -71,11 +70,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.HeroWithReview,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 

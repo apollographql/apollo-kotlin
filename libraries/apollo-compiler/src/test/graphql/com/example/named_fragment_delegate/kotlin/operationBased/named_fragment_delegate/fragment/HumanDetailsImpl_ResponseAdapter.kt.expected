@@ -17,7 +17,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Any
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
@@ -25,7 +24,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.named_fragment_delegate.fragment.HumanDetails {
       var _name: String? = null
       var _profileLink: Any? = null
@@ -47,11 +46,11 @@ public object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.named_fragment_delegate.fragment.HumanDetails,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -67,7 +66,7 @@ public object HumanDetailsImpl_ResponseAdapter {
         {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection {
         var _edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge?>? = null
 
@@ -83,11 +82,11 @@ public object HumanDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
       }
@@ -97,7 +96,7 @@ public object HumanDetailsImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge {
           var _node: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node? = null
 
@@ -113,11 +112,11 @@ public object HumanDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("node")
           Node.obj().nullable().toJson(writer, value.node, adapterContext)
         }
@@ -127,7 +126,7 @@ public object HumanDetailsImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node {
             var _name: String? = null
 
@@ -143,11 +142,11 @@ public object HumanDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("name")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }

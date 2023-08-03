@@ -14,14 +14,13 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java8annotation.LoginBarber
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object LoginBarber_ResponseAdapter {
   public object Data : CompositeAdapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
@@ -37,11 +36,11 @@ public object LoginBarber_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: LoginBarber.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("login")
       Login.obj().toJson(writer, value.login, adapterContext)
     }
@@ -49,7 +48,7 @@ public object LoginBarber_ResponseAdapter {
     private object Login : CompositeAdapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           LoginBarber.Data.Login {
         var _response: String? = null
 
@@ -65,11 +64,11 @@ public object LoginBarber_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: LoginBarber.Data.Login,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("response")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.response)
       }

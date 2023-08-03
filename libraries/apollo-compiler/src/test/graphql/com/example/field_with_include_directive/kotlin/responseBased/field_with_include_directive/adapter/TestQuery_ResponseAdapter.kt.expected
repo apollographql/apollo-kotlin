@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.field_with_include_directive.TestQuery
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
@@ -40,11 +39,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -52,7 +51,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Hero {
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
@@ -71,11 +70,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -86,7 +85,7 @@ public object TestQuery_ResponseAdapter {
       private object FriendsConnection : CompositeAdapter<TestQuery.Data.Hero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Hero.FriendsConnection {
           var _totalCount: Int? = null
 
@@ -102,11 +101,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Hero.FriendsConnection,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
         }

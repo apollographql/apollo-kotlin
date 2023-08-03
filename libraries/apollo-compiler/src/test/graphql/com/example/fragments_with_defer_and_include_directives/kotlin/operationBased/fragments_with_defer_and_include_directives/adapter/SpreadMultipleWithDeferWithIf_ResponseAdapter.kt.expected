@@ -25,14 +25,13 @@ import com.example.fragments_with_defer_and_include_directives.fragment.Characte
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
   public object Data : CompositeAdapter<SpreadMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         SpreadMultipleWithDeferWithIf.Data {
       var _hero: SpreadMultipleWithDeferWithIf.Data.Hero? = null
 
@@ -48,11 +47,11 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: SpreadMultipleWithDeferWithIf.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -60,7 +59,7 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
     private object Hero : CompositeAdapter<SpreadMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           SpreadMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
@@ -105,11 +104,11 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: SpreadMultipleWithDeferWithIf.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

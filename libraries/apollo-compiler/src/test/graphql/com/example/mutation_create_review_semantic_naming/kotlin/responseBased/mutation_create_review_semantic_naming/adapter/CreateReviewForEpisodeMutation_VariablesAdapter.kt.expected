@@ -14,7 +14,6 @@ import com.example.mutation_create_review_semantic_naming.type.adapter.Episode_R
 import com.example.mutation_create_review_semantic_naming.type.adapter.ReviewInput_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object CreateReviewForEpisodeMutation_VariablesAdapter {
   @Suppress(
@@ -26,7 +25,7 @@ public object CreateReviewForEpisodeMutation_VariablesAdapter {
     `value`: CreateReviewForEpisodeMutation,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("ep")

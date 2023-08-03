@@ -17,7 +17,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
@@ -25,7 +24,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       CompositeAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.fragment_spread_with_nested_fields.fragment.HeroDetails {
       var _name: String? = null
       var _friendsConnection: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection? = null
@@ -44,11 +43,11 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -61,7 +60,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge?>? = null
@@ -80,11 +79,11 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
 
@@ -97,7 +96,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge {
           var _node: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
 
@@ -113,11 +112,11 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("node")
           Node.obj().nullable().toJson(writer, value.node, adapterContext)
         }
@@ -127,7 +126,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node {
             var _name: String? = null
 
@@ -143,11 +142,11 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("name")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }

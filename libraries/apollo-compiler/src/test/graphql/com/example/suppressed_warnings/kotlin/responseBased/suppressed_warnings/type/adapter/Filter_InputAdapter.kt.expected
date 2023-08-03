@@ -18,19 +18,18 @@ import com.example.suppressed_warnings.type.Filter
 import kotlin.IllegalStateException
 import kotlin.OptIn
 import kotlin.Suppress
-import kotlin.Unit
 
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
 public object Filter_InputAdapter : CompositeAdapter<Filter> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Filter
-      = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Filter = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: Filter,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     if (value.name is Optional.Present) {
       writer.name("name")
       NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.name)

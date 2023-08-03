@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.multiple_fragments.TestQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _a: TestQuery.Data.A? = null
 
@@ -41,11 +40,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("a")
       A.obj().nullable().toJson(writer, value.a, adapterContext)
     }
@@ -53,7 +52,7 @@ public object TestQuery_ResponseAdapter {
     private object A : CompositeAdapter<TestQuery.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "node")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.A {
         var __typename: String? = null
         var _node: TestQuery.Data.A.Node? = null
@@ -72,11 +71,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.A,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -85,7 +84,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Node : CompositeAdapter<TestQuery.Data.A.Node> {
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.A.Node {
           val __typename = reader.readTypename()
           return when(__typename) {
@@ -96,11 +95,11 @@ public object TestQuery_ResponseAdapter {
           }
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.A.Node,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           when(value) {
             is TestQuery.Data.A.ANodeNode -> ANodeNode.toJson(writer, value, adapterContext)
             is TestQuery.Data.A.OtherNode -> OtherNode.toJson(writer, value, adapterContext)
@@ -140,7 +139,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.A.ANodeNode,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -178,7 +177,7 @@ public object TestQuery_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestQuery.Data.A.OtherNode,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
         }

@@ -14,7 +14,6 @@ import com.example.input_object_type.type.adapter.Episode_ResponseAdapter
 import com.example.input_object_type.type.adapter.ReviewInput_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
   @Suppress(
@@ -26,7 +25,7 @@ public object TestQuery_VariablesAdapter {
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("ep")

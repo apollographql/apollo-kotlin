@@ -20,14 +20,13 @@ import com.apollographql.apollo3.api.obj
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object Data : CompositeAdapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         HeroDetailsImpl.Data {
       var _name: String? = null
       var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
@@ -46,11 +45,11 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -59,7 +58,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     }
 
     private object Friend : CompositeAdapter<HeroDetailsImpl.Data.Friend> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           HeroDetailsImpl.Data.Friend {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -72,11 +71,11 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.Friend,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, value, adapterContext)
           is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.toJson(writer, value, adapterContext)
@@ -117,7 +116,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.HumanFriend,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -161,7 +160,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.DroidFriend,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -202,7 +201,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.OtherFriend,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

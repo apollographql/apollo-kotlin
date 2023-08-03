@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
@@ -14,6 +15,7 @@ internal class CgFile(
     val propertySpecs: List<PropertySpec> = emptyList(),
     val funSpecs: List<FunSpec> = emptyList(),
     val fileName: String,
+    val imports: List<CgImport> = emptyList()
 )
 
 internal interface CgFileBuilder {
@@ -21,3 +23,4 @@ internal interface CgFileBuilder {
   fun build(): CgFile
 }
 
+internal class CgImport(val className: ClassName, val alias: String )

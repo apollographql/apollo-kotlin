@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CreateReviewForEpisodeMutation_ResponseAdapter {
   public object Data : CompositeAdapter<CreateReviewForEpisodeMutation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         CreateReviewForEpisodeMutation.Data {
       var _createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
 
@@ -40,11 +39,11 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: CreateReviewForEpisodeMutation.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, value.createReview, adapterContext)
     }
@@ -53,7 +52,7 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
         {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           CreateReviewForEpisodeMutation.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
@@ -72,11 +71,11 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: CreateReviewForEpisodeMutation.Data.CreateReview,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("stars")
         IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
 

@@ -17,25 +17,23 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 
 public class HorseFragmentImpl() : Fragment<HorseFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      HorseFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = HorseFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Horse.type
   )
@@ -43,10 +41,10 @@ public class HorseFragmentImpl() : Fragment<HorseFragmentImpl.Data> {
   .build()
 
   public data class Data(
-    public override val cow: Cow?,
+    override val cow: Cow?,
   ) : HorseFragment, Fragment.Data {
     public data class Cow(
-      public override val moo: String?,
+      override val moo: String?,
     ) : HorseFragment.Cow
   }
 }

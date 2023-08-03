@@ -116,11 +116,15 @@ internal class ModelBuilder(
   private fun buildAccessorFunSpecs(model: IrModel): List<FunSpec> {
     return model.accessors.map { accessor ->
 
+      val returnedClassName = context.resolver.resolveModel(accessor.returnedModelId)
       FunSpec.builder(accessor.funName())
           .applyIf(!context.jsExport) {
             receiver(context.resolver.resolveModel(model.id))
           }
-          .addCode("return·this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
+          .returns(returnedClassName.copy(nullable = true))
+          .addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "USELESS_CAST").build())
+          // https://github.com/square/kotlinpoet/pull/1559
+          .addCode("return this as? %T\n", returnedClassName)
           .build()
     }
   }

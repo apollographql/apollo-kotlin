@@ -16,14 +16,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
   public object Data : CompositeAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         GetUser.Data {
       var __typename: String? = null
       var _organization: GetUser.Data.Organization? = null
@@ -42,11 +41,11 @@ public object GetUser_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: GetUser.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -57,7 +56,7 @@ public object GetUser_ResponseAdapter {
     private object Organization : CompositeAdapter<GetUser.Data.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           GetUser.Data.Organization {
         var _id: String? = null
         var _user: List<GetUser.Data.Organization.User>? = null
@@ -76,11 +75,11 @@ public object GetUser_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: GetUser.Data.Organization,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("id")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
 
@@ -92,7 +91,7 @@ public object GetUser_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
             "avatar")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             GetUser.Data.Organization.User {
           var __typename: String? = null
           var _firstName: String? = null
@@ -117,11 +116,11 @@ public object GetUser_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: GetUser.Data.Organization.User,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

@@ -19,8 +19,8 @@ internal class SearchResult {
   public companion object : BuilderFactory<OtherSearchResultBuilder> {
     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
-        OtherSearchResultBuilder = OtherSearchResultBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherSearchResultBuilder =
+        OtherSearchResultBuilder(customScalarAdapters)
   }
 }
 
@@ -29,7 +29,7 @@ internal interface SearchResultMap : Map<String, Any?>
 internal class OtherSearchResultBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<OtherSearchResultMap>(customScalarAdapters) {
-  public override fun build(): OtherSearchResultMap = OtherSearchResultMap(__fields)
+  override fun build(): OtherSearchResultMap = OtherSearchResultMap(__fields)
 }
 
 internal class OtherSearchResultMap(

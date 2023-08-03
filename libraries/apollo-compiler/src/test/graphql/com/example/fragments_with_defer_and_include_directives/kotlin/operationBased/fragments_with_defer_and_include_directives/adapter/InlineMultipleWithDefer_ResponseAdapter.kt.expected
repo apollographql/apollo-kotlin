@@ -19,14 +19,13 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDefer
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineMultipleWithDefer_ResponseAdapter {
   public object Data : CompositeAdapter<InlineMultipleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         InlineMultipleWithDefer.Data {
       var _hero: InlineMultipleWithDefer.Data.Hero? = null
 
@@ -42,11 +41,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: InlineMultipleWithDefer.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -54,7 +53,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
     private object Hero : CompositeAdapter<InlineMultipleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           InlineMultipleWithDefer.Data.Hero {
         var __typename: String? = null
 
@@ -91,11 +90,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: InlineMultipleWithDefer.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -114,7 +113,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first {
           var _name: String? = null
 
@@ -130,11 +129,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_first,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -144,7 +143,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           CompositeAdapter<InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second {
           var _id: String? = null
 
@@ -160,11 +159,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: InlineMultipleWithDefer.Data.Hero.OnDroidDeferD_second,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("id")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
         }
