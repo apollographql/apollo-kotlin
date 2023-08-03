@@ -23,4 +23,4 @@ internal interface CgFileBuilder {
   fun build(): CgFile
 }
 
-class CgImport(val className: ClassName, val alias: String )
+internal class CgImport(val className: ClassName, val alias: String )
