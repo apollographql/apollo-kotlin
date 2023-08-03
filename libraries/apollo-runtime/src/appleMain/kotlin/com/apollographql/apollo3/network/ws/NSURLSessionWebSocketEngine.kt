@@ -2,10 +2,10 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.internal.ChannelWrapper
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import okio.ByteString
 import okio.toByteString
@@ -61,7 +61,7 @@ actual class DefaultWebSocketEngine(
       setHTTPMethod("GET")
     }
 
-    val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
+    val messageChannel = Channel<String>(Channel.UNLIMITED)
     val isOpen = CompletableDeferred<Boolean>()
 
     val connectionListener = object : WebSocketConnectionListener {
@@ -95,10 +95,11 @@ actual class DefaultWebSocketEngine(
 
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
-    val messageChannel: ChannelWrapper<String>,
+    val messageChannel: Channel<String>,
 ) : WebSocketConnection {
   init {
-    messageChannel.setInvokeOnClose {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    messageChannel.invokeOnClose {
       webSocket.cancelWithCloseCode(
           closeCode = CLOSE_NORMAL.convert(),
           reason = null
@@ -112,7 +113,8 @@ private class WebSocketConnectionImpl(
   }
 
   override fun send(data: ByteString) {
-    if (!messageChannel.isClosed) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    if (!messageChannel.isClosedForSend) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
       val completionHandler = { error: NSError? ->
         if (error != null) handleError(error)
@@ -122,7 +124,8 @@ private class WebSocketConnectionImpl(
   }
 
   override fun send(string: String) {
-    if (!messageChannel.isClosed) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    if (!messageChannel.isClosedForSend) {
       val message = NSURLSessionWebSocketMessage(string)
       val completionHandler = { error: NSError? ->
         if (error != null) handleError(error)
