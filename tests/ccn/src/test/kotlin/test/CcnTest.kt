@@ -40,7 +40,8 @@ class CcnTest {
               {
                 "name": "nullability"
               }
-            ]
+            ],
+            "frenemies": []
           }
         }
       }
@@ -54,5 +55,6 @@ class CcnTest {
     }
     assertEquals(null, response.data!!.user!!.friends[0]?.name)
     assertEquals("nullability", response.data!!.user!!.enemies[0].name)
+    assertEquals(0, response.data!!.user!!.frenemies.size)
   }
 }

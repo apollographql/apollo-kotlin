@@ -163,6 +163,12 @@ fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLRe
   }
 }
 
+internal fun String.parseAsGQLNullability(options: ParserOptions = ParserOptions.Default): GQLResult<GQLNullability> {
+  @Suppress("DEPRECATION")
+  check (!options.useAntlr)
+  return parseInternal(null, options) { parseNullability() ?: error("No nullability") }
+}
+
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
   @Suppress("DEPRECATION")
   return if (options.useAntlr) {
