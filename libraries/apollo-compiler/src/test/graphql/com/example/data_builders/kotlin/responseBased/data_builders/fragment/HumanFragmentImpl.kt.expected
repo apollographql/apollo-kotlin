@@ -26,22 +26,21 @@ import kotlin.String
 import kotlin.Unit
 
 public class HumanFragmentImpl() : Fragment<HumanFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      HumanFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = HumanFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Human.type
   )
@@ -49,7 +48,7 @@ public class HumanFragmentImpl() : Fragment<HumanFragmentImpl.Data> {
   .build()
 
   public data class Data(
-    public override val homePlanet: String,
+    override val homePlanet: String,
   ) : HumanFragment, Fragment.Data
 
   public companion object {

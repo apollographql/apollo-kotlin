@@ -10,20 +10,18 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.hero_details.type.Hero_type
-import kotlin.Unit
 
 public object Hero_type_ResponseAdapter : Adapter<Hero_type> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      Hero_type {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero_type {
     val rawValue = reader.nextString()!!
     return Hero_type.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     `value`: Hero_type,
-  ): Unit {
+  ) {
     writer.value(value.rawValue)
   }
 }

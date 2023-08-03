@@ -28,7 +28,7 @@ internal class Review {
   public companion object : BuilderFactory<ReviewBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder =
         ReviewBuilder(customScalarAdapters)
   }
 }
@@ -54,7 +54,7 @@ internal class ReviewBuilder(
   init {
     __typename = "Review"}
 
-  public override fun build(): ReviewMap = ReviewMap(__fields)
+  override fun build(): ReviewMap = ReviewMap(__fields)
 }
 
 internal class ReviewMap(

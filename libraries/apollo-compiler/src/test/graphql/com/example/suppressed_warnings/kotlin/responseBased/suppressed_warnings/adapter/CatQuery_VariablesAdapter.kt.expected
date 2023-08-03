@@ -16,7 +16,6 @@ import com.example.suppressed_warnings.CatQuery
 import com.example.suppressed_warnings.type.adapter.Filter_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object CatQuery_VariablesAdapter {
   @Suppress(
@@ -28,7 +27,7 @@ public object CatQuery_VariablesAdapter {
     `value`: CatQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.filter is Optional.Present) {

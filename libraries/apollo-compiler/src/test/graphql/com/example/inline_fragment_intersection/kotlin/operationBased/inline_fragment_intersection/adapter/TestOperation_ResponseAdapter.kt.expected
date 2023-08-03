@@ -24,14 +24,13 @@ import com.example.inline_fragment_intersection.type.adapter.Race_ResponseAdapte
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
   public object Data : CompositeAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
@@ -47,11 +46,11 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestOperation.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("random")
       Random.obj(true).toJson(writer, value.random, adapterContext)
     }
@@ -59,7 +58,7 @@ public object TestOperation_ResponseAdapter {
     private object Random : CompositeAdapter<TestOperation.Data.Random> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestOperation.Data.Random {
         var __typename: String? = null
 
@@ -95,11 +94,11 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestOperation.Data.Random,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -117,7 +116,7 @@ public object TestOperation_ResponseAdapter {
       private object OnBeing : CompositeAdapter<TestOperation.Data.Random.OnBeing> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
           var _name: String? = null
@@ -151,11 +150,11 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestOperation.Data.Random.OnBeing,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -174,7 +173,7 @@ public object TestOperation_ResponseAdapter {
         private object Friend : CompositeAdapter<TestOperation.Data.Random.OnBeing.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
             var _name: String? = null
@@ -205,11 +204,11 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestOperation.Data.Random.OnBeing.Friend,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -226,8 +225,7 @@ public object TestOperation_ResponseAdapter {
               CompositeAdapter<TestOperation.Data.Random.OnBeing.Friend.OnWookie> {
             public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var _lifeExpectancy: Double? = null
 
@@ -243,11 +241,11 @@ public object TestOperation_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestOperation.Data.Random.OnBeing.Friend.OnWookie,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("lifeExpectancy")
               NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
             }
@@ -257,7 +255,7 @@ public object TestOperation_ResponseAdapter {
         private object OnHuman : CompositeAdapter<TestOperation.Data.Random.OnBeing.OnHuman> {
           public val RESPONSE_NAMES: List<String> = listOf("profilePictureUrl", "friends")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestOperation.Data.Random.OnBeing.OnHuman {
             var _profilePictureUrl: String? = null
             var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
@@ -276,11 +274,11 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestOperation.Data.Random.OnBeing.OnHuman,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("profilePictureUrl")
             NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty,
                 value.profilePictureUrl)
@@ -293,8 +291,7 @@ public object TestOperation_ResponseAdapter {
               {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
               var _isFamous: Boolean? = null
@@ -325,11 +322,11 @@ public object TestOperation_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("__typename")
               StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -346,8 +343,7 @@ public object TestOperation_ResponseAdapter {
                 CompositeAdapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
               public val RESPONSE_NAMES: List<String> = listOf("race")
 
-              public override fun fromJson(reader: JsonReader,
-                  adapterContext: CompositeAdapterContext):
+              override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var _race: Race? = null
 
@@ -363,11 +359,11 @@ public object TestOperation_ResponseAdapter {
                 )
               }
 
-              public override fun toJson(
+              override fun toJson(
                 writer: JsonWriter,
                 `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie,
                 adapterContext: CompositeAdapterContext,
-              ): Unit {
+              ) {
                 writer.name("race")
                 Race_ResponseAdapter.toJson(writer, CustomScalarAdapters.Empty, value.race)
               }
@@ -379,7 +375,7 @@ public object TestOperation_ResponseAdapter {
       private object OnWookie : CompositeAdapter<TestOperation.Data.Random.OnWookie> {
         public val RESPONSE_NAMES: List<String> = listOf("race", "friends")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestOperation.Data.Random.OnWookie {
           var _race: Race? = null
           var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
@@ -398,11 +394,11 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestOperation.Data.Random.OnWookie,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("race")
           Race_ResponseAdapter.toJson(writer, CustomScalarAdapters.Empty, value.race)
 
@@ -413,7 +409,7 @@ public object TestOperation_ResponseAdapter {
         private object Friend : CompositeAdapter<TestOperation.Data.Random.OnWookie.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestOperation.Data.Random.OnWookie.Friend {
             var _lifeExpectancy: Double? = null
 
@@ -429,11 +425,11 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestOperation.Data.Random.OnWookie.Friend,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("lifeExpectancy")
             NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
           }

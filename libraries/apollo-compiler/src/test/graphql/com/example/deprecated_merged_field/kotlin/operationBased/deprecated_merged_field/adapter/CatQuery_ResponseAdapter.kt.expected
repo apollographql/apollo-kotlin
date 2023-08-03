@@ -15,14 +15,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.deprecated_merged_field.CatQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
   public object Data : CompositeAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
@@ -38,11 +37,11 @@ public object CatQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: CatQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("cat")
       Cat.obj(true).nullable().toJson(writer, value.cat, adapterContext)
     }
@@ -50,7 +49,7 @@ public object CatQuery_ResponseAdapter {
     private object Cat : CompositeAdapter<CatQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           CatQuery.Data.Cat {
         var __typename: String? = null
 
@@ -71,11 +70,11 @@ public object CatQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: CatQuery.Data.Cat,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

@@ -18,7 +18,7 @@ import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
 
 public data class QueryFragmentImpl(
@@ -26,19 +26,18 @@ public data class QueryFragmentImpl(
   public val query: UserQuery,
   public val size: Int,
 ) : Fragment<QueryFragmentImpl.Data> {
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      QueryFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Query.type
   )
@@ -46,20 +45,21 @@ public data class QueryFragmentImpl(
   .build()
 
   public data class Data(
-    public override val organization: Organization?,
+    override val organization: Organization?,
   ) : QueryFragment, Fragment.Data {
     public data class Organization(
-      public override val id: String,
-      public override val user: List<User>,
+      override val id: String,
+      override val user: List<User>,
     ) : QueryFragment.Organization {
       public data class User(
-        public override val __typename: String,
-        public override val firstName: String,
-        public override val lastName: String,
-        public override val avatar: String,
+        override val __typename: String,
+        override val firstName: String,
+        override val lastName: String,
+        override val avatar: String,
       ) : UserFragment, QueryFragment.Organization.User {
         public companion object {
-          public fun User.userFragment() = this as? UserFragment
+          @Suppress("USELESS_CAST")
+          public fun User.userFragment(): UserFragment? = this as? UserFragment
         }
       }
     }

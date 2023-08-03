@@ -6,6 +6,7 @@
 package com.example.named_fragment_with_variables.fragment
 
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public interface QueryFragment {
@@ -19,14 +20,15 @@ public interface QueryFragment {
     public interface User : UserFragment {
       public val __typename: String
 
-      public override val firstName: String
+      override val firstName: String
 
-      public override val lastName: String
+      override val lastName: String
 
-      public override val avatar: String
+      override val avatar: String
 
       public companion object {
-        public fun User.userFragment() = this as? UserFragment
+        @Suppress("USELESS_CAST")
+        public fun User.userFragment(): UserFragment? = this as? UserFragment
       }
     }
   }

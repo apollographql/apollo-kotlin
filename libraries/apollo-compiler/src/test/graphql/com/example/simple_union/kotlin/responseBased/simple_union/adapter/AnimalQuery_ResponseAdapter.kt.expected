@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.simple_union.AnimalQuery
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalQuery_ResponseAdapter {
   public object Data : CompositeAdapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
@@ -40,17 +39,17 @@ public object AnimalQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: AnimalQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("animal")
       Animal.obj().nullable().toJson(writer, value.animal, adapterContext)
     }
 
     private object Animal : CompositeAdapter<AnimalQuery.Data.Animal> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           AnimalQuery.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -63,11 +62,11 @@ public object AnimalQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: AnimalQuery.Data.Animal,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is AnimalQuery.Data.CatAnimal -> CatAnimal.toJson(writer, value, adapterContext)
           is AnimalQuery.Data.DogAnimal -> DogAnimal.toJson(writer, value, adapterContext)
@@ -105,7 +104,7 @@ public object AnimalQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalQuery.Data.CatAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -143,7 +142,7 @@ public object AnimalQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalQuery.Data.DogAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -178,7 +177,7 @@ public object AnimalQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalQuery.Data.OtherAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }

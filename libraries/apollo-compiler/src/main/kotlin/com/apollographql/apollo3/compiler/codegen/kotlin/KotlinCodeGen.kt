@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -220,6 +221,9 @@ internal object KotlinCodeGen {
           }
           cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
             builder.addProperty(propertySpec)
+          }
+          cgFile.imports.forEach {
+            builder.addAliasedImport(it.className, it.alias)
           }
           ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build())
         }

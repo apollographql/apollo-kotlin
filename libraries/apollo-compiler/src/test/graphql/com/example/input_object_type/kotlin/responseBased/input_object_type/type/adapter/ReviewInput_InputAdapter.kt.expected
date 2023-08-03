@@ -19,19 +19,19 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.input_object_type.type.ReviewInput
-import java.util.Date
 import kotlin.IllegalStateException
-import kotlin.Unit
+import com.example.input_object_type.type.Date as TypeDate
+import java.util.Date as UtilDate
 
 public object ReviewInput_InputAdapter : CompositeAdapter<ReviewInput> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
-      ReviewInput = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): ReviewInput =
+      throw IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: ReviewInput,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     writer.name("stars")
     IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Optional.Present) {
@@ -63,12 +63,12 @@ public object ReviewInput_InputAdapter : CompositeAdapter<ReviewInput> {
     }
     if (value.listOfCustomScalar is Optional.Present) {
       writer.name("listOfCustomScalar")
-      adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.input_object_type.type.Date.type).nullable().list().nullable().present().toJson(writer,
+      adapterContext.customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).nullable().list().nullable().present().toJson(writer,
           CustomScalarAdapters.Empty, value.listOfCustomScalar)
     }
     if (value.customScalar is Optional.Present) {
       writer.name("customScalar")
-      adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.input_object_type.type.Date.type).nullable().present().toJson(writer,
+      adapterContext.customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).nullable().present().toJson(writer,
           CustomScalarAdapters.Empty, value.customScalar)
     }
     if (value.listOfEnums is Optional.Present) {
@@ -116,7 +116,7 @@ public object ReviewInput_InputAdapter : CompositeAdapter<ReviewInput> {
     }
     if (value.listOfListOfCustom is Optional.Present) {
       writer.name("listOfListOfCustom")
-      adapterContext.customScalarAdapters.responseAdapterFor<Date>(com.example.input_object_type.type.Date.type).list().list().nullable().present().toJson(writer,
+      adapterContext.customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().present().toJson(writer,
           CustomScalarAdapters.Empty, value.listOfListOfCustom)
     }
     if (value.listOfListOfObject is Optional.Present) {

@@ -20,8 +20,8 @@ public class Character {
     public val type: InterfaceType =
         InterfaceType.Builder(name = "Character").interfaces(listOf(Node.type)).build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
-        OtherCharacterBuilder = OtherCharacterBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherCharacterBuilder =
+        OtherCharacterBuilder(customScalarAdapters)
   }
 }
 
@@ -34,7 +34,7 @@ public class OtherCharacterBuilder(
 
   public var name: String by __fields
 
-  public override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
+  override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
 
 public class OtherCharacterMap(

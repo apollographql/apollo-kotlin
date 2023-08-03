@@ -16,17 +16,16 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
 import com.example.java_guava_optionals.type.MyInput
 import kotlin.IllegalStateException
-import kotlin.Unit
 
 public object MyInput_InputAdapter : CompositeAdapter<MyInput> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): MyInput
-      = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): MyInput =
+      throw IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: MyInput,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
       NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)

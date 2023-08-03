@@ -19,14 +19,13 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.example.operationbased2_ex7.TestOperation
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
   public object Data : CompositeAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
@@ -42,11 +41,11 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestOperation.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("animal")
       Animal.obj(true).nullable().toJson(writer, value.animal, adapterContext)
     }
@@ -54,7 +53,7 @@ public object TestOperation_ResponseAdapter {
     private object Animal : CompositeAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestOperation.Data.Animal {
         var __typename: String? = null
 
@@ -75,11 +74,11 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestOperation.Data.Animal,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -90,7 +89,7 @@ public object TestOperation_ResponseAdapter {
       private object OnAnimal : CompositeAdapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
@@ -129,11 +128,11 @@ public object TestOperation_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestOperation.Data.Animal.OnAnimal,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -155,7 +154,7 @@ public object TestOperation_ResponseAdapter {
             CompositeAdapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
           public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestOperation.Data.Animal.OnAnimal.OnWarmBlooded {
             var _temperature: Int? = null
 
@@ -171,11 +170,11 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("temperature")
             IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
           }
@@ -184,7 +183,7 @@ public object TestOperation_ResponseAdapter {
         private object OnPet : CompositeAdapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestOperation.Data.Animal.OnAnimal.OnPet {
             var _name: String? = null
 
@@ -200,11 +199,11 @@ public object TestOperation_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestOperation.Data.Animal.OnAnimal.OnPet,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("name")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
           }

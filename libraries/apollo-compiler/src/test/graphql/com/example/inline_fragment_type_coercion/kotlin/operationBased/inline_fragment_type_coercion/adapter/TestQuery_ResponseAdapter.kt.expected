@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.inline_fragment_type_coercion.TestQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _foo: TestQuery.Data.Foo? = null
 
@@ -40,11 +39,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("foo")
       Foo.obj(true).nullable().toJson(writer, value.foo, adapterContext)
     }
@@ -52,7 +51,7 @@ public object TestQuery_ResponseAdapter {
     private object Foo : CompositeAdapter<TestQuery.Data.Foo> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Foo {
         var __typename: String? = null
         var _foo: String? = null
@@ -83,11 +82,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Foo,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -103,7 +102,7 @@ public object TestQuery_ResponseAdapter {
       private object OnBar : CompositeAdapter<TestQuery.Data.Foo.OnBar> {
         public val RESPONSE_NAMES: List<String> = listOf("bar")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Foo.OnBar {
           var _bar: String? = null
 
@@ -119,11 +118,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Foo.OnBar,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("bar")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.bar)
         }

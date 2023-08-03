@@ -16,7 +16,6 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
@@ -24,7 +23,7 @@ public object DroidDetailsImpl_ResponseAdapter {
       CompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.named_fragment_delegate.fragment.DroidDetails {
       var _name: String? = null
       var _primaryFunction: String? = null
@@ -46,11 +45,11 @@ public object DroidDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.named_fragment_delegate.fragment.DroidDetails,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -65,7 +64,7 @@ public object DroidDetailsImpl_ResponseAdapter {
         CompositeAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.named_fragment_delegate.fragment.DroidDetails.Friend {
         var _name: String? = null
 
@@ -81,11 +80,11 @@ public object DroidDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.named_fragment_delegate.fragment.DroidDetails.Friend,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }

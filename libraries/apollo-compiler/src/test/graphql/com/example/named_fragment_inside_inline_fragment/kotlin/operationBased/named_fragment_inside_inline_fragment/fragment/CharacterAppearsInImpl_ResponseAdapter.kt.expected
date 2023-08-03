@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
@@ -24,7 +23,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
@@ -40,11 +39,11 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, CustomScalarAdapters.Empty,
           value.appearsIn)

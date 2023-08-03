@@ -17,14 +17,13 @@ import com.example.enum_field.type.GravityAsEnum
 import com.example.enum_field.type.adapter.GravityAsEnum_ResponseAdapter
 import com.example.enum_field.type.adapter.Gravity_ResponseAdapter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("gravity", "gravityAsEnum")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _gravity: Gravity? = null
       var _gravityAsEnum: GravityAsEnum? = null
@@ -43,11 +42,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("gravity")
       Gravity_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty, value.gravity)
 

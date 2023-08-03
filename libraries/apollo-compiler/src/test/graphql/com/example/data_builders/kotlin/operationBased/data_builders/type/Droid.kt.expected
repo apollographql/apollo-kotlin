@@ -20,7 +20,7 @@ public class Droid {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DroidBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DroidBuilder =
         DroidBuilder(customScalarAdapters)
   }
 }
@@ -35,7 +35,7 @@ public class DroidBuilder(
   init {
     __typename = "Droid"}
 
-  public override fun build(): DroidMap = DroidMap(__fields)
+  override fun build(): DroidMap = DroidMap(__fields)
 }
 
 public class DroidMap(

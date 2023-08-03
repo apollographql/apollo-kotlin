@@ -17,24 +17,24 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Character.type
   )
@@ -42,18 +42,19 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   .build()
 
   public data class Data(
-    public override val __typename: String,
+    override val __typename: String,
     /**
      * The name of the character
      */
-    public override val name: String,
+    override val name: String,
     /**
      * The date character was born.
      */
-    public override val birthDate: Any,
+    override val birthDate: Any,
   ) : CharacterDetails, HeroDetails, Fragment.Data {
     public companion object {
-      public fun Data.characterDetails() = this as? CharacterDetails
+      @Suppress("USELESS_CAST")
+      public fun Data.characterDetails(): CharacterDetails? = this as? CharacterDetails
     }
   }
 }

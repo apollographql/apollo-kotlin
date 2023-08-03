@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_merge_fields.TestQuery
 import kotlin.Any
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
@@ -41,11 +40,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -53,7 +52,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
@@ -80,11 +79,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -101,7 +100,7 @@ public object TestQuery_ResponseAdapter {
       private object FriendsConnection : CompositeAdapter<TestQuery.Data.Hero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Hero.FriendsConnection {
           var _edges: List<TestQuery.Data.Hero.FriendsConnection.Edge?>? = null
 
@@ -117,11 +116,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Hero.FriendsConnection,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("edges")
           Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
         }
@@ -129,7 +128,7 @@ public object TestQuery_ResponseAdapter {
         private object Edge : CompositeAdapter<TestQuery.Data.Hero.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Hero.FriendsConnection.Edge {
             var _node: TestQuery.Data.Hero.FriendsConnection.Edge.Node? = null
 
@@ -145,11 +144,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Hero.FriendsConnection.Edge,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("node")
             Node.obj().nullable().toJson(writer, value.node, adapterContext)
           }
@@ -157,8 +156,7 @@ public object TestQuery_ResponseAdapter {
           private object Node : CompositeAdapter<TestQuery.Data.Hero.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Hero.FriendsConnection.Edge.Node {
               var _name: String? = null
 
@@ -174,11 +172,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Hero.FriendsConnection.Edge.Node,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("name")
               StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
             }
@@ -189,7 +187,7 @@ public object TestQuery_ResponseAdapter {
       private object OnCharacter : CompositeAdapter<TestQuery.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Hero.OnCharacter {
           var _name: String? = null
           var _profileLink: Any? = null
@@ -211,11 +209,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Hero.OnCharacter,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -230,7 +228,7 @@ public object TestQuery_ResponseAdapter {
             CompositeAdapter<TestQuery.Data.Hero.OnCharacter.FriendsConnection> {
           public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Hero.OnCharacter.FriendsConnection {
             var _edges: List<TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge?>? = null
 
@@ -246,11 +244,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Hero.OnCharacter.FriendsConnection,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("edges")
             Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
           }
@@ -259,8 +257,7 @@ public object TestQuery_ResponseAdapter {
               CompositeAdapter<TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge> {
             public val RESPONSE_NAMES: List<String> = listOf("node")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge {
               var _node: TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge.Node? = null
 
@@ -276,11 +273,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("node")
               Node.obj().nullable().toJson(writer, value.node, adapterContext)
             }
@@ -289,8 +286,7 @@ public object TestQuery_ResponseAdapter {
                 CompositeAdapter<TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge.Node> {
               public val RESPONSE_NAMES: List<String> = listOf("name")
 
-              public override fun fromJson(reader: JsonReader,
-                  adapterContext: CompositeAdapterContext):
+              override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                   TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge.Node {
                 var _name: String? = null
 
@@ -306,11 +302,11 @@ public object TestQuery_ResponseAdapter {
                 )
               }
 
-              public override fun toJson(
+              override fun toJson(
                 writer: JsonWriter,
                 `value`: TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge.Node,
                 adapterContext: CompositeAdapterContext,
-              ): Unit {
+              ) {
                 writer.name("name")
                 StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
               }

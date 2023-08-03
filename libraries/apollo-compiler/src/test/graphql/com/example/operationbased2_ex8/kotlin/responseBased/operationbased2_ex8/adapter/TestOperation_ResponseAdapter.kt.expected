@@ -19,14 +19,13 @@ import com.example.operationbased2_ex8.TestOperation
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
   public object Data : CompositeAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
@@ -42,11 +41,11 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestOperation.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("animal")
       Animal.obj().nullable().toJson(writer, value.animal, adapterContext)
     }
@@ -54,7 +53,7 @@ public object TestOperation_ResponseAdapter {
     private object Animal : CompositeAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "parent")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestOperation.Data.Animal {
         var __typename: String? = null
         var _species: String? = null
@@ -76,11 +75,11 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestOperation.Data.Animal,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -92,7 +91,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Parent : CompositeAdapter<TestOperation.Data.Animal.Parent> {
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestOperation.Data.Animal.Parent {
           val __typename = reader.readTypename()
           return when(__typename) {
@@ -105,11 +104,11 @@ public object TestOperation_ResponseAdapter {
           }
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestOperation.Data.Animal.Parent,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           when(value) {
             is TestOperation.Data.Animal.LionParent -> LionParent.toJson(writer, value,
                 adapterContext)
@@ -153,7 +152,7 @@ public object TestOperation_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestOperation.Data.Animal.LionParent,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -197,7 +196,7 @@ public object TestOperation_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestOperation.Data.Animal.CatParent,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -238,7 +237,7 @@ public object TestOperation_ResponseAdapter {
           writer: JsonWriter,
           `value`: TestOperation.Data.Animal.OtherParent,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

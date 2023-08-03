@@ -13,17 +13,16 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.java8annotation.type.Login
 import kotlin.IllegalStateException
-import kotlin.Unit
 
 public object Login_InputAdapter : CompositeAdapter<Login> {
-  public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Login =
-      throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Login = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  override fun toJson(
     writer: JsonWriter,
     `value`: Login,
     adapterContext: CompositeAdapterContext,
-  ): Unit {
+  ) {
     writer.name("email")
     StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.email)
   }

@@ -19,14 +19,13 @@ import com.example.operationbased2_ex7.TestOperation
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
   public object Data : CompositeAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
@@ -42,17 +41,17 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestOperation.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("animal")
       Animal.obj().nullable().toJson(writer, value.animal, adapterContext)
     }
 
     private object Animal : CompositeAdapter<TestOperation.Data.Animal> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestOperation.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -68,11 +67,11 @@ public object TestOperation_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestOperation.Data.Animal,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer, value,
               adapterContext)
@@ -121,7 +120,7 @@ public object TestOperation_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestOperation.Data.PetWarmBloodedAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -165,7 +164,7 @@ public object TestOperation_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -206,7 +205,7 @@ public object TestOperation_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherWarmBloodedAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -250,7 +249,7 @@ public object TestOperation_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestOperation.Data.OtherPetAnimal,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

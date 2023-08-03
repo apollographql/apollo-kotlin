@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HorseFragmentImpl_ResponseAdapter {
@@ -22,7 +21,7 @@ public object HorseFragmentImpl_ResponseAdapter {
       CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.decapitalized_fields.fragment.HorseFragment {
       var _Cow: com.example.decapitalized_fields.fragment.HorseFragment.Cow? = null
 
@@ -38,11 +37,11 @@ public object HorseFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.decapitalized_fields.fragment.HorseFragment,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("Cow")
       Cow.obj().nullable().toJson(writer, value.cow, adapterContext)
     }
@@ -51,7 +50,7 @@ public object HorseFragmentImpl_ResponseAdapter {
         CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.decapitalized_fields.fragment.HorseFragment.Cow {
         var _Moo: String? = null
 
@@ -67,11 +66,11 @@ public object HorseFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.decapitalized_fields.fragment.HorseFragment.Cow,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("Moo")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo)
       }

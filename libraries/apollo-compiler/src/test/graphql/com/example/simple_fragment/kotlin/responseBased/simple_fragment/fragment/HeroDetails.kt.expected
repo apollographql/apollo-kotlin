@@ -6,22 +6,25 @@
 package com.example.simple_fragment.fragment
 
 import kotlin.String
+import kotlin.Suppress
 
 internal interface HeroDetails {
   public val __typename: String
 
   public companion object {
-    public fun HeroDetails.humanDetails() = this as? HumanDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.humanDetails(): HumanDetails? = this as? HumanDetails
 
-    public fun HeroDetails.asHuman() = this as? HumanHeroDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.asHuman(): HumanHeroDetails? = this as? HumanHeroDetails
   }
 }
 
 internal interface HumanHeroDetails : HeroDetails, HumanDetails {
-  public override val __typename: String
+  override val __typename: String
 
   /**
    * What this human calls themselves
    */
-  public override val name: String
+  override val name: String
 }

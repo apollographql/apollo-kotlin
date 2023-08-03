@@ -15,7 +15,6 @@ import com.example.named_fragment_with_variables.GetUser
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object GetUser_VariablesAdapter {
   @Suppress(
@@ -27,7 +26,7 @@ public object GetUser_VariablesAdapter {
     `value`: GetUser,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("organizationId")

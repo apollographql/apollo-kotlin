@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import com.example.test_inline.GetPage
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object GetPage_ResponseAdapter {
   public object Data : CompositeAdapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
@@ -40,17 +39,17 @@ public object GetPage_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: GetPage.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("collection")
       Collection.obj().toJson(writer, value.collection, adapterContext)
     }
 
     private object Collection : CompositeAdapter<GetPage.Data.Collection> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           GetPage.Data.Collection {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -61,11 +60,11 @@ public object GetPage_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: GetPage.Data.Collection,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
               ParticularCollectionCollection.toJson(writer, value, adapterContext)
@@ -103,7 +102,7 @@ public object GetPage_ResponseAdapter {
         writer: JsonWriter,
         `value`: GetPage.Data.ParticularCollectionCollection,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -112,7 +111,7 @@ public object GetPage_ResponseAdapter {
       }
 
       private object Item : CompositeAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             GetPage.Data.ParticularCollectionCollection.Item {
           val __typename = reader.readTypename()
           return when(__typename) {
@@ -123,11 +122,11 @@ public object GetPage_ResponseAdapter {
           }
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.Item,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
                 ParticularItemItem.toJson(writer, value, adapterContext)
@@ -169,7 +168,7 @@ public object GetPage_ResponseAdapter {
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
 
@@ -210,7 +209,7 @@ public object GetPage_ResponseAdapter {
           writer: JsonWriter,
           `value`: GetPage.Data.ParticularCollectionCollection.OtherItem,
           @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
 
@@ -249,7 +248,7 @@ public object GetPage_ResponseAdapter {
         writer: JsonWriter,
         `value`: GetPage.Data.OtherCollection,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -260,7 +259,7 @@ public object GetPage_ResponseAdapter {
       private object Item : CompositeAdapter<GetPage.Data.OtherCollection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             GetPage.Data.OtherCollection.Item {
           var _title: String? = null
 
@@ -276,11 +275,11 @@ public object GetPage_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: GetPage.Data.OtherCollection.Item,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("title")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title)
         }

@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
@@ -22,7 +21,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       CompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.root_query_fragment.fragment.QueryFragment {
       var __typename: String? = null
       var _hero: com.example.root_query_fragment.fragment.QueryFragment.Hero? = null
@@ -41,11 +40,11 @@ public object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.root_query_fragment.fragment.QueryFragment,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -57,7 +56,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         CompositeAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.root_query_fragment.fragment.QueryFragment.Hero {
         var _name: String? = null
 
@@ -73,11 +72,11 @@ public object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.root_query_fragment.fragment.QueryFragment.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }

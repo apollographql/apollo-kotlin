@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
@@ -10,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgImport
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
@@ -72,10 +74,18 @@ internal class OperationBuilder(
   }
 
   override fun build(): CgFile {
+    val className = context.resolver.resolveSchemaType(operation.typeCondition)
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        typeSpecs = listOf(typeSpec())
+        typeSpecs = listOf(typeSpec()),
+        imports = listOf(
+            CgImport(
+                className,
+            "Compiled${className.simpleName.capitalizeFirstLetter()}"
+            )
+
+        )
     )
   }
 

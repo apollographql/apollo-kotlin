@@ -22,7 +22,7 @@ internal class Mutation {
   public companion object : BuilderFactory<MutationBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder =
         MutationBuilder(customScalarAdapters)
   }
 }
@@ -35,7 +35,7 @@ internal class MutationBuilder(
   init {
     __typename = "Mutation"}
 
-  public override fun build(): MutationMap = MutationMap(__fields)
+  override fun build(): MutationMap = MutationMap(__fields)
 }
 
 internal class MutationMap(
