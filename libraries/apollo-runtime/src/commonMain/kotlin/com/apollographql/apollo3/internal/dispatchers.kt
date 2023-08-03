@@ -11,5 +11,7 @@ internal expect val defaultDispatcher: CoroutineDispatcher
  */
 internal expect class CloseableSingleThreadDispatcher() : Closeable {
   val coroutineDispatcher: CoroutineDispatcher
+
+  override fun close()
 }
 

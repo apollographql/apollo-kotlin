@@ -36,7 +36,11 @@ interface HttpEngine {
  * - on Android (OkHttp), it is used to set both `OkHttpClient.connectTimeout` and `OkHttpClient.readTimeout`
  * - on Js (Ktor), it is used to set both `HttpTimeoutCapabilityConfiguration.connectTimeoutMillis` and `HttpTimeoutCapabilityConfiguration.requestTimeoutMillis`
  */
-expect class DefaultHttpEngine(timeoutMillis: Long = 60_000): HttpEngine
+expect class DefaultHttpEngine(timeoutMillis: Long = 60_000): HttpEngine {
+  override suspend fun execute(request: HttpRequest): HttpResponse
+
+  override fun dispose()
+}
 
 fun HttpEngine.get(url: String) = HttpCall(this, HttpMethod.Get, url)
 fun HttpEngine.post(url: String) = HttpCall(this, HttpMethod.Post, url)

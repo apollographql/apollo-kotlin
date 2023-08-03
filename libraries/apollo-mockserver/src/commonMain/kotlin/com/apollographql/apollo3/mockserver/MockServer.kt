@@ -34,4 +34,10 @@ interface MockServerInterface {
 }
 
 @ApolloExperimental
-expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : MockServerInterface
+expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : MockServerInterface {
+  override suspend fun url(): String
+  override suspend fun stop()
+  override val mockServerHandler: MockServerHandler
+  override fun enqueue(mockResponse: MockResponse)
+  override fun takeRequest(): MockRequest
+}
