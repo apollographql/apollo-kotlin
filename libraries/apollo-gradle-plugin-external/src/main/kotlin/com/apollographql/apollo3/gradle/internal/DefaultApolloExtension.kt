@@ -654,6 +654,7 @@ abstract class DefaultApolloExtension(
     task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
     task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)
     task.generatePrimitiveTypes.set(service.generatePrimitiveTypes)
+    task.generateInputBuilders.set(service.generateInputBuilders)
     val nullableFieldStyle: String? = service.nullableFieldStyle.orNull
     task.nullableFieldStyle.set(
         project.provider {

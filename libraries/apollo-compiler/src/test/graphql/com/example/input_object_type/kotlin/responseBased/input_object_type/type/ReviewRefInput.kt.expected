@@ -12,4 +12,17 @@ import com.apollographql.apollo3.api.Optional
  */
 public data class ReviewRefInput(
   public val reviewInput: Optional<ReviewInput?> = Optional.Absent,
-)
+) {
+  public class Builder {
+    private var reviewInput: Optional<ReviewInput?> = Optional.Absent
+
+    public fun reviewInput(reviewInput: ReviewInput?): Builder {
+      this.reviewInput = Optional.Present(reviewInput)
+      return this
+    }
+
+    public fun build(): ReviewRefInput = ReviewRefInput(
+      reviewInput = reviewInput,
+    )
+  }
+}

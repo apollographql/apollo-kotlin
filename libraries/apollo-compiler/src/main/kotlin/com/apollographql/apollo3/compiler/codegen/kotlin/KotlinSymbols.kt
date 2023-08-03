@@ -61,6 +61,7 @@ internal object KotlinSymbols {
   val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
   val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
   val MandatoryTypenameProperty = ClassNames.MandatoryTypenameProperty.toKotlinPoetClassName()
+  val Builder = ClassName("", "Builder")
 
   /**
    * Kotlin class names

@@ -127,8 +127,8 @@ public final class com/apollographql/apollo3/compiler/JavaNullable$Companion {
 }
 
 public final class com/apollographql/apollo3/compiler/KotlinCodegenOptions {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;Z)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ZZ)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAddJvmOverloads ()Z
 	public final fun getGenerateAsInternal ()Z
 	public final fun getGenerateFilterNotNull ()Z
@@ -185,6 +185,7 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field defaultGenerateDataBuilders Z
 	public static final field defaultGenerateFilterNotNull Z
 	public static final field defaultGenerateFragmentImplementations Z
+	public static final field defaultGenerateInputBuilders Z
 	public static final field defaultGenerateModelBuilders Z
 	public static final field defaultGenerateOptionalOperationVariables Z
 	public static final field defaultGeneratePrimitiveTypes Z

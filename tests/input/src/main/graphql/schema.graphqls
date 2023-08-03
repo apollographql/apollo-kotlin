@@ -1,0 +1,8 @@
+type Query {
+  user(input: UserInput): Int
+}
+
+input UserInput {
+  name: String!
+  email: String
+}

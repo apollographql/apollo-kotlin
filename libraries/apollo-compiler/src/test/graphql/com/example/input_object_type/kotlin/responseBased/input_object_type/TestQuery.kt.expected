@@ -50,6 +50,27 @@ public data class TestQuery(
   .selections(selections = TestQuerySelections.__root)
   .build()
 
+  public class Builder {
+    private var ep: Episode? = null
+
+    private var review: ReviewInput? = null
+
+    public fun ep(ep: Episode): Builder {
+      this.ep = ep
+      return this
+    }
+
+    public fun review(review: ReviewInput): Builder {
+      this.review = review
+      return this
+    }
+
+    public fun build(): TestQuery = TestQuery(
+      ep = ep ?: error("missing value for ep"),
+      review = review ?: error("missing value for review"),
+    )
+  }
+
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
     public val createReview: CreateReview?,
