@@ -124,9 +124,9 @@ fun GQLType.withNullability(nullability: GQLNullability?): GQLType {
 
 internal sealed interface NullabilityValidation
 
-object NullabilityValidationIgnore: NullabilityValidation
-object NullabilityValidationThrow: NullabilityValidation
-class NullabilityValidationRegister(val issues: MutableList<Issue>, val fieldName: String): NullabilityValidation
+internal object NullabilityValidationIgnore: NullabilityValidation
+internal object NullabilityValidationThrow: NullabilityValidation
+internal class NullabilityValidationRegister(val issues: MutableList<Issue>, val fieldName: String): NullabilityValidation
 
 internal fun GQLType.withNullability(nullability: GQLNullability?, validation: NullabilityValidation): GQLType {
   val selfNullability: GQLNullability?
