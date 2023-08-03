@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-07-06**
+**Last updated: 2023-08-03**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -25,7 +25,7 @@ _Approximate Date: 2023-04-03 (experimental), stable release pending user feedba
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate Dates: August 2023 (Beta), Autumn 2023 (GA)_
+_Approximate Dates: 2023-09-20 (Beta), Autumn 2023 (GA)_
 
 Our next major release is currently in the alpha stage. Expect new alphas to be released as we make progress towards being feature-complete. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible. 
 
@@ -35,15 +35,18 @@ Here's a high-level overview of what to expect:
 - [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
 - Better error handling ([RFC here](https://github.com/apollographql/apollo-kotlin/issues/4711))
 - [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
-- Client-controlled nullability
-- Annotation processing for custom scalars
-- Stable Jetpack Compose extensions
+- Client-controlled nullability (experimental)
 
 ## Cache improvements
 
 _Approximate Date: TBD_
 
 The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
+
+## Future feature releases
+
+- Annotation processing for custom scalars
+- Stable Jetpack Compose extensions - user feedback is critical here, please do try out the experimental extensions and let us know what's working and what could be improved!
 
 ### `release-2.x` branch
 
