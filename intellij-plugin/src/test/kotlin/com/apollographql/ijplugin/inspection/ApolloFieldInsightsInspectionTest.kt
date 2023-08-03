@@ -1,5 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.inspection
 
+import com.apollographql.ijplugin.ApolloTestCase
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection
 import com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService
@@ -38,10 +39,10 @@ class ApolloFieldInsightsInspectionTest : ApolloTestCase() {
     myFixture.configureByFile("FieldInsights.graphql")
     var highlightInfos = doHighlighting()
     assertTrue(highlightInfos.any { it.description == "firstName has a high latency: ~150 ms" })
-    val quickFixAction = myFixture.findSingleIntention("Enclose in @defer fragment");
+    val quickFixAction = myFixture.findSingleIntention("Enclose in @defer fragment")
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
-    myFixture.checkResultByFile("FieldInsights.after.graphql");
+    myFixture.checkResultByFile("FieldInsights_after.graphql")
 
     highlightInfos = doHighlighting()
     assertTrue(highlightInfos.none { it.description == "firstName has a high latency: ~150 ms" })

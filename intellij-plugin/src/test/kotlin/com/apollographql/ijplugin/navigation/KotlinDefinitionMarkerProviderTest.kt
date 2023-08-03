@@ -1,5 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.ApolloTestCase
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl

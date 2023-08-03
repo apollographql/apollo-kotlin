@@ -1,6 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.inspection
 
-import com.apollographql.ijplugin.inspection.ApolloSchemaInGraphqlFileInspection
+import com.apollographql.ijplugin.ApolloTestCase
 import com.apollographql.ijplugin.util.cast
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.testFramework.TestDataPath
