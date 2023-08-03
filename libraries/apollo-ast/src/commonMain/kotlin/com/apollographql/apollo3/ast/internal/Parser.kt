@@ -42,6 +42,10 @@ internal class Parser(
     return parseTopLevel(::parseTypeInternal)
   }
 
+  fun parseNullability(): GQLNullability? {
+    return parseTopLevel(::parseNullabilityInternal)
+  }
+
   private fun advance() {
     lastToken = token
     if (lookaheadToken != null) {
@@ -217,7 +221,7 @@ internal class Parser(
     val arguments = parseArguments(const = false)
     var nullability: GQLNullability? = null
     if (allowClientControlledNullability) {
-      nullability = parseNullability()
+      nullability = parseNullabilityInternal()
     }
     val directives = parseDirectives(const = false)
 
@@ -253,7 +257,7 @@ internal class Parser(
     }
   }
 
-  private fun parseNullability(): GQLNullability? {
+  private fun parseNullabilityInternal(): GQLNullability? {
     return when (token) {
       is Token.LeftBracket -> {
         parseListNullability()
@@ -268,7 +272,7 @@ internal class Parser(
     val sourceLocation = sourceLocation()
 
     expectToken<Token.LeftBracket>()
-    val ofNullability = parseNullability()
+    val ofNullability = parseNullabilityInternal()
     expectToken<Token.RightBracket>()
 
     return GQLListNullability(

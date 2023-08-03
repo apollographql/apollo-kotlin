@@ -84,43 +84,77 @@ internal fun GQLType.isOutputType(typeDefinitions: Map<String, GQLTypeDefinition
   }
 }
 
-private fun GQLType.withItemNullability(itemNullability: GQLNullability?): GQLType {
+private fun GQLType.withItemNullability(itemNullability: GQLNullability?, validation: NullabilityValidation): GQLType {
   if (itemNullability == null) {
     return this
   }
 
-  check(this is GQLListType)
+  if (this !is GQLListType) {
+    when (validation) {
+      is NullabilityValidationThrow -> {
+        check(this is GQLListType) {
+          "Cannot apply nullability, the nullability list dimension exceeds the one of the field type."
+        }
+      }
 
-  return this.copy(type = type.withNullability(itemNullability))
+      is NullabilityValidationIgnore -> {
+        return this
+
+      }
+
+      is NullabilityValidationRegister -> {
+        validation.issues.add(
+            Issue.ValidationError(
+                "Cannot apply nullability on '${validation.fieldName}', the nullability list dimension exceeds the one of the field type.",
+                itemNullability.sourceLocation,
+            )
+        )
+        return this
+      }
+    }
+  }
+
+  return this.copy(type = type.withNullability(itemNullability, validation))
 }
 
 @ApolloExperimental
 fun GQLType.withNullability(nullability: GQLNullability?): GQLType {
+  return withNullability(nullability, NullabilityValidationThrow)
+}
+
+internal sealed interface NullabilityValidation
+
+object NullabilityValidationIgnore: NullabilityValidation
+object NullabilityValidationThrow: NullabilityValidation
+class NullabilityValidationRegister(val issues: MutableList<Issue>, val fieldName: String): NullabilityValidation
+
+internal fun GQLType.withNullability(nullability: GQLNullability?, validation: NullabilityValidation): GQLType {
   val selfNullability: GQLNullability?
   val itemNullability: GQLNullability?
 
-  when(nullability) {
+  when (nullability) {
     is GQLListNullability -> {
       selfNullability = nullability.selfNullability
       itemNullability = nullability.itemNullability
     }
+
     else -> {
       selfNullability = nullability
       itemNullability = null
     }
   }
   return if (this is GQLNonNullType && selfNullability == null) {
-    this.copy(type = type.withItemNullability(itemNullability))
+    this.copy(type = type.withItemNullability(itemNullability, validation))
   } else if (this is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
-    this.copy(type = type.withItemNullability(itemNullability))
+    this.copy(type = type.withItemNullability(itemNullability, validation))
   } else if (this is GQLNonNullType && selfNullability is GQLNullDesignator) {
-    this.type.withItemNullability(itemNullability)
+    this.type.withItemNullability(itemNullability, validation)
   } else if (this !is GQLNonNullType && selfNullability == null) {
-    this.withItemNullability(itemNullability)
+    this.withItemNullability(itemNullability, validation)
   } else if (this !is GQLNonNullType && selfNullability is GQLNonNullDesignator) {
-    GQLNonNullType(type = this.withItemNullability(itemNullability))
+    GQLNonNullType(type = this.withItemNullability(itemNullability, validation))
   } else if (this !is GQLNonNullType && selfNullability is GQLNullDesignator) {
-    this.withItemNullability(itemNullability)
+    this.withItemNullability(itemNullability, validation)
   } else {
     error("")
   }
