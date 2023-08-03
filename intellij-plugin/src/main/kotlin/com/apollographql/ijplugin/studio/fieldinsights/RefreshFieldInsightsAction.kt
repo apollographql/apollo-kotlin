@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.studio.fieldinsights
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsConfigurable
 import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.logd
@@ -32,6 +33,10 @@ class RefreshFieldInsightsAction : AnAction() {
     }
 
     project.fieldInsightsService.fetchLatencies()
+  }
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isEnabled = e.project?.apolloProjectService?.apolloVersion?.isAtLeastV3 == true
   }
 
   override fun getActionUpdateThread() = ActionUpdateThread.BGT
