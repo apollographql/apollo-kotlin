@@ -1,3 +1,4 @@
+
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.gradle.api.DefaultTask
@@ -43,7 +44,8 @@ object JapiCmp {
       }
 
       this.artifact = artifact
-      output.set(File(buildDir, "japicmp/cache/$artifact"))
+
+      output.set(File(layout.buildDirectory.asFile.get(), "japicmp/cache/$artifact"))
     }
 
     // TODO: Make this lazy
@@ -62,8 +64,8 @@ object JapiCmp {
           packageExcludes = listOf("*.internal*")
           onlyModified = true
           failOnSourceIncompatibility = false
-          htmlOutputFile = file("$buildDir/reports/japicmp.html")
-          txtOutputFile = file("$buildDir/reports/japicmp.txt")
+          htmlOutputFile = file("${layout.buildDirectory.asFile.get()}/reports/japicmp.html")
+          txtOutputFile = file("${layout.buildDirectory.asFile.get()}/reports/japicmp.txt")
         }
         tasks.register("checkJapicmp", me.champeau.gradle.japicmp.JapicmpTask::class.java) {
           dependsOn(downloadBaselineJarTaskProvider)
@@ -73,8 +75,8 @@ object JapiCmp {
           packageExcludes = listOf("*.internal*")
           onlyModified = true
           failOnSourceIncompatibility = true
-          htmlOutputFile = file("$buildDir/reports/japicmp.html")
-          txtOutputFile = file("$buildDir/reports/japicmp.txt")
+          htmlOutputFile = file("${layout.buildDirectory.asFile.get()}/reports/japicmp.html")
+          txtOutputFile = file("${layout.buildDirectory.asFile.get()}/reports/japicmp.txt")
         }
       }
     }
