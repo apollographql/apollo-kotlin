@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.inspection
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.getMethodName
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
@@ -33,6 +34,7 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
       private val registeredTomlVersionValues = mutableSetOf<PsiElement>()
 
       override fun visitElement(element: PsiElement) {
+        if (!element.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         when {
           element.containingFile.name.endsWith(".versions.toml") && element is TomlLiteral -> {
             visitVersionsToml(element, holder)

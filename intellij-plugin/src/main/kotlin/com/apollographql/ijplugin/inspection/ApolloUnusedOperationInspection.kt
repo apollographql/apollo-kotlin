@@ -25,27 +25,25 @@ class ApolloUnusedOperationInspection : LocalInspectionTool() {
       }
     }
   }
+}
 
-  companion object {
-    fun isUnusedOperation(operationDefinition: GraphQLTypedOperationDefinition): Boolean {
-      if (isProcessCanceled()) return false
-      if (!operationDefinition.project.apolloProjectService.apolloVersion.isAtLeastV3) return false
-      val ktClasses = findKotlinOperationDefinitions(operationDefinition).ifEmpty {
-        // Didn't find any generated class: maybe in the middle of writing a new operation, let's not report an error yet.
-        return false
-      }
-      val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(operationDefinition.project)
-      val hasUsageProcessor = HasUsageProcessor()
-      for (kotlinDefinition in ktClasses) {
-        if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
-          val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
-              ?: return false
-          val findUsageOptions = kotlinFindUsagesHandlerFactory.findClassOptions ?: return false
-          kotlinFindUsagesHandler.processElementUsages(kotlinDefinition, hasUsageProcessor, findUsageOptions)
-          if (hasUsageProcessor.foundUsage) return false
-        }
-      }
-      return true
+fun isUnusedOperation(operationDefinition: GraphQLTypedOperationDefinition): Boolean {
+  if (isProcessCanceled()) return false
+  if (!operationDefinition.project.apolloProjectService.apolloVersion.isAtLeastV3) return false
+  val ktClasses = findKotlinOperationDefinitions(operationDefinition).ifEmpty {
+    // Didn't find any generated class: maybe in the middle of writing a new operation, let's not report an error yet.
+    return false
+  }
+  val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(operationDefinition.project)
+  val hasUsageProcessor = HasUsageProcessor()
+  for (kotlinDefinition in ktClasses) {
+    if (kotlinFindUsagesHandlerFactory.canFindUsages(kotlinDefinition)) {
+      val kotlinFindUsagesHandler = kotlinFindUsagesHandlerFactory.createFindUsagesHandler(kotlinDefinition, false)
+          ?: return false
+      val findUsageOptions = kotlinFindUsagesHandlerFactory.findClassOptions ?: return false
+      kotlinFindUsagesHandler.processElementUsages(kotlinDefinition, hasUsageProcessor, findUsageOptions)
+      if (hasUsageProcessor.foundUsage) return false
     }
   }
+  return true
 }

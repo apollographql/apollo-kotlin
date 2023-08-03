@@ -104,7 +104,7 @@
     />
 
     <!-- "Apollo Kotlin 4 is available" inspection -->
-    <!--suppress PluginXmlCapitalization -->
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
     <localInspection
         implementationClass="com.apollographql.ijplugin.inspection.Apollo4AvailableInspection"
         groupPathKey="inspection.group.graphql"
@@ -138,6 +138,18 @@
         enabledByDefault="true"
         level="WARNING"
         editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
+    />
+
+    <!-- "Missing introspection" inspection  -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        language="kotlin"
+        implementationClass="com.apollographql.ijplugin.inspection.MissingIntrospectionInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.missingIntrospection.displayName"
+        enabledByDefault="true"
+        level="INFO"
     />
 
     <!-- Fields insights service (fetch and cache data) -->
