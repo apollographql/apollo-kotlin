@@ -117,7 +117,7 @@ tasks.register("cleanStaleTestProjects") {
   /**
    * Remove stale testProject directories
    */
-  val buildFiles = buildDir.listFiles()
+  val buildFiles = layout.buildDirectory.asFile.get().listFiles()
   doFirst {
     buildFiles?.forEach {
       if (it.isDirectory && it.name.startsWith("testProject")) {
