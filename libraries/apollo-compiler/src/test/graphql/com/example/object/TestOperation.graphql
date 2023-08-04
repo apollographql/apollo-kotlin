@@ -1,0 +1,6 @@
+# https://github.com/apollographql/apollo-kotlin/issues/1173
+query TestQuery {
+  object {
+    random
+  }
+}

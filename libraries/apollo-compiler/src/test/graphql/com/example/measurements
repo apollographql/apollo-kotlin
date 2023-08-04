@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  191665
-aggregate-kotlin-responseBased                                                                  60538
+aggregate-all                                                                                  192403
+aggregate-kotlin-responseBased                                                                  60846
 aggregate-kotlin-operationBased                                                                 40535
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   90592
+aggregate-java-operationBased                                                                   91022
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5552
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3471
@@ -214,6 +214,7 @@ kotlin-responseBased-enum_field                                                 
 kotlin-responseBased-inline_fragment_type_coercion                                                436
 java-operationBased-companion                                                                     435
 kotlin-responseBased-optional                                                                     435
+java-operationBased-object                                                                        430
 kotlin-responseBased-recursive_selection                                                          427
 kotlin-responseBased-inline_fragment_simple                                                       419
 kotlin-operationBased-inline_fragment_for_non_optional_field                                      412
@@ -234,6 +235,7 @@ kotlin-responseBased-big_query                                                  
 kotlin-responseBased-case_sensitive_enum                                                          322
 kotlin-responseBased-nonnull                                                                      316
 kotlin-operationBased-companion                                                                   309
+kotlin-responseBased-object                                                                       308
 kotlin-responseBased-java_hashcode                                                                248
 kotlin-responseBased-__schema                                                                     128
 java-operationBased-__schema                                                                      103
