@@ -2,11 +2,17 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
+<<<<<<< HEAD
 aggregate-all                                                                                  191665
 aggregate-kotlin-responseBased                                                                  60538
 aggregate-kotlin-operationBased                                                                 40535
+=======
+aggregate-all                                                                                  192103
+aggregate-kotlin-responseBased                                                                  60668
+aggregate-kotlin-operationBased                                                                 40413
+>>>>>>> 3a94475632 (add a test for Object)
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   90592
+aggregate-java-operationBased                                                                   91022
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5552
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3471
@@ -213,6 +219,7 @@ kotlin-responseBased-field_with_include_directive                               
 kotlin-responseBased-enum_field                                                                   436
 kotlin-responseBased-inline_fragment_type_coercion                                                436
 java-operationBased-companion                                                                     435
+<<<<<<< HEAD
 kotlin-responseBased-optional                                                                     435
 kotlin-responseBased-recursive_selection                                                          427
 kotlin-responseBased-inline_fragment_simple                                                       419
@@ -235,6 +242,34 @@ kotlin-responseBased-case_sensitive_enum                                        
 kotlin-responseBased-nonnull                                                                      316
 kotlin-operationBased-companion                                                                   309
 kotlin-responseBased-java_hashcode                                                                248
+=======
+kotlin-responseBased-enum_field                                                                   434
+kotlin-responseBased-inline_fragment_type_coercion                                                434
+kotlin-responseBased-optional                                                                     433
+java-operationBased-object                                                                        430
+kotlin-responseBased-recursive_selection                                                          425
+kotlin-responseBased-inline_fragment_simple                                                       417
+kotlin-operationBased-inline_fragment_for_non_optional_field                                      410
+kotlin-responseBased-capitalized_fields                                                           400
+kotlin-operationBased-inline_fragment_type_coercion                                               399
+kotlin-responseBased-two_heroes_unique                                                            395
+kotlin-operationBased-inline_fragment_simple                                                      391
+kotlin-responseBased-java8annotation                                                              383
+kotlin-responseBased-starships                                                                    383
+kotlin-responseBased-antlr_tokens                                                                 382
+kotlin-responseBased-subscriptions                                                                370
+kotlin-responseBased-arguments_hardcoded                                                          367
+kotlin-responseBased-enums_as_sealed                                                              350
+java-operationBased-java_hashcode                                                                 331
+kotlin-responseBased-operation_id_generator                                                       330
+kotlin-responseBased-merged_include                                                               328
+kotlin-responseBased-big_query                                                                    322
+kotlin-responseBased-case_sensitive_enum                                                          320
+kotlin-responseBased-nonnull                                                                      314
+kotlin-operationBased-companion                                                                   307
+kotlin-responseBased-object                                                                       306
+kotlin-responseBased-java_hashcode                                                                246
+>>>>>>> 3a94475632 (add a test for Object)
 kotlin-responseBased-__schema                                                                     128
 java-operationBased-__schema                                                                      103
 kotlin-responseBased-empty                                                                         91

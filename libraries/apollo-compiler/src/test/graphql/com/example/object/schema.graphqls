@@ -1,0 +1,7 @@
+type Query {
+  object: Object
+}
+
+type Object {
+  random: Int
+}
