@@ -1,0 +1,6 @@
+query TestQuery {
+  amenityCategories {
+    text
+  }
+  category
+}
