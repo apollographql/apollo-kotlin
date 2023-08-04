@@ -70,6 +70,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query SpreadSingleWithDefer {
      *   hero {
      *     __typename
@@ -80,6 +81,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      * fragment DroidDetails on Droid {
      *   name
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

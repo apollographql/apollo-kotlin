@@ -115,6 +115,7 @@ public class GetPage() : Query<GetPage.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query GetPage {
      *   collection {
      *     __typename
@@ -131,6 +132,7 @@ public class GetPage() : Query<GetPage.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

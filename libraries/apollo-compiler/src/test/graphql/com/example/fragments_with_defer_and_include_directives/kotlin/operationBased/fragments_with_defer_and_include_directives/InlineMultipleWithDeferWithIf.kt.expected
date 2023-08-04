@@ -97,6 +97,7 @@ public data class InlineMultipleWithDeferWithIf(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query InlineMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
@@ -111,6 +112,7 @@ public data class InlineMultipleWithDeferWithIf(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

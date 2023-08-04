@@ -192,6 +192,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestOperation {
      *   random {
      *     __typename
@@ -232,6 +233,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

@@ -68,12 +68,14 @@ public data class CatQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query CatQuery($filter: Filter) {
      *   search(filter: $filter) {
      *     mustaches
      *   }
      *   direction
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

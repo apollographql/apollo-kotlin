@@ -79,6 +79,7 @@ public data class SpreadMultipleWithDeferWithIf(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query SpreadMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
@@ -99,6 +100,7 @@ public data class SpreadMultipleWithDeferWithIf(
      * fragment CharacterDetails3 on Droid {
      *   birthDate
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

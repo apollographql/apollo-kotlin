@@ -108,6 +108,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery {
      *   hero {
      *     __typename
@@ -126,6 +127,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

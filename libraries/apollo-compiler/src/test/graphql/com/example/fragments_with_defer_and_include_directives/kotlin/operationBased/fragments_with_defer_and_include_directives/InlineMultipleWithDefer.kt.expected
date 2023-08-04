@@ -88,6 +88,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query InlineMultipleWithDefer {
      *   hero {
      *     __typename
@@ -99,6 +100,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

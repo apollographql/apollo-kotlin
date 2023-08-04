@@ -71,6 +71,7 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query SpreadMultipleWithDefer {
      *   hero {
      *     __typename
@@ -82,6 +83,7 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * fragment DroidDetails on Droid {
      *   name
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

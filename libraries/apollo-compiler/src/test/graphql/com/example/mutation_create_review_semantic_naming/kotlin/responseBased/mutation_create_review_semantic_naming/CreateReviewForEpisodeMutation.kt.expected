@@ -75,12 +75,14 @@ public data class CreateReviewForEpisodeMutation(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
      *   createReview(episode: $ep, review: $review) {
      *     stars
      *     commentary
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

@@ -109,6 +109,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) {
      *   hero {
      *     __typename
@@ -126,6 +127,7 @@ public data class TestQuery(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =
