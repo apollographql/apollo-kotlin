@@ -135,10 +135,6 @@ fun GQLDocument.toSDL(indent: String = "  "): String {
   val buffer = Buffer()
   val writer = SDLWriter(buffer, indent)
 
-  definitions.filter {
-    it !is GQLScalarTypeDefinition || it.name !in GQLTypeDefinition.builtInTypes
-  }
-
   definitions.forEachIndexed { index, definition ->
     when {
       definition is GQLScalarTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes -> {
