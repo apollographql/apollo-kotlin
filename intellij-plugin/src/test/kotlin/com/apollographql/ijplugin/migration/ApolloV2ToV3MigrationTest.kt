@@ -1,5 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.migration
 
+import com.apollographql.ijplugin.ApolloTestCase
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.ApolloV2ToV3MigrationProcessor
 import com.intellij.testFramework.TestDataPath
 import org.junit.Test

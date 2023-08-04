@@ -29,7 +29,7 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         if (isUnusedOperation) return
         val operation = o.findParentOfType<GraphQLTypedOperationDefinition>()
-        if (operation != null && ApolloUnusedOperationInspection.isUnusedOperation(operation)) {
+        if (operation != null && isUnusedOperation(operation)) {
           // The whole operation is unused, no need to check the fields
           isUnusedOperation = true
           return

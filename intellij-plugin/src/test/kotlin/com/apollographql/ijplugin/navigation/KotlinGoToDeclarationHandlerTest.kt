@@ -1,6 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.navigation
 
-import com.apollographql.ijplugin.navigation.KotlinGotoDeclarationHandler
+import com.apollographql.ijplugin.ApolloTestCase
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition

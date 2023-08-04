@@ -1,6 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.inspection
 
-import com.apollographql.ijplugin.inspection.ApolloUnusedOperationInspection
+import com.apollographql.ijplugin.ApolloTestCase
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

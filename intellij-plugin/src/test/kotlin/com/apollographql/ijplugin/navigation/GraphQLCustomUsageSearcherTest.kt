@@ -1,5 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.ApolloTestCase
 import com.apollographql.ijplugin.util.cast
 import com.intellij.usages.UsageInfo2UsageAdapter
 import org.junit.Test

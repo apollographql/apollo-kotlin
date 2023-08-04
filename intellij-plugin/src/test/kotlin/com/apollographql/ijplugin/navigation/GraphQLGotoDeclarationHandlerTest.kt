@@ -1,6 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.navigation
 
-import com.apollographql.ijplugin.navigation.GraphQLGotoDeclarationHandler
+import com.apollographql.ijplugin.ApolloTestCase
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry

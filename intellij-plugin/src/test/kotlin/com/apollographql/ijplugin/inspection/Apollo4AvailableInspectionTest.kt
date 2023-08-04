@@ -1,6 +1,6 @@
-package com.apollographql.ijplugin
+package com.apollographql.ijplugin.inspection
 
-import com.apollographql.ijplugin.inspection.Apollo4AvailableInspection
+import com.apollographql.ijplugin.ApolloTestCase
 import com.intellij.testFramework.TestDataPath
 import org.junit.Test
 import org.junit.runner.RunWith
