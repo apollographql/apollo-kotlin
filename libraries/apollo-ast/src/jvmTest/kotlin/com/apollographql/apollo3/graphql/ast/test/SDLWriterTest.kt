@@ -1,48 +1,39 @@
 package com.apollographql.apollo3.graphql.ast.test
 
-import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSDL
+import com.apollographql.apollo3.ast.withBuiltinDefinitions
+import com.apollographql.apollo3.graphql.ast.test.ParserTest.Companion.checkExpected
+import java.io.File
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SDLWriterTest {
   @Test
   fun simpleTest() {
-    val schemaString = """
-      schema {
-          query: Query
-      }
-      
-      type Query {
-          foo: Int
-      }
-      
-      interface A {
-          a: String
-      }
-      
-      interface B {
-          b: String
-      }
-      
-      type C implements A & B {
-          a: String
-      
-          b: String
-      }
-      
-      interface D implements A & B {
-          a: String
-      
-          b: String
-      }
+    val sdlSchema = File("${CWD}/test-fixtures/sdl/simple.graphqls")
 
-    """.trimIndent()
+    checkExpected(sdlSchema) {
+      it.parseAsGQLDocument().getOrThrow().toSDL("    ")
+    }
+  }
 
-    val schema: GQLDocument = schemaString.parseAsGQLDocument().getOrThrow()
-    val sdl = schema.toSDL("    ")
-    assertEquals(schemaString, sdl)
+  @Test
+  fun typeRedefinitionInspectionIsIgnored() {
+    val sdlSchema = File("${CWD}/test-fixtures/sdl/type_redefinitions.graphqls")
+
+    checkExpected(sdlSchema) {
+      it.parseAsGQLDocument().getOrThrow().withBuiltinDefinitions().toSDL("    ")
+    }
+  }
+
+  @Test
+  fun introspectionSchema() {
+    val sdlSchema = File("${CWD}/test-fixtures/sdl/introspection.json")
+
+    checkExpected(sdlSchema) {
+      it.toSchema().toGQLDocument().toSDL("    ")
+    }
   }
 
   @Test

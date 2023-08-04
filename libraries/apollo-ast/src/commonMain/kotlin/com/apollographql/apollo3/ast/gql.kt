@@ -727,6 +727,7 @@ class GQLDirectiveDefinition(
         "include",
         "skip",
         "deprecated",
+        "specifiedBy"
     )
   }
 }

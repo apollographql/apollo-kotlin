@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.internal.apollo_v0_1_definitionsStr
 import com.apollographql.apollo3.ast.internal.apollo_v0_2_definitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
+import okio.Buffer
 
 /**
  * Add builtin definitions from the latest spec version to the [GQLDocument]
@@ -47,7 +48,7 @@ fun apolloDefinitions() = definitionsFromString(apollo_v0_1_definitionsStr)
  * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
 fun apolloDefinitions(version: String): List<GQLDefinition> {
-  return definitionsFromString(when(version) {
+  return definitionsFromString(when (version) {
     "v0.1" -> apollo_v0_1_definitionsStr
     "v0.2" -> apollo_v0_2_definitionsStr
     else -> error("Apollo definitions $version are not supported")
@@ -91,7 +92,11 @@ internal enum class ConflictResolution {
   TakeLeft
 }
 
-internal fun combineDefinitions(left: List<GQLDefinition>, right: List<GQLDefinition>, conflictResolution: ConflictResolution): List<GQLDefinition> {
+internal fun combineDefinitions(
+    left: List<GQLDefinition>,
+    right: List<GQLDefinition>,
+    conflictResolution: ConflictResolution,
+): List<GQLDefinition> {
   val mergedDefinitions = left.toMutableList()
 
   right.forEach { builtInTypeDefinition ->
@@ -111,6 +116,7 @@ internal fun combineDefinitions(left: List<GQLDefinition>, right: List<GQLDefini
 
   return mergedDefinitions
 }
+
 private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDocument {
   return copy(
       definitions = combineDefinitions(this.definitions, definitions, ConflictResolution.TakeLeft)
@@ -126,9 +132,37 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
  */
 @ApolloExperimental
 fun GQLDocument.toSDL(indent: String = "  "): String {
-  return this.copy(
-      definitions = definitions.filter {
-        it !is GQLScalarTypeDefinition || it.name !in GQLTypeDefinition.builtInTypes
+  val buffer = Buffer()
+  val writer = SDLWriter(buffer, indent)
+
+  definitions.filter {
+    it !is GQLScalarTypeDefinition || it.name !in GQLTypeDefinition.builtInTypes
+  }
+
+  definitions.forEachIndexed { index, definition ->
+    when {
+      definition is GQLScalarTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes -> {
+        // Always skip scalar definitions, it's a must in the spec
+        return@forEachIndexed
       }
-  ).toUtf8(indent)
+
+      definition is GQLTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes ||
+          definition is GQLDirectiveDefinition && definition.name in GQLDirectiveDefinition.builtInDirectives -> {
+        // Tools like the GraphQL intelliJ plugin expect a "server" schema, without builtin types
+        // Suppress the errors for now
+        buffer.writeUtf8("# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665\n")
+        buffer.writeUtf8("# noinspection GraphQLTypeRedefinition\n")
+        writer.write(definition)
+
+      }
+
+      else -> {
+        writer.write(definition)
+      }
+    }
+    if (index < definitions.size - 1) {
+      writer.write("\n")
+    }
+  }
+  return buffer.readUtf8()
 }
