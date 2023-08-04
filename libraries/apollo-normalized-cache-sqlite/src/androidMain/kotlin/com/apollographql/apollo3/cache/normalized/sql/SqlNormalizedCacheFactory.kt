@@ -38,7 +38,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
 
   actual constructor(name: String?): this(createDriver(name, null, getSchema()))
 
-  override fun create(): NormalizedCache {
+  actual override fun create(): NormalizedCache {
     return SqlNormalizedCache(createRecordDatabase(driver))
   }
 }

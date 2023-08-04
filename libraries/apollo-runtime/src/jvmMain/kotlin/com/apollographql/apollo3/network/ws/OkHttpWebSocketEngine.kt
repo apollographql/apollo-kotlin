@@ -21,7 +21,7 @@ actual class DefaultWebSocketEngine(
       webSocketFactory = OkHttpClient()
   )
 
-  override suspend fun open(
+  actual override suspend fun open(
       url: String,
       headers: List<HttpHeader>,
   ): WebSocketConnection {

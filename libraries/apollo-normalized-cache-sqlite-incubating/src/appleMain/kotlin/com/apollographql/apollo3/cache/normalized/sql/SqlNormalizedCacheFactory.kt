@@ -24,7 +24,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
   constructor(name: String) : this(name, false)
   constructor() : this("apollo.db", false)
 
-  override fun create(): NormalizedCache {
+  actual override fun create(): NormalizedCache {
     return SqlNormalizedCache(
         recordDatabase = createRecordDatabase(driver, withDates)
     )

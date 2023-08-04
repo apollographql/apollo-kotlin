@@ -63,7 +63,7 @@ actual class DefaultWebSocketEngine(
       }
   )
 
-  override suspend fun open(
+  actual override suspend fun open(
       url: String,
       headers: List<HttpHeader>,
   ): WebSocketConnection {

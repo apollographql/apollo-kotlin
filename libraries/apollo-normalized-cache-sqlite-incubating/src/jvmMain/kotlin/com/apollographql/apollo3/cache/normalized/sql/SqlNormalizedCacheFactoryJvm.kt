@@ -35,7 +35,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
   constructor(name: String?, withDates: Boolean, baseDir: String?) : this(createDriver(name, baseDir, getSchema(withDates)), withDates)
   actual constructor(name: String?, withDates: Boolean) : this(name, withDates, null)
 
-  override fun create(): NormalizedCache {
+  actual override fun create(): NormalizedCache {
     return SqlNormalizedCache(createRecordDatabase(driver, withDates))
   }
 }

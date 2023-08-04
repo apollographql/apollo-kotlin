@@ -16,7 +16,7 @@ import java.util.concurrent.Executors
 
 @Suppress("BlockingMethodInNonBlockingContext")
 actual class MockServer actual constructor(
-    override val mockServerHandler: MockServerHandler,
+    actual override val mockServerHandler: MockServerHandler,
 ) : MockServerInterface {
   private val serverSocket = ServerSocket(0)
   private val mockRequests = mutableListOf<MockRequest>()
@@ -62,20 +62,20 @@ actual class MockServer actual constructor(
     }
   }
 
-  override fun enqueue(mockResponse: MockResponse) {
+  actual override fun enqueue(mockResponse: MockResponse) {
     (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
         ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
-  override fun takeRequest(): MockRequest {
+  actual override fun takeRequest(): MockRequest {
     return synchronized(mockRequests) { mockRequests.removeFirst() }
   }
 
-  override suspend fun url(): String {
+  actual override suspend fun url(): String {
     return "http://${serverSocket.inetAddress.hostAddress}:${serverSocket.localPort}/"
   }
 
-  override suspend fun stop() {
+  actual override suspend fun stop() {
     runCatching { serverSocket.close() }
     coroutineScope.cancel()
     dispatcher.close()

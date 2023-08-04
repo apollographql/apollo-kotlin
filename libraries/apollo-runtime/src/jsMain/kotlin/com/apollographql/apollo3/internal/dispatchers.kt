@@ -11,6 +11,6 @@ internal actual val defaultDispatcher = Dispatchers.Default
 internal actual class CloseableSingleThreadDispatcher : Closeable {
   actual val coroutineDispatcher: CoroutineDispatcher = defaultDispatcher
 
-  override fun close() {
+  actual override fun close() {
   }
 }

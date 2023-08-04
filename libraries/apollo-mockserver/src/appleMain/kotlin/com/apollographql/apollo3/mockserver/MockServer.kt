@@ -32,7 +32,7 @@ import platform.posix.socket
 @OptIn(ExperimentalStdlibApi::class)
 actual class MockServer(
     private val acceptDelayMillis: Long,
-    override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
+    actual override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
 ) : MockServerInterface {
 
   init {
@@ -98,11 +98,11 @@ actual class MockServer(
     }, stableRef.asCPointer())
   }
 
-  override suspend fun url(): String {
+  actual override suspend fun url(): String {
     return "http://localhost:$port/"
   }
 
-  override fun enqueue(mockResponse: MockResponse) {
+  actual override fun enqueue(mockResponse: MockResponse) {
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
@@ -116,7 +116,7 @@ actual class MockServer(
    * If stop() is called while we're reading a request, this might wait forever
    * Revisit once okio has native Timeout
    */
-  override suspend fun stop() {
+  actual override suspend fun stop() {
     if (socket == null) {
       return
     }
@@ -129,7 +129,7 @@ actual class MockServer(
     socket = null
   }
 
-  override fun takeRequest(): MockRequest {
+  actual override fun takeRequest(): MockRequest {
     check(socket != null) {
       "Cannot take a request from a stopped MockServer"
     }

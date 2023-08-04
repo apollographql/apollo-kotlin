@@ -35,7 +35,7 @@ actual class DefaultHttpEngine constructor(
           .build()
   )
 
-  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
+  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
         .headers(request.headers.toOkHttpHeaders())
@@ -102,7 +102,7 @@ actual class DefaultHttpEngine constructor(
     }
   }
 
-  override fun dispose() {
+  actual override fun dispose() {
   }
 }
 

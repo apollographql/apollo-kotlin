@@ -18,7 +18,7 @@ import kotlin.coroutines.resumeWithException
 
 actual class DefaultWebSocketEngine : WebSocketEngine {
 
-  override suspend fun open(
+  actual override suspend fun open(
       url: String,
       headers: List<HttpHeader>,
   ): WebSocketConnection = open(Url(url), headers)
