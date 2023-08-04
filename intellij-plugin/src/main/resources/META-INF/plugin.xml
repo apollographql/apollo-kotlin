@@ -144,10 +144,10 @@
     <!--suppress PluginXmlCapitalization -->
     <localInspection
         language="kotlin"
-        implementationClass="com.apollographql.ijplugin.inspection.MissingIntrospectionInspection"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloEndpointNotConfiguredInspection"
         groupPathKey="inspection.group.graphql"
         groupKey="inspection.group.graphql.apolloKotlin"
-        key="inspection.missingIntrospection.displayName"
+        key="inspection.endpointNotConfigured.displayName"
         enabledByDefault="true"
         level="INFO"
     />

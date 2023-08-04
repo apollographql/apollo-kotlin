@@ -8,13 +8,11 @@ apollo {
     // Some comment
     codegenModels.set("operationBased")
     srcDir("src/main/graphql")
-  }
-
-  service("b") { // Should highlight
-    packageName.set("com.example")
-    // Some comment
-    codegenModels.set("operationBased")
-    srcDir("src/main/graphql")
+    introspection {
+      endpointUrl.set("https://example.com/graphql")
+      headers.put("api-key", "1234567890abcdef")
+      schemaFile.set(file("src/main/graphql/schema.graphqls"))
+    }
   }
 
   service("c") {
@@ -28,7 +26,7 @@ apollo {
     }
   }
 
-  service("d") {
+  service("d") { // Should highlight
     packageName.set("com.example")
     // Some comment
     codegenModels.set("operationBased")
@@ -36,6 +34,11 @@ apollo {
     registry {
       key.set(System.getenv("APOLLO_KEY"))
       graph.set(System.getenv("APOLLO_GRAPH"))
+      schemaFile.set(file("src/main/graphql/schema.graphqls"))
+    }
+    introspection {
+      endpointUrl.set("https://example.com/graphql")
+      headers.put("api-key", "1234567890abcdef")
       schemaFile.set(file("src/main/graphql/schema.graphqls"))
     }
   }

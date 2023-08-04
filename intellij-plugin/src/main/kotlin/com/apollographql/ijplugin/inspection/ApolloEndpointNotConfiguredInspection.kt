@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtVisitorVoid
 
-class MissingIntrospectionInspection : LocalInspectionTool() {
+class ApolloEndpointNotConfiguredInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : KtVisitorVoid() {
       override fun visitCallExpression(expression: KtCallExpression) {
@@ -24,31 +24,8 @@ class MissingIntrospectionInspection : LocalInspectionTool() {
         if (expression.containingFile.name != "build.gradle.kts") return
         if (expression.getMethodName() == "service" && expression.findParentInFile { it is KtCallExpression && it.getMethodName() == "apollo" } != null) {
           val serviceBlockExpression = expression.lambdaBlockExpression() ?: return
-          if (serviceBlockExpression.statements.none { it is KtCallExpression && (it.getMethodName() == "introspection" || it.getMethodName() == "registry") }) {
-            holder.registerProblem(
-                expression.calleeExpression!!,
-                ApolloBundle.message("inspection.missingIntrospection.reportText"),
-                AddBlockQuickFix(
-                    name = "inspection.missingIntrospection.quickFix.introspection",
-                    blockToAdd = """
-                      introspection {
-                          endpointUrl.set("https://example.com/graphql")
-                          headers.put("api-key", "1234567890abcdef")
-                          schemaFile.set(file("src/main/graphql/schema.graphqls"))
-                      }
-                    """.trimIndent()
-                ),
-                AddBlockQuickFix(
-                    name = "inspection.missingIntrospection.quickFix.registry",
-                    blockToAdd = """
-                      registry {
-                          key.set(System.getenv("APOLLO_KEY"))
-                          graph.set(System.getenv("APOLLO_GRAPH"))
-                          schemaFile.set(file("src/main/graphql/schema.graphqls"))
-                      }
-                    """.trimIndent()
-                ),
-            )
+          if (serviceBlockExpression.statements.none { it is KtCallExpression && it.getMethodName() == "introspection" }) {
+            holder.registerProblem(expression.calleeExpression!!, ApolloBundle.message("inspection.endpointNotConfigured.reportText"), AddIntrospectionBlockQuickFix)
           }
         }
       }
@@ -56,15 +33,23 @@ class MissingIntrospectionInspection : LocalInspectionTool() {
   }
 }
 
-private class AddBlockQuickFix(private val name: String, private val blockToAdd: String) : LocalQuickFix {
-  override fun getName() = ApolloBundle.message(name)
+object AddIntrospectionBlockQuickFix : LocalQuickFix {
+  override fun getName() = ApolloBundle.message("inspection.endpointNotConfigured.quickFix")
   override fun getFamilyName() = name
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
     val callExpression = descriptor.psiElement.parent as KtCallExpression
     val serviceBlockExpression = callExpression.lambdaBlockExpression() ?: return
     val ktFactory = KtPsiFactory(project)
-    val newCallExpression = ktFactory.createExpression(blockToAdd)
+    val newCallExpression = ktFactory.createExpression(
+        """
+        introspection {
+            endpointUrl.set("https://example.com/graphql")
+            headers.put("api-key", "1234567890abcdef")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        }
+      """.trimIndent()
+    )
     serviceBlockExpression.add(ktFactory.createNewLine())
     serviceBlockExpression.add(newCallExpression)
   }
