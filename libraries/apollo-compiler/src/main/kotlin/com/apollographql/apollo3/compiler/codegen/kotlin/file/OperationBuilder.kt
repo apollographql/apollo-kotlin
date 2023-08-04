@@ -204,10 +204,12 @@ internal class OperationBuilder(
 
 
   /**
-   * Things like `[${'$'}oo]` do not compile. See https://youtrack.jetbrains.com/issue/KT-43906
+   * Things like `[${'$'}oo]` do not compile.
+   *
+   * See https://youtrack.jetbrains.com/issue/KT-43906
    */
   private fun String.escapeKdoc(): String {
-    return replace("[", "\\[").replace("]", "\\]")
+    return "```\n$this\n```\n"
   }
 
   private fun rootFieldFunSpec(): FunSpec {

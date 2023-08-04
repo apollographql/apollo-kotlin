@@ -75,8 +75,8 @@ public data class TestQuery(
      * mutation TestQuery($ep: Episode!) {
      *   createReview(episode: $ep, review: {
      *     stars: 5
-     *     listOfEnums: \[JEDI,EMPIRE,NEWHOPE\]
-     *     listOfStringNonOptional: \["1","2","3"\]
+     *     listOfEnums: [JEDI,EMPIRE,NEWHOPE]
+     *     listOfStringNonOptional: ["1","2","3"]
      *     favoriteColor: {
      *       red: 1
      *       blue: 1
