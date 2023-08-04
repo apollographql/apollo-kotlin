@@ -64,11 +64,13 @@ public data class LoginBarber(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * mutation LoginBarber($input: Login!) {
      *   login(input: $input) {
      *     response
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() = "mutation LoginBarber(${'$'}input: Login!) { login(input: ${'$'}input) { response } }"

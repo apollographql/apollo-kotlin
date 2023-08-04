@@ -86,6 +86,7 @@ public data class MyQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4
      * , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! =
      * {
@@ -109,6 +110,7 @@ public data class MyQuery(
      *   nullableListOfNullableString
      *   nullableListOfNonNullableString
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

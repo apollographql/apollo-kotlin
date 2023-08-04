@@ -74,12 +74,14 @@ public data class TestSubscription(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * subscription TestSubscription($repo: String!) {
      *   commentAdded(repoFullName: $repo) {
      *     id
      *     content
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

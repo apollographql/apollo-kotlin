@@ -113,6 +113,7 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query CharacterQuery {
      *   character {
      *     __typename
@@ -130,6 +131,7 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
      * fragment DroidFragment on Droid {
      *   primaryFunction
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

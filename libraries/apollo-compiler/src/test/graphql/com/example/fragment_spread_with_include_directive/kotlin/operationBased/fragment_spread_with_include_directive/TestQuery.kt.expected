@@ -93,6 +93,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!,
      * $optionalWithDefaultFalse: Boolean = false , $optionalWithDefaultTrue: Boolean = true ,
      * $optionalWithNoDefault: Boolean) {
@@ -122,6 +123,7 @@ public data class TestQuery(
      * fragment OtherDroidDetails on Droid {
      *   id
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

@@ -76,6 +76,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
      *   heroWithReview(episode: $episode, review: {
      *     stars: $stars
@@ -93,6 +94,7 @@ public data class TestQuery(
      *     height(unit: FOOT)
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

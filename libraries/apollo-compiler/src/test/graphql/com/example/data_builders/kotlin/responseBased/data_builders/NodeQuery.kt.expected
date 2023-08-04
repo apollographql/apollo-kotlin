@@ -108,6 +108,7 @@ public class NodeQuery() : Query<NodeQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query NodeQuery {
      *   node {
      *     __typename
@@ -124,6 +125,7 @@ public class NodeQuery() : Query<NodeQuery.Data> {
      * fragment DroidFragment on Droid {
      *   primaryFunction
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

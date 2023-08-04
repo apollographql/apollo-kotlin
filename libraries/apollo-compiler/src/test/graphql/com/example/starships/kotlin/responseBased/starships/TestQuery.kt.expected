@@ -73,6 +73,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($id: ID!) {
      *   starship(id: $id) {
      *     id
@@ -80,6 +81,7 @@ public data class TestQuery(
      *     coordinates
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() = "query TestQuery(${'$'}id: ID!) { starship(id: ${'$'}id) { id name coordinates } }"

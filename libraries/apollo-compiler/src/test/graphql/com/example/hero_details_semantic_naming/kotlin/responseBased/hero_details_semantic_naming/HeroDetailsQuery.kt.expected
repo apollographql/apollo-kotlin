@@ -100,6 +100,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query HeroDetails {
      *   hero {
      *     name
@@ -113,6 +114,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =
