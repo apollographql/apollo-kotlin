@@ -14,7 +14,7 @@ class ParserTest {
   @Test
   fun parserProducesExpectedValues(@TestParameter(valuesProvider = ParametersProvider::class) graphqlFile: File) {
     checkExpected(graphqlFile) {
-      graphqlFile.parseAsGQLDocument()
+      it.parseAsGQLDocument()
           .issues
           .serialize()
     }
@@ -29,28 +29,6 @@ class ParserTest {
           .filter {
             testFilterMatches(it.name)
           }
-    }
-  }
-
-  /**
-   * run the block and checks the result against the .expected file. Will overwrite the result if required
-   *
-   * @param block the callback to produce the result.
-   */
-  fun checkExpected(graphQLFile: File, block: () -> String) {
-    val actual = block()
-
-    val expectedFile = File(graphQLFile.parent, graphQLFile.nameWithoutExtension + ".expected")
-    val expected = try {
-      expectedFile.readText()
-    } catch (e: Exception) {
-      null
-    }
-
-    if (shouldUpdateTestFixtures()) {
-      expectedFile.writeText(actual)
-    } else {
-      assertEquals(expected, actual)
     }
   }
 
@@ -76,6 +54,28 @@ class ParserTest {
       val testFilter = System.getenv("testFilter") ?: System.getProperty("testFilter") ?: return true
 
       return Regex(testFilter).containsMatchIn(value)
+    }
+
+    /**
+     * run the block and checks the result against the .expected file. Will overwrite the result if required
+     *
+     * @param block the callback to produce the result.
+     */
+    fun checkExpected(graphQLFile: File, block: (File) -> String) {
+      val actual = block(graphQLFile)
+
+      val expectedFile = File(graphQLFile.parent, graphQLFile.nameWithoutExtension + ".expected")
+      val expected = try {
+        expectedFile.readText()
+      } catch (e: Exception) {
+        null
+      }
+
+      if (shouldUpdateTestFixtures()) {
+        expectedFile.writeText(actual)
+      } else {
+        assertEquals(expected, actual)
+      }
     }
   }
 }

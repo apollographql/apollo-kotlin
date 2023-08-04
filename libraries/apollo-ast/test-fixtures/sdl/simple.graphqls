@@ -1,0 +1,27 @@
+schema {
+  query: Query
+}
+
+type Query {
+  foo: Int
+}
+
+interface A {
+  a: String
+}
+
+interface B {
+  b: String
+}
+
+type C implements A & B {
+  a: String
+
+  b: String
+}
+
+interface D implements A & B {
+  a: String
+
+  b: String
+}
