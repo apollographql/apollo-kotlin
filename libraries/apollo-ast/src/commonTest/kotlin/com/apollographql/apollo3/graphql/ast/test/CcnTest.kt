@@ -9,7 +9,7 @@ import com.apollographql.apollo3.ast.withNullability
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class GQLTest {
+class CcnTest {
   @Test
   fun type() {
     val newType = "[String!]!".parseAsGQLType().getOrThrow().withNullability(GQLListNullability(selfNullability = null, itemNullability = GQLNullDesignator()))

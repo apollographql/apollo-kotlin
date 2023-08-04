@@ -92,14 +92,11 @@ private fun GQLType.withItemNullability(itemNullability: GQLNullability?, valida
   if (this !is GQLListType) {
     when (validation) {
       is NullabilityValidationThrow -> {
-        check(this is GQLListType) {
-          "Cannot apply nullability, the nullability list dimension exceeds the one of the field type."
-        }
+        error("Cannot apply nullability, the nullability list dimension exceeds the one of the field type.")
       }
 
       is NullabilityValidationIgnore -> {
         return this
-
       }
 
       is NullabilityValidationRegister -> {
