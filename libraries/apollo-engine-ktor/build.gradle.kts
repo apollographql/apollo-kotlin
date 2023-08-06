@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.runtime")
+  javaModuleName("com.apollographql.apollo3.engine.ktor")
   mpp {
     withLinux.set(false)
   }
@@ -14,11 +14,10 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":apollo-api"))
-        api(project(":apollo-mpp-utils"))
-        api(libs.okio)
-        api(libs.uuid)
+        api(project(":apollo-runtime"))
         api(libs.kotlinx.coroutines)
+        api(libs.ktor.client.core)
+        api(libs.ktor.client.websockets)
       }
     }
 
@@ -38,7 +37,7 @@ kotlin {
 
     findByName("jvmMain")?.apply {
       dependencies {
-        api(libs.okhttp)
+        api(libs.ktor.client.okhttp)
       }
     }
 
@@ -50,14 +49,7 @@ kotlin {
 
     findByName("appleMain")?.apply {
       dependencies {
-      }
-    }
-
-    findByName("jvmTest")?.apply {
-      dependencies {
-        implementation(libs.kotlin.test.junit)
-        implementation(libs.truth)
-        implementation(libs.okhttp)
+        api(libs.ktor.client.darwin)
       }
     }
   }
@@ -72,3 +64,4 @@ tasks.register("iOSSimTest") {
     }
   }
 }
+

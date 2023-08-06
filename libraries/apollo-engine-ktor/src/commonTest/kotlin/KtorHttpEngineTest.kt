@@ -1,8 +1,6 @@
-package com.apollographql.apollo3.network
-
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.KtorHttpEngine
 import com.apollographql.apollo3.network.http.get
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -10,7 +8,7 @@ import okio.ByteString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class HttpEngineTest {
+class KtorHttpEngineTest {
   // "Hello World" gzipped and hex encoded
   val gzipData = """
 1f8b 0800 0000 0000 0003 f348 cdc9 c957
@@ -27,7 +25,7 @@ class HttpEngineTest {
   }
 
   @Test
-  fun gzipTest() = runTest {
+  fun ktorEngineGzipTest() = runTest {
     val mockServer = MockServer()
 
     try {
@@ -37,7 +35,7 @@ class HttpEngineTest {
           .body(gzipData.toByteString())
           .build())
 
-      val engine = DefaultHttpEngine()
+      val engine = KtorHttpEngine()
 
       val response = engine.get(mockServer.url())
           .execute()

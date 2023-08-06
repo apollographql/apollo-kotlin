@@ -20,7 +20,7 @@ class KtorHttpEngine(
     private val client: HttpClient,
 ): HttpEngine {
 
-  var disposed = false
+  private var disposed = false
 
   constructor(timeoutMillis: Long = 60_000) : this(timeoutMillis, timeoutMillis)
 

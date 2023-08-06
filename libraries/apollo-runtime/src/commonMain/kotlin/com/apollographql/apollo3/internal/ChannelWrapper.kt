@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.Channel
  *
  * TODO: remove when Channel.invokeOnClose is no longer marked ExperimentalCoroutinesApi.
  */
-internal class ChannelWrapper<E>(private val wrapped: Channel<E>) : Channel<E> by wrapped {
+class ChannelWrapper<E>(private val wrapped: Channel<E>) : Channel<E> by wrapped {
   private var handler: ((cause: Throwable?) -> Unit)? = null
 
   var isClosed: Boolean = false
