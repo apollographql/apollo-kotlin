@@ -6,12 +6,17 @@ import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeExtension
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeExtension
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLInterfaceTypeExtension
+import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLNamed
+import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectTypeExtension
 import com.apollographql.apollo3.ast.GQLResult
@@ -19,11 +24,14 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeExtension
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeExtension
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.MergeOptions
 import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.toUtf8
 import kotlin.reflect.KClass
 
 /**
@@ -31,7 +39,7 @@ import kotlin.reflect.KClass
  *
  * Typically, extensions come after type definitions
  */
-internal class ExtensionsMerger(private val definitions: List<GQLDefinition>) {
+internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, internal val mergeOptions: MergeOptions) {
   val issues = mutableListOf<Issue>()
   val directiveDefinitions: Map<String, GQLDirectiveDefinition>
 
@@ -45,16 +53,17 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>) {
 
       when (definition) {
         is GQLTypeSystemExtension -> {
-          when(definition) {
-            is GQLSchemaExtension -> mergeTyped(GQLSchemaDefinition::class, newDefinitions, definition, "schema") { mergeSchema(it, definition) }
-            is GQLScalarTypeExtension -> mergeNamed(GQLScalarTypeDefinition::class, newDefinitions, definition, "scalar") { mergeScalar(it, definition) }
-            is GQLInterfaceTypeExtension -> mergeNamed(GQLInterfaceTypeDefinition::class, newDefinitions, definition, "interface") { mergeInterface(it, definition) }
-            is GQLObjectTypeExtension -> mergeNamed(GQLObjectTypeDefinition::class, newDefinitions, definition, "object") { mergeObject(it, definition) }
-            is GQLInputObjectTypeExtension -> mergeNamed(GQLInputObjectTypeDefinition::class, newDefinitions, definition, "input") { mergeInputObject(it, definition) }
-            is GQLEnumTypeExtension -> mergeNamed(GQLEnumTypeDefinition::class, newDefinitions, definition, "enum") { mergeEnum(it, definition) }
-            is GQLUnionTypeExtension -> mergeNamed(GQLUnionTypeDefinition::class, newDefinitions, definition, "union") { mergeUnion(it, definition) }
+          when (definition) {
+            is GQLSchemaExtension -> mergeTypedDefinition(GQLSchemaDefinition::class, newDefinitions, definition, "schema") { mergeSchema(it, definition) }
+            is GQLScalarTypeExtension -> mergeNamedDefinition(GQLScalarTypeDefinition::class, newDefinitions, definition, "scalar") { mergeScalar(it, definition) }
+            is GQLInterfaceTypeExtension -> mergeNamedDefinition(GQLInterfaceTypeDefinition::class, newDefinitions, definition, "interface") { mergeInterface(it, definition) }
+            is GQLObjectTypeExtension -> mergeNamedDefinition(GQLObjectTypeDefinition::class, newDefinitions, definition, "object") { mergeObject(it, definition) }
+            is GQLInputObjectTypeExtension -> mergeNamedDefinition(GQLInputObjectTypeDefinition::class, newDefinitions, definition, "input") { mergeInputObject(it, definition) }
+            is GQLEnumTypeExtension -> mergeNamedDefinition(GQLEnumTypeDefinition::class, newDefinitions, definition, "enum") { mergeEnum(it, definition) }
+            is GQLUnionTypeExtension -> mergeNamedDefinition(GQLUnionTypeDefinition::class, newDefinitions, definition, "union") { mergeUnion(it, definition) }
           }
         }
+
         else -> {
           newDefinitions.add(definition)
         }
@@ -123,7 +132,7 @@ private fun ExtensionsMerger.mergeObject(
 ): GQLObjectTypeDefinition = with(objectTypeDefinition) {
   return copy(
       directives = mergeDirectives(directives, extension.directives),
-      fields = mergeUniquesOrThrow(fields, extension.fields),
+      fields = mergeFields(fields, extension.fields),
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
@@ -133,24 +142,24 @@ private fun ExtensionsMerger.mergeInterface(
     extension: GQLInterfaceTypeExtension,
 ): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
   return copy(
-      fields = mergeUniquesOrThrow(fields, extension.fields),
+      fields = mergeFields(fields, extension.fields),
       directives = mergeDirectives(directives, extension.directives),
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
 
-private inline fun <reified T, E> ExtensionsMerger.mergeTyped(
+private inline fun <reified T, E> ExtensionsMerger.mergeTypedDefinition(
     @Suppress("UNUSED_PARAMETER") clazz: KClass<T>,
     newDefinitions: MutableList<GQLDefinition>,
     extension: E,
     extra: String,
     merge: (T) -> T,
-) where T: GQLDefinition, E: GQLTypeSystemExtension{
+) where T : GQLDefinition, E : GQLTypeSystemExtension {
   val index = newDefinitions.indexOfFirst { it is T }
   if (index == -1) {
     issues.add(Issue.ValidationError("Cannot find $extra definition to apply extension", extension.sourceLocation))
   } else {
-    newDefinitions.set(index, merge(newDefinitions[index]as T))
+    newDefinitions.set(index, merge(newDefinitions[index] as T))
   }
 }
 
@@ -163,13 +172,13 @@ private fun ExtensionsMerger.mergeScalar(
   )
 }
 
-private inline fun <reified T, E> ExtensionsMerger.mergeNamed(
+private inline fun <reified T, E> ExtensionsMerger.mergeNamedDefinition(
     @Suppress("UNUSED_PARAMETER") clazz: KClass<T>,
     definitions: MutableList<GQLDefinition>,
     extension: E,
     extra: String,
     merge: (T) -> T,
-) where T : GQLDefinition, T : GQLNamed, E : GQLNamed, E : GQLTypeSystemExtension  {
+) where T : GQLDefinition, T : GQLNamed, E : GQLNamed, E : GQLTypeSystemExtension {
   val indexedValues = definitions.withIndex().filter { (_, value) ->
     value is T && value.name == extension.name
   }
@@ -178,10 +187,12 @@ private inline fun <reified T, E> ExtensionsMerger.mergeNamed(
     0 -> {
       issues.add(Issue.ValidationError("Cannot find $extra type `${extension.name}` to apply extension", extension.sourceLocation))
     }
+
     1 -> {
       val indexedValue = indexedValues.first()
       definitions.set(indexedValue.index, merge(indexedValue.value as T))
     }
+
     else -> {
       issues.add(Issue.ValidationError("Multiple '${extension.name}' types found while merging extensions.", extension.sourceLocation))
     }
@@ -250,6 +261,92 @@ private fun ExtensionsMerger.mergeUniqueInterfacesOrThrow(
   }
 }
 
+private fun ExtensionsMerger.mergeFields(
+    list: List<GQLFieldDefinition>,
+    others: List<GQLFieldDefinition>,
+): List<GQLFieldDefinition> {
+
+  val result = list.toMutableList()
+
+  others.forEach { newFieldDefinition ->
+    val index = result.indexOfFirst { it.name == newFieldDefinition.name }
+    if (index == -1) {
+      // field doesn't exist, add it
+      result.add(newFieldDefinition)
+    } else {
+      val existingFieldDefinition = result[index]
+      if (!mergeOptions.allowFieldNullabilityModification) {
+        issues.add(Issue.ValidationError("There is already a field definition named `${newFieldDefinition.name}` for this type", newFieldDefinition.sourceLocation))
+        return@forEach
+      }
+
+      if (!areEqual(newFieldDefinition.arguments, existingFieldDefinition.arguments)) {
+        issues.add(Issue.ValidationError("Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition", newFieldDefinition.sourceLocation))
+        return@forEach
+      }
+
+      if (newFieldDefinition.directives.isNotEmpty()) {
+        issues.add(Issue.ValidationError("Cannot add directives to existing field definition `${newFieldDefinition.name}`", newFieldDefinition.sourceLocation))
+        return@forEach
+      }
+
+      if (!newFieldDefinition.type.isCompatibleWith(existingFieldDefinition.type)) {
+        issues.add(Issue.ValidationError("Cannot merge field directives`${newFieldDefinition.name}`: its type is not compatible with the original type`", newFieldDefinition.sourceLocation))
+        return@forEach
+      }
+
+      result[index] = existingFieldDefinition.copy(type = newFieldDefinition.type)
+    }
+  }
+
+  return result
+}
+
+private fun GQLType.isCompatibleWith(other: GQLType): Boolean {
+  var a = this
+  var b = other
+
+  if (a is GQLNonNullType) {
+    a = a.type
+  }
+  if (b is GQLNonNullType) {
+    b = b.type
+  }
+
+  return when (a) {
+    is GQLListType -> {
+      if (b is GQLListType) {
+        a.type.isCompatibleWith(b.type)
+      } else {
+        false
+      }
+    }
+    is GQLNamedType -> {
+      if (b !is GQLNamedType) {
+        false
+      } else {
+        b.name == a.name
+      }
+    }
+    is GQLNonNullType -> {
+      error("")
+    }
+  }
+}
+
+private fun areEqual(a: List<GQLInputValueDefinition>, b: List<GQLInputValueDefinition>): Boolean {
+  if (a.size != b.size) {
+    return false
+  }
+
+  a.forEachIndexed { index, aDefinition ->
+    if (aDefinition.toUtf8() != b[index].toUtf8()) {
+      return false
+    }
+  }
+
+  return true
+}
 
 private inline fun <reified T : GQLNode> ExtensionsMerger.mergeUniquesOrThrow(
     list: List<T>,

@@ -33,14 +33,32 @@ fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
 fun GQLDocument.toFullSchemaGQLDocument(): GQLDocument {
   return ensureSchemaDefinition()
       .withDefinitions(builtinDefinitions())
-      .mergeExtensions()
+      .toMergedGQLDocument()
 }
 
 fun GQLDocument.toSchema(): Schema = validateAsSchema().getOrThrow()
 
 @ApolloExperimental
-fun GQLDocument.mergeExtensions(): GQLDocument {
-  return GQLDocument(ExtensionsMerger(definitions).merge().getOrThrow(), sourceLocation = null)
+class MergeOptions(
+    val allowFieldNullabilityModification: Boolean
+) {
+  companion object {
+    val Default: MergeOptions = MergeOptions(false)
+  }
+}
+
+@ApolloExperimental
+fun GQLDocument.toMergedGQLDocument(mergeOptions: MergeOptions = MergeOptions.Default): GQLDocument {
+  return mergeExtensions(mergeOptions).getOrThrow()
+}
+
+@ApolloExperimental
+fun GQLDocument.mergeExtensions(mergeOptions: MergeOptions = MergeOptions.Default): GQLResult<GQLDocument> {
+  val result = ExtensionsMerger(definitions, mergeOptions).merge()
+  return GQLResult(
+      GQLDocument(result.value.orEmpty(), sourceLocation = null),
+      result.issues
+  )
 }
 
 @Deprecated("Use GQLDocument.toSDL() to write a GQLDocument")
