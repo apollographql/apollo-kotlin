@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
@@ -40,17 +39,17 @@ public object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: AFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("node")
       Node.obj().nullable().toJson(writer, value.node, adapterContext)
     }
 
     private object Node : CompositeAdapter<AFragmentImpl.Data.Node> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -61,11 +60,11 @@ public object AFragmentImpl_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.Node,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, value, adapterContext)
           is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, value, adapterContext)
@@ -105,7 +104,7 @@ public object AFragmentImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.ANodeNode,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -143,7 +142,7 @@ public object AFragmentImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.OtherNode,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
       }

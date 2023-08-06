@@ -22,14 +22,13 @@ import com.example.unique_type_name.type.Episode
 import com.example.unique_type_name.type.adapter.Episode_ResponseAdapter
 import kotlin.Double
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailQuery_ResponseAdapter {
   public object Data : CompositeAdapter<HeroDetailQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroDetailQuery")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.unique_type_name.HeroDetailQuery.Data {
       var _heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
 
@@ -45,11 +44,11 @@ public object HeroDetailQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.unique_type_name.HeroDetailQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("heroDetailQuery")
       HeroDetailQuery.obj(true).nullable().toJson(writer, value.heroDetailQuery, adapterContext)
     }
@@ -58,7 +57,7 @@ public object HeroDetailQuery_ResponseAdapter {
         CompositeAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
         var __typename: String? = null
         var _name: String? = null
@@ -92,11 +91,11 @@ public object HeroDetailQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -117,7 +116,7 @@ public object HeroDetailQuery_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend {
           var _name: String? = null
 
@@ -133,11 +132,11 @@ public object HeroDetailQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -148,7 +147,7 @@ public object HeroDetailQuery_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("height", "friends")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman {
           var _height: Double? = null
           var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend?>? = null
@@ -167,11 +166,11 @@ public object HeroDetailQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("height")
           NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
 
@@ -184,7 +183,7 @@ public object HeroDetailQuery_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("appearsIn", "friends")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend {
             var _appearsIn: List<Episode?>? = null
             var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend?>? = null
@@ -203,11 +202,11 @@ public object HeroDetailQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("appearsIn")
             Episode_ResponseAdapter.nullable().list().toJson(writer, CustomScalarAdapters.Empty,
                 value.appearsIn)
@@ -222,8 +221,7 @@ public object HeroDetailQuery_ResponseAdapter {
               {
             public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend {
               var __typename: String? = null
 
@@ -244,11 +242,11 @@ public object HeroDetailQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("__typename")
               StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

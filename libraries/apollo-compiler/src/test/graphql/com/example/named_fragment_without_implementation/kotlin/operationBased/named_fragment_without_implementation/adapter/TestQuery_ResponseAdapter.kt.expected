@@ -19,14 +19,13 @@ import com.example.named_fragment_without_implementation.TestQuery
 import com.example.named_fragment_without_implementation.fragment.DroidDetails
 import com.example.named_fragment_without_implementation.fragment.HumanDetails
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
@@ -42,11 +41,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -54,7 +53,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
@@ -93,11 +92,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

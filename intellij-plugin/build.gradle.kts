@@ -137,7 +137,7 @@ tasks {
   }
 }
 
-val mockJdkRoot = buildDir.resolve("mockJDK")
+val mockJdkRoot = layout.buildDirectory.asFile.get().resolve("mockJDK")
 
 // Setup fake JDK for maven dependencies to work
 // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321

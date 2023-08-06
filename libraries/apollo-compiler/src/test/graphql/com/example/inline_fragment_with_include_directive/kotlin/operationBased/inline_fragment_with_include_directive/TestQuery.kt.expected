@@ -17,32 +17,32 @@ import com.example.inline_fragment_with_include_directive.adapter.TestQuery_Vari
 import com.example.inline_fragment_with_include_directive.selections.TestQuerySelections
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.inline_fragment_with_include_directive.type.Query as CompiledQuery
 
 public data class TestQuery(
   public val withDetails: Boolean,
   public val skipHumanDetails: Boolean,
 ) : Query<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.inline_fragment_with_include_directive.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -109,6 +109,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) {
      *   hero {
      *     __typename
@@ -126,6 +127,7 @@ public data class TestQuery(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.codegen
 import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
 import com.apollographql.ijplugin.gradle.GradleExecutionHelperCompat
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
+import com.apollographql.ijplugin.gradle.SimpleProgressListener
 import com.apollographql.ijplugin.gradle.getGradleRootPath
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.ApolloProjectService
@@ -37,11 +38,6 @@ import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtil
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
-import org.gradle.tooling.events.FailureResult
-import org.gradle.tooling.events.FinishEvent
-import org.gradle.tooling.events.ProgressListener
-import org.gradle.tooling.events.StartEvent
-import org.gradle.tooling.events.SuccessResult
 import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
@@ -197,27 +193,13 @@ class ApolloCodegenService(
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(gradleCodegenCancellation!!.token())
               .addArguments("--continuous")
-              .addProgressListener(ProgressListener { event ->
-                when {
-                  event is StartEvent && event.descriptor.name == "Run build" -> {
-                    logd("Gradle build started")
-                  }
-
-                  event is FinishEvent && event.descriptor.name == "Run build" -> {
-                    when (val result = event.result) {
-                      is FailureResult -> {
-                        logd("Gradle build failed: ${result.failures.map { it.message }}")
-                      }
-
-                      is SuccessResult -> {
-                        logd("Gradle build success, marking generated source roots as dirty")
-                        // Mark the generated sources dirty so the files are visible to the IDE
-                        val generatedSourceRoots = modules.flatMap { it.apolloGeneratedSourcesRoots() }
-                        logd("Mark dirty $generatedSourceRoots")
-                        VfsUtil.markDirtyAndRefresh(true, true, true, *generatedSourceRoots.toTypedArray())
-                      }
-                    }
-                  }
+              .addProgressListener(object : SimpleProgressListener() {
+                override fun onSuccess() {
+                  logd("Gradle build success, marking generated source roots as dirty")
+                  // Mark the generated sources dirty so the files are visible to the IDE
+                  val generatedSourceRoots = modules.flatMap { it.apolloGeneratedSourcesRoots() }
+                  logd("Mark dirty $generatedSourceRoots")
+                  VfsUtil.markDirtyAndRefresh(true, true, true, *generatedSourceRoots.toTypedArray())
                 }
               })
               .run()

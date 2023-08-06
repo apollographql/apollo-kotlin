@@ -19,7 +19,7 @@ class OpenInSandboxAction : AnAction(
 ) {
 
   companion object {
-    val ACTION_ID = OpenInSandboxAction::class.java.simpleName
+    val ACTION_ID: String = OpenInSandboxAction::class.java.simpleName
   }
 
   override fun update(e: AnActionEvent) {

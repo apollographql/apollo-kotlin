@@ -21,33 +21,33 @@ import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import com.example.input_object_variable_and_argument.type.Query as CompiledQuery
 
 public data class TestQuery(
   public val episode: Optional<Episode?> = Optional.Absent,
   public val stars: Int,
   public val greenValue: Double,
 ) : Query<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.input_object_variable_and_argument.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -76,6 +76,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {
      *   heroWithReview(episode: $episode, review: {
      *     stars: $stars
@@ -86,13 +87,14 @@ public data class TestQuery(
      *     }
      *
      *     booleanNonOptional: false
-     *     listOfStringNonOptional: \[\]
+     *     listOfStringNonOptional: []
      *   }
-     *   , listOfInts: \[$stars,$stars\]) {
+     *   , listOfInts: [$stars,$stars]) {
      *     name
      *     height(unit: FOOT)
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

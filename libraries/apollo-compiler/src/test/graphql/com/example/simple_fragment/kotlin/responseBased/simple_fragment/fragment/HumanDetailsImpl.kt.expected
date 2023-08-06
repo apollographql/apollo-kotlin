@@ -29,22 +29,21 @@ import kotlin.Unit
  * Fragment with Java / Kotlin docs generation
  */
 internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      HumanDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = HumanDetailsImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Human.type
   )
@@ -52,11 +51,11 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
   .build()
 
   public data class Data(
-    public override val __typename: String,
+    override val __typename: String,
     /**
      * What this human calls themselves
      */
-    public override val name: String,
+    override val name: String,
   ) : HumanDetails, Fragment.Data
 
   public companion object {

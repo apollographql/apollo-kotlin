@@ -17,14 +17,13 @@ import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<AnimalFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         AnimalFragmentImpl.Data {
       var _species: String? = null
       var _parent: AnimalFragmentImpl.Data.Parent? = null
@@ -43,11 +42,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("species")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
@@ -56,7 +55,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     }
 
     private object Parent : CompositeAdapter<AnimalFragmentImpl.Data.Parent> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           AnimalFragmentImpl.Data.Parent {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -69,11 +68,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.Parent,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is AnimalFragmentImpl.Data.LionParent -> LionParent.toJson(writer, value, adapterContext)
           is AnimalFragmentImpl.Data.CatParent -> CatParent.toJson(writer, value, adapterContext)
@@ -115,7 +114,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.LionParent,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -159,7 +158,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.CatParent,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -200,7 +199,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         writer: JsonWriter,
         `value`: AnimalFragmentImpl.Data.OtherParent,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

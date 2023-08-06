@@ -136,7 +136,8 @@ internal data class IrEnum(
  *
  * Note: [IrInputField], and [IrVariable] are all very similar since they all share
  * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type, but [IrVariable]
- * so they are modeled differently in the [IrOperations]
+ * misses description, deprecation and optIn so they are modeled differently in
+ * [IrOperations]
  */
 internal data class IrInputField(
     val name: String,

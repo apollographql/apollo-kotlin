@@ -17,38 +17,38 @@ import com.example.nested_named_fragments.fragment.PilotFragment
 import com.example.nested_named_fragments.fragment.PlanetFragment
 import com.example.nested_named_fragments.fragment.StarshipFragment
 import com.example.nested_named_fragments.selections.AllStarshipsSelections
-import com.example.nested_named_fragments.type.Root
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
+import com.example.nested_named_fragments.type.Root as CompiledRoot
 
 public class AllStarships() : Query<AllStarships.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = AllStarships_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = AllStarships_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = Root.type
+    type = CompiledRoot.type
   )
   .selections(selections = AllStarshipsSelections.__root)
   .build()
@@ -76,18 +76,18 @@ public class AllStarships() : Query<AllStarships.Data> {
           /**
            * The ID of an object
            */
-          public override val id: String,
+          override val id: String,
           /**
            * The name of this starship. The common name, such as "Death Star".
            */
-          public override val name: String?,
-          public override val pilotConnection: PilotConnection?,
+          override val name: String?,
+          override val pilotConnection: PilotConnection?,
         ) : StarshipFragment {
           public data class PilotConnection(
             /**
              * A list of edges.
              */
-            public override val edges: List<Edge?>?,
+            override val edges: List<Edge?>?,
           ) : StarshipFragment.PilotConnection {
             public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -95,41 +95,44 @@ public class AllStarships() : Query<AllStarships.Data> {
               /**
                * The item at the end of the edge
                */
-              public override val node: Node?,
+              override val node: Node?,
             ) : StarshipFragment.PilotConnection.Edge {
               public data class Node(
-                public override val __typename: String,
+                override val __typename: String,
                 /**
                  * The name of this person.
                  */
-                public override val name: String?,
+                override val name: String?,
                 /**
                  * A planet that this person was born on or inhabits.
                  */
-                public override val homeworld: Homeworld?,
+                override val homeworld: Homeworld?,
               ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
                 public data class Homeworld(
-                  public override val __typename: String,
+                  override val __typename: String,
                   /**
                    * The name of this planet.
                    */
-                  public override val name: String?,
+                  override val name: String?,
                 ) : PlanetFragment, PilotFragment.Homeworld,
                     StarshipFragment.PilotConnection.Edge.Node.Homeworld {
                   public companion object {
-                    public fun Homeworld.planetFragment() = this as? PlanetFragment
+                    @Suppress("USELESS_CAST")
+                    public fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
                   }
                 }
 
                 public companion object {
-                  public fun Node.pilotFragment() = this as? PilotFragment
+                  @Suppress("USELESS_CAST")
+                  public fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
                 }
               }
             }
           }
 
           public companion object {
-            public fun Node.starshipFragment() = this as? StarshipFragment
+            @Suppress("USELESS_CAST")
+            public fun Node.starshipFragment(): StarshipFragment? = this as? StarshipFragment
           }
         }
       }
@@ -144,6 +147,7 @@ public class AllStarships() : Query<AllStarships.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query AllStarships {
      *   allStarships(first: 7) {
      *     edges {
@@ -179,6 +183,7 @@ public class AllStarships() : Query<AllStarships.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

@@ -15,7 +15,6 @@ import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAV
 import com.example.hero_name_query_long_name.type.adapter.Episode_ResponseAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter
@@ -29,7 +28,7 @@ public object
     `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if

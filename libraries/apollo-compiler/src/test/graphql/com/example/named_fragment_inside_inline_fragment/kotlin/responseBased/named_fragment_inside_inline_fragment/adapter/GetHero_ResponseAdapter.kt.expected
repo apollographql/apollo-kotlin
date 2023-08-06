@@ -18,14 +18,13 @@ import com.example.named_fragment_inside_inline_fragment.GetHero
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object GetHero_ResponseAdapter {
   public object Data : CompositeAdapter<GetHero.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         GetHero.Data {
       var _hero: GetHero.Data.Hero? = null
 
@@ -41,11 +40,11 @@ public object GetHero_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: GetHero.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, value.hero, adapterContext)
     }
@@ -53,7 +52,7 @@ public object GetHero_ResponseAdapter {
     private object Hero : CompositeAdapter<GetHero.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           GetHero.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
@@ -75,11 +74,11 @@ public object GetHero_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: GetHero.Data.Hero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

@@ -20,32 +20,33 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
+import com.example.simple_union.type.Query as CompiledQuery
 
 public class AnimalQuery() : Query<AnimalQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.simple_union.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = AnimalQuerySelections.__root)
   .build()
@@ -58,28 +59,32 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Animal.catFragment() = this as? CatFragment
+        @Suppress("USELESS_CAST")
+        public fun Animal.catFragment(): CatFragment? = this as? CatFragment
 
-        public fun Animal.dogFragment() = this as? DogFragment
+        @Suppress("USELESS_CAST")
+        public fun Animal.dogFragment(): DogFragment? = this as? DogFragment
 
-        public fun Animal.asCat() = this as? CatAnimal
+        @Suppress("USELESS_CAST")
+        public fun Animal.asCat(): CatAnimal? = this as? CatAnimal
 
-        public fun Animal.asDog() = this as? DogAnimal
+        @Suppress("USELESS_CAST")
+        public fun Animal.asDog(): DogAnimal? = this as? DogAnimal
       }
     }
 
     public data class CatAnimal(
-      public override val __typename: String,
-      public override val meow: String,
+      override val __typename: String,
+      override val meow: String,
     ) : Animal, CatFragment
 
     public data class DogAnimal(
-      public override val __typename: String,
-      public override val woof: String,
+      override val __typename: String,
+      override val woof: String,
     ) : Animal, DogFragment
 
     public data class OtherAnimal(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Animal
   }
 
@@ -91,6 +96,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query AnimalQuery {
      *   animal {
      *     __typename
@@ -106,6 +112,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
      * fragment DogFragment on Dog {
      *   woof
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

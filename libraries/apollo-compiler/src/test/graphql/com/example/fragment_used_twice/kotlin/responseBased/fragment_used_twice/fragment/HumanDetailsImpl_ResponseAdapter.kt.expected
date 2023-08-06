@@ -16,12 +16,11 @@ import com.apollographql.apollo3.api.json.readTypename
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object Data : CompositeAdapter<HumanDetailsImpl.Data> {
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         HumanDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
@@ -32,11 +31,11 @@ public object HumanDetailsImpl_ResponseAdapter {
       }
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: HumanDetailsImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       when(value) {
         is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, value, adapterContext)
         is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, value, adapterContext)
@@ -76,7 +75,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: HumanDetailsImpl.CharacterData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -117,7 +116,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: HumanDetailsImpl.OtherData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

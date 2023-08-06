@@ -20,35 +20,56 @@ import com.example.input_object_type.type.ReviewInput
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import com.example.input_object_type.type.Mutation as CompiledMutation
 
 public data class TestQuery(
   public val ep: Episode,
   public val review: ReviewInput,
 ) : Mutation<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.input_object_type.type.Mutation.type
+    type = CompiledMutation.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
+
+  public class Builder {
+    private var ep: Episode? = null
+
+    private var review: ReviewInput? = null
+
+    public fun ep(ep: Episode): Builder {
+      this.ep = ep
+      return this
+    }
+
+    public fun review(review: ReviewInput): Builder {
+      this.review = review
+      return this
+    }
+
+    public fun build(): TestQuery = TestQuery(
+      ep = ep ?: error("missing value for ep"),
+      review = review ?: error("missing value for review"),
+    )
+  }
 
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -74,12 +95,14 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * mutation TestQuery($ep: Episode!, $review: ReviewInput!) {
      *   createReview(episode: $ep, review: $review) {
      *     stars
      *     commentary
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

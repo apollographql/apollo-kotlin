@@ -15,7 +15,6 @@ import com.example.deprecation.TestQuery
 import com.example.deprecation.type.adapter.Episode_ResponseAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
   @Suppress(
@@ -27,7 +26,7 @@ public object TestQuery_VariablesAdapter {
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.episode is Optional.Present) {

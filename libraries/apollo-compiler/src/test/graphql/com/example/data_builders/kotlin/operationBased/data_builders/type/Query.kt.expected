@@ -19,7 +19,7 @@ public class Query {
   public companion object : BuilderFactory<QueryBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): QueryBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): QueryBuilder =
         QueryBuilder(customScalarAdapters)
   }
 }
@@ -36,7 +36,7 @@ public class QueryBuilder(
   init {
     __typename = "Query"}
 
-  public override fun build(): QueryMap = QueryMap(__fields)
+  override fun build(): QueryMap = QueryMap(__fields)
 }
 
 public class QueryMap(

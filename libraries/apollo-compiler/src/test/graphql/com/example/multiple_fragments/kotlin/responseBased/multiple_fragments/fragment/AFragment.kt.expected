@@ -6,6 +6,7 @@
 package com.example.multiple_fragments.fragment
 
 import kotlin.String
+import kotlin.Suppress
 
 public interface AFragment {
   public val node: Node?
@@ -14,19 +15,22 @@ public interface AFragment {
     public val __typename: String
 
     public companion object {
-      public fun Node.fragment1() = this as? Fragment1
+      @Suppress("USELESS_CAST")
+      public fun Node.fragment1(): Fragment1? = this as? Fragment1
 
-      public fun Node.fragment2() = this as? Fragment2
+      @Suppress("USELESS_CAST")
+      public fun Node.fragment2(): Fragment2? = this as? Fragment2
 
-      public fun Node.asANode() = this as? ANodeNode
+      @Suppress("USELESS_CAST")
+      public fun Node.asANode(): ANodeNode? = this as? ANodeNode
     }
   }
 
   public interface ANodeNode : Node, Fragment1, Fragment2 {
-    public override val __typename: String
+    override val __typename: String
 
-    public override val field1: String?
+    override val field1: String?
 
-    public override val field2: String?
+    override val field2: String?
   }
 }

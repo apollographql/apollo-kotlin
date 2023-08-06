@@ -18,31 +18,31 @@ import com.example.antlr_tokens.adapter.TestQuery_VariablesAdapter
 import com.example.antlr_tokens.selections.TestQuerySelections
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.antlr_tokens.type.Query as CompiledQuery
 
 public data class TestQuery(
   public val operation: Optional<String?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.antlr_tokens.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -66,6 +66,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($operation: String) {
      *   typeWithGraphQLKeywords {
      *     on
@@ -73,6 +74,7 @@ public data class TestQuery(
      *     alias: null(fragment: "A string\nwith a new line")
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

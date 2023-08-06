@@ -26,32 +26,34 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
+import com.example.data_builders.type.Query as CompiledQuery
 
 public class NodeQuery() : Query<NodeQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = NodeQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = NodeQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.data_builders.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = NodeQuerySelections.__root)
   .build()
@@ -66,31 +68,35 @@ public class NodeQuery() : Query<NodeQuery.Data> {
       public val id: String
 
       public companion object {
-        public fun Node.humanFragment() = this as? HumanFragment
+        @Suppress("USELESS_CAST")
+        public fun Node.humanFragment(): HumanFragment? = this as? HumanFragment
 
-        public fun Node.droidFragment() = this as? DroidFragment
+        @Suppress("USELESS_CAST")
+        public fun Node.droidFragment(): DroidFragment? = this as? DroidFragment
 
-        public fun Node.asHuman() = this as? HumanNode
+        @Suppress("USELESS_CAST")
+        public fun Node.asHuman(): HumanNode? = this as? HumanNode
 
-        public fun Node.asDroid() = this as? DroidNode
+        @Suppress("USELESS_CAST")
+        public fun Node.asDroid(): DroidNode? = this as? DroidNode
       }
     }
 
     public data class HumanNode(
-      public override val __typename: String,
-      public override val id: String,
-      public override val homePlanet: String,
+      override val __typename: String,
+      override val id: String,
+      override val homePlanet: String,
     ) : Node, HumanFragment
 
     public data class DroidNode(
-      public override val __typename: String,
-      public override val id: String,
-      public override val primaryFunction: String,
+      override val __typename: String,
+      override val id: String,
+      override val primaryFunction: String,
     ) : Node, DroidFragment
 
     public data class OtherNode(
-      public override val __typename: String,
-      public override val id: String,
+      override val __typename: String,
+      override val id: String,
     ) : Node
   }
 
@@ -102,6 +108,7 @@ public class NodeQuery() : Query<NodeQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query NodeQuery {
      *   node {
      *     __typename
@@ -118,6 +125,7 @@ public class NodeQuery() : Query<NodeQuery.Data> {
      * fragment DroidFragment on Droid {
      *   primaryFunction
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =
@@ -127,7 +135,7 @@ public class NodeQuery() : Query<NodeQuery.Data> {
 
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
         block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      com.example.data_builders.type.Query,
+      CompiledQuery,
       block,
       NodeQuery_ResponseAdapter.Data,
       NodeQuerySelections.__root,

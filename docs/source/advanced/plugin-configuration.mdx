@@ -203,6 +203,8 @@ apollo {
 This will create a task named `download<ServiceName>ApolloSchemaFromRegistry` (`downloadServiceApolloSchemaFromRegistry`
 by default).
 
+With the [Android Studio plugin](../testing/android-studio-plugin), you can also go to <kbd>Tools</kbd> | <kbd>Apollo</kbd> | <kbd>Download schema</kbd> which acts as a shortcut to these tasks.
+
 ## All options
 
 Below is a summary of the Gradle options in a single code block. For more details, take a look at the [ApolloExtension KDoc](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-apollo-extension/index.html)
@@ -293,6 +295,9 @@ apollo {
     generateModelBuilders.set(true)
     // Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`, etc..)
     generatePrimitiveTypes.set(true)
+    // Opt-in Builders for Operations, Fragments and Input types. Builders are more ergonomic than default arguments when there are a lot of
+    // optional arguments.
+    generateInputBuilders.set(true)
     // The style to use for fields that are nullable in the Java generated code
     nullableFieldStyle.set("apolloOptional")
     // Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`)

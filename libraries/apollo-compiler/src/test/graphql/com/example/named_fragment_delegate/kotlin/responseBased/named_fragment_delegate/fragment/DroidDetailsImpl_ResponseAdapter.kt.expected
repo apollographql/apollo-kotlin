@@ -16,14 +16,13 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
   public object Data : CompositeAdapter<DroidDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         DroidDetailsImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
@@ -45,11 +44,11 @@ public object DroidDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: DroidDetailsImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -63,7 +62,7 @@ public object DroidDetailsImpl_ResponseAdapter {
     private object Friend : CompositeAdapter<DroidDetailsImpl.Data.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           DroidDetailsImpl.Data.Friend {
         var _name: String? = null
 
@@ -79,11 +78,11 @@ public object DroidDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: DroidDetailsImpl.Data.Friend,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
       }

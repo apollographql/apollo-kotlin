@@ -7,6 +7,7 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public interface HeroDetails {
@@ -49,98 +50,102 @@ public interface HeroDetails {
   }
 
   public companion object {
-    public fun HeroDetails.humanDetails() = this as? HumanDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.humanDetails(): HumanDetails? = this as? HumanDetails
 
-    public fun HeroDetails.droidDetails() = this as? DroidDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.droidDetails(): DroidDetails? = this as? DroidDetails
 
-    public fun HeroDetails.asHuman() = this as? HumanHeroDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.asHuman(): HumanHeroDetails? = this as? HumanHeroDetails
 
-    public fun HeroDetails.asDroid() = this as? DroidHeroDetails
+    @Suppress("USELESS_CAST")
+    public fun HeroDetails.asDroid(): DroidHeroDetails? = this as? DroidHeroDetails
   }
 }
 
 public interface HumanHeroDetails : HeroDetails, HumanDetails {
-  public override val __typename: String
+  override val __typename: String
 
   /**
    * Merged field with multiple descriptions. See parentTypes: 'Human, Character' for more
    * information
    */
-  public override val name: String
+  override val name: String
 
   /**
    * The friends of the character exposed as a connection with edges
    */
-  public override val friendsConnection: FriendsConnection
+  override val friendsConnection: FriendsConnection
 
   public interface FriendsConnection : HeroDetails.FriendsConnection {
     /**
      * The total number of friends
      */
-    public override val totalCount: Int?
+    override val totalCount: Int?
 
     /**
      * The edges for each of the character's friends.
      */
-    public override val edges: List<Edge?>?
+    override val edges: List<Edge?>?
 
     public interface Edge : HeroDetails.FriendsConnection.Edge {
       /**
        * The character represented by this friendship edge
        */
-      public override val node: Node?
+      override val node: Node?
 
       public interface Node : HeroDetails.FriendsConnection.Edge.Node {
         /**
          * The name of the character
          */
-        public override val name: String
+        override val name: String
       }
     }
   }
 }
 
 public interface DroidHeroDetails : HeroDetails, DroidDetails {
-  public override val __typename: String
+  override val __typename: String
 
   /**
    * Merged field with multiple descriptions. See parentTypes: 'Droid, Character' for more
    * information
    */
-  public override val name: String
+  override val name: String
 
   /**
    * This droid's primary function
    */
-  public override val primaryFunction: String?
+  override val primaryFunction: String?
 
   /**
    * The friends of the character exposed as a connection with edges
    */
-  public override val friendsConnection: FriendsConnection
+  override val friendsConnection: FriendsConnection
 
   public interface FriendsConnection : HeroDetails.FriendsConnection {
     /**
      * The total number of friends
      */
-    public override val totalCount: Int?
+    override val totalCount: Int?
 
     /**
      * The edges for each of the character's friends.
      */
-    public override val edges: List<Edge?>?
+    override val edges: List<Edge?>?
 
     public interface Edge : HeroDetails.FriendsConnection.Edge {
       /**
        * The character represented by this friendship edge
        */
-      public override val node: Node?
+      override val node: Node?
 
       public interface Node : HeroDetails.FriendsConnection.Edge.Node {
         /**
          * The name of the character
          */
-        public override val name: String
+        override val name: String
       }
     }
   }

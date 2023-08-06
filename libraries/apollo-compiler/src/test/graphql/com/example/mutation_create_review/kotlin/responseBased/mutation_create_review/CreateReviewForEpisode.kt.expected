@@ -29,32 +29,32 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
+import com.example.mutation_create_review.type.Mutation as CompiledMutation
 
 internal data class CreateReviewForEpisode(
   public val ep: Episode,
   public val review: ReviewInput,
 ) : Mutation<CreateReviewForEpisode.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      CreateReviewForEpisode_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.mutation_create_review.type.Mutation.type
+    type = CompiledMutation.type
   )
   .selections(selections = CreateReviewForEpisodeSelections.__root)
   .build()
@@ -106,6 +106,7 @@ internal data class CreateReviewForEpisode(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
      *   createReview(episode: $ep, review: $review) {
      *     stars
@@ -118,6 +119,7 @@ internal data class CreateReviewForEpisode(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =
@@ -127,7 +129,7 @@ internal data class CreateReviewForEpisode(
 
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
         block: MutationBuilder.() -> Unit = {}): Data = buildData(
-      com.example.mutation_create_review.type.Mutation,
+      CompiledMutation,
       block,
       CreateReviewForEpisode_ResponseAdapter.Data,
       CreateReviewForEpisodeSelections.__root,

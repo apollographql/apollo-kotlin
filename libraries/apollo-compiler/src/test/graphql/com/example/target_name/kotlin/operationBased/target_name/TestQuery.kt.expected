@@ -21,33 +21,33 @@ import com.example.target_name.type.renamedInput
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.target_name.type.Query as CompiledQuery
 
 public data class TestQuery(
   public val input: Optional<renamedInput?> = Optional.Absent,
   public val scalar: Optional<Any?> = Optional.Absent,
   public val `enum`: Optional<renamedEnum?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.target_name.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -89,6 +89,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) {
      *   object(input: $input) {
      *     field
@@ -105,6 +106,7 @@ public data class TestQuery(
      *   scalar(scalar: $scalar)
      *   enum(enum: $enum)
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

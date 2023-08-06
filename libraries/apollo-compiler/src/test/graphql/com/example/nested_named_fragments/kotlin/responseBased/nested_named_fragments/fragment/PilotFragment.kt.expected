@@ -6,6 +6,7 @@
 package com.example.nested_named_fragments.fragment
 
 import kotlin.String
+import kotlin.Suppress
 
 public interface PilotFragment {
   /**
@@ -24,10 +25,11 @@ public interface PilotFragment {
     /**
      * The name of this planet.
      */
-    public override val name: String?
+    override val name: String?
 
     public companion object {
-      public fun Homeworld.planetFragment() = this as? PlanetFragment
+      @Suppress("USELESS_CAST")
+      public fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
     }
   }
 }

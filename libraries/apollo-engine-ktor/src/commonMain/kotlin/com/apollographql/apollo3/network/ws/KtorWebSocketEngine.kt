@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.internal.ChannelWrapper
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
@@ -42,8 +41,8 @@ class KtorWebSocketEngine(
         /* URLProtocol.SOCKS */else -> throw UnsupportedOperationException("SOCKS is not a supported protocol")
       }
     }.build()
-    val receiveMessageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
-    val sendFrameChannel = ChannelWrapper(Channel<Frame>(Channel.UNLIMITED))
+    val receiveMessageChannel = Channel<String>(Channel.UNLIMITED)
+    val sendFrameChannel = Channel<Frame>(Channel.UNLIMITED)
     client.webSocket(
         request = {
           headers {

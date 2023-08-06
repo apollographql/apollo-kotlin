@@ -33,4 +33,64 @@ public data class ColorInput(
    * Circle ref to review input
    */
   public val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent,
-)
+) {
+  public class Builder {
+    private var red: Optional<Int> = Optional.Absent
+
+    private var green: Optional<Double?> = Optional.Absent
+
+    private var blue: Optional<Double> = Optional.Absent
+
+    private var enumWithDefaultValue: Optional<Episode?> = Optional.Absent
+
+    private var reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent
+
+    /**
+     * A description with a dollar sign: $10
+     */
+    public fun red(red: Int): Builder {
+      this.red = Optional.Present(red)
+      return this
+    }
+
+    /**
+     * Green color
+     */
+    public fun green(green: Double?): Builder {
+      this.green = Optional.Present(green)
+      return this
+    }
+
+    /**
+     * Blue color
+     */
+    public fun blue(blue: Double): Builder {
+      this.blue = Optional.Present(blue)
+      return this
+    }
+
+    /**
+     * for test purpose only
+     */
+    public fun enumWithDefaultValue(enumWithDefaultValue: Episode?): Builder {
+      this.enumWithDefaultValue = Optional.Present(enumWithDefaultValue)
+      return this
+    }
+
+    /**
+     * Circle ref to review input
+     */
+    public fun reviewRefInput(reviewRefInput: ReviewRefInput?): Builder {
+      this.reviewRefInput = Optional.Present(reviewRefInput)
+      return this
+    }
+
+    public fun build(): ColorInput = ColorInput(
+      red = red,
+      green = green,
+      blue = blue,
+      enumWithDefaultValue = enumWithDefaultValue,
+      reviewRefInput = reviewRefInput,
+    )
+  }
+}

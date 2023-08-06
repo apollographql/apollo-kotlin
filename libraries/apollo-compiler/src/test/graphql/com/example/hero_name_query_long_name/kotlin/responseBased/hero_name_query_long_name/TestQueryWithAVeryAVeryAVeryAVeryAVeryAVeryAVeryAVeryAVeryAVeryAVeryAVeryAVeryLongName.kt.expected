@@ -19,7 +19,7 @@ import com.example.hero_name_query_long_name.selections.TestQueryWithAVeryAVeryA
 import com.example.hero_name_query_long_name.type.Episode
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.hero_name_query_long_name.type.Query as CompiledQuery
 
 public data class
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
@@ -29,27 +29,27 @@ public data class
 ) :
     Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.serializeVariables(writer,
         this, customScalarAdapters, withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
+  override fun adapter(): CompositeAdapter<Data> =
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.hero_name_query_long_name.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections.__root)
   .build()
@@ -76,6 +76,7 @@ public data class
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query
      * TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName($episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
      * Episode) {
@@ -85,6 +86,7 @@ public data class
      * name
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

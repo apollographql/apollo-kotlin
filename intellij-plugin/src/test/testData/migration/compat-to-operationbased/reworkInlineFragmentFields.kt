@@ -92,4 +92,22 @@ suspend fun main() {
   val asGranny: AsGranny = data.fruitList.list[0].asApple!!.asGranny!!
   val isGranny = asGranny.isGranny
   val id2 = data.fruitList.list[0].asApple!!.asGranny!!.id
+
+  val newAsGranny: FruitListQuery.AsApple = FruitListQuery.AsApple(
+      __typename = "Apple",
+      id = "id",
+      color = "color",
+      asGolden = FruitListQuery.AsGolden(
+          __typename = "Golden",
+          id = "id",
+          color = "color",
+          isGolden = true,
+      ),
+      asGranny = FruitListQuery.AsGranny(
+          __typename = "Granny",
+          id = "id",
+          color = "color",
+          isGranny = true,
+      ),
+  )
 }

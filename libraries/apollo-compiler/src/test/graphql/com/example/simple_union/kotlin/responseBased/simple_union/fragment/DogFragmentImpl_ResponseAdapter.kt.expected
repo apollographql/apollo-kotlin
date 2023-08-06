@@ -12,14 +12,13 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object DogFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<DogFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("woof")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         DogFragmentImpl.Data {
       var _woof: String? = null
 
@@ -35,11 +34,11 @@ public object DogFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: DogFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("woof")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.woof)
     }

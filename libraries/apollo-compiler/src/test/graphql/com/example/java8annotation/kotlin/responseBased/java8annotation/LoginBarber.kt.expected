@@ -18,31 +18,31 @@ import com.example.java8annotation.selections.LoginBarberSelections
 import com.example.java8annotation.type.Login
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.java8annotation.type.Mutation as CompiledMutation
 
 public data class LoginBarber(
   public val input: Login,
 ) : Mutation<LoginBarber.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     LoginBarber_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.java8annotation.type.Mutation.type
+    type = CompiledMutation.type
   )
   .selections(selections = LoginBarberSelections.__root)
   .build()
@@ -64,11 +64,13 @@ public data class LoginBarber(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * mutation LoginBarber($input: Login!) {
      *   login(input: $input) {
      *     response
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() = "mutation LoginBarber(${'$'}input: Login!) { login(input: ${'$'}input) { response } }"

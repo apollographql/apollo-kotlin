@@ -7,6 +7,7 @@ package com.example.simple_fragment_with_inline_fragments.fragment
 
 import kotlin.Double
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public interface HeroDetails {
@@ -29,19 +30,21 @@ public interface HeroDetails {
     public val name: String
 
     public companion object {
-      public fun Friend.asHuman() = this as? HumanFriend
+      @Suppress("USELESS_CAST")
+      public fun Friend.asHuman(): HumanFriend? = this as? HumanFriend
 
-      public fun Friend.asDroid() = this as? DroidFriend
+      @Suppress("USELESS_CAST")
+      public fun Friend.asDroid(): DroidFriend? = this as? DroidFriend
     }
   }
 
   public interface HumanFriend : Friend {
-    public override val __typename: String
+    override val __typename: String
 
     /**
      * The name of the character
      */
-    public override val name: String
+    override val name: String
 
     /**
      * Height in the preferred unit, default is meters
@@ -50,12 +53,12 @@ public interface HeroDetails {
   }
 
   public interface DroidFriend : Friend {
-    public override val __typename: String
+    override val __typename: String
 
     /**
      * The name of the character
      */
-    public override val name: String
+    override val name: String
 
     /**
      * This droid's primary function

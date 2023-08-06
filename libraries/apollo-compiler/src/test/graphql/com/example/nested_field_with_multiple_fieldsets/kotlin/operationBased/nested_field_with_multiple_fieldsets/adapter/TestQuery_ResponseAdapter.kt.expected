@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
@@ -41,11 +40,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("iface1")
       Iface1.obj(true).nullable().toJson(writer, value.iface1, adapterContext)
     }
@@ -53,7 +52,7 @@ public object TestQuery_ResponseAdapter {
     private object Iface1 : CompositeAdapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Iface1 {
         var __typename: String? = null
 
@@ -86,11 +85,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Iface1,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -106,7 +105,7 @@ public object TestQuery_ResponseAdapter {
       private object OnIface1 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Iface1.OnIface1 {
           var _iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
 
@@ -122,11 +121,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Iface1.OnIface1,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("iface2")
           Iface2.obj(true).nullable().toJson(writer, value.iface2, adapterContext)
         }
@@ -134,7 +133,7 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
 
@@ -167,11 +166,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Iface1.OnIface1.Iface2,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -188,8 +187,7 @@ public object TestQuery_ResponseAdapter {
               {
             public val RESPONSE_NAMES: List<String> = listOf("scalar1")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
               var _scalar1: String? = null
 
@@ -205,11 +203,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("scalar1")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
             }
@@ -218,8 +216,7 @@ public object TestQuery_ResponseAdapter {
           private object OnImpl2 : CompositeAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar2")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
               var _scalar2: String? = null
 
@@ -235,11 +232,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("scalar2")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar2)
             }
@@ -250,7 +247,7 @@ public object TestQuery_ResponseAdapter {
       private object OnImpl1 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Iface1.OnImpl1 {
           var _iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
 
@@ -266,11 +263,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Iface1.OnImpl1,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("iface2")
           Iface2.obj(true).nullable().toJson(writer, value.iface2, adapterContext)
         }
@@ -278,7 +275,7 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
 
@@ -311,11 +308,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Iface1.OnImpl1.Iface2,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -332,8 +329,7 @@ public object TestQuery_ResponseAdapter {
               {
             public val RESPONSE_NAMES: List<String> = listOf("scalar3")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
               var _scalar3: String? = null
 
@@ -349,11 +345,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("scalar3")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar3)
             }
@@ -362,8 +358,7 @@ public object TestQuery_ResponseAdapter {
           private object OnImpl2 : CompositeAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar4")
 
-            public override fun fromJson(reader: JsonReader,
-                adapterContext: CompositeAdapterContext):
+            override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
               var _scalar4: String? = null
 
@@ -379,11 +374,11 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            override fun toJson(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2,
               adapterContext: CompositeAdapterContext,
-            ): Unit {
+            ) {
               writer.name("scalar4")
               NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar4)
             }

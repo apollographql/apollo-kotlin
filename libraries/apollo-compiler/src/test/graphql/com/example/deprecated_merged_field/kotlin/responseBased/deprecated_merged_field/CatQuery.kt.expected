@@ -22,32 +22,33 @@ import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
+import com.example.deprecated_merged_field.type.Query as CompiledQuery
 
 public class CatQuery() : Query<CatQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.deprecated_merged_field.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = CatQuerySelections.__root)
   .build()
@@ -60,34 +61,37 @@ public class CatQuery() : Query<CatQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Cat.animalFragment() = this as? AnimalFragment
+        @Suppress("USELESS_CAST")
+        public fun Cat.animalFragment(): AnimalFragment? = this as? AnimalFragment
 
-        public fun Cat.asAnimal() = this as? AnimalCat
+        @Suppress("USELESS_CAST")
+        public fun Cat.asAnimal(): AnimalCat? = this as? AnimalCat
 
-        public fun Cat.asAnimalDog() = this as? AnimalDogCat
+        @Suppress("USELESS_CAST")
+        public fun Cat.asAnimalDog(): AnimalDogCat? = this as? AnimalDogCat
       }
     }
 
     public sealed interface AnimalDogCat : AnimalCat, CatAnimalFragment, DogAnimalFragment {
-      public override val __typename: String
+      override val __typename: String
 
       @Deprecated(message = "Deprecated in: 'Dog'")
-      public override val name: String
+      override val name: String
     }
 
     public sealed interface AnimalCat : Cat, CatAnimalFragment {
-      public override val __typename: String
+      override val __typename: String
 
-      public override val name: String
+      override val name: String
     }
 
     public data class OtherCat(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Cat
 
     public data class OtherAnimalCat(
-      public override val __typename: String,
-      public override val name: String,
+      override val __typename: String,
+      override val name: String,
     ) : AnimalCat, CatAnimalFragment
   }
 
@@ -99,6 +103,7 @@ public class CatQuery() : Query<CatQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query CatQuery {
      *   cat {
      *     __typename
@@ -115,6 +120,7 @@ public class CatQuery() : Query<CatQuery.Data> {
      *     name
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

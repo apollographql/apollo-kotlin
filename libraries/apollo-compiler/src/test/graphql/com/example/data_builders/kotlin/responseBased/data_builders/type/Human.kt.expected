@@ -20,7 +20,7 @@ public class Human {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder =
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder =
         HumanBuilder(customScalarAdapters)
   }
 }
@@ -37,7 +37,7 @@ public class HumanBuilder(
   init {
     __typename = "Human"}
 
-  public override fun build(): HumanMap = HumanMap(__fields)
+  override fun build(): HumanMap = HumanMap(__fields)
 }
 
 public class HumanMap(

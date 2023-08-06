@@ -27,36 +27,38 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
+import com.example.simple_fragment.type.Query as CompiledQuery
 
 /**
  * Demonstration of Java / Kotlin docs generation
  * for both query and fragments
  */
 internal class TestQuery() : Query<TestQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.simple_fragment.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -66,27 +68,30 @@ internal class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?,
   ) : Query.Data {
     public sealed interface Hero : HeroDetails {
-      public override val __typename: String
+      override val __typename: String
 
       public companion object {
-        public fun Hero.heroDetails() = this as? HeroDetails
+        @Suppress("USELESS_CAST")
+        public fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
 
-        public fun Hero.humanDetails() = this as? HumanDetails
+        @Suppress("USELESS_CAST")
+        public fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
 
-        public fun Hero.asHuman() = this as? HumanHero
+        @Suppress("USELESS_CAST")
+        public fun Hero.asHuman(): HumanHero? = this as? HumanHero
       }
     }
 
     public data class HumanHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * What this human calls themselves
        */
-      public override val name: String,
+      override val name: String,
     ) : Hero, HumanHeroDetails, HumanDetails
 
     public data class OtherHero(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Hero, HeroDetails
   }
 
@@ -98,6 +103,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery {
      *   hero {
      *     __typename
@@ -115,6 +121,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
      *   __typename
      *   ...HumanDetails
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =
@@ -124,7 +131,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
 
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
         block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      com.example.simple_fragment.type.Query,
+      CompiledQuery,
       block,
       TestQuery_ResponseAdapter.Data,
       TestQuerySelections.__root,

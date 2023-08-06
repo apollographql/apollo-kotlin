@@ -14,14 +14,13 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object HorseFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<HorseFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         HorseFragmentImpl.Data {
       var _Cow: HorseFragmentImpl.Data.Cow? = null
 
@@ -37,11 +36,11 @@ public object HorseFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: HorseFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("Cow")
       Cow.obj().nullable().toJson(writer, value.cow, adapterContext)
     }
@@ -49,7 +48,7 @@ public object HorseFragmentImpl_ResponseAdapter {
     private object Cow : CompositeAdapter<HorseFragmentImpl.Data.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           HorseFragmentImpl.Data.Cow {
         var _Moo: String? = null
 
@@ -65,11 +64,11 @@ public object HorseFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: HorseFragmentImpl.Data.Cow,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("Moo")
         NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo)
       }

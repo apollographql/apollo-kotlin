@@ -17,7 +17,7 @@ import com.example.fragments_with_defer_and_include_directives.adapter.InlineMul
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferAndIncludeSelections
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.fragments_with_defer_and_include_directives.type.Query as CompiledQuery
 
 public data class InlineMultipleWithDeferAndInclude(
   public val cond1: Boolean,
@@ -25,27 +25,27 @@ public data class InlineMultipleWithDeferAndInclude(
   public val cond3: Boolean,
   public val cond4: Boolean,
 ) : Query<InlineMultipleWithDeferAndInclude.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     InlineMultipleWithDeferAndInclude_VariablesAdapter.serializeVariables(writer, this,
         customScalarAdapters, withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
+  override fun adapter(): CompositeAdapter<Data> =
       InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.fragments_with_defer_and_include_directives.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = InlineMultipleWithDeferAndIncludeSelections.__root)
   .build()
@@ -133,6 +133,7 @@ public data class InlineMultipleWithDeferAndInclude(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!,
      * $cond4: Boolean!) {
      *   hero {
@@ -157,6 +158,7 @@ public data class InlineMultipleWithDeferAndInclude(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

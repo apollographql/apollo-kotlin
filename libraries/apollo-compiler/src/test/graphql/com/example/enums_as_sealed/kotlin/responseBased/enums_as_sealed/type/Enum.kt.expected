@@ -63,13 +63,13 @@ public sealed class Enum(
   public class UNKNOWN__(
     rawValue: String,
   ) : Enum(rawValue = rawValue) {
-    public override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean {
       if (other !is UNKNOWN__) return false
       return this.rawValue == other.rawValue
     }
 
-    public override fun hashCode(): Int = this.rawValue.hashCode()
+    override fun hashCode(): Int = this.rawValue.hashCode()
 
-    public override fun toString(): String = "UNKNOWN__($rawValue)"
+    override fun toString(): String = "UNKNOWN__($rawValue)"
   }
 }

@@ -17,7 +17,6 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
@@ -25,7 +24,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       CompositeAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.operationbased2_ex8.fragment.AnimalFragment {
       var _species: String? = null
       var _parent: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent? = null
@@ -44,11 +43,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.operationbased2_ex8.fragment.AnimalFragment,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("species")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
 
@@ -60,7 +59,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         CompositeAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           com.example.operationbased2_ex8.fragment.AnimalFragment.Parent {
         var __typename: String? = null
         var _species: String? = null
@@ -99,11 +98,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -125,7 +124,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
           CompositeAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion> {
         public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion {
           var _temperature: Int? = null
 
@@ -141,11 +140,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("temperature")
           IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
         }
@@ -155,7 +154,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
           CompositeAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat {
           var _name: String? = null
 
@@ -171,11 +170,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }

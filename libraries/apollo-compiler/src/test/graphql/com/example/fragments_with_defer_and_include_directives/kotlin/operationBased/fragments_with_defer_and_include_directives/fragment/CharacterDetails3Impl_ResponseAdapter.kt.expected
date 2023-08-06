@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.Any
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterDetails3Impl_ResponseAdapter {
@@ -22,7 +21,7 @@ public object CharacterDetails3Impl_ResponseAdapter {
       {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
       var _birthDate: Any? = null
 
@@ -38,11 +37,11 @@ public object CharacterDetails3Impl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("birthDate")
       AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.birthDate)
     }

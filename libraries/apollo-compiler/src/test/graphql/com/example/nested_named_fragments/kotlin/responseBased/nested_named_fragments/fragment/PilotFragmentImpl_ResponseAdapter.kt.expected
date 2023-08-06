@@ -15,14 +15,13 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object PilotFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<PilotFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         PilotFragmentImpl.Data {
       var _name: String? = null
       var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
@@ -41,11 +40,11 @@ public object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: PilotFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("name")
       NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -56,7 +55,7 @@ public object PilotFragmentImpl_ResponseAdapter {
     private object Homeworld : CompositeAdapter<PilotFragmentImpl.Data.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var _name: String? = null
@@ -75,11 +74,11 @@ public object PilotFragmentImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: PilotFragmentImpl.Data.Homeworld,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

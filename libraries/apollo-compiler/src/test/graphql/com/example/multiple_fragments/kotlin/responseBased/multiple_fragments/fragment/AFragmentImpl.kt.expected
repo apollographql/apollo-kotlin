@@ -17,24 +17,24 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = AFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = AFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = A.type
   )
@@ -42,28 +42,31 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
   .build()
 
   public data class Data(
-    public override val node: Node?,
+    override val node: Node?,
   ) : AFragment, Fragment.Data {
     public sealed interface Node : AFragment.Node {
-      public override val __typename: String
+      override val __typename: String
 
       public companion object {
-        public fun Node.fragment1() = this as? Fragment1
+        @Suppress("USELESS_CAST")
+        public fun Node.fragment1(): Fragment1? = this as? Fragment1
 
-        public fun Node.fragment2() = this as? Fragment2
+        @Suppress("USELESS_CAST")
+        public fun Node.fragment2(): Fragment2? = this as? Fragment2
 
-        public fun Node.asANode() = this as? ANodeNode
+        @Suppress("USELESS_CAST")
+        public fun Node.asANode(): ANodeNode? = this as? ANodeNode
       }
     }
 
     public data class ANodeNode(
-      public override val __typename: String,
-      public override val field1: String?,
-      public override val field2: String?,
+      override val __typename: String,
+      override val field1: String?,
+      override val field2: String?,
     ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
 
     public data class OtherNode(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Node, AFragment.Node
   }
 }

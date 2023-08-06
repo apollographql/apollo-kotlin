@@ -12,19 +12,15 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLListNullability
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLNullDesignator
-import com.apollographql.apollo3.ast.GQLNonNullDesignator
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
@@ -34,6 +30,8 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.NullabilityValidationIgnore
+import com.apollographql.apollo3.ast.NullabilityValidationRegister
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
@@ -218,37 +216,13 @@ internal class ExecutableValidationScope(
     }
 
     if (nullability != null) {
-      val typeListDimension = fieldDefinition.type.listDimension()
-      val nullabilityListDimension = nullability.listDimension()
-      if (typeListDimension < nullabilityListDimension) {
-        registerIssue(
-            message = "Cannot apply nullability on '$name', the nullability list dimension exceeds the one of the field type.",
-            sourceLocation = nullability.sourceLocation
-        )
-        return
-      }
+      fieldDefinition.type.withNullability(nullability, NullabilityValidationRegister(issues, name))
     }
 
     directives.forEach {
       validateDirective(it, this) {
         variableUsages.add(it)
       }
-    }
-  }
-
-  private fun GQLType.listDimension(): Int {
-    return when (this) {
-      is GQLNonNullType -> this.type.listDimension()
-      is GQLListType -> 1 + this.type.listDimension()
-      else -> 0
-    }
-  }
-
-  private fun GQLNullability.listDimension(): Int {
-    return when (this) {
-      is GQLListNullability -> 1 + this.itemNullability.listDimension()
-      is GQLNullDesignator -> 0
-      is GQLNonNullDesignator -> 0
     }
   }
 
@@ -517,8 +491,8 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withNullability(fieldA.nullability)
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withNullability(fieldB.nullability)
+    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withNullability(fieldA.nullability, NullabilityValidationIgnore)
+    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withNullability(fieldB.nullability, NullabilityValidationIgnore)
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return

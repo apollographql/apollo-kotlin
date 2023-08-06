@@ -247,6 +247,7 @@ class KotlinCodegenOptions(
      */
     val addJvmOverloads: Boolean = false,
     val requiresOptInAnnotation: String?,
+
     /**
      * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
      * responses into Kotlin classes using [unsafeCast].
@@ -255,6 +256,16 @@ class KotlinCodegenOptions(
      */
     @ApolloExperimental
     val jsExport: Boolean = false,
+
+    /**
+     * Whether to generate builders in addition to constructors for operations and input types.
+     * Constructors are more concise but require passing an instance of `Optional` always, making them more verbose
+     * for the cases where there are a lot of optional input parameters.
+     *
+     * Default: false
+     */
+    @ApolloExperimental
+    val generateInputBuilders: Boolean = false
 )
 
 class JavaCodegenOptions(
@@ -369,6 +380,7 @@ const val defaultAddJvmOverloads = false
 const val defaultFieldsOnDisjointTypesMustMerge = true
 const val defaultGeneratePrimitiveTypes = false
 const val defaultJsExport = false
+const val defaultGenerateInputBuilders = false
 val defaultNullableFieldStyle = JavaNullable.NONE
 const val defaultDecapitalizeFields = false
 val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity

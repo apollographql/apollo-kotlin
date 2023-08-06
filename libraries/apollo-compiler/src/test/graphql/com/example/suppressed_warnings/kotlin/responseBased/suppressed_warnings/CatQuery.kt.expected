@@ -21,31 +21,31 @@ import com.example.suppressed_warnings.type.Filter
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import com.example.suppressed_warnings.type.Query as CompiledQuery
 
 public data class CatQuery(
   public val filter: Optional<Filter?> = Optional.Absent,
 ) : Query<CatQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     CatQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.suppressed_warnings.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = CatQuerySelections.__root)
   .build()
@@ -68,12 +68,14 @@ public data class CatQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query CatQuery($filter: Filter) {
      *   search(filter: $filter) {
      *     mustaches
      *   }
      *   direction
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

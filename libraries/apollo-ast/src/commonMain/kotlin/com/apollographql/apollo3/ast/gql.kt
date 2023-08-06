@@ -165,10 +165,10 @@ class GQLOperationDefinition(
     val operationType: String,
     val name: String?,
     val variableDefinitions: List<GQLVariableDefinition>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
     override val description: String?, // spec extension
-) : GQLExecutableDefinition, GQLDescribed {
+) : GQLExecutableDefinition, GQLDescribed, GQLHasDirectives {
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -235,11 +235,11 @@ class GQLOperationDefinition(
 class GQLFragmentDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,
     val selections: List<GQLSelection>,
     override val description: String?, // spec extension
-) : GQLExecutableDefinition, GQLNamed, GQLDescribed {
+) : GQLExecutableDefinition, GQLNamed, GQLDescribed, GQLHasDirectives {
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -297,9 +297,9 @@ class GQLFragmentDefinition(
 class GQLSchemaDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>,
-) : GQLDefinition, GQLDescribed {
+) : GQLDefinition, GQLDescribed, GQLHasDirectives {
 
   override val children = directives + rootOperationTypeDefinitions
 
@@ -727,15 +727,16 @@ class GQLDirectiveDefinition(
         "include",
         "skip",
         "deprecated",
+        "specifiedBy"
     )
   }
 }
 
 class GQLSchemaExtension(
     override val sourceLocation: SourceLocation? = null,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val operationTypeDefinitions: List<GQLOperationTypeDefinition>,
-) : GQLDefinition, GQLTypeSystemExtension {
+) : GQLDefinition, GQLTypeSystemExtension, GQLHasDirectives {
 
   override val children = directives + operationTypeDefinitions
 
@@ -777,9 +778,9 @@ class GQLSchemaExtension(
 class GQLEnumTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val enumValues: List<GQLEnumValueDefinition>,
-) : GQLDefinition, GQLTypeExtension {
+) : GQLDefinition, GQLTypeExtension, GQLHasDirectives {
 
   override val children: List<GQLNode> = directives + enumValues
 
@@ -825,9 +826,9 @@ class GQLObjectTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val implementsInterfaces: List<String>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val fields: List<GQLFieldDefinition>,
-) : GQLDefinition, GQLTypeExtension {
+) : GQLDefinition, GQLTypeExtension, GQLHasDirectives {
 
   override val children: List<GQLNode> = directives + fields
 
@@ -878,9 +879,9 @@ class GQLObjectTypeExtension(
 class GQLInputObjectTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val inputFields: List<GQLInputValueDefinition>,
-) : GQLDefinition, GQLTypeExtension {
+) : GQLDefinition, GQLTypeExtension, GQLHasDirectives {
 
   override val children: List<GQLNode> = directives + inputFields
 
@@ -925,8 +926,8 @@ class GQLInputObjectTypeExtension(
 class GQLScalarTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
-) : GQLDefinition, GQLTypeExtension {
+    override val directives: List<GQLDirective>,
+) : GQLDefinition, GQLTypeExtension, GQLHasDirectives {
 
   override val children = directives
 
@@ -962,9 +963,9 @@ class GQLInterfaceTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
     val implementsInterfaces: List<String>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val fields: List<GQLFieldDefinition>,
-) : GQLDefinition, GQLTypeExtension, GQLNamed {
+) : GQLDefinition, GQLTypeExtension, GQLNamed, GQLHasDirectives {
 
   override val children = fields
 
@@ -1014,9 +1015,9 @@ class GQLInterfaceTypeExtension(
 class GQLUnionTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val memberTypes: List<GQLNamedType>,
-) : GQLDefinition, GQLTypeExtension {
+) : GQLDefinition, GQLTypeExtension, GQLHasDirectives {
 
   override val children: List<GQLNode> = directives + memberTypes
 
@@ -1057,8 +1058,8 @@ class GQLEnumValueDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
-) : GQLNode, GQLDescribed, GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLNode, GQLDescribed, GQLNamed, GQLHasDirectives {
 
   override val children = directives
 
@@ -1101,8 +1102,8 @@ class GQLFieldDefinition(
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val type: GQLType,
-    val directives: List<GQLDirective>,
-) : GQLNode, GQLDescribed, GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLNode, GQLDescribed, GQLNamed, GQLHasDirectives {
 
   override val children: List<GQLNode> = directives + arguments
 
@@ -1154,10 +1155,10 @@ class GQLInputValueDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val type: GQLType,
     val defaultValue: GQLValue?,
-) : GQLNode, GQLDescribed, GQLNamed {
+) : GQLNode, GQLDescribed, GQLNamed, GQLHasDirectives {
 
   override val children = directives
 
@@ -1229,8 +1230,8 @@ class GQLVariableDefinition(
     override val name: String,
     val type: GQLType,
     val defaultValue: GQLValue?,
-    val directives: List<GQLDirective>,
-) : GQLNode, GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLNode, GQLNamed, GQLHasDirectives {
 
   override val children = listOfNotNull(defaultValue) + directives
 
@@ -1529,15 +1530,17 @@ class GQLNullDesignator(override val sourceLocation: SourceLocation? = null) : G
 @ApolloExperimental
 class GQLListNullability(
     override val sourceLocation: SourceLocation? = null,
-    val itemNullability: GQLNullability,
+    val itemNullability: GQLNullability?,
     val selfNullability: GQLNullability?,
 ) : GQLNullability {
   override val children: List<GQLNode>
-    get() = listOf(itemNullability)
+    get() = listOfNotNull(itemNullability)
 
   override fun writeInternal(writer: SDLWriter) {
     writer.write("[")
-    writer.write(itemNullability)
+    if (itemNullability != null) {
+      writer.write(itemNullability)
+    }
     writer.write("]")
     if (selfNullability != null) {
       writer.write(selfNullability)
@@ -1552,7 +1555,7 @@ class GQLListNullability(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      ofNullability: GQLNullability = this.itemNullability,
+      ofNullability: GQLNullability? = this.itemNullability,
       selfNullability: GQLNullability? = this.selfNullability,
   ): GQLListNullability {
     return GQLListNullability(
@@ -1568,11 +1571,11 @@ class GQLField @ApolloExperimental constructor(
     val alias: String?,
     override val name: String,
     val arguments: List<GQLArgument>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
     @property:ApolloExperimental
     val nullability: GQLNullability?,
-) : GQLSelection(), GQLNamed {
+) : GQLSelection(), GQLNamed, GQLHasDirectives {
   constructor(
       sourceLocation: SourceLocation? = null,
       alias: String?,
@@ -1665,9 +1668,9 @@ class GQLField @ApolloExperimental constructor(
 class GQLInlineFragment(
     override val sourceLocation: SourceLocation? = null,
     val typeCondition: GQLNamedType?,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
-) : GQLSelection() {
+) : GQLSelection(), GQLHasDirectives {
   @Suppress("DEPRECATION")
   @Deprecated("Use selections directly")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -1722,8 +1725,8 @@ class GQLInlineFragment(
 class GQLFragmentSpread(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
-    val directives: List<GQLDirective>,
-) : GQLSelection(), GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLSelection(), GQLNamed, GQLHasDirectives {
 
   override val children = directives
 

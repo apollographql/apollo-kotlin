@@ -1,0 +1,1 @@
+No tests in this module. If it compiles, it means everything went fine. See operation.graphql for more details

@@ -20,33 +20,34 @@ import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
+import com.example.inline_fragment_intersection.type.Query as CompiledQuery
 
 public class TestOperation() : Query<TestOperation.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestOperation_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestOperation_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.inline_fragment_intersection.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestOperationSelections.__root)
   .build()
@@ -56,7 +57,7 @@ public class TestOperation() : Query<TestOperation.Data> {
     public val random: Random,
   ) : Query.Data {
     public sealed interface BeingRandom : Random {
-      public override val __typename: String
+      override val __typename: String
 
       public val name: String
 
@@ -68,21 +69,22 @@ public class TestOperation() : Query<TestOperation.Data> {
         public val name: String
 
         public companion object {
-          public fun Friend.asWookie() = this as? WookieFriend
+          @Suppress("USELESS_CAST")
+          public fun Friend.asWookie(): WookieFriend? = this as? WookieFriend
         }
       }
 
       public sealed interface WookieFriend : Friend {
-        public override val __typename: String
+        override val __typename: String
 
-        public override val name: String
+        override val name: String
 
         public val lifeExpectancy: Double?
       }
     }
 
     public sealed interface WookieRandom : Random {
-      public override val __typename: String
+      override val __typename: String
 
       public val race: Race
 
@@ -97,82 +99,88 @@ public class TestOperation() : Query<TestOperation.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Random.asBeing() = this as? BeingRandom
+        @Suppress("USELESS_CAST")
+        public fun Random.asBeing(): BeingRandom? = this as? BeingRandom
 
-        public fun Random.asBeingHuman() = this as? BeingHumanRandom
+        @Suppress("USELESS_CAST")
+        public fun Random.asBeingHuman(): BeingHumanRandom? = this as? BeingHumanRandom
 
-        public fun Random.asWookie() = this as? WookieRandom
+        @Suppress("USELESS_CAST")
+        public fun Random.asWookie(): WookieRandom? = this as? WookieRandom
 
-        public fun Random.asBeingWookie() = this as? BeingWookieRandom
+        @Suppress("USELESS_CAST")
+        public fun Random.asBeingWookie(): BeingWookieRandom? = this as? BeingWookieRandom
       }
     }
 
     public data class BeingHumanRandom(
-      public override val __typename: String,
-      public override val name: String,
-      public override val friends: List<Friend>,
+      override val __typename: String,
+      override val name: String,
+      override val friends: List<Friend>,
       public val profilePictureUrl: String?,
     ) : BeingRandom {
       public sealed interface Friend : BeingRandom.Friend {
-        public override val __typename: String
+        override val __typename: String
 
-        public override val name: String
+        override val name: String
 
         public val isFamous: Boolean?
 
         public companion object {
-          public fun Friend.asWookie() = this as? WookieFriend
+          @Suppress("USELESS_CAST")
+          public fun Friend.asWookie(): WookieFriend? = this as? WookieFriend
         }
       }
 
       public data class WookieFriend(
-        public override val __typename: String,
-        public override val name: String,
-        public override val lifeExpectancy: Double?,
-        public override val isFamous: Boolean?,
+        override val __typename: String,
+        override val name: String,
+        override val lifeExpectancy: Double?,
+        override val isFamous: Boolean?,
         public val race: Race,
       ) : Friend, BeingRandom.WookieFriend
 
       public data class OtherFriend(
-        public override val __typename: String,
-        public override val name: String,
-        public override val isFamous: Boolean?,
+        override val __typename: String,
+        override val name: String,
+        override val isFamous: Boolean?,
       ) : Friend, BeingRandom.Friend
     }
 
     public data class BeingWookieRandom(
-      public override val __typename: String,
-      public override val name: String,
-      public override val friends: List<Friend>,
-      public override val race: Race,
+      override val __typename: String,
+      override val name: String,
+      override val friends: List<Friend>,
+      override val race: Race,
     ) : BeingRandom, WookieRandom {
       public sealed interface Friend : BeingRandom.Friend, WookieRandom.Friend {
-        public override val __typename: String
+        override val __typename: String
 
-        public override val name: String
+        override val name: String
 
-        public override val lifeExpectancy: Double?
+        override val lifeExpectancy: Double?
 
         public companion object {
-          public fun Friend.asWookie() = this as? WookieFriend
+          @Suppress("USELESS_CAST")
+          public fun Friend.asWookie(): WookieFriend? = this as? WookieFriend
         }
       }
 
       public data class WookieFriend(
-        public override val __typename: String,
-        public override val name: String,
-        public override val lifeExpectancy: Double?,
+        override val __typename: String,
+        override val name: String,
+        override val lifeExpectancy: Double?,
       ) : Friend, BeingRandom.WookieFriend, WookieRandom.Friend
 
       public data class OtherFriend(
-        public override val __typename: String,
-        public override val name: String,
-        public override val lifeExpectancy: Double?,
+        override val __typename: String,
+        override val name: String,
+        override val lifeExpectancy: Double?,
       ) : Friend, BeingRandom.Friend, WookieRandom.Friend
     }
 
     public data class OtherRandom(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Random
   }
 
@@ -184,6 +192,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestOperation {
      *   random {
      *     __typename
@@ -224,6 +233,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

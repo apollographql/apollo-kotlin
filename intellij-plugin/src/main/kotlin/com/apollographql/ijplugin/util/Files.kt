@@ -14,6 +14,11 @@ fun Project.findPsiFilesByName(fileName: String, searchScope: GlobalSearchScope)
   return PsiUtilCore.toPsiFiles(PsiManager.getInstance(this), virtualFiles)
 }
 
+fun Project.findPsiFilesByExtension(extension: String, searchScope: GlobalSearchScope): List<PsiFile> {
+  val virtualFiles = FilenameIndex.getAllFilesByExt(this, extension, searchScope)
+  return PsiUtilCore.toPsiFiles(PsiManager.getInstance(this), virtualFiles)
+}
+
 fun VirtualFile.isGenerated(project: Project): Boolean {
   return GeneratedSourcesFilter.isGeneratedSourceByAnyFilter(this, project) || isApolloGenerated() || name.endsWith(".keystream")
 }

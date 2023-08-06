@@ -18,14 +18,13 @@ import com.example.inline_fragment_for_non_optional_field.TestQuery
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
@@ -41,17 +40,17 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("nonOptionalHero")
       NonOptionalHero.obj().toJson(writer, value.nonOptionalHero, adapterContext)
     }
 
     private object NonOptionalHero : CompositeAdapter<TestQuery.Data.NonOptionalHero> {
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.NonOptionalHero {
         val __typename = reader.readTypename()
         return when(__typename) {
@@ -62,11 +61,11 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.NonOptionalHero,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         when(value) {
           is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toJson(writer, value,
               adapterContext)
@@ -108,7 +107,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.HumanNonOptionalHero,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -149,7 +148,7 @@ public object TestQuery_ResponseAdapter {
         writer: JsonWriter,
         `value`: TestQuery.Data.OtherNonOptionalHero,
         @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 

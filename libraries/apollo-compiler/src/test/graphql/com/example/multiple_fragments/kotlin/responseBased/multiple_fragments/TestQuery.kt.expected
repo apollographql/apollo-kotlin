@@ -21,32 +21,33 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
+import com.example.multiple_fragments.type.Query as CompiledQuery
 
 public class TestQuery() : Query<TestQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.multiple_fragments.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -57,32 +58,36 @@ public class TestQuery() : Query<TestQuery.Data> {
   ) : Query.Data {
     public data class A(
       public val __typename: String,
-      public override val node: Node?,
+      override val node: Node?,
     ) : AFragment {
       public sealed interface Node : AFragment.Node {
-        public override val __typename: String
+        override val __typename: String
 
         public companion object {
-          public fun Node.fragment1() = this as? Fragment1
+          @Suppress("USELESS_CAST")
+          public fun Node.fragment1(): Fragment1? = this as? Fragment1
 
-          public fun Node.fragment2() = this as? Fragment2
+          @Suppress("USELESS_CAST")
+          public fun Node.fragment2(): Fragment2? = this as? Fragment2
 
-          public fun Node.asANode() = this as? ANodeNode
+          @Suppress("USELESS_CAST")
+          public fun Node.asANode(): ANodeNode? = this as? ANodeNode
         }
       }
 
       public data class ANodeNode(
-        public override val __typename: String,
-        public override val field1: String?,
-        public override val field2: String?,
+        override val __typename: String,
+        override val field1: String?,
+        override val field2: String?,
       ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
 
       public data class OtherNode(
-        public override val __typename: String,
+        override val __typename: String,
       ) : Node, AFragment.Node
 
       public companion object {
-        public fun A.aFragment() = this as? AFragment
+        @Suppress("USELESS_CAST")
+        public fun A.aFragment(): AFragment? = this as? AFragment
       }
     }
   }
@@ -95,6 +100,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery {
      *   a {
      *     __typename
@@ -117,6 +123,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     ...fragment2
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

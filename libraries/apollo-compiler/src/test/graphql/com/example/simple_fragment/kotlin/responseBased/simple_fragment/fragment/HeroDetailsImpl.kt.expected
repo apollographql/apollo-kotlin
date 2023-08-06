@@ -25,6 +25,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 
 /**
@@ -32,21 +33,21 @@ import kotlin.Unit
  * with multi lines support
  */
 internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Character.type
   )
@@ -54,25 +55,27 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   .build()
 
   public sealed interface Data : HeroDetails, Fragment.Data {
-    public override val __typename: String
+    override val __typename: String
 
     public companion object {
-      public fun Data.humanDetails() = this as? HumanDetails
+      @Suppress("USELESS_CAST")
+      public fun Data.humanDetails(): HumanDetails? = this as? HumanDetails
 
-      public fun Data.asHuman() = this as? HumanData
+      @Suppress("USELESS_CAST")
+      public fun Data.asHuman(): HumanData? = this as? HumanData
     }
   }
 
   public data class HumanData(
-    public override val __typename: String,
+    override val __typename: String,
     /**
      * What this human calls themselves
      */
-    public override val name: String,
+    override val name: String,
   ) : Data, HumanDetails, HumanHeroDetails
 
   public data class OtherData(
-    public override val __typename: String,
+    override val __typename: String,
   ) : Data, HeroDetails
 
   public companion object {

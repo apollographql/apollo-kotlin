@@ -20,8 +20,8 @@ import com.example.java_android_annotations.type.MyInput
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
+import com.example.java_android_annotations.type.Query as CompiledQuery
 
 public data class MyQuery(
   public val nullableInt: Optional<Int?> = Optional.Absent,
@@ -31,26 +31,26 @@ public data class MyQuery(
   public val nonNullableInput: MyInput,
   public val nonNullableInputWithDefault: Optional<MyInput> = Optional.Absent,
 ) : Query<MyQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     MyQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.java_android_annotations.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = MyQuerySelections.__root)
   .build()
@@ -86,6 +86,7 @@ public data class MyQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4
      * , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! =
      * {
@@ -109,6 +110,7 @@ public data class MyQuery(
      *   nullableListOfNullableString
      *   nullableListOfNonNullableString
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

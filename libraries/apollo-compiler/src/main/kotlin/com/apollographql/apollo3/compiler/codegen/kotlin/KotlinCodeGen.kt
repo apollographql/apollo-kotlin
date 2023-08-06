@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -71,6 +72,7 @@ internal object KotlinCodeGen {
     val hooks = kotlinCodegenOptions.compilerKotlinHooks
     val generateSchema = commonCodegenOptions.generateSchema || generateDataBuilders
     val outputDir = commonCodegenOptions.outputDir
+    val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
@@ -107,7 +109,7 @@ internal object KotlinCodeGen {
         builders.add(EnumResponseAdapterBuilder(context, irEnum))
       }
       irSchema.irInputObjects.forEach { irInputObject ->
-        builders.add(InputObjectBuilder(context, irInputObject))
+        builders.add(InputObjectBuilder(context, irInputObject, generateInputBuilders))
         builders.add(InputObjectAdapterBuilder(context, irInputObject))
       }
       irSchema.irUnions.forEach {irUnion ->
@@ -155,7 +157,8 @@ internal object KotlinCodeGen {
                     fragment,
                     flatten,
                     addJvmOverloads,
-                    generateDataBuilders
+                    generateDataBuilders,
+                    generateInputBuilders,
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -183,6 +186,7 @@ internal object KotlinCodeGen {
                   flatten,
                   addJvmOverloads,
                   generateDataBuilders,
+                  generateInputBuilders
               )
           )
         }
@@ -220,6 +224,9 @@ internal object KotlinCodeGen {
           }
           cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
             builder.addProperty(propertySpec)
+          }
+          cgFile.imports.forEach {
+            builder.addAliasedImport(it.className, it.alias)
           }
           ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build())
         }

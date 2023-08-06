@@ -643,6 +643,16 @@ interface Service {
   val generatePrimitiveTypes: Property<Boolean>
 
   /**
+   * Whether to generate builders in addition to constructors for operations and input types.
+   * Constructors are more concise but require passing an instance of `Optional` always, making them more verbose
+   * for the cases where there are a lot of optional input parameters.
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val generateInputBuilders: Property<Boolean>
+
+  /**
    * The style to use for fields that are nullable in the Java generated code.
    *
    * Only valid when [generateKotlinModels] is `false`.

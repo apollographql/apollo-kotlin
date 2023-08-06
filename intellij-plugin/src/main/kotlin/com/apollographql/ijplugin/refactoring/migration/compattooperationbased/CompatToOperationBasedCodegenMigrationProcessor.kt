@@ -17,7 +17,7 @@ class CompatToOperationBasedCodegenMigrationProcessor(project: Project) : Apollo
 
   override val migrationItems = listOf(
       UpdateCodegenInBuildKts,
-      RemoveFragmentsField,
       ReworkInlineFragmentFields,
+      RemoveFragmentsField,
   )
 }

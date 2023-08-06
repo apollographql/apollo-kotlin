@@ -18,14 +18,13 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.interface_always_nested.TestQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _root: TestQuery.Data.Root? = null
 
@@ -41,11 +40,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("root")
       Root.obj(true).nullable().toJson(writer, value.root, adapterContext)
     }
@@ -53,7 +52,7 @@ public object TestQuery_ResponseAdapter {
     private object Root : CompositeAdapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Root {
         var __typename: String? = null
 
@@ -81,11 +80,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Root,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -98,7 +97,7 @@ public object TestQuery_ResponseAdapter {
       private object OnA : CompositeAdapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Root.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
@@ -129,11 +128,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Root.OnA,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -149,7 +148,7 @@ public object TestQuery_ResponseAdapter {
         private object OnB : CompositeAdapter<TestQuery.Data.Root.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-          public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
               TestQuery.Data.Root.OnA.OnB {
             var _fieldB1: String? = null
 
@@ -165,11 +164,11 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          override fun toJson(
             writer: JsonWriter,
             `value`: TestQuery.Data.Root.OnA.OnB,
             adapterContext: CompositeAdapterContext,
-          ): Unit {
+          ) {
             writer.name("fieldB1")
             NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldB1)
           }

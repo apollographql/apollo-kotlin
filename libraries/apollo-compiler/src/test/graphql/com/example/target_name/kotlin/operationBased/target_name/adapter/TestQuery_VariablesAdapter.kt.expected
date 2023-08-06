@@ -18,7 +18,6 @@ import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
 import com.example.target_name.type.adapter.renamedInput_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
-import kotlin.Unit
 
 public object TestQuery_VariablesAdapter {
   @Suppress(
@@ -30,7 +29,7 @@ public object TestQuery_VariablesAdapter {
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     val adapterContext =
         CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.input is Optional.Present) {

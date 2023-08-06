@@ -1,5 +1,4 @@
 import JapiCmp.configureJapiCmp
-import java.util.Locale
 
 plugins {
   id("apollo.library") apply false
@@ -102,7 +101,7 @@ tasks.register("ciBuild") {
 rootProject.configureDokka()
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
-  outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
+  outputDirectory.set(layout.buildDirectory.asFile.get().resolve("dokkaHtml/kdoc"))
 }
 
 tasks.named("dependencyUpdates").configure {

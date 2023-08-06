@@ -1,0 +1,5 @@
+query GetRandom($input: String) {
+  # This triggers a 'Identifier expected' Kotlin compiler error if not escaped:
+  random(arg: [$input])
+}
+

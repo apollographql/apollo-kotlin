@@ -18,33 +18,34 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
+import com.example.inline_fragment_inside_inline_fragment.type.Query as CompiledQuery
 
 public class TestQuery() : Query<TestQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.inline_fragment_inside_inline_fragment.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -56,7 +57,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
     public sealed interface CharacterSearch : Search {
-      public override val __typename: String
+      override val __typename: String
 
       /**
        * The name of the character
@@ -68,20 +69,23 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Search.asCharacter() = this as? CharacterSearch
+        @Suppress("USELESS_CAST")
+        public fun Search.asCharacter(): CharacterSearch? = this as? CharacterSearch
 
-        public fun Search.asCharacterHuman() = this as? CharacterHumanSearch
+        @Suppress("USELESS_CAST")
+        public fun Search.asCharacterHuman(): CharacterHumanSearch? = this as? CharacterHumanSearch
 
-        public fun Search.asCharacterDroid() = this as? CharacterDroidSearch
+        @Suppress("USELESS_CAST")
+        public fun Search.asCharacterDroid(): CharacterDroidSearch? = this as? CharacterDroidSearch
       }
     }
 
     public data class CharacterHumanSearch(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String,
+      override val name: String,
       /**
        * The home planet of the human, or null if unknown
        */
@@ -89,11 +93,11 @@ public class TestQuery() : Query<TestQuery.Data> {
     ) : CharacterSearch
 
     public data class CharacterDroidSearch(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String,
+      override val name: String,
       /**
        * This droid's primary function
        */
@@ -101,7 +105,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     ) : CharacterSearch
 
     public data class OtherSearch(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Search
   }
 
@@ -113,6 +117,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery {
      *   search(text: "bla-bla") {
      *     __typename
@@ -128,6 +133,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

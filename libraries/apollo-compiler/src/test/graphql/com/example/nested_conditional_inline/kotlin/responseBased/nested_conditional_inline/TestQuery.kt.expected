@@ -20,32 +20,33 @@ import com.example.nested_conditional_inline.type.Episode
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
+import com.example.nested_conditional_inline.type.Query as CompiledQuery
 
 public data class TestQuery(
   public val episode: Optional<Episode?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.nested_conditional_inline.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -63,18 +64,20 @@ public data class TestQuery(
       public val name: String
 
       public companion object {
-        public fun Hero.asHuman() = this as? HumanHero
+        @Suppress("USELESS_CAST")
+        public fun Hero.asHuman(): HumanHero? = this as? HumanHero
 
-        public fun Hero.asDroid() = this as? DroidHero
+        @Suppress("USELESS_CAST")
+        public fun Hero.asDroid(): DroidHero? = this as? DroidHero
       }
     }
 
     public data class HumanHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String,
+      override val name: String,
       /**
        * This human's friends, or an empty list if they have none
        */
@@ -91,16 +94,17 @@ public data class TestQuery(
         public val name: String
 
         public companion object {
-          public fun Friend.asHuman() = this as? HumanFriend
+          @Suppress("USELESS_CAST")
+          public fun Friend.asHuman(): HumanFriend? = this as? HumanFriend
         }
       }
 
       public data class HumanFriend(
-        public override val __typename: String,
+        override val __typename: String,
         /**
          * The name of the character
          */
-        public override val name: String,
+        override val name: String,
         /**
          * Height in the preferred unit, default is meters
          */
@@ -108,20 +112,20 @@ public data class TestQuery(
       ) : Friend
 
       public data class OtherFriend(
-        public override val __typename: String,
+        override val __typename: String,
         /**
          * The name of the character
          */
-        public override val name: String,
+        override val name: String,
       ) : Friend
     }
 
     public data class DroidHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String,
+      override val name: String,
       /**
        * This droid's friends, or an empty list if they have none
        */
@@ -138,16 +142,17 @@ public data class TestQuery(
         public val name: String
 
         public companion object {
-          public fun Friend.asHuman() = this as? HumanFriend
+          @Suppress("USELESS_CAST")
+          public fun Friend.asHuman(): HumanFriend? = this as? HumanFriend
         }
       }
 
       public data class HumanFriend(
-        public override val __typename: String,
+        override val __typename: String,
         /**
          * The name of the character
          */
-        public override val name: String,
+        override val name: String,
         /**
          * Height in the preferred unit, default is meters
          */
@@ -155,20 +160,20 @@ public data class TestQuery(
       ) : Friend
 
       public data class OtherFriend(
-        public override val __typename: String,
+        override val __typename: String,
         /**
          * The name of the character
          */
-        public override val name: String,
+        override val name: String,
       ) : Friend
     }
 
     public data class OtherHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String,
+      override val name: String,
     ) : Hero
   }
 
@@ -180,6 +185,7 @@ public data class TestQuery(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery($episode: Episode) {
      *   hero(episode: $episode) {
      *     __typename
@@ -204,6 +210,7 @@ public data class TestQuery(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

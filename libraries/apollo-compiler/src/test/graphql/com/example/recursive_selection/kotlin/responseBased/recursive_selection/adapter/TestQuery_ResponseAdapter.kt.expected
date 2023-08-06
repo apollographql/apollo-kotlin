@@ -16,14 +16,13 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.recursive_selection.TestQuery
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : CompositeAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("tree")
 
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         TestQuery.Data {
       var _tree: TestQuery.Data.Tree? = null
 
@@ -39,11 +38,11 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: TestQuery.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("tree")
       Tree.obj().nullable().toJson(writer, value.tree, adapterContext)
     }
@@ -51,7 +50,7 @@ public object TestQuery_ResponseAdapter {
     private object Tree : CompositeAdapter<TestQuery.Data.Tree> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
 
-      public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
           TestQuery.Data.Tree {
         var _name: String? = null
         var _children: List<TestQuery.Data.Tree.Child>? = null
@@ -73,11 +72,11 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Tree,
         adapterContext: CompositeAdapterContext,
-      ): Unit {
+      ) {
         writer.name("name")
         StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
 
@@ -91,7 +90,7 @@ public object TestQuery_ResponseAdapter {
       private object Child : CompositeAdapter<TestQuery.Data.Tree.Child> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Tree.Child {
           var _name: String? = null
 
@@ -107,11 +106,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Tree.Child,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }
@@ -120,7 +119,7 @@ public object TestQuery_ResponseAdapter {
       private object Parent : CompositeAdapter<TestQuery.Data.Tree.Parent> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
             TestQuery.Data.Tree.Parent {
           var _name: String? = null
 
@@ -136,11 +135,11 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        override fun toJson(
           writer: JsonWriter,
           `value`: TestQuery.Data.Tree.Parent,
           adapterContext: CompositeAdapterContext,
-        ): Unit {
+        ) {
           writer.name("name")
           StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
         }

@@ -17,32 +17,32 @@ import com.example.fragments_with_defer_and_include_directives.adapter.InlineMul
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferWithIfSelections
 import kotlin.Boolean
 import kotlin.String
-import kotlin.Unit
+import com.example.fragments_with_defer_and_include_directives.type.Query as CompiledQuery
 
 public data class InlineMultipleWithDeferWithIf(
   public val cond: Boolean,
 ) : Query<InlineMultipleWithDeferWithIf.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     InlineMultipleWithDeferWithIf_VariablesAdapter.serializeVariables(writer, this,
         customScalarAdapters, withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
+  override fun adapter(): CompositeAdapter<Data> =
       InlineMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.fragments_with_defer_and_include_directives.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = InlineMultipleWithDeferWithIfSelections.__root)
   .build()
@@ -97,6 +97,7 @@ public data class InlineMultipleWithDeferWithIf(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query InlineMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
@@ -111,6 +112,7 @@ public data class InlineMultipleWithDeferWithIf(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

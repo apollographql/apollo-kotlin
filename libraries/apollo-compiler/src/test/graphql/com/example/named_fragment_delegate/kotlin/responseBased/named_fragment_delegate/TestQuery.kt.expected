@@ -20,33 +20,34 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 import kotlin.collections.List
+import com.example.named_fragment_delegate.type.Query as CompiledQuery
 
 public class TestQuery() : Query<TestQuery.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.named_fragment_delegate.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = TestQuerySelections.__root)
   .build()
@@ -59,30 +60,34 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String
 
       public companion object {
-        public fun Hero.droidDetails() = this as? DroidDetails
+        @Suppress("USELESS_CAST")
+        public fun Hero.droidDetails(): DroidDetails? = this as? DroidDetails
 
-        public fun Hero.humanDetails() = this as? HumanDetails
+        @Suppress("USELESS_CAST")
+        public fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
 
-        public fun Hero.asDroid() = this as? DroidHero
+        @Suppress("USELESS_CAST")
+        public fun Hero.asDroid(): DroidHero? = this as? DroidHero
 
-        public fun Hero.asHuman() = this as? HumanHero
+        @Suppress("USELESS_CAST")
+        public fun Hero.asHuman(): HumanHero? = this as? HumanHero
       }
     }
 
     public data class DroidHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * What others call this droid
        */
-      public override val name: String,
+      override val name: String,
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?,
+      override val primaryFunction: String?,
       /**
        * This droid's friends, or an empty list if they have none
        */
-      public override val friends: List<Friend?>?,
+      override val friends: List<Friend?>?,
     ) : Hero, DroidDetails {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -90,30 +95,30 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * The name of the character
          */
-        public override val name: String,
+        override val name: String,
       ) : DroidDetails.Friend
     }
 
     public data class HumanHero(
-      public override val __typename: String,
+      override val __typename: String,
       /**
        * What this human calls themselves
        */
-      public override val name: String,
+      override val name: String,
       /**
        * Profile link
        */
-      public override val profileLink: Any,
+      override val profileLink: Any,
       /**
        * The friends of the human exposed as a connection with edges
        */
-      public override val friendsConnection: FriendsConnection,
+      override val friendsConnection: FriendsConnection,
     ) : Hero, HumanDetails {
       public data class FriendsConnection(
         /**
          * The edges for each of the character's friends.
          */
-        public override val edges: List<Edge?>?,
+        override val edges: List<Edge?>?,
       ) : HumanDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -121,20 +126,20 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The character represented by this friendship edge
            */
-          public override val node: Node?,
+          override val node: Node?,
         ) : HumanDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
-            public override val name: String,
+            override val name: String,
           ) : HumanDetails.FriendsConnection.Edge.Node
         }
       }
     }
 
     public data class OtherHero(
-      public override val __typename: String,
+      override val __typename: String,
     ) : Hero
   }
 
@@ -146,6 +151,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query TestQuery {
      *   hero {
      *     __typename
@@ -173,6 +179,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

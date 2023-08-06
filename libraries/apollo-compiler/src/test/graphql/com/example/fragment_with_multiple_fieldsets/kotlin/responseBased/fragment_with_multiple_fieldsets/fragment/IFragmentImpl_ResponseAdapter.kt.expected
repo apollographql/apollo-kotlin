@@ -15,12 +15,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
   public object Data : CompositeAdapter<IFragmentImpl.Data> {
-    public override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
         IFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
@@ -31,11 +30,11 @@ public object IFragmentImpl_ResponseAdapter {
       }
     }
 
-    public override fun toJson(
+    override fun toJson(
       writer: JsonWriter,
       `value`: IFragmentImpl.Data,
       adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       when(value) {
         is IFragmentImpl.AData -> AData.toJson(writer, value, adapterContext)
         is IFragmentImpl.OtherData -> OtherData.toJson(writer, value, adapterContext)
@@ -72,7 +71,7 @@ public object IFragmentImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: IFragmentImpl.AData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
 
@@ -107,7 +106,7 @@ public object IFragmentImpl_ResponseAdapter {
       writer: JsonWriter,
       `value`: IFragmentImpl.OtherData,
       @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
-    ): Unit {
+    ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
     }

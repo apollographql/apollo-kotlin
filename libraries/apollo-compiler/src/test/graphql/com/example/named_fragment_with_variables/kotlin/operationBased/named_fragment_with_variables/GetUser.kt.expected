@@ -20,33 +20,33 @@ import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import com.example.named_fragment_with_variables.type.Query as CompiledQuery
 
 public data class GetUser(
   public val organizationId: String,
   public val query: UserQuery,
   public val size: Int,
 ) : Query<GetUser.Data> {
-  public override fun id(): String = OPERATION_ID
+  override fun id(): String = OPERATION_ID
 
-  public override fun document(): String = OPERATION_DOCUMENT
+  override fun document(): String = OPERATION_DOCUMENT
 
-  public override fun name(): String = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
         withBooleanDefaultValues)
   }
 
-  public override fun adapter(): CompositeAdapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
+  override fun adapter(): CompositeAdapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = com.example.named_fragment_with_variables.type.Query.type
+    type = CompiledQuery.type
   )
   .selections(selections = GetUserSelections.__root)
   .build()
@@ -68,6 +68,7 @@ public data class GetUser(
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
+     * ```
      * query GetUser($organizationId: String!, $query: UserQuery!, $size: Int!) {
      *   __typename
      *   ...QueryFragment
@@ -88,6 +89,7 @@ public data class GetUser(
      *     }
      *   }
      * }
+     * ```
      */
     public val OPERATION_DOCUMENT: String
       get() =

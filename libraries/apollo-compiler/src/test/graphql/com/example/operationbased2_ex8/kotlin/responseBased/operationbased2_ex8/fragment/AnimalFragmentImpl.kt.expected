@@ -17,25 +17,24 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
+import kotlin.Suppress
 
 public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
-  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
-  public override fun hashCode(): Int = this::class.hashCode()
+  override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(
+  override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
-  ): Unit {
+  ) {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): CompositeAdapter<Data> =
-      AnimalFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): CompositeAdapter<Data> = AnimalFragmentImpl_ResponseAdapter.Data.obj()
 
-  public override fun rootField(): CompiledField = CompiledField.Builder(
+  override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
     type = Animal.type
   )
@@ -43,36 +42,38 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
   .build()
 
   public data class Data(
-    public override val species: String,
-    public override val parent: Parent,
+    override val species: String,
+    override val parent: Parent,
   ) : AnimalFragment, Fragment.Data {
     public sealed interface Parent : AnimalFragment.Parent {
-      public override val __typename: String
+      override val __typename: String
 
-      public override val species: String
+      override val species: String
 
       public companion object {
-        public fun Parent.asLion() = this as? LionParent
+        @Suppress("USELESS_CAST")
+        public fun Parent.asLion(): LionParent? = this as? LionParent
 
-        public fun Parent.asCat() = this as? CatParent
+        @Suppress("USELESS_CAST")
+        public fun Parent.asCat(): CatParent? = this as? CatParent
       }
     }
 
     public data class LionParent(
-      public override val __typename: String,
-      public override val species: String,
-      public override val temperature: Int,
+      override val __typename: String,
+      override val species: String,
+      override val temperature: Int,
     ) : Parent, AnimalFragment.LionParent
 
     public data class CatParent(
-      public override val __typename: String,
-      public override val species: String,
-      public override val name: String,
+      override val __typename: String,
+      override val species: String,
+      override val name: String,
     ) : Parent, AnimalFragment.CatParent
 
     public data class OtherParent(
-      public override val __typename: String,
-      public override val species: String,
+      override val __typename: String,
+      override val species: String,
     ) : Parent, AnimalFragment.Parent
   }
 }
