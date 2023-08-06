@@ -1,0 +1,19 @@
+public final class com/apollographql/apollo3/network/KtorExtensionsKt {
+	public static final fun ktorClient (Lcom/apollographql/apollo3/ApolloClient$Builder;Lio/ktor/client/HttpClient;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+}
+
+public final class com/apollographql/apollo3/network/http/KtorHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
+	public fun <init> (J)V
+	public synthetic fun <init> (JILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (JJ)V
+	public fun <init> (Lio/ktor/client/HttpClient;)V
+	public fun dispose ()V
+	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/network/ws/KtorWebSocketEngine : com/apollographql/apollo3/network/ws/WebSocketEngine {
+	public fun <init> ()V
+	public fun <init> (Lio/ktor/client/HttpClient;)V
+	public fun open (Ljava/lang/String;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
