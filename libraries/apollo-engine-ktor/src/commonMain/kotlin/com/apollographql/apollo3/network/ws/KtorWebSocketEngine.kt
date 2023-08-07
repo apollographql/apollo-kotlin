@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
@@ -13,8 +14,11 @@ import io.ktor.http.Url
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 import okio.ByteString
 
@@ -28,6 +32,8 @@ class KtorWebSocketEngine(
         install(WebSockets)
       }
   )
+
+  private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
   override suspend fun open(
       url: String,
@@ -45,44 +51,67 @@ class KtorWebSocketEngine(
     }.build()
     val receiveMessageChannel = Channel<String>(Channel.UNLIMITED)
     val sendFrameChannel = Channel<Frame>(Channel.UNLIMITED)
-    client.webSocket(
-        request = {
-          headers {
-            headers.forEach {
-              append(it.name, it.value)
+    coroutineScope.launch {
+      try {
+        client.webSocket(
+            request = {
+              headers {
+                headers.forEach {
+                  append(it.name, it.value)
+                }
+              }
+              url(newUrl)
+            },
+        ) {
+          launch {
+            while (true) {
+              val frame = sendFrameChannel.receive()
+              try {
+                send(frame)
+              } catch (e: Exception) {
+                val closeReason = try {closeReason.await()} catch (e: Exception) {null}
+                receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
+                    ?: -1, reason = closeReason?.message, cause = e))
+                sendFrameChannel.close(e)
+                break
+              }
             }
           }
-          url(newUrl)
-        },
-    ) {
-      coroutineScope {
-        launch {
           while (true) {
-            when (val frame = incoming.receive()) {
+            when (val frame = try {
+              incoming.receive()
+            } catch (e: ClosedReceiveChannelException) {
+              val closeReason = try {closeReason.await()} catch (e: Exception) {null}
+              receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
+                  ?: -1, reason = closeReason?.message, cause = e))
+              sendFrameChannel.close(e)
+              break
+            }) {
               is Frame.Text -> {
                 receiveMessageChannel.send(frame.readText())
               }
+
               is Frame.Binary -> {
                 receiveMessageChannel.send(frame.data.decodeToString())
               }
+
               is Frame.Ping -> {
                 send(Frame.Pong(frame.data))
               }
+
               is Frame.Pong -> {}
               is Frame.Close -> {
                 close()
                 receiveMessageChannel.close()
               }
+
               else -> error("unknown frame type")
             }
           }
         }
-        launch {
-          while (true) {
-            val frame = sendFrameChannel.receive()
-            send(frame)
-          }
-        }
+      } catch (e: Exception) {
+        receiveMessageChannel.close(e)
+        sendFrameChannel.close(e)
       }
     }
     return object : WebSocketConnection {
@@ -101,8 +130,6 @@ class KtorWebSocketEngine(
       override fun close() {
         sendFrameChannel.trySend(Frame.Close())
         sendFrameChannel.close()
-        //close the message channel as well, since it is idempotent there is no harm
-        receiveMessageChannel.close()
       }
 
     }

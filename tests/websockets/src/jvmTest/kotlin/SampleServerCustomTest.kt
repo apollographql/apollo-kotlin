@@ -1,11 +1,10 @@
-import app.cash.turbine.test
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -15,8 +14,7 @@ import org.junit.Test
 import sample.server.CountSubscription
 
 class SampleServerCustomTest {
-  @Test
-  fun websocketReopenWhenDoesNotPile() {
+  private fun websocketReopenWhenDoesNotPile(customizeTransport: WebSocketNetworkTransport.Builder.() -> WebSocketNetworkTransport.Builder) {
 
     val port = 56678
     val url = "http://localhost:$port/subscriptions"
@@ -36,13 +34,14 @@ class SampleServerCustomTest {
                   reopenCount++
                   true
                 }
+                .customizeTransport()
                 .build()
         )
         .serverUrl("https://unused.com/")
         .build()
 
     runBlocking {
-      repeat(50) {id ->
+      repeat(50) { id ->
         launch {
           try {
             withTimeout(30_000) {
@@ -72,4 +71,10 @@ class SampleServerCustomTest {
     }
     sampleServer?.close()
   }
+
+  @Test
+  fun websocketReopenWhenDoesNotPileDefault() = websocketReopenWhenDoesNotPile { this }
+
+  @Test
+  fun websocketReopenWhenDoesNotPileKtor() = websocketReopenWhenDoesNotPile { webSocketEngine(KtorWebSocketEngine()) }
 }
