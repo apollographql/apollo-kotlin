@@ -77,6 +77,7 @@ apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime",
 apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo3", name = "apollo-annotations", version.ref = "apollo" }
 apollo-runtime-java = { group = "com.apollographql.apollo3", name = "apollo-runtime-java", version.ref = "apollo" }
+apollo-engine-ktor = { group = "com.apollographql.apollo3", name = "apollo-engine-ktor", version.ref = "apollo" }
 apollo-rx2 = { group = "com.apollographql.apollo3", name = "apollo-rx2-support", version.ref = "apollo" }
 apollo-rx3-java = { group = "com.apollographql.apollo3", name = "apollo-rx3-support-java", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
