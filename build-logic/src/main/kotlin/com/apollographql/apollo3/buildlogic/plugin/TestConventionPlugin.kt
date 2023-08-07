@@ -4,6 +4,7 @@ import commonSetup
 import configureJavaAndKotlinCompilers
 import configureMppTestsDefaults
 import configureTesting
+import hostTarget
 import optIn
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -49,6 +50,7 @@ class TestConventionPlugin : Plugin<Project> {
           withJs = mppConfiguration.withJs.getOrElse(true),
           withJvm = mppConfiguration.withJvm.getOrElse(true),
           browserTest = mppConfiguration.browserTest.getOrElse(false),
+          appleTargets = mppConfiguration.appleTargets.getOrElse(setOf(hostTarget))
       )
     }
   }

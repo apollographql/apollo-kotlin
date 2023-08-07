@@ -23,7 +23,7 @@ private val allAppleTargets = setOf(
 )
 
 // Try to guess the dev machine to make sure the tests are running smoothly
-private val hostTarget: String
+internal val hostTarget: String
   get() = if (System.getProperty("os.arch") == "aarch64") {
     "macosArm64"
   } else {
@@ -53,6 +53,7 @@ fun Project.configureMppTestsDefaults(
     withJs: Boolean,
     withJvm: Boolean,
     browserTest: Boolean,
+    appleTargets: Collection<String>,
 ) {
   configureMpp(
       withJvm = withJvm,
@@ -60,7 +61,7 @@ fun Project.configureMppTestsDefaults(
       browserTest = browserTest,
       withLinux = false,
       withAndroid = false,
-      appleTargets = setOf(hostTarget),
+      appleTargets = appleTargets,
   )
 }
 
