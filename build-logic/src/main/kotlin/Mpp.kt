@@ -1,7 +1,11 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
 private val allAppleTargets = setOf(
@@ -19,23 +23,23 @@ private val allAppleTargets = setOf(
 )
 
 // Try to guess the dev machine to make sure the tests are running smoothly
-val hostTarget: String
+private val hostTarget: String
   get() = if (System.getProperty("os.arch") == "aarch64") {
     "macosArm64"
   } else {
     "macosX64"
   }
 
-val enabledAppleTargets = allAppleTargets
-val enabledLinux = true
-val enabledJs = true
+private val enableLinux = true
+private val enableJs = true
 
 fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
   configureMpp(
       withJvm = true,
       withJs = withJs,
+      browserTest = false,
       withLinux = withLinux,
-      appleTargets = enabledAppleTargets,
+      appleTargets = allAppleTargets,
       withAndroid = withAndroid,
   )
 }
@@ -49,7 +53,6 @@ fun Project.configureMppTestsDefaults(
     withJs: Boolean,
     withJvm: Boolean,
     browserTest: Boolean,
-    appleTargets: Collection<String>,
 ) {
   configureMpp(
       withJvm = withJvm,
@@ -57,7 +60,7 @@ fun Project.configureMppTestsDefaults(
       browserTest = browserTest,
       withLinux = false,
       withAndroid = false,
-      appleTargets = appleTargets,
+      appleTargets = setOf(hostTarget),
   )
 }
 
@@ -67,7 +70,7 @@ fun Project.configureMpp(
     withLinux: Boolean,
     withAndroid: Boolean,
     appleTargets: Collection<String>,
-    browserTest: Boolean = false,
+    browserTest: Boolean,
 ) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
@@ -78,7 +81,7 @@ fun Project.configureMpp(
       jvm()
     }
 
-    if (enabledJs && withJs) {
+    if (enableJs && withJs) {
       js(IR) {
         if (browserTest) {
           browser {
@@ -101,7 +104,7 @@ fun Project.configureMpp(
       }
     }
 
-    if (enabledLinux && withLinux) {
+    if (enableLinux && withLinux) {
       linuxX64("linux")
     }
 
@@ -111,8 +114,14 @@ fun Project.configureMpp(
       }
     }
 
-    createAndConfigureAppleTargets(appleTargets.toSet().intersect(enabledAppleTargets))
+    appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
+      targetFromPreset(
+          presets.getByName(presetName),
+          presetName,
+      )
+    }
 
+    configureSourceSetGraph()
     addTestDependencies()
 
     tasks.withType(KotlinJsIrLink::class.java).configureEach {
@@ -124,31 +133,60 @@ fun Project.configureMpp(
   }
 }
 
-private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNames: Collection<String>) {
-  if (presetNames.isEmpty()) {
-    return
-  }
-
-  if (System.getProperty("idea.sync.active") != null) {
-    // Early return. Inside intelliJ, only configure one target
-    targetFromPreset(presets.getByName(hostTarget), "apple")
-    return
-  }
-
+/**
+ * Current Graph is something like so
+ *
+ * graph TB
+ * commonMain --> jvmMain
+ * commonMain --> appleMain
+ * commonMain --> linuxMain
+ * commonMain --> jsMain
+ * appleMain --> macosX64
+ * appleMain --> macosArm64
+ * appleMain --> iosArm64
+ * appleMain --> iosX64
+ * appleMain --> iosSimulatorArm64
+ * appleMain --> watchosArm32
+ * appleMain --> watchosArm64
+ * appleMain --> watchosSimulatorArm64
+ * appleMain --> tvosArm64
+ * appleMain --> tvosX64
+ * appleMain --> tvosSimulatorArm64
+ *
+ *
+ * commonTest --> kotlinCodegenTest
+ * commonTest --> jvmJavaCodeGen
+ * kotlinCodegenTest --> macOsArm64Test
+ * kotlinCodegenTest --> jvmTest
+ * kotlinCodegenTest --> jsTest
+ *
+ *
+ *
+ * classDef kotlinPurple fill:#A97BFF,stroke:#333,stroke-width:2px,color:#333
+ * classDef javaOrange fill:#b07289,stroke:#333,stroke-width:2px,color:#333
+ * classDef gray fill:#AAA,stroke:#333,stroke-width:2px,color:#333
+ * class kotlinCodegenTest gray
+ * class jvmJavaCodeGen,macOsArm64Test,jvmTest,jsTest kotlinPurple
+ * class commonTest javaOrange
+ */
+private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   val appleMain = sourceSets.create("appleMain")
   val appleTest = sourceSets.create("appleTest")
 
   appleMain.dependsOn(sourceSets.getByName("commonMain"))
   appleTest.dependsOn(sourceSets.getByName("commonTest"))
 
-  presetNames.forEach { presetName ->
-    targetFromPreset(
-        presets.getByName(presetName),
-        presetName,
-    )
+  allAppleTargets.forEach {
+    sourceSets.findByName("${it}Main")?.dependsOn(appleMain)
+    sourceSets.findByName("${it}Test")?.dependsOn(appleTest)
+  }
 
-    sourceSets.getByName("${presetName}Main").dependsOn(appleMain)
-    sourceSets.getByName("${presetName}Test").dependsOn(appleTest)
+  val kotlinCodegentTest = sourceSets.create("kotlinCodegenTest")
+
+  kotlinCodegentTest.dependsOn(sourceSets.getByName("commonTest"))
+
+  targets.forEach {
+    sourceSets.findByName("${it.name}Test")?.dependsOn(kotlinCodegentTest)
   }
 }
 
@@ -158,4 +196,39 @@ private fun KotlinMultiplatformExtension.addTestDependencies() {
       implementation(kotlin("test"))
     }
   }
+}
+
+fun Project.registerJavaCodegenTestTask() {
+  val kotlin = kotlinExtension
+  check(kotlin is KotlinMultiplatformExtension) {
+    "Only multiplatform projects can register a javaCodegenTest task"
+  }
+  val jvmTarget = kotlin.targets.getByName("jvm") as KotlinJvmTarget
+  jvmTarget.withJava()
+
+  val javaCodegenCompilation = jvmTarget.compilations.create("javaCodegen")
+  javaCodegenCompilation.compileJavaTaskProvider?.configure {
+    classpath += configurations.getByName("jvmTestCompileClasspath")
+  }
+  javaCodegenCompilation.configurations.compileDependencyConfiguration.extendsFrom(configurations.getByName("jvmTestCompileClasspath"))
+  javaCodegenCompilation.defaultSourceSet.dependsOn(kotlin.sourceSets.getByName("commonTest"))
+  javaCodegenCompilation.defaultSourceSet.kotlin.apply {
+    srcDir("src/kotlinCodegenTest/kotlin")
+  }
+
+  val task = tasks.register("javaCodegenTest", Test::class.java) {
+    description = "Runs Java codegen tests."
+    group = "verification"
+
+    testClassesDirs = javaCodegenCompilation.output.classesDirs
+    classpath = configurations.getByName("jvmTestRuntimeClasspath") + javaCodegenCompilation.output.classesDirs
+
+    useJUnit()
+
+    testLogging {
+      events("passed")
+    }
+  }
+
+  tasks.named("build").dependsOn(task)
 }

@@ -9,13 +9,6 @@ apolloTest {
 }
 
 kotlin {
-  /**
-   * Extra target to test the java codegen
-   */
-  jvm("javaCodegen") {
-    withJava()
-  }
-
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
@@ -29,6 +22,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
+        implementation(libs.apollo.adapters)
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
         implementation(libs.kotlinx.coroutines)
@@ -96,7 +90,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             configureConnection(generateKotlinModels)
           }
         }
-    file("src/commonTest/kotlin/test").listFiles()!!
+    file("src/kotlinCodegenTest/kotlin/test").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
           service("${it.name}-$extra") {
@@ -123,60 +117,18 @@ fun configureApollo(generateKotlinModels: Boolean) {
 
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
-    if (System.getProperty("idea.sync.active") == null) {
-      if (generateKotlinModels) {
-        connectToKotlinSourceSet("jvmTest")
-        connectToKotlinSourceSet("jsTest")
-        connectToKotlinSourceSet("appleTest")
-      } else {
-        connectToJavaSourceSet("main")
-      }
+    if (generateKotlinModels) {
+      connectToKotlinSourceSet("kotlinCodegenTest")
     } else {
-      // For autocomplete to work
-      connectToKotlinSourceSet("commonTest")
+      connectToJavaSourceSet("javaCodegen")
     }
   }
 }
 configureApollo(true)
-configureApollo(false)
 
-// See https://youtrack.jetbrains.com/issue/KT-56019
-val myAttribute = Attribute.of("com.apollographql.test", String::class.java)
-
-configurations.named("jvmApiElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm")
-  }
-}
-
-configurations.named("javaCodegenApiElements").configure {
-  attributes {
-    attribute(myAttribute, "java")
-  }
-}
-
-configurations.named("jvmRuntimeElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm-runtime")
-  }
-}
-
-configurations.named("javaCodegenRuntimeElements").configure {
-  attributes {
-    attribute(myAttribute, "java-runtime")
-  }
-}
-
-configurations.named("jvmSourcesElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm")
-  }
-}
-
-configurations.named("javaCodegenSourcesElements").configure {
-  attributes {
-    attribute(myAttribute, "java")
-  }
+if (System.getProperty("idea.sync.active") == null) {
+  registerJavaCodegenTestTask()
+  configureApollo(false)
 }
 
 val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {

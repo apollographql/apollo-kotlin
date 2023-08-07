@@ -49,7 +49,6 @@ class TestConventionPlugin : Plugin<Project> {
           withJs = mppConfiguration.withJs.getOrElse(true),
           withJvm = mppConfiguration.withJvm.getOrElse(true),
           browserTest = mppConfiguration.browserTest.getOrElse(false),
-          appleTargets = mppConfiguration.appleTargets.orElse(setOf("macosArm64", "macosX64")).get()
       )
     }
   }
