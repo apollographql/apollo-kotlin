@@ -1,12 +1,15 @@
+
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+import org.jetbrains.kotlin.konan.target.Family
 
 private val allAppleTargets = setOf(
     "macosX64",
@@ -171,15 +174,20 @@ fun Project.configureMpp(
  * class commonTest javaOrange
  */
 private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
-  val appleMain = sourceSets.create("appleMain")
-  val appleTest = sourceSets.create("appleTest")
+  val hasAppleTarget = targets.any {
+    it is KotlinNativeTarget && it.konanTarget.family in setOf(Family.IOS, Family.OSX, Family.WATCHOS, Family.TVOS)
+  }
+  if (hasAppleTarget) {
+    val appleMain = sourceSets.create("appleMain")
+    val appleTest = sourceSets.create("appleTest")
 
-  appleMain.dependsOn(sourceSets.getByName("commonMain"))
-  appleTest.dependsOn(sourceSets.getByName("commonTest"))
+    appleMain.dependsOn(sourceSets.getByName("commonMain"))
+    appleTest.dependsOn(sourceSets.getByName("commonTest"))
 
-  allAppleTargets.forEach {
-    sourceSets.findByName("${it}Main")?.dependsOn(appleMain)
-    sourceSets.findByName("${it}Test")?.dependsOn(appleTest)
+    allAppleTargets.forEach {
+      sourceSets.findByName("${it}Main")?.dependsOn(appleMain)
+      sourceSets.findByName("${it}Test")?.dependsOn(appleTest)
+    }
   }
 
   val kotlinCodegentTest = sourceSets.create("kotlinCodegenTest")
