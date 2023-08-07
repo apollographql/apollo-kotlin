@@ -15,7 +15,6 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         api(project(":apollo-runtime"))
-        api(libs.kotlinx.coroutines)
         api(libs.ktor.client.core)
         api(libs.ktor.client.websockets)
       }
@@ -41,12 +40,6 @@ kotlin {
       }
     }
 
-    findByName("jsMain")?.apply {
-      dependencies {
-        api(libs.ktor.client.js)
-      }
-    }
-
     findByName("appleMain")?.apply {
       dependencies {
         api(libs.ktor.client.darwin)
@@ -54,14 +47,3 @@ kotlin {
     }
   }
 }
-
-tasks.register("iOSSimTest") {
-  dependsOn("iosSimTestBinaries")
-  doLast {
-    val binary = kotlin.targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosSim").binaries.getTest("DEBUG").outputFile
-    exec {
-      commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
-    }
-  }
-}
-
