@@ -52,19 +52,14 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    */
   private var peekedString: String? = null
 
-  /**
-   * The nesting stack. Using a manual array rather than an ArrayList saves 20%.
-   * This stack permits up to MAX_STACK_SIZE levels of nesting including the top-level document.
-   * Deeper nesting is prone to trigger StackOverflowErrors.
-   */
-  private val stack = IntArray(MAX_STACK_SIZE).apply {
+  private var stack = IntArray(INITIAL_STACK_SIZE).apply {
     this[0] = JsonScope.EMPTY_DOCUMENT
   }
   private var stackSize = 1
-  private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
-  private val pathIndices = IntArray(MAX_STACK_SIZE)
+  private var pathNames = arrayOfNulls<String>(INITIAL_STACK_SIZE)
+  private var pathIndices = IntArray(INITIAL_STACK_SIZE)
 
-  private val indexStack = IntArray(MAX_STACK_SIZE).apply {
+  private var indexStack = IntArray(INITIAL_STACK_SIZE).apply {
     this[0] = 0
   }
   private var indexStackSize = 1
@@ -746,7 +741,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   private fun push(newTop: Int) {
-    if (stackSize == stack.size) throw JsonDataException("Nesting too deep at " + getPath())
+    if (stackSize == stack.size) {
+      stack = stack.copyOf(stack.size * 2)
+      pathNames = pathNames.copyOf(pathNames.size * 2)
+      pathIndices = pathIndices.copyOf(pathIndices.size * 2)
+      indexStack = indexStack.copyOf(indexStack.size * 2)
+    }
     stack[stackSize++] = newTop
   }
 
@@ -888,6 +888,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val NUMBER_CHAR_EXP_SIGN = 6
     private const val NUMBER_CHAR_EXP_DIGIT = 7
 
-    internal const val MAX_STACK_SIZE = 256
+    internal const val INITIAL_STACK_SIZE = 64
   }
 }

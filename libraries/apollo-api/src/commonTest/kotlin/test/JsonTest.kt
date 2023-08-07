@@ -3,8 +3,12 @@ package test
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.LongAdapter
+import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.json.readAny
+import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,5 +30,37 @@ class JsonTest {
       AnyAdapter.toJson(this, CustomScalarAdapters.Empty, mapWriter.root()!!)
     }
     assertEquals("9223372036854775807", json)
+  }
+
+  @Test
+  fun canReadAndWriteVeryDeeplyNestedJsonSource() {
+    val json = buildJsonString {
+      val nesting = 1025
+      repeat(nesting) {
+        beginObject()
+        name("child")
+      }
+      value("yooooo")
+      repeat(nesting) {
+        endObject()
+      }
+    }
+
+    Buffer().writeUtf8(json).jsonReader().readAny()
+  }
+
+  @Test
+  fun canReadVeryDeeplyNestedJsonMap() {
+    val root = mutableMapOf<String, Any>()
+    var map = root
+    val nesting = 1025
+
+    repeat(nesting) {
+      val newMap = mutableMapOf<String, Any>()
+      map.put("child", newMap)
+      map = newMap
+    }
+
+    MapJsonReader(root).readAny()
   }
 }
