@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
@@ -17,6 +18,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import okio.ByteString
 
+@ApolloExperimental
 class KtorWebSocketEngine(
     private val client: HttpClient,
 ) : WebSocketEngine {

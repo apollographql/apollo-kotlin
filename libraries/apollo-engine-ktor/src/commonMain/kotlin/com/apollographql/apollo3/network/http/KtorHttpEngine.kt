@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -16,6 +17,7 @@ import io.ktor.util.flattenEntries
 import okio.Buffer
 import kotlin.coroutines.cancellation.CancellationException
 
+@ApolloExperimental
 class KtorHttpEngine(
     private val client: HttpClient,
 ): HttpEngine {
