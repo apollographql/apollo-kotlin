@@ -25,6 +25,7 @@ kotlin {
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
+        implementation(libs.apollo.engine.ktor)
       }
     }
 

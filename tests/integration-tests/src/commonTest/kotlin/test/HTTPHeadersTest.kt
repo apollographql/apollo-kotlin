@@ -8,6 +8,10 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.HttpInfo
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.KtorHttpEngine
+import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
@@ -19,9 +23,9 @@ class HTTPHeadersTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  private suspend fun setUp() {
+  private suspend fun setUp(builder: ApolloClient.Builder.() -> Unit) {
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).apply(builder).build()
   }
 
   private suspend fun tearDown() {
@@ -29,7 +33,24 @@ class HTTPHeadersTest {
   }
 
   @Test
-  fun makeSureHeadersAreSet() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineMakeSureHeadersAreSet() {
+    makeSureHeadersAreSet {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  fun ktorEngineMakeSureHeadersAreSet() {
+    makeSureHeadersAreSet {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun makeSureHeadersAreSet(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -46,7 +67,24 @@ class HTTPHeadersTest {
   }
 
   @Test
-  fun headersCanBeReadInResponseExecutionContext() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineHeadersCanBeReadInResponseExecutionContext() {
+    headersCanBeReadInResponseExecutionContext {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  fun ktorEngineHeadersCanBeReadInResponseExecutionContext() {
+    headersCanBeReadInResponseExecutionContext {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun headersCanBeReadInResponseExecutionContext(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 

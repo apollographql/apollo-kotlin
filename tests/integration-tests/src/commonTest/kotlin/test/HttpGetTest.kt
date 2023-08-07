@@ -1,18 +1,41 @@
 package test
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.SearchHeroQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.KtorHttpEngine
+import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HttpGetTest {
+
   @Test
-  fun getTest() = mockServerTest {
+  fun defaultEngineGetTest() {
+    getTest {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  fun ktorEngineGetTest() {
+    getTest {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun getTest(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = mockServerTest(builder) {
     mockServer.enqueue("""
       {
         "data": {
@@ -38,8 +61,26 @@ class HttpGetTest {
         mockServer.takeRequest().path
     )
   }
+
   @Test
-  fun encodeReservedCharactersTest() = mockServerTest {
+  fun defaultEngineEncodeReservedCharactersTest() {
+    encodeReservedCharactersTest {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  fun ktorEngineEncodeReservedCharactersTest() {
+    encodeReservedCharactersTest {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun encodeReservedCharactersTest(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = mockServerTest(builder) {
     // Response not needed, just testing generated url
     mockServer.enqueueData(data = emptyMap())
     apolloClient.query(SearchHeroQuery("!#$&'()*+,/:;=?@[]{}% "))
