@@ -2,19 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-<<<<<<< HEAD
-aggregate-all                                                                                  192403
-aggregate-kotlin-responseBased                                                                  60846
-aggregate-kotlin-operationBased                                                                 40535
-aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   91022
-=======
 aggregate-all                                                                                  193357
 aggregate-kotlin-responseBased                                                                  61239
 aggregate-kotlin-operationBased                                                                 40535
 aggregate-kotlin-compat                                                                             0
 aggregate-java-operationBased                                                                   91583
->>>>>>> 32f386b900 (Compiler: add a test for types named `Object` (#5156))
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5552
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3471
