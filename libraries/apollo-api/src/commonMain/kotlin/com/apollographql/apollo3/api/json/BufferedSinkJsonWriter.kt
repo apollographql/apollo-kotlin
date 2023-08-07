@@ -16,9 +16,8 @@
 package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.INITIAL_STACK_SIZE
 import com.apollographql.apollo3.api.json.internal.JsonScope
-import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink
 import okio.IOException
 import kotlin.jvm.JvmOverloads
@@ -39,12 +38,10 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
     private val sink: BufferedSink,
     private val indent: String? = null,
 ) : JsonWriter {
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to MAX_STACK_SIZE levels of nesting including
-  // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   private var stackSize = 0
-  private val scopes = IntArray(MAX_STACK_SIZE)
-  private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
-  private val pathIndices = IntArray(MAX_STACK_SIZE)
+  private var scopes = IntArray(INITIAL_STACK_SIZE)
+  private var pathNames = arrayOfNulls<String>(INITIAL_STACK_SIZE)
+  private var pathIndices = IntArray(INITIAL_STACK_SIZE)
 
   /** The name/value separator; either ":" or ": ".  */
   private val separator: String
@@ -256,7 +253,9 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
 
   private fun pushScope(newTop: Int) {
     if (stackSize == scopes.size) {
-      throw JsonDataException("Nesting too deep at $path: circular reference?")
+      scopes = scopes.copyOf(scopes.size * 2)
+      pathNames = pathNames.copyOf(pathNames.size * 2)
+      pathIndices = pathIndices.copyOf(pathIndices.size * 2)
     }
     scopes[stackSize++] = newTop
   }

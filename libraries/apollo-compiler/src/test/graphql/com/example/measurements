@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  192403
-aggregate-kotlin-responseBased                                                                  60846
+aggregate-all                                                                                  193357
+aggregate-kotlin-responseBased                                                                  61239
 aggregate-kotlin-operationBased                                                                 40535
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   91022
+aggregate-java-operationBased                                                                   91583
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5552
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3471
@@ -172,6 +172,7 @@ kotlin-responseBased-reserved_keywords                                          
 kotlin-operationBased-test_inline                                                                 569
 java-operationBased-two_heroes_unique                                                             568
 kotlin-responseBased-java_primitive_types                                                         563
+java-operationBased-list_field_clash                                                              561
 java-operationBased-inline_fragment_simple                                                        557
 kotlin-responseBased-path_vs_flat_accessors                                                       546
 kotlin-operationBased-reserved_keywords                                                           542
@@ -222,6 +223,7 @@ kotlin-responseBased-capitalized_fields                                         
 kotlin-operationBased-inline_fragment_type_coercion                                               401
 kotlin-responseBased-two_heroes_unique                                                            397
 kotlin-operationBased-inline_fragment_simple                                                      393
+kotlin-responseBased-list_field_clash                                                             393
 kotlin-responseBased-java8annotation                                                              385
 kotlin-responseBased-starships                                                                    385
 kotlin-responseBased-antlr_tokens                                                                 384

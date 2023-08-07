@@ -21,8 +21,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.api)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.mockserver)
         implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
         implementation(libs.apollo.engine.ktor)
@@ -31,6 +29,8 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.testingsupport)
         implementation(libs.kotlinx.coroutines)
         implementation(libs.kotlinx.serialization.json.asProvider())
         implementation(libs.kotlinx.coroutines.test)
