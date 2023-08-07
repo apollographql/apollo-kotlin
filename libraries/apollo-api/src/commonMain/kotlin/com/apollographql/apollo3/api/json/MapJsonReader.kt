@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.INITIAL_STACK_SIZE
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
@@ -50,14 +50,14 @@ constructor(
    * - a String representing the current key to be read in a Map
    * - null if peekedToken is BEGIN_OBJECT
    */
-  private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
+  private var path = arrayOfNulls<Any>(INITIAL_STACK_SIZE)
 
   /**
    * The current object memorized in case we need to rewind
    */
-  private var containerStack = arrayOfNulls<Map<String, Any?>>(MAX_STACK_SIZE)
-  private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
-  private val nameIndexStack = IntArray(MAX_STACK_SIZE)
+  private var containerStack = arrayOfNulls<Map<String, Any?>>(INITIAL_STACK_SIZE)
+  private var iteratorStack = arrayOfNulls<Iterator<*>>(INITIAL_STACK_SIZE)
+  private var nameIndexStack = IntArray(INITIAL_STACK_SIZE)
 
   private var stackSize = 0
 
@@ -113,6 +113,16 @@ constructor(
     }
   }
 
+  private fun increaseStack() {
+    if (stackSize == path.size) {
+      path = path.copyOf(path.size * 2)
+      containerStack = containerStack.copyOf(containerStack.size * 2)
+      nameIndexStack = nameIndexStack.copyOf(nameIndexStack.size * 2)
+      iteratorStack = iteratorStack.copyOf(iteratorStack.size * 2)
+    }
+    stackSize++
+  }
+
   override fun beginArray() = apply {
     if (peek() != JsonReader.Token.BEGIN_ARRAY) {
       throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPathAsString()}")
@@ -120,10 +130,7 @@ constructor(
 
     val currentValue = peekedData as List<Any?>
 
-    check(stackSize < MAX_STACK_SIZE) {
-      "Nesting too deep"
-    }
-    stackSize++
+    increaseStack()
 
     path[stackSize - 1] = -1
     iteratorStack[stackSize - 1] = currentValue.iterator()
@@ -145,10 +152,8 @@ constructor(
       throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
 
-    check(stackSize < MAX_STACK_SIZE) {
-      "Nesting too deep"
-    }
-    stackSize++
+    increaseStack()
+
     @Suppress("UNCHECKED_CAST")
     containerStack[stackSize - 1] = peekedData as Map<String, Any?>
 
