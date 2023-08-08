@@ -35,7 +35,7 @@ Persisted queries is currently in [preview](/resources/product-launch-stages#pre
 
 ## Implementation steps
 
-Both persisted queries and APQs require you to configure your client makes requests. If you intend to use persisted queries for safelisting, you also need to generate an operations manifest.
+Both persisted queries and APQs require you to configure your client makes requests. If you intend to use persisted queries for safelisting, you also need to generate the operations manifest.
 
 We recommend you follow this order while implementing:
 
@@ -51,9 +51,9 @@ Persisted queries also requires you to create and link a PQL, and to configure y
 
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
-An operation manifest acts as a safelist of trusted operations the [Apollo Router](/router/) can check incoming requests against. 
+The operation manifest acts as a safelist of trusted operations the [Apollo Router](/router/) can check incoming requests against. 
 
-To generate an operation manifest, set `operationManifestFormat` to `"persistedQueryManifest"` in your Gradle script:
+To generate the operation manifest, set `operationManifestFormat` to `"persistedQueryManifest"` in your Gradle script:
 
 ```kotlin
 // build.gradle.kts
@@ -69,7 +69,22 @@ apollo {
 
 The operation manifest is generated during code generation. This will happen automatically every time you build your project or you can trigger it manually by executing the `generateApolloSources` Gradle task. 
 
-The operation manifest will be generated in `build/generated/manifest/apollo/$serviceName/persistedQueryManifest.json`, where `$serviceName` is `"api"` here.
+The operation manifest is generated in `build/generated/manifest/apollo/$serviceName/persistedQueryManifest.json`, where `$serviceName` is `"api"` here. The resulting operation manifest looks something like this:
+
+```json title="persistedQueryManifest.json"
+{
+  "format": "apollo-persisted-query-manifest",
+  "version": 1,
+  "operations": [
+    {
+      "id": "e0321f6b438bb42c022f633d38c19549dea9a2d55c908f64c5c6cb8403442fef",
+      "body": "query GetItem { thing { __typename } }",
+      "name": "GetItem",
+      "type": "query"
+    }
+  ]
+}
+```
 
 ### 2. Publish operation manifests
 
