@@ -39,34 +39,15 @@ Both persisted queries and APQs require you to configure your client makes reque
 
 We recommend you follow this order while implementing:
 
-1. **For both persisted queries and APQs**: Enable persisted queries on `ApolloClient`
 1. **For persisted queries only**: Generate operation manifests
 1. **For persisted queries only**: Publish operation manifests
+1. **For both persisted queries and APQs**: Enable persisted queries on `ApolloClient`
 
 The rest of this article details these steps.
 
 Persisted queries also requires you to create and link a PQL, and to configure your router. For more information on the other configuration aspects of persisted queries, see the [GraphOS persisted queries documentation](/graphos/operations/persisted-queries).
 
-### 1. Enable persisted queries on `ApolloClient`
-
-Once you've configured your code generation to include operation IDs, you can update your client to query by operation ID rather than the full operation string. This configuration is the same whether you're using APQs or persisted queries. Call `autoPersistedQueries()` on your `ApolloClient.Builder`:
-
-```kotlin
-val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
-  .autoPersistedQueries()
-  .build()
-```
-
-Once APQs are enabled on your ApolloClient, hashed queries are sent by default.
-
-You may want to disable persisted queries for certain queries, for instance to avoid any caching when the data is updated often. In order to do that, set `enableAutoPersistedQueries` to false on the `ApolloCall`:
-
-```kotlin
-apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
-```
-
-### 2. Generate operation manifests
+### 1. Generate operation manifests
 
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
@@ -90,7 +71,7 @@ The operation manifest is generated during code generation. This will happen aut
 
 The operation manifest will be generated in `build/generated/manifest/apollo/$serviceName/persistedQueryManifest.json`, where `$serviceName` is `"api"` here.
 
-### 3. Publish operation manifests
+### 2. Publish operation manifests
 
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
@@ -121,6 +102,25 @@ rover persisted-queries publish my-graph@my-variant \
 2. It updates any _other_ variants that the PQL is applied to so that routers associated with those variants can fetch their updated PQL.
 
 As with manifest generation, you can execute this command in your CI/CD pipeline to publish new operations as part of your app release process.
+
+### 3. Enable persisted queries on `ApolloClient`
+
+Once you've configured your code generation to include operation IDs, you can update your client to query by operation ID rather than the full operation string. This configuration is the same whether you're using APQs or persisted queries. Call `autoPersistedQueries()` on your `ApolloClient.Builder`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .autoPersistedQueries()
+  .build()
+```
+
+Once APQs are enabled on your ApolloClient, hashed queries are sent by default.
+
+You may want to disable persisted queries for certain queries, for instance to avoid any caching when the data is updated often. In order to do that, set `enableAutoPersistedQueries` to false on the `ApolloCall`:
+
+```kotlin
+apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
+```
 
 ## Custom ID for Persisted Queries 
 
