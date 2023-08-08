@@ -101,7 +101,7 @@ If you want to preregister your manifest as a safelist of trusted operations, yo
 
 ```bash title="Example command"
 rover persisted-queries publish my-graph@my-variant \
-  --manifest ./persistedQueryManifest.json
+  --manifest app/build/generated/manifest/apollo/api/persistedQueryManifest.json
 ```
 
 - Replace `my-graph@my-variant` with the **graph ref** of _any_ variant your PQL is [linked to](/graphos/operations/persisted-queries#12-link-the-pql-to-variants). Your platform team can provide this for you.
