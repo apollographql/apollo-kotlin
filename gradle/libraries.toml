@@ -14,7 +14,7 @@ android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 antlr = "4.12.0"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "4.0.0-alpha.3"
+apollo = "4.0.0-alpha.4-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-alpha.1"
 cache = "2.0.2"
