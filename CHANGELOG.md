@@ -5,7 +5,7 @@ Change Log
 
 _2023-08-08_
 
-A lot of additions to the IntelliJ plugin as well as a new GraphQL parser, a Ktor multiplatform engine.
+A lot of additions to the IntelliJ plugin as well as a new GraphQL parser, a new Ktor multiplatform engine and more!
 
 ## 💙 External contributors 💙
 
