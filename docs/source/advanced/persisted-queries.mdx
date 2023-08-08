@@ -39,15 +39,15 @@ Both persisted queries and APQs require you to configure your client makes reque
 
 We recommend you follow this order while implementing:
 
-1. **For persisted queries only**: Generate operation manifests
-1. **For persisted queries only**: Publish operation manifests
+1. **For persisted queries only**: Generate the operation manifest
+1. **For persisted queries only**: Publish the operation manifest
 1. **For both persisted queries and APQs**: Enable persisted queries on `ApolloClient`
 
 The rest of this article details these steps.
 
 Persisted queries also requires you to create and link a PQL, and to configure your router. For more information on the other configuration aspects of persisted queries, see the [GraphOS persisted queries documentation](/graphos/operations/persisted-queries).
 
-### 1. Generate operation manifests
+### 1. Generate the operation manifest
 
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
