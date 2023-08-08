@@ -37,7 +37,7 @@ If you configured introspection, you can now download your schema directly from 
 
 The IntelliJ plugin now has its [own dedicated documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin). 
 
-Consult to find out everything you can do with the plugin as well as installation instructions.
+Consult it to find out everything you can do with the plugin as well as installation instructions.
 
 
 ## 🌳 Multiplatform Apollo AST (#5047)
