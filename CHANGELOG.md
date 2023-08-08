@@ -31,7 +31,7 @@ Because Kotlin is such a rich language and we can't account for all possible way
 
 If you configured introspection, you can now download your schema directly from IntelliJ
 
-![](https://github.com/apollographql/apollo-kotlin/assets/372852/3a15f587-b057-4df5-82c0-2e0b0247c203)
+<img src="https://github.com/apollographql/apollo-kotlin/assets/372852/3a15f587-b057-4df5-82c0-2e0b0247c203" width=250/>
 
 ### 📖 documentation
 
@@ -49,7 +49,21 @@ Apollo AST, the GraphQL parser powering Apollo Kotlin is now a manually written 
 
 [Client Controlled Nullability (CCN)](https://github.com/graphql/graphql-wg/blob/main/rfcs/ClientControlledNullability.md) is a GraphQL specification RFC aiming at making it easier to work with GraphQL in type safe languages like Kotlin and Swift.
 
-The RFC is still in early stages and requires server support. The API, final shape of the RFC might still change. By adding support in Apollo Kotlin, we're hoping to unblock potential users and gather real life feedbacks helping the proposal move forward.   
+To use CCN, use the CCN modifiers in your queries:
+
+```graphql
+query GetUser {
+  user {
+    id
+    # name is required to display the user
+    name!
+    # phoneNumber is optional
+    phoneNumber?
+  }
+}
+```
+
+The RFC is still in early stages and requires server support. The API and final shape of the RFC might still change. By adding support in Apollo Kotlin, we're hoping to unblock potential users and gather real life feedbacks helping the proposal move forward.
 
 ## 📡 Ktor engine (#5142)
 
