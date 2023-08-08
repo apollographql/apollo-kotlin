@@ -4,6 +4,7 @@ import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.closeConnection
 import kotlinx.coroutines.async
@@ -39,8 +40,7 @@ class WebSocketErrorsTest {
     }
   }
 
-  @Test
-  fun connectionErrorEmitsException() = runBlocking {
+  private fun connectionErrorEmitsException(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
@@ -48,6 +48,7 @@ class WebSocketErrorsTest {
                 connectionPayload = { mapOf("return" to "error") }
             )
         )
+        .customizeClient()
         .build()
 
     apolloClient.subscription(TimeSubscription())
@@ -62,8 +63,14 @@ class WebSocketErrorsTest {
     apolloClient.close()
   }
 
+
   @Test
-  fun socketClosedEmitsException() = runBlocking {
+  fun connectionErrorEmitsExceptionDefault() = connectionErrorEmitsException { this }
+
+  @Test
+  fun connectionErrorEmitsExceptionKtor() = connectionErrorEmitsException { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun socketClosedEmitsException(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
@@ -73,6 +80,7 @@ class WebSocketErrorsTest {
                 connectionPayload = { mapOf("return" to "close(3666)") }
             )
         )
+        .customizeClient()
         .build()
 
     apolloClient.subscription(TimeSubscription())
@@ -88,7 +96,12 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun socketReopensAfterAnError() = runBlocking {
+  fun socketClosedEmitsExceptionDefault() = socketClosedEmitsException { this }
+
+  @Test
+  fun socketClosedEmitsExceptionKtor() = socketClosedEmitsException { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun socketReopensAfterAnError(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     var connectionInitCount = 0
     var exception: Throwable? = null
 
@@ -108,6 +121,7 @@ class WebSocketErrorsTest {
           // Only retry once
           connectionInitCount == 1
         }
+        .customizeClient()
         .build()
 
     val items = async {
@@ -154,10 +168,16 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun disposingTheClientClosesTheWebSocket() = runBlocking {
+  fun socketReopensAfterAnErrorDefault() = socketReopensAfterAnError { this }
+
+  @Test
+  fun socketReopensAfterAnErrorKtor() = socketReopensAfterAnError { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun disposingTheClientClosesTheWebSocket(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     var apolloClient = ApolloClient.Builder()
         .httpServerUrl(sampleServer.graphqlUrl())
         .webSocketServerUrl(sampleServer.subscriptionsUrl())
+        .customizeClient()
         .build()
 
 
@@ -184,7 +204,12 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun flowThrowsIfNoReconnect() = runBlocking {
+  fun disposingTheClientClosesTheWebSocketDefault() = disposingTheClientClosesTheWebSocket { this }
+
+  @Test
+  fun disposingTheClientClosesTheWebSocketKtor() = disposingTheClientClosesTheWebSocket { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun flowThrowsIfNoReconnect(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     val apolloClient = ApolloClient.Builder()
         .httpServerUrl(sampleServer.graphqlUrl())
         .webSocketServerUrl(sampleServer.subscriptionsUrl())
@@ -195,6 +220,7 @@ class WebSocketErrorsTest {
                 }
             )
         )
+        .customizeClient()
         .build()
 
     launch {
@@ -220,7 +246,12 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun closeConnectionReconnectsTheWebSocket() = runBlocking {
+  fun flowThrowsIfNoReconnectDefault() = flowThrowsIfNoReconnect { this }
+
+  @Test
+  fun flowThrowsIfNoReconnectKtor() = flowThrowsIfNoReconnect { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun closeConnectionReconnectsTheWebSocket(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) = runBlocking {
     class MyWebSocketReconnectException : Exception()
 
     var connectionInitCount = 0
@@ -239,6 +270,7 @@ class WebSocketErrorsTest {
           assertIs<MyWebSocketReconnectException>(e)
           true
         }
+        .customizeClient()
         .build()
 
     apolloClient.subscription(CountSubscription(2, 100))
@@ -258,4 +290,10 @@ class WebSocketErrorsTest {
     // connectionInitCount is 2 since we returned true in webSocketReopenWhen
     assertEquals(2, connectionInitCount)
   }
+
+  @Test
+  fun closeConnectionReconnectsTheWebSocketDefault() = closeConnectionReconnectsTheWebSocket { this }
+
+  @Test
+  fun closeConnectionReconnectsTheWebSocketKtor() = closeConnectionReconnectsTheWebSocket { webSocketEngine(KtorWebSocketEngine()) }
 }

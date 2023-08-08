@@ -15,6 +15,10 @@ import com.apollographql.apollo3.internal.MultipartReader
 import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.KtorHttpEngine
+import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
@@ -72,7 +76,7 @@ class FileUploadTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  private suspend fun setUp() {
+  private suspend fun setUp(builder: ApolloClient.Builder.() -> Unit) {
     mockServer = MockServer()
 
     // We only test the data that is sent to the server, we don't really mind the response
@@ -82,7 +86,7 @@ class FileUploadTest {
       }
     """.trimIndent())
 
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).apply(builder).build()
   }
 
   private suspend fun tearDown() {
@@ -91,7 +95,25 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun single() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineSingle() {
+    single {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun ktorEngineSingle() {
+    single {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun single(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     apolloClient.mutation(mutationSingle).execute()
 
     val request = mockServer.takeRequest()
@@ -106,7 +128,25 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun twice() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineTwice() {
+    twice {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun ktorEngineTwice() {
+    twice {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun twice(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     apolloClient.mutation(mutationTwice).execute()
 
     val request = mockServer.takeRequest()
@@ -121,7 +161,25 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun multiple() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineMultiple() {
+    multiple {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun ktorEngineMultiple() {
+    multiple {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun multiple(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     apolloClient.mutation(mutationMultiple).execute()
 
     val request = mockServer.takeRequest()
@@ -136,7 +194,25 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun nested() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun defaultEngineNested() {
+    nested {
+      httpEngine(DefaultHttpEngine())
+      webSocketEngine(DefaultWebSocketEngine())
+    }
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun ktorEngineNested() {
+    nested {
+      httpEngine(KtorHttpEngine())
+      webSocketEngine(KtorWebSocketEngine())
+    }
+  }
+
+  private fun nested(
+      builder: ApolloClient.Builder.() -> Unit
+  ) = runTest(before = { setUp(builder) }, after = { tearDown() }) {
     apolloClient.mutation(mutationNested).execute()
 
     val request = mockServer.takeRequest()

@@ -2,6 +2,7 @@
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.SubscriptionOperationException
+import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocolAdapter
 import com.apollographql.apollo3.network.ws.WebSocketConnection
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -44,10 +45,10 @@ class SampleServerTest {
     }
   }
 
-  @Test
-  fun simple() {
+  private fun simple(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
+        .customizeClient()
         .build()
 
     runBlocking {
@@ -60,9 +61,16 @@ class SampleServerTest {
   }
 
   @Test
-  fun interleavedSubscriptions() {
+  fun simpleDefault()= simple { this }
+
+  @Test
+  fun simpleKtor() = simple { webSocketEngine(KtorWebSocketEngine()) }
+
+
+  private fun interleavedSubscriptions(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
+        .customizeClient()
         .build()
 
     runBlocking {
@@ -85,12 +93,17 @@ class SampleServerTest {
   }
 
   @Test
-  fun idleTimeout() {
+  fun interleavedSubscriptionsDefault() = interleavedSubscriptions { this }
+
+  @Test
+  fun interleavedSubscriptionsKtor() = interleavedSubscriptions { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun idleTimeout(customizeTransport: WebSocketNetworkTransport.Builder.() -> WebSocketNetworkTransport.Builder) {
     val transport = WebSocketNetworkTransport.Builder().serverUrl(
         serverUrl = sampleServer.subscriptionsUrl(),
     ).idleTimeoutMillis(
         idleTimeoutMillis = 1000
-    ).build()
+    ).customizeTransport().build()
 
     val apolloClient = ApolloClient.Builder()
         .networkTransport(transport)
@@ -110,8 +123,13 @@ class SampleServerTest {
   }
 
   @Test
-  fun slowConsumer() {
-    val apolloClient = ApolloClient.Builder().serverUrl(serverUrl = sampleServer.subscriptionsUrl()).build()
+  fun idleTimeoutDefault() = idleTimeout { this }
+
+  @Test
+  fun idleTimeoutKtor() = idleTimeout { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun slowConsumer(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) {
+    val apolloClient = ApolloClient.Builder().serverUrl(serverUrl = sampleServer.subscriptionsUrl()).customizeClient().build()
 
     runBlocking {
       /**
@@ -135,12 +153,17 @@ class SampleServerTest {
   }
 
   @Test
-  fun serverTermination() {
+  fun slowConsumerDefault() = slowConsumer { this }
+
+  @Test
+  fun slowConsumerKtor() = slowConsumer { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun serverTermination(customizeTransport: WebSocketNetworkTransport.Builder.() -> WebSocketNetworkTransport.Builder) {
     val transport = WebSocketNetworkTransport.Builder().serverUrl(
         serverUrl = sampleServer.subscriptionsUrl(),
     ).idleTimeoutMillis(
         idleTimeoutMillis = 1000
-    ).build()
+    ).customizeTransport().build()
 
     val apolloClient = ApolloClient.Builder()
         .networkTransport(transport)
@@ -161,9 +184,15 @@ class SampleServerTest {
   }
 
   @Test
-  fun operationError() {
+  fun serverTerminationDefault() = serverTermination { this }
+
+  @Test
+  fun serverTerminationKtor() = serverTermination { webSocketEngine(KtorWebSocketEngine()) }
+
+  private fun operationError(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
+        .customizeClient()
         .build()
 
     runBlocking {
@@ -181,6 +210,12 @@ class SampleServerTest {
       assertEquals("Woops", error)
     }
   }
+
+  @Test
+  fun operationErrorDefault() = operationError { this }
+
+  @Test
+  fun operationErrorKtor() = operationError { webSocketEngine(KtorWebSocketEngine()) }
 
   private inline fun <reified T> Any?.cast() = this as T
 
@@ -230,15 +265,16 @@ class SampleServerTest {
     }
   }
 
-  @Test
-  fun canResumeAfterGraphQLError() {
+  private fun canResumeAfterGraphQLError(customizeClient: ApolloClient.Builder.() -> ApolloClient.Builder) {
     val wsFactory = AuthorizationAwareWsProtocolFactory()
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(wsFactory)
         .webSocketReopenWhen { e, _ ->
+          println("XXX " + e)
           e is AuthorizationException
         }
+        .customizeClient()
         .build()
 
     runBlocking {
@@ -250,4 +286,10 @@ class SampleServerTest {
       assertEquals(listOf(0, 0), list)
     }
   }
+
+  @Test
+  fun canResumeAfterGraphQLErrorDefault() = canResumeAfterGraphQLError { this }
+
+  @Test
+  fun canResumeAfterGraphQLErrorKtor() = canResumeAfterGraphQLError { webSocketEngine(KtorWebSocketEngine()) }
 }
