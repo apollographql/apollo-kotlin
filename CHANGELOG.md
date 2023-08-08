@@ -5,7 +5,7 @@ Change Log
 
 _2023-08-08_
 
-A lot of additions to the IntelliJ plugin as well as a new GraphQL parser, a new Ktor multiplatform engine and more!
+A lot of additions to the [IntelliJ plugin](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin) as well as a new GraphQL parser, a new Ktor multiplatform engine and more!
 
 ## 💙 External contributors 💙
 
@@ -35,9 +35,9 @@ If you configured introspection, you can now download your schema directly from 
 
 ### 📖 documentation
 
-The IntelliJ plugin now has its [dedicated documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin). 
+The IntelliJ plugin now has its [own dedicated documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin). 
 
-Use it for installation instructions and feature list.
+Consult to find out everything you can do with the plugin as well as installation instructions.
 
 
 ## 🌳 Multiplatform Apollo AST (#5047)
