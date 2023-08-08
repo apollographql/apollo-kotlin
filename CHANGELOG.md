@@ -17,7 +17,7 @@ Apollo Kotlin wouldn't be where it is today without the awesome feedback, discus
 
 The IntelliJ plugin now detects unused fields in your queries and greys them out:
 
-https://github.com/apollographql/apollo-kotlin/assets/372852/de4e47c8-28bd-4bdf-bc40-a58eb75dc49a
+https://github.com/apollographql/apollo-kotlin/assets/372852/6a573a78-4a07-4294-8fa5-92a9ebb02e6c
 
 ## v4 migration
 
