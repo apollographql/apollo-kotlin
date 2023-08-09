@@ -127,13 +127,6 @@ fun Project.configureMpp(
 
     configureSourceSetGraph()
     addTestDependencies()
-
-    tasks.withType(KotlinJsIrLink::class.java).configureEach {
-      notCompatibleWithConfigurationCache("https://youtrack.jetbrains.com/issue/KT-60311/")
-    }
-    tasks.withType(KotlinNativeLink::class.java).configureEach {
-      notCompatibleWithConfigurationCache("https://youtrack.jetbrains.com/issue/KT-60311/")
-    }
   }
 }
 
