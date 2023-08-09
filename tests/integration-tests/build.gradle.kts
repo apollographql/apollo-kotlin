@@ -16,7 +16,6 @@ kotlin {
         implementation(libs.apollo.normalizedcache)
         implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
-        implementation(libs.apollo.engine.ktor)
       }
     }
 
