@@ -27,7 +27,7 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
     expectSuccess = false
     install(HttpTimeout) {
       this.connectTimeoutMillis = this@DefaultHttpEngine.connectTimeoutMillis
-      this.socketTimeoutMillis = this@DefaultHttpEngine.readTimeoutMillis
+      this.requestTimeoutMillis = this@DefaultHttpEngine.readTimeoutMillis
     }
   }
 
