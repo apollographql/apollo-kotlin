@@ -39,7 +39,8 @@
       "Error handling": "/essentials/errors",
       "Custom scalars": "/essentials/custom-scalars",
       "Fragments": "/essentials/fragments",
-      "@defer support (experimental)": "/fetching/defer"
+      "@defer support (experimental)": "/fetching/defer",
+      "Persisted queries": "/advanced/persisted-queries"
     },
     "Caching": {
       "Introduction": "/caching/introduction",
@@ -49,7 +50,6 @@
       "Watching cached data": "/caching/query-watchers",
       "ApolloStore": "/caching/store",
       "HTTP cache": "/caching/http-cache",
-      "Persisted queries": "/advanced/persisted-queries",
       "Troubleshooting": "/caching/troubleshooting"
     },
     "Networking": {
