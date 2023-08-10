@@ -1,83 +1,12 @@
 ---
-title: Persisted queries 
-description: Secure your graph while minimizing request latency
+title: Persisted queries in Apollo Kotlin
 ---
 
-<ClientPQIntro />
+## Automatic persisted queries
 
-Hashed queries are also sent by default using HTTP `GET` instead of the default `POST`, making them easier to cache in your edge network.
+Apollo Kotlin supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of it, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
 
-## Differences between persisted queries and APQs
-
-<ClientPQDifferences />
-
-## Implementation steps
-
-Both persisted queries and APQs require you to configure how your client makes requests. If you intend to use persisted queries for safelisting, you also need to generate and publish an operation manifest.
-
-<ClientPQImplementation />
-
-### 0. Requirements
-
-You can use APQs with the following versions of Apollo Kotlin, Apollo Server, and Apollo Router:
-- Apollo Kotlin (v1.0.0+)
-- [Apollo Server](/apollo-server/) (v1.0.0+)
-- [Apollo Router](/router) (v0.1.0+)
-
-> **Note:** You can use _either_ Apollo Server _or_ Apollo Router for APQs. They don't need to be used together.
-
-Persisted queries is currently in [preview](/resources/product-launch-stages#preview) and has the following requirements:
-- Apollo Kotlin (v3.8.2+)
-- [Apollo Router](/router) (v1.25.0+)
-- [GraphOS Enterprise plan](/graphos/enterprise/)
-
-### 1. Generate operation manifest
-
-> This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
-
-The operation manifest acts as a safelist of trusted operations the [Apollo Router](/router/) can check incoming requests against. 
-To generate the operation manifest, set `operationManifestFormat` to `"persistedQueryManifest"` in your Gradle script:
-
-```kotlin
-// build.gradle.kts
-apollo {
-  service("api") {
-    packageName.set("com.example")
-    
-    // Enable generation of the operation manifest
-    operationManifestFormat.set("persistedQueryManifest") // highlight-line 
-  }
-}
-```
-
-The operation manifest is generated during code generation. This happens automatically every time you build your project or you can trigger it manually by executing the `generateApolloSources` Gradle task. 
-
-The operation manifest is generated in `build/generated/manifest/apollo/$serviceName/persistedQueryManifest.json`, where `$serviceName` is `"api"` here. The resulting operation manifest looks something like this:
-
-```json title="persistedQueryManifest.json"
-{
-  "format": "apollo-persisted-query-manifest",
-  "version": 1,
-  "operations": [
-    {
-      "id": "e0321f6b438bb42c022f633d38c19549dea9a2d55c908f64c5c6cb8403442fef",
-      "body": "query GetItem { thing { __typename } }",
-      "name": "GetItem",
-      "type": "query"
-    }
-  ]
-}
-```
-
-### 2. Publish operation manifest
-
-> This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
-
-<PublishPQMs />
-
-### 3. Enable persisted queries on `ApolloClient`
-
-Once you've configured your code generation to include operation IDs, you can update your client to query by operation ID rather than the full operation string. This configuration is the same whether you're using APQs or persisted queries. Call `autoPersistedQueries()` on your `ApolloClient.Builder`:
+Enable the feature when you initialize your `ApolloClient` instance, like so:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
@@ -86,17 +15,44 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-Once APQs are enabled on your ApolloClient, hashed queries are sent by default.
+You can optionally configure the HTTP methods to use. Using `GET` may take advantage of HTTP caching for instance when using a CDN:
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .autoPersistedQueries(
+        // For the initial hashed query that does not send the actual Graphql document
+        httpMethodForHashedQueries = HttpMethod.Get,
+        
+        // For the follow-up query that sends the full document if the initial hashed query was not found
+        httpMethodForDocumentQueries = HttpMethod.Get
+    )
+    .build()
+```
 
-You may want to disable automatic persisted queries for certain queries, for instance to avoid any caching when the data is updated often. To do that, set `enableAutoPersistedQueries` to false on the `ApolloCall`:
+Note that mutations will always be sent as `POST` requests, regardless of these settings, as to avoid hitting caches.
 
+## Disable persisted queries for certain queries
+
+You may want to disable persisted queries for certain queries, for instance to avoid any caching when the data is updated often. In order to do that, set `enableAutoPersistedQueries` to false on the `ApolloCall`:
 ```kotlin
 apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
 ```
 
-## Generating custom IDs for persisted queries
+## operationOutput.json
 
-By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the `operationIdGenerator` option. It accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo3.compiler.OperationIdGenerator`) as the input. You can use this option to either specify a different hashing algorithm or to fetch the persisted query ID from a different location, for example, from a service or a CLI.
+If your backend uses custom persisted queries, Apollo Kotlin can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
+
+```kotlin
+apollo {
+  service("service") {
+    generateOperationOutput.set(true)
+  }
+}
+```
+
+## Custom ID for Persisted Queries
+
+By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo3.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different hashing algorithm or to fetch the persisted query ID from a different place - e.g. a service or a CLI.
 
 Example Md5 hash generator:
 
@@ -138,6 +94,6 @@ apollo {
 
 </MultiCodeBlock>
 
-### ID generator versioning
+### Versioning Id Generator
 
 The result of the ID generator is cached. The cache is not updated when the implementation of the ID Generator changes. To indicate an update to the implementation of the ID Generator, change the `version` override as shown in the above example.
