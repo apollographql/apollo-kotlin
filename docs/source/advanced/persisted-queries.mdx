@@ -11,6 +11,12 @@ Hashed queries are also sent by default using HTTP `GET` instead of the default 
 
 <ClientPQDifferences />
 
+## Implementation steps
+
+Both persisted queries and APQs require you to configure how your client makes requests. If you intend to use persisted queries for safelisting, you also need to generate and publish an operation manifest.
+
+<ClientPQImplementation />
+
 ## Requirements
 
 You can use APQs with the following versions of Apollo Kotlin, Apollo Server, and Apollo Router:
@@ -24,20 +30,6 @@ Persisted queries is currently in [preview](/resources/product-launch-stages#pre
 - Apollo Kotlin (v3.8.2+)
 - [Apollo Router](/router) (v1.25.0+)
 - [GraphOS Enterprise plan](/graphos/enterprise/)
-
-## Implementation steps
-
-Both persisted queries and APQs require you to configure how your client makes requests. If you intend to use persisted queries for safelisting, you also need to generate the operations manifest.
-
-We recommend you follow this order while implementing:
-
-1. **For persisted queries only**: Generate the operation manifest
-1. **For persisted queries only**: Publish the operation manifest
-1. **For both persisted queries and APQs**: Enable persisted queries on `ApolloClient`
-
-The rest of this article details these steps.
-
-> For more information on the other configuration aspects of persisted queries, see the [GraphOS persisted queries documentation](/graphos/operations/persisted-queries).
 
 ### 1. Generate the operation manifest
 
