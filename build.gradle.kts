@@ -1,4 +1,6 @@
 import JapiCmp.configureJapiCmp
+import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult
+import org.gradle.api.internal.tasks.testing.junit.result.TestResultSerializer
 
 plugins {
   id("apollo.library") apply false
@@ -160,3 +162,5 @@ tasks.register("rmbuild") {
     }.count()
   }
 }
+
+rootSetup()
