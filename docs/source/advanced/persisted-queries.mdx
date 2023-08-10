@@ -36,7 +36,6 @@ Persisted queries is currently in [preview](/resources/product-launch-stages#pre
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
 The operation manifest acts as a safelist of trusted operations the [Apollo Router](/router/) can check incoming requests against. 
-
 To generate the operation manifest, set `operationManifestFormat` to `"persistedQueryManifest"` in your Gradle script:
 
 ```kotlin
@@ -51,7 +50,7 @@ apollo {
 }
 ```
 
-The operation manifest is generated during code generation. This will happen automatically every time you build your project or you can trigger it manually by executing the `generateApolloSources` Gradle task. 
+The operation manifest is generated during code generation. This happens automatically every time you build your project or you can trigger it manually by executing the `generateApolloSources` Gradle task. 
 
 The operation manifest is generated in `build/generated/manifest/apollo/$serviceName/persistedQueryManifest.json`, where `$serviceName` is `"api"` here. The resulting operation manifest looks something like this:
 
