@@ -25,7 +25,11 @@ kotlin {
 
     findByName("jvmTest")?.apply {
       dependencies {
-        implementation(project(":sample-server"))
+        implementation(libs.ktor.server.core)
+        implementation(libs.ktor.server.cio)
+        implementation(libs.ktor.server.websockets)
+        implementation(libs.kotlinx.coroutines)
+        implementation(libs.turbine)
       }
     }
   }

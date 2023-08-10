@@ -11,6 +11,7 @@ import io.ktor.client.request.url
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
@@ -68,8 +69,19 @@ class KtorWebSocketEngine(
               val frame = sendFrameChannel.receive()
               try {
                 send(frame)
+
+                // Also close the connection if the sent frame is a close frame
+                if (frame is Frame.Close) {
+                  receiveMessageChannel.close()
+                  sendFrameChannel.close()
+                  break
+                }
               } catch (e: Exception) {
-                val closeReason = try {closeReason.await()} catch (e: Exception) {null}
+                val closeReason = try {
+                  closeReason.await()
+                } catch (e: Exception) {
+                  null
+                }
                 receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
                     ?: -1, reason = closeReason?.message, cause = e))
                 sendFrameChannel.close(e)
@@ -81,7 +93,11 @@ class KtorWebSocketEngine(
             when (val frame = try {
               incoming.receive()
             } catch (e: ClosedReceiveChannelException) {
-              val closeReason = try {closeReason.await()} catch (e: Exception) {null}
+              val closeReason = try {
+                closeReason.await()
+              } catch (e: Exception) {
+                null
+              }
               receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
                   ?: -1, reason = closeReason?.message, cause = e))
               sendFrameChannel.close(e)
@@ -128,8 +144,7 @@ class KtorWebSocketEngine(
       }
 
       override fun close() {
-        sendFrameChannel.trySend(Frame.Close())
-        sendFrameChannel.close()
+        sendFrameChannel.trySend(Frame.Close(CloseReason(CLOSE_NORMAL.toShort(), "")))
       }
 
     }
