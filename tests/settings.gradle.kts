@@ -19,8 +19,11 @@ rootProject.projectDir
     }
     .filter { it.isDirectory && File(it, "build.gradle.kts").exists() }
     .forEach {
-      val project = it.relativeTo(rootProject.projectDir).path.replace(File.separatorChar, ':')
+      // Do no create intermediate projects as they will fail for apolloTestAgreggation
+      // See https://stackoverflow.com/questions/21015353/gradle-intermediate-dir-of-multiproject-not-subproject
+      val project = it.relativeTo(rootProject.projectDir).path.replace(File.separatorChar, '-')
       include(project)
+      project(":$project").projectDir = it
     }
 
 includeBuild("../")

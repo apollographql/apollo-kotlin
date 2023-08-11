@@ -95,7 +95,7 @@ tasks.register("ciTestsNoGradle") {
   }
 }
 
-tasks.register("ciBuild") {
+val ciBuild = tasks.register("ciBuild") {
   description = "Execute the 'build' task in each subproject"
   dependsOn(subprojectTasks("build"))
 }
@@ -163,4 +163,4 @@ tasks.register("rmbuild") {
   }
 }
 
-rootSetup()
+rootSetup(ciBuild)
