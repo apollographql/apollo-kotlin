@@ -4,7 +4,9 @@ plugins {
 }
 
 apolloTest {
-  mpp {}
+  mpp {
+    withJs.set(false)
+  }
 }
 
 kotlin {
@@ -20,11 +22,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
-      }
-    }
-
-    findByName("jvmTest")?.apply {
-      dependencies {
         implementation(libs.ktor.server.core)
         implementation(libs.ktor.server.cio)
         implementation(libs.ktor.server.websockets)

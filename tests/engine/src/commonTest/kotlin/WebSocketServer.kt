@@ -1,3 +1,8 @@
+import WebSocketServer.WebSocketEvent.BinaryFrame
+import WebSocketServer.WebSocketEvent.Close
+import WebSocketServer.WebSocketEvent.Connect
+import WebSocketServer.WebSocketEvent.Error
+import WebSocketServer.WebSocketEvent.TextFrame
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
@@ -42,7 +47,7 @@ class WebSocketServer(private val port: Int = Random.nextInt(10000, 20000)) {
   }
 
   fun url(): String {
-    return "ws://localhost:$port"
+    return "ws://127.0.0.1:$port"
   }
 
   private class Session(val id: String, val session: DefaultWebSocketSession)
@@ -69,21 +74,21 @@ class WebSocketServer(private val port: Int = Random.nextInt(10000, 20000)) {
         val sessionId = Random.nextInt().toString()
         sessions[sessionId] = Session(sessionId, this)
         try {
-          _events.emit(WebSocketEvent.Connect(sessionId = sessionId, headers = call.request.headers.toMap().mapValues { it.value.first() }))
+          _events.emit(Connect(sessionId = sessionId, headers = call.request.headers.toMap().mapValues { it.value.first() }))
           for (frame in incoming) {
             when (frame) {
-              is Frame.Text -> _events.emit(WebSocketEvent.TextFrame(sessionId, frame.readText()))
-              is Frame.Binary -> _events.emit(WebSocketEvent.BinaryFrame(sessionId, frame.readBytes()))
+              is Frame.Text -> _events.emit(TextFrame(sessionId, frame.readText()))
+              is Frame.Binary -> _events.emit(BinaryFrame(sessionId, frame.readBytes()))
               else -> {}
             }
           }
           val closeReason = closeReason.await()
-          _events.emit(WebSocketEvent.Close(sessionId, closeReason?.code, closeReason?.message))
+          _events.emit(Close(sessionId, closeReason?.code, closeReason?.message))
         } catch (e: ClosedReceiveChannelException) {
           val closeReason = closeReason.await()
-          _events.emit(WebSocketEvent.Close(sessionId, closeReason?.code, closeReason?.message))
+          _events.emit(Close(sessionId, closeReason?.code, closeReason?.message))
         } catch (e: Throwable) {
-          _events.emit(WebSocketEvent.Error(sessionId, e))
+          _events.emit(Error(sessionId, e))
         } finally {
           sessions.remove(sessionId)
         }
