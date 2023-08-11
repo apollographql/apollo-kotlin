@@ -100,7 +100,38 @@ By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the que
 
 Example Md5 hash generator:
 
-	@@ -94,6 +138,6 @@ apollo {
+<MultiCodeBlock>
+
+```kotlin
+apollo {
+  service("service") {
+    operationIdGenerator.set(object : com.apollographql.apollo3.compiler.OperationIdGenerator {
+      override val version = "my-md5-version1"
+      override fun apply(operationDocument: String, operationName: String): String {
+        return operationDocument.md5()
+      }
+    })
+  }
+}
+```
+
+```groovy
+import com.apollographql.apollo3.compiler.OperationIdGenerator
+apollo {
+  service("service") {
+    operationIdGenerator = new OperationIdGenerator() {
+      String apply(String operationDocument, String operationName) {
+        return operationDocument.md5()
+      }
+      /**
+       * Use this version override to indicate an update to the implementation.
+       * This forces gradle to recompile models.
+       */
+      String version = "my-md5-v1"
+    }
+  }
+}
+```
 
 </MultiCodeBlock>
 
