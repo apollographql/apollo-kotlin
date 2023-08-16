@@ -985,22 +985,16 @@ public final class com/apollographql/apollo3/ast/VariableUsage {
 public final class com/apollographql/apollo3/ast/internal/SchemaValidationScopeKt {
 }
 
-public final class com/apollographql/apollo3/ast/introspection/-Introspection {
-	public static final fun toIntrospectionSchema (Ljava/io/File;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
-	public static final fun writeTo (Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;Ljava/io/File;)V
-}
-
-public final class com/apollographql/apollo3/ast/introspection/-IntrospectionReader {
-	public static final fun toGQLDocument (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;)Lcom/apollographql/apollo3/ast/GQLDocument;
-	public static final fun toIntrospectionSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
-}
-
-public final class com/apollographql/apollo3/ast/introspection/-IntrospectionWriter {
-	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;
-	public static final fun toJson (Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;)Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema {
+}
+
+public final class com/apollographql/apollo3/ast/introspection/Introspection {
+	public static final fun toGQLDocument (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;)Lcom/apollographql/apollo3/ast/GQLDocument;
+	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;
+	public static final fun toIntrospectionSchema (Ljava/io/File;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
+	public static final fun toIntrospectionSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
+	public static final fun toJson (Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;)Ljava/lang/String;
+	public static final fun writeTo (Lcom/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema;Ljava/io/File;)V
 }
 
 public abstract interface class com/apollographql/apollo3/ast/introspection/IntrospectionSchema {

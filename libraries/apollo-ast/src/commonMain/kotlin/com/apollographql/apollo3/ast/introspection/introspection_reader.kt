@@ -1,4 +1,6 @@
-@file:JvmName("-IntrospectionReader")
+@file:JvmMultifileClass
+@file:JvmName("Introspection")
+
 @file:Suppress("PropertyName")
 
 package com.apollographql.apollo3.ast.introspection
@@ -43,6 +45,7 @@ import okio.BufferedSource
 import okio.ByteString.Companion.decodeHex
 import okio.Path
 import okio.buffer
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 /**

@@ -1,4 +1,5 @@
-@file:JvmName("-IntrospectionWriter")
+@file:JvmMultifileClass
+@file:JvmName("Introspection")
 @file:Suppress("PropertyName")
 
 package com.apollographql.apollo3.ast.introspection
@@ -28,6 +29,7 @@ import com.apollographql.apollo3.ast.toUtf8
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 /**
