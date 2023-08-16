@@ -1,10 +1,10 @@
+
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
@@ -38,7 +38,8 @@ class CachedSubscriptionTest {
     }
   }
 
-  private fun subscriptionsCanUpdateTheCache(customizeApolloClientBuilder: ApolloClient.Builder.() -> ApolloClient.Builder) {
+  @Test
+  fun subscriptionsCanUpdateTheCache() {
     val store = ApolloStore(
         MemoryCacheFactory(Int.MAX_VALUE),
     )
@@ -46,7 +47,6 @@ class CachedSubscriptionTest {
     val apolloClient = ApolloClient.Builder()
         .httpServerUrl(sampleServer.graphqlUrl())
         .webSocketServerUrl(sampleServer.subscriptionsUrl())
-        .customizeApolloClientBuilder()
         .store(store)
         .build()
 
@@ -81,10 +81,4 @@ class CachedSubscriptionTest {
       job.cancel()
     }
   }
-
-  @Test
-  fun subscriptionsCanUpdateTheCacheDefault() = subscriptionsCanUpdateTheCache { this }
-
-  @Test
-  fun subscriptionsCanUpdateTheCacheKtor() = subscriptionsCanUpdateTheCache { webSocketEngine(KtorWebSocketEngine()) }
 }

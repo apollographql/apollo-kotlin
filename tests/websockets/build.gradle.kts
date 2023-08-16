@@ -13,7 +13,6 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         implementation(libs.apollo.runtime)
-        implementation(libs.apollo.engine.ktor)
       }
     }
 
