@@ -25,9 +25,7 @@ class BenchmarksTest {
     repeat(MEASUREMENT_COUNT) {
       durations.add(
           measureTime {
-            repeat(EXECUTION_PER_MEASUREMENT) {
-              test(it)
-            }
+            repeat(EXECUTION_PER_MEASUREMENT) { test(it) }
           }
       )
     }
@@ -85,8 +83,8 @@ class BenchmarksTest {
   )
 
   companion object {
-    private const val EXECUTION_PER_MEASUREMENT = 100
-    private const val MEASUREMENT_COUNT = 4
+    private const val EXECUTION_PER_MEASUREMENT = 500
+    private const val MEASUREMENT_COUNT = 10
 
     val measurements = mutableListOf<Measurement>()
 
