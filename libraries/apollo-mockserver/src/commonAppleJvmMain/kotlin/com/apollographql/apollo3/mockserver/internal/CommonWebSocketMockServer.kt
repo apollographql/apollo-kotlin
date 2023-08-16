@@ -80,9 +80,13 @@ internal class CommonWebSocketMockServer(private val port: Int) : WebSocketMockS
             }
           }
           val closeReason = closeReason.await()
+          // TODO remove debug log
+          println("XXX Closing due to no more incoming frames closeReason=$closeReason")
           _events.emit(Close(sessionId, closeReason?.code, closeReason?.message))
         } catch (e: ClosedReceiveChannelException) {
           val closeReason = closeReason.await()
+          // TODO remove debug log
+          println("XXX Closing due to ClosedReceiveChannelException closeReason=$closeReason")
           _events.emit(Close(sessionId, closeReason?.code, closeReason?.message))
         } catch (e: Throwable) {
           _events.emit(Error(sessionId, e))
