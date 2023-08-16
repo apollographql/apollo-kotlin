@@ -1,7 +1,10 @@
 import app.cash.turbine.test
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo3.mockserver.WebSocketMockServer
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
@@ -18,17 +21,18 @@ import kotlin.test.assertTrue
 class WebSocketEngineTest {
 
   private fun textFrames(webSocketEngine: WebSocketEngine) = runTest {
-    val webSocketServer = WebSocketServer()
+    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
+    val webSocketServer = WebSocketMockServer()
     webSocketServer.start()
     webSocketServer.events.test {
       val connection = webSocketEngine.open(webSocketServer.url())
       val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketServer.WebSocketEvent.Connect)
+      assertTrue(connectEvent is WebSocketEvent.Connect)
 
       val sessionId = connectEvent.sessionId
       connection.send("client->server")
       val textFrame = awaitItem()
-      assertTrue(textFrame is WebSocketServer.WebSocketEvent.TextFrame)
+      assertTrue(textFrame is WebSocketEvent.TextFrame)
       assertEquals("client->server", textFrame.text)
 
       webSocketServer.sendText(sessionId, "server->client")
@@ -37,7 +41,7 @@ class WebSocketEngineTest {
 
       connection.close()
       val closeEvent = awaitItem()
-      assertTrue(closeEvent is WebSocketServer.WebSocketEvent.Close)
+      assertTrue(closeEvent is WebSocketEvent.Close)
       assertEquals(1000, closeEvent.reasonCode)
 
       cancelAndIgnoreRemainingEvents()
@@ -52,17 +56,18 @@ class WebSocketEngineTest {
   fun textFramesKtor() = textFrames(KtorWebSocketEngine())
 
   private fun binaryFrames(webSocketEngine: WebSocketEngine) = runTest {
-    val webSocketServer = WebSocketServer()
+    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
+    val webSocketServer = WebSocketMockServer()
     webSocketServer.start()
     webSocketServer.events.test {
       val connection = webSocketEngine.open(webSocketServer.url())
       val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketServer.WebSocketEvent.Connect)
+      assertTrue(connectEvent is WebSocketEvent.Connect)
 
       val sessionId = connectEvent.sessionId
       connection.send("client->server".encodeUtf8())
       val binaryFrame = awaitItem()
-      assertTrue(binaryFrame is WebSocketServer.WebSocketEvent.BinaryFrame)
+      assertTrue(binaryFrame is WebSocketEvent.BinaryFrame)
       assertEquals("client->server", binaryFrame.bytes.decodeToString())
 
       webSocketServer.sendBinary(sessionId, "server->client".toByteArray())
@@ -71,7 +76,7 @@ class WebSocketEngineTest {
 
       connection.close()
       val closeEvent = awaitItem()
-      assertTrue(closeEvent is WebSocketServer.WebSocketEvent.Close)
+      assertTrue(closeEvent is WebSocketEvent.Close)
       assertEquals(1000, closeEvent.reasonCode)
 
       cancelAndIgnoreRemainingEvents()
@@ -86,20 +91,22 @@ class WebSocketEngineTest {
   fun binaryFramesKtor() = binaryFrames(KtorWebSocketEngine())
 
   private fun serverCloseNicely(webSocketEngine: WebSocketEngine, checkCodeAndReason: Boolean = true) = runTest {
-    val webSocketServer = WebSocketServer()
+    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
+    val webSocketServer = WebSocketMockServer()
     webSocketServer.start()
     webSocketServer.events.test {
       val connection = webSocketEngine.open(webSocketServer.url())
       val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketServer.WebSocketEvent.Connect)
+      assertTrue(connectEvent is WebSocketEvent.Connect)
 
       val sessionId = connectEvent.sessionId
       webSocketServer.sendClose(sessionId, reasonCode = 4200, reasonMessage = "Bye now")
 
-      val e = assertFailsWith<ApolloWebSocketClosedException> {
+      val e = assertFailsWith<ApolloException> {
         connection.receive()
       }
       if (checkCodeAndReason) {
+        assertTrue(e is ApolloWebSocketClosedException)
         assertEquals(4200, e.code)
         assertEquals("Bye now", e.reason)
       }
@@ -121,12 +128,13 @@ class WebSocketEngineTest {
   )
 
   private fun serverCloseAbruptly(webSocketEngine: WebSocketEngine) = runTest {
-    val webSocketServer = WebSocketServer()
+    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
+    val webSocketServer = WebSocketMockServer()
     webSocketServer.start()
     webSocketServer.events.test {
       val connection = webSocketEngine.open(webSocketServer.url())
       val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketServer.WebSocketEvent.Connect)
+      assertTrue(connectEvent is WebSocketEvent.Connect)
 
       webSocketServer.stop()
       assertFailsWith<ApolloNetworkException> {
@@ -143,7 +151,8 @@ class WebSocketEngineTest {
   fun serverCloseAbruptlyKtor() = serverCloseAbruptly(KtorWebSocketEngine())
 
   private fun headers(webSocketEngine: WebSocketEngine) = runTest {
-    val webSocketServer = WebSocketServer()
+    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
+    val webSocketServer = WebSocketMockServer()
     webSocketServer.start()
     webSocketServer.events.test {
       webSocketEngine.open(webSocketServer.url(), listOf(
@@ -152,7 +161,7 @@ class WebSocketEngineTest {
           HttpHeader("header2", "value2"),
       ))
       val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketServer.WebSocketEvent.Connect)
+      assertTrue(connectEvent is WebSocketEvent.Connect)
       assertEquals("graphql-ws", connectEvent.headers["Sec-WebSocket-Protocol"])
       assertEquals("value1", connectEvent.headers["header1"])
       assertEquals("value2", connectEvent.headers["header2"])
@@ -167,5 +176,4 @@ class WebSocketEngineTest {
 
   @Test
   fun headersKtor() = headers(KtorWebSocketEngine())
-
 }

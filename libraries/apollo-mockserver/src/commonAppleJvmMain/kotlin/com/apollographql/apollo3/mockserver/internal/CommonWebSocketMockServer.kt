@@ -1,8 +1,12 @@
-import WebSocketServer.WebSocketEvent.BinaryFrame
-import WebSocketServer.WebSocketEvent.Close
-import WebSocketServer.WebSocketEvent.Connect
-import WebSocketServer.WebSocketEvent.Error
-import WebSocketServer.WebSocketEvent.TextFrame
+package com.apollographql.apollo3.mockserver.internal
+
+import com.apollographql.apollo3.mockserver.WebSocketMockServer
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.BinaryFrame
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Close
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Connect
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Error
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.TextFrame
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
@@ -24,29 +28,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.random.Random
 
-class WebSocketServer(private val port: Int = Random.nextInt(10000, 20000)) {
-  sealed class WebSocketEvent {
-    class Connect(val sessionId: String, val headers: Map<String, String>) : WebSocketEvent()
-    class TextFrame(val sessionId: String, val text: String) : WebSocketEvent()
-    class BinaryFrame(val sessionId: String, val bytes: ByteArray) : WebSocketEvent()
-    class Close(val sessionId: String, val reasonCode: Short?, val reasonMessage: String?) : WebSocketEvent()
-    class Error(val sessionId: String, val cause: Throwable) : WebSocketEvent()
-  }
-
+internal class CommonWebSocketMockServer(private val port: Int) : WebSocketMockServer {
   private var server: ApplicationEngine? = null
 
   private val _events = MutableSharedFlow<WebSocketEvent>()
-  val events: Flow<WebSocketEvent> = _events
+  override val events: Flow<WebSocketEvent> = _events
 
-  fun start() {
+  override fun start() {
+    check(server == null) { "Server already started" }
     server = embeddedServer(CIO, port) { webSocketServer() }.start(wait = false)
   }
 
-  fun stop() {
-    server?.stop(0, 0)
+  override fun stop() {
+    server?.stop(100, 100)
   }
 
-  fun url(): String {
+  override fun url(): String {
     return "ws://127.0.0.1:$port"
   }
 
@@ -54,15 +51,15 @@ class WebSocketServer(private val port: Int = Random.nextInt(10000, 20000)) {
 
   private val sessions = mutableMapOf<String, Session>()
 
-  suspend fun sendText(sessionId: String, text: String) {
+  override suspend fun sendText(sessionId: String, text: String) {
     sessions[sessionId]?.session?.send(text)
   }
 
-  suspend fun sendBinary(sessionId: String, binary: ByteArray) {
+  override suspend fun sendBinary(sessionId: String, binary: ByteArray) {
     sessions[sessionId]?.session?.send(binary)
   }
 
-  suspend fun sendClose(sessionId: String, reasonCode: Short? = null, reasonMessage: String? = null) {
+  override suspend fun sendClose(sessionId: String, reasonCode: Short?, reasonMessage: String?) {
     sessions[sessionId]?.session?.close(CloseReason(reasonCode ?: CloseReason.Codes.NORMAL.code, reasonMessage ?: ""))
   }
 
