@@ -5,7 +5,7 @@ plugins {
 
 rootProject.configureNode()
 
-tasks.register("ciBuild") {
+val ciBuild = tasks.register("ciBuild") {
   description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
   subprojects {
     this@register.dependsOn(tasks.matching { it.name == "build" })
@@ -15,3 +15,5 @@ tasks.register("ciBuild") {
     checkGitStatus()
   }
 }
+
+rootSetup(ciBuild)

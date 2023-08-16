@@ -6,13 +6,13 @@ plugins {
 
 dependencies {
   implementation(libs.apollo.runtime)
-  implementation(project(":multi-module-1:root"))
+  implementation(project(":multi-module-1-root"))
   testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    dependsOn(project(":multi-module-1:root"))
+    dependsOn(project(":multi-module-1-root"))
   }
 }
