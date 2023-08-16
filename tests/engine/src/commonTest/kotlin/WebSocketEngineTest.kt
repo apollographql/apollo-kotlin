@@ -42,6 +42,7 @@ class WebSocketEngineTest {
       connection.close()
       val closeEvent = awaitItem()
       assertTrue(closeEvent is WebSocketEvent.Close)
+      assertEquals(1000, closeEvent.reasonCode)
 
       cancelAndIgnoreRemainingEvents()
     }
@@ -76,6 +77,7 @@ class WebSocketEngineTest {
       connection.close()
       val closeEvent = awaitItem()
       assertTrue(closeEvent is WebSocketEvent.Close)
+      assertEquals(1000, closeEvent.reasonCode)
 
       cancelAndIgnoreRemainingEvents()
     }
