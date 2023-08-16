@@ -47,7 +47,7 @@ class Schema internal constructor(
 
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = definitions,
-      filePath = null
+      sourceLocation = null
   )
 
   /**

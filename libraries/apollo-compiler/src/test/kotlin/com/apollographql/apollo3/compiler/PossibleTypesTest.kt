@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ast.ConflictResolution
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -32,6 +33,7 @@ import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.containsError
+import com.apollographql.apollo3.ast.introspection.defaultSchemaDefinition
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
@@ -139,8 +141,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
    * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing
    */
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
-  val dedupedScope = DefaultValidationScope(typeDefinitions, directiveDefinitions, issues)
-  val mergedDefinitions = dedupedScope.mergeExtensions(dedupedDefinitions, typeSystemExtensions)
+  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions).merge().getOrThrow()
 
   val foreignNames = foreignSchemas.flatMap {
     it.newNames.entries
@@ -540,3 +541,14 @@ private val GQLTypeDefinition.fields
     is GQLInterfaceTypeDefinition -> fields
     else -> emptyList()
   }
+
+internal fun GQLDocument.ensureSchemaDefinition(): GQLDocument {
+  if (definitions.any { it is GQLSchemaDefinition }) {
+    return this
+  }
+
+  val typeDefinitions = definitions.filterIsInstance<GQLTypeDefinition>()
+      .associateBy { it.name }
+  return this.copy(listOf(defaultSchemaDefinition(typeDefinitions)) +  definitions)
+}
+

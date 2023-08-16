@@ -1,8 +1,7 @@
 package com.apollographql.apollo3.ast.internal
 
-import com.apollographql.apollo3.generated.antlr.GraphQLParser
-
 import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.generated.antlr.GraphQLParser
 import org.antlr.v4.runtime.Token
 
 /**
@@ -28,7 +27,7 @@ private class AntlrToGQLScope(val filePath: String?) {
   fun parseDocumentContext(documentContext: GraphQLParser.DocumentContext): GQLDocument {
     return GQLDocument(
         definitions = documentContext.definition().map { it.parse() },
-        filePath = filePath
+        sourceLocation = SourceLocation.forPath(filePath)
     )
   }
 

@@ -2,8 +2,8 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth
 import org.junit.Test
@@ -31,7 +31,7 @@ class StringEncodingTest {
       }
     """.trimIndent()
 
-    val queryType = schema.buffer().toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
+    val queryType = schema.toGQLDocument().toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
     val defaultValue = (queryType.fields.first().arguments.first().defaultValue as GQLStringValue).value
     assertEquals("", defaultValue)
   }
@@ -45,7 +45,7 @@ class StringEncodingTest {
       }
     """.trimIndent()
 
-    val queryType = schema.buffer().toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
+    val queryType = schema.toGQLDocument().toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
     val defaultValue = (queryType.fields.first().arguments.first().defaultValue as GQLStringValue).value
     assertEquals("", defaultValue)
   }

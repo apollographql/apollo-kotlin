@@ -37,7 +37,7 @@ import com.apollographql.apollo3.ast.isVariableUsageAllowed
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
 
-interface IssuesScope {
+internal interface IssuesScope {
   val issues: MutableList<Issue>
 }
 

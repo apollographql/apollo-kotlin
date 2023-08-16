@@ -2,10 +2,10 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.ast.introspection.normalize
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import util.TestUtils
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
+import util.TestUtils
 import java.io.File
 import org.assertj.core.api.Assertions.assertThat as assertjThat
 

@@ -1,0 +1,166 @@
+schema {
+  query: Query
+}
+
+"A type representing a formatted kotlinx.datetime.Instant"
+scalar Instant
+
+"A type representing a formatted kotlinx.datetime.LocalDate"
+scalar LocalDate
+
+"A type representing a formatted kotlinx.datetime.LocalDateTime"
+scalar LocalDateTime
+
+type Query {
+  hello: String!
+}
+
+type __Directive {
+  "The __Directive type represents a Directive that a server supports."
+  name: String!
+  description: String
+  isRepeatable: Boolean!
+  locations: [__DirectiveLocation!]!
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+}
+
+"An enum describing valid locations where a directive can be placed"
+enum __DirectiveLocation {
+  "Indicates the directive is valid on queries."
+  QUERY
+  "Indicates the directive is valid on mutations."
+  MUTATION
+  "Indicates the directive is valid on subscriptions."
+  SUBSCRIPTION
+  "Indicates the directive is valid on fields."
+  FIELD
+  "Indicates the directive is valid on fragment definitions."
+  FRAGMENT_DEFINITION
+  "Indicates the directive is valid on fragment spreads."
+  FRAGMENT_SPREAD
+  "Indicates the directive is valid on inline fragments."
+  INLINE_FRAGMENT
+  "Indicates the directive is valid on variable definitions."
+  VARIABLE_DEFINITION
+  "Indicates the directive is valid on a schema SDL definition."
+  SCHEMA
+  "Indicates the directive is valid on a scalar SDL definition."
+  SCALAR
+  "Indicates the directive is valid on an object SDL definition."
+  OBJECT
+  "Indicates the directive is valid on a field SDL definition."
+  FIELD_DEFINITION
+  "Indicates the directive is valid on a field argument SDL definition."
+  ARGUMENT_DEFINITION
+  "Indicates the directive is valid on an interface SDL definition."
+  INTERFACE
+  "Indicates the directive is valid on an union SDL definition."
+  UNION
+  "Indicates the directive is valid on an enum SDL definition."
+  ENUM
+  "Indicates the directive is valid on an enum value SDL definition."
+  ENUM_VALUE
+  "Indicates the directive is valid on an input object SDL definition."
+  INPUT_OBJECT
+  "Indicates the directive is valid on an input object field SDL definition."
+  INPUT_FIELD_DEFINITION
+}
+
+type __EnumValue {
+  name: String!
+  description: String
+  isDeprecated: Boolean!
+  deprecationReason: String
+}
+
+type __Field {
+  name: String!
+  description: String
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+  type: __Type!
+  isDeprecated: Boolean!
+  deprecationReason: String
+}
+
+type __InputValue {
+  name: String!
+  description: String
+  type: __Type!
+  defaultValue: String
+  isDeprecated: Boolean
+  deprecationReason: String
+}
+
+"A GraphQL Introspection defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, the entry points for query, mutation, and subscription operations."
+type __Schema {
+  description: String
+  "A list of all types supported by this server."
+  types: [__Type!]!
+  "The type that query operations will be rooted at."
+  queryType: __Type!
+  "If this server supports mutation, the type that mutation operations will be rooted at."
+  mutationType: __Type
+  "'A list of all directives supported by this server."
+  directives: [__Directive!]!
+  "'If this server support subscription, the type that subscription operations will be rooted at."
+  subscriptionType: __Type
+}
+
+type __Type {
+  kind: __TypeKind!
+  name: String
+  description: String
+  fields(includeDeprecated: Boolean = false): [__Field!]
+  interfaces: [__Type!]
+  possibleTypes: [__Type!]
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+  inputFields(includeDeprecated: Boolean = false): [__InputValue!]
+  ofType: __Type
+  specifiedByURL: String
+  specifiedByUrl: String @deprecated
+}
+
+"An enum describing what kind of type a given __Type is"
+enum __TypeKind {
+  "Indicates this type is a scalar. 'specifiedByURL' is a valid field"
+  SCALAR
+  "Indicates this type is an object. `fields` and `interfaces` are valid fields."
+  OBJECT
+  "Indicates this type is an interface. `fields` and `possibleTypes` are valid fields."
+  INTERFACE
+  "Indicates this type is a union. `possibleTypes` is a valid field."
+  UNION
+  "Indicates this type is an enum. `enumValues` is a valid field."
+  ENUM
+  "Indicates this type is an input object. `inputFields` is a valid field."
+  INPUT_OBJECT
+  "Indicates this type is a list. `ofType` is a valid field."
+  LIST
+  "Indicates this type is a non-null. `ofType` is a valid field."
+  NON_NULL
+}
+
+"Directs the executor to include this field or fragment only when the `if` argument is true"
+directive @include(
+  "Included when true."
+  if: Boolean!
+) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"Directs the executor to skip this field or fragment when the `if` argument is true."
+directive @skip(
+  "Skipped when true."
+  if: Boolean!
+) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"Marks the field, argument, input field or enum value as deprecated"
+directive @deprecated(
+  "The reason for the deprecation"
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM_VALUE | INPUT_FIELD_DEFINITION
+
+"Exposes a URL that specifies the behaviour of this scalar."
+directive @specifiedBy(
+  "The URL that specifies the behaviour of this scalar."
+  url: String!
+) on SCALAR
+

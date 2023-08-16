@@ -31,7 +31,7 @@ class SourceLocation(
     get() = column - 1
 
   override fun toString(): String {
-    return "($line:$column)"
+    return pretty()
   }
 
   fun pretty(): String = "$filePath: ($line, $column)"

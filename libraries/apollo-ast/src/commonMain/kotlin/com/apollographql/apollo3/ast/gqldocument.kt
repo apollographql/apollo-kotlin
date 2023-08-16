@@ -2,9 +2,11 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.internal.ExtensionsMerger
 import com.apollographql.apollo3.ast.internal.apollo_v0_1_definitionsStr
 import com.apollographql.apollo3.ast.internal.apollo_v0_2_definitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
+import com.apollographql.apollo3.ast.internal.ensureSchemaDefinition
 import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
 import okio.Buffer
 
@@ -22,7 +24,26 @@ fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   return withDefinitions(builtinDefinitions())
 }
 
-@Deprecated("Use GQLDocument.toSDL() to write a GQLDocument without the scalar directives")
+/**
+ * Returns a "full schema" document. Full schema documents are for use by clients and other tools that need
+ * to know what features are supported by a given server. They include builtin directives and merge all type
+ * extensions
+ */
+@ApolloExperimental
+fun GQLDocument.toFullSchemaGQLDocument(): GQLDocument {
+  return ensureSchemaDefinition()
+      .withDefinitions(builtinDefinitions())
+      .mergeExtensions()
+}
+
+fun GQLDocument.toSchema(): Schema = validateAsSchema().getOrThrow()
+
+@ApolloExperimental
+fun GQLDocument.mergeExtensions(): GQLDocument {
+  return GQLDocument(ExtensionsMerger(definitions).merge().getOrThrow(), sourceLocation = null)
+}
+
+@Deprecated("Use GQLDocument.toSDL() to write a GQLDocument")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return withoutDefinitions(builtinDefinitions())
@@ -122,6 +143,7 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
       definitions = combineDefinitions(this.definitions, definitions, ConflictResolution.TakeLeft)
   )
 }
+
 
 /**
  * Outputs a schema document to SDL. For executable documents, use toUtf8()

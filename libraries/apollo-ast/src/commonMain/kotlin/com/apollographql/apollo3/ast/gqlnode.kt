@@ -2,11 +2,13 @@
 @file:JvmName("GqlnodeKt")
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.Buffer
 import okio.BufferedSink
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
+@ApolloExperimental
 fun GQLNode.toUtf8(sink: BufferedSink, indent: String = "  ") {
   val writer = SDLWriter(sink, indent)
   writer.write(this)

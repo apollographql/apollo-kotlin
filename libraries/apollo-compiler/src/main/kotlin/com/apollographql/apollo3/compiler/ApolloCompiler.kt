@@ -13,9 +13,9 @@ import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkNoErrors
-import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
@@ -53,7 +53,7 @@ object ApolloCompiler {
   ): CodegenSchema {
 
     val schemaDocuments = schemaFiles.map {
-      it.toSchemaGQLDocument()
+      it.toGQLDocument(allowJson = true)
     }
 
     if (schemaDocuments.isEmpty()) {
@@ -61,9 +61,17 @@ object ApolloCompiler {
     }
 
     // Locate the mainSchemaDocument. It's the one that contains the operation roots
-    val mainSchemaDocuments = schemaDocuments.filter {
-      it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
+    val mainSchemaDocuments = mutableListOf<GQLDocument>()
+    var otherSchemaDocuments = mutableListOf<GQLDocument>()
+    schemaDocuments.forEach {
+      if (
+          it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
           || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
+      ) {
+        mainSchemaDocuments.add(it)
+      } else {
+        otherSchemaDocuments.add(it)
+      }
     }
 
     if (mainSchemaDocuments.size > 1) {
@@ -75,10 +83,12 @@ object ApolloCompiler {
     }
     val mainSchemaDocument = mainSchemaDocuments.single()
 
-    val schemaDefinitions = schemaDocuments.flatMap { it.definitions }
+    // Sort the other schema document as type extensions are order sensitive
+    val otherSchemaDocumentSorted = otherSchemaDocuments.sortedBy { it.sourceLocation?.filePath?.substringAfterLast(File.pathSeparator) }
+    val schemaDefinitions = (listOf(mainSchemaDocument) + otherSchemaDocumentSorted).flatMap { it.definitions }
     val schemaDocument = GQLDocument(
         definitions = schemaDefinitions,
-        filePath = null
+        sourceLocation = null
     )
 
     /**
@@ -144,7 +154,7 @@ object ApolloCompiler {
      */
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
-        filePath = null
+        sourceLocation = null
     ).validateAsExecutable(schema, options.fieldsOnDisjointTypesMustMerge)
 
     validationResult.issues.checkNoErrors()

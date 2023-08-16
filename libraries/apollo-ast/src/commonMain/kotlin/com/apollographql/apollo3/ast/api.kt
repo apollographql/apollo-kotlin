@@ -11,6 +11,8 @@ import com.apollographql.apollo3.ast.internal.LexerException
 import com.apollographql.apollo3.ast.internal.Parser
 import com.apollographql.apollo3.ast.internal.ParserException
 import com.apollographql.apollo3.ast.internal.validateSchema
+import com.apollographql.apollo3.ast.introspection.toGQLDocument
+import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import okio.Buffer
 import okio.BufferedSource
 import okio.Path
@@ -18,16 +20,6 @@ import okio.buffer
 import okio.use
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-
-/**
- * Parses the source to a [Schema], throwing on parsing or validation errors.
- *
- * See [parseAsGQLDocument] and [validateAsSchema] for more granular error reporting
- */
-@ApolloExperimental
-fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocument(filePath).getOrThrow().validateAsSchema().getOrThrow()
-
-fun String.toSchema(): Schema = parseAsGQLDocument().getOrThrow().validateAsSchema().getOrThrow()
 
 /**
  * Parses the source to a List<[GQLDefinition]>, throwing on parsing or validation errors.
@@ -145,6 +137,10 @@ fun String.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): G
   }
 }
 
+fun String.toGQLDocument(options: ParserOptions = ParserOptions.Default): GQLDocument {
+  return parseAsGQLDocument(options).getOrThrow()
+}
+
 fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
   @Suppress("DEPRECATION")
   return if (options.useAntlr) {
@@ -152,6 +148,10 @@ fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLR
   } else {
     parseInternal(null, options) { parseValue() }
   }
+}
+
+fun String.toGQLValue(options: ParserOptions = ParserOptions.Default): GQLValue {
+  return parseAsGQLValue(options).getOrThrow()
 }
 
 fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
@@ -163,10 +163,18 @@ fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLRe
   }
 }
 
+fun String.toGQLType(options: ParserOptions = ParserOptions.Default): GQLType {
+  return parseAsGQLType(options).getOrThrow()
+}
+
 internal fun String.parseAsGQLNullability(options: ParserOptions = ParserOptions.Default): GQLResult<GQLNullability> {
   @Suppress("DEPRECATION")
-  check (!options.useAntlr)
+  check(!options.useAntlr)
   return parseInternal(null, options) { parseNullability() ?: error("No nullability") }
+}
+
+fun String.toGQLNullability(options: ParserOptions = ParserOptions.Default): GQLNullability {
+  return parseAsGQLNullability(options).getOrThrow()
 }
 
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
@@ -178,8 +186,20 @@ fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default):
   }
 }
 
+fun String.toGQLSelections(options: ParserOptions = ParserOptions.Default): List<GQLSelection> {
+  return parseAsGQLSelections(options).getOrThrow()
+}
+
 fun Path.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
   return HOST_FILESYSTEM.source(this).buffer().parseAsGQLDocument(filePath = toString(), options = options)
+}
+
+fun Path.toGQLDocument(options: ParserOptions = ParserOptions.Default, allowJson: Boolean = false): GQLDocument {
+  return if (allowJson && name.endsWith(".json")) {
+    toIntrospectionSchema().toGQLDocument()
+  } else {
+    parseAsGQLDocument(options).getOrThrow()
+  }
 }
 
 /**

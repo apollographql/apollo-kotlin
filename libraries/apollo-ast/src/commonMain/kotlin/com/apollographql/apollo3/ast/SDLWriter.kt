@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import okio.BufferedSink
 import okio.Closeable
 
 /**
  * A [SDLWriter] writes utf8 text to the given sink and supports [indent]/[unindent]
  */
+@ApolloInternal
 open class SDLWriter(
     private val sink: BufferedSink,
     private val indent: String,
