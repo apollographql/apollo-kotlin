@@ -60,3 +60,8 @@ public abstract interface class com/apollographql/apollo3/mockserver/MockServerI
 	public abstract fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo3/mockserver/WebSocketMockServer_jvmKt {
+	public static final fun WebSocketMockServer (I)Lcom/apollographql/apollo3/mockserver/WebSocketMockServer;
+	public static synthetic fun WebSocketMockServer$default (IILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/WebSocketMockServer;
+}
+
