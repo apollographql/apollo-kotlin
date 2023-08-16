@@ -135,10 +135,6 @@ class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
 ) : GQLNode {
-  @Deprecated("Use sourceLocation primary constructor", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  constructor(definitions: List<GQLDefinition>, filePath: String?) : this(definitions, SourceLocation.forPath(filePath))
-
   override val children = definitions
 
   override fun writeInternal(writer: SDLWriter) {
