@@ -164,7 +164,7 @@ private class WebSocketConnectionImpl(
 
   private fun handleError(error: NSError) {
     messageChannel.close(
-        if (webSocket.closeCode != 0L) ApolloWebSocketClosedException(
+        if (webSocket.closeCode.convert<Int>() != 0) ApolloWebSocketClosedException(
             code = webSocket.closeCode.convert(),
             reason = webSocket.closeReason?.toKotlinString(),
         ) else {
