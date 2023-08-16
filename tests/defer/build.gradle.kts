@@ -9,13 +9,6 @@ apolloTest {
 }
 
 kotlin {
-  /**
-   * Extra target to test the java codegen
-   */
-  jvm("javaCodegen") {
-    withJava()
-  }
-
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
@@ -26,6 +19,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
+        implementation(libs.apollo.normalizedcache)
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
       }
@@ -51,47 +45,44 @@ kotlin {
   }
 }
 
-apollo {
-  service("kotlin") {
-    packageName.set("defer")
-    generateKotlinModels.set(true)
-    sourceFolder.set("base")
-    configureConnection(true)
-  }
-  service("java") {
-    packageName.set("defer")
-    generateKotlinModels.set(false)
-    sourceFolder.set("base")
-    configureConnection(false)
-  }
-  service("supergraph") {
-    packageName.set("supergraph")
-    sourceFolder.set("supergraph")
-    this.addTypename.set("ifAbstract")
+fun configureApollo(generateKotlinModels: Boolean) {
+  val extra = if (generateKotlinModels) "kotlin" else "java"
 
-    configureConnection(true)
+  apollo {
+    service("base-$extra") {
+      packageName.set("defer")
+      this.generateKotlinModels.set(generateKotlinModels)
+      sourceFolder.set("base")
+      configureConnection(generateKotlinModels)
+    }
+    service("supergraph-$extra") {
+      packageName.set("supergraph")
+      sourceFolder.set("supergraph")
+      this.addTypename.set("ifAbstract")
+      this.generateKotlinModels.set(generateKotlinModels)
+      configureConnection(generateKotlinModels)
+    }
   }
+}
+
+configureApollo(true)
+if (System.getProperty("idea.sync.active") == null) {
+  registerJavaCodegenTestTask()
+  configureApollo(false)
 }
 
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
-    if (System.getProperty("idea.sync.active") == null) {
-      if (generateKotlinModels) {
-        connectToKotlinSourceSet("jvmTest")
-        connectToKotlinSourceSet("jsTest")
-        connectToKotlinSourceSet("appleTest")
-      } else {
-        connectToJavaSourceSet("main")
-      }
+    if (generateKotlinModels) {
+      connectToKotlinSourceSet("kotlinCodegenTest")
     } else {
-      // For autocomplete to work
-      connectToKotlinSourceSet("commonTest")
+      connectToJavaSourceSet("javaCodegen")
     }
   }
 }
 
 tasks.withType(AbstractTestTask::class.java) {
-  // Run the defer with Router tests only from a a specific CI job
+  // Run the defer with Router tests only from a specific CI job
   val runDeferWithRouterTests = System.getenv("COM_APOLLOGRAPHQL_DEFER_WITH_ROUTER_TESTS").toBoolean()
   if (runDeferWithRouterTests) {
     filter.setIncludePatterns("test.DeferWithRouterTest")
@@ -100,41 +91,3 @@ tasks.withType(AbstractTestTask::class.java) {
   }
 }
 
-// See https://youtrack.jetbrains.com/issue/KT-56019
-val myAttribute = Attribute.of("com.apollographql.test", String::class.java)
-
-configurations.named("jvmApiElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm")
-  }
-}
-
-configurations.named("javaCodegenApiElements").configure {
-  attributes {
-    attribute(myAttribute, "java")
-  }
-}
-
-configurations.named("jvmRuntimeElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm-runtime")
-  }
-}
-
-configurations.named("javaCodegenRuntimeElements").configure {
-  attributes {
-    attribute(myAttribute, "java-runtime")
-  }
-}
-
-configurations.named("jvmSourcesElements").configure {
-  attributes {
-    attribute(myAttribute, "jvm")
-  }
-}
-
-configurations.named("javaCodegenSourcesElements").configure {
-  attributes {
-    attribute(myAttribute, "java")
-  }
-}

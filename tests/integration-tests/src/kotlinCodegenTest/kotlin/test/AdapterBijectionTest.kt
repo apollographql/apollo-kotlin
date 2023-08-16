@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
