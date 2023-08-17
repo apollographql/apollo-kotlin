@@ -23,6 +23,8 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
     assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "name" })
     // id inside the fragment is used
     assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "id" && it.line > 3 })
+    // barkVolume is unused, but the inspection is suppressed
+    assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "barkVolume"})
 
     moveCaret("id")
 
@@ -39,6 +41,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
           }
           ... on dog {
             id
+            # noinspection ApolloUnusedField
             barkVolume
             fieldOnDogAndCat
           }
@@ -72,6 +75,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
           name
           ... on dog {
             id
+            # noinspection ApolloUnusedField
             barkVolume
             fieldOnDogAndCat
           }
