@@ -2,7 +2,6 @@ package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlinx.coroutines.flow.Flow
-import kotlin.random.Random
 
 @ApolloExperimental
 interface WebSocketMockServer {
@@ -25,7 +24,7 @@ interface WebSocketMockServer {
   }
 
   fun start()
-  fun url(): String
+  suspend fun url(): String
 
   val events: Flow<WebSocketEvent>
 
@@ -36,4 +35,7 @@ interface WebSocketMockServer {
 }
 
 @ApolloExperimental
-expect fun WebSocketMockServer(port: Int = Random.nextInt(10000, 20000)): WebSocketMockServer
+/**
+ * @param port the port to listen on. If 0, a random available port will be used.
+ */
+expect fun WebSocketMockServer(port: Int = 0): WebSocketMockServer

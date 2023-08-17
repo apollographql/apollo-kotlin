@@ -43,8 +43,9 @@ internal class CommonWebSocketMockServer(private val port: Int) : WebSocketMockS
     server?.stop(100, 100)
   }
 
-  override fun url(): String {
-    return "ws://127.0.0.1:$port"
+  override suspend fun url(): String {
+    val actualPort = server!!.resolvedConnectors().first().port
+    return "ws://127.0.0.1:$actualPort"
   }
 
   private class Session(val id: String, val session: DefaultWebSocketSession)
