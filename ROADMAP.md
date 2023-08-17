@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-08-03**
+**Last updated: 2023-08-17**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -25,7 +25,7 @@ _Approximate Date: 2023-04-03 (experimental), stable release pending user feedba
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate Dates: 2023-09-20 (Beta), Autumn 2023 (GA)_
+_Approximate Dates: 2023-10-11 (Beta), Autumn 2023 (GA)_
 
 Our next major release is currently in the alpha stage. Expect new alphas to be released as we make progress towards being feature-complete. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible. 
 
