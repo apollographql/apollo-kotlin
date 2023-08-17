@@ -26,6 +26,7 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.MergeOptions
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.apolloDefinitions
@@ -141,7 +142,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
    * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing
    */
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
-  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions).merge().getOrThrow()
+  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(true)).merge().getOrThrow()
 
   val foreignNames = foreignSchemas.flatMap {
     it.newNames.entries

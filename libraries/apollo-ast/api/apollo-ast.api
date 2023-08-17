@@ -838,6 +838,10 @@ public final class com/apollographql/apollo3/ast/IssueKt {
 	public static final fun containsError (Ljava/util/List;)Z
 }
 
+public final class com/apollographql/apollo3/ast/MergeOptions$Companion {
+	public final fun getDefault ()Lcom/apollographql/apollo3/ast/MergeOptions;
+}
+
 public final class com/apollographql/apollo3/ast/NodeContainer {
 	public fun <init> (Ljava/util/List;)V
 	public final fun assert ()V
