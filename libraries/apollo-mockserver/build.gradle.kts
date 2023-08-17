@@ -44,22 +44,13 @@ kotlin {
         }
       }
     }
-  }
 
-  val commonAppleJvmMain = sourceSets.create("commonAppleJvmMain").apply {
-    dependsOn(sourceSets.getByName("commonMain"))
-    dependencies {
-      implementation(libs.ktor.server.core)
-      implementation(libs.ktor.server.cio)
-      implementation(libs.ktor.server.websockets)
+    findByName("concurrentMain")?.apply {
+      dependencies {
+        implementation(libs.ktor.server.core)
+        implementation(libs.ktor.server.cio)
+        implementation(libs.ktor.server.websockets)
+      }
     }
   }
-  val commonAppleJvmTest = sourceSets.create("commonAppleJvmTest").apply {
-    dependsOn(sourceSets.getByName("commonTest"))
-  }
-  sourceSets.getByName("jvmMain").dependsOn(commonAppleJvmMain)
-  sourceSets.getByName("jvmTest").dependsOn(commonAppleJvmTest)
-  sourceSets.getByName("appleMain").dependsOn(commonAppleJvmMain)
-  sourceSets.getByName("appleTest").dependsOn(commonAppleJvmTest)
 }
-

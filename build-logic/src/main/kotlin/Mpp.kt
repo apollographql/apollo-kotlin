@@ -141,10 +141,11 @@ fun Project.configureMpp(
  * Current Graph is something like so
  *
  * graph TB
- * commonMain --> jvmMain
- * commonMain --> appleMain
+ * commonMain --> concurrentMain
  * commonMain --> linuxMain
  * commonMain --> jsMain
+ * concurrentMain --> jvmMain
+ * concurrentMain --> appleMain
  * appleMain --> macosX64
  * appleMain --> macosArm64
  * appleMain --> iosArm64
@@ -177,12 +178,22 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   val hasAppleTarget = targets.any {
     it is KotlinNativeTarget && it.konanTarget.family in setOf(Family.IOS, Family.OSX, Family.WATCHOS, Family.TVOS)
   }
+
+  val concurrentMain = sourceSets.create("concurrentMain")
+  val concurrentTest = sourceSets.create("concurrentTest")
+
+  concurrentMain.dependsOn(sourceSets.getByName("commonMain"))
+  concurrentTest.dependsOn(sourceSets.getByName("commonTest"))
+
+  sourceSets.findByName("jvmMain")?.dependsOn(concurrentMain)
+  sourceSets.findByName("jvmTest")?.dependsOn(concurrentTest)
+
   if (hasAppleTarget) {
     val appleMain = sourceSets.create("appleMain")
     val appleTest = sourceSets.create("appleTest")
 
-    appleMain.dependsOn(sourceSets.getByName("commonMain"))
-    appleTest.dependsOn(sourceSets.getByName("commonTest"))
+    appleMain.dependsOn(concurrentMain)
+    appleTest.dependsOn(concurrentTest)
 
     allAppleTargets.forEach {
       sourceSets.findByName("${it}Main")?.dependsOn(appleMain)
