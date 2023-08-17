@@ -24,8 +24,15 @@ class KtorHttpEngine(
 
   private var disposed = false
 
+  /**
+   * @param timeoutMillis: The timeout in milliseconds used both for the connection and the request.
+   */
   constructor(timeoutMillis: Long = 60_000) : this(timeoutMillis, timeoutMillis)
 
+  /**
+   * @param connectTimeoutMillis The connection timeout in milliseconds. The connection timeout is the time period in which a client should establish a connection with a server.
+   * @param requestTimeoutMillis The request timeout in milliseconds. The request timeout is the time period required to process an HTTP call: from sending a request to receiving a response.
+   */
   constructor(connectTimeoutMillis: Long, requestTimeoutMillis: Long) : this(
       HttpClient {
         expectSuccess = false

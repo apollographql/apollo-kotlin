@@ -17,10 +17,16 @@ import io.ktor.util.flattenEntries
 import io.ktor.utils.io.CancellationException
 import okio.Buffer
 
-
+/**
+ * @param connectTimeoutMillis The connection timeout in milliseconds. The connection timeout is the time period in which a client should establish a connection with a server.
+ * @param readTimeoutMillis The request timeout in milliseconds. The request timeout is the time period required to process an HTTP call: from sending a request to receiving a response.
+ */
 actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
   var disposed = false
 
+  /**
+   * @param timeoutMillis: The timeout in milliseconds used both for the connection and the request.
+   */
   actual constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
   private val client = HttpClient(Js) {
