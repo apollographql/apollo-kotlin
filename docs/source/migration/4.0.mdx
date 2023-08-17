@@ -190,6 +190,30 @@ apollo {
 
 - Enum class names now have their first letter capitalized, as other generated types.
 - To avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`) when using the `generateSchema` option.
+- `addTypename = "ifFragments"` is deprecated as it could lead to cache misses for cache users:
+
+```graphql
+{
+  node(id: 42) {
+    # no fragment here means but we if we don't query __typename, the query below will emit a cache miss 
+    title
+    price
+  }
+}
+
+{
+  product(id: 42) {
+    # __typename is added here automatically
+    __typename
+    ... on Product {
+      title
+      price
+    }
+  }
+}
+```
+
+Instead, use `"always"` if you're using the cache or `"ifPolymorphic"` else. See [#3965](https://github.com/apollographql/apollo-kotlin/issues/3965) for more details.
 
 ## Cache
 

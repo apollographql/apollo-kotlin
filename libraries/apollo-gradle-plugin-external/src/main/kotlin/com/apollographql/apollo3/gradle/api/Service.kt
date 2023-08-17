@@ -454,27 +454,25 @@ interface Service {
   val codegenModels: Property<String>
 
   /**
-   * When to add __typename. One of "always", "ifFragments", "ifAbstract" or "ifPolymorphic"
+   * When to add __typename. One of "always", "ifAbstract", "ifPolymorphic" or "ifFragments"
    *
    * - "always": Add '__typename' for every composite field
    *
-   * - "ifFragments": Add '__typename' for every selection set that contains fragments (inline or named)
-   * This causes cache misses when introducing fragments where no fragment was present before and will be certainly removed in
-   * a future version.
-   *
    * - "ifAbstract": Add '__typename' for abstract fields, i.e. fields that are of union or interface type
-   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache, and we don't have a containing field in that case.
    *
    * - "ifPolymorphic": Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
    * (inline or named) whose type condition isn't a super type of the field type.
    * If a field is monomorphic, no '__typename' will be added.
-   * This adds the bare minimum amount of __typename but the logic is substantially more complex and
-   * it could cause cache misses when using fragments on monomorphic fields because __typename can be
-   * required in some cases.
+   * This adds the bare minimum amount of __typename but the logic is substantially more complex than `ifAbstract`.
    *
-   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache, and we don't have a containing field in that case.
+   * - "ifFragments" (deprecated): Add '__typename' for every selection set that contains fragments (inline or named)
+   * This causes cache misses when introducing fragments where no fragment was present before. This is deprecated and
+   * will be removed in a future version.
+   *
+   * Apollo Kotlin requires __typename to handle polymorphism and parsing fragments. By default, __typename is added on
+   * every composite field selection set. When using the cache, this also ensures that cache keys can read __typename.
+   * If you're not using the cache or do not use __typename in your cache keys, you can use "ifAbstract" or "ifPolymorphic"
+   * to reduce the number of __typename and the size of the network response.
    *
    * Default value: "ifFragments"
    */
