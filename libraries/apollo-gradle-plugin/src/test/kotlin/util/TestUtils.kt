@@ -38,7 +38,7 @@ object TestUtils {
       block(dest)
     } finally {
       // Comment this line if you want to keep the directory around during development
-      //dest.deleteRecursively()
+      dest.deleteRecursively()
     }
   }
 
