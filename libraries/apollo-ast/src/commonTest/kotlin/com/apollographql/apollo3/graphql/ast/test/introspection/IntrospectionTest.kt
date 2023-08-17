@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.graphql.ast.test.introspection
 
-import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.graphql.ast.test.CWD
-import okio.Buffer
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +15,10 @@ class IntrospectionTest {
   @Test
   fun parseSchema() {
     try {
-      "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json".toPath().toSchema()
+      "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json"
+          .toPath()
+          .toGQLDocument(allowJson = true)
+          .toSchema()
     } catch (e: SourceAwareException) {
       assertTrue(e.message!!.contains("is defined multiple times"))
     }
@@ -52,17 +53,19 @@ class IntrospectionTest {
       }
     """.trimIndent()
 
-    val introspectionSchema = Buffer().writeUtf8(schema)
-        .toSchema()
+    val introspectionSchema = schema
+        .toGQLDocument()
+        .toFullSchemaGQLDocument()
         .toIntrospectionSchema()
+        .__schema
 
-    val someInputType = introspectionSchema.__schema.types.first { it.name == "SomeInput" } as IntrospectionSchema.Schema.Type.InputObject
+    val someInputType = introspectionSchema.types.first { it.name == "SomeInput" }
     val someInputFields = someInputType.inputFields
 
-    assertEquals("false", someInputFields.first { it.name == "value1" }.defaultValue)
-    assertEquals("South", someInputFields.first { it.name == "value2" }.defaultValue)
-    assertEquals("{\nvalue: true\nvalue2: [North,null,South]\n}\n", someInputFields.first { it.name == "value3" }.defaultValue)
-    assertEquals("[0,null,1]", someInputFields.first { it.name == "value4" }.defaultValue)
-    assertEquals("\"South\"", someInputFields.first { it.name == "value5" }.defaultValue)
+    assertEquals("false", someInputFields?.first { it.name == "value1" }?.defaultValue)
+    assertEquals("South", someInputFields?.first { it.name == "value2" }?.defaultValue)
+    assertEquals("{\nvalue: true\nvalue2: [North,null,South]\n}\n", someInputFields?.first { it.name == "value3" }?.defaultValue)
+    assertEquals("[0,null,1]", someInputFields?.first { it.name == "value4" }?.defaultValue)
+    assertEquals("\"South\"", someInputFields?.first { it.name == "value5" }?.defaultValue)
   }
 }

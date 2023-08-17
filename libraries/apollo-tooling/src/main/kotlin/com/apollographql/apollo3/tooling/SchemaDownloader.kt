@@ -7,8 +7,9 @@ import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
+import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
@@ -65,7 +66,7 @@ object SchemaDownloader {
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
   ) {
-    var introspectionSchemaJson: String? = null
+    var introspectionDataJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
     var sdlSchema: String? = null
 
@@ -75,21 +76,20 @@ object SchemaDownloader {
         // Try the latest spec first
         for (specVersion in SpecVersion.values().reversed()) {
           try {
-            introspectionSchemaJson = downloadIntrospection(
+            introspectionDataJson = downloadIntrospection(
                 endpoint = endpoint,
                 headers = headers,
                 insecure = insecure,
                 specVersion = specVersion,
             )
-            // Validates the JSON schema
-            introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
+            introspectionSchema = introspectionDataJson.toIntrospectionSchema()
             exception = null
             break
           } catch (e: Exception) {
             exception = e
           }
         }
-        if (introspectionSchemaJson == null) {
+        if (introspectionDataJson == null) {
           throw exception!!
         }
       }
@@ -121,13 +121,14 @@ object SchemaDownloader {
         check(sdlSchema != null)
         // Convert from SDL to JSON
         sdlSchema
-            .toSchema()
+            .toGQLDocument()
+            .toFullSchemaGQLDocument()
             .toIntrospectionSchema()
             .writeTo(schema)
       } else {
-        check(introspectionSchemaJson != null)
+        check(introspectionDataJson != null)
         // Copy Json verbatim
-        schema.writeText(introspectionSchemaJson)
+        schema.writeText(introspectionDataJson)
       }
     } else {
       if (sdlSchema == null) {

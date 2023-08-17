@@ -3,7 +3,8 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toJson
-import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import org.junit.Assert
@@ -101,7 +102,7 @@ class SdlWritingTest {
       }
     """.trimIndent()
 
-    val jsonSchema = src.buffer().toSchema().toIntrospectionSchema().toJson()
+    val jsonSchema = src.toGQLDocument().toFullSchemaGQLDocument().toIntrospectionSchema().toJson()
     assertTrue(jsonSchema.contains("\"defaultValue\":\"\\\"\\\"\""))
 
     val sdlSchema = jsonSchema.toIntrospectionSchema().toGQLDocument().toUtf8()

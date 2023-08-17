@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 fun Project.commonSetup() {
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
     tasks.register("ft") {
-      if (this@commonSetup.name != "apollo-gradle-plugin") {
+      if (this@commonSetup.name !in setOf("apollo-gradle-plugin", "intellij-plugin")) {
         dependsOn("test")
       }
     }
@@ -37,6 +37,8 @@ private fun Project.configureTestAggregation() {
       attribute(USAGE_ATTRIBUTE, objects.named(Usage::class.java, "apolloTestAggregation"))
     }
   }
+  // Hide this from the 'assemble' task
+  configuration.setVisible(false)
 
   tasks.withType(AbstractTestTask::class.java).configureEach {
     configuration.getOutgoing().artifact(

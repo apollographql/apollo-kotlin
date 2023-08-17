@@ -197,15 +197,17 @@ The normalized cache must be configured before the auto persisted queries, confi
 
 ## apollo-ast
 
-The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/).
+The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/). The class hierarchy has been tweaked so that `GQLNamed`, `GQLDescribed` and `GQLHasDirectives` are more consistently inherited from.
 
-`GQLSelectionSet` and `GQLArguments` are deprecated and removed from `GQLField`, `GQLInlineFragment` and other constructors. Use `.selections` directly
+`GQLSelectionSet` and `GQLArguments` are deprecated and removed from `GQLField` and `GQLInlineFragment`. Use `.selections` directly
 
-`GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition
+`GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition.
 
-`SourceLocation.position` is renamed `SourceLocation.column` and is now 1-indexed
+`SourceLocation.position` is renamed `SourceLocation.column` and is now 1-indexed. `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
 
-`GQLNode.sourceLocation` is now nullable
+It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
+
+
 
 ## Gradle configuration
 

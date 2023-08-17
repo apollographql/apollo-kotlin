@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.graphql.ast.test
 
-import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.withBuiltinDefinitions
 import com.apollographql.apollo3.graphql.ast.test.ParserTest.Companion.checkExpected
@@ -29,10 +29,10 @@ class SDLWriterTest {
 
   @Test
   fun introspectionSchema() {
-    val sdlSchema = File("${CWD}/test-fixtures/sdl/introspection.json")
+    val jsonSchema = File("${CWD}/test-fixtures/sdl/introspection.json")
 
-    checkExpected(sdlSchema) {
-      it.toSchema().toGQLDocument().toSDL("    ")
+    checkExpected(jsonSchema) {
+      it.toGQLDocument(allowJson = true).toSDL("    ")
     }
   }
 

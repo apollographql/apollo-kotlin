@@ -16,6 +16,19 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
           ?: "No longer supported"
     }
 
+fun List<GQLDirective>.findSpecifiedBy() = firstOrNull { it.name == "specifiedBy" }
+    ?.let { directive ->
+      directive.arguments
+          .firstOrNull { it.name == "url" }
+          ?.value
+          ?.let { value ->
+            if (value !is GQLStringValue) {
+              throw ConversionException("url must be a string", directive.sourceLocation)
+            }
+            value.value
+          }
+    }
+
 @ApolloInternal
 fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { schema.originalDirectiveName(it.name) == Schema.REQUIRES_OPT_IN }
     .map {

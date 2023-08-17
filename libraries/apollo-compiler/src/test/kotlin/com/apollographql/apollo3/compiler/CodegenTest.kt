@@ -4,8 +4,8 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
-import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
@@ -383,7 +383,7 @@ class CodegenTest {
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
 
       ApolloCompiler.writeSimple(
-          schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().getOrThrow(),
+          schema = schemaFile.toGQLDocument(allowJson = true).validateAsSchemaAndAddApolloDefinition().getOrThrow(),
           executableFiles = graphqlFiles,
           outputDir = outputDir,
           flattenModels = flattenModels,

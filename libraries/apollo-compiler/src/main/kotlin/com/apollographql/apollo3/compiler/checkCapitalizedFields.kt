@@ -11,7 +11,6 @@ import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.internal.IssuesScope
 
 @ApolloInternal
 fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
@@ -64,8 +63,8 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
   }
 }
 
-private interface ValidationScope : IssuesScope {
-  override val issues: MutableList<Issue>
+private interface ValidationScope {
+  val issues: MutableList<Issue>
   val fragmentsByName: Map<String, GQLFragmentDefinition>
 }
 

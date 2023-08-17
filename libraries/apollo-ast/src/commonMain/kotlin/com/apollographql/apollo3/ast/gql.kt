@@ -46,6 +46,7 @@ sealed interface GQLNode {
   fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode
 }
 
+@ApolloExperimental
 sealed interface TransformResult {
   object Delete : TransformResult
   object Continue : TransformResult
@@ -57,10 +58,12 @@ sealed interface TransformResult {
   class Replace(val newNode: GQLNode) : TransformResult
 }
 
+@ApolloExperimental
 fun interface NodeTransformer {
   fun transform(node: GQLNode): TransformResult
 }
 
+@ApolloExperimental
 fun GQLNode.transform(transformer: NodeTransformer): GQLNode? {
   return when (val result = transformer.transform(this)) {
     is TransformResult.Delete -> null
@@ -117,7 +120,7 @@ interface GQLHasDirectives {
 
 sealed interface GQLDefinition : GQLNode
 sealed interface GQLExecutableDefinition : GQLDefinition
-sealed interface GQLTypeSystemExtension : GQLNode
+sealed interface GQLTypeSystemExtension : GQLDefinition
 sealed interface GQLTypeExtension : GQLTypeSystemExtension, GQLNamed
 
 sealed class GQLSelection : GQLNode
@@ -132,8 +135,6 @@ class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
 ) : GQLNode {
-  constructor(definitions: List<GQLDefinition>, filePath: String?) : this(definitions, SourceLocation.forPath(filePath))
-
   override val children = definitions
 
   override fun writeInternal(writer: SDLWriter) {

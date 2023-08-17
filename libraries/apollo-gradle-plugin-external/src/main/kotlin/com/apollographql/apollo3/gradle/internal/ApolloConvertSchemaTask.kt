@@ -3,7 +3,8 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
-import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
@@ -47,7 +48,7 @@ abstract class ApolloConvertSchemaTask : DefaultTask() {
     if (from.isIntrospection()) {
       from.toIntrospectionSchema().toGQLDocument().toUtf8(to)
     } else {
-      from.toSchema().toIntrospectionSchema().writeTo(to)
+      from.toGQLDocument().toFullSchemaGQLDocument().toIntrospectionSchema().writeTo(to)
     }
   }
 

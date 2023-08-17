@@ -42,7 +42,7 @@ val graphQLText = """
     }
 """.trimIndent()
 
-val parseResult = Buffer().writeUtf8(graphQLText).parseAsGQLDocument()
+val parseResult = graphQLText.parseAsGQLDocument()
 ```
 
 This method returns a `GQLResult<GQLDocument>`, which contains the document and/or parsing issues, each of which can have a severity of either `WARNING` or `ERROR`. Because there can be warnings, it is possible to have both a valid document and issues at the same time.
@@ -111,7 +111,7 @@ val schemaText = """
     }
 """.trimIndent()
 
-val schemaGQLDocument = Buffer().writeUtf8(schemaText).parseAsGQLDocument().getOrThrow()
+val schemaGQLDocument = schemaText.parseAsGQLDocument().getOrThrow()
 val schemaResult = schemaGQLDocument.validateAsSchema()
 println(schemaResult.issues.map { it.severity.name + ": " + it.message })
 ```
@@ -146,9 +146,6 @@ println(queryGqlDocument.toUtf8())
 
 // Output to a File
 queryGqlDocument.toUtf8(file)
-
-// Output to an Okio BufferedSink
-queryGqlDocument.toUtf8(sink)
 ```
 
 ## Transforming an AST

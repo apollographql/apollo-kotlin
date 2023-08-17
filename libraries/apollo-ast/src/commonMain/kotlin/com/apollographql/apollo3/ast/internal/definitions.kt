@@ -6,8 +6,6 @@ package com.apollographql.apollo3.ast.internal
  * - builtins.graphqls: the official built-in defintions such as [built-in scalars](https://spec.graphql.org/draft/#sec-Scalars.Built-in-Scalars), [built-in directives](https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives) or [introspection definitions](https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema).
  * - link.graphqls: the [core schemas](https://specs.apollo.dev/link/v1.0/) definitions.
  * - apollo-${version}.graphqls: the client directives supported by Apollo Kotlin. Changes are versioned at https://github.com/apollographql/specs. Changing them requires a new version and a PR.
- *
- * TODO: move to apollo-compiler instead?
  */
 
 internal val apollo_v0_1_definitionsStr = """
@@ -144,15 +142,14 @@ internal val apollo_v0_2_definitionsStr = """
       | INPUT_OBJECT
 """.trimIndent()
 
+// Built in scalar and introspection types from the Draft:
+// - https://spec.graphql.org/draft/#sec-Scalars
+// - https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
+// In theory the user needs to provide the builtin definitions because we cannot know in advance what
+// version of the spec they are using neither if they have extended any of the introspection types.
+// This file is a fallback to make a best-effort guess in case the user didn't provide these definitions, at the
+// risk of potentially validating invalid queries.
 internal val builtinsDefinitionsStr = """
-  # Built in scalar and introspection types from:
-  # - https://spec.graphql.org/June2018/#sec-Scalars
-  # - https://github.com/graphql/graphql-spec/blob/afc0a35d271ba9502c3c68aeda6e6c6fbc223774/spec/Section%204%20--%20Introspection.md
-  # In theory the user needs to provide the builtin definitions because we cannot know in advance what
-  # version of the spec they are using neither if they have extended any of the introspection types.
-  # This file is a fallback to make a best-effort guess in case the user didn't provide these definitions, at the
-  # risk of potentially validating invalid queries.
-
   ""${'"'}
   The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
   ""${'"'}
@@ -178,7 +175,6 @@ internal val builtinsDefinitionsStr = """
   ""${'"'}
   scalar ID
 
-
   type __Schema {
     description: String
     types: [__Type!]!
@@ -187,7 +183,7 @@ internal val builtinsDefinitionsStr = """
     subscriptionType: __Type
     directives: [__Directive!]!
   }
-
+  
   type __Type {
     kind: __TypeKind!
     name: String
@@ -207,7 +203,7 @@ internal val builtinsDefinitionsStr = """
     # may be non-null for custom SCALAR, otherwise null.
     specifiedByURL: String
   }
-
+  
   enum __TypeKind {
     SCALAR
     OBJECT
@@ -218,7 +214,7 @@ internal val builtinsDefinitionsStr = """
     LIST
     NON_NULL
   }
-
+  
   type __Field {
     name: String!
     description: String
@@ -227,7 +223,7 @@ internal val builtinsDefinitionsStr = """
     isDeprecated: Boolean!
     deprecationReason: String
   }
-
+  
   type __InputValue {
     name: String!
     description: String
@@ -236,14 +232,14 @@ internal val builtinsDefinitionsStr = """
     isDeprecated: Boolean!
     deprecationReason: String
   }
-
+  
   type __EnumValue {
     name: String!
     description: String
     isDeprecated: Boolean!
     deprecationReason: String
   }
-
+  
   type __Directive {
     name: String!
     description: String
@@ -251,7 +247,7 @@ internal val builtinsDefinitionsStr = """
     args(includeDeprecated: Boolean = false): [__InputValue!]!
     isRepeatable: Boolean!
   }
-
+  
   enum __DirectiveLocation {
     QUERY
     MUTATION

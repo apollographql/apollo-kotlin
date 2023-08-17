@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
-import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
