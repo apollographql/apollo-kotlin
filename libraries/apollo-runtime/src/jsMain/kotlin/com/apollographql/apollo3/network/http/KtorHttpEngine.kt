@@ -33,6 +33,8 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
     expectSuccess = false
     install(HttpTimeout) {
       this.connectTimeoutMillis = this@DefaultHttpEngine.connectTimeoutMillis
+
+      // socketTimeoutMillis would make more sense but doesn't seem to work on JS. See https://youtrack.jetbrains.com/issue/KTOR-6211
       this.requestTimeoutMillis = this@DefaultHttpEngine.readTimeoutMillis
     }
   }

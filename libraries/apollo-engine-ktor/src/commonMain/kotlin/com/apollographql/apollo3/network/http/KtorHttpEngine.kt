@@ -25,20 +25,21 @@ class KtorHttpEngine(
   private var disposed = false
 
   /**
-   * @param timeoutMillis: The timeout in milliseconds used both for the connection and the request.
+   * @param timeoutMillis: The timeout in milliseconds used both for the connection and socket read.
    */
   constructor(timeoutMillis: Long = 60_000) : this(timeoutMillis, timeoutMillis)
 
   /**
    * @param connectTimeoutMillis The connection timeout in milliseconds. The connection timeout is the time period in which a client should establish a connection with a server.
-   * @param requestTimeoutMillis The request timeout in milliseconds. The request timeout is the time period required to process an HTTP call: from sending a request to receiving a response.
+   * @param readTimeoutMillis The socket read timeout in milliseconds. On JVM and Apple this maps to [HttpTimeout.HttpTimeoutCapabilityConfiguration.socketTimeoutMillis], on JS
+   * this maps to [HttpTimeout.HttpTimeoutCapabilityConfiguration.requestTimeoutMillis]
    */
-  constructor(connectTimeoutMillis: Long, requestTimeoutMillis: Long) : this(
+  constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : this(
       HttpClient {
         expectSuccess = false
         install(HttpTimeout) {
           this.connectTimeoutMillis = connectTimeoutMillis
-          this.requestTimeoutMillis = requestTimeoutMillis
+          setReadTimeout(readTimeoutMillis)
         }
       }
   )
@@ -82,3 +83,4 @@ class KtorHttpEngine(
   }
 }
 
+expect fun HttpTimeout.HttpTimeoutCapabilityConfiguration.setReadTimeout(readTimeoutMillis: Long)
