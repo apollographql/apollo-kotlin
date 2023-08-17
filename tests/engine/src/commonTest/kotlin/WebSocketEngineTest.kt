@@ -32,7 +32,7 @@ class WebSocketEngineTest {
       val sessionId = connectEvent.sessionId
       connection.send("client->server")
       val textFrame = awaitItem()
-      assertTrue(textFrame is WebSocketEvent.TextFrame)
+      assertTrue(textFrame is WebSocketEvent.TextMessage)
       assertEquals("client->server", textFrame.text)
 
       webSocketServer.sendText(sessionId, "server->client")
@@ -66,7 +66,7 @@ class WebSocketEngineTest {
       val sessionId = connectEvent.sessionId
       connection.send("client->server".encodeUtf8())
       val binaryFrame = awaitItem()
-      assertTrue(binaryFrame is WebSocketEvent.BinaryFrame)
+      assertTrue(binaryFrame is WebSocketEvent.BinaryMessage)
       assertEquals("client->server", binaryFrame.bytes.decodeToString())
 
       webSocketServer.sendBinary(sessionId, "server->client".toByteArray())

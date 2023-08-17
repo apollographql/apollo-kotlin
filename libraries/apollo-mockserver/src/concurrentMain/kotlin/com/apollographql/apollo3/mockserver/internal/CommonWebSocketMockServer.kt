@@ -2,11 +2,11 @@ package com.apollographql.apollo3.mockserver.internal
 
 import com.apollographql.apollo3.mockserver.WebSocketMockServer
 import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent
-import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.BinaryFrame
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.BinaryMessage
 import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Close
 import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Connect
 import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.Error
-import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.TextFrame
+import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent.TextMessage
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
@@ -75,8 +75,8 @@ internal class CommonWebSocketMockServer(private val port: Int) : WebSocketMockS
           _events.emit(Connect(sessionId = sessionId, headers = call.request.headers.toMap().mapValues { it.value.first() }))
           for (frame in incoming) {
             when (frame) {
-              is Frame.Text -> _events.emit(TextFrame(sessionId, frame.readText()))
-              is Frame.Binary -> _events.emit(BinaryFrame(sessionId, frame.readBytes()))
+              is Frame.Text -> _events.emit(TextMessage(sessionId, frame.readText()))
+              is Frame.Binary -> _events.emit(BinaryMessage(sessionId, frame.readBytes()))
               else -> {}
             }
           }

@@ -12,10 +12,10 @@ interface WebSocketMockServer : Closeable {
     class Connect(val sessionId: String, val headers: Map<String, String>) : WebSocketEvent()
 
     @ApolloExperimental
-    class TextFrame(val sessionId: String, val text: String) : WebSocketEvent()
+    class TextMessage(val sessionId: String, val text: String) : WebSocketEvent()
 
     @ApolloExperimental
-    class BinaryFrame(val sessionId: String, val bytes: ByteArray) : WebSocketEvent()
+    class BinaryMessage(val sessionId: String, val bytes: ByteArray) : WebSocketEvent()
 
     @ApolloExperimental
     class Close(val sessionId: String, val reasonCode: Short?, val reasonMessage: String?) : WebSocketEvent()
