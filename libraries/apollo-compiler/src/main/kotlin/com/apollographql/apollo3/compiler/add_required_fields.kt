@@ -77,7 +77,10 @@ private fun List<GQLSelection>.addRequiredFields(
 
   val requiresTypename = when(addTypename) {
     "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
-    "ifFragments" -> selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+    "ifFragments" -> {
+      println("Using addTypename=\"ifFragments\" is deprecated. Use \"always\" if you're using the cache or \"ifPolymorphic\" else.")
+      selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+    }
     "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()
     "always" -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
