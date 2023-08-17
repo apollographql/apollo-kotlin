@@ -45,7 +45,7 @@ class WebSocketEngineTest {
 
       cancelAndIgnoreRemainingEvents()
     }
-    webSocketServer.stop()
+    webSocketServer.close()
   }
 
   @Test
@@ -79,7 +79,7 @@ class WebSocketEngineTest {
 
       cancelAndIgnoreRemainingEvents()
     }
-    webSocketServer.stop()
+    webSocketServer.close()
   }
 
   @Test
@@ -111,7 +111,7 @@ class WebSocketEngineTest {
 
       cancelAndIgnoreRemainingEvents()
     }
-    webSocketServer.stop()
+    webSocketServer.close()
   }
 
   @Test
@@ -134,7 +134,7 @@ class WebSocketEngineTest {
       val connectEvent = awaitItem()
       assertTrue(connectEvent is WebSocketEvent.Connect)
 
-      webSocketServer.stop()
+      webSocketServer.close()
       assertFailsWith<ApolloNetworkException> {
         connection.receive()
       }
@@ -166,7 +166,7 @@ class WebSocketEngineTest {
 
       cancelAndIgnoreRemainingEvents()
     }
-    webSocketServer.stop()
+    webSocketServer.close()
   }
 
   @Test

@@ -39,7 +39,7 @@ internal class CommonWebSocketMockServer(private val port: Int) : WebSocketMockS
     server = embeddedServer(CIO, port) { webSocketServer() }.start(wait = false)
   }
 
-  override fun stop() {
+  override fun close() {
     server?.stop(100, 100)
   }
 

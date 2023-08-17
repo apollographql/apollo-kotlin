@@ -2,9 +2,10 @@ package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlinx.coroutines.flow.Flow
+import okio.Closeable
 
 @ApolloExperimental
-interface WebSocketMockServer {
+interface WebSocketMockServer : Closeable {
   @ApolloExperimental
   sealed class WebSocketEvent {
     @ApolloExperimental
@@ -31,7 +32,7 @@ interface WebSocketMockServer {
   suspend fun sendText(sessionId: String, text: String)
   suspend fun sendBinary(sessionId: String, binary: ByteArray)
   suspend fun sendClose(sessionId: String, reasonCode: Short? = null, reasonMessage: String? = null)
-  fun stop()
+  override fun close()
 }
 
 @ApolloExperimental
