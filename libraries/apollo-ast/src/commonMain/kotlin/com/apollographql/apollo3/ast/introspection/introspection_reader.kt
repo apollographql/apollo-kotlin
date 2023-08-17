@@ -387,6 +387,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
    *   foo: Int @deprecated(reason: null)
    * }
    * ```
+   *
+   * If there are legit use cases for `@deprecated(reason: null)` we should update this function
    */
   fun makeDirectives(deprecationReason: String?): List<GQLDirective> {
     if (deprecationReason == null) {
