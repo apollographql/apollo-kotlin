@@ -58,6 +58,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
       fromElement = { elementAt<PsiElement>("computerFields")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtClass>("class ComputerFields")!! },
+      multipleTarget = true
   )
 
   @Test

@@ -69,6 +69,11 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       val resolvedElement = sourceElement.parent?.reference?.resolve()
       if (resolvedElement != null) {
         add(resolvedElement)
+      } else {
+        // Special case for Fragment declaration: we switch to the Fragment's usages
+        if (gqlElement is GraphQLFragmentDefinition) {
+          addAll(findFragmentSpreads(gqlElement.project) { it.nameIdentifier.reference?.resolve() == gqlElement.nameIdentifier })
+        }
       }
 
       // Add Kotlin definition(s)

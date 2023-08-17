@@ -17,6 +17,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLInlineFragment
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLOperationDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLRecursiveVisitor
 import com.intellij.lang.jsgraphql.psi.GraphQLSelectionSet
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.openapi.project.Project
@@ -355,5 +356,21 @@ private fun String.minusOperationTypeSuffix(): String {
     endsWith("Mutation") -> substringBeforeLast("Mutation")
     endsWith("Subscription") -> substringBeforeLast("Subscription")
     else -> this
+  }
+}
+
+fun findFragmentSpreads(project: Project, predicate: (GraphQLFragmentSpread) -> Boolean): List<GraphQLFragmentSpread> {
+  return FileTypeIndex.getFiles(GraphQLFileType.INSTANCE, GlobalSearchScope.allScope(project)).flatMap { virtualFile ->
+    val fragmentSpreads = mutableListOf<GraphQLFragmentSpread>()
+    val visitor = object : GraphQLRecursiveVisitor() {
+      override fun visitFragmentSpread(o: GraphQLFragmentSpread) {
+        super.visitFragmentSpread(o)
+        if (predicate(o)) {
+          fragmentSpreads += o
+        }
+      }
+    }
+    PsiManager.getInstance(project).findFile(virtualFile)?.accept(visitor)
+    fragmentSpreads
   }
 }
