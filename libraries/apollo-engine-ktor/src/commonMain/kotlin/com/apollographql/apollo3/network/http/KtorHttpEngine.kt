@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -83,4 +84,5 @@ class KtorHttpEngine(
   }
 }
 
+@ApolloInternal
 expect fun HttpTimeout.HttpTimeoutCapabilityConfiguration.setReadTimeout(readTimeoutMillis: Long)
