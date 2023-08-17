@@ -19,18 +19,6 @@ import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as Gra
 import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
 import com.apollographql.apollo3.tooling.graphql.october2021.IntrospectionQuery as GraphQLOctober2021IntrospectionQuery
 
-/**
- * @return the graph from a service key like "service:$graph:$token"
- *
- * This will not work with user keys
- */
-internal fun String.getGraph(): String? {
-  if (!startsWith("service:")) {
-    return null
-  }
-  return split(":")[1]
-}
-
 
 @ApolloExperimental
 object SchemaDownloader {

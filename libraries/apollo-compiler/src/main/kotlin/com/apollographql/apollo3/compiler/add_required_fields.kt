@@ -78,7 +78,15 @@ private fun List<GQLSelection>.addRequiredFields(
   val requiresTypename = when(addTypename) {
     "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
     "ifFragments" -> {
-      println("Using addTypename=\"ifFragments\" is deprecated. Use \"always\" if you're using the cache or \"ifPolymorphic\" else.")
+      println("""Apollo: addTypename=\"ifFragments\" (default) is deprecated as it could lead to cache misses. Use \"always\" if you're using the cache or \"ifPolymorphic\" else:
+        |apollo {
+        |  service("service") {
+        |    addTypename.set("$ADD_TYPENAME_ALWAYS")
+        |    // or 
+        |    addTypename.set("$ADD_TYPENAME_IF_POLYMORPHIC")
+        |  }
+        |}
+      """.trimMargin())
       selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     }
     "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()

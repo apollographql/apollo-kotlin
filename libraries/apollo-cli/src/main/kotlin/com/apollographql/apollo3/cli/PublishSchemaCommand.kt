@@ -17,7 +17,7 @@ internal class PublishSchemaCommand: CliktCommand() {
 
   override fun run() {
     SchemaUploader.uploadSchema(
-        key = key,
+        apolloKey = key,
         graph = graph,
         variant = graphVariant,
         sdl = File(schema).readText(),

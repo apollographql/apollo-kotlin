@@ -119,13 +119,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       "Apollo: registerOperations {} cannot be configured outside of a service {} block"
     }
 
-    val existing = operationManifestFormat.orNull
-    check(existing == null || existing == MANIFEST_OPERATION_OUTPUT) {
-      "Apollo: registerOperation {} requires $MANIFEST_OPERATION_OUTPUT (found $existing)"
-    }
-    operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
-    operationManifestFormat.finalizeValue()
-
     val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
 
     if (this.registerOperationsConfig != null) {

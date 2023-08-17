@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.pqm
 
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -31,6 +30,13 @@ class PqmOperation(
 fun PersistedQueryManifest.writeTo(file: File) {
   file.sink().buffer().use {
     Json.encodeToBufferedSink<PersistedQueryManifest>(this, it)
+  }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun File.toPersistedQueryManifest(): PersistedQueryManifest {
+  return source().buffer().use {
+    Json.decodeFromBufferedSource(it)
   }
 }
 
