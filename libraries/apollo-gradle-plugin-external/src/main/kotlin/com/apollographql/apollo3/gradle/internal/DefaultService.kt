@@ -332,7 +332,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
    * Resolves the operation manifest and formats.
    */
   @Suppress("DEPRECATION")
-  private fun resolveOperationManifest(): Pair<String, File> {
+  private fun resolveOperationManifest(): Pair<String, File?> {
     generateOperationOutput.disallowChanges()
     operationOutputFile.disallowChanges()
     operationManifest.disallowChanges()
@@ -372,7 +372,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
         format = MANIFEST_OPERATION_OUTPUT
       }
     } else {
-      userFile = BuildDirLayout.operationManifest(project, this, format ?: MANIFEST_OPERATION_OUTPUT)
+      userFile = if (format == null || format == MANIFEST_NONE) {
+        null
+      } else {
+        BuildDirLayout.operationManifest(project, this, format)
+      }
     }
 
     if (format == null) {
@@ -385,9 +389,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     return project.provider {
       resolveOperationManifest().second
     }.let { fileProvider ->
-      project.objects.fileProperty().value {
-        fileProvider.get()
-      }
+      project.objects.fileProperty().fileProvider(fileProvider)
     }
   }
 

@@ -21,7 +21,12 @@ import org.gradle.api.tasks.TaskAction
 
 abstract class ApolloRegisterOperationsTask: DefaultTask() {
   @get:InputFile
+  @get:Optional
   abstract val operationOutput: RegularFileProperty
+
+  @get:Input
+  @get:Optional
+  abstract val operationManifestFormat: Property<String>
 
   @get:Input
   @get:Optional
@@ -32,9 +37,6 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
 
   @get:Input
   abstract val graph: Property<String>
-
-  @get:Input
-  abstract val operationManifestFormat: Property<String>
 
   @get:Input
   @get:Optional
