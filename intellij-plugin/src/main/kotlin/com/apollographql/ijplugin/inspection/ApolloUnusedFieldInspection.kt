@@ -7,8 +7,13 @@ import com.apollographql.ijplugin.navigation.findKotlinFragmentSpreadDefinitions
 import com.apollographql.ijplugin.navigation.findKotlinInlineFragmentDefinitions
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.isProcessCanceled
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.ui.InspectionOptionsPanel
+import com.intellij.codeInspection.ui.ListEditForm
 import com.intellij.lang.jsgraphql.psi.GraphQLField
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
@@ -17,10 +22,15 @@ import com.intellij.lang.jsgraphql.psi.GraphQLSelection
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeName
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.findParentOfType
+import javax.swing.JComponent
 
 class ApolloUnusedFieldInspection : LocalInspectionTool() {
+  @JvmField
+  var fieldsToIgnore: MutableList<String> = mutableListOf()
+
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     var isUnusedOperation = false
     return object : GraphQLVisitor() {
@@ -36,19 +46,35 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
         }
 
         var isFragment = false
-        val ktDefinitions  = when (val parent = o.parent) {
+        val parent = o.parent
+        val ktDefinitions = when (parent) {
           is GraphQLField -> findKotlinFieldDefinitions(parent)
           is GraphQLFragmentSpread -> {
             isFragment = true
             findKotlinFragmentSpreadDefinitions(parent)
           }
+
           is GraphQLTypeName -> {
             val inlineFragment = parent.parent?.parent as? GraphQLInlineFragment ?: return
             isFragment = true
             findKotlinInlineFragmentDefinitions(inlineFragment)
           }
+
           else -> return
         }.ifEmpty { return }
+
+        val matchingFieldCoordinates: Collection<String> = if (parent is GraphQLField) {
+          matchingFieldCoordinates(o)
+        } else {
+          emptySet()
+        }
+        val shouldIgnoreField = fieldsToIgnore.any { fieldToIgnore ->
+          matchingFieldCoordinates.any match@{ fieldCoordinates ->
+            val regex = runCatching { Regex(fieldToIgnore) }.getOrNull() ?: return@match false
+            fieldCoordinates.matches(regex)
+          }
+        }
+        if (shouldIgnoreField) return
 
         val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(o.project)
         val hasUsageProcessor = HasUsageProcessor()
@@ -64,9 +90,32 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
         holder.registerProblem(
             if (isFragment) o.findParentOfType<GraphQLSelection>()!! else o,
             ApolloBundle.message("inspection.unusedField.reportText"),
-            DeleteElementQuickFix("inspection.unusedField.quickFix") { it.findParentOfType<GraphQLSelection>(strict = false)!! },
+            *buildList {
+              add(DeleteElementQuickFix("inspection.unusedField.quickFix.deleteField") { it.findParentOfType<GraphQLSelection>(strict = false)!! })
+              for (matchingFieldCoordinate in matchingFieldCoordinates) {
+                add(IgnoreFieldQuickFix(matchingFieldCoordinate))
+              }
+            }.toTypedArray()
         )
       }
     }
+  }
+
+  private inner class IgnoreFieldQuickFix(private val fieldCoordinates: String) : LocalQuickFix {
+    override fun getName() = ApolloBundle.message("inspection.unusedField.quickFix.ignoreField", fieldCoordinates)
+    override fun getFamilyName() = name
+
+    override fun availableInBatchMode() = false
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
+
+    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+      fieldsToIgnore += fieldCoordinates.replace(".", "\\.")
+    }
+  }
+
+  override fun createOptionsPanel(): JComponent {
+    val form = ListEditForm(ApolloBundle.message("inspection.unusedField.options.fieldsToIgnore.title"), ApolloBundle.message("inspection.unusedField.options.fieldsToIgnore.label"), fieldsToIgnore)
+    form.contentPanel.minimumSize = InspectionOptionsPanel.getMinimumListSize()
+    return form.contentPanel
   }
 }

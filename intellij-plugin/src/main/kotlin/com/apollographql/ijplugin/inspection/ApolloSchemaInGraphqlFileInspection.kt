@@ -45,7 +45,7 @@ class ApolloSchemaInGraphqlFileInspection : LocalInspectionTool() {
     }
     override fun getFamilyName() = name
 
-    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
       val psiFile = descriptor.psiElement.containingFile

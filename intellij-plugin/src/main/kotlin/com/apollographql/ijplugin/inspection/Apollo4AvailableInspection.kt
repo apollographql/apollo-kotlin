@@ -152,7 +152,7 @@ object Apollo4AvailableQuickFix : LocalQuickFix {
 
   override fun availableInBatchMode() = false
 
-  override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
+  override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
     val action = ActionManager.getInstance().getAction(ApolloV3ToV4MigrationAction.ACTION_ID)
