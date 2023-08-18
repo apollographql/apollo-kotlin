@@ -15,7 +15,7 @@ configurations.create("gr8Classpath")
 val shadeConfiguration = configurations.create("shade")
 
 // Set to false to skip relocation and save some building time during development
-val relocateJar = false
+val relocateJar = true
 
 dependencies {
   /**
@@ -128,15 +128,24 @@ tasks.register("cleanStaleTestProjects") {
 }
 
 tasks.withType<Test> {
-  dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-annotations:publishKotlinMultiplatformTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-annotations:publishJvmTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-annotations:publishIosArm64TestPublicationToPluginTestRepository")
+  dependsOn(":apollo-api:publishKotlinMultiplatformTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-api:publishJvmTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-api:publishIosArm64TestPublicationToPluginTestRepository")
+  dependsOn(":apollo-ast:publishKotlinMultiplatformTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-ast:publishJvmTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishKotlinMultiplatformTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishJvmTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishKotlinMultiplatformTestPublicationToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishJvmTestPublicationToPluginTestRepository")
+
   dependsOn(":apollo-compiler:publishTestPublicationToPluginTestRepository")
   dependsOn(":apollo-gradle-plugin-external:publishTestPublicationToPluginTestRepository")
   dependsOn(":apollo-gradle-plugin:publishApolloGradlePluginPluginMarkerMavenPublicationToPluginTestRepository")
   dependsOn(":apollo-tooling:publishTestPublicationToPluginTestRepository")
+
   dependsOn("publishTestPublicationToPluginTestRepository")
   dependsOn("publishApolloGradlePluginPluginMarkerMavenPublicationToPluginTestRepository")
 

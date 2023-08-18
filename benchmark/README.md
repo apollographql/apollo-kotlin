@@ -4,7 +4,7 @@ This is a standalone Android Studio project to benchmark performance. While the 
 opened with IntelliJ, this one requires Android Studio.
 
 It's not a composite build to workaround interop issues between AGP and multiplatform builds. 
-Use `publishAllPublicationsToPluginTestRepository` from `apollo-kotlin` to use the artifacts from the current version.
+Use `publishTestToPluginTest` from `apollo-kotlin` to use the artifacts from the current version.
 
 ## Running the tests
 

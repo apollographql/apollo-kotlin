@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import kotlinx.coroutines.runBlocking
@@ -9,8 +10,11 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.api.publish.maven.tasks.PublishToMavenLocal
+import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
@@ -101,7 +105,8 @@ private fun Project.configurePublishingInternal() {
     }
   }
 
-  extensions.configure(PublishingExtension::class.java) {
+  val publishing = extensions.getByType(PublishingExtension::class.java)
+  publishing.apply {
     publications {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
@@ -109,13 +114,20 @@ private fun Project.configurePublishingInternal() {
            * Kotlin MPP creates nice publications.
            * It only misses the javadoc
            */
+          duplicateTargetPublications(project)
           withType(MavenPublication::class.java).configureEach {
-            if (name == "kotlinMultiplatform") {
-              // Add the javadoc to the multiplatform publications
-              artifact(javadocJar(this.name))
-            } else {
-              // And an empty one for others to save some space
-              artifact(emptyJavadocJar(this.name))
+            when {
+              name.endsWith("Test") -> {
+                // do nothing
+              }
+              name == "kotlinMultiplatform" -> {
+                // Add the javadoc to the multiplatform publications
+                artifact(javadocJar(this.name))
+              }
+              else -> {
+                // And an empty one for others to save some space
+                artifact(emptyJavadocJar(this.name))
+              }
             }
           }
         }
@@ -129,8 +141,11 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java).configureEach {
             when (name) {
               "pluginMaven" -> {
-                artifact(javadocJar(this.name))
-                artifact(sourcesJar(this.name))
+                // com.gradle.plugin-publish creates sources & javadoc so skip in that case
+                if (!plugins.hasPlugin("com.gradle.plugin-publish")) {
+                  artifact(javadocJar(this.name))
+                  artifact(sourcesJar(this.name))
+                }
               }
               "test" -> {
                 from(components.findByName("java"))
@@ -190,6 +205,39 @@ private fun Project.configurePublishingInternal() {
       }
     }
 
+    tasks.register("publishMainToMavenLocal") {
+      dependsOn(tasks.withType(PublishToMavenLocal::class.java).matching { !it.name.contains("TestPublication") })
+    }
+
+    repositories.all {
+      val repo = this
+      when (name) {
+        "pluginTest" -> {
+          tasks.register("publishTestTo${name.capitalized()}") {
+            dependsOn(tasks.withType(PublishToMavenRepository::class.java).matching {
+              it.name.contains("TestPublication") && it.name.endsWith("${repo.name.capitalized()}Repository")
+            })
+          }
+        }
+        else -> {
+          tasks.register("publishMainTo${name.capitalized()}") {
+            dependsOn(tasks.withType(PublishToMavenRepository::class.java).matching {
+              !it.name.contains("TestPublication") && it.name.endsWith("${repo.name.capitalized()}Repository")
+            })
+          }
+        }
+      }
+    }
+
+    gradle.taskGraph.whenReady {
+      allTasks.firstOrNull {
+        (it.name.contains("AllPublications") || it.name == "publishToMavenLocal") &&
+            it.project.name != "intellij-plugin"
+      }?.let {
+        error("Calling '${it.name}' is an error, call 'publishMainTo${'$'}{Repository}' or 'publishTestTo${'$'}{Repository}'")
+      }
+    }
+
     repositories {
       maven {
         name = "pluginTest"
@@ -227,18 +275,16 @@ private fun Project.configurePublishingInternal() {
     }
   }
 
-// See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
-  val signingTasks = tasks.withType(Sign::class.java)
-  tasks.withType(AbstractPublishToMaven::class.java).configureEach {
-    //this.dependsOn(signingTasks)
+  // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
+  val signing = extensions.getByType(SigningExtension::class.java)
+  publishing.publications.configureEach {
+    signing.sign(this)
   }
 
-  extensions.configure(SigningExtension::class.java) {
+   signing.apply{
     // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
     // It can be obtained with gpg --armour --export-secret-keys KEY_ID
     useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
-    val publicationsContainer = (extensions.getByName("publishing") as PublishingExtension).publications
-    sign(publicationsContainer)
   }
   tasks.withType(Sign::class.java).configureEach {
     isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()

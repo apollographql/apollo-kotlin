@@ -1,6 +1,5 @@
+
 import JapiCmp.configureJapiCmp
-import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult
-import org.gradle.api.internal.tasks.testing.junit.result.TestResultSerializer
 
 plugins {
   id("apollo.library") apply false
@@ -34,7 +33,7 @@ tasks.register("ciPublishSnapshot") {
   description = "Publishes a SNAPSHOT"
 
   if (shouldPublishSnapshots()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
+    dependsOn(subprojectTasks("publishMainToOssSnapshots"))
   } else {
     doFirst {
       error("We are not on a branch, fail snapshots publishing")
@@ -47,7 +46,7 @@ tasks.register("ciPublishRelease") {
   description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
 
   if (isTag()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
+    dependsOn(subprojectTasks("publishMainToOssStaging"))
     // Only publish plugins to the Gradle portal if everything else succeeded
     finalizedBy(":apollo-gradle-plugin:publishPlugins")
   } else {
