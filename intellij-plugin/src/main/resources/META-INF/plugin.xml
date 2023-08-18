@@ -152,6 +152,12 @@
         level="INFO"
     />
 
+    <!-- Suppression of inspections on individual fields -->
+    <lang.inspectionSuppressor
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.GraphQLInspectionSuppressor"
+    />
+
     <!-- Fields insights service (fetch and cache data) -->
     <projectService
         serviceInterface="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService"
