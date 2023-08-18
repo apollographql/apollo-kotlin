@@ -76,6 +76,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/RegisterOpe
 	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
 	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
+	public abstract fun getListId ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Registry {

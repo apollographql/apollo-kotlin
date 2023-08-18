@@ -11,6 +11,7 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("com.example")
+    operationManifestFormat.set("operationOutput")
     registerOperations {
       key.set("unused")
       graph.set("unused")

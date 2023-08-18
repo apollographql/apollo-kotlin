@@ -463,6 +463,7 @@ public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest
 }
 
 public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifestKt {
+	public static final fun toPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
 	public static final fun toPersistedQueryManifest (Ljava/util/Map;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
 }

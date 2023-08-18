@@ -585,6 +585,8 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.registerApolloOperations(service), ApolloRegisterOperationsTask::class.java) { task ->
         task.group = TASK_GROUP
 
+        task.operationManifestFormat.set(service.operationManifestFormat())
+        task.listId.set(registerOperationsConfig.listId)
         task.graph.set(registerOperationsConfig.graph)
         task.graphVariant.set(registerOperationsConfig.graphVariant)
         task.key.set(registerOperationsConfig.key)

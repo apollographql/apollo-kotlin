@@ -83,7 +83,7 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
     // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
     // working directory where the gradle command was started
     SchemaUploader.uploadSchema(
-        key = key,
+        apolloKey = key,
         graph = graph,
         variant = graphVariant ?: "current",
         sdl = File(projectRootDir).resolve(schema).readText(),

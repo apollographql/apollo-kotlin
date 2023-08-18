@@ -30,3 +30,37 @@ mutation PublishSubgraphSchema($graphID: ID!, $variant: String!, $subgraph: Stri
     }
   }
 }
+
+mutation PublishOperationsMutation($graphId: ID!, $listId: ID!, $operationManifest: [PersistedQueryInput!]) {
+  graph(id: $graphId) {
+    persistedQueryList(id: $listId) {
+      publishOperations(operations: $operationManifest) {
+        __typename
+        ... on PermissionError {
+          message
+        }
+        ... on CannotModifyOperationBodyError {
+          message
+        }
+        ... on PublishOperationsResult {
+          build {
+            revision
+            publish {
+              operationCounts {
+                added
+                identical
+                updated
+                unaffected
+                removed
+              }
+            }
+            list {
+              name
+            }
+          }
+          unchanged
+        }
+      }
+    }
+  }
+}
