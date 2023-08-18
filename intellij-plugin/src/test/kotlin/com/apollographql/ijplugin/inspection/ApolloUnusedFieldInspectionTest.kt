@@ -10,7 +10,9 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
   @Throws(Exception::class)
   override fun setUp() {
     super.setUp()
-    myFixture.enableInspections(ApolloUnusedFieldInspection())
+    myFixture.enableInspections(ApolloUnusedFieldInspection().apply {
+      fieldsToIgnore = mutableListOf("dog\\.name")
+    })
   }
 
   @Test
@@ -20,11 +22,13 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
     // id is unused
     assertTrue(highlightInfos.any { it.description == "Unused field" && it.text == "id" && it.line == 3})
     // name is used
-    assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "name" })
+    assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "name" && it.line == 4 })
     // id inside the fragment is used
     assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "id" && it.line > 3 })
     // barkVolume is unused, but the inspection is suppressed
     assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "barkVolume"})
+    // name is unused, but the field is ignored
+    assertTrue(highlightInfos.none { it.description == "Unused field" && it.text == "name" && it.line == 14})
 
     moveCaret("id")
 
@@ -44,6 +48,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
             # noinspection ApolloUnusedField
             barkVolume
             fieldOnDogAndCat
+            name
           }
         }
       }
@@ -78,6 +83,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
             # noinspection ApolloUnusedField
             barkVolume
             fieldOnDogAndCat
+            name
           }
         }
       }
