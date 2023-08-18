@@ -32,9 +32,9 @@ interface HttpEngine {
 /**
  * @param timeoutMillis: The timeout interval to use when connecting or waiting for additional data.
  *
- * - on iOS, it is used to set [NSMutableURLRequest.timeoutIntervalForRequest]
- * - on Android, it is used to set both [OkHttpClient.connectTimeout] and [OkHttpClient.readTimeout]
- * - on Js, it is used to set both connectTimeoutMillis, and socketTimeoutMillis
+ * - on iOS (NSURLRequest), it is used to set `NSMutableURLRequest.setTimeoutInterval`
+ * - on Android (OkHttp), it is used to set both `OkHttpClient.connectTimeout` and `OkHttpClient.readTimeout`
+ * - on Js (Ktor), it is used to set both `HttpTimeoutCapabilityConfiguration.connectTimeoutMillis` and `HttpTimeoutCapabilityConfiguration.requestTimeoutMillis`
  */
 expect class DefaultHttpEngine(timeoutMillis: Long = 60_000): HttpEngine
 

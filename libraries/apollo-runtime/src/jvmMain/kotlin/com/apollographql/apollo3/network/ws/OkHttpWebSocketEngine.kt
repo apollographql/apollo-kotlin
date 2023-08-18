@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -52,7 +52,7 @@ actual class DefaultWebSocketEngine(
       override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         //println("onFailure: ${t.message} - ${response?.body?.string()}")
         webSocketOpenResult.complete(Unit)
-        messageChannel.close(t)
+        messageChannel.close(ApolloNetworkException(message = "Web socket communication error", platformCause = t))
       }
 
       override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -71,7 +71,6 @@ actual class DefaultWebSocketEngine(
 
     webSocketOpenResult.await()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     messageChannel.invokeOnClose {
       // I think this is not necessary. The caller must call [WebSocketConnection.close] in all cases.
       // This should either trigger onClose or onFailure which should close the messageChannel

@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
@@ -11,14 +12,16 @@ import io.ktor.client.request.url
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 import okio.ByteString
 
@@ -68,11 +71,15 @@ class KtorWebSocketEngine(
               val frame = sendFrameChannel.receive()
               try {
                 send(frame)
+
+                // Also close the connection if the sent frame is a close frame
+                if (frame is Frame.Close) {
+                  receiveMessageChannel.close()
+                  sendFrameChannel.close()
+                  break
+                }
               } catch (e: Exception) {
-                val closeReason = try {closeReason.await()} catch (e: Exception) {null}
-                receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
-                    ?: -1, reason = closeReason?.message, cause = e))
-                sendFrameChannel.close(e)
+                handleNetworkException(e, closeReason, receiveMessageChannel, sendFrameChannel)
                 break
               }
             }
@@ -80,11 +87,8 @@ class KtorWebSocketEngine(
           while (true) {
             when (val frame = try {
               incoming.receive()
-            } catch (e: ClosedReceiveChannelException) {
-              val closeReason = try {closeReason.await()} catch (e: Exception) {null}
-              receiveMessageChannel.close(ApolloWebSocketClosedException(code = closeReason?.code?.toInt()
-                  ?: -1, reason = closeReason?.message, cause = e))
-              sendFrameChannel.close(e)
+            } catch (e: Exception) {
+              handleNetworkException(e, closeReason, receiveMessageChannel, sendFrameChannel)
               break
             }) {
               is Frame.Text -> {
@@ -110,7 +114,7 @@ class KtorWebSocketEngine(
           }
         }
       } catch (e: Exception) {
-        receiveMessageChannel.close(e)
+        receiveMessageChannel.close(ApolloNetworkException(message = "Web socket communication error", platformCause = e))
         sendFrameChannel.close(e)
       }
     }
@@ -128,10 +132,36 @@ class KtorWebSocketEngine(
       }
 
       override fun close() {
-        sendFrameChannel.trySend(Frame.Close())
-        sendFrameChannel.close()
+        sendFrameChannel.trySend(Frame.Close(CloseReason(CLOSE_NORMAL.toShort(), "")))
       }
-
     }
+  }
+
+  private suspend fun handleNetworkException(
+      e: Exception,
+      deferredCloseReason: Deferred<CloseReason?>,
+      receiveMessageChannel: Channel<String>,
+      sendFrameChannel: Channel<Frame>,
+  ) {
+    if (e is CancellationException) throw e
+    val closeReason = try {
+      deferredCloseReason.await()
+    } catch (e: Exception) {
+      null
+    }
+    val apolloException = if (closeReason != null) {
+      ApolloWebSocketClosedException(
+          code = closeReason.code.toInt(),
+          reason = closeReason.message,
+          cause = e
+      )
+    } else {
+      ApolloNetworkException(
+          message = "Web socket communication error",
+          platformCause = e
+      )
+    }
+    receiveMessageChannel.close(apolloException)
+    sendFrameChannel.close(apolloException)
   }
 }
