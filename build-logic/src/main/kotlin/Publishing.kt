@@ -1,9 +1,9 @@
-
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
@@ -19,8 +19,8 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
   apply {
-      plugin("signing")
-    }
+    plugin("signing")
+  }
   apply {
     plugin("maven-publish")
   }
@@ -90,31 +90,7 @@ private fun Project.getOssStagingUrl(): String {
 }
 
 private fun Project.configurePublishingInternal() {
-  /**
-   * Javadoc
-   */
-  val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    archiveClassifier.set("javadoc")
 
-    runCatching {
-      from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
-    }
-  }
-  val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    // Add an appendix to avoid the output of this task to overlap with defaultJavadocJar
-    archiveAppendix.set("empty")
-    archiveClassifier.set("javadoc")
-  }
-
-  /**
-   * Type `echo "apollographql_publish_kdoc=false" >> ~/.gradle/gradle.properties` on your development machine
-   * to save some time during Gradle tests and publishing to mavenLocal
-   */
-  val javadocJarTaskProvider = if (properties["apollographql_publish_kdoc"] == "false") {
-    emptyJavadocJarTaskProvider
-  } else {
-    dokkaJarTaskProvider
-  }
 
   tasks.withType(Jar::class.java) {
     manifest {
@@ -136,27 +112,30 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java).configureEach {
             if (name == "kotlinMultiplatform") {
               // Add the javadoc to the multiplatform publications
-              artifact(javadocJarTaskProvider)
+              artifact(javadocJar(this.name))
             } else {
-              // And an empty one for others so as to save some space
-              artifact(emptyJavadocJarTaskProvider)
+              // And an empty one for others to save some space
+              artifact(emptyJavadocJar(this.name))
             }
           }
         }
-        plugins.hasPlugin("com.gradle.plugin-publish") -> {
-          /**
-           * com.gradle.plugin-publish creates all publications
-           */
-        }
+
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
            */
-          withType(MavenPublication::class.java) {
-            // Only add sources and javadoc for the main publication
-            if (!name.lowercase().contains("marker")) {
-              artifact(javadocJarTaskProvider)
-              artifact(createJavaSourcesTask())
+          create("test", MavenPublication::class.java)
+
+          withType(MavenPublication::class.java).configureEach {
+            when (name) {
+              "pluginMaven" -> {
+                artifact(javadocJar(this.name))
+                artifact(sourcesJar(this.name))
+              }
+              "test" -> {
+                from(components.findByName("java"))
+                artifactId = findProperty("POM_ARTIFACT_ID") as String?
+              }
             }
           }
         }
@@ -171,9 +150,16 @@ private fun Project.configurePublishingInternal() {
               from(components.findByName("release"))
             }
 
-            artifact(javadocJarTaskProvider)
+            artifact(javadocJar(this.name))
             artifact(createAndroidSourcesTask())
 
+            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+          }
+          create("test", MavenPublication::class.java) {
+            afterEvaluate {
+              // afterEvaluate is required for Android
+              from(components.findByName("release"))
+            }
             artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
         }
@@ -183,12 +169,15 @@ private fun Project.configurePublishingInternal() {
            * Kotlin JVM do not create publications (yet?). Do it ourselves.
            */
           create("default", MavenPublication::class.java) {
+            this.from(components.findByName("java"))
+            this.artifact(javadocJar(this.name))
+            this.artifact(sourcesJar(this.name))
 
-            from(components.findByName("java"))
-            artifact(javadocJarTaskProvider)
-            artifact(createJavaSourcesTask())
-
-            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            this.artifactId = findProperty("POM_ARTIFACT_ID") as String?
+          }
+          create("test", MavenPublication::class.java) {
+            this.from(components.findByName("java"))
+            this.artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
         }
       }
@@ -238,10 +227,10 @@ private fun Project.configurePublishingInternal() {
     }
   }
 
-  // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
+// See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
   val signingTasks = tasks.withType(Sign::class.java)
   tasks.withType(AbstractPublishToMaven::class.java).configureEach {
-    this.dependsOn(signingTasks)
+    //this.dependsOn(signingTasks)
   }
 
   extensions.configure(SigningExtension::class.java) {
@@ -296,11 +285,33 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
   }
 }
 
-private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
-  return tasks.register("javaSourcesJar", Jar::class.java) {
+/**
+ * We need to register distinct javadoc jars for different publications to avoid some Gradle issue
+ * See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
+ */
+private fun Project.javadocJar(publicationName: String): TaskProvider<out Task> {
+  return tasks.register("${publicationName}JavadocJar", Jar::class.java) {
+    archiveClassifier.set("javadoc")
+    archiveBaseName.set("${archiveBaseName.get()}-${publicationName}")
+    runCatching {
+      from(tasks.named("dokkaHtml"))
+    }
+  }
+}
+
+private fun Project.sourcesJar(publicationName: String): TaskProvider<out Task> {
+  return tasks.register("${publicationName}SourcesJar", Jar::class.java) {
     archiveClassifier.set("sources")
+    archiveBaseName.set("${archiveBaseName.get()}-${publicationName}")
     val sourceSets = project.extensions.getByType(JavaPluginExtension::class.java).sourceSets
     from(sourceSets.getByName("main").allSource)
+  }
+}
+
+private fun Project.emptyJavadocJar(publicationName: String): TaskProvider<out Task> {
+  return tasks.register("${publicationName}JavadocJar", Jar::class.java) {
+    archiveClassifier.set("javadoc")
+    archiveBaseName.set("${archiveBaseName.get()}-${publicationName}")
   }
 }
 
