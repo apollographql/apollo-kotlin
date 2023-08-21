@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-  namespace = "app_under_test"
+  namespace = "app.under.test"
 
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
