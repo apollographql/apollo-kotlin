@@ -23,6 +23,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLTypeName
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
+import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.findParentOfType
 import javax.swing.JComponent
@@ -101,6 +102,7 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
     }
   }
 
+  // In a future version of the platform we should use `AddToInspectionOptionListFix` instead.
   private inner class IgnoreFieldQuickFix(private val fieldCoordinates: String) : LocalQuickFix {
     override fun getName() = ApolloBundle.message("inspection.unusedField.quickFix.ignoreField", fieldCoordinates)
     override fun getFamilyName() = name
@@ -110,6 +112,9 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
       fieldsToIgnore += fieldCoordinates.replace(".", "\\.")
+
+      // Save the inspection settings
+      ProjectInspectionProfileManager.getInstance(project).fireProfileChanged()
     }
   }
 
