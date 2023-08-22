@@ -1,4 +1,4 @@
-package app_under_test
+package app.under.test
 
 import android.content.Context
 import android.os.Bundle

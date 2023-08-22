@@ -47,7 +47,7 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
   )
 
   private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
-      packageName = "app_under_test.benchmark",
+      packageName = "app.under.test.benchmark",
       metrics = listOf(StartupTimingMetric()),
       compilationMode = compilationMode,
       iterations = 10,
