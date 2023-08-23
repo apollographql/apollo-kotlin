@@ -141,7 +141,7 @@ Some platforms have specific runtime requirements:
 * Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
 * iOS 13+
 
-At build times, it requires:
+At build time, it requires:
 
 * Gradle 6.8+
 * Kotlin 1.8+
