@@ -7,25 +7,38 @@ import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 /**
  * A class that hides all references to the Kotlin plugin from the caller.
  * For a non-Kotlin project, this class will never be loaded so that no runtime
  * exception is thrown
  */
-fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
+fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLanguage {
   @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
     "1.5" -> TargetLanguage.KOTLIN_1_5
+    "1.9" -> TargetLanguage.KOTLIN_1_9
     null -> {
-      // User didn't specify a version: defaults to the Kotlin plugin's version
-      // Commented for now as the only possible outcome is to target 1.5
-      // val majorMinor = project.getKotlinPluginVersion()!!.take(3)
-      TargetLanguage.KOTLIN_1_5
+      // User didn't specify a version: use apiVersion and languageVersion to choose the default
+      // Fallback to the Kotlin plugin version if apiVersion or languageVersion are not set
+      val pluginVersion = project.getKotlinPluginVersion().substringBeforeLast(".")
+      val kotlinOptions = project.tasks.withType(KotlinCompile::class.java).firstOrNull()?.kotlinOptions
+          ?: project.tasks.withType(KotlinNativeCompile::class.java).firstOrNull()?.kotlinOptions
+      val apiVersion = (kotlinOptions?.apiVersion ?: pluginVersion).split(".").map { it.toInt() }
+      val languageVersion = (kotlinOptions?.languageVersion ?: pluginVersion).split(".").map { it.toInt() }
+      // To use Enum.entries we need languageVersion >= 1.9 and apiVersion >= 1.8
+      if ((languageVersion[0] > 1 || languageVersion[1] >= 9) && (apiVersion[0] > 1 || apiVersion[1] >= 8)) {
+        TargetLanguage.KOTLIN_1_9
+      } else {
+        TargetLanguage.KOTLIN_1_5
+      }
     }
-    else -> error("Apollo: languageVersion '$userSpecified' is not supported, Apollo Kotlin always generate Kotlin '1.5' source files")
+
+    else -> error("Apollo: languageVersion '$userSpecified' is not supported, Supported values: '1.5', '1.9'")
   }
 }
 

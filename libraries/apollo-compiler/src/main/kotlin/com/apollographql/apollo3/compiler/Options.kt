@@ -29,6 +29,11 @@ enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
   KOTLIN_1_5,
+
+  /**
+   * Same as [KOTLIN_1_5] but uses `entries` instead of `values()` in enums.
+   */
+  KOTLIN_1_9,
 }
 
 enum class JavaNullable {

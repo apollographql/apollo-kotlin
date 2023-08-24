@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.UNKNOWN__
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
@@ -79,10 +80,22 @@ internal class EnumAsEnumBuilder(
         .addKdoc("Returns all [%T] known at compile time", selfClassName)
         .maybeSuppressDeprecation(enum.values)
         .maybeAddOptIn(context.resolver, enum.values)
-        .returns(KotlinSymbols.Array.parameterizedBy(selfClassName))
+        .returns(
+            if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) {
+              KotlinSymbols.List.parameterizedBy(selfClassName)
+            } else {
+              KotlinSymbols.Array.parameterizedBy(selfClassName)
+            }
+        )
         .addCode(
             CodeBlock.builder()
-                .add("return·arrayOf(\n")
+                .add(
+                    if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) {
+                      "return·listOf(\n"
+                    } else {
+                      "return·arrayOf(\n"
+                    }
+                )
                 .indent()
                 .add(
                     values.map {
@@ -97,12 +110,13 @@ internal class EnumAsEnumBuilder(
   }
 
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
+    val entries = if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) "entries" else "values()"
     return FunSpec
         .builder("safeValueOf")
         .addParameter("rawValue", String::
         class)
         .returns(selfClassName)
-        .addStatement("return·values().find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
+        .addStatement("return·$entries.find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
         .build()
   }
 

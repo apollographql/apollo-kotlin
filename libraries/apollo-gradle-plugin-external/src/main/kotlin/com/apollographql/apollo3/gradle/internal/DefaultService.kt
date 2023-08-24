@@ -248,7 +248,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     }
 
     return if (generateKotlinModels) {
-      getKotlinTargetLanguage(this.languageVersion.orNull)
+      getKotlinTargetLanguage(project, this.languageVersion.orNull)
     } else {
       TargetLanguage.JAVA
     }
