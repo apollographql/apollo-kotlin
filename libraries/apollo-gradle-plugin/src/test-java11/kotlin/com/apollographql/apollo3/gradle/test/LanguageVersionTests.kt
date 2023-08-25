@@ -40,32 +40,16 @@ class LanguageVersionTests {
   }
 
   @Test
-  fun `compiling with languageVersion 1_9 and apiVersion 1_9 generates entries in enums`() {
-    withProject(kotlinLanguageVersion = "1.9", kotlinApiVersion = "1.9", graphqlPath = "githunt") { dir ->
+  fun `compiling with 1_9 features generates entries in enums`() {
+    withProject(apolloLanguageVersion = "1.9", graphqlPath = "githunt") { dir ->
       TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
       Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("entries.find"))
     }
   }
 
   @Test
-  fun `compiling with languageVersion 1_9 and apiVersion 1_8 generates entries in enums`() {
-    withProject(kotlinLanguageVersion = "1.9", kotlinApiVersion = "1.8", graphqlPath = "githunt") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
-      Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("entries.find"))
-    }
-  }
-
-  @Test
-  fun `compiling with languageVersion 1_9 and apiVersion 1_7 generates values in enums`() {
-    withProject(kotlinLanguageVersion = "1.9", kotlinApiVersion = "1.7", graphqlPath = "githunt") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
-      Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("values().find"))
-    }
-  }
-
-  @Test
-  fun `compiling with languageVersion 1_8 generates values in enums`() {
-    withProject(kotlinLanguageVersion = "1.8", graphqlPath = "githunt") { dir ->
+  fun `compiling with 1_5 features generates values in enums`() {
+    withProject(apolloLanguageVersion = "1.5", graphqlPath = "githunt") { dir ->
       TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
       Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("values().find"))
     }

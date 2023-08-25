@@ -7,10 +7,8 @@ import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 /**
  * A class that hides all references to the Kotlin plugin from the caller.
@@ -23,15 +21,10 @@ fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLan
     "1.5" -> TargetLanguage.KOTLIN_1_5
     "1.9" -> TargetLanguage.KOTLIN_1_9
     null -> {
-      // User didn't specify a version: use apiVersion and languageVersion to choose the default
-      // Fallback to the Kotlin plugin version if apiVersion or languageVersion are not set
-      val pluginVersion = project.getKotlinPluginVersion().substringBeforeLast(".")
-      val kotlinOptions = project.tasks.withType(KotlinCompile::class.java).firstOrNull()?.kotlinOptions
-          ?: project.tasks.withType(KotlinNativeCompile::class.java).firstOrNull()?.kotlinOptions
-      val apiVersion = (kotlinOptions?.apiVersion ?: pluginVersion).split(".").map { it.toInt() }
-      val languageVersion = (kotlinOptions?.languageVersion ?: pluginVersion).split(".").map { it.toInt() }
-      // To use Enum.entries we need languageVersion >= 1.9 and apiVersion >= 1.8
-      if ((languageVersion[0] > 1 || languageVersion[1] >= 9) && (apiVersion[0] > 1 || apiVersion[1] >= 8)) {
+      // User didn't specify a version: default to the Kotlin plugin version
+      val versionNumbers = project.getKotlinPluginVersion().split(".").map { it.toInt() }
+      val version = KotlinVersion(versionNumbers[0], versionNumbers[1])
+      if (version.isAtLeast(1, 9)) {
         TargetLanguage.KOTLIN_1_9
       } else {
         TargetLanguage.KOTLIN_1_5
