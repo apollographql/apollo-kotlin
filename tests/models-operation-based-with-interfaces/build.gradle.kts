@@ -20,6 +20,7 @@ apollo {
     generateFragmentImplementations.set(true)
 
     codegenModels.set("experimental_operationBasedWithInterfaces")
+    languageVersion.set("1.5")
   }
   service("animals") {
     srcDir(file("graphql"))
@@ -27,5 +28,6 @@ apollo {
     generateDataBuilders.set(true)
     codegenModels.set("experimental_operationBasedWithInterfaces")
     packageName.set("animals")
+    languageVersion.set("1.5")
   }
 }

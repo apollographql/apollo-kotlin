@@ -87,6 +87,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             this.generateKotlinModels.set(generateKotlinModels)
             generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
+            languageVersion.set("1.5")
           }
         }
     file("src/kotlinCodegenTest/kotlin/test").listFiles()!!
@@ -109,6 +110,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             packageName.set(it.name)
             generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
+            languageVersion.set("1.5")
           }
         }
   }

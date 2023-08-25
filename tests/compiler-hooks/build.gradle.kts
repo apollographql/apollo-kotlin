@@ -34,21 +34,25 @@ apollo {
     packageName.set("hooks.addinternal")
     @OptIn(ApolloInternal::class)
     compilerKotlinHooks.set(listOf(AddInternalCompilerHooks(".*NodeQuery")))
+    languageVersion.set("1.5")
   }
 
   service("defaultnullvalues") {
     packageName.set("hooks.defaultnullvalues")
     compilerKotlinHooks.set(listOf(DefaultNullValuesHooks()))
+    languageVersion.set("1.5")
   }
 
   service("typenameinterface") {
     packageName.set("hooks.typenameinterface")
     compilerKotlinHooks.set(listOf(TypeNameInterfaceHooks("hooks.typenameinterface.HasTypeName")))
+    languageVersion.set("1.5")
   }
 
   service("prefixnames.kotlin") {
     packageName.set("hooks.prefixnames.kotlin")
     compilerKotlinHooks.set(listOf(PrefixNamesKotlinHooks("GQL")))
+    languageVersion.set("1.5")
   }
 
   service("prefixnames.java") {
@@ -63,6 +67,7 @@ apollo {
   service("capitalizeenumvalues") {
     packageName.set("hooks.capitalizeenumvalues")
     compilerKotlinHooks.set(listOf(CapitalizeEnumValuesHooks()))
+    languageVersion.set("1.5")
   }
 
   service("gettersandsetters.java") {
