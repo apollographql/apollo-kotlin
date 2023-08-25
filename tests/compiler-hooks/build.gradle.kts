@@ -9,6 +9,7 @@ import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -329,14 +330,16 @@ class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
                       typeSpecs.replaceAll { typeSpec ->
                         typeSpec.toBuilder()
                             .apply {
-                              funSpecs.replaceAll { funSpec ->
-                                if (funSpec.name == "knownValues") {
-                                  funSpec.toBuilder()
-                                      .clearBody()
-                                      .addStatement("return arrayOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                              propertySpecs.replaceAll { propertySpec ->
+                                if (propertySpec.name == "knownEntries") {
+                                  propertySpec.toBuilder()
+                                      .getter(FunSpec.getterBuilder()
+                                          .addStatement("return listOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                                          .build()
+                                      )
                                       .build()
                                 } else {
-                                  funSpec
+                                  propertySpec
                                 }
                               }
                             }
