@@ -7,7 +7,9 @@ package com.example.inline_fragment_intersection.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
+import kotlin.Deprecated
 import kotlin.String
+import kotlin.collections.List
 
 public enum class Race(
   public val rawValue: String,
@@ -24,15 +26,25 @@ public enum class Race(
   public companion object {
     public val type: EnumType = EnumType("Race", listOf("WOOKIE", "GUMGAN", "EWOK"))
 
-    public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+    /**
+     * All [Race] known at compile time
+     */
+    public val knownEntries: List<Race>
+      get() = listOf(
+        WOOKIE,
+        GUMGAN,
+        EWOK)
 
     /**
      * Returns all [Race] known at compile time
      */
-    public fun knownValues(): Array<Race> = arrayOf(
-      WOOKIE,
-      GUMGAN,
-      EWOK)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Race> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?:
+        UNKNOWN__
   }
 }

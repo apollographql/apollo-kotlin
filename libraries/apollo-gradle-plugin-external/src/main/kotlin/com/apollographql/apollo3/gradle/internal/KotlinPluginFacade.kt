@@ -15,17 +15,23 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * For a non-Kotlin project, this class will never be loaded so that no runtime
  * exception is thrown
  */
-fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
+fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLanguage {
   @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
     "1.5" -> TargetLanguage.KOTLIN_1_5
+    "1.9" -> TargetLanguage.KOTLIN_1_9
     null -> {
-      // User didn't specify a version: defaults to the Kotlin plugin's version
-      // Commented for now as the only possible outcome is to target 1.5
-      // val majorMinor = project.getKotlinPluginVersion()!!.take(3)
-      TargetLanguage.KOTLIN_1_5
+      // User didn't specify a version: default to the Kotlin plugin version
+      val versionNumbers = project.getKotlinPluginVersion().split(".").map { it.toInt() }
+      val version = KotlinVersion(versionNumbers[0], versionNumbers[1])
+      if (version.isAtLeast(1, 9)) {
+        TargetLanguage.KOTLIN_1_9
+      } else {
+        TargetLanguage.KOTLIN_1_5
+      }
     }
-    else -> error("Apollo: languageVersion '$userSpecified' is not supported, Apollo Kotlin always generate Kotlin '1.5' source files")
+
+    else -> error("Apollo: languageVersion '$userSpecified' is not supported, Supported values: '1.5', '1.9'")
   }
 }
 

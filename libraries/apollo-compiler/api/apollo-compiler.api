@@ -285,6 +285,7 @@ public final class com/apollographql/apollo3/compiler/StringsKt {
 public final class com/apollographql/apollo3/compiler/TargetLanguage : java/lang/Enum {
 	public static final field JAVA Lcom/apollographql/apollo3/compiler/TargetLanguage;
 	public static final field KOTLIN_1_5 Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static final field KOTLIN_1_9 Lcom/apollographql/apollo3/compiler/TargetLanguage;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/TargetLanguage;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/TargetLanguage;
 }

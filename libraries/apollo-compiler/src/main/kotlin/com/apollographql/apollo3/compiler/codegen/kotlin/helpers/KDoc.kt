@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrEnum
+import com.squareup.kotlinpoet.Annotatable
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -117,7 +118,7 @@ internal val suppressDeprecationAnnotationSpec = AnnotationSpec.builder(KotlinSy
     .addMember("%S", "DEPRECATION")
     .build()
 
-internal fun FunSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): FunSpec.Builder = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
+internal fun <T: Annotatable.Builder<*>> T.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): T = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
   addAnnotation(suppressDeprecationAnnotationSpec)
 }
 
@@ -127,10 +128,10 @@ internal fun requiresOptInAnnotation(annotation: ClassName): AnnotationSpec {
       .build()
 }
 
-internal fun FunSpec.Builder.maybeAddOptIn(
+internal fun <T: Annotatable.Builder<*>> T.maybeAddOptIn(
     resolver: KotlinResolver,
     enumValues: List<IrEnum.Value>,
-): FunSpec.Builder = applyIf(enumValues.any { !it.optInFeature.isNullOrBlank() }) {
+): T = applyIf(enumValues.any { !it.optInFeature.isNullOrBlank() }) {
   val annotation = resolver.resolveRequiresOptInAnnotation() ?: return@applyIf
   addAnnotation(requiresOptInAnnotation(annotation))
 }

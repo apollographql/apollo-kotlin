@@ -9,6 +9,7 @@ import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -33,21 +34,25 @@ apollo {
     packageName.set("hooks.addinternal")
     @OptIn(ApolloInternal::class)
     compilerKotlinHooks.set(listOf(AddInternalCompilerHooks(".*NodeQuery")))
+    languageVersion.set("1.5")
   }
 
   service("defaultnullvalues") {
     packageName.set("hooks.defaultnullvalues")
     compilerKotlinHooks.set(listOf(DefaultNullValuesHooks()))
+    languageVersion.set("1.5")
   }
 
   service("typenameinterface") {
     packageName.set("hooks.typenameinterface")
     compilerKotlinHooks.set(listOf(TypeNameInterfaceHooks("hooks.typenameinterface.HasTypeName")))
+    languageVersion.set("1.5")
   }
 
   service("prefixnames.kotlin") {
     packageName.set("hooks.prefixnames.kotlin")
     compilerKotlinHooks.set(listOf(PrefixNamesKotlinHooks("GQL")))
+    languageVersion.set("1.5")
   }
 
   service("prefixnames.java") {
@@ -62,6 +67,7 @@ apollo {
   service("capitalizeenumvalues") {
     packageName.set("hooks.capitalizeenumvalues")
     compilerKotlinHooks.set(listOf(CapitalizeEnumValuesHooks()))
+    languageVersion.set("1.5")
   }
 
   service("gettersandsetters.java") {
@@ -329,14 +335,16 @@ class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
                       typeSpecs.replaceAll { typeSpec ->
                         typeSpec.toBuilder()
                             .apply {
-                              funSpecs.replaceAll { funSpec ->
-                                if (funSpec.name == "knownValues") {
-                                  funSpec.toBuilder()
-                                      .clearBody()
-                                      .addStatement("return arrayOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                              propertySpecs.replaceAll { propertySpec ->
+                                if (propertySpec.name == "knownEntries") {
+                                  propertySpec.toBuilder()
+                                      .getter(FunSpec.getterBuilder()
+                                          .addStatement("return listOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                                          .build()
+                                      )
                                       .build()
                                 } else {
-                                  funSpec
+                                  propertySpec
                                 }
                               }
                             }

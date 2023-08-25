@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
 import kotlin.Suppress
+import kotlin.collections.List
 
 public enum class Gravity(
   public val rawValue: kotlin.String,
@@ -31,20 +32,30 @@ public enum class Gravity(
     public val type: EnumType = EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom",
         "is", "type", "String"))
 
-    public fun safeValueOf(rawValue: kotlin.String): Gravity =
-        values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    /**
+     * All [Gravity] known at compile time
+     */
+    @Suppress("DEPRECATION")
+    public val knownEntries: List<Gravity>
+      get() = listOf(
+        TOP,
+        CENTER,
+        BOTTOM,
+        bottom,
+        `is`,
+        type_,
+        String)
 
     /**
      * Returns all [Gravity] known at compile time
      */
-    @Suppress("DEPRECATION")
-    public fun knownValues(): Array<Gravity> = arrayOf(
-      TOP,
-      CENTER,
-      BOTTOM,
-      bottom,
-      `is`,
-      type_,
-      String)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Gravity> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: kotlin.String): Gravity =
+        entries.find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

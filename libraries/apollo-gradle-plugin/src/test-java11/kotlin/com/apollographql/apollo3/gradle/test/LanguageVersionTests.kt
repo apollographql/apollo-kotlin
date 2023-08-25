@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.gradle.test
 
-import util.TestUtils
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Test
+import util.TestUtils
 import java.io.File
 
 class LanguageVersionTests {
@@ -39,25 +39,52 @@ class LanguageVersionTests {
     }
   }
 
+  @Test
+  fun `compiling with 1_9 features generates entries in enums`() {
+    withProject(apolloLanguageVersion = "1.9", graphqlPath = "githunt") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
+      Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("entries.find"))
+    }
+  }
+
+  @Test
+  fun `compiling with 1_5 features generates values in enums`() {
+    withProject(apolloLanguageVersion = "1.5", graphqlPath = "githunt") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
+      Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("values().find"))
+    }
+  }
+
   private fun withProject(
-      kotlinLanguageVersion: String,
-      apolloLanguageVersion: String,
+      kotlinLanguageVersion: String? = null,
+      kotlinApiVersion: String? = null,
+      apolloLanguageVersion: String? = null,
+      graphqlPath: String = "hero",
       block: (File) -> Unit,
   ) {
     TestUtils.withProject(
         usesKotlinDsl = true,
         plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
-        apolloConfiguration = getConfiguration(kotlinLanguageVersion = kotlinLanguageVersion, apolloLanguageVersion = apolloLanguageVersion),
-        graphqlPath = "hero",
+        apolloConfiguration = getConfiguration(
+            kotlinLanguageVersion = kotlinLanguageVersion,
+            kotlinApiVersion = kotlinApiVersion,
+            apolloLanguageVersion = apolloLanguageVersion,
+        ),
+        graphqlPath = graphqlPath,
         block = block
     )
   }
 
-  private fun getConfiguration(kotlinLanguageVersion: String, apolloLanguageVersion: String): String {
+  private fun getConfiguration(
+      kotlinLanguageVersion: String?,
+      kotlinApiVersion: String?,
+      apolloLanguageVersion: String?,
+  ): String {
     val kotlinConfiguration = """
       tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
-          languageVersion = "$kotlinLanguageVersion"
+          ${if (kotlinLanguageVersion == null) "" else "languageVersion = \"$kotlinLanguageVersion\""}
+          ${if (kotlinApiVersion == null) "" else "apiVersion = \"$kotlinApiVersion\""}
         }
       }      
       """.trimIndent()
@@ -67,7 +94,7 @@ class LanguageVersionTests {
         service("service") {
           packageNamesFromFilePaths()
           codegenModels.set(com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED)
-          languageVersion.set("$apolloLanguageVersion")
+          ${if (apolloLanguageVersion == null) "" else "languageVersion.set(\"$apolloLanguageVersion\")"}
         }
       }
       """.trimIndent()
