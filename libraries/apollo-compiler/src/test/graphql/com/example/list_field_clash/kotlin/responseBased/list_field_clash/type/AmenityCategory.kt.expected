@@ -7,7 +7,9 @@ package com.example.list_field_clash.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
+import kotlin.Deprecated
 import kotlin.String
+import kotlin.collections.List
 
 public enum class AmenityCategory(
   public val rawValue: String,
@@ -23,14 +25,24 @@ public enum class AmenityCategory(
   public companion object {
     public val type: EnumType = EnumType("AmenityCategory", listOf("Category0", "Category1"))
 
-    public fun safeValueOf(rawValue: String): AmenityCategory =
-        values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    /**
+     * All [AmenityCategory] known at compile time
+     */
+    public val knownEntries: List<AmenityCategory>
+      get() = listOf(
+        Category0,
+        Category1)
 
     /**
      * Returns all [AmenityCategory] known at compile time
      */
-    public fun knownValues(): Array<AmenityCategory> = arrayOf(
-      Category0,
-      Category1)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<AmenityCategory> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): AmenityCategory =
+        values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

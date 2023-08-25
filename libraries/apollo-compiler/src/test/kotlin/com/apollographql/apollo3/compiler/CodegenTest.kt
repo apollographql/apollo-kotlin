@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
+import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_9
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
@@ -121,9 +122,16 @@ class CodegenTest {
         val expectedWarnings = folder.name in listOf(
             "deprecated_merged_field",
             "deprecation",
+            "enum_field",
         )
 
-        KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
+        /**
+         * Some tests use enum entries which are only available in Kotlin 1.9
+         * TODO: Remove this once kotlin-compile-testing with Kotlin 1.9 is released
+         */
+        val enableEnumEntriesLanguageFeature = folder.name == "enum_field"
+
+        KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings, enableEnumEntriesLanguageFeature)
       } else {
         JavaCompiler.assertCompiles(actualFiles.toSet())
       }
@@ -311,7 +319,11 @@ class CodegenTest {
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
+      val targetLanguage = if (generateKotlinModels) {
+        if (folder.name == "enum_field") KOTLIN_1_9 else KOTLIN_1_5
+      } else {
+        JAVA
+      }
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
       val flattenModels = when {
         folder.name in listOf("capitalized_fields", "companion") -> true

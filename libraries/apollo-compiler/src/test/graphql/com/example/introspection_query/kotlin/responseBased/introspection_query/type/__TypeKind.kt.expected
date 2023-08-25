@@ -7,7 +7,9 @@ package com.example.introspection_query.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
+import kotlin.Deprecated
 import kotlin.String
+import kotlin.collections.List
 
 public enum class __TypeKind(
   public val rawValue: String,
@@ -30,20 +32,30 @@ public enum class __TypeKind(
     public val type: EnumType = EnumType("__TypeKind", listOf("SCALAR", "OBJECT", "INTERFACE",
         "UNION", "ENUM", "INPUT_OBJECT", "LIST", "NON_NULL"))
 
-    public fun safeValueOf(rawValue: String): __TypeKind = values().find { it.rawValue == rawValue }
-        ?: UNKNOWN__
+    /**
+     * All [__TypeKind] known at compile time
+     */
+    public val knownEntries: List<__TypeKind>
+      get() = listOf(
+        SCALAR,
+        OBJECT,
+        INTERFACE,
+        UNION,
+        ENUM,
+        INPUT_OBJECT,
+        LIST,
+        NON_NULL)
 
     /**
      * Returns all [__TypeKind] known at compile time
      */
-    public fun knownValues(): Array<__TypeKind> = arrayOf(
-      SCALAR,
-      OBJECT,
-      INTERFACE,
-      UNION,
-      ENUM,
-      INPUT_OBJECT,
-      LIST,
-      NON_NULL)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<__TypeKind> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): __TypeKind = values().find { it.rawValue == rawValue }
+        ?: UNKNOWN__
   }
 }

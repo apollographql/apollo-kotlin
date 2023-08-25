@@ -12,6 +12,7 @@ import kotlin.Deprecated
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 public enum class Direction(
   public val rawValue: String,
@@ -30,17 +31,27 @@ public enum class Direction(
   public companion object {
     public val type: EnumType = EnumType("Direction", listOf("South", "North", "East"))
 
-    public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue }
-        ?: UNKNOWN__
+    /**
+     * All [Direction] known at compile time
+     */
+    @Suppress("DEPRECATION")
+    @OptIn(ApolloRequiresOptIn::class)
+    public val knownEntries: List<Direction>
+      get() = listOf(
+        South,
+        North,
+        East)
 
     /**
      * Returns all [Direction] known at compile time
      */
-    @Suppress("DEPRECATION")
-    @OptIn(ApolloRequiresOptIn::class)
-    public fun knownValues(): Array<Direction> = arrayOf(
-      South,
-      North,
-      East)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Direction> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue }
+        ?: UNKNOWN__
   }
 }

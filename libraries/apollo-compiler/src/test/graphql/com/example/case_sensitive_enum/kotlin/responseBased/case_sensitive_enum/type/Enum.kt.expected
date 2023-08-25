@@ -10,6 +10,7 @@ import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 public enum class Enum(
   public val rawValue: String,
@@ -29,17 +30,27 @@ public enum class Enum(
   public companion object {
     public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH"))
 
-    public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+    /**
+     * All [Enum] known at compile time
+     */
+    @Suppress("DEPRECATION")
+    public val knownEntries: List<Enum>
+      get() = listOf(
+        north,
+        North,
+        NORTH,
+        SOUTH)
 
     /**
      * Returns all [Enum] known at compile time
      */
-    @Suppress("DEPRECATION")
-    public fun knownValues(): Array<Enum> = arrayOf(
-      north,
-      North,
-      NORTH,
-      SOUTH)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Enum> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?:
+        UNKNOWN__
   }
 }

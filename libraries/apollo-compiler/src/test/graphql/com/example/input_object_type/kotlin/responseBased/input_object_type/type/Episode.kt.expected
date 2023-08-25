@@ -10,6 +10,7 @@ import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 /**
  * The episodes in the Star Wars trilogy
@@ -49,18 +50,28 @@ public enum class Episode(
     public val type: EnumType = EnumType("Episode", listOf("NEWHOPE", "EMPIRE", "JEDI",
         "DEPRECATED", "new"))
 
-    public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+    /**
+     * All [Episode] known at compile time
+     */
+    @Suppress("DEPRECATION")
+    public val knownEntries: List<Episode>
+      get() = listOf(
+        NEWHOPE,
+        EMPIRE,
+        JEDI,
+        DEPRECATED,
+        new)
 
     /**
      * Returns all [Episode] known at compile time
      */
-    @Suppress("DEPRECATION")
-    public fun knownValues(): Array<Episode> = arrayOf(
-      NEWHOPE,
-      EMPIRE,
-      JEDI,
-      DEPRECATED,
-      new)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Episode> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
+        UNKNOWN__
   }
 }

@@ -7,7 +7,9 @@ package com.example.hero_details.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
+import kotlin.Deprecated
 import kotlin.String
+import kotlin.collections.List
 
 /**
  * Lower case enum type name
@@ -26,14 +28,24 @@ public enum class Hero_type(
   public companion object {
     public val type: EnumType = EnumType("hero_type", listOf("human", "droid"))
 
-    public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue }
-        ?: UNKNOWN__
+    /**
+     * All [Hero_type] known at compile time
+     */
+    public val knownEntries: List<Hero_type>
+      get() = listOf(
+        human,
+        droid)
 
     /**
      * Returns all [Hero_type] known at compile time
      */
-    public fun knownValues(): Array<Hero_type> = arrayOf(
-      human,
-      droid)
+    @Deprecated(
+      message = "Use knownEntries instead",
+      replaceWith = ReplaceWith("this.knownEntries"),
+    )
+    public fun knownValues(): Array<Hero_type> = knownEntries.toTypedArray()
+
+    public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue }
+        ?: UNKNOWN__
   }
 }

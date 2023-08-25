@@ -57,6 +57,7 @@ internal object Identifier {
    */
   const val safeValueOf = "safeValueOf"
   const val knownValues = "knownValues"
+  const val knownEntries = "knownEntries"
 
   // extra underscores at the end to prevent potential name clashes
   const val UNKNOWN__ = "UNKNOWN__"
