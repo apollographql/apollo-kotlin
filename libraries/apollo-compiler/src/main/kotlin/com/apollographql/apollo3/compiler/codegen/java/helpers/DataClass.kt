@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__h
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.L
@@ -24,7 +23,7 @@ import javax.lang.model.element.Modifier
  * This is named "data class" because it's similar to Kotlin data classes even if technically Java
  * doesn't have data classes
  */
-fun TypeSpec.Builder.makeDataClassFromParameters(parameters: List<ParameterSpec>): TypeSpec.Builder {
+fun TypeSpec.Builder.makeClassFromParameters(generateDataClass: Boolean, parameters: List<ParameterSpec>): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -44,7 +43,11 @@ fun TypeSpec.Builder.makeDataClassFromParameters(parameters: List<ParameterSpec>
             .build()
       }
   )
-  return makeDataClass()
+  return if (generateDataClass) {
+    makeDataClass()
+  } else {
+    this
+  }
 }
 
 fun TypeSpec.Builder.makeDataClass(): TypeSpec.Builder {
@@ -55,9 +58,9 @@ fun TypeSpec.Builder.makeDataClass(): TypeSpec.Builder {
 }
 
 /**
- * Same as [makeDataClassFromParameters] but takes fields instead of parameters as input
+ * Same as [makeClassFromParameters] but takes fields instead of parameters as input
  */
-fun TypeSpec.Builder.makeDataClassFromProperties(fields: List<FieldSpec>): TypeSpec.Builder {
+fun TypeSpec.Builder.makeClassFromProperties(generateDataClass: Boolean, fields: List<FieldSpec>): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -76,7 +79,11 @@ fun TypeSpec.Builder.makeDataClassFromProperties(fields: List<FieldSpec>): TypeS
   )
 
   addFields(fields)
-  return makeDataClass()
+  return if (generateDataClass) {
+    makeDataClass()
+  } else {
+    this
+  }
 }
 
 

@@ -13,16 +13,19 @@ import com.squareup.kotlinpoet.TypeSpec
  * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
  * as well as the corresponding properties
  */
-fun TypeSpec.Builder.makeDataClass(
+internal fun TypeSpec.Builder.makeClassFromParameters(
+    generateDataClass: Boolean,
     parameters: List<ParameterSpec>,
     addJvmOverloads: Boolean = false,
 ) = apply {
-  if (parameters.isNotEmpty()) {
-    addModifiers(KModifier.DATA)
-  } else {
-    // Can't use a data class: manually add equals/hashCode based on the class type
-    addFunction(equalsFunSpec())
-    addFunction(hashCodeFunSpec())
+  if (generateDataClass) {
+    if (parameters.isNotEmpty()) {
+      addModifiers(KModifier.DATA)
+    } else {
+      // Can't use a data class: manually add equals/hashCode based on the class type
+      addFunction(equalsFunSpec())
+      addFunction(hashCodeFunSpec())
+    }
   }
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
@@ -44,8 +47,8 @@ fun TypeSpec.Builder.makeDataClass(
   }
 }
 
-fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>) = apply {
-  if (properties.isNotEmpty()) {
+fun TypeSpec.Builder.makeClassFromProperties(generateDataClass: Boolean, properties: List<PropertySpec>) = apply {
+  if (generateDataClass && properties.isNotEmpty()) {
     addModifiers(KModifier.DATA)
   }
   primaryConstructor(FunSpec.constructorBuilder()

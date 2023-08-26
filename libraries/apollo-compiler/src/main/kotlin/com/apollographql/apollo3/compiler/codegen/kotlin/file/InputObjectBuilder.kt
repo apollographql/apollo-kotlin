@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
@@ -51,7 +51,7 @@ internal class InputObjectBuilder(
     return TypeSpec
         .classBuilder(simpleName)
         .maybeAddDescription(description)
-        .makeDataClass(namedTypes.map { it.toParameterSpec(context) })
+        .makeClassFromParameters(context.generateDataClasses, namedTypes.map { it.toParameterSpec(context) })
         .apply {
           if (namedTypes.isNotEmpty() && generateInputBuilders) {
             addType(namedTypes.builderTypeSpec(context, className))

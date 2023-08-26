@@ -427,6 +427,16 @@ interface Service {
   val generateOptionalOperationVariables: Property<Boolean>
 
   /**
+   * Whether to generate operations, models, fragments and input classes as data classes.
+   *
+   * If you do not need equality/hash comparison of your models, and you do not need pretty 'toString()'
+   * methods, you can reduce the size of the generated code by setting this to 'false'.
+   *
+   * Default: true
+   */
+  val generateDataClasses: Property<Boolean>
+
+  /**
    * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
    * cases too.
    */

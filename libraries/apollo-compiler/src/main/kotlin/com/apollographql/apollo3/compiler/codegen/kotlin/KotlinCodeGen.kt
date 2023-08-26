@@ -56,6 +56,7 @@ internal object KotlinCodeGen {
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator
     val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
+    val generateDataClasses = commonCodegenOptions.generateDataClasses
     val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
     val generateQueryDocument = commonCodegenOptions.generateQueryDocument
@@ -89,10 +90,11 @@ internal object KotlinCodeGen {
     )
 
     val context = KotlinContext(
+        generateDataClasses = generateDataClasses,
+        jsExport = jsExport,
         layout = layout,
         resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
         targetLanguageVersion = targetLanguageVersion,
-        jsExport = jsExport,
     )
     val builders = mutableListOf<CgFileBuilder>()
 

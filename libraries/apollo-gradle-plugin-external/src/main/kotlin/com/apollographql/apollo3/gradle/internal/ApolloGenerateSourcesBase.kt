@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.UsedCoordinates
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.defaultGenerateDataClasses
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateInputBuilders
@@ -99,6 +100,10 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val generateDataClasses: Property<Boolean>
+
+  @get:Input
+  @get:Optional
   abstract val generateInputBuilders: Property<Boolean>
 
   @get:Input
@@ -180,6 +185,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         packageNameGenerator = packageNameGenerator,
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
+        generateDataClasses = generateDataClasses.getOrElse(defaultGenerateDataClasses),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),

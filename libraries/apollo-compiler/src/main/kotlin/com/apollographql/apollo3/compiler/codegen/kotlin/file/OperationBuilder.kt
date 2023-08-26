@@ -14,7 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgImport
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
@@ -95,7 +95,7 @@ internal class OperationBuilder(
     return TypeSpec.classBuilder(layout.operationName(operation))
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeDataClass(namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
+        .makeClassFromParameters(context.generateDataClasses, namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
         .maybeAddJsExport(context)
         .apply {
           if (namedTypes.isNotEmpty() && generateInputBuilders) {

@@ -3,10 +3,11 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.TargetLanguage
 
 internal class KotlinContext(
+    val generateDataClasses: Boolean,
+    val jsExport: Boolean,
     val layout: KotlinCodegenLayout,
     val resolver: KotlinResolver,
     val targetLanguageVersion: TargetLanguage,
-    val jsExport: Boolean,
 ) {
   fun isTargetLanguageVersionAtLeast(targetLanguage: TargetLanguage): Boolean {
     // Assumes TargetLanguage.KOTLIN_X_Y values are declared in increasing order

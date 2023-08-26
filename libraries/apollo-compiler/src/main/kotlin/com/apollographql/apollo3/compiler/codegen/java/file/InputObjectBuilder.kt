@@ -1,12 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
-import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
-import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
+import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
@@ -42,7 +40,7 @@ internal class InputObjectBuilder(
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
           .maybeAddDescription(description)
-          .makeDataClassFromParameters(fields.map {
+          .makeClassFromParameters(context.generateDataClasses, fields.map {
             it.toNamedType().toParameterSpec(context)
           })
           .addBuilder()

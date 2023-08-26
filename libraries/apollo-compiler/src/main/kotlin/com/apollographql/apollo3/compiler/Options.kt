@@ -185,6 +185,13 @@ data class CommonCodegenOptions(
      */
     val generateFragmentImplementations: Boolean,
 
+
+    /**
+     * Generate data classes for all models, operations, fragments, and input objects.
+     */
+    val generateDataClasses: Boolean = true,
+
+
     /**
      * Whether to generate the compiled selections used to read/write from the normalized cache.
      * Disable this option if you don't use the normalized cache to save some bytecode
@@ -366,6 +373,7 @@ const val defaultWarnOnDeprecatedUsages = true
 const val defaultFailOnWarnings = false
 const val defaultGenerateAsInternal = false
 const val defaultGenerateFilterNotNull = false
+const val defaultGenerateDataClasses = true
 const val defaultGenerateFragmentImplementations = false
 const val defaultGenerateResponseFields = true
 const val defaultGenerateQueryDocument = true
