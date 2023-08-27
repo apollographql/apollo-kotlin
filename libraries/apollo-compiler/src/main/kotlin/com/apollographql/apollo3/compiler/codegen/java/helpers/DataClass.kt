@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
+import com.apollographql.apollo3.compiler.GeneratedMethod
+import com.apollographql.apollo3.compiler.GeneratedMethod.*
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__h
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.L
@@ -23,7 +26,10 @@ import javax.lang.model.element.Modifier
  * This is named "data class" because it's similar to Kotlin data classes even if technically Java
  * doesn't have data classes
  */
-fun TypeSpec.Builder.makeClassFromParameters(generateDataClass: Boolean, parameters: List<ParameterSpec>): TypeSpec.Builder {
+fun TypeSpec.Builder.makeClassFromParameters(
+    generateMethods: List<GeneratedMethod>,
+    parameters: List<ParameterSpec>,
+): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -43,24 +49,26 @@ fun TypeSpec.Builder.makeClassFromParameters(generateDataClass: Boolean, paramet
             .build()
       }
   )
-  return if (generateDataClass) {
-    makeDataClass()
-  } else {
-    this
-  }
+  return addGeneratedMethods(generateMethods)
 }
 
-fun TypeSpec.Builder.makeDataClass(): TypeSpec.Builder {
-  return build().withEqualsImplementation()
-      .withHashCodeImplementation()
-      .withToStringImplementation()
+fun TypeSpec.Builder.addGeneratedMethods(
+    generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING)
+): TypeSpec.Builder {
+  return build()
+      .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withEqualsImplementation() }
+      .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withHashCodeImplementation() }
+      .applyIf(generateMethods.contains(TO_STRING)) { withToStringImplementation() }
       .toBuilder()
 }
 
 /**
  * Same as [makeClassFromParameters] but takes fields instead of parameters as input
  */
-fun TypeSpec.Builder.makeClassFromProperties(generateDataClass: Boolean, fields: List<FieldSpec>): TypeSpec.Builder {
+fun TypeSpec.Builder.makeClassFromProperties(
+    generateMethods: List<GeneratedMethod>,
+    fields: List<FieldSpec>,
+): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -79,11 +87,7 @@ fun TypeSpec.Builder.makeClassFromProperties(generateDataClass: Boolean, fields:
   )
 
   addFields(fields)
-  return if (generateDataClass) {
-    makeDataClass()
-  } else {
-    this
-  }
+  return addGeneratedMethods(generateMethods)
 }
 
 

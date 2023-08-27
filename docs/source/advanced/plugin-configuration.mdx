@@ -293,6 +293,8 @@ apollo {
     generateDataBuilders.set(true)
     // Whether to generate response model builders for Java.
     generateModelBuilders.set(true)
+    // Which methods to auto generate (can include: `equalsHashCode`, `copy`, `toString`, or `dataClass`)
+    generateMethods.set(listOf("dataClass"))
     // Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`, etc..)
     generatePrimitiveTypes.set(true)
     // Opt-in Builders for Operations, Fragments and Input types. Builders are more ergonomic than default arguments when there are a lot of

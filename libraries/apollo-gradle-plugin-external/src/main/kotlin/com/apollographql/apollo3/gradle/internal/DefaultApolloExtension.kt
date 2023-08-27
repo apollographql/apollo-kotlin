@@ -644,7 +644,7 @@ abstract class DefaultApolloExtension(
     service.packageName.disallowChanges()
 
     task.generateFilterNotNull.set(project.isKotlinMultiplatform)
-    task.generateDataClasses.set(service.generateDataClasses)
+    task.generateMethods.set(service.generateMethods())
     task.generateFragmentImplementations.set(service.generateFragmentImplementations)
     task.generateQueryDocument.set(service.generateQueryDocument)
     task.generateSchema.set(service.generateSchema)

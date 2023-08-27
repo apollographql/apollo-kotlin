@@ -66,7 +66,7 @@ internal class FragmentBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeClassFromParameters(context.generateDataClasses, variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeClassFromParameters(context.generateMethods, variables.map { it.toNamedType().toParameterSpec(context) })
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec(context.resolver, fragment.dataProperty))
         .addMethod(selectionsMethodSpec())

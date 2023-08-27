@@ -88,7 +88,7 @@ internal class OperationBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeClassFromParameters(context.generateDataClasses, operation.variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeClassFromParameters(context.generateMethods, operation.variables.map { it.toNamedType().toParameterSpec(context) })
         .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))

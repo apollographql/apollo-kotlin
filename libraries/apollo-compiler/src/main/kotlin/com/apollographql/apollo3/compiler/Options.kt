@@ -93,6 +93,57 @@ enum class JavaNullable {
   }
 }
 
+enum class GeneratedMethod {
+  /**
+   * Generate both hash code and equals method
+   *
+   */
+  EQUALS_HASH_CODE,
+
+  /**
+   * Generate toString method
+   *
+   */
+  TO_STRING,
+
+  /**
+   * Generate copy method
+   *
+   */
+  COPY,
+
+  /**
+   * Generate class as data class, which will include equals, hash code, and toString()
+   *
+   */
+  DATA_CLASS,
+  ;
+  companion object {
+
+    fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
+      return when(targetLanguage) {
+        TargetLanguage.JAVA -> {
+          defaultGenerateMethodsJava
+        }
+        else -> {
+          defaultGenerateMethodsKotlin
+        }
+      }
+    }
+
+    fun fromName(name: String): GeneratedMethod? {
+      return when (name) {
+        "equalsHashCode" -> GeneratedMethod.EQUALS_HASH_CODE
+        "toString" -> GeneratedMethod.TO_STRING
+        "copy" -> GeneratedMethod.COPY
+        "dataClass" -> GeneratedMethod.DATA_CLASS
+        else -> null
+      }
+    }
+  }
+
+}
+
 @ApolloExperimental
 class IrOptions(
     /**
@@ -185,12 +236,10 @@ data class CommonCodegenOptions(
      */
     val generateFragmentImplementations: Boolean,
 
-
     /**
-     * Generate data classes for all models, operations, fragments, and input objects.
+     * Which methods to auto generate on models, fragments, operations, and input objects
      */
-    val generateDataClasses: Boolean = true,
-
+    val generateMethods: List<GeneratedMethod>,
 
     /**
      * Whether to generate the compiled selections used to read/write from the normalized cache.
@@ -373,10 +422,11 @@ const val defaultWarnOnDeprecatedUsages = true
 const val defaultFailOnWarnings = false
 const val defaultGenerateAsInternal = false
 const val defaultGenerateFilterNotNull = false
-const val defaultGenerateDataClasses = true
 const val defaultGenerateFragmentImplementations = false
 const val defaultGenerateResponseFields = true
 const val defaultGenerateQueryDocument = true
+val defaultGenerateMethodsKotlin = listOf(GeneratedMethod.DATA_CLASS)
+val defaultGenerateMethodsJava = listOf(GeneratedMethod.EQUALS_HASH_CODE, GeneratedMethod.TO_STRING)
 const val defaultCodegenModels = MODELS_OPERATION_BASED
 const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
 const val defaultRequiresOptInAnnotation = "none"

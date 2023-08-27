@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.compiler.GeneratedMethod
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
@@ -10,6 +12,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.defaultCodegenModels
+import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -45,12 +48,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       alwaysGenerateTypesMatching.convention(null as List<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       classesForEnumsMatching.convention(null as List<String>?)
+      generateMethods.convention(null as List<String>?)
     } else {
       includes.set(null as List<String>?)
       excludes.set(null as List<String>?)
       alwaysGenerateTypesMatching.set(null as List<String>?)
       sealedClassesForEnumsMatching.set(null as List<String>?)
       classesForEnumsMatching.set(null as List<String>?)
+      generateMethods.set(null as List<String>?)
     }
   }
 
@@ -270,6 +275,30 @@ abstract class DefaultService @Inject constructor(val project: Project, override
           """.trimMargin()))
     }
     return packageNameGenerator
+  }
+
+  internal fun generateMethods(): List<GeneratedMethod> {
+    val generateMethods = generateMethods.orNull?.map {
+      GeneratedMethod.fromName(it) ?: error("Apollo: unknown method type: $it for generateMethods")
+    } ?: return GeneratedMethod.defaultsFor(targetLanguage())
+
+    when(targetLanguage()) {
+      TargetLanguage.JAVA -> {
+        check(!generateMethods.contains(GeneratedMethod.DATA_CLASS)) {
+          "Java codegen does not support dataClass as an option for generateMethods"
+        }
+        check(!generateMethods.contains(GeneratedMethod.COPY)) {
+          "Java codegen does not support copy as an option for generateMethods"
+        }
+      }
+      else -> {
+        if (generateMethods.contains(GeneratedMethod.DATA_CLASS) && generateMethods.size > 1) {
+          error("Apollo: dataClass subsumes all other method types and must be the only option passed to generateMethods")
+        }
+      }
+    }
+
+    return generateMethods
   }
 
   internal fun jsExport(): Boolean {

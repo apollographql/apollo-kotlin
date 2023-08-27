@@ -85,7 +85,7 @@ internal class ModelBuilder(
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(simpleName)
-          .makeClassFromProperties(context.generateDataClasses, properties)
+          .makeClassFromProperties(context.generateMethods, properties)
     }
 
     val nestedTypes = nestedBuilders.map { it.build() }

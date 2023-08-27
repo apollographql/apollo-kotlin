@@ -62,7 +62,7 @@ internal class JavaCodeGen(
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator
     val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
-    val generateDataClasses = commonCodegenOptions.generateDataClasses
+    val generateMethods = commonCodegenOptions.generateMethods
     val generateQueryDocument = commonCodegenOptions.generateQueryDocument
     val generatedSchemaName = commonCodegenOptions.generatedSchemaName
     val flatten = ir.flattenModels
@@ -92,7 +92,7 @@ internal class JavaCodeGen(
     val context = JavaContext(
         layout = layout,
         resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks),
-        generateDataClasses = generateDataClasses,
+        generateMethods = generateMethods,
         generateModelBuilders = generateModelBuilders,
         nullableFieldStyle = nullableFieldStyle,
     )

@@ -427,14 +427,20 @@ interface Service {
   val generateOptionalOperationVariables: Property<Boolean>
 
   /**
-   * Whether to generate operations, models, fragments and input classes as data classes.
+   * Specifies which methods will be auto generated on operations, models, fragments and input objects.
    *
-   * If you do not need equality/hash comparison of your models, and you do not need pretty 'toString()'
-   * methods, you can reduce the size of the generated code by setting this to 'false'.
+   * Pass a list of any of the following:
    *
-   * Default: true
+   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
+   * - "toString" generates a method that will print a pretty string representing the data in the class
+   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+   * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
+   * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
+   *
+   * Default for kotlin: `listOf("data")`
+   * Default for Java: `listOf("equalsHashCode", "toString")`
    */
-  val generateDataClasses: Property<Boolean>
+  val generateMethods: ListProperty<String>
 
   /**
    * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use

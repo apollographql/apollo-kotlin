@@ -40,7 +40,7 @@ internal class InputObjectBuilder(
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
           .maybeAddDescription(description)
-          .makeClassFromParameters(context.generateDataClasses, fields.map {
+          .makeClassFromParameters(context.generateMethods, fields.map {
             it.toNamedType().toParameterSpec(context)
           })
           .addBuilder()

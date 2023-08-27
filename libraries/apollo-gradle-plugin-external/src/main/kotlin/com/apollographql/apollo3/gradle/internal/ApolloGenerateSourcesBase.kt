@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
+import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
@@ -14,7 +15,6 @@ import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.UsedCoordinates
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.defaultGenerateDataClasses
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateInputBuilders
@@ -100,7 +100,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateDataClasses: Property<Boolean>
+  abstract val generateMethods: ListProperty<GeneratedMethod>
 
   @get:Input
   @get:Optional
@@ -185,7 +185,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         packageNameGenerator = packageNameGenerator,
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
-        generateDataClasses = generateDataClasses.getOrElse(defaultGenerateDataClasses),
+        generateMethods = generateMethods.getOrElse(GeneratedMethod.defaultsFor(codegenSchema.targetLanguage)),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
