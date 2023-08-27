@@ -110,22 +110,18 @@ private fun emptyPropertiesHashCodeFunSpec() = FunSpec.builder(Identifier.hashCo
     .build()
 
 fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder {
-  fun hashPropertyCode(property: PropertySpec) =
+    fun hashPropertyCode(property: PropertySpec) =
       CodeBlock.builder()
-          .addStatement("${Identifier.__h} *= 1000003")
-          .let {
-            if (property.type.isNullable) {
-              it.addStatement("${Identifier.__h} = ${Identifier.__h}.xor(%L?.hashCode() ?: 0)", property.name)
-            } else {
-              it.addStatement("${Identifier.__h} = ${Identifier.__h}.xor(%L.hashCode())", property.name)
-            }
-          }.build()
+        .addStatement("${Identifier.__h} *= 31")
+        .addStatement("${Identifier.__h} += %L.hashCode()", property.name)
+        .build()
 
   fun methodCode() =
       CodeBlock.builder()
           .beginControlFlow("if (%L == null)", MEMOIZED_HASH_CODE_VAR)
-          .addStatement("var ${Identifier.__h}: Int = 1")
+          .addStatement("var ${Identifier.__h} = %L.hashCode()", propertySpecs.getOrNull(0)?.name ?: "null")
           .add(propertySpecs
+              .drop(1)
               .filter { it.name != MEMOIZED_HASH_CODE_VAR }
               .map(::hashPropertyCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
