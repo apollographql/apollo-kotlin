@@ -3,7 +3,10 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.GeneratedMethod.*
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -12,6 +15,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
+import javax.lang.model.element.Modifier
 
 /**
  * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
@@ -82,7 +86,7 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>)
 
   if (generateMethods.contains(TO_STRING)) {
     if (propertySpecs.isNotEmpty()) {
-      // TODO
+      withToStringImplementation()
     }
   }
 
@@ -106,7 +110,7 @@ fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
     "Cannot generate copy method for class with constructor arguments that are not properties"
   }
 
-  return addFunction(FunSpec.builder("copy")
+  return addFunction(FunSpec.builder(Identifier.copy)
       .apply {
         constructorProperties.forEach {
           addParameter(ParameterSpec.builder(it.name, it.type).defaultValue("this.%L", it.name).build())
@@ -215,6 +219,35 @@ fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
       .build()
   )
 }
+
+fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
+  val name = build().name ?: return this
+  fun printPropertiesTemplate() =
+      "$name(" + propertySpecs
+            .excludeInternalProperties()
+            .joinToString(",") { "${it.name}=\$${it.name}" } + ")"
+
+  fun methodCode() =
+      CodeBlock.builder()
+          .beginControlFlow("if (%L == null)", MEMOIZED_TO_STRING_VAR)
+          .add("%L = %P", MEMOIZED_TO_STRING_VAR, printPropertiesTemplate())
+          .endControlFlow()
+          .addStatement("return %L!!", MEMOIZED_TO_STRING_VAR)
+          .build()
+
+  return addProperty(
+      PropertySpec.builder(MEMOIZED_TO_STRING_VAR, KotlinSymbols.String.copy(nullable = true), KModifier.PRIVATE)
+          .mutable()
+          .initializer("null")
+          .build()
+  )
+      .addFunction(FunSpec.builder(Identifier.toString)
+          .addModifiers(KModifier.OVERRIDE)
+          .returns(KotlinSymbols.String)
+          .addCode(methodCode())
+          .build())
+}
+
 
 private fun Collection<PropertySpec>.excludeInternalProperties(): Collection<PropertySpec> {
   return filterNot { it.name == MEMOIZED_HASH_CODE_VAR || it.name == MEMOIZED_TO_STRING_VAR }
