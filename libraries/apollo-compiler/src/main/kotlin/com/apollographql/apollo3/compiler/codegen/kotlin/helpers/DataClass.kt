@@ -72,7 +72,7 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>)
     } else {
       addModifiers(KModifier.DATA)
     }
-    // Data class is mutually exclusive with the other modifiers
+    // Data class is mutually exclusive with the other methods
     return@apply
   }
   if (generateMethods.contains(EQUALS_HASH_CODE)) {
@@ -88,9 +88,42 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>)
 
   if (generateMethods.contains(COPY)) {
     if (propertySpecs.isNotEmpty()) {
-      // TODO
+      withCopyImplementation()
     }
   }
+}
+
+fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
+  val type = build()
+  val constructorParamNames = type.primaryConstructor?.parameters?.map { it.name }?.toSet() ?: return this
+  val typeName = type.name ?: return this
+  val className = ClassName("", typeName)
+  val constructorProperties = propertySpecs
+      .excludeInternalProperties()
+      .filter { constructorParamNames.contains(it.name) }
+
+  check(constructorProperties.size == constructorParamNames.size) {
+    "Cannot generate copy method for class with constructor arguments that are not properties"
+  }
+
+  return addFunction(FunSpec.builder("copy")
+      .apply {
+        constructorProperties.forEach {
+          addParameter(ParameterSpec.builder(it.name, it.type).defaultValue("this.%L", it.name).build())
+        }
+      }
+      .returns(className)
+      .addCode(CodeBlock.builder()
+          .add("return %T(", className)
+          .apply {
+            constructorProperties.forEach {
+              add("%L,", it.name)
+            }
+          }
+          .add(")")
+          .build()
+      )
+      .build())
 }
 
 fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
@@ -117,7 +150,7 @@ fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
             add("return true")
           } else {
             add("return %L", propertySpecs
-                .filterNot { it.name == MEMOIZED_HASH_CODE_VAR || it.name == MEMOIZED_TO_STRING_VAR }
+                .excludeInternalProperties()
                 .map { equalsCode(it) }
                 .joinToCode("&& ")
             )
@@ -152,7 +185,7 @@ fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
         .addStatement("var ${Identifier.__h} = %L.hashCode()", propertySpecs.getOrNull(0)?.name ?: "null")
         .add(propertySpecs
             .drop(1)
-            .filter { it.name != MEMOIZED_HASH_CODE_VAR }
+            .excludeInternalProperties()
             .map(::hashPropertyCode)
             .fold(CodeBlock.builder(), CodeBlock.Builder::add)
             .build())
@@ -181,6 +214,10 @@ fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
       .addCode(methodCode())
       .build()
   )
+}
+
+private fun Collection<PropertySpec>.excludeInternalProperties(): Collection<PropertySpec> {
+  return filterNot { it.name == MEMOIZED_HASH_CODE_VAR || it.name == MEMOIZED_TO_STRING_VAR }
 }
 
 private const val MEMOIZED_HASH_CODE_VAR: String = "__hashCode"
