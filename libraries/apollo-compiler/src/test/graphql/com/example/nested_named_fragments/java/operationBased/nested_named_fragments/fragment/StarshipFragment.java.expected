@@ -6,6 +6,8 @@
 package com.example.nested_named_fragments.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 import java.util.List;
 
@@ -22,10 +24,58 @@ public class StarshipFragment implements Fragment.Data {
 
   public PilotConnection pilotConnection;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public StarshipFragment(String id, String name, PilotConnection pilotConnection) {
     this.id = id;
     this.name = name;
     this.pilotConnection = pilotConnection;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof StarshipFragment) {
+      StarshipFragment that = (StarshipFragment) o;
+      return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+       &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+       &&((this.pilotConnection == null) ? (that.pilotConnection == null) : this.pilotConnection.equals(that.pilotConnection));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (id == null) ? 0 : id.hashCode();
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "StarshipFragment{"
+        + "id=" + id + ", "
+        + "name=" + name + ", "
+        + "pilotConnection=" + pilotConnection
+        + "}";
+    }
+    return $toString;
   }
 
   public static class PilotConnection {
@@ -34,8 +84,48 @@ public class StarshipFragment implements Fragment.Data {
      */
     public List<Edge> edges;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public PilotConnection(List<Edge> edges) {
       this.edges = edges;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof PilotConnection) {
+        PilotConnection that = (PilotConnection) o;
+        return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "PilotConnection{"
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -45,8 +135,48 @@ public class StarshipFragment implements Fragment.Data {
      */
     public Node node;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Edge(Node node) {
       this.node = node;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Edge) {
+        Edge that = (Edge) o;
+        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Edge{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -58,9 +188,53 @@ public class StarshipFragment implements Fragment.Data {
      */
     public PilotFragment pilotFragment;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Node(String __typename, PilotFragment pilotFragment) {
       this.__typename = __typename;
       this.pilotFragment = pilotFragment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node) {
+        Node that = (Node) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.pilotFragment == null) ? (that.pilotFragment == null) : this.pilotFragment.equals(that.pilotFragment));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Node{"
+          + "__typename=" + __typename + ", "
+          + "pilotFragment=" + pilotFragment
+          + "}";
+      }
+      return $toString;
     }
   }
 }

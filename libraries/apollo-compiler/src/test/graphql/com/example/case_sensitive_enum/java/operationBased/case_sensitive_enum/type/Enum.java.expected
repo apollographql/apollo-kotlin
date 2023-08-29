@@ -6,6 +6,8 @@
 package com.example.case_sensitive_enum.type;
 
 import com.apollographql.apollo3.api.EnumType;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
@@ -42,8 +44,44 @@ public class Enum {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends Enum {
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public UNKNOWN__(String rawValue) {
       super(rawValue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Enum) {
+        return true;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Enum{"
+          + "}";
+      }
+      return $toString;
     }
   }
 }

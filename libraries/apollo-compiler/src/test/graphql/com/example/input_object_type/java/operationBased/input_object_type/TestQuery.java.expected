@@ -18,6 +18,7 @@ import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -43,9 +44,53 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
   public final ReviewInput review;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery(Episode ep, ReviewInput review) {
     this.ep = ep;
     this.review = review;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      TestQuery that = (TestQuery) o;
+      return ((this.ep == null) ? (that.ep == null) : this.ep.equals(that.ep))
+       &&((this.review == null) ? (that.review == null) : this.review.equals(that.review));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (ep == null) ? 0 : ep.hashCode();
+      __h *= 1000003;
+      __h ^= (review == null) ? 0 : review.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "ep=" + ep + ", "
+        + "review=" + review
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -114,8 +159,48 @@ public class TestQuery implements Mutation<TestQuery.Data> {
   public static class Data implements Mutation.Data {
     public CreateReview createReview;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(CreateReview createReview) {
       this.createReview = createReview;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.createReview == null) ? (that.createReview == null) : this.createReview.equals(that.createReview));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (createReview == null) ? 0 : createReview.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "createReview=" + createReview
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -130,9 +215,53 @@ public class TestQuery implements Mutation<TestQuery.Data> {
      */
     public String commentary;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public CreateReview(Integer stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof CreateReview) {
+        CreateReview that = (CreateReview) o;
+        return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
+         &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (stars == null) ? 0 : stars.hashCode();
+        __h *= 1000003;
+        __h ^= (commentary == null) ? 0 : commentary.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "CreateReview{"
+          + "stars=" + stars + ", "
+          + "commentary=" + commentary
+          + "}";
+      }
+      return $toString;
     }
   }
 }

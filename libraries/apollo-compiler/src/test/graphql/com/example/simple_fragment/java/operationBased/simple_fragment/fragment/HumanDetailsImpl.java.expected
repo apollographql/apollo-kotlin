@@ -14,14 +14,52 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_fragment.fragment.selections.HumanDetailsSelections;
 import com.example.simple_fragment.type.Human;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
+import java.lang.String;
 
 /**
  * Fragment with Java / Kotlin docs generation
  */
 public class HumanDetailsImpl implements Fragment<HumanDetails> {
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public HumanDetailsImpl() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof HumanDetailsImpl) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "HumanDetailsImpl{"
+        + "}";
+    }
+    return $toString;
   }
 
   @Override

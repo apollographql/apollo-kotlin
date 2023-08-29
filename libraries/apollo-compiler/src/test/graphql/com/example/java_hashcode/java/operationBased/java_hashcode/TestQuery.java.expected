@@ -15,6 +15,7 @@ import com.example.java_hashcode.adapter.TestQuery_ResponseAdapter;
 import com.example.java_hashcode.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -33,8 +34,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -89,8 +126,48 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Integer h;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Integer h) {
       this.h = h;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.h == null) ? (that.h == null) : this.h.equals(that.h));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (h == null) ? 0 : h.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "h=" + h
+          + "}";
+      }
+      return $toString;
     }
   }
 }

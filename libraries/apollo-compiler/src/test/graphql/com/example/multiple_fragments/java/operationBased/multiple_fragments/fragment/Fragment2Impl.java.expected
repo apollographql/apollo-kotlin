@@ -14,11 +14,49 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.multiple_fragments.fragment.selections.fragment2Selections;
 import com.example.multiple_fragments.type.ANode;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
+import java.lang.String;
 
 public class Fragment2Impl implements Fragment<Fragment2> {
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public Fragment2Impl() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Fragment2Impl) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "Fragment2Impl{"
+        + "}";
+    }
+    return $toString;
   }
 
   @Override

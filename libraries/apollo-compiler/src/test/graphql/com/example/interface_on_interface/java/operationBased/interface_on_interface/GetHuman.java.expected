@@ -15,6 +15,7 @@ import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter;
 import com.example.interface_on_interface.selections.GetHumanSelections;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -43,8 +44,44 @@ public class GetHuman implements Query<GetHuman.Data> {
 
   public static final String OPERATION_NAME = "GetHuman";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public GetHuman() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof GetHuman) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "GetHuman{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -101,9 +138,53 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     public Node node;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Human human, Node node) {
       this.human = human;
       this.node = node;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.human == null) ? (that.human == null) : this.human.equals(that.human))
+         &&((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (human == null) ? 0 : human.hashCode();
+        __h *= 1000003;
+        __h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "human=" + human + ", "
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -114,10 +195,58 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     public Double height;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Human(String id, String name, Double height) {
       this.id = id;
       this.name = name;
       this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Human) {
+        Human that = (Human) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Human{"
+          + "id=" + id + ", "
+          + "name=" + name + ", "
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -129,17 +258,101 @@ public class GetHuman implements Query<GetHuman.Data> {
      */
     public OnHuman onHuman;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Node(String __typename, OnHuman onHuman) {
       this.__typename = __typename;
       this.onHuman = onHuman;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node) {
+        Node that = (Node) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Node{"
+          + "__typename=" + __typename + ", "
+          + "onHuman=" + onHuman
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class OnHuman {
     public Double height;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman(Double height) {
       this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman) {
+        OnHuman that = (OnHuman) o;
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman{"
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
   }
 }

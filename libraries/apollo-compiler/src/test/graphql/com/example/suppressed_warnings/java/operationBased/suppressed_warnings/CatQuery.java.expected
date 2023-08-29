@@ -19,6 +19,7 @@ import com.example.suppressed_warnings.type.Direction;
 import com.example.suppressed_warnings.type.Filter;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -42,8 +43,48 @@ public class CatQuery implements Query<CatQuery.Data> {
 
   public final Optional<Filter> filter;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public CatQuery(Optional<Filter> filter) {
     this.filter = filter;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof CatQuery) {
+      CatQuery that = (CatQuery) o;
+      return ((this.filter == null) ? (that.filter == null) : this.filter.equals(that.filter));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (filter == null) ? 0 : filter.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "CatQuery{"
+        + "filter=" + filter
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -107,17 +148,101 @@ public class CatQuery implements Query<CatQuery.Data> {
 
     public Direction direction;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Search search, Direction direction) {
       this.search = search;
       this.direction = direction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.search == null) ? (that.search == null) : this.search.equals(that.search))
+         &&((this.direction == null) ? (that.direction == null) : this.direction.equals(that.direction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (search == null) ? 0 : search.hashCode();
+        __h *= 1000003;
+        __h ^= (direction == null) ? 0 : direction.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "search=" + search + ", "
+          + "direction=" + direction
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class Search {
     public Integer mustaches;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Search(Integer mustaches) {
       this.mustaches = mustaches;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Search) {
+        Search that = (Search) o;
+        return ((this.mustaches == null) ? (that.mustaches == null) : this.mustaches.equals(that.mustaches));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (mustaches == null) ? 0 : mustaches.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Search{"
+          + "mustaches=" + mustaches
+          + "}";
+      }
+      return $toString;
     }
   }
 }

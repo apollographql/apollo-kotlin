@@ -14,11 +14,49 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections;
 import com.example.named_fragment_inside_inline_fragment.type.Character;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
+import java.lang.String;
 
 public class CharacterNameImpl implements Fragment<CharacterName> {
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public CharacterNameImpl() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof CharacterNameImpl) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "CharacterNameImpl{"
+        + "}";
+    }
+    return $toString;
   }
 
   @Override

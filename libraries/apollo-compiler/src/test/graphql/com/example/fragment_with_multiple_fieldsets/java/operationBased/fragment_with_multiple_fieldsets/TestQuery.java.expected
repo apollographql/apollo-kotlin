@@ -15,6 +15,7 @@ import com.example.fragment_with_multiple_fieldsets.adapter.TestQuery_ResponseAd
 import com.example.fragment_with_multiple_fieldsets.fragment.IFragment;
 import com.example.fragment_with_multiple_fieldsets.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -43,8 +44,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -99,8 +136,48 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public I i;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(I i) {
       this.i = i;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.i == null) ? (that.i == null) : this.i.equals(that.i));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (i == null) ? 0 : i.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "i=" + i
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -112,9 +189,53 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public IFragment iFragment;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public I(String __typename, IFragment iFragment) {
       this.__typename = __typename;
       this.iFragment = iFragment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof I) {
+        I that = (I) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.iFragment == null) ? (that.iFragment == null) : this.iFragment.equals(that.iFragment));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (iFragment == null) ? 0 : iFragment.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "I{"
+          + "__typename=" + __typename + ", "
+          + "iFragment=" + iFragment
+          + "}";
+      }
+      return $toString;
     }
   }
 }

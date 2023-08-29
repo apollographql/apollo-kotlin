@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.list_field_clash.adapter.TestQuery_ResponseAdapter;
 import com.example.list_field_clash.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -36,8 +37,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -94,18 +131,102 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public com.example.list_field_clash.type.AmenityCategory category;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(List<AmenityCategory> amenityCategories,
         com.example.list_field_clash.type.AmenityCategory category) {
       this.amenityCategories = amenityCategories;
       this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.amenityCategories == null) ? (that.amenityCategories == null) : this.amenityCategories.equals(that.amenityCategories))
+         &&((this.category == null) ? (that.category == null) : this.category.equals(that.category));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (amenityCategories == null) ? 0 : amenityCategories.hashCode();
+        __h *= 1000003;
+        __h ^= (category == null) ? 0 : category.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "amenityCategories=" + amenityCategories + ", "
+          + "category=" + category
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class AmenityCategory {
     public String text;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public AmenityCategory(String text) {
       this.text = text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AmenityCategory) {
+        AmenityCategory that = (AmenityCategory) o;
+        return ((this.text == null) ? (that.text == null) : this.text.equals(that.text));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (text == null) ? 0 : text.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AmenityCategory{"
+          + "text=" + text
+          + "}";
+      }
+      return $toString;
     }
   }
 }

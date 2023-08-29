@@ -18,6 +18,7 @@ import com.example.nested_conditional_inline.selections.TestQuerySelections;
 import com.example.nested_conditional_inline.type.Episode;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -60,8 +61,48 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<Episode> episode;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery(Optional<Episode> episode) {
     this.episode = episode;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      TestQuery that = (TestQuery) o;
+      return ((this.episode == null) ? (that.episode == null) : this.episode.equals(that.episode));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (episode == null) ? 0 : episode.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "episode=" + episode
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -123,8 +164,48 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Hero hero;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero) {
       this.hero = hero;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -146,11 +227,63 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnDroid onDroid;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
       this.onDroid = onDroid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman))
+         &&((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroid == null) ? 0 : onDroid.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "onHuman=" + onHuman + ", "
+          + "onDroid=" + onDroid
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -160,8 +293,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public List<Friend> friends;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman(List<Friend> friends) {
       this.friends = friends;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman) {
+        OnHuman that = (OnHuman) o;
+        return ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (friends == null) ? 0 : friends.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman{"
+          + "friends=" + friends
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -178,10 +351,58 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnHuman1 onHuman;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Friend(String __typename, String name, OnHuman1 onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Friend) {
+        Friend that = (Friend) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Friend{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "onHuman=" + onHuman
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -191,8 +412,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public Double height;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman1(Double height) {
       this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman1) {
+        OnHuman1 that = (OnHuman1) o;
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman1{"
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -202,8 +463,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public List<Friend1> friends;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroid(List<Friend1> friends) {
       this.friends = friends;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroid) {
+        OnDroid that = (OnDroid) o;
+        return ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (friends == null) ? 0 : friends.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroid{"
+          + "friends=" + friends
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -220,10 +521,58 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnHuman2 onHuman;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Friend1(String __typename, String name, OnHuman2 onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Friend1) {
+        Friend1 that = (Friend1) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Friend1{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "onHuman=" + onHuman
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -233,8 +582,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public Double height;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman2(Double height) {
       this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman2) {
+        OnHuman2 that = (OnHuman2) o;
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman2{"
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
   }
 }

@@ -6,6 +6,9 @@
 package com.example.mutation_create_review.type;
 
 import com.apollographql.apollo3.api.Optional;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 
 /**
  * Circle ref to review input
@@ -13,8 +16,48 @@ import com.apollographql.apollo3.api.Optional;
 public class ReviewRefInput {
   public final Optional<ReviewInput> reviewInput;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public ReviewRefInput(Optional<ReviewInput> reviewInput) {
     this.reviewInput = reviewInput;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ReviewRefInput) {
+      ReviewRefInput that = (ReviewRefInput) o;
+      return ((this.reviewInput == null) ? (that.reviewInput == null) : this.reviewInput.equals(that.reviewInput));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (reviewInput == null) ? 0 : reviewInput.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "ReviewRefInput{"
+        + "reviewInput=" + reviewInput
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {

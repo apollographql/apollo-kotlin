@@ -15,6 +15,7 @@ import com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter;
 import com.example.root_query_fragment.fragment.QueryFragment;
 import com.example.root_query_fragment.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -41,8 +42,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -102,9 +139,53 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public QueryFragment queryFragment;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(String __typename, QueryFragment queryFragment) {
       this.__typename = __typename;
       this.queryFragment = queryFragment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.queryFragment == null) ? (that.queryFragment == null) : this.queryFragment.equals(that.queryFragment));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (queryFragment == null) ? 0 : queryFragment.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "__typename=" + __typename + ", "
+          + "queryFragment=" + queryFragment
+          + "}";
+      }
+      return $toString;
     }
   }
 }

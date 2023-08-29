@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.two_heroes_unique.adapter.TestQuery_ResponseAdapter;
 import com.example.two_heroes_unique.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -38,8 +39,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -96,9 +133,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public Luke luke;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(R2 r2, Luke luke) {
       this.r2 = r2;
       this.luke = luke;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.r2 == null) ? (that.r2 == null) : this.r2.equals(that.r2))
+         &&((this.luke == null) ? (that.luke == null) : this.luke.equals(that.luke));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (r2 == null) ? 0 : r2.hashCode();
+        __h *= 1000003;
+        __h ^= (luke == null) ? 0 : luke.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "r2=" + r2 + ", "
+          + "luke=" + luke
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -108,8 +189,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public R2(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof R2) {
+        R2 that = (R2) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "R2{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -124,9 +245,53 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Luke(String id, String name) {
       this.id = id;
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Luke) {
+        Luke that = (Luke) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Luke{"
+          + "id=" + id + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 }

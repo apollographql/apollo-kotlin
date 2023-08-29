@@ -13,11 +13,49 @@ import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_fragment.fragment.selections.StarshipSelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
+import java.lang.String;
 
 public class StarshipImpl implements Fragment<Starship> {
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public StarshipImpl() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof StarshipImpl) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "StarshipImpl{"
+        + "}";
+    }
+    return $toString;
   }
 
   @Override

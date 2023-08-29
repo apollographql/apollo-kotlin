@@ -15,6 +15,7 @@ import com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter;
 import com.example.operationbased2_ex7.selections.TestOperationSelections;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -45,8 +46,44 @@ public class TestOperation implements Query<TestOperation.Data> {
 
   public static final String OPERATION_NAME = "TestOperation";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestOperation() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestOperation) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestOperation{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -101,8 +138,48 @@ public class TestOperation implements Query<TestOperation.Data> {
   public static class Data implements Query.Data {
     public Animal animal;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Animal animal) {
       this.animal = animal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.animal == null) ? (that.animal == null) : this.animal.equals(that.animal));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (animal == null) ? 0 : animal.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "animal=" + animal
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -114,9 +191,53 @@ public class TestOperation implements Query<TestOperation.Data> {
      */
     public OnAnimal onAnimal;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Animal(String __typename, OnAnimal onAnimal) {
       this.__typename = __typename;
       this.onAnimal = onAnimal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Animal) {
+        Animal that = (Animal) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onAnimal == null) ? (that.onAnimal == null) : this.onAnimal.equals(that.onAnimal));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onAnimal == null) ? 0 : onAnimal.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Animal{"
+          + "__typename=" + __typename + ", "
+          + "onAnimal=" + onAnimal
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -135,27 +256,159 @@ public class TestOperation implements Query<TestOperation.Data> {
      */
     public OnPet onPet;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnAnimal(String __typename, String species, OnWarmBlooded onWarmBlooded, OnPet onPet) {
       this.__typename = __typename;
       this.species = species;
       this.onWarmBlooded = onWarmBlooded;
       this.onPet = onPet;
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnAnimal) {
+        OnAnimal that = (OnAnimal) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.species == null) ? (that.species == null) : this.species.equals(that.species))
+         &&((this.onWarmBlooded == null) ? (that.onWarmBlooded == null) : this.onWarmBlooded.equals(that.onWarmBlooded))
+         &&((this.onPet == null) ? (that.onPet == null) : this.onPet.equals(that.onPet));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (species == null) ? 0 : species.hashCode();
+        __h *= 1000003;
+        __h ^= (onWarmBlooded == null) ? 0 : onWarmBlooded.hashCode();
+        __h *= 1000003;
+        __h ^= (onPet == null) ? 0 : onPet.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnAnimal{"
+          + "__typename=" + __typename + ", "
+          + "species=" + species + ", "
+          + "onWarmBlooded=" + onWarmBlooded + ", "
+          + "onPet=" + onPet
+          + "}";
+      }
+      return $toString;
+    }
   }
 
   public static class OnWarmBlooded {
     public Integer temperature;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnWarmBlooded(Integer temperature) {
       this.temperature = temperature;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnWarmBlooded) {
+        OnWarmBlooded that = (OnWarmBlooded) o;
+        return ((this.temperature == null) ? (that.temperature == null) : this.temperature.equals(that.temperature));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (temperature == null) ? 0 : temperature.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnWarmBlooded{"
+          + "temperature=" + temperature
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class OnPet {
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnPet(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnPet) {
+        OnPet that = (OnPet) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnPet{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 }

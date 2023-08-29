@@ -6,6 +6,8 @@
 package com.example.named_fragment_with_variables.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 
 public class UserFragment implements Fragment.Data {
@@ -15,9 +17,57 @@ public class UserFragment implements Fragment.Data {
 
   public String avatar;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public UserFragment(String firstName, String lastName, String avatar) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.avatar = avatar;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof UserFragment) {
+      UserFragment that = (UserFragment) o;
+      return ((this.firstName == null) ? (that.firstName == null) : this.firstName.equals(that.firstName))
+       &&((this.lastName == null) ? (that.lastName == null) : this.lastName.equals(that.lastName))
+       &&((this.avatar == null) ? (that.avatar == null) : this.avatar.equals(that.avatar));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (firstName == null) ? 0 : firstName.hashCode();
+      __h *= 1000003;
+      __h ^= (lastName == null) ? 0 : lastName.hashCode();
+      __h *= 1000003;
+      __h ^= (avatar == null) ? 0 : avatar.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "UserFragment{"
+        + "firstName=" + firstName + ", "
+        + "lastName=" + lastName + ", "
+        + "avatar=" + avatar
+        + "}";
+    }
+    return $toString;
   }
 }

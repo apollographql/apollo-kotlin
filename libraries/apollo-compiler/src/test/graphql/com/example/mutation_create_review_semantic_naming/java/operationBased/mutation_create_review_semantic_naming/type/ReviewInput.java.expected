@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Optional;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 import java.util.List;
 
@@ -60,6 +61,12 @@ public class ReviewInput {
 
   public final Optional<Integer> CapitalizedInt;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public ReviewInput(Integer stars, Optional<Integer> nullableIntFieldWithDefaultValue,
       Optional<String> commentary, ColorInput favoriteColor, Optional<Episode> enumWithDefaultValue,
       Optional<Episode> nonNullableEnumWithDefaultValue, Optional<Episode> nullableEnum,
@@ -94,6 +101,124 @@ public class ReviewInput {
     this.listOfListOfObject = listOfListOfObject;
     this.CapitalizedField = CapitalizedField;
     this.CapitalizedInt = CapitalizedInt;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ReviewInput) {
+      ReviewInput that = (ReviewInput) o;
+      return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
+       &&((this.nullableIntFieldWithDefaultValue == null) ? (that.nullableIntFieldWithDefaultValue == null) : this.nullableIntFieldWithDefaultValue.equals(that.nullableIntFieldWithDefaultValue))
+       &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary))
+       &&((this.favoriteColor == null) ? (that.favoriteColor == null) : this.favoriteColor.equals(that.favoriteColor))
+       &&((this.enumWithDefaultValue == null) ? (that.enumWithDefaultValue == null) : this.enumWithDefaultValue.equals(that.enumWithDefaultValue))
+       &&((this.nonNullableEnumWithDefaultValue == null) ? (that.nonNullableEnumWithDefaultValue == null) : this.nonNullableEnumWithDefaultValue.equals(that.nonNullableEnumWithDefaultValue))
+       &&((this.nullableEnum == null) ? (that.nullableEnum == null) : this.nullableEnum.equals(that.nullableEnum))
+       &&((this.listOfCustomScalar == null) ? (that.listOfCustomScalar == null) : this.listOfCustomScalar.equals(that.listOfCustomScalar))
+       &&((this.customScalar == null) ? (that.customScalar == null) : this.customScalar.equals(that.customScalar))
+       &&((this.listOfEnums == null) ? (that.listOfEnums == null) : this.listOfEnums.equals(that.listOfEnums))
+       &&((this.listOfInt == null) ? (that.listOfInt == null) : this.listOfInt.equals(that.listOfInt))
+       &&((this.listOfString == null) ? (that.listOfString == null) : this.listOfString.equals(that.listOfString))
+       &&((this.listOfStringNonOptional == null) ? (that.listOfStringNonOptional == null) : this.listOfStringNonOptional.equals(that.listOfStringNonOptional))
+       &&((this.listOfInputTypes == null) ? (that.listOfInputTypes == null) : this.listOfInputTypes.equals(that.listOfInputTypes))
+       &&((this.booleanWithDefaultValue == null) ? (that.booleanWithDefaultValue == null) : this.booleanWithDefaultValue.equals(that.booleanWithDefaultValue))
+       &&((this.booleanNonOptional == null) ? (that.booleanNonOptional == null) : this.booleanNonOptional.equals(that.booleanNonOptional))
+       &&((this.listOfListOfString == null) ? (that.listOfListOfString == null) : this.listOfListOfString.equals(that.listOfListOfString))
+       &&((this.listOfListOfEnum == null) ? (that.listOfListOfEnum == null) : this.listOfListOfEnum.equals(that.listOfListOfEnum))
+       &&((this.listOfListOfCustom == null) ? (that.listOfListOfCustom == null) : this.listOfListOfCustom.equals(that.listOfListOfCustom))
+       &&((this.listOfListOfObject == null) ? (that.listOfListOfObject == null) : this.listOfListOfObject.equals(that.listOfListOfObject))
+       &&((this.CapitalizedField == null) ? (that.CapitalizedField == null) : this.CapitalizedField.equals(that.CapitalizedField))
+       &&((this.CapitalizedInt == null) ? (that.CapitalizedInt == null) : this.CapitalizedInt.equals(that.CapitalizedInt));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (stars == null) ? 0 : stars.hashCode();
+      __h *= 1000003;
+      __h ^= (nullableIntFieldWithDefaultValue == null) ? 0 : nullableIntFieldWithDefaultValue.hashCode();
+      __h *= 1000003;
+      __h ^= (commentary == null) ? 0 : commentary.hashCode();
+      __h *= 1000003;
+      __h ^= (favoriteColor == null) ? 0 : favoriteColor.hashCode();
+      __h *= 1000003;
+      __h ^= (enumWithDefaultValue == null) ? 0 : enumWithDefaultValue.hashCode();
+      __h *= 1000003;
+      __h ^= (nonNullableEnumWithDefaultValue == null) ? 0 : nonNullableEnumWithDefaultValue.hashCode();
+      __h *= 1000003;
+      __h ^= (nullableEnum == null) ? 0 : nullableEnum.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfCustomScalar == null) ? 0 : listOfCustomScalar.hashCode();
+      __h *= 1000003;
+      __h ^= (customScalar == null) ? 0 : customScalar.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfEnums == null) ? 0 : listOfEnums.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfInt == null) ? 0 : listOfInt.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfString == null) ? 0 : listOfString.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfStringNonOptional == null) ? 0 : listOfStringNonOptional.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfInputTypes == null) ? 0 : listOfInputTypes.hashCode();
+      __h *= 1000003;
+      __h ^= (booleanWithDefaultValue == null) ? 0 : booleanWithDefaultValue.hashCode();
+      __h *= 1000003;
+      __h ^= (booleanNonOptional == null) ? 0 : booleanNonOptional.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfListOfString == null) ? 0 : listOfListOfString.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfListOfEnum == null) ? 0 : listOfListOfEnum.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfListOfCustom == null) ? 0 : listOfListOfCustom.hashCode();
+      __h *= 1000003;
+      __h ^= (listOfListOfObject == null) ? 0 : listOfListOfObject.hashCode();
+      __h *= 1000003;
+      __h ^= (CapitalizedField == null) ? 0 : CapitalizedField.hashCode();
+      __h *= 1000003;
+      __h ^= (CapitalizedInt == null) ? 0 : CapitalizedInt.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "ReviewInput{"
+        + "stars=" + stars + ", "
+        + "nullableIntFieldWithDefaultValue=" + nullableIntFieldWithDefaultValue + ", "
+        + "commentary=" + commentary + ", "
+        + "favoriteColor=" + favoriteColor + ", "
+        + "enumWithDefaultValue=" + enumWithDefaultValue + ", "
+        + "nonNullableEnumWithDefaultValue=" + nonNullableEnumWithDefaultValue + ", "
+        + "nullableEnum=" + nullableEnum + ", "
+        + "listOfCustomScalar=" + listOfCustomScalar + ", "
+        + "customScalar=" + customScalar + ", "
+        + "listOfEnums=" + listOfEnums + ", "
+        + "listOfInt=" + listOfInt + ", "
+        + "listOfString=" + listOfString + ", "
+        + "listOfStringNonOptional=" + listOfStringNonOptional + ", "
+        + "listOfInputTypes=" + listOfInputTypes + ", "
+        + "booleanWithDefaultValue=" + booleanWithDefaultValue + ", "
+        + "booleanNonOptional=" + booleanNonOptional + ", "
+        + "listOfListOfString=" + listOfListOfString + ", "
+        + "listOfListOfEnum=" + listOfListOfEnum + ", "
+        + "listOfListOfCustom=" + listOfListOfCustom + ", "
+        + "listOfListOfObject=" + listOfListOfObject + ", "
+        + "CapitalizedField=" + CapitalizedField + ", "
+        + "CapitalizedInt=" + CapitalizedInt
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {

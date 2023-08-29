@@ -42,8 +42,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -100,9 +136,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public List<Object> objects;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Yield yield, List<Object> objects) {
       this.yield = yield;
       this.objects = objects;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.yield == null) ? (that.yield == null) : this.yield.equals(that.yield))
+         &&((this.objects == null) ? (that.objects == null) : this.objects.equals(that.objects));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (yield == null) ? 0 : yield.hashCode();
+        __h *= 1000003;
+        __h ^= (objects == null) ? 0 : objects.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "yield=" + yield + ", "
+          + "objects=" + objects
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -117,9 +197,53 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String it;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Yield(String while_, String it) {
       this.while_ = while_;
       this.it = it;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Yield) {
+        Yield that = (Yield) o;
+        return ((this.while_ == null) ? (that.while_ == null) : this.while_.equals(that.while_))
+         &&((this.it == null) ? (that.it == null) : this.it.equals(that.it));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (while_ == null) ? 0 : while_.hashCode();
+        __h *= 1000003;
+        __h ^= (it == null) ? 0 : it.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Yield{"
+          + "while_=" + while_ + ", "
+          + "it=" + it
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -131,9 +255,53 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnCharacter onCharacter;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Object(String __typename, OnCharacter onCharacter) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Object) {
+        Object that = (Object) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onCharacter == null) ? 0 : onCharacter.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Object{"
+          + "__typename=" + __typename + ", "
+          + "onCharacter=" + onCharacter
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -143,8 +311,48 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnCharacter(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnCharacter) {
+        OnCharacter that = (OnCharacter) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnCharacter{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 }

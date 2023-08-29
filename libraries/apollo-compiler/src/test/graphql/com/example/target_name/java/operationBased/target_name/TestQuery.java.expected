@@ -55,11 +55,59 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<renamedEnum> enum_;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery(Optional<renamedInput> input, Optional<java.lang.Object> scalar,
       Optional<renamedEnum> enum_) {
     this.input = input;
     this.scalar = scalar;
     this.enum_ = enum_;
+  }
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      TestQuery that = (TestQuery) o;
+      return ((this.input == null) ? (that.input == null) : this.input.equals(that.input))
+       &&((this.scalar == null) ? (that.scalar == null) : this.scalar.equals(that.scalar))
+       &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (input == null) ? 0 : input.hashCode();
+      __h *= 1000003;
+      __h ^= (scalar == null) ? 0 : scalar.hashCode();
+      __h *= 1000003;
+      __h ^= (enum_ == null) ? 0 : enum_.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "input=" + input + ", "
+        + "scalar=" + scalar + ", "
+        + "enum_=" + enum_
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -143,6 +191,12 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public renamedEnum enum_;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Object object, Interface interface_, Union union, java.lang.Object scalar,
         renamedEnum enum_) {
       this.object = object;
@@ -151,21 +205,151 @@ public class TestQuery implements Query<TestQuery.Data> {
       this.scalar = scalar;
       this.enum_ = enum_;
     }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.object == null) ? (that.object == null) : this.object.equals(that.object))
+         &&((this.interface_ == null) ? (that.interface_ == null) : this.interface_.equals(that.interface_))
+         &&((this.union == null) ? (that.union == null) : this.union.equals(that.union))
+         &&((this.scalar == null) ? (that.scalar == null) : this.scalar.equals(that.scalar))
+         &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (object == null) ? 0 : object.hashCode();
+        __h *= 1000003;
+        __h ^= (interface_ == null) ? 0 : interface_.hashCode();
+        __h *= 1000003;
+        __h ^= (union == null) ? 0 : union.hashCode();
+        __h *= 1000003;
+        __h ^= (scalar == null) ? 0 : scalar.hashCode();
+        __h *= 1000003;
+        __h ^= (enum_ == null) ? 0 : enum_.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "object=" + object + ", "
+          + "interface_=" + interface_ + ", "
+          + "union=" + union + ", "
+          + "scalar=" + scalar + ", "
+          + "enum_=" + enum_
+          + "}";
+      }
+      return $toString;
+    }
   }
 
   public static class Object {
     public String field;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Object(String field) {
       this.field = field;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Object) {
+        Object that = (Object) o;
+        return ((this.field == null) ? (that.field == null) : this.field.equals(that.field));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Object{"
+          + "field=" + field
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class Interface {
     public String field;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Interface(String field) {
       this.field = field;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Interface) {
+        Interface that = (Interface) o;
+        return ((this.field == null) ? (that.field == null) : this.field.equals(that.field));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Interface{"
+          + "field=" + field
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -177,17 +361,101 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnReservedObject onReservedObject;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Union(String __typename, OnReservedObject onReservedObject) {
       this.__typename = __typename;
       this.onReservedObject = onReservedObject;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Union) {
+        Union that = (Union) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onReservedObject == null) ? (that.onReservedObject == null) : this.onReservedObject.equals(that.onReservedObject));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onReservedObject == null) ? 0 : onReservedObject.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Union{"
+          + "__typename=" + __typename + ", "
+          + "onReservedObject=" + onReservedObject
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class OnReservedObject {
     public String field;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnReservedObject(String field) {
       this.field = field;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnReservedObject) {
+        OnReservedObject that = (OnReservedObject) o;
+        return ((this.field == null) ? (that.field == null) : this.field.equals(that.field));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnReservedObject{"
+          + "field=" + field
+          + "}";
+      }
+      return $toString;
     }
   }
 }

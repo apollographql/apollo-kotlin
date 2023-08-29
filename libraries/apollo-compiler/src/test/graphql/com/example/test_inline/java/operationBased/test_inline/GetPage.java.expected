@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.adapter.GetPage_ResponseAdapter;
 import com.example.test_inline.selections.GetPageSelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -46,8 +47,44 @@ public class GetPage implements Query<GetPage.Data> {
 
   public static final String OPERATION_NAME = "GetPage";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public GetPage() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof GetPage) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "GetPage{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -102,8 +139,48 @@ public class GetPage implements Query<GetPage.Data> {
   public static class Data implements Query.Data {
     public Collection collection;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Collection collection) {
       this.collection = collection;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.collection == null) ? (that.collection == null) : this.collection.equals(that.collection));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (collection == null) ? 0 : collection.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "collection=" + collection
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -117,27 +194,155 @@ public class GetPage implements Query<GetPage.Data> {
      */
     public OnParticularCollection onParticularCollection;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Collection(String __typename, List<Item> items,
         OnParticularCollection onParticularCollection) {
       this.__typename = __typename;
       this.items = items;
       this.onParticularCollection = onParticularCollection;
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Collection) {
+        Collection that = (Collection) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.items == null) ? (that.items == null) : this.items.equals(that.items))
+         &&((this.onParticularCollection == null) ? (that.onParticularCollection == null) : this.onParticularCollection.equals(that.onParticularCollection));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (items == null) ? 0 : items.hashCode();
+        __h *= 1000003;
+        __h ^= (onParticularCollection == null) ? 0 : onParticularCollection.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Collection{"
+          + "__typename=" + __typename + ", "
+          + "items=" + items + ", "
+          + "onParticularCollection=" + onParticularCollection
+          + "}";
+      }
+      return $toString;
+    }
   }
 
   public static class Item {
     public String title;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Item(String title) {
       this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Item) {
+        Item that = (Item) o;
+        return ((this.title == null) ? (that.title == null) : this.title.equals(that.title));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (title == null) ? 0 : title.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Item{"
+          + "title=" + title
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class OnParticularCollection {
     public List<Item1> items;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnParticularCollection(List<Item1> items) {
       this.items = items;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnParticularCollection) {
+        OnParticularCollection that = (OnParticularCollection) o;
+        return ((this.items == null) ? (that.items == null) : this.items.equals(that.items));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (items == null) ? 0 : items.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnParticularCollection{"
+          + "items=" + items
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -149,17 +354,101 @@ public class GetPage implements Query<GetPage.Data> {
      */
     public OnParticularItem onParticularItem;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Item1(String __typename, OnParticularItem onParticularItem) {
       this.__typename = __typename;
       this.onParticularItem = onParticularItem;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Item1) {
+        Item1 that = (Item1) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onParticularItem == null) ? (that.onParticularItem == null) : this.onParticularItem.equals(that.onParticularItem));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onParticularItem == null) ? 0 : onParticularItem.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Item1{"
+          + "__typename=" + __typename + ", "
+          + "onParticularItem=" + onParticularItem
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class OnParticularItem {
     public String image;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnParticularItem(String image) {
       this.image = image;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnParticularItem) {
+        OnParticularItem that = (OnParticularItem) o;
+        return ((this.image == null) ? (that.image == null) : this.image.equals(that.image));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (image == null) ? 0 : image.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnParticularItem{"
+          + "image=" + image
+          + "}";
+      }
+      return $toString;
     }
   }
 }

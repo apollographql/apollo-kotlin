@@ -6,6 +6,8 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 
 public class HeroFragment implements Fragment.Data {
@@ -14,7 +16,47 @@ public class HeroFragment implements Fragment.Data {
    */
   public String name;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public HeroFragment(String name) {
     this.name = name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof HeroFragment) {
+      HeroFragment that = (HeroFragment) o;
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "HeroFragment{"
+        + "name=" + name
+        + "}";
+    }
+    return $toString;
   }
 }

@@ -15,6 +15,7 @@ import com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter;
 import com.example.decapitalized_fields.fragment.HorseFragment;
 import com.example.decapitalized_fields.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -48,8 +49,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -104,8 +141,48 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Horse horse;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Horse horse) {
       this.horse = horse;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.horse == null) ? (that.horse == null) : this.horse.equals(that.horse));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (horse == null) ? 0 : horse.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "horse=" + horse
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -124,27 +201,159 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public HorseFragment horseFragment;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Horse(String __typename, String donkey, OnHorse onHorse, HorseFragment horseFragment) {
       this.__typename = __typename;
       this.donkey = donkey;
       this.onHorse = onHorse;
       this.horseFragment = horseFragment;
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Horse) {
+        Horse that = (Horse) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.donkey == null) ? (that.donkey == null) : this.donkey.equals(that.donkey))
+         &&((this.onHorse == null) ? (that.onHorse == null) : this.onHorse.equals(that.onHorse))
+         &&((this.horseFragment == null) ? (that.horseFragment == null) : this.horseFragment.equals(that.horseFragment));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (donkey == null) ? 0 : donkey.hashCode();
+        __h *= 1000003;
+        __h ^= (onHorse == null) ? 0 : onHorse.hashCode();
+        __h *= 1000003;
+        __h ^= (horseFragment == null) ? 0 : horseFragment.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Horse{"
+          + "__typename=" + __typename + ", "
+          + "donkey=" + donkey + ", "
+          + "onHorse=" + onHorse + ", "
+          + "horseFragment=" + horseFragment
+          + "}";
+      }
+      return $toString;
+    }
   }
 
   public static class OnHorse {
     public Cow cow;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHorse(Cow cow) {
       this.cow = cow;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHorse) {
+        OnHorse that = (OnHorse) o;
+        return ((this.cow == null) ? (that.cow == null) : this.cow.equals(that.cow));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (cow == null) ? 0 : cow.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHorse{"
+          + "cow=" + cow
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class Cow {
     public String moo;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Cow(String moo) {
       this.moo = moo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Cow) {
+        Cow that = (Cow) o;
+        return ((this.moo == null) ? (that.moo == null) : this.moo.equals(that.moo));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (moo == null) ? 0 : moo.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Cow{"
+          + "moo=" + moo
+          + "}";
+      }
+      return $toString;
     }
   }
 }

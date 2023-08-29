@@ -15,6 +15,7 @@ import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter;
 import com.example.java8annotation.adapter.LoginBarber_VariablesAdapter;
 import com.example.java8annotation.selections.LoginBarberSelections;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +40,48 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   @NotNull
   public final com.example.java8annotation.type.Login input;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public LoginBarber(@NotNull com.example.java8annotation.type.Login input) {
     this.input = input;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof LoginBarber) {
+      LoginBarber that = (LoginBarber) o;
+      return ((this.input == null) ? (that.input == null) : this.input.equals(that.input));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (input == null) ? 0 : input.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "LoginBarber{"
+        + "input=" + input
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -103,8 +144,48 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     @NotNull
     public Login login;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(@NotNull Login login) {
       this.login = login;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.login == null) ? (that.login == null) : this.login.equals(that.login));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (login == null) ? 0 : login.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "login=" + login
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -112,8 +193,48 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     @NotNull
     public String response;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Login(@NotNull String response) {
       this.response = response;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Login) {
+        Login that = (Login) o;
+        return ((this.response == null) ? (that.response == null) : this.response.equals(that.response));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (response == null) ? 0 : response.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Login{"
+          + "response=" + response
+          + "}";
+      }
+      return $toString;
     }
   }
 }

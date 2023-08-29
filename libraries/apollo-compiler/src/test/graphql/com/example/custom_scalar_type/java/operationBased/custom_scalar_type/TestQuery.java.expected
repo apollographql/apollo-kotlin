@@ -44,8 +44,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -100,8 +136,48 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Hero hero;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero) {
       this.hero = hero;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -141,6 +217,12 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public List<String> links;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
         Object fieldWithUnsupportedType, String profileLink, List<String> links) {
       this.id = id;
@@ -150,6 +232,64 @@ public class TestQuery implements Query<TestQuery.Data> {
       this.fieldWithUnsupportedType = fieldWithUnsupportedType;
       this.profileLink = profileLink;
       this.links = links;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
+         &&((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
+         &&((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType))
+         &&((this.profileLink == null) ? (that.profileLink == null) : this.profileLink.equals(that.profileLink))
+         &&((this.links == null) ? (that.links == null) : this.links.equals(that.links));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+        __h *= 1000003;
+        __h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
+        __h *= 1000003;
+        __h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
+        __h *= 1000003;
+        __h ^= (profileLink == null) ? 0 : profileLink.hashCode();
+        __h *= 1000003;
+        __h ^= (links == null) ? 0 : links.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "id=" + id + ", "
+          + "name=" + name + ", "
+          + "birthDate=" + birthDate + ", "
+          + "appearanceDates=" + appearanceDates + ", "
+          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType + ", "
+          + "profileLink=" + profileLink + ", "
+          + "links=" + links
+          + "}";
+      }
+      return $toString;
     }
   }
 }

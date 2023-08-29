@@ -21,6 +21,7 @@ import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDet
 import com.example.fragment_spread_with_include_directive.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -73,6 +74,12 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<Boolean> optionalWithNoDefault;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery(Boolean withDetails, Boolean skipHumanDetails,
       Optional<Boolean> optionalWithDefaultFalse, Optional<Boolean> optionalWithDefaultTrue,
       Optional<Boolean> optionalWithNoDefault) {
@@ -81,6 +88,56 @@ public class TestQuery implements Query<TestQuery.Data> {
     this.optionalWithDefaultFalse = optionalWithDefaultFalse;
     this.optionalWithDefaultTrue = optionalWithDefaultTrue;
     this.optionalWithNoDefault = optionalWithNoDefault;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      TestQuery that = (TestQuery) o;
+      return ((this.withDetails == null) ? (that.withDetails == null) : this.withDetails.equals(that.withDetails))
+       &&((this.skipHumanDetails == null) ? (that.skipHumanDetails == null) : this.skipHumanDetails.equals(that.skipHumanDetails))
+       &&((this.optionalWithDefaultFalse == null) ? (that.optionalWithDefaultFalse == null) : this.optionalWithDefaultFalse.equals(that.optionalWithDefaultFalse))
+       &&((this.optionalWithDefaultTrue == null) ? (that.optionalWithDefaultTrue == null) : this.optionalWithDefaultTrue.equals(that.optionalWithDefaultTrue))
+       &&((this.optionalWithNoDefault == null) ? (that.optionalWithNoDefault == null) : this.optionalWithNoDefault.equals(that.optionalWithNoDefault));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (withDetails == null) ? 0 : withDetails.hashCode();
+      __h *= 1000003;
+      __h ^= (skipHumanDetails == null) ? 0 : skipHumanDetails.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithDefaultFalse == null) ? 0 : optionalWithDefaultFalse.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithDefaultTrue == null) ? 0 : optionalWithDefaultTrue.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithNoDefault == null) ? 0 : optionalWithNoDefault.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "withDetails=" + withDetails + ", "
+        + "skipHumanDetails=" + skipHumanDetails + ", "
+        + "optionalWithDefaultFalse=" + optionalWithDefaultFalse + ", "
+        + "optionalWithDefaultTrue=" + optionalWithDefaultTrue + ", "
+        + "optionalWithNoDefault=" + optionalWithNoDefault
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -172,9 +229,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public Boolean getBoolean;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero, Boolean getBoolean) {
       this.hero = hero;
       this.getBoolean = getBoolean;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero))
+         &&((this.getBoolean == null) ? (that.getBoolean == null) : this.getBoolean.equals(that.getBoolean));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        __h *= 1000003;
+        __h ^= (getBoolean == null) ? 0 : getBoolean.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero + ", "
+          + "getBoolean=" + getBoolean
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -206,6 +307,12 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OtherDroidDetails otherDroidDetails;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(String __typename, String id, HeroDetails heroDetails, HumanDetails humanDetails,
         DroidDetails droidDetails, OtherDroidDetails otherDroidDetails) {
       this.__typename = __typename;
@@ -214,6 +321,60 @@ public class TestQuery implements Query<TestQuery.Data> {
       this.humanDetails = humanDetails;
       this.droidDetails = droidDetails;
       this.otherDroidDetails = otherDroidDetails;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         &&((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails))
+         &&((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
+         &&((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails))
+         &&((this.otherDroidDetails == null) ? (that.otherDroidDetails == null) : this.otherDroidDetails.equals(that.otherDroidDetails));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        __h *= 1000003;
+        __h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (otherDroidDetails == null) ? 0 : otherDroidDetails.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "id=" + id + ", "
+          + "heroDetails=" + heroDetails + ", "
+          + "humanDetails=" + humanDetails + ", "
+          + "droidDetails=" + droidDetails + ", "
+          + "otherDroidDetails=" + otherDroidDetails
+          + "}";
+      }
+      return $toString;
     }
   }
 }

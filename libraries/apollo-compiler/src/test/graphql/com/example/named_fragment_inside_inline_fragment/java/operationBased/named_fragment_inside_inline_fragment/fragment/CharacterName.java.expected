@@ -6,6 +6,8 @@
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 
 public class CharacterName implements Fragment.Data {
@@ -14,7 +16,47 @@ public class CharacterName implements Fragment.Data {
    */
   public String name;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public CharacterName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof CharacterName) {
+      CharacterName that = (CharacterName) o;
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "CharacterName{"
+        + "name=" + name
+        + "}";
+    }
+    return $toString;
   }
 }

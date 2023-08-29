@@ -17,6 +17,7 @@ import com.example.fragments_with_defer_and_include_directives.fragment.DroidDet
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadMultipleWithDeferAndIncludeSelections;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -55,12 +56,64 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
   public final Boolean cond4;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public SpreadMultipleWithDeferAndInclude(Boolean cond1, Boolean cond2, Boolean cond3,
       Boolean cond4) {
     this.cond1 = cond1;
     this.cond2 = cond2;
     this.cond3 = cond3;
     this.cond4 = cond4;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof SpreadMultipleWithDeferAndInclude) {
+      SpreadMultipleWithDeferAndInclude that = (SpreadMultipleWithDeferAndInclude) o;
+      return ((this.cond1 == null) ? (that.cond1 == null) : this.cond1.equals(that.cond1))
+       &&((this.cond2 == null) ? (that.cond2 == null) : this.cond2.equals(that.cond2))
+       &&((this.cond3 == null) ? (that.cond3 == null) : this.cond3.equals(that.cond3))
+       &&((this.cond4 == null) ? (that.cond4 == null) : this.cond4.equals(that.cond4));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (cond1 == null) ? 0 : cond1.hashCode();
+      __h *= 1000003;
+      __h ^= (cond2 == null) ? 0 : cond2.hashCode();
+      __h *= 1000003;
+      __h ^= (cond3 == null) ? 0 : cond3.hashCode();
+      __h *= 1000003;
+      __h ^= (cond4 == null) ? 0 : cond4.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "SpreadMultipleWithDeferAndInclude{"
+        + "cond1=" + cond1 + ", "
+        + "cond2=" + cond2 + ", "
+        + "cond3=" + cond3 + ", "
+        + "cond4=" + cond4
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -143,8 +196,48 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
   public static class Data implements Query.Data {
     public Hero hero;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero) {
       this.hero = hero;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -156,9 +249,53 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
      */
     public DroidDetails droidDetails;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(String __typename, DroidDetails droidDetails) {
       this.__typename = __typename;
       this.droidDetails = droidDetails;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "droidDetails=" + droidDetails
+          + "}";
+      }
+      return $toString;
     }
   }
 }

@@ -16,6 +16,7 @@ import com.example.fragments_with_defer_and_include_directives.adapter.InlineMul
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferAndIncludeSelections;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -62,12 +63,64 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
   public final Boolean cond4;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public InlineMultipleWithDeferAndInclude(Boolean cond1, Boolean cond2, Boolean cond3,
       Boolean cond4) {
     this.cond1 = cond1;
     this.cond2 = cond2;
     this.cond3 = cond3;
     this.cond4 = cond4;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof InlineMultipleWithDeferAndInclude) {
+      InlineMultipleWithDeferAndInclude that = (InlineMultipleWithDeferAndInclude) o;
+      return ((this.cond1 == null) ? (that.cond1 == null) : this.cond1.equals(that.cond1))
+       &&((this.cond2 == null) ? (that.cond2 == null) : this.cond2.equals(that.cond2))
+       &&((this.cond3 == null) ? (that.cond3 == null) : this.cond3.equals(that.cond3))
+       &&((this.cond4 == null) ? (that.cond4 == null) : this.cond4.equals(that.cond4));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (cond1 == null) ? 0 : cond1.hashCode();
+      __h *= 1000003;
+      __h ^= (cond2 == null) ? 0 : cond2.hashCode();
+      __h *= 1000003;
+      __h ^= (cond3 == null) ? 0 : cond3.hashCode();
+      __h *= 1000003;
+      __h ^= (cond4 == null) ? 0 : cond4.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "InlineMultipleWithDeferAndInclude{"
+        + "cond1=" + cond1 + ", "
+        + "cond2=" + cond2 + ", "
+        + "cond3=" + cond3 + ", "
+        + "cond4=" + cond4
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -150,8 +203,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
   public static class Data implements Query.Data {
     public Hero hero;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero) {
       this.hero = hero;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -188,6 +281,12 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public OnDroidDeferE_fourth onDroidDeferE_fourth;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(String __typename, OnDroidIfCond1 onDroidIfCond1,
         OnDroidIfNotCond2 onDroidIfNotCond2, OnDroidDeferE_first onDroidDeferE_first,
         OnDroidDeferE_second onDroidDeferE_second, OnDroidDeferE_third onDroidDeferE_third,
@@ -200,6 +299,64 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       this.onDroidDeferE_third = onDroidDeferE_third;
       this.onDroidDeferE_fourth = onDroidDeferE_fourth;
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onDroidIfCond1 == null) ? (that.onDroidIfCond1 == null) : this.onDroidIfCond1.equals(that.onDroidIfCond1))
+         &&((this.onDroidIfNotCond2 == null) ? (that.onDroidIfNotCond2 == null) : this.onDroidIfNotCond2.equals(that.onDroidIfNotCond2))
+         &&((this.onDroidDeferE_first == null) ? (that.onDroidDeferE_first == null) : this.onDroidDeferE_first.equals(that.onDroidDeferE_first))
+         &&((this.onDroidDeferE_second == null) ? (that.onDroidDeferE_second == null) : this.onDroidDeferE_second.equals(that.onDroidDeferE_second))
+         &&((this.onDroidDeferE_third == null) ? (that.onDroidDeferE_third == null) : this.onDroidDeferE_third.equals(that.onDroidDeferE_third))
+         &&((this.onDroidDeferE_fourth == null) ? (that.onDroidDeferE_fourth == null) : this.onDroidDeferE_fourth.equals(that.onDroidDeferE_fourth));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidIfCond1 == null) ? 0 : onDroidIfCond1.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidIfNotCond2 == null) ? 0 : onDroidIfNotCond2.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidDeferE_first == null) ? 0 : onDroidDeferE_first.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidDeferE_second == null) ? 0 : onDroidDeferE_second.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidDeferE_third == null) ? 0 : onDroidDeferE_third.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroidDeferE_fourth == null) ? 0 : onDroidDeferE_fourth.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "onDroidIfCond1=" + onDroidIfCond1 + ", "
+          + "onDroidIfNotCond2=" + onDroidIfNotCond2 + ", "
+          + "onDroidDeferE_first=" + onDroidDeferE_first + ", "
+          + "onDroidDeferE_second=" + onDroidDeferE_second + ", "
+          + "onDroidDeferE_third=" + onDroidDeferE_third + ", "
+          + "onDroidDeferE_fourth=" + onDroidDeferE_fourth
+          + "}";
+      }
+      return $toString;
+    }
   }
 
   public static class OnDroidIfCond1 {
@@ -208,8 +365,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidIfCond1(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidIfCond1) {
+        OnDroidIfCond1 that = (OnDroidIfCond1) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidIfCond1{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -219,8 +416,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String id;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidIfNotCond2(String id) {
       this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidIfNotCond2) {
+        OnDroidIfNotCond2 that = (OnDroidIfNotCond2) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidIfNotCond2{"
+          + "id=" + id
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -230,8 +467,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidDeferE_first(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidDeferE_first) {
+        OnDroidDeferE_first that = (OnDroidDeferE_first) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidDeferE_first{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -241,8 +518,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String id;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidDeferE_second(String id) {
       this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidDeferE_second) {
+        OnDroidDeferE_second that = (OnDroidDeferE_second) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidDeferE_second{"
+          + "id=" + id
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -252,8 +569,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidDeferE_third(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidDeferE_third) {
+        OnDroidDeferE_third that = (OnDroidDeferE_third) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidDeferE_third{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -263,8 +620,48 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
      */
     public String id;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroidDeferE_fourth(String id) {
       this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroidDeferE_fourth) {
+        OnDroidDeferE_fourth that = (OnDroidDeferE_fourth) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroidDeferE_fourth{"
+          + "id=" + id
+          + "}";
+      }
+      return $toString;
     }
   }
 }

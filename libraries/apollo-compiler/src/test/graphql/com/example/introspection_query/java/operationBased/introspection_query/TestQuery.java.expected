@@ -15,6 +15,7 @@ import com.example.introspection_query.adapter.TestQuery_ResponseAdapter;
 import com.example.introspection_query.selections.TestQuerySelections;
 import com.example.introspection_query.type.__TypeKind;
 import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -45,8 +46,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -103,9 +140,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public __Type __type;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(__Schema __schema, __Type __type) {
       this.__schema = __schema;
       this.__type = __type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.__schema == null) ? (that.__schema == null) : this.__schema.equals(that.__schema))
+         &&((this.__type == null) ? (that.__type == null) : this.__type.equals(that.__type));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__schema == null) ? 0 : __schema.hashCode();
+        __h *= 1000003;
+        __h ^= (__type == null) ? 0 : __type.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "__schema=" + __schema + ", "
+          + "__type=" + __type
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -114,25 +195,149 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public List<Type> types;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public __Schema(QueryType queryType, List<Type> types) {
       this.queryType = queryType;
       this.types = types;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof __Schema) {
+        __Schema that = (__Schema) o;
+        return ((this.queryType == null) ? (that.queryType == null) : this.queryType.equals(that.queryType))
+         &&((this.types == null) ? (that.types == null) : this.types.equals(that.types));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (queryType == null) ? 0 : queryType.hashCode();
+        __h *= 1000003;
+        __h ^= (types == null) ? 0 : types.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "__Schema{"
+          + "queryType=" + queryType + ", "
+          + "types=" + types
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class QueryType {
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public QueryType(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof QueryType) {
+        QueryType that = (QueryType) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "QueryType{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
   public static class Type {
     public String name;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Type(String name) {
       this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Type) {
+        Type that = (Type) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Type{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -141,9 +346,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public __TypeKind kind;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public __Type(String name, __TypeKind kind) {
       this.name = name;
       this.kind = kind;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof __Type) {
+        __Type that = (__Type) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.kind == null) ? (that.kind == null) : this.kind.equals(that.kind));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (kind == null) ? 0 : kind.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "__Type{"
+          + "name=" + name + ", "
+          + "kind=" + kind
+          + "}";
+      }
+      return $toString;
     }
   }
 }

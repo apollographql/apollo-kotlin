@@ -7,6 +7,8 @@ package com.example.simple_fragment_with_inline_fragments.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
 import java.lang.Double;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 import java.util.List;
 
@@ -21,9 +23,53 @@ public class HeroDetails implements Fragment.Data {
    */
   public List<Friend> friends;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public HeroDetails(String name, List<Friend> friends) {
     this.name = name;
     this.friends = friends;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof HeroDetails) {
+      HeroDetails that = (HeroDetails) o;
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+       &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (friends == null) ? 0 : friends.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "HeroDetails{"
+        + "name=" + name + ", "
+        + "friends=" + friends
+        + "}";
+    }
+    return $toString;
   }
 
   public static class Friend {
@@ -44,11 +90,63 @@ public class HeroDetails implements Fragment.Data {
      */
     public OnDroid onDroid;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Friend(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
       this.onDroid = onDroid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Friend) {
+        Friend that = (Friend) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman))
+         &&((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroid == null) ? 0 : onDroid.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Friend{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "onHuman=" + onHuman + ", "
+          + "onDroid=" + onDroid
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -58,8 +156,48 @@ public class HeroDetails implements Fragment.Data {
      */
     public Double height;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman(Double height) {
       this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman) {
+        OnHuman that = (OnHuman) o;
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman{"
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -69,8 +207,48 @@ public class HeroDetails implements Fragment.Data {
      */
     public String primaryFunction;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroid(String primaryFunction) {
       this.primaryFunction = primaryFunction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroid) {
+        OnDroid that = (OnDroid) o;
+        return ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroid{"
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+      return $toString;
     }
   }
 }

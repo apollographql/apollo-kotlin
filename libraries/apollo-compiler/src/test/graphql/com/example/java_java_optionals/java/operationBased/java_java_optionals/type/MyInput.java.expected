@@ -6,6 +6,9 @@
 package com.example.java_java_optionals.type;
 
 import java.lang.Integer;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,11 +19,59 @@ public class MyInput {
 
   public final Optional<Integer> nonNullableIntWithDefault;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public MyInput(Optional<Optional<Integer>> nullableInt, int nonNullableInt,
       Optional<Integer> nonNullableIntWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof MyInput) {
+      MyInput that = (MyInput) o;
+      return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
+       &&this.nonNullableInt == that.nonNullableInt
+       &&((this.nonNullableIntWithDefault == null) ? (that.nonNullableIntWithDefault == null) : this.nonNullableIntWithDefault.equals(that.nonNullableIntWithDefault));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+      __h *= 1000003;
+      __h ^= nonNullableInt;
+      __h *= 1000003;
+      __h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "MyInput{"
+        + "nullableInt=" + nullableInt + ", "
+        + "nonNullableInt=" + nonNullableInt + ", "
+        + "nonNullableIntWithDefault=" + nonNullableIntWithDefault
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {

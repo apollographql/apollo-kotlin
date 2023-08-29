@@ -6,6 +6,8 @@
 package com.example.nested_named_fragments.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 
 public class PilotFragment implements Fragment.Data {
@@ -19,9 +21,53 @@ public class PilotFragment implements Fragment.Data {
    */
   public Homeworld homeworld;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public PilotFragment(String name, Homeworld homeworld) {
     this.name = name;
     this.homeworld = homeworld;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof PilotFragment) {
+      PilotFragment that = (PilotFragment) o;
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+       &&((this.homeworld == null) ? (that.homeworld == null) : this.homeworld.equals(that.homeworld));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (homeworld == null) ? 0 : homeworld.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "PilotFragment{"
+        + "name=" + name + ", "
+        + "homeworld=" + homeworld
+        + "}";
+    }
+    return $toString;
   }
 
   public static class Homeworld {
@@ -32,9 +78,53 @@ public class PilotFragment implements Fragment.Data {
      */
     public PlanetFragment planetFragment;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Homeworld(String __typename, PlanetFragment planetFragment) {
       this.__typename = __typename;
       this.planetFragment = planetFragment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Homeworld) {
+        Homeworld that = (Homeworld) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.planetFragment == null) ? (that.planetFragment == null) : this.planetFragment.equals(that.planetFragment));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (planetFragment == null) ? 0 : planetFragment.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Homeworld{"
+          + "__typename=" + __typename + ", "
+          + "planetFragment=" + planetFragment
+          + "}";
+      }
+      return $toString;
     }
   }
 }

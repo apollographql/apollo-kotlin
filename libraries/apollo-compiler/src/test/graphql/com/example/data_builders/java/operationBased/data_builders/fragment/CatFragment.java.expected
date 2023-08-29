@@ -6,12 +6,54 @@
 package com.example.data_builders.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 
 public class CatFragment implements Fragment.Data {
   public String meow;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public CatFragment(String meow) {
     this.meow = meow;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof CatFragment) {
+      CatFragment that = (CatFragment) o;
+      return ((this.meow == null) ? (that.meow == null) : this.meow.equals(that.meow));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (meow == null) ? 0 : meow.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "CatFragment{"
+        + "meow=" + meow
+        + "}";
+    }
+    return $toString;
   }
 }

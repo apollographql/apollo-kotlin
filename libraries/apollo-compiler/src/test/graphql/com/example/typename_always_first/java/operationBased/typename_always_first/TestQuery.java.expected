@@ -15,6 +15,7 @@ import com.example.typename_always_first.adapter.TestQuery_ResponseAdapter;
 import com.example.typename_always_first.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -45,8 +46,44 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public TestQuery() {
 
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestQuery) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "TestQuery{"
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
@@ -103,9 +140,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public String __typename;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Data(Hero hero, String __typename) {
       this.hero = hero;
       this.__typename = __typename;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero))
+         &&((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero + ", "
+          + "__typename=" + __typename
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -122,10 +203,58 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnDroid onDroid;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public Hero(String __typename, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.onHuman = onHuman;
       this.onDroid = onDroid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman))
+         &&((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        __h *= 1000003;
+        __h ^= (onDroid == null) ? 0 : onDroid.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "onHuman=" + onHuman + ", "
+          + "onDroid=" + onDroid
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -137,9 +266,53 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public String __typename;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnHuman(Double height, String __typename) {
       this.height = height;
       this.__typename = __typename;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnHuman) {
+        OnHuman that = (OnHuman) o;
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height))
+         &&((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (height == null) ? 0 : height.hashCode();
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnHuman{"
+          + "height=" + height + ", "
+          + "__typename=" + __typename
+          + "}";
+      }
+      return $toString;
     }
   }
 
@@ -156,10 +329,58 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String primaryFunction;
 
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
     public OnDroid(String name, String __typename, String primaryFunction) {
       this.name = name;
       this.__typename = __typename;
       this.primaryFunction = primaryFunction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof OnDroid) {
+        OnDroid that = (OnDroid) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        $hashCode = __h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "OnDroid{"
+          + "name=" + name + ", "
+          + "__typename=" + __typename + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+      return $toString;
     }
   }
 }

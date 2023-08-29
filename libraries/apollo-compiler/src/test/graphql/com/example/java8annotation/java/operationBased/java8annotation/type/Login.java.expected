@@ -5,6 +5,8 @@
 //
 package com.example.java8annotation.type;
 
+import java.lang.Object;
+import java.lang.Override;
 import java.lang.String;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,8 +14,48 @@ public class Login {
   @NotNull
   public final String email;
 
+  private transient volatile int $hashCode;
+
+  private transient volatile boolean $hashCodeMemoized;
+
+  private transient volatile String $toString;
+
   public Login(@NotNull String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Login) {
+      Login that = (Login) o;
+      return ((this.email == null) ? (that.email == null) : this.email.equals(that.email));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (email == null) ? 0 : email.hashCode();
+      $hashCode = __h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public String toString() {
+    if ($toString == null) {
+      $toString = "Login{"
+        + "email=" + email
+        + "}";
+    }
+    return $toString;
   }
 
   public static Builder builder() {
