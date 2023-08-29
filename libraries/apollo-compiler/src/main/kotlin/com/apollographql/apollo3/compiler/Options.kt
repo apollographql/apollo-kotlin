@@ -118,7 +118,7 @@ enum class GeneratedMethod {
    */
   DATA_CLASS,
   ;
-  internal companion object {
+  companion object {
 
     fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
       return when(targetLanguage) {
