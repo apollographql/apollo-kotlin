@@ -16,7 +16,6 @@ import com.example.enum_field.selections.TestQuerySelections;
 import com.example.enum_field.type.Gravity;
 import com.example.enum_field.type.GravityAsEnum;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -36,44 +35,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -130,53 +93,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public GravityAsEnum gravityAsEnum;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Gravity gravity, GravityAsEnum gravityAsEnum) {
       this.gravity = gravity;
       this.gravityAsEnum = gravityAsEnum;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.gravity == null) ? (that.gravity == null) : this.gravity.equals(that.gravity))
-         &&((this.gravityAsEnum == null) ? (that.gravityAsEnum == null) : this.gravityAsEnum.equals(that.gravityAsEnum));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (gravity == null) ? 0 : gravity.hashCode();
-        __h *= 1000003;
-        __h ^= (gravityAsEnum == null) ? 0 : gravityAsEnum.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "gravity=" + gravity + ", "
-          + "gravityAsEnum=" + gravityAsEnum
-          + "}";
-      }
-      return $toString;
     }
   }
 }

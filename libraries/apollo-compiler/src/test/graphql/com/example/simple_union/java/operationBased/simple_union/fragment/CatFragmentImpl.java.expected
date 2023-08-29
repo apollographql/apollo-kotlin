@@ -14,49 +14,11 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.fragment.selections.CatFragmentSelections;
 import com.example.simple_union.type.Cat;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
-import java.lang.String;
 
 public class CatFragmentImpl implements Fragment<CatFragment> {
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public CatFragmentImpl() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof CatFragmentImpl) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "CatFragmentImpl{"
-        + "}";
-    }
-    return $toString;
   }
 
   @Override

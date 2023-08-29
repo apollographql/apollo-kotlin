@@ -6,102 +6,20 @@
 package com.example.decapitalized_fields.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class HorseFragment implements Fragment.Data {
   public Cow cow;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public HorseFragment(Cow cow) {
     this.cow = cow;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof HorseFragment) {
-      HorseFragment that = (HorseFragment) o;
-      return ((this.cow == null) ? (that.cow == null) : this.cow.equals(that.cow));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (cow == null) ? 0 : cow.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "HorseFragment{"
-        + "cow=" + cow
-        + "}";
-    }
-    return $toString;
   }
 
   public static class Cow {
     public String moo;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Cow(String moo) {
       this.moo = moo;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Cow) {
-        Cow that = (Cow) o;
-        return ((this.moo == null) ? (that.moo == null) : this.moo.equals(that.moo));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (moo == null) ? 0 : moo.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Cow{"
-          + "moo=" + moo
-          + "}";
-      }
-      return $toString;
     }
   }
 }

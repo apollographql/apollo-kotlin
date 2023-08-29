@@ -16,7 +16,6 @@ import com.example.fragments_with_defer_and_include_directives.adapter.InlineMul
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferWithIfSelections;
 import java.io.IOException;
 import java.lang.Boolean;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -48,48 +47,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
   public final Boolean cond;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public InlineMultipleWithDeferWithIf(Boolean cond) {
     this.cond = cond;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof InlineMultipleWithDeferWithIf) {
-      InlineMultipleWithDeferWithIf that = (InlineMultipleWithDeferWithIf) o;
-      return ((this.cond == null) ? (that.cond == null) : this.cond.equals(that.cond));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (cond == null) ? 0 : cond.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "InlineMultipleWithDeferWithIf{"
-        + "cond=" + cond
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -151,48 +110,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
   public static class Data implements Query.Data {
     public Hero hero;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Hero hero) {
       this.hero = hero;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (hero == null) ? 0 : hero.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "hero=" + hero
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -214,12 +133,6 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
      */
     public OnCharacterDeferF_third onCharacterDeferF_third;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Hero(String __typename, OnCharacter onCharacter,
         OnCharacterDeferF_second onCharacterDeferF_second,
         OnCharacterDeferF_third onCharacterDeferF_third) {
@@ -227,52 +140,6 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
       this.onCharacter = onCharacter;
       this.onCharacterDeferF_second = onCharacterDeferF_second;
       this.onCharacterDeferF_third = onCharacterDeferF_third;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter))
-         &&((this.onCharacterDeferF_second == null) ? (that.onCharacterDeferF_second == null) : this.onCharacterDeferF_second.equals(that.onCharacterDeferF_second))
-         &&((this.onCharacterDeferF_third == null) ? (that.onCharacterDeferF_third == null) : this.onCharacterDeferF_third.equals(that.onCharacterDeferF_third));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (onCharacter == null) ? 0 : onCharacter.hashCode();
-        __h *= 1000003;
-        __h ^= (onCharacterDeferF_second == null) ? 0 : onCharacterDeferF_second.hashCode();
-        __h *= 1000003;
-        __h ^= (onCharacterDeferF_third == null) ? 0 : onCharacterDeferF_third.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Hero{"
-          + "__typename=" + __typename + ", "
-          + "onCharacter=" + onCharacter + ", "
-          + "onCharacterDeferF_second=" + onCharacterDeferF_second + ", "
-          + "onCharacterDeferF_third=" + onCharacterDeferF_third
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -282,48 +149,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
      */
     public String id;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnCharacter(String id) {
       this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnCharacter) {
-        OnCharacter that = (OnCharacter) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (id == null) ? 0 : id.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnCharacter{"
-          + "id=" + id
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -333,48 +160,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
      */
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnCharacterDeferF_second(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnCharacterDeferF_second) {
-        OnCharacterDeferF_second that = (OnCharacterDeferF_second) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnCharacterDeferF_second{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -384,48 +171,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
      */
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnCharacterDeferF_third(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnCharacterDeferF_third) {
-        OnCharacterDeferF_third that = (OnCharacterDeferF_third) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnCharacterDeferF_third{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 }

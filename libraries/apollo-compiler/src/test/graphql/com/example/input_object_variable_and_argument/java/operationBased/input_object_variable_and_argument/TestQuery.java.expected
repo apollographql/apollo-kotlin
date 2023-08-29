@@ -19,7 +19,6 @@ import com.example.input_object_variable_and_argument.type.Episode;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Integer;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -58,58 +57,10 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Double greenValue;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery(Optional<Episode> episode, Integer stars, Double greenValue) {
     this.episode = episode;
     this.stars = stars;
     this.greenValue = greenValue;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      TestQuery that = (TestQuery) o;
-      return ((this.episode == null) ? (that.episode == null) : this.episode.equals(that.episode))
-       &&((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
-       &&((this.greenValue == null) ? (that.greenValue == null) : this.greenValue.equals(that.greenValue));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (episode == null) ? 0 : episode.hashCode();
-      __h *= 1000003;
-      __h ^= (stars == null) ? 0 : stars.hashCode();
-      __h *= 1000003;
-      __h ^= (greenValue == null) ? 0 : greenValue.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "episode=" + episode + ", "
-        + "stars=" + stars + ", "
-        + "greenValue=" + greenValue
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -185,48 +136,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public HeroWithReview heroWithReview;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(HeroWithReview heroWithReview) {
       this.heroWithReview = heroWithReview;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.heroWithReview == null) ? (that.heroWithReview == null) : this.heroWithReview.equals(that.heroWithReview));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (heroWithReview == null) ? 0 : heroWithReview.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "heroWithReview=" + heroWithReview
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -241,53 +152,9 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public Double height;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public HeroWithReview(String name, Double height) {
       this.name = name;
       this.height = height;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof HeroWithReview) {
-        HeroWithReview that = (HeroWithReview) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&((this.height == null) ? (that.height == null) : this.height.equals(that.height));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        __h *= 1000003;
-        __h ^= (height == null) ? 0 : height.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "HeroWithReview{"
-          + "name=" + name + ", "
-          + "height=" + height
-          + "}";
-      }
-      return $toString;
     }
   }
 }

@@ -6,54 +6,12 @@
 package com.example.data_builders.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class DogFragment implements Fragment.Data {
   public String woof;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public DogFragment(String woof) {
     this.woof = woof;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof DogFragment) {
-      DogFragment that = (DogFragment) o;
-      return ((this.woof == null) ? (that.woof == null) : this.woof.equals(that.woof));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (woof == null) ? 0 : woof.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "DogFragment{"
-        + "woof=" + woof
-        + "}";
-    }
-    return $toString;
   }
 }

@@ -8,9 +8,6 @@ package com.example.mutation_create_review_semantic_naming.type;
 import com.apollographql.apollo3.api.Optional;
 import java.lang.Double;
 import java.lang.Integer;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 
 /**
  * The input object sent when passing in a color
@@ -26,12 +23,6 @@ public class ColorInput {
 
   public final Optional<ReviewRefInput> reviewRefInput;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public ColorInput(Optional<Integer> red, Optional<Double> green, Optional<Double> blue,
       Optional<Episode> enumWithDefaultValue, Optional<ReviewRefInput> reviewRefInput) {
     this.red = red;
@@ -39,56 +30,6 @@ public class ColorInput {
     this.blue = blue;
     this.enumWithDefaultValue = enumWithDefaultValue;
     this.reviewRefInput = reviewRefInput;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof ColorInput) {
-      ColorInput that = (ColorInput) o;
-      return ((this.red == null) ? (that.red == null) : this.red.equals(that.red))
-       &&((this.green == null) ? (that.green == null) : this.green.equals(that.green))
-       &&((this.blue == null) ? (that.blue == null) : this.blue.equals(that.blue))
-       &&((this.enumWithDefaultValue == null) ? (that.enumWithDefaultValue == null) : this.enumWithDefaultValue.equals(that.enumWithDefaultValue))
-       &&((this.reviewRefInput == null) ? (that.reviewRefInput == null) : this.reviewRefInput.equals(that.reviewRefInput));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (red == null) ? 0 : red.hashCode();
-      __h *= 1000003;
-      __h ^= (green == null) ? 0 : green.hashCode();
-      __h *= 1000003;
-      __h ^= (blue == null) ? 0 : blue.hashCode();
-      __h *= 1000003;
-      __h ^= (enumWithDefaultValue == null) ? 0 : enumWithDefaultValue.hashCode();
-      __h *= 1000003;
-      __h ^= (reviewRefInput == null) ? 0 : reviewRefInput.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "ColorInput{"
-        + "red=" + red + ", "
-        + "green=" + green + ", "
-        + "blue=" + blue + ", "
-        + "enumWithDefaultValue=" + enumWithDefaultValue + ", "
-        + "reviewRefInput=" + reviewRefInput
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {

@@ -15,7 +15,6 @@ import com.example.deprecated_merged_field.adapter.CatQuery_ResponseAdapter;
 import com.example.deprecated_merged_field.fragment.AnimalFragment;
 import com.example.deprecated_merged_field.selections.CatQuerySelections;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -47,44 +46,8 @@ public class CatQuery implements Query<CatQuery.Data> {
 
   public static final String OPERATION_NAME = "CatQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public CatQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof CatQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "CatQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -139,48 +102,8 @@ public class CatQuery implements Query<CatQuery.Data> {
   public static class Data implements Query.Data {
     public Cat cat;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Cat cat) {
       this.cat = cat;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.cat == null) ? (that.cat == null) : this.cat.equals(that.cat));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (cat == null) ? 0 : cat.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "cat=" + cat
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -192,53 +115,9 @@ public class CatQuery implements Query<CatQuery.Data> {
      */
     public AnimalFragment animalFragment;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Cat(String __typename, AnimalFragment animalFragment) {
       this.__typename = __typename;
       this.animalFragment = animalFragment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Cat) {
-        Cat that = (Cat) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.animalFragment == null) ? (that.animalFragment == null) : this.animalFragment.equals(that.animalFragment));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (animalFragment == null) ? 0 : animalFragment.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Cat{"
-          + "__typename=" + __typename + ", "
-          + "animalFragment=" + animalFragment
-          + "}";
-      }
-      return $toString;
     }
   }
 }

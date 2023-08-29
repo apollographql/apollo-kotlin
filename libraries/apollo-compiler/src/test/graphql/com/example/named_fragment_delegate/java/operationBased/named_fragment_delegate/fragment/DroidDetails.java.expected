@@ -6,8 +6,6 @@
 package com.example.named_fragment_delegate.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 import java.util.List;
 
@@ -27,58 +25,10 @@ public class DroidDetails implements Fragment.Data {
    */
   public List<Friend> friends;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public DroidDetails(String name, String primaryFunction, List<Friend> friends) {
     this.name = name;
     this.primaryFunction = primaryFunction;
     this.friends = friends;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof DroidDetails) {
-      DroidDetails that = (DroidDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-       &&((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction))
-       &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (name == null) ? 0 : name.hashCode();
-      __h *= 1000003;
-      __h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-      __h *= 1000003;
-      __h ^= (friends == null) ? 0 : friends.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "DroidDetails{"
-        + "name=" + name + ", "
-        + "primaryFunction=" + primaryFunction + ", "
-        + "friends=" + friends
-        + "}";
-    }
-    return $toString;
   }
 
   public static class Friend {
@@ -87,48 +37,8 @@ public class DroidDetails implements Fragment.Data {
      */
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Friend(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Friend) {
-        Friend that = (Friend) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Friend{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 }

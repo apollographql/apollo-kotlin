@@ -21,7 +21,6 @@ import com.example.data_builders.schema.__Schema;
 import com.example.data_builders.selections.NodeQuerySelections;
 import com.example.data_builders.type.builder.QueryMap;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -53,44 +52,8 @@ public class NodeQuery implements Query<NodeQuery.Data> {
 
   public static final String OPERATION_NAME = "NodeQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public NodeQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof NodeQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "NodeQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -160,48 +123,8 @@ public class NodeQuery implements Query<NodeQuery.Data> {
   public static class Data implements Query.Data {
     public Node node;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Node node) {
       this.node = node;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "node=" + node
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -220,64 +143,12 @@ public class NodeQuery implements Query<NodeQuery.Data> {
      */
     public DroidFragment droidFragment;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Node(String __typename, String id, HumanFragment humanFragment,
         DroidFragment droidFragment) {
       this.__typename = __typename;
       this.id = id;
       this.humanFragment = humanFragment;
       this.droidFragment = droidFragment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Node) {
-        Node that = (Node) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-         &&((this.humanFragment == null) ? (that.humanFragment == null) : this.humanFragment.equals(that.humanFragment))
-         &&((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (id == null) ? 0 : id.hashCode();
-        __h *= 1000003;
-        __h ^= (humanFragment == null) ? 0 : humanFragment.hashCode();
-        __h *= 1000003;
-        __h ^= (droidFragment == null) ? 0 : droidFragment.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Node{"
-          + "__typename=" + __typename + ", "
-          + "id=" + id + ", "
-          + "humanFragment=" + humanFragment + ", "
-          + "droidFragment=" + droidFragment
-          + "}";
-      }
-      return $toString;
     }
   }
 }

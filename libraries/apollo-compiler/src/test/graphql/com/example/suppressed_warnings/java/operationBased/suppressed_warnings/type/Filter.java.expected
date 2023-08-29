@@ -6,8 +6,6 @@
 package com.example.suppressed_warnings.type;
 
 import com.apollographql.apollo3.api.Optional;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class Filter {
@@ -17,58 +15,10 @@ public class Filter {
 
   public final Optional<String> experimental;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public Filter(Optional<String> name, Optional<String> deprecated, Optional<String> experimental) {
     this.name = name;
     this.deprecated = deprecated;
     this.experimental = experimental;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof Filter) {
-      Filter that = (Filter) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-       &&((this.deprecated == null) ? (that.deprecated == null) : this.deprecated.equals(that.deprecated))
-       &&((this.experimental == null) ? (that.experimental == null) : this.experimental.equals(that.experimental));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (name == null) ? 0 : name.hashCode();
-      __h *= 1000003;
-      __h ^= (deprecated == null) ? 0 : deprecated.hashCode();
-      __h *= 1000003;
-      __h ^= (experimental == null) ? 0 : experimental.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "Filter{"
-        + "name=" + name + ", "
-        + "deprecated=" + deprecated + ", "
-        + "experimental=" + experimental
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {

@@ -35,44 +35,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -127,96 +91,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Object object;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Object object) {
       this.object = object;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.object == null) ? (that.object == null) : this.object.equals(that.object));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (object == null) ? 0 : object.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "object=" + object
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class Object {
     public Integer random;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Object(Integer random) {
       this.random = random;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Object) {
-        Object that = (Object) o;
-        return ((this.random == null) ? (that.random == null) : this.random.equals(that.random));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (random == null) ? 0 : random.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Object{"
-          + "random=" + random
-          + "}";
-      }
-      return $toString;
     }
   }
 }

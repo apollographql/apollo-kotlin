@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.recursive_selection.adapter.TestQuery_ResponseAdapter;
 import com.example.recursive_selection.selections.TestQuerySelections;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -42,44 +41,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -134,48 +97,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Tree tree;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Tree tree) {
       this.tree = tree;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.tree == null) ? (that.tree == null) : this.tree.equals(that.tree));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (tree == null) ? 0 : tree.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "tree=" + tree
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -186,154 +109,26 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public Parent parent;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Tree(String name, List<Child> children, Parent parent) {
       this.name = name;
       this.children = children;
       this.parent = parent;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Tree) {
-        Tree that = (Tree) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&((this.children == null) ? (that.children == null) : this.children.equals(that.children))
-         &&((this.parent == null) ? (that.parent == null) : this.parent.equals(that.parent));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        __h *= 1000003;
-        __h ^= (children == null) ? 0 : children.hashCode();
-        __h *= 1000003;
-        __h ^= (parent == null) ? 0 : parent.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Tree{"
-          + "name=" + name + ", "
-          + "children=" + children + ", "
-          + "parent=" + parent
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class Child {
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Child(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Child) {
-        Child that = (Child) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Child{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class Parent {
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Parent(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Parent) {
-        Parent that = (Parent) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Parent{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 }

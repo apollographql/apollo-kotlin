@@ -15,7 +15,6 @@ import com.example.arguments_hardcoded.adapter.TestQuery_ResponseAdapter;
 import com.example.arguments_hardcoded.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Integer;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -39,44 +38,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -133,53 +96,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public Integer testNullableArguments;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(List<Review> reviews, Integer testNullableArguments) {
       this.reviews = reviews;
       this.testNullableArguments = testNullableArguments;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.reviews == null) ? (that.reviews == null) : this.reviews.equals(that.reviews))
-         &&((this.testNullableArguments == null) ? (that.testNullableArguments == null) : this.testNullableArguments.equals(that.testNullableArguments));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (reviews == null) ? 0 : reviews.hashCode();
-        __h *= 1000003;
-        __h ^= (testNullableArguments == null) ? 0 : testNullableArguments.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "reviews=" + reviews + ", "
-          + "testNullableArguments=" + testNullableArguments
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -194,53 +113,9 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public String commentary;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Review(Integer stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Review) {
-        Review that = (Review) o;
-        return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
-         &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (stars == null) ? 0 : stars.hashCode();
-        __h *= 1000003;
-        __h ^= (commentary == null) ? 0 : commentary.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Review{"
-          + "stars=" + stars + ", "
-          + "commentary=" + commentary
-          + "}";
-      }
-      return $toString;
     }
   }
 }

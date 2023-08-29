@@ -18,7 +18,15 @@ import kotlin.Boolean
 import kotlin.Int
 
 public class AFragmentImpl() : Fragment<AFragment> {
-  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean {
+    if (other == this) {
+      return true
+    }
+    if (other is AFragmentImpl) {
+      return true
+    }
+    return false
+  }
 
   override fun hashCode(): Int = this::class.hashCode()
 

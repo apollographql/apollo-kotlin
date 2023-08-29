@@ -15,7 +15,6 @@ import com.example.operationbased2_ex8.adapter.TestOperation_ResponseAdapter;
 import com.example.operationbased2_ex8.fragment.AnimalFragment;
 import com.example.operationbased2_ex8.selections.TestOperationSelections;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -51,44 +50,8 @@ public class TestOperation implements Query<TestOperation.Data> {
 
   public static final String OPERATION_NAME = "TestOperation";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestOperation() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestOperation) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestOperation{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -143,48 +106,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   public static class Data implements Query.Data {
     public Animal animal;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Animal animal) {
       this.animal = animal;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.animal == null) ? (that.animal == null) : this.animal.equals(that.animal));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (animal == null) ? 0 : animal.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "animal=" + animal
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -196,53 +119,9 @@ public class TestOperation implements Query<TestOperation.Data> {
      */
     public AnimalFragment animalFragment;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Animal(String __typename, AnimalFragment animalFragment) {
       this.__typename = __typename;
       this.animalFragment = animalFragment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Animal) {
-        Animal that = (Animal) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.animalFragment == null) ? (that.animalFragment == null) : this.animalFragment.equals(that.animalFragment));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (animalFragment == null) ? 0 : animalFragment.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Animal{"
-          + "__typename=" + __typename + ", "
-          + "animalFragment=" + animalFragment
-          + "}";
-      }
-      return $toString;
     }
   }
 }

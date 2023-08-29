@@ -6,8 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class DroidDetails implements Fragment.Data {
@@ -16,47 +14,7 @@ public class DroidDetails implements Fragment.Data {
    */
   public String name;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public DroidDetails(String name) {
     this.name = name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof DroidDetails) {
-      DroidDetails that = (DroidDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (name == null) ? 0 : name.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "DroidDetails{"
-        + "name=" + name
-        + "}";
-    }
-    return $toString;
   }
 }

@@ -16,7 +16,6 @@ import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter;
 import com.example.subscriptions.selections.TestSubscriptionSelections;
 import java.io.IOException;
 import java.lang.Integer;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -40,48 +39,8 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
   public final String repo;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestSubscription(String repo) {
     this.repo = repo;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestSubscription) {
-      TestSubscription that = (TestSubscription) o;
-      return ((this.repo == null) ? (that.repo == null) : this.repo.equals(that.repo));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (repo == null) ? 0 : repo.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestSubscription{"
-        + "repo=" + repo
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -146,48 +105,8 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
      */
     public CommentAdded commentAdded;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(CommentAdded commentAdded) {
       this.commentAdded = commentAdded;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.commentAdded == null) ? (that.commentAdded == null) : this.commentAdded.equals(that.commentAdded));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (commentAdded == null) ? 0 : commentAdded.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "commentAdded=" + commentAdded
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -202,53 +121,9 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
      */
     public String content;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public CommentAdded(Integer id, String content) {
       this.id = id;
       this.content = content;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof CommentAdded) {
-        CommentAdded that = (CommentAdded) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-         &&((this.content == null) ? (that.content == null) : this.content.equals(that.content));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (id == null) ? 0 : id.hashCode();
-        __h *= 1000003;
-        __h ^= (content == null) ? 0 : content.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "CommentAdded{"
-          + "id=" + id + ", "
-          + "content=" + content
-          + "}";
-      }
-      return $toString;
     }
   }
 }

@@ -17,7 +17,6 @@ import com.example.field_with_include_directive.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Integer;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -45,53 +44,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Boolean skipFriends;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery(Boolean includeName, Boolean skipFriends) {
     this.includeName = includeName;
     this.skipFriends = skipFriends;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      TestQuery that = (TestQuery) o;
-      return ((this.includeName == null) ? (that.includeName == null) : this.includeName.equals(that.includeName))
-       &&((this.skipFriends == null) ? (that.skipFriends == null) : this.skipFriends.equals(that.skipFriends));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (includeName == null) ? 0 : includeName.hashCode();
-      __h *= 1000003;
-      __h ^= (skipFriends == null) ? 0 : skipFriends.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "includeName=" + includeName + ", "
-        + "skipFriends=" + skipFriends
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -160,48 +115,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Hero hero;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Hero hero) {
       this.hero = hero;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (hero == null) ? 0 : hero.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "hero=" + hero
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -216,53 +131,9 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public FriendsConnection friendsConnection;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Hero(String name, FriendsConnection friendsConnection) {
       this.name = name;
       this.friendsConnection = friendsConnection;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        __h *= 1000003;
-        __h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Hero{"
-          + "name=" + name + ", "
-          + "friendsConnection=" + friendsConnection
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -272,48 +143,8 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public Integer totalCount;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public FriendsConnection(Integer totalCount) {
       this.totalCount = totalCount;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof FriendsConnection) {
-        FriendsConnection that = (FriendsConnection) o;
-        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "FriendsConnection{"
-          + "totalCount=" + totalCount
-          + "}";
-      }
-      return $toString;
     }
   }
 }

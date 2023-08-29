@@ -6,8 +6,6 @@
 package com.example.target_name.type;
 
 import com.apollographql.apollo3.api.EnumType;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
 
@@ -33,44 +31,8 @@ public class renamedEnum {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends renamedEnum {
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public UNKNOWN__(String rawValue) {
       super(rawValue);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof UNKNOWN__) {
-        return true;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "UNKNOWN__{"
-          + "}";
-      }
-      return $toString;
     }
   }
 }

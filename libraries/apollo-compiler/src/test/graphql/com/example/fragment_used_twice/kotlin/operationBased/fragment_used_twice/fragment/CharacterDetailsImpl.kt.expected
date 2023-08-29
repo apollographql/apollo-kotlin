@@ -18,7 +18,15 @@ import kotlin.Boolean
 import kotlin.Int
 
 public class CharacterDetailsImpl() : Fragment<CharacterDetails> {
-  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean {
+    if (other == this) {
+      return true
+    }
+    if (other is CharacterDetailsImpl) {
+      return true
+    }
+    return false
+  }
 
   override fun hashCode(): Int = this::class.hashCode()
 

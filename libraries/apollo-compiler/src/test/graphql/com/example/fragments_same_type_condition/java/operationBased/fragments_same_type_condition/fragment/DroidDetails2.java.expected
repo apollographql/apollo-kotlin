@@ -6,8 +6,6 @@
 package com.example.fragments_same_type_condition.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class DroidDetails2 implements Fragment.Data {
@@ -16,47 +14,7 @@ public class DroidDetails2 implements Fragment.Data {
    */
   public String primaryFunction;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public DroidDetails2(String primaryFunction) {
     this.primaryFunction = primaryFunction;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof DroidDetails2) {
-      DroidDetails2 that = (DroidDetails2) o;
-      return ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "DroidDetails2{"
-        + "primaryFunction=" + primaryFunction
-        + "}";
-    }
-    return $toString;
   }
 }

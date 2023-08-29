@@ -14,49 +14,11 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.DroidDetailsSelections;
 import com.example.fragments_with_defer_and_include_directives.type.Droid;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
-import java.lang.String;
 
 public class DroidDetailsImpl implements Fragment<DroidDetails> {
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public DroidDetailsImpl() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof DroidDetailsImpl) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "DroidDetailsImpl{"
-        + "}";
-    }
-    return $toString;
   }
 
   @Override

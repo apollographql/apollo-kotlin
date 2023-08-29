@@ -22,7 +22,15 @@ import kotlin.String
 import com.example.fragments_with_defer_and_include_directives.type.Query as CompiledQuery
 
 public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
-  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean {
+    if (other == this) {
+      return true
+    }
+    if (other is SpreadMultipleWithDefer) {
+      return true
+    }
+    return false
+  }
 
   override fun hashCode(): Int = this::class.hashCode()
 

@@ -25,7 +25,15 @@ import kotlin.Int
 import kotlin.Unit
 
 public class DogFragmentImpl() : Fragment<DogFragment> {
-  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean {
+    if (other == this) {
+      return true
+    }
+    if (other is DogFragmentImpl) {
+      return true
+    }
+    return false
+  }
 
   override fun hashCode(): Int = this::class.hashCode()
 

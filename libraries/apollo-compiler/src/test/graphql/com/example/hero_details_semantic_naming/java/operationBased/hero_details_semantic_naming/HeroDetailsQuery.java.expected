@@ -15,7 +15,6 @@ import com.example.hero_details_semantic_naming.adapter.HeroDetailsQuery_Respons
 import com.example.hero_details_semantic_naming.selections.HeroDetailsQuerySelections;
 import java.io.IOException;
 import java.lang.Integer;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -45,44 +44,8 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
   public static final String OPERATION_NAME = "HeroDetails";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public HeroDetailsQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof HeroDetailsQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "HeroDetailsQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -137,48 +100,8 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
   public static class Data implements Query.Data {
     public Hero hero;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Hero hero) {
       this.hero = hero;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (hero == null) ? 0 : hero.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "hero=" + hero
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -193,53 +116,9 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
      */
     public FriendsConnection friendsConnection;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Hero(String name, FriendsConnection friendsConnection) {
       this.name = name;
       this.friendsConnection = friendsConnection;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        __h *= 1000003;
-        __h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Hero{"
-          + "name=" + name + ", "
-          + "friendsConnection=" + friendsConnection
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -254,53 +133,9 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
      */
     public List<Edge> edges;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public FriendsConnection(Integer totalCount, List<Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof FriendsConnection) {
-        FriendsConnection that = (FriendsConnection) o;
-        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-         &&((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        __h *= 1000003;
-        __h ^= (edges == null) ? 0 : edges.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "FriendsConnection{"
-          + "totalCount=" + totalCount + ", "
-          + "edges=" + edges
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -310,48 +145,8 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
      */
     public Node node;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Edge(Node node) {
       this.node = node;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Edge) {
-        Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Edge{"
-          + "node=" + node
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -361,48 +156,8 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
      */
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Node(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Node) {
-        Node that = (Node) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Node{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 }

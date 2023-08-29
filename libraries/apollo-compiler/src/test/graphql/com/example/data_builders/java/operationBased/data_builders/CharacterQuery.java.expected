@@ -21,7 +21,6 @@ import com.example.data_builders.schema.__Schema;
 import com.example.data_builders.selections.CharacterQuerySelections;
 import com.example.data_builders.type.builder.QueryMap;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -54,44 +53,8 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
 
   public static final String OPERATION_NAME = "CharacterQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public CharacterQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof CharacterQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "CharacterQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -161,48 +124,8 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
   public static class Data implements Query.Data {
     public Character character;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Character character) {
       this.character = character;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.character == null) ? (that.character == null) : this.character.equals(that.character));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (character == null) ? 0 : character.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "character=" + character
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -223,12 +146,6 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
      */
     public DroidFragment droidFragment;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Character(String __typename, String id, String name, HumanFragment humanFragment,
         DroidFragment droidFragment) {
       this.__typename = __typename;
@@ -236,56 +153,6 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
       this.name = name;
       this.humanFragment = humanFragment;
       this.droidFragment = droidFragment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Character) {
-        Character that = (Character) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&((this.humanFragment == null) ? (that.humanFragment == null) : this.humanFragment.equals(that.humanFragment))
-         &&((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (id == null) ? 0 : id.hashCode();
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        __h *= 1000003;
-        __h ^= (humanFragment == null) ? 0 : humanFragment.hashCode();
-        __h *= 1000003;
-        __h ^= (droidFragment == null) ? 0 : droidFragment.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Character{"
-          + "__typename=" + __typename + ", "
-          + "id=" + id + ", "
-          + "name=" + name + ", "
-          + "humanFragment=" + humanFragment + ", "
-          + "droidFragment=" + droidFragment
-          + "}";
-      }
-      return $toString;
     }
   }
 }

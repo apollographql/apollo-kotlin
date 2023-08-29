@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter;
 import com.example.capitalized_fields.selections.TestQuerySelections;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -41,44 +40,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -133,48 +96,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Horse Horse;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Horse Horse) {
       this.Horse = Horse;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.Horse == null) ? (that.Horse == null) : this.Horse.equals(that.Horse));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (Horse == null) ? 0 : Horse.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "Horse=" + Horse
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -188,154 +111,26 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnHorse onHorse;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Horse(String __typename, String Donkey, OnHorse onHorse) {
       this.__typename = __typename;
       this.Donkey = Donkey;
       this.onHorse = onHorse;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Horse) {
-        Horse that = (Horse) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.Donkey == null) ? (that.Donkey == null) : this.Donkey.equals(that.Donkey))
-         &&((this.onHorse == null) ? (that.onHorse == null) : this.onHorse.equals(that.onHorse));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (Donkey == null) ? 0 : Donkey.hashCode();
-        __h *= 1000003;
-        __h ^= (onHorse == null) ? 0 : onHorse.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Horse{"
-          + "__typename=" + __typename + ", "
-          + "Donkey=" + Donkey + ", "
-          + "onHorse=" + onHorse
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class OnHorse {
     public Cow Cow;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnHorse(Cow Cow) {
       this.Cow = Cow;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnHorse) {
-        OnHorse that = (OnHorse) o;
-        return ((this.Cow == null) ? (that.Cow == null) : this.Cow.equals(that.Cow));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (Cow == null) ? 0 : Cow.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnHorse{"
-          + "Cow=" + Cow
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class Cow {
     public String Moo;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Cow(String Moo) {
       this.Moo = Moo;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Cow) {
-        Cow that = (Cow) o;
-        return ((this.Moo == null) ? (that.Moo == null) : this.Moo.equals(that.Moo));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (Moo == null) ? 0 : Moo.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Cow{"
-          + "Moo=" + Moo
-          + "}";
-      }
-      return $toString;
     }
   }
 }

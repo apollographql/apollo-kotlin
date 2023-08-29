@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.monomorphic.adapter.TestQuery_ResponseAdapter;
 import com.example.monomorphic.selections.TestQuerySelections;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -41,44 +40,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public TestQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof TestQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "TestQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -133,48 +96,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Cat cat;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Cat cat) {
       this.cat = cat;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.cat == null) ? (that.cat == null) : this.cat.equals(that.cat));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (cat == null) ? 0 : cat.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "cat=" + cat
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -186,53 +109,9 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnNode onNode;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Cat(String __typename, OnNode onNode) {
       this.__typename = __typename;
       this.onNode = onNode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Cat) {
-        Cat that = (Cat) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onNode == null) ? (that.onNode == null) : this.onNode.equals(that.onNode));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (onNode == null) ? 0 : onNode.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Cat{"
-          + "__typename=" + __typename + ", "
-          + "onNode=" + onNode
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -244,101 +123,17 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public OnAnimal onAnimal;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnNode(String __typename, OnAnimal onAnimal) {
       this.__typename = __typename;
       this.onAnimal = onAnimal;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnNode) {
-        OnNode that = (OnNode) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onAnimal == null) ? (that.onAnimal == null) : this.onAnimal.equals(that.onAnimal));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (onAnimal == null) ? 0 : onAnimal.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnNode{"
-          + "__typename=" + __typename + ", "
-          + "onAnimal=" + onAnimal
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class OnAnimal {
     public String species;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnAnimal(String species) {
       this.species = species;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnAnimal) {
-        OnAnimal that = (OnAnimal) o;
-        return ((this.species == null) ? (that.species == null) : this.species.equals(that.species));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (species == null) ? 0 : species.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnAnimal{"
-          + "species=" + species
-          + "}";
-      }
-      return $toString;
     }
   }
 }

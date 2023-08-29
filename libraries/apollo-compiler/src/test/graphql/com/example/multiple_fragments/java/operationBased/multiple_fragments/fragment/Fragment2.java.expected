@@ -6,54 +6,12 @@
 package com.example.multiple_fragments.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class Fragment2 implements Fragment.Data {
   public String field2;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public Fragment2(String field2) {
     this.field2 = field2;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof Fragment2) {
-      Fragment2 that = (Fragment2) o;
-      return ((this.field2 == null) ? (that.field2 == null) : this.field2.equals(that.field2));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (field2 == null) ? 0 : field2.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "Fragment2{"
-        + "field2=" + field2
-        + "}";
-    }
-    return $toString;
   }
 }

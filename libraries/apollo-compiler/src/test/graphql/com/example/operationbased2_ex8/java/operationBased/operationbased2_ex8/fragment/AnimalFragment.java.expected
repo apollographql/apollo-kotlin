@@ -7,8 +7,6 @@ package com.example.operationbased2_ex8.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
 import java.lang.Integer;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class AnimalFragment implements Fragment.Data {
@@ -16,53 +14,9 @@ public class AnimalFragment implements Fragment.Data {
 
   public Parent parent;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public AnimalFragment(String species, Parent parent) {
     this.species = species;
     this.parent = parent;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof AnimalFragment) {
-      AnimalFragment that = (AnimalFragment) o;
-      return ((this.species == null) ? (that.species == null) : this.species.equals(that.species))
-       &&((this.parent == null) ? (that.parent == null) : this.parent.equals(that.parent));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (species == null) ? 0 : species.hashCode();
-      __h *= 1000003;
-      __h ^= (parent == null) ? 0 : parent.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "AnimalFragment{"
-        + "species=" + species + ", "
-        + "parent=" + parent
-        + "}";
-    }
-    return $toString;
   }
 
   public static class Parent {
@@ -80,159 +34,27 @@ public class AnimalFragment implements Fragment.Data {
      */
     public OnCat onCat;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Parent(String __typename, String species, OnLion onLion, OnCat onCat) {
       this.__typename = __typename;
       this.species = species;
       this.onLion = onLion;
       this.onCat = onCat;
     }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Parent) {
-        Parent that = (Parent) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.species == null) ? (that.species == null) : this.species.equals(that.species))
-         &&((this.onLion == null) ? (that.onLion == null) : this.onLion.equals(that.onLion))
-         &&((this.onCat == null) ? (that.onCat == null) : this.onCat.equals(that.onCat));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (species == null) ? 0 : species.hashCode();
-        __h *= 1000003;
-        __h ^= (onLion == null) ? 0 : onLion.hashCode();
-        __h *= 1000003;
-        __h ^= (onCat == null) ? 0 : onCat.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Parent{"
-          + "__typename=" + __typename + ", "
-          + "species=" + species + ", "
-          + "onLion=" + onLion + ", "
-          + "onCat=" + onCat
-          + "}";
-      }
-      return $toString;
-    }
   }
 
   public static class OnLion {
     public Integer temperature;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnLion(Integer temperature) {
       this.temperature = temperature;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnLion) {
-        OnLion that = (OnLion) o;
-        return ((this.temperature == null) ? (that.temperature == null) : this.temperature.equals(that.temperature));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (temperature == null) ? 0 : temperature.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnLion{"
-          + "temperature=" + temperature
-          + "}";
-      }
-      return $toString;
     }
   }
 
   public static class OnCat {
     public String name;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public OnCat(String name) {
       this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnCat) {
-        OnCat that = (OnCat) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "OnCat{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
     }
   }
 }

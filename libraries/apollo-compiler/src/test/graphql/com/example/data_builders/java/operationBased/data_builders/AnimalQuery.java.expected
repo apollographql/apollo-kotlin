@@ -21,7 +21,6 @@ import com.example.data_builders.schema.__Schema;
 import com.example.data_builders.selections.AnimalQuerySelections;
 import com.example.data_builders.type.builder.QueryMap;
 import java.io.IOException;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
@@ -52,44 +51,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
 
   public static final String OPERATION_NAME = "AnimalQuery";
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public AnimalQuery() {
 
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof AnimalQuery) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "AnimalQuery{"
-        + "}";
-    }
-    return $toString;
   }
 
   public static Builder builder() {
@@ -159,48 +122,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   public static class Data implements Query.Data {
     public Animal animal;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Data(Animal animal) {
       this.animal = animal;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return ((this.animal == null) ? (that.animal == null) : this.animal.equals(that.animal));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (animal == null) ? 0 : animal.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "animal=" + animal
-          + "}";
-      }
-      return $toString;
     }
   }
 
@@ -217,58 +140,10 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
      */
     public DogFragment dogFragment;
 
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     public Animal(String __typename, CatFragment catFragment, DogFragment dogFragment) {
       this.__typename = __typename;
       this.catFragment = catFragment;
       this.dogFragment = dogFragment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Animal) {
-        Animal that = (Animal) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.catFragment == null) ? (that.catFragment == null) : this.catFragment.equals(that.catFragment))
-         &&((this.dogFragment == null) ? (that.dogFragment == null) : this.dogFragment.equals(that.dogFragment));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        __h *= 1000003;
-        __h ^= (__typename == null) ? 0 : __typename.hashCode();
-        __h *= 1000003;
-        __h ^= (catFragment == null) ? 0 : catFragment.hashCode();
-        __h *= 1000003;
-        __h ^= (dogFragment == null) ? 0 : dogFragment.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Animal{"
-          + "__typename=" + __typename + ", "
-          + "catFragment=" + catFragment + ", "
-          + "dogFragment=" + dogFragment
-          + "}";
-      }
-      return $toString;
     }
   }
 }

@@ -6,54 +6,12 @@
 package com.example.not_all_combinations_are_needed.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class BFragment implements Fragment.Data {
   public String fieldB1;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public BFragment(String fieldB1) {
     this.fieldB1 = fieldB1;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof BFragment) {
-      BFragment that = (BFragment) o;
-      return ((this.fieldB1 == null) ? (that.fieldB1 == null) : this.fieldB1.equals(that.fieldB1));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (fieldB1 == null) ? 0 : fieldB1.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "BFragment{"
-        + "fieldB1=" + fieldB1
-        + "}";
-    }
-    return $toString;
   }
 }

@@ -20,7 +20,15 @@ import kotlin.Int
 import kotlin.collections.List
 
 public class CharacterAppearsInImpl() : Fragment<CharacterAppearsInImpl.Data> {
-  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+  override fun equals(other: Any?): Boolean {
+    if (other == this) {
+      return true
+    }
+    if (other is CharacterAppearsInImpl) {
+      return true
+    }
+    return false
+  }
 
   override fun hashCode(): Int = this::class.hashCode()
 

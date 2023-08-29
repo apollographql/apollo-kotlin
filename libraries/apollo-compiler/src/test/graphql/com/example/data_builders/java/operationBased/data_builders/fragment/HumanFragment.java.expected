@@ -6,54 +6,12 @@
 package com.example.data_builders.fragment;
 
 import com.apollographql.apollo3.api.Fragment;
-import java.lang.Object;
-import java.lang.Override;
 import java.lang.String;
 
 public class HumanFragment implements Fragment.Data {
   public String homePlanet;
 
-  private transient volatile int $hashCode;
-
-  private transient volatile boolean $hashCodeMemoized;
-
-  private transient volatile String $toString;
-
   public HumanFragment(String homePlanet) {
     this.homePlanet = homePlanet;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof HumanFragment) {
-      HumanFragment that = (HumanFragment) o;
-      return ((this.homePlanet == null) ? (that.homePlanet == null) : this.homePlanet.equals(that.homePlanet));
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int __h = 1;
-      __h *= 1000003;
-      __h ^= (homePlanet == null) ? 0 : homePlanet.hashCode();
-      $hashCode = __h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "HumanFragment{"
-        + "homePlanet=" + homePlanet
-        + "}";
-    }
-    return $toString;
   }
 }
