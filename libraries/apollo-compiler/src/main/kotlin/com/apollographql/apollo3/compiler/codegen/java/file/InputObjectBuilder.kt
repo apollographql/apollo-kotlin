@@ -40,9 +40,11 @@ internal class InputObjectBuilder(
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
           .maybeAddDescription(description)
-          .makeClassFromParameters(context.generateMethods, fields.map {
-            it.toNamedType().toParameterSpec(context)
-          })
+          .makeClassFromParameters(
+              context.generateMethods,
+              fields.map { it.toNamedType().toParameterSpec(context) },
+              className = context.resolver.resolveSchemaType(inputObject.name)
+          )
           .addBuilder()
           .build()
 

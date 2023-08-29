@@ -29,7 +29,8 @@ import javax.lang.model.element.Modifier
 internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
-): TypeSpec.Builder {
+    className: ClassName
+    ): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -49,17 +50,19 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
             .build()
       }
   )
-  return addGeneratedMethods(generateMethods)
+  return addGeneratedMethods(className, generateMethods)
 }
 
 internal fun TypeSpec.Builder.addGeneratedMethods(
+    className: ClassName,
     generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING)
 ): TypeSpec.Builder {
-  return build()
-      .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withEqualsImplementation() }
+  println("DEBUGSETH: $generateMethods")
+  return applyIf(generateMethods.contains(EQUALS_HASH_CODE)) {
+        println("DEBUGSETH: withEquals")
+        withEqualsImplementation(className) }
       .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withHashCodeImplementation() }
-      .applyIf(generateMethods.contains(TO_STRING)) { withToStringImplementation() }
-      .toBuilder()
+      .applyIf(generateMethods.contains(TO_STRING)) { withToStringImplementation(className) }
 }
 
 /**
@@ -68,7 +71,8 @@ internal fun TypeSpec.Builder.addGeneratedMethods(
 internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     fields: List<FieldSpec>,
-): TypeSpec.Builder {
+    className: ClassName
+    ): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -87,11 +91,11 @@ internal fun TypeSpec.Builder.makeClassFromProperties(
   )
 
   addFields(fields)
-  return addGeneratedMethods(generateMethods)
+  return addGeneratedMethods(className, generateMethods)
 }
 
 
-fun TypeSpec.withToStringImplementation(): TypeSpec {
+internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): TypeSpec.Builder {
   fun printFieldCode(fieldIndex: Int, fieldName: String) =
       CodeBlock.builder()
           .let { if (fieldIndex > 0) it.add(" + \", \"\n") else it.add("\n") }
@@ -103,7 +107,7 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
   fun methodCode() =
       CodeBlock.builder()
           .beginControlFlow("if (\$L == null)", MEMOIZED_TO_STRING_VAR)
-          .add("\$L = \$S", "\$toString", "$name{")
+          .add("\$L = \$S", "\$toString", "${className.simpleName()}{")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
               .filter { !it.hasModifier(Modifier.TRANSIENT) }
@@ -120,8 +124,7 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
           .addStatement("return \$L", MEMOIZED_TO_STRING_VAR)
           .build()
 
-  return toBuilder()
-      .addField(FieldSpec.builder(JavaClassNames.String, MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+  return addField(FieldSpec.builder(JavaClassNames.String, MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
           Modifier.TRANSIENT)
           .build())
       .addMethod(MethodSpec.methodBuilder("toString")
@@ -130,7 +133,6 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
           .returns(JavaClassNames.String)
           .addCode(methodCode())
           .build())
-      .build()
 }
 
 private fun List<FieldSpec>.equalsCode(): CodeBlock = filter { !it.hasModifier(Modifier.STATIC) }
@@ -154,7 +156,7 @@ private fun FieldSpec.equalsCode() =
         }
         .build()
 
-fun TypeSpec.withEqualsImplementation(): TypeSpec {
+internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): TypeSpec.Builder {
   fun methodCode(typeJavaClass: ClassName) =
       CodeBlock.builder()
           .beginControlFlow("if (o == this)")
@@ -173,18 +175,16 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
           .addStatement("return false")
           .build()
 
-  return toBuilder()
-      .addMethod(MethodSpec.methodBuilder("equals")
+  return addMethod(MethodSpec.methodBuilder("equals")
           .addAnnotation(JavaClassNames.Override)
           .addModifiers(Modifier.PUBLIC)
           .returns(TypeName.BOOLEAN)
           .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
-          .addCode(methodCode(ClassName.get("", name)))
+          .addCode(methodCode(className))
           .build())
-      .build()
 }
 
-fun TypeSpec.withHashCodeImplementation(): TypeSpec {
+internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder {
   fun hashFieldCode(field: FieldSpec) =
       CodeBlock.builder()
           .addStatement("$__h *= 1000003")
@@ -217,8 +217,7 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           .addStatement("return \$L", MEMOIZED_HASH_CODE_VAR)
           .build()
 
-  return toBuilder()
-      .addField(FieldSpec.builder(TypeName.INT, MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+  return addField(FieldSpec.builder(TypeName.INT, MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
           Modifier.TRANSIENT).build())
       .addField(FieldSpec.builder(TypeName.BOOLEAN, MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE,
           Modifier.VOLATILE, Modifier.TRANSIENT).build())
@@ -228,7 +227,6 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           .returns(TypeName.INT)
           .addCode(methodCode())
           .build())
-      .build()
 }
 
 
