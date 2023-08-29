@@ -114,7 +114,7 @@ internal class EnumAsClassBuilder(
                 .addCode("super($rawValue);\n")
                 .build()
         )
-        .addGeneratedMethods(selfClassName)
+        .addGeneratedMethods(ClassName.get("", Identifier.UNKNOWN__))
         .build()
   }
 }
