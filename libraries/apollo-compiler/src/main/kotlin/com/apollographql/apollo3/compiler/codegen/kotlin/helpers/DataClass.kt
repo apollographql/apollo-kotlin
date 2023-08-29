@@ -70,7 +70,7 @@ internal fun TypeSpec.Builder.makeClassFromProperties(
   addGeneratedMethods(generateMethods, className)
 }
 
-fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>, className: ClassName) = apply {
+internal fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>, className: ClassName) = apply {
   if (generateMethods.contains(DATA_CLASS)) {
     if (propertySpecs.isEmpty()) {
       withEqualsImplementation(className)

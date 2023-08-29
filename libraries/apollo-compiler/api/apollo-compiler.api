@@ -386,10 +386,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/adapter/Adapt
 	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
-	public static final fun addGeneratedMethods (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
-}
-
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrOperations {
 	public abstract fun getFragmentDefinitions ()Ljava/util/List;
 	public abstract fun getUsedFields ()Ljava/util/Map;
