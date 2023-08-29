@@ -57,10 +57,7 @@ internal fun TypeSpec.Builder.addGeneratedMethods(
     className: ClassName,
     generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING)
 ): TypeSpec.Builder {
-  println("DEBUGSETH: $generateMethods")
-  return applyIf(generateMethods.contains(EQUALS_HASH_CODE)) {
-        println("DEBUGSETH: withEquals")
-        withEqualsImplementation(className) }
+  return applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withEqualsImplementation(className) }
       .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withHashCodeImplementation() }
       .applyIf(generateMethods.contains(TO_STRING)) { withToStringImplementation(className) }
 }
