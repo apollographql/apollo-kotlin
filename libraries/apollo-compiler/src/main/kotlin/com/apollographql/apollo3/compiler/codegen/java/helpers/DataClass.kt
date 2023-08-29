@@ -26,7 +26,7 @@ import javax.lang.model.element.Modifier
  * This is named "data class" because it's similar to Kotlin data classes even if technically Java
  * doesn't have data classes
  */
-fun TypeSpec.Builder.makeClassFromParameters(
+internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
 ): TypeSpec.Builder {
@@ -52,7 +52,7 @@ fun TypeSpec.Builder.makeClassFromParameters(
   return addGeneratedMethods(generateMethods)
 }
 
-fun TypeSpec.Builder.addGeneratedMethods(
+internal fun TypeSpec.Builder.addGeneratedMethods(
     generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING)
 ): TypeSpec.Builder {
   return build()
@@ -65,7 +65,7 @@ fun TypeSpec.Builder.addGeneratedMethods(
 /**
  * Same as [makeClassFromParameters] but takes fields instead of parameters as input
  */
-fun TypeSpec.Builder.makeClassFromProperties(
+internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     fields: List<FieldSpec>,
 ): TypeSpec.Builder {

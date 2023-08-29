@@ -118,7 +118,7 @@ enum class GeneratedMethod {
    */
   DATA_CLASS,
   ;
-  companion object {
+  internal companion object {
 
     fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
       return when(targetLanguage) {
@@ -133,10 +133,10 @@ enum class GeneratedMethod {
 
     fun fromName(name: String): GeneratedMethod? {
       return when (name) {
-        "equalsHashCode" -> GeneratedMethod.EQUALS_HASH_CODE
-        "toString" -> GeneratedMethod.TO_STRING
-        "copy" -> GeneratedMethod.COPY
-        "dataClass" -> GeneratedMethod.DATA_CLASS
+        "equalsHashCode" -> EQUALS_HASH_CODE
+        "toString" -> TO_STRING
+        "copy" -> COPY
+        "dataClass" -> DATA_CLASS
         else -> null
       }
     }

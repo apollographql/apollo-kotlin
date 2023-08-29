@@ -3,10 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.GeneratedMethod.*
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.squareup.javapoet.FieldSpec
-import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -15,13 +12,12 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
-import javax.lang.model.element.Modifier
 
 /**
  * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
  * as well as the corresponding properties
  */
-fun TypeSpec.Builder.makeClassFromParameters(
+internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
     addJvmOverloads: Boolean = false,
@@ -47,7 +43,7 @@ fun TypeSpec.Builder.makeClassFromParameters(
   addGeneratedMethods(generateMethods)
 }
 
-fun TypeSpec.Builder.makeClassFromProperties(
+internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     properties: List<PropertySpec>,
 ) = apply {
@@ -97,7 +93,8 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>)
   }
 }
 
-fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
+internal fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
+  // Note that we need to build the type to get its name because kotlin poet keeps the name internal to the builder
   val type = build()
   val constructorParamNames = type.primaryConstructor?.parameters?.map { it.name }?.toSet() ?: return this
   val typeName = type.name ?: return this
@@ -130,7 +127,7 @@ fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
       .build())
 }
 
-fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
+internal fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
   fun equalsCode(property: PropertySpec): CodeBlock {
     return CodeBlock
         .builder()
@@ -151,7 +148,7 @@ fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
         .beginControlFlow("if (other is %T)", className)
         .apply {
           if (propertySpecs.isEmpty()) {
-            add("return true")
+            add("return true\n")
           } else {
             add("return %L", propertySpecs
                 .excludeInternalProperties()
@@ -173,7 +170,7 @@ fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
       .build())
 }
 
-fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
+internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
   fun hashPropertyCode(property: PropertySpec) =
       CodeBlock.builder()
           .addStatement("${Identifier.__h} *= 31")
@@ -220,7 +217,8 @@ fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
   )
 }
 
-fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
+internal fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
+  // Note that we need to build the type to get its name because kotlin poet keeps the name internal to the builder
   val name = build().name ?: return this
   fun printPropertiesTemplate() =
       "$name(" + propertySpecs
@@ -229,19 +227,10 @@ fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
 
   fun methodCode() =
       CodeBlock.builder()
-          .beginControlFlow("if (%L == null)", MEMOIZED_TO_STRING_VAR)
-          .add("%L = %P", MEMOIZED_TO_STRING_VAR, printPropertiesTemplate())
-          .endControlFlow()
-          .addStatement("return %L!!", MEMOIZED_TO_STRING_VAR)
+          .addStatement("return %P", printPropertiesTemplate())
           .build()
 
-  return addProperty(
-      PropertySpec.builder(MEMOIZED_TO_STRING_VAR, KotlinSymbols.String.copy(nullable = true), KModifier.PRIVATE)
-          .mutable()
-          .initializer("null")
-          .build()
-  )
-      .addFunction(FunSpec.builder(Identifier.toString)
+  return addFunction(FunSpec.builder(Identifier.toString)
           .addModifiers(KModifier.OVERRIDE)
           .returns(KotlinSymbols.String)
           .addCode(methodCode())
@@ -250,8 +239,7 @@ fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
 
 
 private fun Collection<PropertySpec>.excludeInternalProperties(): Collection<PropertySpec> {
-  return filterNot { it.name == MEMOIZED_HASH_CODE_VAR || it.name == MEMOIZED_TO_STRING_VAR }
+  return filterNot { it.name == MEMOIZED_HASH_CODE_VAR }
 }
 
 private const val MEMOIZED_HASH_CODE_VAR: String = "__hashCode"
-private const val MEMOIZED_TO_STRING_VAR: String = "__toString"

@@ -152,6 +152,7 @@ class MetadataTest {
         generateQueryDocument = defaultGenerateQueryDocument,
         generateSchema = defaultGenerateSchema,
         generatedSchemaName = defaultGeneratedSchemaName,
+        generateMethods = defaultGenerateMethodsKotlin
     )
 
     val kotlinCodegenOptions = KotlinCodegenOptions(
