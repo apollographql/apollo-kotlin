@@ -18,15 +18,7 @@ import kotlin.Boolean
 import kotlin.Int
 
 public class CharacterAppearsInImpl() : Fragment<CharacterAppearsIn> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is CharacterAppearsInImpl) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 

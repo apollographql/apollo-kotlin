@@ -23,15 +23,7 @@ import kotlin.Suppress
 import com.example.interface_on_interface.type.Query as CompiledQuery
 
 public class GetHuman() : Query<GetHuman.Data> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is GetHuman) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 

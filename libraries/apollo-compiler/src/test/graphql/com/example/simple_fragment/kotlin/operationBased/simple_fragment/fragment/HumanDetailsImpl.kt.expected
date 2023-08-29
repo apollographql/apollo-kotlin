@@ -28,15 +28,7 @@ import kotlin.Unit
  * Fragment with Java / Kotlin docs generation
  */
 internal class HumanDetailsImpl() : Fragment<HumanDetails> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is HumanDetailsImpl) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 

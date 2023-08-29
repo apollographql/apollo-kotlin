@@ -393,6 +393,7 @@ class CodegenTest {
 
       val compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
+      val generatedMethods = if (targetLanguage == JAVA) defaultGenerateMethodsJava else defaultGenerateMethodsKotlin
 
       ApolloCompiler.writeSimple(
           schema = schemaFile.toGQLDocument(allowJson = true).validateAsSchemaAndAddApolloDefinition().getOrThrow(),
@@ -420,6 +421,7 @@ class CodegenTest {
           generatePrimitiveTypes = generatePrimitiveTypes,
           generateFilterNotNull = true,
           generateInputBuilders = generateInputBuilders,
+          generateMethods = generatedMethods
       )
       return outputDir
     }

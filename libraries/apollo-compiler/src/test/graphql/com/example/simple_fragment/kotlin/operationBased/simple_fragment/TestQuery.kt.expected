@@ -34,15 +34,7 @@ import com.example.simple_fragment.type.Query as CompiledQuery
  * for both query and fragments
  */
 internal class TestQuery() : Query<TestQuery.Data> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is TestQuery) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 

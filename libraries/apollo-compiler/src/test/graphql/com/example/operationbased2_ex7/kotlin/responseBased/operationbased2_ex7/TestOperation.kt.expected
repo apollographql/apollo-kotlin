@@ -22,15 +22,7 @@ import kotlin.Suppress
 import com.example.operationbased2_ex7.type.Query as CompiledQuery
 
 public class TestOperation() : Query<TestOperation.Data> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is TestOperation) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 

@@ -20,15 +20,7 @@ import kotlin.String
 import kotlin.Suppress
 
 public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
-  override fun equals(other: Any?): Boolean {
-    if (other == this) {
-      return true
-    }
-    if (other is IFragmentImpl) {
-      return true
-    }
-    return false
-  }
+  override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()
 
