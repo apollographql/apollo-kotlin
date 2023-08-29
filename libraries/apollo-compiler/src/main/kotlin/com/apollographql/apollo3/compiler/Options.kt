@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
@@ -118,6 +119,7 @@ enum class GeneratedMethod {
    */
   DATA_CLASS,
   ;
+  @ApolloInternal
   companion object {
 
     fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
