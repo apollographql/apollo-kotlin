@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
+import com.squareup.kotlinpoet.typeNameOf
 
 /**
  * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
@@ -144,7 +145,7 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
           .build()
     }
     return CodeBlock.builder()
-        .beginControlFlow("if (other == this)")
+        .beginControlFlow("if (other === this)")
         .addStatement("return true")
         .endControlFlow()
         .beginControlFlow("if (other is %T)", className)
@@ -176,7 +177,13 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
   fun hashPropertyCode(property: PropertySpec) =
       CodeBlock.builder()
           .addStatement("${Identifier.__h} *= 31")
-          .addStatement("${Identifier.__h} += %L.hashCode()", property.name)
+          .apply {
+            if (property.type == typeNameOf<Boolean>()) {
+             addStatement("${Identifier.__h} += if (%L) 1 else 0", property.name)
+            } else {
+              addStatement("${Identifier.__h} += %L.hashCode()", property.name)
+            }
+          }
           .build()
 
   fun methodCode(): CodeBlock {
