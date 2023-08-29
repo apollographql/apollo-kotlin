@@ -73,7 +73,12 @@ internal class FragmentBuilder(
     return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeClassFromParameters(context.generateMethods, namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
+        .makeClassFromParameters(
+            context.generateMethods,
+            namedTypes.map { it.toParameterSpec(context) },
+            addJvmOverloads,
+            context.resolver.resolveFragment(fragment.name)
+        )
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context, dataProperty))
         .addFunction(rootFieldFunSpec())

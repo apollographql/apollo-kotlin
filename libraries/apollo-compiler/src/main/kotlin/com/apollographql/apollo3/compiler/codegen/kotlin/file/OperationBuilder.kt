@@ -95,7 +95,12 @@ internal class OperationBuilder(
     return TypeSpec.classBuilder(layout.operationName(operation))
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeClassFromParameters(context.generateMethods, namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
+        .makeClassFromParameters(
+            context.generateMethods,
+            namedTypes.map { it.toParameterSpec(context) },
+            addJvmOverloads,
+            className = context.resolver.resolveOperation(operation.name)
+        )
         .maybeAddJsExport(context)
         .apply {
           if (namedTypes.isNotEmpty() && generateInputBuilders) {

@@ -1,7 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
 import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.GeneratedMethod.*
+import com.apollographql.apollo3.compiler.GeneratedMethod.COPY
+import com.apollographql.apollo3.compiler.GeneratedMethod.DATA_CLASS
+import com.apollographql.apollo3.compiler.GeneratedMethod.EQUALS_HASH_CODE
+import com.apollographql.apollo3.compiler.GeneratedMethod.TO_STRING
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.ClassName
@@ -21,6 +24,7 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
     addJvmOverloads: Boolean = false,
+    className: ClassName,
 ) = apply {
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
@@ -40,12 +44,13 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
         .initializer(CodeBlock.of(it.name))
         .build())
   }
-  addGeneratedMethods(generateMethods)
+  addGeneratedMethods(generateMethods, className)
 }
 
 internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     properties: List<PropertySpec>,
+    className: ClassName
 ) = apply {
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
@@ -61,13 +66,13 @@ internal fun TypeSpec.Builder.makeClassFromProperties(
         .build()
     )
   }
-  addGeneratedMethods(generateMethods)
+  addGeneratedMethods(generateMethods, className)
 }
 
-fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>) = apply {
+fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>, className: ClassName) = apply {
   if (generateMethods.contains(DATA_CLASS)) {
     if (propertySpecs.isEmpty()) {
-      withEqualsImplementation()
+      withEqualsImplementation(className)
       withHashCodeImplementation()
     } else {
       addModifiers(KModifier.DATA)
@@ -77,7 +82,7 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>)
   }
   if (generateMethods.contains(EQUALS_HASH_CODE)) {
     withHashCodeImplementation()
-    withEqualsImplementation()
+    withEqualsImplementation(className)
   }
 
   if (generateMethods.contains(TO_STRING)) {
@@ -127,7 +132,7 @@ internal fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
       .build())
 }
 
-internal fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
+internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): TypeSpec.Builder {
   fun equalsCode(property: PropertySpec): CodeBlock {
     return CodeBlock
         .builder()
@@ -140,7 +145,6 @@ internal fun TypeSpec.Builder.withEqualsImplementation(): TypeSpec.Builder {
           .addStatement("return·other != null·&&·other::class·==·this::class")
           .build()
     }
-    val className = ClassName("", typeName)
     return CodeBlock.builder()
         .beginControlFlow("if (other == this)")
         .addStatement("return true")

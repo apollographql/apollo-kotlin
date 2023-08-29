@@ -51,7 +51,11 @@ internal class InputObjectBuilder(
     return TypeSpec
         .classBuilder(simpleName)
         .maybeAddDescription(description)
-        .makeClassFromParameters(context.generateMethods, namedTypes.map { it.toParameterSpec(context) })
+        .makeClassFromParameters(
+            context.generateMethods,
+            namedTypes.map { it.toParameterSpec(context) },
+            className = context.resolver.resolveSchemaType(inputObject.name)
+        )
         .apply {
           if (namedTypes.isNotEmpty() && generateInputBuilders) {
             addType(namedTypes.builderTypeSpec(context, className))

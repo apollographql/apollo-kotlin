@@ -85,7 +85,11 @@ internal class ModelBuilder(
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(simpleName)
-          .makeClassFromProperties(context.generateMethods, properties)
+          .makeClassFromProperties(
+              context.generateMethods,
+              properties,
+              context.resolver.resolveModel(model.id)
+          )
     }
 
     val nestedTypes = nestedBuilders.map { it.build() }
