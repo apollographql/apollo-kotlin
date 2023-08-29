@@ -103,11 +103,17 @@ public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializ
 
 public final class com/apollographql/apollo3/compiler/GeneratedMethod : java/lang/Enum {
 	public static final field COPY Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static final field Companion Lcom/apollographql/apollo3/compiler/GeneratedMethod$Companion;
 	public static final field DATA_CLASS Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 	public static final field EQUALS_HASH_CODE Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 	public static final field TO_STRING Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+}
+
+public final class com/apollographql/apollo3/compiler/GeneratedMethod$Companion {
+	public final fun defaultsFor (Lcom/apollographql/apollo3/compiler/TargetLanguage;)Ljava/util/List;
+	public final fun fromName (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 }
 
 public final class com/apollographql/apollo3/compiler/JavaCodegenOptions {
