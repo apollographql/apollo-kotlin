@@ -1,0 +1,16 @@
+type Query {
+  bigCat: BigCat!
+}
+
+type BigCat {
+  species: Species!
+  name: String!
+  age: Int!
+  isMean: Boolean!
+  numberZebrasEaten: Int
+}
+
+enum Species {
+  LION,
+  TIGER
+}
