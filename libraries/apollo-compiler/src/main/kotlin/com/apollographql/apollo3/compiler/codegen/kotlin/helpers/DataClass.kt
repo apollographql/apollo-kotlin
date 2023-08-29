@@ -87,23 +87,21 @@ fun TypeSpec.Builder.addGeneratedMethods(generateMethods: List<GeneratedMethod>,
 
   if (generateMethods.contains(TO_STRING)) {
     if (propertySpecs.isNotEmpty()) {
-      withToStringImplementation()
+      withToStringImplementation(className)
     }
   }
 
   if (generateMethods.contains(COPY)) {
     if (propertySpecs.isNotEmpty()) {
-      withCopyImplementation()
+      withCopyImplementation(className)
     }
   }
 }
 
-internal fun TypeSpec.Builder.withCopyImplementation(): TypeSpec.Builder {
+internal fun TypeSpec.Builder.withCopyImplementation(className: ClassName): TypeSpec.Builder {
   // Note that we need to build the type to get its name because kotlin poet keeps the name internal to the builder
   val type = build()
   val constructorParamNames = type.primaryConstructor?.parameters?.map { it.name }?.toSet() ?: return this
-  val typeName = type.name ?: return this
-  val className = ClassName("", typeName)
   val constructorProperties = propertySpecs
       .excludeInternalProperties()
       .filter { constructorParamNames.contains(it.name) }
@@ -139,8 +137,8 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
         .addStatement("this.%L == other.%L", property.name, property.name).build()
   }
 
-  fun methodCode(typeName: String?): CodeBlock {
-    if (typeName == null) {
+  fun methodCode(): CodeBlock {
+    if (propertySpecs.isEmpty()) {
       return CodeBlock.builder()
           .addStatement("return·other != null·&&·other::class·==·this::class")
           .build()
@@ -170,7 +168,7 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
       .addModifiers(KModifier.OVERRIDE)
       .addParameter("other", KotlinSymbols.Any.copy(nullable = true))
       .returns(KotlinSymbols.Boolean)
-      .addCode(methodCode(build().name))
+      .addCode(methodCode())
       .build())
 }
 
@@ -221,11 +219,9 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
   )
 }
 
-internal fun TypeSpec.Builder.withToStringImplementation(): TypeSpec.Builder {
-  // Note that we need to build the type to get its name because kotlin poet keeps the name internal to the builder
-  val name = build().name ?: return this
+internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): TypeSpec.Builder {
   fun printPropertiesTemplate() =
-      "$name(" + propertySpecs
+      "${className.simpleName}(" + propertySpecs
             .excludeInternalProperties()
             .joinToString(",") { "${it.name}=\$${it.name}" } + ")"
 
