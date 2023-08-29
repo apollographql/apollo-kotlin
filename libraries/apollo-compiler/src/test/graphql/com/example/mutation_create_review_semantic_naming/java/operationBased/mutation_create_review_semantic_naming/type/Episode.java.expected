@@ -65,7 +65,7 @@ public class Episode {
       if (o == this) {
         return true;
       }
-      if (o instanceof Episode) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -84,7 +84,7 @@ public class Episode {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Episode{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

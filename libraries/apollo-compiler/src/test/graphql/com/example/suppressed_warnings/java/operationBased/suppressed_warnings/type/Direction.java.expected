@@ -56,7 +56,7 @@ public class Direction {
       if (o == this) {
         return true;
       }
-      if (o instanceof Direction) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -75,7 +75,7 @@ public class Direction {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Direction{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

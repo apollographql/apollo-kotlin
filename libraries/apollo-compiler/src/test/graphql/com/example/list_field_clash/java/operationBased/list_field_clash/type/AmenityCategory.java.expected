@@ -51,7 +51,7 @@ public class AmenityCategory {
       if (o == this) {
         return true;
       }
-      if (o instanceof AmenityCategory) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -70,7 +70,7 @@ public class AmenityCategory {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "AmenityCategory{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

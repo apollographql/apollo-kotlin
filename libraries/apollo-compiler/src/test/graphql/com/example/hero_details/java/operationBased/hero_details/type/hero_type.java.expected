@@ -54,7 +54,7 @@ public class Hero_type {
       if (o == this) {
         return true;
       }
-      if (o instanceof Hero_type) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -73,7 +73,7 @@ public class Hero_type {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Hero_type{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

@@ -48,7 +48,7 @@ public class renamedEnum {
       if (o == this) {
         return true;
       }
-      if (o instanceof renamedEnum) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -67,7 +67,7 @@ public class renamedEnum {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "renamedEnum{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

@@ -68,7 +68,7 @@ public class Gravity {
       if (o == this) {
         return true;
       }
-      if (o instanceof Gravity) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -87,7 +87,7 @@ public class Gravity {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Gravity{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

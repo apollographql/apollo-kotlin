@@ -54,7 +54,7 @@ public class Race {
       if (o == this) {
         return true;
       }
-      if (o instanceof Race) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -73,7 +73,7 @@ public class Race {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Race{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;

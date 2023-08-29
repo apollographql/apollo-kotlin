@@ -69,7 +69,7 @@ public class __TypeKind {
       if (o == this) {
         return true;
       }
-      if (o instanceof __TypeKind) {
+      if (o instanceof UNKNOWN__) {
         return true;
       }
       return false;
@@ -88,7 +88,7 @@ public class __TypeKind {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "__TypeKind{"
+        $toString = "UNKNOWN__{"
           + "}";
       }
       return $toString;
