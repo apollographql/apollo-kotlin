@@ -1,8 +1,8 @@
 package test
 
-import generatedMethods.kotlin19.GetBigCatQuery
-import generatedMethods.kotlin19.type.Species
-import generatedMethods.kotlin19.type.buildBigCat
+import generatedMethods.GetBigCatQuery
+import generatedMethods.type.Species
+import generatedMethods.type.buildBigCat
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
