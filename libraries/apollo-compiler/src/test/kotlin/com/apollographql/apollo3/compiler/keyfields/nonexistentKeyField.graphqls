@@ -1,0 +1,16 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1/", import: ["@typePolicy"])
+
+type Query {
+  animal: Animal
+}
+
+type Animal @typePolicy(keyFields: "id") {
+  species: String!
+}
+
+
+query GetAnimal {
+  animal {
+    species
+  }
+}

@@ -1,7 +1,10 @@
 package com.apollographql.apollo3.compiler.keyfields
 
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLExecutableDefinition
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
@@ -110,5 +113,27 @@ class KeyFieldsTest {
         .let { issues ->
           assertTrue(issues.isEmpty())
         }
+  }
+
+  @Test
+  fun nonexistentKeyField() {
+    val definitions = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/nonexistentKeyField.graphqls"
+        .toPath()
+        .parseAsGQLDocument()
+        .getOrThrow()
+        .definitions
+
+    val (operationDefinitions, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
+
+    try {
+      val schema = GQLDocument(schemaDefinitions, null).validateAsSchema().getOrThrow()
+      var operation = (operationDefinitions.single() as GQLOperationDefinition)
+      operation = addRequiredFields(operation, "always", schema, emptyMap())
+      checkKeyFields(operation, schema, emptyMap())
+      fail("An exception was expected")
+    } catch (e: SourceAwareException) {
+      check(e.message!!.contains("Field 'id' is not a valid key field for type 'Animal'"))
+      return
+    }
   }
 }
