@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
@@ -73,7 +73,12 @@ internal class FragmentBuilder(
     return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeDataClass(namedTypes.map { it.toParameterSpec(context) }, addJvmOverloads)
+        .makeClassFromParameters(
+            context.generateMethods,
+            namedTypes.map { it.toParameterSpec(context) },
+            addJvmOverloads,
+            context.resolver.resolveFragment(fragment.name)
+        )
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context, dataProperty))
         .addFunction(rootFieldFunSpec())

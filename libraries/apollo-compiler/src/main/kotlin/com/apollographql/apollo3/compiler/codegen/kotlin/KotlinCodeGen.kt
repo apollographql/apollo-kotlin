@@ -32,7 +32,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -56,6 +55,7 @@ internal object KotlinCodeGen {
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator
     val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
+    val generateMethods = commonCodegenOptions.generateMethods
     val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
     val generateQueryDocument = commonCodegenOptions.generateQueryDocument
@@ -89,10 +89,11 @@ internal object KotlinCodeGen {
     )
 
     val context = KotlinContext(
+        generateMethods = generateMethods,
+        jsExport = jsExport,
         layout = layout,
         resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
         targetLanguageVersion = targetLanguageVersion,
-        jsExport = jsExport,
     )
     val builders = mutableListOf<CgFileBuilder>()
 

@@ -1,0 +1,9 @@
+query GetBigCat {
+  bigCat {
+    species,
+    name,
+    age,
+    isMean
+    numberZebrasEaten
+  }
+}

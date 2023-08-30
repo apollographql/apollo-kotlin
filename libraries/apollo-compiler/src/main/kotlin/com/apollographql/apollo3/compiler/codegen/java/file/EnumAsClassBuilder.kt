@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClass
+import com.apollographql.apollo3.compiler.codegen.java.helpers.addGeneratedMethods
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeSuppressDeprecation
 import com.apollographql.apollo3.compiler.ir.IrEnum
@@ -114,7 +114,7 @@ internal class EnumAsClassBuilder(
                 .addCode("super($rawValue);\n")
                 .build()
         )
-        .makeDataClass()
+        .addGeneratedMethods(ClassName.get("", Identifier.UNKNOWN__))
         .build()
   }
 }

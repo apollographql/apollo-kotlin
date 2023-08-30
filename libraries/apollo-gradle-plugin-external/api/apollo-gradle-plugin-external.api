@@ -110,6 +110,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getGenerateAsInternal ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateFragmentImplementations ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateKotlinModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateMethods ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getGenerateOperationOutput ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateOptionalOperationVariables ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGeneratePrimitiveTypes ()Lorg/gradle/api/provider/Property;

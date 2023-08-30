@@ -101,6 +101,16 @@ public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializ
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/GeneratedMethod : java/lang/Enum {
+	public static final field COPY Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static final field Companion Lcom/apollographql/apollo3/compiler/GeneratedMethod$Companion;
+	public static final field DATA_CLASS Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static final field EQUALS_HASH_CODE Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static final field TO_STRING Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/GeneratedMethod;
+}
+
 public final class com/apollographql/apollo3/compiler/JavaCodegenOptions {
 	public fun <init> (ZLjava/util/List;ZLcom/apollographql/apollo3/compiler/JavaNullable;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks;)V
 	public final fun getClassesForEnumsMatching ()Ljava/util/List;
@@ -201,6 +211,8 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
 	public static final fun getDefaultCompilerJavaHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$Identity;
 	public static final fun getDefaultCompilerKotlinHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$Identity;
+	public static final fun getDefaultGenerateMethodsJava ()Ljava/util/List;
+	public static final fun getDefaultGenerateMethodsKotlin ()Ljava/util/List;
 	public static final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
 	public static final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
@@ -372,21 +384,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt
 public final class com/apollographql/apollo3/compiler/codegen/java/adapter/AdapterCommonKt {
 	public static final fun singletonAdapterInitializer (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;Z)Lcom/squareup/javapoet/CodeBlock;
 	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataClassKt {
-	public static final fun makeDataClass (Lcom/squareup/javapoet/TypeSpec$Builder;)Lcom/squareup/javapoet/TypeSpec$Builder;
-	public static final fun makeDataClassFromParameters (Lcom/squareup/javapoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/javapoet/TypeSpec$Builder;
-	public static final fun makeDataClassFromProperties (Lcom/squareup/javapoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/javapoet/TypeSpec$Builder;
-	public static final fun withEqualsImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
-	public static final fun withHashCodeImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
-	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
-	public static final fun makeDataClass (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;Z)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
-	public static synthetic fun makeDataClass$default (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
-	public static final fun makeDataClassFromProperties (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrOperations {

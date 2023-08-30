@@ -37,6 +37,8 @@ internal object Identifier {
   const val document = "document"
   const val equals = "equals"
   const val hashCode = "hashCode"
+  const val toString = "toString"
+  const val copy = "copy"
   const val Data = "Data"
 
   const val cacheKeyForObject = "cacheKeyForObject"

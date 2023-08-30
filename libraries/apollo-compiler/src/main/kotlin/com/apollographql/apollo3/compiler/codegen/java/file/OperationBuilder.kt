@@ -19,7 +19,7 @@ import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
-import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
+import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
@@ -88,7 +88,11 @@ internal class OperationBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeDataClassFromParameters(operation.variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeClassFromParameters(
+            context.generateMethods,
+            operation.variables.map { it.toNamedType().toParameterSpec(context) },
+            className = context.resolver.resolveOperation(operation.name)
+          )
         .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))

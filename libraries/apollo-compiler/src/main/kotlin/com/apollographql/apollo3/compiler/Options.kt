@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
@@ -91,6 +92,58 @@ enum class JavaNullable {
       }
     }
   }
+}
+
+enum class GeneratedMethod {
+  /**
+   * Generate both hash code and equals method
+   *
+   */
+  EQUALS_HASH_CODE,
+
+  /**
+   * Generate toString method
+   *
+   */
+  TO_STRING,
+
+  /**
+   * Generate copy method
+   *
+   */
+  COPY,
+
+  /**
+   * Generate class as data class, which will include equals, hash code, and toString()
+   *
+   */
+  DATA_CLASS,
+  ;
+  @ApolloInternal
+  companion object {
+
+    fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
+      return when(targetLanguage) {
+        TargetLanguage.JAVA -> {
+          defaultGenerateMethodsJava
+        }
+        else -> {
+          defaultGenerateMethodsKotlin
+        }
+      }
+    }
+
+    fun fromName(name: String): GeneratedMethod? {
+      return when (name) {
+        "equalsHashCode" -> EQUALS_HASH_CODE
+        "toString" -> TO_STRING
+        "copy" -> COPY
+        "dataClass" -> DATA_CLASS
+        else -> null
+      }
+    }
+  }
+
 }
 
 @ApolloExperimental
@@ -184,6 +237,11 @@ data class CommonCodegenOptions(
      * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
      */
     val generateFragmentImplementations: Boolean,
+
+    /**
+     * Which methods to auto generate on models, fragments, operations, and input objects
+     */
+    val generateMethods: List<GeneratedMethod>,
 
     /**
      * Whether to generate the compiled selections used to read/write from the normalized cache.
@@ -369,6 +427,8 @@ const val defaultGenerateFilterNotNull = false
 const val defaultGenerateFragmentImplementations = false
 const val defaultGenerateResponseFields = true
 const val defaultGenerateQueryDocument = true
+val defaultGenerateMethodsKotlin = listOf(GeneratedMethod.DATA_CLASS)
+val defaultGenerateMethodsJava = listOf(GeneratedMethod.EQUALS_HASH_CODE, GeneratedMethod.TO_STRING)
 const val defaultCodegenModels = MODELS_OPERATION_BASED
 const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
 const val defaultRequiresOptInAnnotation = "none"

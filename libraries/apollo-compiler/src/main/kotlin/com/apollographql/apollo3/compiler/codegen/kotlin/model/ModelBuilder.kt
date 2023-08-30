@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperC
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
@@ -85,7 +85,11 @@ internal class ModelBuilder(
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(simpleName)
-          .makeDataClassFromProperties(properties)
+          .makeClassFromProperties(
+              context.generateMethods,
+              properties,
+              context.resolver.resolveModel(model.id)
+          )
     }
 
     val nestedTypes = nestedBuilders.map { it.build() }

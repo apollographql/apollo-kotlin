@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
+import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
@@ -66,7 +66,11 @@ internal class FragmentBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeDataClassFromParameters(variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeClassFromParameters(
+            context.generateMethods,
+            variables.map { it.toNamedType().toParameterSpec(context) },
+            className = context.resolver.resolveFragment(fragment.name)
+        )
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec(context.resolver, fragment.dataProperty))
         .addMethod(selectionsMethodSpec())

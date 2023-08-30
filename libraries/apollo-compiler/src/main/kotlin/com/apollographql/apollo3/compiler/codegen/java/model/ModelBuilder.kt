@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
-import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
+import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
@@ -79,7 +79,11 @@ internal class ModelBuilder(
           .addFields(fields)
     } else {
       TypeSpec.classBuilder(modelName)
-          .makeDataClassFromProperties(fields)
+          .makeClassFromProperties(
+              context.generateMethods,
+              fields,
+              context.resolver.resolveModel(model.id)
+          )
     }
 
     val nestedTypes = nestedBuilders.map { it.build() }

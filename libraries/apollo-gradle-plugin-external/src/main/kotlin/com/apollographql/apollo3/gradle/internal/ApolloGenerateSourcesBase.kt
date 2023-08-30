@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
+import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
@@ -99,6 +100,10 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val generateMethods: ListProperty<GeneratedMethod>
+
+  @get:Input
+  @get:Optional
   abstract val generateInputBuilders: Property<Boolean>
 
   @get:Input
@@ -180,6 +185,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         packageNameGenerator = packageNameGenerator,
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
+        generateMethods = generateMethods.getOrElse(GeneratedMethod.defaultsFor(codegenSchema.targetLanguage)),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),

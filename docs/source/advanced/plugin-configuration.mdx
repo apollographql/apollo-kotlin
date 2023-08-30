@@ -205,6 +205,35 @@ by default).
 
 With the [Android Studio plugin](../testing/android-studio-plugin), you can also go to <kbd>Tools</kbd> | <kbd>Apollo</kbd> | <kbd>Download schema</kbd> which acts as a shortcut to these tasks.
 
+## Generated methods
+By default all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
+auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN` for most generated classes. If you don't think you need all of those
+auto-generated methods, and/or you are worried about the size of the generated code, you can configure the Apollo compiler to generate none
+or a subset of the data class methods. To do this, set `generateMethods` to a list of the methods you need. The available methods are:
+
+- "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
+- "toString" generates a method that will print a pretty string representing the data in the class
+- "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+- "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
+which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
+
+Here are some possible configurations:
+
+```kotlin
+apollo {
+  service("service") {
+    // Generates equals/hashCode
+    modelMethods.set(listOf("equalsHashCode"))
+    // Also generates toString, equals, and hashcode
+    modelMethods.set(listOf("equalsHashCode", "toString"))
+    // Only generates copy
+    modelMethods.set(listOf("copy"))
+    // Generates data classes
+    modelMethods.set(listOf("dataClass"))
+  }
+}
+```
+
 ## All options
 
 Below is a summary of the Gradle options in a single code block. For more details, take a look at the [ApolloExtension KDoc](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-apollo-extension/index.html)
@@ -293,6 +322,8 @@ apollo {
     generateDataBuilders.set(true)
     // Whether to generate response model builders for Java.
     generateModelBuilders.set(true)
+    // Which methods to auto generate (can include: `equalsHashCode`, `copy`, `toString`, or `dataClass`)
+    generateMethods.set(listOf("dataClass"))
     // Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`, etc..)
     generatePrimitiveTypes.set(true)
     // Opt-in Builders for Operations, Fragments and Input types. Builders are more ergonomic than default arguments when there are a lot of
