@@ -14,24 +14,10 @@ dependencies {
 }
 
 apollo {
-  service("kotlin19") {
-    packageName.set("generatedMethods.kotlin19")
+  service("service") {
+    packageName.set("generatedMethods")
+    languageVersion.set("1.5")
     generateDataBuilders.set(true)
     generateMethods.set(listOf("toString", "equalsHashCode", "copy"))
-  }
-}
-
-//kotlin {
-//  compilerOptions {
-//    languageVersion.set(KotlinVersion.KOTLIN_1_9)
-//    apiVersion.set(KotlinVersion.KOTLIN_1_9)
-//  }
-//}
-
-
-tasks.withType(KotlinCompile::class.java).configureEach {
-  kotlinOptions {
-    apiVersion = "1.9"
-    languageVersion = "1.9"
   }
 }
