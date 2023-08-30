@@ -9,34 +9,40 @@ import kotlin.test.assertNotEquals
 
 class GeneratedMethodsTest {
 
+    data class BigCat(
+        val species: Species,
+        val name: String,
+        val age: Int,
+        val isMean: Boolean,
+        val numberZebrasEaten: Int?
+    )
+
+    private val dataClassBigCat = BigCat(
+        species = Species.LION,
+        name = "bob",
+        age = 13,
+        isMean = false,
+        numberZebrasEaten = null
+    )
+
+    private val generatedBigCatData = GetBigCatQuery.Data {
+        bigCat = buildBigCat {
+            species = dataClassBigCat.species
+            age = dataClassBigCat.age
+            isMean = dataClassBigCat.isMean
+            name = dataClassBigCat.name
+            numberZebrasEaten = dataClassBigCat.numberZebrasEaten
+        }
+    }
+
     @Test
     fun generatedMethodsHashCodeMatchesDataClass() {
-        data class DataClassBigCat(
-            val species: Species,
-            val name: String,
-            val age: Int,
-            val isMean: Boolean,
-            val numberZebrasEaten: Int?
-        )
-
-        val dataClassBigCat = DataClassBigCat(
-            species = Species.LION,
-            name = "bob",
-            age = 13,
-            isMean = false,
-            numberZebrasEaten = null
-        )
-
-        val generatedBigCatData = GetBigCatQuery.Data {
-            bigCat = buildBigCat {
-                species = dataClassBigCat.species
-                age = dataClassBigCat.age
-                isMean = dataClassBigCat.isMean
-                name = dataClassBigCat.name
-                numberZebrasEaten = dataClassBigCat.numberZebrasEaten
-            }
-        }
         assertEquals(dataClassBigCat.hashCode(), generatedBigCatData.bigCat.hashCode())
+    }
+
+    @Test
+    fun generatedMethodsStringMatchesDataClass() {
+        assertEquals(dataClassBigCat.toString(), generatedBigCatData.bigCat.toString())
     }
 
     @Test
@@ -50,7 +56,7 @@ class GeneratedMethodsTest {
                 numberZebrasEaten = null
             }
         }
-        assertEquals("BigCat(species=TIGER,name=alice,age=12,isMean=true,numberZebrasEaten=null)", generatedBigCatData.bigCat.toString())
+        assertEquals("BigCat(species=TIGER, name=alice, age=12, isMean=true, numberZebrasEaten=null)", generatedBigCatData.bigCat.toString())
     }
 
     @Test

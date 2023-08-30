@@ -230,7 +230,7 @@ internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): 
   fun printPropertiesTemplate() =
       "${className.simpleName}(" + propertySpecs
             .excludeInternalProperties()
-            .joinToString(",") { "${it.name}=\$${it.name}" } + ")"
+            .joinToString(", ") { "${it.name}=\$${it.name}" } + ")"
 
   fun methodCode() =
       CodeBlock.builder()
