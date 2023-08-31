@@ -162,8 +162,8 @@ internal fun ValidationScope.validateDirective(
   if (originalDirectiveName(directive.name) == Schema.NONNULL) {
     extraValidateNonNullDirective(directive, directiveContext)
   }
-  if (originalDirectiveName(directive.name) == Schema.FIELD_POLICY) {
-    extraValidateTypePolicyDirective(directive)
+  if (originalDirectiveName(directive.name) == TYPE_POLICY) {
+    extraValidateTypePolicyDirective(directive, directiveContext)
   }
 }
 
@@ -204,12 +204,43 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
 /**
  * Extra Apollo-specific validation for @typePolicy
  */
-internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
-  (directive.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach {
-    if (it !is GQLField) {
-      registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
-    } else if (it.selections.isNotEmpty()) {
-      registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", it.sourceLocation)
+internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective, directiveContext: GQLNode) {
+  val keyFieldsArg = directive.arguments.firstOrNull { it.name == "keyFields" }
+  if (keyFieldsArg == null) {
+    return
+  }
+
+  val fieldDefinitions: List<GQLFieldDefinition>
+  val type: String
+  when(directiveContext) {
+    is GQLInterfaceTypeDefinition -> {
+      fieldDefinitions = directiveContext.fields
+      type = directiveContext.name
+    }
+    is GQLObjectTypeDefinition -> {
+      fieldDefinitions = directiveContext.fields
+      type = directiveContext.name
+    }
+    is GQLUnionTypeDefinition -> {
+      fieldDefinitions = emptyList()
+      type = directiveContext.name
+    }
+    else -> {
+      // Should be caught by previous validation steps
+      error("")
+    }
+  }
+
+  (keyFieldsArg.value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach { selection ->
+    if (selection !is GQLField) {
+      registerIssue("Fragments are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+    } else if (selection.selections.isNotEmpty()) {
+      registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+    } else {
+      val definition = fieldDefinitions.firstOrNull { it.name ==  selection.name}
+      if (definition == null) {
+        registerIssue("Field '${selection.name}' is not a valid key field for type '$type'", keyFieldsArg.sourceLocation)
+      }
     }
   }
 }
