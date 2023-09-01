@@ -11,6 +11,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
@@ -49,6 +50,7 @@ fun Project.configureDokka() {
     dependsOn("assemble")
     notCompatibleWithConfigurationCache("See https://github.com/Kotlin/dokka/issues/1217")
   }
+
   tasks.withType(DokkaTaskPartial::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
     dependsOn("assemble")
@@ -59,6 +61,13 @@ fun Project.configureDokka() {
     pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
       customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
       customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+    }
+
+    /**
+     * Speed up development. When running the Gradle integration tests, we don't need KDoc to be generated
+     */
+    onlyIf {
+      gradle.taskGraph.allTasks.none { it.project.name == "apollo-gradle-plugin" && it is Test }
     }
   }
 }
