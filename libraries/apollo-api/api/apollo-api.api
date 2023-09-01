@@ -786,6 +786,11 @@ public final class com/apollographql/apollo3/api/Operations {
 	public static final fun parseJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
 	public static final fun parseJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/Set;)Lcom/apollographql/apollo3/api/ApolloResponse;
 	public static synthetic fun parseJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/Set;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public static final fun parseResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public static final fun parseResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public static final fun parseResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public static final fun parseResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/Set;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public static synthetic fun parseResponse$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/Set;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
 }
 
 public abstract class com/apollographql/apollo3/api/Optional {

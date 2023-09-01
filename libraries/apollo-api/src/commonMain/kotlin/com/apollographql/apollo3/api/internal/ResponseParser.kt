@@ -9,10 +9,9 @@ import com.apollographql.apollo3.api.falseVariables
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.parseData
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
-import okio.use
 
 /**
  * [ResponseParser] parses network responses, including data, errors and extensions from a [JsonReader]
@@ -21,33 +20,31 @@ internal object ResponseParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
+      requestUuid: Uuid?,
       customScalarAdapters: CustomScalarAdapters,
       deferredFragmentIds: Set<DeferredFragmentIdentifier>?,
   ): ApolloResponse<D> {
-    @Suppress("NAME_SHADOWING")
-    return jsonReader.use { jsonReader ->
-      jsonReader.beginObject()
+    jsonReader.beginObject()
 
-      var data: D? = null
-      var errors: List<Error>? = null
-      var extensions: Map<String, Any?>? = null
-      while (jsonReader.hasNext()) {
-        @Suppress("UNCHECKED_CAST")
-        when (jsonReader.nextName()) {
-          "data" -> {
-            val falseVariables = operation.falseVariables(customScalarAdapters)
-            data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds)
-          }
-          "errors" -> errors = jsonReader.readErrors()
-          "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
-          else -> jsonReader.skipValue()
+    var data: D? = null
+    var errors: List<Error>? = null
+    var extensions: Map<String, Any?>? = null
+    while (jsonReader.hasNext()) {
+      @Suppress("UNCHECKED_CAST")
+      when (jsonReader.nextName()) {
+        "data" -> {
+          val falseVariables = operation.falseVariables(customScalarAdapters)
+          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds)
         }
+        "errors" -> errors = jsonReader.readErrors()
+        "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
+        else -> jsonReader.skipValue()
       }
-
-      jsonReader.endObject()
-
-      ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data, errors = errors, extensions = extensions).build()
     }
+
+    jsonReader.endObject()
+
+    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = operation, data = data, errors = errors, extensions = extensions).build()
   }
 
   fun parseError(

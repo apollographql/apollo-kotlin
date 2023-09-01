@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8
@@ -18,7 +18,7 @@ class ParseResponseBodyTest {
    */
   @Test
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("AllPlanets.json")).data
+    val data = testFixtureToJsonReader("AllPlanets.json").toApolloResponse(operation = AllPlanetsQuery()).data
 
     assertEquals(data!!.allPlanets?.planets?.size, 60)
     val planets = data.allPlanets?.planets?.mapNotNull {
@@ -48,7 +48,7 @@ class ParseResponseBodyTest {
     val expected = testFixtureToUtf8("OperationJsonWriter.json")
 
     val query = AllPlanetsQuery()
-    val data = query.parseJsonResponse(Buffer().writeUtf8(expected).jsonReader()).data
+    val data = Buffer().writeUtf8(expected).jsonReader().toApolloResponse(operation = query).data
     val actual = buildJsonString(indent = "  ") {
       query.composeJsonResponse(this, data!!)
     }

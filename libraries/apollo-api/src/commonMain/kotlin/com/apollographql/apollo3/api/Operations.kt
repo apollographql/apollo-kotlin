@@ -6,11 +6,13 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.writeObject
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.exception.JsonEncodingException
-import okio.Buffer
+import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
 import okio.IOException
 import okio.use
 import kotlin.jvm.JvmName
@@ -46,7 +48,8 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 }
 
 /**
- * Reads a GraphQL Json response like below to a [ApolloResponse]
+ * Reads a GraphQL Json response to a [ApolloResponse]. GraphQL Json responses look like so:
+ *
  * ```
  * {
  *  "data": ...
@@ -62,26 +65,65 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
  * @throws JsonDataException if the data is not of the expected type
  */
 @JvmOverloads
+@Deprecated("Use parseResponse or jsonReader.toApolloResponse() instead", ReplaceWith("parseResponse"))
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  return ResponseParser.parse(
-      jsonReader,
-      this,
-      customScalarAdapters,
-      deferredFragmentIdentifiers,
-  )
+  return jsonReader.use {
+    ResponseParser.parse(
+        it,
+        this,
+        null,
+        customScalarAdapters,
+        deferredFragmentIdentifiers,
+    )
+  }
 }
 
+/**
+ * Reads a GraphQL Json response like below to a [ApolloResponse]. GraphQL Json responses look like so:
+ *
+ * ```
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ * ```
+ *
+ * By default, this method does not close the [jsonReader]
+ */
 @JvmOverloads
-@ApolloExperimental
-fun <D : Operation.Data> Operation<D>.parseJsonResponse(
-    json: String,
+fun <D : Operation.Data> Operation<D>.parseResponse(
+    jsonReader: JsonReader,
+    requestUuid: Uuid? = null,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  return parseJsonResponse(Buffer().writeUtf8(json).jsonReader(), customScalarAdapters)
+  return try {
+    ResponseParser.parse(
+        jsonReader,
+        this,
+        requestUuid,
+        customScalarAdapters,
+        deferredFragmentIdentifiers,
+    )
+  } catch (throwable: Throwable) {
+    val apolloException = if (throwable is ApolloException) {
+      throwable
+    } else {
+      // This happens for null pointer exceptions on missing fields
+      ApolloParseException(
+          message = "Failed to parse GraphQL http network response",
+          cause = throwable
+      )
+    }
+    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this, exception = apolloException)
+        .isLast(true)
+        .build()
+  }
 }
 
 /**
@@ -100,6 +142,19 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
       name("data")
       adapter().toJson(this, customScalarAdapters, data)
     }
+  }
+}
+
+
+@ApolloExperimental
+fun <D : Operation.Data> JsonReader.toApolloResponse(
+    operation: Operation<D>,
+    requestUuid: Uuid? = null,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
+): ApolloResponse<D> {
+  return use {
+    operation.parseResponse(it, requestUuid, customScalarAdapters, deferredFragmentIdentifiers)
   }
 }
 
