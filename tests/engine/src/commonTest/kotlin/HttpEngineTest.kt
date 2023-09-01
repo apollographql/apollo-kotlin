@@ -6,9 +6,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.http.KtorHttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,10 +35,7 @@ class HttpEngineTest {
   }
 
   @Test
-  fun errorWithBodyDefault() = errorWithBody(DefaultHttpEngine())
-
-  @Test
-  fun errorWithBodyKtor() = errorWithBody(KtorHttpEngine())
+  fun errorWithBody() = errorWithBody(httpEngine())
 
   private fun headers(httpEngine: HttpEngine) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(
@@ -65,10 +60,7 @@ class HttpEngineTest {
   }
 
   @Test
-  fun headersDefault() = headers(DefaultHttpEngine())
-
-  @Test
-  fun headersKtor() = headers(KtorHttpEngine())
+  fun headers() = headers(httpEngine())
 
   private fun post(httpEngine: HttpEngine) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(
@@ -90,10 +82,7 @@ class HttpEngineTest {
   }
 
   @Test
-  fun postDefault() = post(DefaultHttpEngine())
-
-  @Test
-  fun postKtor() = post(KtorHttpEngine())
+  fun post() = post(httpEngine())
 
   private fun connectTimeout(httpEngine: HttpEngine) = runTest(before = { setUp() }, after = { tearDown() }) {
     assertFailsWith<ApolloException> {
@@ -103,11 +92,8 @@ class HttpEngineTest {
   }
 
   @Test
-  fun connectTimeoutDefault() = connectTimeout(DefaultHttpEngine(500))
-
-  @Test
-  fun connectTimeoutKtor() = connectTimeout(KtorHttpEngine(500))
-
+  fun connectTimeout() = connectTimeout(httpEngine(500))
+  
   private fun readTimeout(httpEngine: HttpEngine) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(
         MockResponse.Builder()
@@ -122,9 +108,5 @@ class HttpEngineTest {
   }
 
   @Test
-  fun readTimeoutDefault() = readTimeout(DefaultHttpEngine(500))
-
-  @Test
-  fun readTimeoutKtor() = readTimeout(KtorHttpEngine(500))
-
+  fun readTimeout() = readTimeout(httpEngine(500))
 }

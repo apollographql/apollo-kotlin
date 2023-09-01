@@ -138,8 +138,9 @@ fun Project.configureMpp(
 }
 
 /**
- * Current Graph is something like so
+ * Current Graph is something like so:
  *
+ * ```mermaid
  * graph TB
  * commonMain --> concurrentMain
  * commonMain --> linuxMain
@@ -158,14 +159,11 @@ fun Project.configureMpp(
  * appleMain --> tvosX64
  * appleMain --> tvosSimulatorArm64
  *
- *
  * commonTest --> kotlinCodegenTest
  * commonTest --> jvmJavaCodeGen
  * kotlinCodegenTest --> macOsArm64Test
  * kotlinCodegenTest --> jvmTest
  * kotlinCodegenTest --> jsTest
- *
- *
  *
  * classDef kotlinPurple fill:#A97BFF,stroke:#333,stroke-width:2px,color:#333
  * classDef javaOrange fill:#b07289,stroke:#333,stroke-width:2px,color:#333
@@ -173,6 +171,7 @@ fun Project.configureMpp(
  * class kotlinCodegenTest gray
  * class jvmJavaCodeGen,macOsArm64Test,jvmTest,jsTest kotlinPurple
  * class commonTest javaOrange
+ * ```
  */
 private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   val hasAppleTarget = targets.any {
@@ -201,12 +200,12 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
     }
   }
 
-  val kotlinCodegentTest = sourceSets.create("kotlinCodegenTest")
+  val kotlinCodegenTest = sourceSets.create("kotlinCodegenTest")
 
-  kotlinCodegentTest.dependsOn(sourceSets.getByName("commonTest"))
+  kotlinCodegenTest.dependsOn(sourceSets.getByName("commonTest"))
 
   targets.forEach {
-    sourceSets.findByName("${it.name}Test")?.dependsOn(kotlinCodegentTest)
+    sourceSets.findByName("${it.name}Test")?.dependsOn(kotlinCodegenTest)
   }
 }
 
@@ -218,6 +217,18 @@ private fun KotlinMultiplatformExtension.addTestDependencies() {
   }
 }
 
+/**
+ * Registers a new testRun that substitutes the Kotlin models by the Java models.
+ * Because they have the same JVM API, this is transparent to all tests that are in `kotlinCodegenTest` that work the same for Kotlin
+ * & Java models.
+ *
+ * - For Kotlin models, `kotlinCodegenTest` is directly in the sourceSet graph and generated models are wired to the source set
+ * - For Java models, `kotlinCodegenTest` is not in the sourceSet graph. The generated models are wired to the separate `javaCodegen`
+ * source set. Then the contents of `kotlinCodegenTest/kotlin` is sourced directly
+ *
+ * This breaks IDE support because now `kotlinCodegenTest/kotlin` is used from 2 different places so clicking a model there, it's impossible
+ * to tell which model it is. We could expect/actual all of the model APIs but that'd be a lot of very manual work
+ */
 fun Project.registerJavaCodegenTestTask() {
   val kotlin = kotlinExtension
   check(kotlin is KotlinMultiplatformExtension) {
@@ -250,5 +261,5 @@ fun Project.registerJavaCodegenTestTask() {
     }
   }
 
-  tasks.named("build").dependsOn(task)
+  tasks.named("allTests").dependsOn(task)
 }

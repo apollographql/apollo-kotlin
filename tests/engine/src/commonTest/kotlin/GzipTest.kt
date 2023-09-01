@@ -1,8 +1,8 @@
+
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.http.KtorHttpEngine
 import com.apollographql.apollo3.network.http.get
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -51,8 +51,5 @@ class GzipTest {
   }
 
   @Test
-  fun gzipTestDefault() = gzipTest(DefaultHttpEngine())
-
-  @Test
-  fun gzipTestKtor() = gzipTest(KtorHttpEngine())
+  fun gzipTest() = gzipTest(DefaultHttpEngine())
 }

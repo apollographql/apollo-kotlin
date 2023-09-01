@@ -1,3 +1,4 @@
+
 import app.cash.turbine.test
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
@@ -7,11 +8,9 @@ import com.apollographql.apollo3.mockserver.WebSocketMockServer
 import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
-import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.testing.internal.runTest
-import io.ktor.utils.io.core.toByteArray
+import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,10 +48,7 @@ class WebSocketEngineTest {
   }
 
   @Test
-  fun textFramesDefault() = textFrames(DefaultWebSocketEngine())
-
-  @Test
-  fun textFramesKtor() = textFrames(KtorWebSocketEngine())
+  fun textFrames() = textFrames(webSocketEngine())
 
   private fun binaryFrames(webSocketEngine: WebSocketEngine) = runTest {
     if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
@@ -82,11 +78,10 @@ class WebSocketEngineTest {
     webSocketServer.close()
   }
 
-  @Test
-  fun binaryFramesDefault() = binaryFrames(DefaultWebSocketEngine())
+  private fun String.toByteArray() = Buffer().writeUtf8(this).readByteArray()
 
   @Test
-  fun binaryFramesKtor() = binaryFrames(KtorWebSocketEngine())
+  fun binaryFrames() = binaryFrames(webSocketEngine())
 
   private fun serverCloseNicely(webSocketEngine: WebSocketEngine, checkCodeAndReason: Boolean = true) = runTest {
     if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
@@ -115,14 +110,9 @@ class WebSocketEngineTest {
   }
 
   @Test
-  fun serverCloseNicelyDefault() = serverCloseNicely(DefaultWebSocketEngine())
-
-  @Test
-  fun serverCloseNicelyKtor() = serverCloseNicely(
-      webSocketEngine = KtorWebSocketEngine(),
-
+  fun serverCloseNicely() = serverCloseNicely(webSocketEngine(),
       // On Apple, the close code and reason are not available - https://youtrack.jetbrains.com/issue/KTOR-6198
-      checkCodeAndReason = platform() != Platform.Native
+      checkCodeAndReason = !isKtor || platform() != Platform.Native
   )
 
   private fun serverCloseAbruptly(webSocketEngine: WebSocketEngine) = runTest {
@@ -143,10 +133,7 @@ class WebSocketEngineTest {
   }
 
   @Test
-  fun serverCloseAbruptlyDefault() = serverCloseAbruptly(DefaultWebSocketEngine())
-
-  @Test
-  fun serverCloseAbruptlyKtor() = serverCloseAbruptly(KtorWebSocketEngine())
+  fun serverCloseAbruptly() = serverCloseAbruptly(webSocketEngine())
 
   private fun headers(webSocketEngine: WebSocketEngine) = runTest {
     if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
@@ -170,8 +157,5 @@ class WebSocketEngineTest {
   }
 
   @Test
-  fun headersDefault() = headers(DefaultWebSocketEngine())
-
-  @Test
-  fun headersKtor() = headers(KtorWebSocketEngine())
+  fun headers() = headers(webSocketEngine())
 }
