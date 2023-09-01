@@ -62,13 +62,9 @@ public class HttpNetworkTransport implements NetworkTransport {
           }
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.getBody());
-          try {
-            CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
-            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
-            callback.onResponse(apolloResponse);
-          } catch (Exception e) {
-            callback.onResponse(getExceptionResponse(request, new ApolloParseException("Cannot parse response", e)));
-          }
+          CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
+          ApolloResponse<D> apolloResponse = Operations.toApolloResponse(jsonReader, request.getOperation(), request.getRequestUuid(), customScalarAdapters, null);
+          callback.onResponse(apolloResponse);
         }
       }
 

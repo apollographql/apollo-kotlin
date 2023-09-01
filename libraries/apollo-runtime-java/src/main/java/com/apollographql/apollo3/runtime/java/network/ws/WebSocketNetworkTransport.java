@@ -141,7 +141,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
       CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
       JsonReader jsonReader = new MapJsonReader(payload);
       //noinspection rawtypes
-      ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters).newBuilder().requestUuid(request.getRequestUuid()).build();
+      ApolloResponse apolloResponse = Operations.toApolloResponse(jsonReader, request.getOperation(), request.getRequestUuid(), customScalarAdapters, null);
       //noinspection unchecked
       subscriptionInfo.callback.onResponse(apolloResponse);
     }

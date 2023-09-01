@@ -6,9 +6,10 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.type.Date
@@ -23,6 +24,7 @@ import testFixtureToJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -34,7 +36,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun errorsAreProperlyRead() {
-    val response = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("ResponseError.json"))
+    val response = testFixtureToJsonReader("ResponseError.json").toApolloResponse(operation = AllPlanetsQuery())
     assertTrue(response.hasErrors())
     val errors = response.errors
     assertEquals2(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
@@ -52,7 +54,7 @@ class ParseResponseBodyTest {
      * If I'm reading the spec right, passing null in location/path/extensions is most likely
      * an error, but we are lenient there and allow it
      */
-    val response = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithNulls.json"))
+    val response = testFixtureToJsonReader("ResponseErrorWithNulls.json").toApolloResponse(operation = AllPlanetsQuery())
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
     assertEquals(response.errors!![0].message, "Response with nulls")
@@ -67,7 +69,7 @@ class ParseResponseBodyTest {
     /**
      * location, path and extensions are all optional
      */
-    val response = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithAbsent.json"))
+    val response = testFixtureToJsonReader("ResponseErrorWithAbsent.json").toApolloResponse(operation = AllPlanetsQuery())
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
     assertEquals(response.errors!![0].message, "Response with absent")
@@ -84,7 +86,7 @@ class ParseResponseBodyTest {
      * Extensions are mapped to Kotlin types.
      * Big numbers should throw although this is not tested here
      */
-    val response = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithExtensions.json"))
+    val response = testFixtureToJsonReader("ResponseErrorWithExtensions.json").toApolloResponse(operation = AllPlanetsQuery())
     assertTrue(response.hasErrors())
     assertEquals(response.errors!![0].extensions?.size, 4)
     assertEquals(response.errors!![0].extensions?.get("code"), 500)
@@ -101,7 +103,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun errorWithNonStandardFields() {
-    val response = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithNonStandardFields.json"))
+    val response = testFixtureToJsonReader("ResponseErrorWithNonStandardFields.json").toApolloResponse(operation = AllPlanetsQuery())
     assertTrue(response.hasErrors())
     val nonStandardFields = response.errors!![0].nonStandardFields!!
     assertEquals(3, nonStandardFields.size)
@@ -125,7 +127,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Episode.JEDI).parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithData.json"))
+    val response = testFixtureToJsonReader("ResponseErrorWithData.json").toApolloResponse(operation = EpisodeHeroNameQuery(Episode.JEDI))
     val data = response.data
     val errors = response.errors
     assertTrue(data != null)
@@ -142,10 +144,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun allFilmsWithDate() {
 
-    val response = AllFilmsQuery().parseJsonResponse(
-        testFixtureToJsonReader("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
-    )
+    val response = testFixtureToJsonReader("HttpCacheTestAllFilms.json").toApolloResponse(operation = AllFilmsQuery(), customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build())
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
@@ -157,7 +156,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun dataNull() {
-    val response = HeroNameQuery().parseJsonResponse(testFixtureToJsonReader("ResponseDataNull.json"))
+    val response = testFixtureToJsonReader("ResponseDataNull.json").toApolloResponse(operation = HeroNameQuery())
     assertTrue(response.data == null)
     assertFalse(response.hasErrors())
   }
@@ -165,20 +164,21 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun fieldMissing() {
-    try {
-      HeroNameQuery().parseJsonResponse(testFixtureToJsonReader("ResponseDataMissing.json"))
-      error("an error was expected")
-    } catch (e: NullPointerException) {
-      // This is the Kotlin codegen case
-    } catch (e: ApolloException) {
+    val exception = testFixtureToJsonReader("ResponseDataMissing.json").toApolloResponse(operation = HeroNameQuery()).exception
+    if (exception is DefaultApolloException) {
       // This is the (better) Java codegen case
+      assertTrue(exception.message?.contains("Field 'name' is missing") == true)
+    } else {
+      // Kotlin codegen case
+      assertIs<ApolloException>(exception)
+      assertIs<NullPointerException>(exception.cause)
     }
   }
 
   @Test
   @Throws(Exception::class)
   fun operationResponseParser() {
-    val data = HeroNameQuery().parseJsonResponse(testFixtureToJsonReader("HeroNameResponse.json")).data
+    val data = testFixtureToJsonReader("HeroNameResponse.json").toApolloResponse(operation = HeroNameQuery()).data
     assertEquals(data!!.hero?.name, "R2-D2")
   }
 
@@ -186,7 +186,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun parseSuccessOperationRawResponse() {
     val query = AllPlanetsQuery()
-    val response = query.parseJsonResponse(testFixtureToJsonReader("AllPlanetsNullableField.json"))
+    val response = testFixtureToJsonReader("AllPlanetsNullableField.json").toApolloResponse(operation = query)
     assertEquals(response.operation, query)
     assertFalse(response.hasErrors())
     assertTrue(response.data != null)
@@ -196,10 +196,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseJsonResponse(
-        testFixtureToJsonReader("/ResponseErrorWithData.json"),
-        CustomScalarAdapters.Empty
-    )
+    val response = testFixtureToJsonReader("/ResponseErrorWithData.json").toApolloResponse(operation = EpisodeHeroNameQuery(Episode.EMPIRE), customScalarAdapters = CustomScalarAdapters.Empty)
     val data = response.data
     val errors = response.errors
 
@@ -216,7 +213,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun extensionsAreReadFromResponse() {
     val query = HeroNameQuery()
-    val extensions = query.parseJsonResponse(testFixtureToJsonReader("HeroNameResponse.json")).extensions
+    val extensions = testFixtureToJsonReader("HeroNameResponse.json").toApolloResponse(operation = query).extensions
     assertEquals(
         extensions,
         mapOf(

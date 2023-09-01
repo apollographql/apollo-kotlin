@@ -5,7 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.composeJsonRequest
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.example.GetRandomQuery
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -59,7 +59,7 @@ class NoRuntimeTest {
     assertTrue(response.body != null)
 
     val apolloResponse = response.body?.use {
-      query.parseJsonResponse(BufferedSourceJsonReader(it.source()))
+      BufferedSourceJsonReader(it.source()).toApolloResponse(operation = query)
     }
 
     assertEquals(42, apolloResponse?.data?.random)

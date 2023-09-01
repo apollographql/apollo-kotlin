@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -26,7 +26,6 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -138,15 +137,11 @@ private constructor(
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
-    val response = try {
-      operation.parseJsonResponse(
-          jsonReader = httpResponse.body!!.jsonReader(),
-          customScalarAdapters = customScalarAdapters,
-          deferredFragmentIdentifiers = null,
-      )
-    } catch (e: Exception) {
-      errorResponse(operation, e)
-    }
+    val response = httpResponse.body!!.jsonReader().toApolloResponse(
+        operation,
+        customScalarAdapters = customScalarAdapters,
+        deferredFragmentIdentifiers = null,
+    )
 
     return flowOf(response.newBuilder().isLast(true).build())
   }
@@ -194,11 +189,10 @@ private constructor(
                 reader.beginObject()
                 reader.nextName()
 
-                // TODO: make parseJsonResponse not close the jsonReader
-                operation.parseJsonResponse(
-                    jsonReader = reader,
+                reader.toApolloResponse(
+                    operation = operation,
                     customScalarAdapters = customScalarAdapters,
-                    deferredFragmentIdentifiers = null,
+                    deferredFragmentIdentifiers = null
                 )
               }
 
@@ -220,15 +214,13 @@ private constructor(
             if (jsonMerger!!.isEmptyPayload) {
               null
             } else {
-              operation.parseJsonResponse(
-                  jsonReader = merged.jsonReader(),
+              merged.jsonReader().toApolloResponse(
+                  operation = operation,
                   customScalarAdapters = customScalarAdapters,
-                  deferredFragmentIdentifiers = deferredFragmentIds,
+                  deferredFragmentIdentifiers = deferredFragmentIds
               ).newBuilder().isLast(isLast).build()
             }
           }
-        }.catch {
-          emit(errorResponse(operation, it))
         }
   }
 

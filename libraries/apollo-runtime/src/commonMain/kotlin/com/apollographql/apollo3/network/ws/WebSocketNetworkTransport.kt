@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
@@ -311,11 +311,13 @@ private constructor(
           } else {
             responsePayload to null
           }
-          val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(jsonReader = payload.jsonReader(), customScalarAdapters = requestCustomScalarAdapters, deferredFragmentIdentifiers = mergedFragmentIds)
-              .newBuilder()
-              .requestUuid(request.requestUuid)
-              .build()
+          val apolloResponse: ApolloResponse<D> = payload.jsonReader().toApolloResponse(
+              operation = request.operation,
+              requestUuid = request.requestUuid,
+              customScalarAdapters = requestCustomScalarAdapters,
+              deferredFragmentIdentifiers = mergedFragmentIds
+          )
+
           if (!deferredJsonMerger.hasNext) {
             // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
             deferredJsonMerger.reset()

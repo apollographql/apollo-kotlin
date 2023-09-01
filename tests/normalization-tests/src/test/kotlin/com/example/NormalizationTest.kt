@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
@@ -48,7 +49,7 @@ class NormalizationTest {
 
     val query = Issue3672Query()
 
-    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse).jsonReader(), CustomScalarAdapters.Empty).dataOrThrow()
+    val data1 = Buffer().writeUtf8(nestedResponse).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
     store.writeOperation(query, data1)
 
     val data2 = store.readOperation(query)
@@ -65,7 +66,7 @@ class NormalizationTest {
 
     val query = NestedFragmentQuery()
 
-    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse_list).jsonReader(), CustomScalarAdapters.Empty).dataOrThrow()
+    val data1 = Buffer().writeUtf8(nestedResponse_list).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
     store.writeOperation(query, data1)
 
     val data2 = store.readOperation(query)

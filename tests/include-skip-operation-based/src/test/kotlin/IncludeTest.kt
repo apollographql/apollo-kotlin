@@ -1,10 +1,11 @@
+
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.example.GetCatIncludeFalseQuery
@@ -27,7 +28,7 @@ import kotlin.test.assertNull
 class IncludeTest {
 
   private fun <D : Operation.Data> Operation<D>.parseData(data: Map<String, Any?>): ApolloResponse<D> {
-    return parseJsonResponse(MapJsonReader(mapOf("data" to data)))
+    return MapJsonReader(mapOf("data" to data)).toApolloResponse(this)
   }
 
   @Test
