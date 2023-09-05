@@ -59,7 +59,7 @@ class MultipartTest {
 
 
   @Test
-  fun singleEmptyObjectLastPartIsIgnored() = runTest {
+  fun singleEmptyObjectIsIgnored() = runTest {
     val mockServer = MockServer()
 
     val apolloClient = ApolloClient.Builder()
