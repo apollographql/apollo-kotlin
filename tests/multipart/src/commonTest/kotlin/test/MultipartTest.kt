@@ -55,6 +55,9 @@ class MultipartTest {
 
     assertEquals(1, responses.size)
     assertEquals(42, responses[0].dataOrThrow().counter?.count)
+
+    mockServer.stop()
+    apolloClient.close()
   }
 
 
@@ -79,5 +82,8 @@ class MultipartTest {
     val responses = apolloClient.subscription(CounterSubscription()).toFlow().toList()
 
     assertEquals(0, responses.size)
+
+    mockServer.stop()
+    apolloClient.close()
   }
 }
