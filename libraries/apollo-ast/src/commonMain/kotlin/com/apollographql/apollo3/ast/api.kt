@@ -311,6 +311,8 @@ fun GQLDocument.validateAsExecutable(schema: Schema, fieldsOnDisjointTypesMustMe
 
 /**
  * Infers the variables from a given fragment
+ *
+ * XXX: this traverses the fragments another time. Ideally it could reuse the results of a previous validation step
  */
 @ApolloExperimental
 fun GQLFragmentDefinition.inferVariables(

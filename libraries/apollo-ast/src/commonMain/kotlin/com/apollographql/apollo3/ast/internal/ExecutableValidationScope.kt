@@ -45,7 +45,7 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import com.apollographql.apollo3.ast.withNullability
 
 /**
- * @param fragmentDefinitions: all the fragments in the current compilation unit.
+ * @param fragmentDefinitions all the fragments in the current compilation unit.
  * This is required to check the type conditions as well as fields merging
  *
  * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
@@ -62,42 +62,74 @@ internal class ExecutableValidationScope(
   override val foreignNames: Map<String, String>
     get() = schema.foreignNames
 
+  /**
+   * These are scoped to the current document being validated
+   */
   override val issues = mutableListOf<Issue>()
+  val cyclicFragments = mutableSetOf<String>()
 
   /**
-   * As the tree is walked, variable references will be put here
+   * As the tree is walked, variable references will be put here. These are scope to the current operation/fragment being validated
    */
   private val variableUsages = mutableListOf<VariableUsage>()
-
   private val deferDirectiveLabels = mutableMapOf<String, SourceLocation?>()
   private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation?>()
+
+  init {
+    val globallyVisitedFragments = mutableSetOf<String>()
+    val locallyVisitedFragments = mutableSetOf<String>()
+
+    fragmentDefinitions.forEach {
+      it.value.detectCycles(globallyVisitedFragments, locallyVisitedFragments, emptyList())
+      globallyVisitedFragments.addAll(locallyVisitedFragments)
+    }
+  }
+
+  private fun GQLFragmentDefinition.detectCycles(globallyVisitedFragments: MutableSet<String>,
+                                                 locallyVisitedFragments: MutableSet<String>,
+                                                 path: List<String>) {
+    if (globallyVisitedFragments.contains(name)) {
+      return
+    }
+    if (locallyVisitedFragments.contains(name)) {
+      registerIssue("Fragment '$name' references itself, creating a cycle at '${path.joinToString(".")}'", sourceLocation)
+      cyclicFragments.add(name)
+      return
+    }
+    locallyVisitedFragments.add(name)
+    selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path)
+  }
+
+  private fun List<GQLSelection>.detectCycles(globallyVisitedFragments: MutableSet<String>, locallyVisitedFragments: MutableSet<String>, path: List<String>) {
+    forEach {
+      when (it) {
+        is GQLField -> {
+          it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + it.responseName())
+        }
+        is GQLInlineFragment -> {
+          it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__on${it.typeCondition?.name ?: ""}")
+        }
+        is GQLFragmentSpread -> {
+          val fragment = fragmentDefinitions.get(it.name)
+          if (fragment != null) {
+            fragment.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__${fragment.name}")
+          }
+        }
+      }
+    }
+  }
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
 
     val fragments = document.definitions.filterIsInstance<GQLFragmentDefinition>()
     fragments.checkDuplicateFragments()
-    fragments.forEach {
-      it.validate()
-    }
 
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
     operations.checkDuplicateOperations()
     operations.forEach {
       it.validate()
     }
-
-    return issues
-  }
-
-  fun validateOperation(operation: GQLOperationDefinition): List<Issue> {
-    operation.validate()
-
-    return issues
-  }
-
-  fun validateFragment(fragment: GQLFragmentDefinition): List<Issue> {
-    fragment.validate()
 
     return issues
   }
@@ -110,12 +142,11 @@ internal class ExecutableValidationScope(
    * because this should be caught during previous operation-wide validation.
    */
   fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
-    variableUsages.clear()
     fragment.validate()
 
     return variableUsages.groupBy {
       it.variable.name
-    }.entries.mapNotNull {
+    }.entries.map {
       val types = it.value.map { it.locationType }
       val inferredType = types.findCompatibleType()
       if (inferredType == null) {
@@ -136,7 +167,6 @@ internal class ExecutableValidationScope(
     }
   }
 
-  @Suppress("KotlinConstantConditions")
   private fun GQLType.mergeWith(other: GQLType): GQLType? {
     return if (this is GQLNonNullType && other is GQLNonNullType) {
       type.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
@@ -264,6 +294,9 @@ internal class ExecutableValidationScope(
       )
       return
     }
+    if (name in cyclicFragments) {
+      return
+    }
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
@@ -300,9 +333,15 @@ internal class ExecutableValidationScope(
         }
   }
 
+  /**
+   * Validate the fragment outside the context of an operation
+   * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
+   * This will not catch field merging conflicts and missing variables so ultimately, validation
+   * in the context of an operation is required.
+   */
   private fun GQLFragmentDefinition.validate() {
-    val fragmentRootTypeDefinition = typeDefinitions[typeCondition.name]
-    if (fragmentRootTypeDefinition == null) {
+    val rootTypeDefinition = typeDefinitions[typeCondition.name]
+    if (rootTypeDefinition == null) {
       registerIssue(
           message = "Cannot find type `${typeCondition.name}` for fragment `$name`",
           sourceLocation = typeCondition.sourceLocation
@@ -310,24 +349,34 @@ internal class ExecutableValidationScope(
       return
     }
 
-    /**
-     * Validate the fragment outside the context of an operation
-     * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
-     * This will not catch field merging conflicts and missing variables so ultimately, validation
-     * against all fragments is required.
-     * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
-     * context of an operation.
-     */
-    selections.validate(fragmentRootTypeDefinition, this, path = "-")
-
-    fieldsInSetCanMerge(selections.collectFields(fragmentRootTypeDefinition.name))
+    validateCommon(this, selections, directives, rootTypeDefinition)
   }
 
-  private fun GQLOperationDefinition.validate() {
+  /**
+   * Common validation code between operations and fragments
+   */
+  private fun validateCommon(
+      directiveContext: GQLNode,
+      selections: List<GQLSelection>,
+      directives: List<GQLDirective>,
+      rootTypeDefinition: GQLTypeDefinition
+  ) {
     variableUsages.clear()
     deferDirectiveLabels.clear()
     deferDirectivePathAndLabels.clear()
 
+    selections.validate(rootTypeDefinition, directiveContext)
+
+    fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
+
+    directives.forEach {
+      validateDirective(it, directiveContext) {
+        variableUsages.add(it)
+      }
+    }
+  }
+
+  private fun GQLOperationDefinition.validate() {
     val rootTypeDefinition = rootTypeDefinition(schema)
 
     if (rootTypeDefinition == null) {
@@ -337,16 +386,8 @@ internal class ExecutableValidationScope(
       )
       return
     }
+    validateCommon(this, selections, directives, rootTypeDefinition)
 
-    selections.validate(rootTypeDefinition, this)
-
-    fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
-
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
-    }
     variableUsages.forEach {
       validateVariable(this, it)
     }
@@ -716,7 +757,7 @@ internal class ExecutableValidationScope(
 
   private fun <T> List<T>.pairs(): List<Pair<T, T>> {
     val pairs = mutableListOf<Pair<T, T>>()
-    for (i in 0.until(size)) {
+    for (i in indices) {
       for (j in (i + 1).until(size)) {
         pairs.add(get(i) to get(j))
       }
@@ -744,6 +785,10 @@ internal class ExecutableValidationScope(
   private fun GQLInlineFragment.collectFields(parentType: String) = selections.collectFields(typeCondition?.name ?: parentType)
 
   private fun GQLFragmentSpread.collectFields(): List<FieldWithParent> {
+    if (name in cyclicFragments) {
+      return emptyList()
+    }
+
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       // will be caught by other validation rules

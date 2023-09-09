@@ -1,0 +1,2 @@
+ERROR: ValidationError (7:1)
+Fragment 'characterFragment' references itself, creating a cycle at 'friend.__friendFragment.__characterFragment'
