@@ -1,4 +1,3 @@
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -31,8 +30,9 @@ internal val hostTarget: String
     "macosX64"
   }
 
-private val enableLinux = true
-private val enableJs = true
+private val enableLinux = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
+private val enableJs = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
+private val enableApple = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 
 fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
   configureMpp(
@@ -116,19 +116,21 @@ fun Project.configureMpp(
       }
     }
 
-    appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
-      when(presetName) {
-        "macosX64" -> macosX64()
-        "macosArm64" -> macosArm64()
-        "iosArm64" -> iosArm64()
-        "iosX64" -> iosX64()
-        "iosSimulatorArm64" -> iosSimulatorArm64()
-        "watchosArm32" -> watchosArm32()
-        "watchosArm64" -> watchosArm64()
-        "watchosSimulatorArm64" -> watchosSimulatorArm64()
-        "tvosArm64" -> tvosArm64()
-        "tvosX64" -> tvosX64()
-        "tvosSimulatorArm64" -> tvosSimulatorArm64()
+    if (enableApple) {
+      appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
+        when (presetName) {
+          "macosX64" -> macosX64()
+          "macosArm64" -> macosArm64()
+          "iosArm64" -> iosArm64()
+          "iosX64" -> iosX64()
+          "iosSimulatorArm64" -> iosSimulatorArm64()
+          "watchosArm32" -> watchosArm32()
+          "watchosArm64" -> watchosArm64()
+          "watchosSimulatorArm64" -> watchosSimulatorArm64()
+          "tvosArm64" -> tvosArm64()
+          "tvosX64" -> tvosX64()
+          "tvosSimulatorArm64" -> tvosSimulatorArm64()
+        }
       }
     }
 

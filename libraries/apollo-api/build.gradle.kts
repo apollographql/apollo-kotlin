@@ -20,8 +20,6 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        //implementation(libs.kotlin.test.junit)
-        //implementation("org.jetbrains.kotlin:kotlin-test")
         implementation(libs.kotlin.test.asProvider().get().toString())
       }
     }

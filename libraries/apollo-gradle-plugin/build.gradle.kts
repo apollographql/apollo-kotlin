@@ -15,7 +15,7 @@ configurations.create("gr8Classpath")
 val shadeConfiguration = configurations.create("shade")
 
 // Set to false to skip relocation and save some building time during development
-val relocateJar = true
+val relocateJar = System.getenv("APOLLO_RELOCATE_JAR")?.toBoolean() ?: true
 
 dependencies {
   /**
