@@ -33,6 +33,34 @@ class Error(
      */
     val nonStandardFields: Map<String, Any?>?,
 ) {
+  class Builder(val message: String) {
+    var locations: List<Location>? = null
+    var path: List<Any>? = null
+    val extensions = mutableMapOf<String, Any?>()
+
+    fun locations(locations: List<Location>) = apply {
+      this.locations = locations
+    }
+
+    fun path(path: List<Any>) = apply {
+      this.path = path
+    }
+
+    fun putExtension(name: String, value: Any?) = apply {
+      this.extensions.put(name, value)
+    }
+
+    fun build(): Error {
+      return Error(
+          message = message,
+          locations = locations,
+          path = path,
+          extensions = extensions,
+          nonStandardFields = null
+      )
+    }
+  }
+
   override fun toString(): String {
     return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions, nonStandardFields = $nonStandardFields)"
   }
