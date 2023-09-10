@@ -9,9 +9,9 @@ import com.apollographql.apollo3.exception.JsonDataException
 import kotlin.jvm.JvmOverloads
 
 /**
- * A [JsonReader] that reads data from a regular [Map<String, Any?>]
+ * A [JsonReader] that can consumes Kotlin values as Json
  *
- * Map values should be any of:
+ * values should be any of:
  * - String
  * - Int
  * - Double
@@ -25,13 +25,13 @@ import kotlin.jvm.JvmOverloads
  *
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  *
- * @param root the root [Map] to read from
+ * @param root the root object to read from
  * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer].
  */
 class MapJsonReader
 @JvmOverloads
 constructor(
-    val root: Map<String, Any?>,
+    val root: Any?,
     private val pathRoot: List<Any> = emptyList(),
 ) : JsonReader {
 
@@ -62,7 +62,7 @@ constructor(
   private var stackSize = 0
 
   init {
-    peekedToken = JsonReader.Token.BEGIN_OBJECT
+    peekedToken = anyToToken(root)
     peekedData = root
   }
 
