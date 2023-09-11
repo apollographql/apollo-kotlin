@@ -1,3 +1,6 @@
+public abstract interface class com/apollographql/apollo3/ast/ApolloIssue : com/apollographql/apollo3/ast/Issue {
+}
+
 public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static final fun parseAsGQLDocument (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static final fun parseAsGQLDocument (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLResult;
@@ -27,9 +30,40 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun toGQLValue$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLValue;
 }
 
+public final class com/apollographql/apollo3/ast/ConditionalFragment : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/ConversionException : com/apollographql/apollo3/ast/SourceAwareException {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/apollographql/apollo3/ast/DeprecatedUsage : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
+public final class com/apollographql/apollo3/ast/DifferentShape : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
+public final class com/apollographql/apollo3/ast/DirectiveRedefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
+public final class com/apollographql/apollo3/ast/DuplicateTypeName : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/GQLArgument : com/apollographql/apollo3/ast/GQLNamed, com/apollographql/apollo3/ast/GQLNode {
@@ -751,8 +785,6 @@ public final class com/apollographql/apollo3/ast/GqlnodeKt {
 public final class com/apollographql/apollo3/ast/GqloperationdefinitionKt {
 	public static final fun rootTypeDefinition (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/ast/GQLTypeDefinition;
 	public static final fun validate (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)Ljava/util/List;
-	public static final fun validate (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;Z)Ljava/util/List;
-	public static synthetic fun validate$default (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;ZILjava/lang/Object;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/ast/GqlstringsKt {
@@ -780,23 +812,25 @@ public final class com/apollographql/apollo3/ast/GqlvalueKt {
 	public static final fun coerceInSchemaContextOrThrow (Lcom/apollographql/apollo3/ast/GQLValue;Lcom/apollographql/apollo3/ast/GQLType;Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/ast/GQLValue;
 }
 
+public abstract interface class com/apollographql/apollo3/ast/GraphQLIssue : com/apollographql/apollo3/ast/Issue {
+}
+
+public abstract interface class com/apollographql/apollo3/ast/GraphQLValidationIssue : com/apollographql/apollo3/ast/GraphQLIssue {
+}
+
 public final class com/apollographql/apollo3/ast/InferredVariable {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/GQLType;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/ast/GQLType;
 }
 
-public abstract class com/apollographql/apollo3/ast/Issue {
-	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getMessage ()Ljava/lang/String;
-	public final fun getSeverity ()Lcom/apollographql/apollo3/ast/Issue$Severity;
-	public final fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
-}
-
-public final class com/apollographql/apollo3/ast/Issue$ConditionalFragment : com/apollographql/apollo3/ast/Issue {
+public final class com/apollographql/apollo3/ast/InlineFragmentWithoutTypeCondition : com/apollographql/apollo3/ast/ApolloIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
+<<<<<<< HEAD
 public final class com/apollographql/apollo3/ast/Issue$DeprecatedUsage : com/apollographql/apollo3/ast/Issue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 }
@@ -833,11 +867,16 @@ public final class com/apollographql/apollo3/ast/Issue$ValidationError : com/apo
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lcom/apollographql/apollo3/ast/ValidationDetails;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lcom/apollographql/apollo3/ast/ValidationDetails;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getDetails ()Lcom/apollographql/apollo3/ast/ValidationDetails;
+=======
+public abstract interface class com/apollographql/apollo3/ast/Issue {
+	public abstract fun getMessage ()Ljava/lang/String;
+	public abstract fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+>>>>>>> 9e5b535b3f (update api)
 }
 
 public final class com/apollographql/apollo3/ast/IssueKt {
-	public static final fun checkNoErrors (Ljava/util/List;)V
-	public static final fun containsError (Ljava/util/List;)Z
+	public static final fun checkEmpty (Ljava/util/List;)V
+	public static final fun checkValidGraphQL (Ljava/util/List;)V
 }
 
 public final class com/apollographql/apollo3/ast/MergeOptions$Companion {
@@ -849,6 +888,12 @@ public final class com/apollographql/apollo3/ast/NodeContainer {
 	public final fun assert ()V
 	public final fun getRemainingNodes ()Ljava/util/List;
 	public final fun setRemainingNodes (Ljava/util/List;)V
+}
+
+public final class com/apollographql/apollo3/ast/OtherValidationIssue : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/ParserOptions {
@@ -881,9 +926,21 @@ public final class com/apollographql/apollo3/ast/ParserOptions$Companion {
 	public final fun getDefault ()Lcom/apollographql/apollo3/ast/ParserOptions;
 }
 
+public final class com/apollographql/apollo3/ast/ParsingError : com/apollographql/apollo3/ast/GraphQLIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/QueryDocumentMinifier {
 	public static final field INSTANCE Lcom/apollographql/apollo3/ast/QueryDocumentMinifier;
 	public static final fun minify (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/ast/ReservedEnumValueName : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/Schema {
@@ -968,10 +1025,17 @@ public final class com/apollographql/apollo3/ast/TransformResult$Replace : com/a
 	public final fun getNewNode ()Lcom/apollographql/apollo3/ast/GQLNode;
 }
 
+public final class com/apollographql/apollo3/ast/UnknownDirective : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/UnrecognizedAntlrRule : com/apollographql/apollo3/ast/SourceAwareException {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 }
 
+<<<<<<< HEAD
 public final class com/apollographql/apollo3/ast/ValidationDetails : java/lang/Enum {
 	public static final field DuplicateTypeName Lcom/apollographql/apollo3/ast/ValidationDetails;
 	public static final field Other Lcom/apollographql/apollo3/ast/ValidationDetails;
@@ -979,6 +1043,24 @@ public final class com/apollographql/apollo3/ast/ValidationDetails : java/lang/E
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/ValidationDetails;
 	public static fun values ()[Lcom/apollographql/apollo3/ast/ValidationDetails;
+=======
+public final class com/apollographql/apollo3/ast/UnusedFragment : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
+public final class com/apollographql/apollo3/ast/UnusedVariable : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
+public final class com/apollographql/apollo3/ast/UpperCaseField : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+>>>>>>> 9e5b535b3f (update api)
 }
 
 public final class com/apollographql/apollo3/ast/VariableUsage {
