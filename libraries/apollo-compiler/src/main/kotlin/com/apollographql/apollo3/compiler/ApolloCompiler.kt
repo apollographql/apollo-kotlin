@@ -14,6 +14,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.UnknownDirective
 import com.apollographql.apollo3.ast.UnusedFragment
 import com.apollographql.apollo3.ast.UnusedVariable
 import com.apollographql.apollo3.ast.checkEmpty
@@ -542,6 +543,7 @@ private fun List<Issue>.group(warnOnDeprecatedUsages: Boolean, fieldsOnDisjointT
       is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
       is UnusedVariable -> Severity.Warning
       is UnusedFragment -> Severity.None
+      is UnknownDirective -> Severity.Warning
       else -> Severity.Error
     }
 
