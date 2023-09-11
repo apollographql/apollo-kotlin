@@ -69,7 +69,7 @@ internal class ExecutableValidationScope(
   val cyclicFragments = mutableSetOf<String>()
 
   /**
-   * As the tree is walked, variable references will be put here. These are scope to the current operation/fragment being validated
+   * As the tree is walked, variable references will be put here. These are scoped to the current operation/fragment being validated
    */
   private val variableUsages = mutableListOf<VariableUsage>()
   private val deferDirectiveLabels = mutableMapOf<String, SourceLocation?>()
