@@ -2,6 +2,7 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.ConflictResolution
+import com.apollographql.apollo3.ast.DirectiveRedefinition
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
@@ -27,13 +28,13 @@ import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
-import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.ast.introspection.defaultSchemaDefinition
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
@@ -80,7 +81,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
     when (gqlDefinition) {
       is GQLSchemaDefinition -> {
         if (schemaDefinition != null) {
-          issues.add(Issue.ValidationError("schema is already defined. First definition was ${schemaDefinition!!.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(OtherValidationIssue("schema is already defined. First definition was ${schemaDefinition!!.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           schemaDefinition = gqlDefinition
         }
@@ -89,18 +90,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       is GQLDirectiveDefinition -> {
         val existing = directiveDefinitions[gqlDefinition.name]
         if (existing != null) {
-          var severity: Issue.Severity = Issue.Severity.ERROR
-          val message = "Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
-
-          if (gqlDefinition.name in apolloDefinitions.mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()) {
-            // We override the definition to stay compatible with previous versions
-            severity = Issue.Severity.WARNING
-          }
           issues.add(
-              Issue.ValidationError(
-                  message = message,
+              DirectiveRedefinition(
+                  name = gqlDefinition.name,
+                  existing.sourceLocation,
                   sourceLocation = gqlDefinition.sourceLocation,
-                  severity = severity
               )
           )
         } else {
@@ -111,7 +105,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       is GQLTypeDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
-          issues.add(Issue.ValidationError("Type '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(OtherValidationIssue("Type '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           typeDefinitions[gqlDefinition.name] = gqlDefinition
         }
@@ -126,7 +120,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
          * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
          * graphql operations for schemas
          */
-        issues.add(Issue.ValidationError("Found an executable definition. Schemas should only contain type system definitions.", gqlDefinition.sourceLocation))
+        issues.add(OtherValidationIssue("Found an executable definition. Schemas should only contain type system definitions.", gqlDefinition.sourceLocation))
       }
     }
   }
@@ -170,9 +164,18 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
 
-  return if (issues.containsError()) {
+  val apolloDirectives = apolloDefinitions("v0.1").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
+  issues.removeAll {
     /**
-     * Schema requires a valid Query root type which might not be always the case if there are error
+     * Because some users might have added the apollo directive to their schema, we just let that through for now
+     */
+    (it is DirectiveRedefinition && it.name in apolloDirectives)
+  }
+
+  return if (issues.isNotEmpty()) {
+    /**
+     * Schema requires a valid Query root type which might not be always the case if there are errors
+     * (other than DirectiveRedefinitions which are ignored down the road
      */
     GQLResult(null, issues)
   } else {
@@ -278,7 +281,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         }
 
         if (components.size < 2) {
-          issues.add(Issue.ValidationError("Invalid @link url: 'url'", gqlDirective.sourceLocation))
+          issues.add(OtherValidationIssue("Invalid @link url: 'url'", gqlDirective.sourceLocation))
           return@eachDirective
         }
 
@@ -294,17 +297,17 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
             is GQLStringValue -> it.value to it.value
             is GQLObjectValue -> {
               if (it.fields.size != 2) {
-                issues.add(Issue.ValidationError("Too many fields in 'import' argument", it.sourceLocation))
+                issues.add(OtherValidationIssue("Too many fields in 'import' argument", it.sourceLocation))
                 return@mapNotNull null
               }
 
               val name = (it.fields.firstOrNull { it.name == "name" }?.value as? GQLStringValue)?.value
               if (name == null) {
-                issues.add(Issue.ValidationError("import 'name' argument is either missing or not a string", it.sourceLocation))
+                issues.add(OtherValidationIssue("import 'name' argument is either missing or not a string", it.sourceLocation))
               }
               val as2 = (it.fields.firstOrNull { it.name == "as" }?.value as? GQLStringValue)?.value
               if (as2 == null) {
-                issues.add(Issue.ValidationError("import 'as' argument is either missing or not a string", it.sourceLocation))
+                issues.add(OtherValidationIssue("import 'as' argument is either missing or not a string", it.sourceLocation))
               }
               if (name == null || as2 == null) {
                 return@mapNotNull null
@@ -313,7 +316,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
             }
 
             else -> {
-              issues.add(Issue.ValidationError("Bad 'import' argument", it.sourceLocation))
+              issues.add(OtherValidationIssue("Bad 'import' argument", it.sourceLocation))
               null
             }
           }

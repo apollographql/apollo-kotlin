@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:23)
+OtherValidationIssue (3:23)
 Value `"badarg"` cannot be used in position expecting `Boolean`

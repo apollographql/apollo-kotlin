@@ -11,6 +11,7 @@ import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.UpperCaseField
 
 @ApolloInternal
 fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
@@ -39,14 +40,14 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
         val alias = it.alias
         if (alias != null) {
           if (isFirstLetterUpperCase(alias)) {
-            issues.add(Issue.UpperCaseField(message = """
+            issues.add(UpperCaseField(message = """
                       Capitalized alias '$alias' is not supported as it causes name clashes with the generated models. Use '${decapitalizeFirstLetter(alias)}' instead.
                     """.trimIndent(),
                 sourceLocation = it.sourceLocation)
             )
           }
         } else if (isFirstLetterUpperCase(it.name)) {
-          issues.add(Issue.UpperCaseField(message = """
+          issues.add(UpperCaseField(message = """
                       Capitalized field '${it.name}' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
                     """.trimIndent(),
               sourceLocation = it.sourceLocation)

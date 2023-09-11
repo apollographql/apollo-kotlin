@@ -316,7 +316,7 @@ internal class IrOperationsBuilder(
   private fun GQLFragmentDefinition.toIr(): IrFragmentDefinition {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
 
-    val inferredVariables = inferVariables(schema, allFragmentDefinitions, fieldsOnDisjointTypesMustMerge)
+    val inferredVariables = inferVariables(schema, allFragmentDefinitions)
 
     val interfaceModelGroup = builder.buildFragmentInterface(
         fragmentName = name

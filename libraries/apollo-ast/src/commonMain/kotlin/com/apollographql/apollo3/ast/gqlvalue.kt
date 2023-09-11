@@ -17,7 +17,7 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
   val coercedValue = scope.validateAndCoerceValue(this, expectedType, false) {
     // ignore variable usages
   }
-  scope.issues.checkNoErrors()
+  scope.issues.checkValidGraphQL()
   return coercedValue
 }
 
@@ -32,6 +32,6 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
 fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = DefaultValidationScope(schema)
   val coercedValue = scope.validateAndCoerceValueInConstContext(this, expectedType, false)
-  scope.issues.checkNoErrors()
+  scope.issues.checkValidGraphQL()
   return coercedValue
 }

@@ -1,2 +1,5 @@
-ERROR: ValidationError (11:1)
+OtherValidationIssue (11:1)
 Fragment HeroFragment is already defined
+------------
+UnusedFragment (11:1)
+Fragment 'HeroFragment' is not used

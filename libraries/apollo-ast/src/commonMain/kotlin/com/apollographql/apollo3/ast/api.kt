@@ -30,10 +30,9 @@ import kotlin.jvm.JvmName
 fun BufferedSource.toExecutableDefinitions(
     schema: Schema,
     filePath: String? = null,
-    fieldsOnDisjointTypesMustMerge: Boolean = true,
 ): List<GQLDefinition> = parseAsGQLDocument(filePath)
     .getOrThrow()
-    .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
+    .validateAsExecutable(schema)
     .getOrThrow()
 
 private fun <T : Any> BufferedSource.parseInternal(filePath: String?, options: ParserOptions, block: Parser.() -> T): GQLResult<T> {
@@ -47,7 +46,7 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
     GQLResult(
         null,
         listOf(
-            Issue.ParsingError(
+            ParsingError(
                 e.message,
                 SourceLocation(
                     start = e.token.start,
@@ -63,7 +62,7 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
     GQLResult(
         null,
         listOf(
-            Issue.ParsingError(
+            ParsingError(
                 e.message,
                 SourceLocation(
                     start = e.pos,
@@ -297,15 +296,12 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
 /**
  * Validates the given document as an executable document.
  *
- * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
- * and allow fields of different types at the same Json path as long as their parent types are disjoint.
- *
  * @return  a [GQLResult] containing the operation and fragment definitions in 'value', along with any potential issues
  */
 @ApolloExperimental
-fun GQLDocument.validateAsExecutable(schema: Schema, fieldsOnDisjointTypesMustMerge: Boolean = true): GQLResult<List<GQLDefinition>> {
+fun GQLDocument.validateAsExecutable(schema: Schema): GQLResult<List<GQLDefinition>> {
   val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-  val issues = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).validate(this)
+  val issues = ExecutableValidationScope(schema, fragments).validate(this)
   return GQLResult(definitions, issues)
 }
 
@@ -318,7 +314,6 @@ fun GQLDocument.validateAsExecutable(schema: Schema, fieldsOnDisjointTypesMustMe
 fun GQLFragmentDefinition.inferVariables(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-    fieldsOnDisjointTypesMustMerge: Boolean,
-) = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).inferFragmentVariables(this)
+) = ExecutableValidationScope(schema, fragments).inferFragmentVariables(this)
 
 

@@ -1,2 +1,2 @@
-WARNING: ValidationError (4:10)
+UnknownDirective (4:10)
 Unknown directive '@required'

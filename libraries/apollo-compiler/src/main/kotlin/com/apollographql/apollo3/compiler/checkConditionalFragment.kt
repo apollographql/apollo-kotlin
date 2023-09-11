@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.ast.ConditionalFragment
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -36,7 +37,7 @@ private fun checkConditionalFragments(issues: MutableList<Issue>, selections: Li
       is GQLInlineFragment -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
-              Issue.ConditionalFragment(
+              ConditionalFragment(
                   message = "'responseBased' and 'experimental_operationBasedWithInterfaces' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )
@@ -47,7 +48,7 @@ private fun checkConditionalFragments(issues: MutableList<Issue>, selections: Li
       is GQLFragmentSpread -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
-              Issue.ConditionalFragment(
+              ConditionalFragment(
                   message = "'responseBased' and 'experimental_operationBasedWithInterfaces' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )

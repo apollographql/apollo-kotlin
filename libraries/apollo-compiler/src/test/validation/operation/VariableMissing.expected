@@ -1,2 +1,2 @@
-ERROR: ValidationError (2:17)
+OtherValidationIssue (2:17)
 Variable `episode` is not defined by operation `TestQuery`

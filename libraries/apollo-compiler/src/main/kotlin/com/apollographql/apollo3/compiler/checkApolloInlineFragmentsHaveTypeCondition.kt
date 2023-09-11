@@ -8,6 +8,7 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.InlineFragmentWithoutTypeCondition
 import com.apollographql.apollo3.ast.Issue
 
 /**
@@ -40,7 +41,7 @@ private fun GQLSelection.walk(issues: MutableList<Issue>) {
 
     is GQLInlineFragment -> {
       if (typeCondition == null) {
-        issues.add(Issue.InlineFragmentWithoutTypeCondition("Inline fragments without a type condition are not supported. Add the parent type to inline fragment.", this.sourceLocation))
+        issues.add(InlineFragmentWithoutTypeCondition("Inline fragments without a type condition are not supported. Add the parent type to inline fragment.", this.sourceLocation))
       }
     }
 

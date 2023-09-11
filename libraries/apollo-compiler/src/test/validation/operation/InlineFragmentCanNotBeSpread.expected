@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:12)
+OtherValidationIssue (3:12)
 Inline fragment cannot be spread here as result can never be of type `Review`

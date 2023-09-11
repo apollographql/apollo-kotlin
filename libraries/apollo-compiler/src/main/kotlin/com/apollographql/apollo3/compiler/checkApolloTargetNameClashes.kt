@@ -4,6 +4,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.ReservedEnumValueName
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.pretty
@@ -36,7 +37,7 @@ internal fun checkApolloTargetNameClashes(schema: Schema): List<Issue> {
     if (usedNames.containsKey(name)) {
       val typeForUsedName = usedNames[name]!!
       issues.add(
-          Issue.ReservedEnumValueName(
+          ReservedEnumValueName(
               message = "'${targetName}' cannot be used as a target name for '${type.name}' because it clashes with '${typeForUsedName.name}' defined at ${typeForUsedName.sourceLocation.pretty()}",
               sourceLocation = type.sourceLocation
           )

@@ -4,73 +4,108 @@ package com.apollographql.apollo3.ast
 /**
  * All the issues that can be collected while analyzing a graphql document
  */
-sealed class Issue(
-    val message: String,
-    val sourceLocation: SourceLocation?,
-    val severity: Severity,
-) {
-  /**
-   * A grammar error
-   */
-  class ParsingError(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
-
-  /**
-   * A GraphqQL validation error as per the spec
-   */
-  class ValidationError(
-      message: String,
-      sourceLocation: SourceLocation?,
-      severity: Severity = Severity.ERROR,
-      val details: ValidationDetails = ValidationDetails.Other,
-  ) : Issue(message, sourceLocation, severity)
-
-  /**
-   * A deprecated field/enum is used
-   */
-  class DeprecatedUsage(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.WARNING)
-
-  /**
-   * A variable is unused
-   */
-  class UnusedVariable(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.WARNING)
-
-  /**
-   * A fragment has an @include or @skip directive. While this is valid GraphQL, the responseBased codegen does not support that
-   */
-  class ConditionalFragment(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
-
-  /**
-   * When models are nested, upper case fields are not supported as Kotlin doesn't allow a property name
-   * with the same name as a nested class.
-   * If this happens, the easiest solution is to add an alias with a lower case first letter.
-   * If there are a lot of such fields, the Apollo compiler option `flattenModels` can also be used to circumvent this
-   * error at the price of possible suffixes in model names.
-   *
-   * This error is an Apollo Kotlin specific error
-   */
-  class UpperCaseField(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
-
-  /**
-   * The GraphQL spec allows inline fragments without a type condition, but we currently forbid this because we need the type condition
-   * to name the models in operation based codegen.
-   */
-  class InlineFragmentWithoutTypeCondition(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
-
-  /**
-   * Certain enum value names such as `type` are reserved for Apollo.
-   *
-   * This error is an Apollo Kotlin specific error
-   */
-  class ReservedEnumValueName(message: String, sourceLocation: SourceLocation?) : Issue(message, sourceLocation, Severity.ERROR)
-
-  enum class Severity {
-    WARNING,
-    ERROR,
-  }
+sealed interface Issue {
+  val message: String
+  val sourceLocation: SourceLocation?
 }
 
-fun List<Issue>.checkNoErrors() {
-  val error = firstOrNull { it.severity == Issue.Severity.ERROR }
+/**
+ * An issue from the GraphQL spec
+ */
+sealed interface GraphQLIssue: Issue
+
+/**
+ * A validation issue from the GraphQL spec
+ */
+sealed interface GraphQLValidationIssue: GraphQLIssue
+
+/**
+ * A custom issue specific to the Apollo compiler
+ */
+sealed interface ApolloIssue: Issue
+
+/**
+ * A grammar error
+ */
+class ParsingError(override val message: String, override val  sourceLocation: SourceLocation?) : GraphQLIssue
+
+/**
+ * An unknown directive was found.
+ *
+ * In a perfect world everyone uses SDL schemas, and we can validate directives but in this world, a lot of users rely
+ * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+ */
+class UnknownDirective(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
+/**
+ * Fields have different shapes and cannot be merged
+ *
+ */
+class DifferentShape(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
+class UnusedFragment(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
+/**
+ * Two type definitions have the same name
+ */
+class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
+class DirectiveRedefinition(val name: String, existingSourceLocation: SourceLocation?, override val sourceLocation: SourceLocation?): GraphQLValidationIssue {
+  override val message = "Directive '${name}' is defined multiple times. First definition is: ${existingSourceLocation.pretty()}"
+}
+
+/**
+ * Another GraphQL validation error as per the spec
+ */
+class OtherValidationIssue(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
+/**
+ * A deprecated field/enum is used
+ */
+class DeprecatedUsage(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+/**
+ * A variable is unused
+ */
+class UnusedVariable(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+/**
+ * A fragment has an @include or @skip directive. While this is valid GraphQL, the responseBased codegen does not support that
+ */
+class ConditionalFragment(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+/**
+ * When models are nested, upper case fields are not supported as Kotlin doesn't allow a property name
+ * with the same name as a nested class.
+ * If this happens, the easiest solution is to add an alias with a lower case first letter.
+ * If there are a lot of such fields, the Apollo compiler option `flattenModels` can also be used to circumvent this
+ * error at the price of possible suffixes in model names.
+ *
+ */
+class UpperCaseField(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+/**
+ * The GraphQL spec allows inline fragments without a type condition, but we currently forbid this because we need the type condition
+ * to name the models in operation based codegen.
+ */
+class InlineFragmentWithoutTypeCondition(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+/**
+ * Certain enum value names such as `type` are reserved for Apollo.
+ *
+ * This error is an Apollo Kotlin specific error
+ */
+class ReservedEnumValueName(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+
+/**
+ * Checks that a list of issues is valid GraphQL per the spec.
+ * This ignores any [ApolloIssue]
+ *
+ * @throws [SourceAwareException] if there is any GraphQL issue
+ */
+fun List<Issue>.checkValidGraphQL() {
+  val error = firstOrNull { it is GraphQLIssue }
   if (error != null) {
     throw SourceAwareException(
         error.message,
@@ -79,21 +114,18 @@ fun List<Issue>.checkNoErrors() {
   }
 }
 
-fun List<Issue>.containsError(): Boolean = any { it.severity == Issue.Severity.ERROR }
-
-
-enum class ValidationDetails {
-  /**
-   * An unknown directive was found.
-   *
-   * In a perfect world everyone uses SDL schemas and we can validate directives but in this world, a lot of users rely
-   * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
-   */
-  UnknownDirective,
-
-  /**
-   * Two type definitions have the same name
-   */
-  DuplicateTypeName,
-  Other
+/**
+ * Checks that a list of issue is empty, regardless of the issues.
+ * This may throw on Apollo specific issues.
+ *
+ * @throws [SourceAwareException] if there is any issue
+ */
+fun List<Issue>.checkEmpty() {
+  val error = firstOrNull()
+  if (error != null) {
+    throw SourceAwareException(
+        error.message,
+        error.sourceLocation
+    )
+  }
 }

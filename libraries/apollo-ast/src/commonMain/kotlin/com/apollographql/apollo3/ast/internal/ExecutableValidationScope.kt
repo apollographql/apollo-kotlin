@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.DeprecatedUsage
+import com.apollographql.apollo3.ast.DifferentShape
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
@@ -32,8 +34,11 @@ import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.NullabilityValidationIgnore
 import com.apollographql.apollo3.ast.NullabilityValidationRegister
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.UnusedFragment
+import com.apollographql.apollo3.ast.UnusedVariable
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
@@ -44,17 +49,14 @@ import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import com.apollographql.apollo3.ast.withNullability
 
+
 /**
  * @param fragmentDefinitions all the fragments in the current compilation unit.
  * This is required to check the type conditions as well as fields merging
- *
- * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
- * and allow fields of different types at the same Json path as long as their parent types are disjoint.
  */
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val fieldsOnDisjointTypesMustMerge: Boolean,
 ) : ValidationScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -66,7 +68,8 @@ internal class ExecutableValidationScope(
    * These are scoped to the current document being validated
    */
   override val issues = mutableListOf<Issue>()
-  val cyclicFragments = mutableSetOf<String>()
+  private val cyclicFragments = mutableSetOf<String>()
+  private val usedFragments = mutableSetOf<String>()
 
   /**
    * As the tree is walked, variable references will be put here. These are scoped to the current operation/fragment being validated
@@ -96,6 +99,13 @@ internal class ExecutableValidationScope(
       cyclicFragments.add(name)
       return
     }
+    if (typeDefinitions[typeCondition.name] == null) {
+      registerIssue(
+          message = "Cannot find type `${typeCondition.name}` for fragment $name",
+          sourceLocation = typeCondition.sourceLocation,
+      )
+    }
+
     locallyVisitedFragments.add(name)
     selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path)
   }
@@ -129,6 +139,16 @@ internal class ExecutableValidationScope(
     operations.checkDuplicateOperations()
     operations.forEach {
       it.validate()
+    }
+
+
+    (this.fragmentDefinitions.keys - usedFragments).forEach {
+      issues.add(
+          UnusedFragment(
+            message = "Fragment '$it' is not used",
+            sourceLocation = fragmentDefinitions[it]?.sourceLocation,
+          )
+      )
     }
 
     return issues
@@ -202,7 +222,7 @@ internal class ExecutableValidationScope(
     }
 
     if (fieldDefinition.directives.findDeprecationReason() != null) {
-      issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
+      issues.add(DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
 
     validateArguments(
@@ -286,6 +306,8 @@ internal class ExecutableValidationScope(
   }
 
   private fun GQLFragmentSpread.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
+    usedFragments.add(name)
+
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -300,10 +322,6 @@ internal class ExecutableValidationScope(
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
-      registerIssue(
-          message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
-          sourceLocation = fragmentDefinition.typeCondition.sourceLocation
-      )
       return
     }
 
@@ -394,7 +412,7 @@ internal class ExecutableValidationScope(
     val foundVariables = variableUsages.map { it.variable.name }.toSet()
     variableDefinitions.forEach {
       if (!foundVariables.contains(it.name)) {
-        issues.add(Issue.UnusedVariable(
+        issues.add(UnusedVariable(
             message = "Variable `${it.name}` is unused",
             sourceLocation = it.sourceLocation
         ))
@@ -551,7 +569,7 @@ internal class ExecutableValidationScope(
 
     // no need to call the recursive version here, it will be taken care at the end of this iteration
     if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different shapes")
+      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
       return
     }
 
@@ -621,12 +639,28 @@ internal class ExecutableValidationScope(
   private fun addFieldMergingIssue(fieldA: GQLField, fieldB: GQLField, message: String) {
     registerIssue(
         message = buildMessage(fieldA, fieldB, message),
-        sourceLocation = fieldA.sourceLocation
+        sourceLocation = fieldA.sourceLocation,
     )
     // Also add the symmetrical error
     registerIssue(
         message = buildMessage(fieldB, fieldA, message),
-        sourceLocation = fieldB.sourceLocation
+        sourceLocation = fieldB.sourceLocation,
+    )
+  }
+
+  private fun addShapeFieldMergingIssue(fieldA: GQLField, fieldB: GQLField) {
+    issues.add(
+        DifferentShape(
+          message = "they have different shapes",
+          sourceLocation = fieldA.sourceLocation,
+        )
+    )
+    // Also add the symmetrical error
+    issues.add(
+        DifferentShape(
+          message = "they have different shapes",
+          sourceLocation = fieldB.sourceLocation,
+        )
     )
   }
 
@@ -673,7 +707,7 @@ internal class ExecutableValidationScope(
 
   private fun sameResponseShapeRecursive(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
     if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different shapes")
+      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
       return false
     }
 
@@ -694,9 +728,6 @@ internal class ExecutableValidationScope(
 
   // 5.3.2 2.1
   private fun haveSameResponseShape(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
-    if (!fieldsOnDisjointTypesMustMerge) {
-      return true
-    }
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
@@ -806,7 +837,7 @@ internal class ExecutableValidationScope(
     forEach {
       val existing = filtered.putIfAbsentMpp(it.name, it)
       if (existing != null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Fragment ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
         ))
@@ -820,7 +851,7 @@ internal class ExecutableValidationScope(
 
     forEach {
       if (it.name == null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Apollo does not support anonymous operations",
             sourceLocation = it.sourceLocation,
         ))
@@ -828,7 +859,7 @@ internal class ExecutableValidationScope(
       }
       val existing = filtered.putIfAbsentMpp(it.name, it)
       if (existing != null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Operation ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
         ))

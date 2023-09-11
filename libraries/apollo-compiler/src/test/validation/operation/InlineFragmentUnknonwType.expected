@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:12)
+OtherValidationIssue (3:12)
 Cannot find type `Banana` for inline fragment

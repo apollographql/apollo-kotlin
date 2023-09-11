@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:16)
+OtherValidationIssue (3:16)
 @defer label argument must not be a variable

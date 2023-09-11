@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.DeprecatedUsage
+import com.apollographql.apollo3.ast.DifferentShape
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -12,7 +14,9 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.checkNoErrors
+import com.apollographql.apollo3.ast.UnusedFragment
+import com.apollographql.apollo3.ast.UnusedVariable
+import com.apollographql.apollo3.ast.checkEmpty
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toGQLDocument
@@ -96,7 +100,10 @@ object ApolloCompiler {
      */
     val result = schemaDocument.validateAsSchemaAndAddApolloDefinition()
 
-    result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
+    val issueGroup = result.issues.group(true, true)
+
+    issueGroup.errors.checkEmpty()
+    issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
@@ -114,6 +121,7 @@ object ApolloCompiler {
     )
   }
 
+
   /**
    * Parses the given files. Throws if there are parsing errors
    */
@@ -130,8 +138,9 @@ object ApolloCompiler {
         definitions.addAll(parseResult.value!!.definitions)
       }
     }
+
     // Parsing issues are fatal
-    parseIssues.checkNoErrors()
+    parseIssues.checkEmpty()
 
     return definitions
   }
@@ -155,33 +164,34 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         sourceLocation = null
-    ).validateAsExecutable(schema, options.fieldsOnDisjointTypesMustMerge)
+    ).validateAsExecutable(schema)
 
-    validationResult.issues.checkNoErrors()
+    val allIssues = mutableListOf<Issue>()
+    allIssues.addAll(validationResult.issues)
 
     val codegenModels = options.codegenSchema.codegenModels
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
-      checkConditionalFragments(definitions).checkNoErrors()
+      allIssues.addAll(checkConditionalFragments(definitions))
     }
 
-    checkApolloReservedEnumValueNames(schema).checkNoErrors()
-    checkApolloTargetNameClashes(schema).checkNoErrors()
-    checkApolloInlineFragmentsHaveTypeCondition(definitions).checkNoErrors()
+    allIssues.addAll(checkApolloReservedEnumValueNames(schema))
+    allIssues.addAll(checkApolloTargetNameClashes(schema))
+    allIssues.addAll(checkApolloInlineFragmentsHaveTypeCondition(definitions))
 
     if (!options.decapitalizeFields) {
       // When flattenModels is true, we still must check capitalized fields inside fragment spreads
-      checkCapitalizedFields(definitions, checkFragmentsOnly = options.flattenModels).checkNoErrors()
+      allIssues.addAll(checkCapitalizedFields(definitions, checkFragmentsOnly = options.flattenModels))
     }
 
-    val warnings = validationResult.issues.filter {
-      it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || options.warnOnDeprecatedUsages)
-    }
+    val issueGroup = allIssues.group(options.warnOnDeprecatedUsages, options.fieldsOnDisjointTypesMustMerge)
 
-    warnings.forEach {
+    issueGroup.errors.checkEmpty()
+
+    issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       options.logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
-    if (options.failOnWarnings && warnings.isNotEmpty()) {
+    if (options.failOnWarnings && issueGroup.warnings.isNotEmpty()) {
       throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
     }
 
@@ -507,4 +517,40 @@ object ApolloCompiler {
       }
     }
   }
+}
+
+private enum class Severity {
+  None,
+  Warning,
+  Error
+}
+
+private class IssueGroup(
+    val ignored: List<Issue>,
+    val warnings: List<Issue>,
+    val errors: List<Issue>
+)
+
+private fun List<Issue>.group(warnOnDeprecatedUsages: Boolean, fieldsOnDisjointTypesMustMerge: Boolean): IssueGroup {
+  val ignored= mutableListOf<Issue>()
+  val warnings= mutableListOf<Issue>()
+  val errors= mutableListOf<Issue>()
+
+  forEach {
+    val severity = when (it) {
+      is DeprecatedUsage -> if (warnOnDeprecatedUsages) Severity.Warning else Severity.None
+      is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
+      is UnusedVariable -> Severity.Warning
+      is UnusedFragment -> Severity.None
+      else -> Severity.Error
+    }
+
+    when(severity) {
+      Severity.None -> ignored.add(it)
+      Severity.Warning -> warnings.add(it)
+      Severity.Error -> errors.add(it)
+    }
+  }
+
+  return IssueGroup(ignored, warnings, errors)
 }

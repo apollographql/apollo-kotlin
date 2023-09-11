@@ -101,7 +101,7 @@ private fun GQLType.withItemNullability(itemNullability: GQLNullability?, valida
 
       is NullabilityValidationRegister -> {
         validation.issues.add(
-            Issue.ValidationError(
+            OtherValidationIssue(
                 "Cannot apply nullability on '${validation.fieldName}', the nullability list dimension exceeds the one of the field type.",
                 itemNullability.sourceLocation,
             )

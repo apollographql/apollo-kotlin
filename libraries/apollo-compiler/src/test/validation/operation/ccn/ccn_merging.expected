@@ -1,5 +1,5 @@
-ERROR: ValidationError (3:9)
+OtherValidationIssue (3:9)
 `nullable` cannot be merged with `nullable` (at ccn_merging.graphql: (5, 5)): they have different types. Use different aliases on the fields to fetch both if this was intentional.
 ------------
-ERROR: ValidationError (5:5)
+OtherValidationIssue (5:5)
 `nullable` cannot be merged with `nullable` (at ccn_merging.graphql: (3, 9)): they have different types. Use different aliases on the fields to fetch both if this was intentional.
