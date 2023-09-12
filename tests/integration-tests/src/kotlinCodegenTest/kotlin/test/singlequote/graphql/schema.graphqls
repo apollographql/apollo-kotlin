@@ -1,0 +1,4 @@
+# https://github.com/apollographql/apollo-kotlin/issues/5233
+type Query {
+    isUsernameAvailable(username: String!): Boolean!
+}
