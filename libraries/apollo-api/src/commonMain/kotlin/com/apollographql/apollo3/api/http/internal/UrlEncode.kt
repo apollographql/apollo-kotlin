@@ -7,7 +7,7 @@ package com.apollographql.apollo3.api.http.internal
 private fun Int.isUnreserved(): Boolean {
   return when (this) {
     in 'a'.code..'z'.code -> true
-    in 'Z'.code..'Z'.code -> true
+    in 'A'.code..'Z'.code -> true
     in '0'.code..'9'.code -> true
     '-'.code -> true
     '.'.code -> true
