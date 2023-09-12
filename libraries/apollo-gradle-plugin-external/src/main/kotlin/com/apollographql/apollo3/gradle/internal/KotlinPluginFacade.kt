@@ -23,7 +23,7 @@ fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLan
     null -> {
       // User didn't specify a version: default to the Kotlin plugin version
       val kotlinPluginVersion = project.getKotlinPluginVersion().split("-")[0]
-      val versionNumbers = kotlinPluginVersion.split(".", "-").map { it.toInt() }
+      val versionNumbers = kotlinPluginVersion.split(".").map { it.toInt() }
       val version = KotlinVersion(versionNumbers[0], versionNumbers[1])
       if (version.isAtLeast(1, 9)) {
         TargetLanguage.KOTLIN_1_9
