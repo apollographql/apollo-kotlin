@@ -63,4 +63,26 @@ class ExceptionsTest {
     }
     assertNotNull(result.exceptionOrNull())
   }
+  @Test
+  @Suppress("DEPRECATION")
+  fun toFlowDoesNotThrowOnV3() = runTest(before = { setUp() }, after = { tearDown() }) {
+      mockServer.enqueue("""
+        {
+          "errors": [
+              {
+                "message": "An error",
+                "locations": [
+                  {
+                    "line": 1,
+                    "column": 1
+                  }
+                ]
+              }
+            ]
+          }
+      """.trimIndent())
+      val errorClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+      val response = errorClient.query(HeroNameQuery()).toFlow().toList()
+      assertTrue(response.first().errors?.isNotEmpty() ?: false)
+  }
 }
