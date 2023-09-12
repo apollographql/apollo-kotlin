@@ -16,7 +16,7 @@ class SingleQuoteTest {
       }
     """.trimIndent())
 
-    val response = apolloClient.query(IsAvailableQuery("o'reilly")).execute()
+    val response = apolloClient.query(IsAvailableQuery("oreilly’")).execute()
 
     check(response.dataOrThrow().isUsernameAvailable)
   }
@@ -29,10 +29,11 @@ class SingleQuoteTest {
       }
     """.trimIndent())
 
-    val response = apolloClient.query(IsAvailableQuery("o'reilly"))
+    val response = apolloClient.query(IsAvailableQuery("oreilly’"))
         .httpMethod(HttpMethod.Get)
         .execute()
 
+    check(mockServer.takeRequest().method == "GET")
     check(response.dataOrThrow().isUsernameAvailable)
   }
 
