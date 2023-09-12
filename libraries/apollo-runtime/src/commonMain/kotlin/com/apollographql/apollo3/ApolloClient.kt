@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -165,8 +166,9 @@ private constructor(
         .let {
           if (request.useV3ExceptionHandling == true) {
             it.onEach { response ->
-              if (response.exception != null) {
-                throw response.exception!!
+              val exception = response.exception ?: return@onEach
+              if (exception !is ApolloGraphQLException) {
+                throw exception
               }
             }
           } else {
