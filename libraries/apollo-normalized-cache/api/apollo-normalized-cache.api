@@ -75,6 +75,7 @@ public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java
 	public static final field CacheOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field NetworkFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field NetworkOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static fun values ()[Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 }

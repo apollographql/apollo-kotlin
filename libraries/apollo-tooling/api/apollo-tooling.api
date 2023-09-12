@@ -41,6 +41,7 @@ public final class com/apollographql/apollo3/tooling/SchemaDownloader$SpecVersio
 	public static final field Draft Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static final field June_2018 Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static final field October_2021 Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static fun values ()[Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 }

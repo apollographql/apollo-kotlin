@@ -946,6 +946,7 @@ public final class com/apollographql/apollo3/api/http/HttpKt {
 public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enum {
 	public static final field Get Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static final field Post Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static fun values ()[Lcom/apollographql/apollo3/api/http/HttpMethod;
 }
@@ -1105,6 +1106,7 @@ public final class com/apollographql/apollo3/api/json/JsonReader$Token : java/la
 	public static final field NULL Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static final field NUMBER Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static final field STRING Lcom/apollographql/apollo3/api/json/JsonReader$Token;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static fun values ()[Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 }

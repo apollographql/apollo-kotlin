@@ -131,6 +131,7 @@ public final class com/apollographql/apollo3/ast/GQLDirectiveLocation : java/lan
 	public static final field SUBSCRIPTION Lcom/apollographql/apollo3/ast/GQLDirectiveLocation;
 	public static final field UNION Lcom/apollographql/apollo3/ast/GQLDirectiveLocation;
 	public static final field VARIABLE_DEFINITION Lcom/apollographql/apollo3/ast/GQLDirectiveLocation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/GQLDirectiveLocation;
 	public static fun values ()[Lcom/apollographql/apollo3/ast/GQLDirectiveLocation;
 }
@@ -815,6 +816,7 @@ public final class com/apollographql/apollo3/ast/Issue$ReservedEnumValueName : c
 public final class com/apollographql/apollo3/ast/Issue$Severity : java/lang/Enum {
 	public static final field ERROR Lcom/apollographql/apollo3/ast/Issue$Severity;
 	public static final field WARNING Lcom/apollographql/apollo3/ast/Issue$Severity;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/Issue$Severity;
 	public static fun values ()[Lcom/apollographql/apollo3/ast/Issue$Severity;
 }
@@ -974,6 +976,7 @@ public final class com/apollographql/apollo3/ast/ValidationDetails : java/lang/E
 	public static final field DuplicateTypeName Lcom/apollographql/apollo3/ast/ValidationDetails;
 	public static final field Other Lcom/apollographql/apollo3/ast/ValidationDetails;
 	public static final field UnknownDirective Lcom/apollographql/apollo3/ast/ValidationDetails;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/ValidationDetails;
 	public static fun values ()[Lcom/apollographql/apollo3/ast/ValidationDetails;
 }

@@ -16,8 +16,8 @@ fun Project.configureJavaAndKotlinCompilers() {
           "-opt-in=kotlin.RequiresOptIn",
           "-Xexpect-actual-classes",
       )
-      apiVersion = "1.6"
-      languageVersion = "1.6"
+      apiVersion = "1.9"
+      languageVersion = "1.9"
 
       (this as? KotlinJvmOptions)?.let {
         freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"

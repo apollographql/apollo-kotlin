@@ -160,7 +160,8 @@ Some platforms have specific runtime requirements:
 At build time, it requires:
 
 * Gradle 6.8+
-* Kotlin 1.8+ 
+* Kotlin 1.8+ for JVM projects
+* Kotlin 1.9+ for native projects
 
 ## Proguard / R8 configuration
 
