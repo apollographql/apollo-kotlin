@@ -113,7 +113,8 @@ private fun buildHttpResponse(
         HttpHeader(key.toString(), value.toString())
       }
 
-  val statusCode = httpResponse.statusCode
+  @Suppress("RemoveRedundantCallsOfConversionMethods")
+  val statusCode = httpResponse.statusCode.toInt()
 
   /**
    * data can be empty if there is no body.
