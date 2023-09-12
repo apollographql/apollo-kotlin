@@ -13,11 +13,11 @@ import kotlinx.cinterop.ptr
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.BufferedSource
+import okio.ByteString.Companion.toByteString
 import okio.Sink
 import okio.Source
 import okio.Timeout
 import okio.buffer
-import okio.toByteString
 import platform.Foundation.NSCachedURLResponse
 import platform.Foundation.NSData
 import platform.Foundation.NSError

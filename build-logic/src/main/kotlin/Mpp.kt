@@ -119,10 +119,19 @@ fun Project.configureMpp(
     }
 
     appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
-      targetFromPreset(
-          presets.getByName(presetName),
-          presetName,
-      )
+      when(presetName) {
+        "macosX64" -> macosX64()
+        "macosArm64" -> macosArm64()
+        "iosArm64" -> iosArm64()
+        "iosX64" -> iosX64()
+        "iosSimulatorArm64" -> iosSimulatorArm64()
+        "watchosArm32" -> watchosArm32()
+        "watchosArm64" -> watchosArm64()
+        "watchosSimulatorArm64" -> watchosSimulatorArm64()
+        "tvosArm64" -> tvosArm64()
+        "tvosX64" -> tvosX64()
+        "tvosSimulatorArm64" -> tvosSimulatorArm64()
+      }
     }
 
     configureSourceSetGraph()
