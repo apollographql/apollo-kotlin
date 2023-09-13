@@ -7,11 +7,19 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.ide.config.model.GraphQLConfigEndpoint
 import com.intellij.lang.jsgraphql.ide.introspection.promptForEnvVariables
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentSpread
+import com.intellij.lang.jsgraphql.psi.GraphQLRecursiveVisitor
 import com.intellij.lang.jsgraphql.ui.GraphQLUIProjectService
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.util.parentOfType
+import java.net.URLEncoder
 
 class OpenInSandboxAction : AnAction(
     ApolloBundle.messagePointer("SandboxService.OpenInSandboxAction.text"),
@@ -42,18 +50,20 @@ class OpenInSandboxAction : AnAction(
     // Editor will be present if the action is triggered from the editor toolbar, the main menu, the Open In popup inside the editor
     // Otherwise it will be null, and we fallback to the File (but no endpoint / variables)
     val editor = e.getData(CommonDataKeys.EDITOR)
-    val contents = editor?.document?.text ?: run {
-      val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return@actionPerformed
-      file.contentsToByteArray().toString(file.charset)
-    }
+    val psiFile = editor?.document?.let { PsiDocumentManager.getInstance(project).getPsiFile(it) }
+        ?: e.getData(CommonDataKeys.VIRTUAL_FILE)?.let { virtualFile ->
+          PsiManager.getInstance(project).findFile(virtualFile)
+        }
+        ?: return
+    val contents = contentsWithReferencedFragments(psiFile).urlEncoded()
 
     val endpointsModel = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_ENDPOINTS_MODEL)
     val graphQLConfigEndpoint: GraphQLConfigEndpoint? = endpointsModel?.let { promptForEnvVariables(project, it.selectedItem) }
-    val selectedEndpointUrl = graphQLConfigEndpoint?.url
-    val headers = graphQLConfigEndpoint?.headers?.formatAsJson()
+    val selectedEndpointUrl = graphQLConfigEndpoint?.url?.urlEncoded()
+    val headers = graphQLConfigEndpoint?.headers?.formatAsJson()?.urlEncoded()
 
     val variablesEditor = editor?.getUserData(GraphQLUIProjectService.GRAPH_QL_VARIABLES_EDITOR)
-    val variables = variablesEditor?.document?.text
+    val variables = variablesEditor?.document?.text?.urlEncoded()
 
     // See https://www.apollographql.com/docs/graphos/explorer/sandbox/#url-parameters
     val url = buildString {
@@ -71,7 +81,32 @@ class OpenInSandboxAction : AnAction(
     BrowserUtil.browse(url, project)
   }
 
+  /**
+   * Get contents of the file, including all referenced fragments, recursively, if they belong to a different file
+   */
+  private fun contentsWithReferencedFragments(psiFile: PsiFile, fragmentDefinition: GraphQLFragmentDefinition? = null): String {
+    val contents = StringBuilder(fragmentDefinition?.text ?: psiFile.text)
+    val visitor = object : GraphQLRecursiveVisitor() {
+      override fun visitFragmentSpread(o: GraphQLFragmentSpread) {
+        super.visitFragmentSpread(o)
+        val referencedFragmentDefinition = o.nameIdentifier.reference?.resolve()?.parentOfType<GraphQLFragmentDefinition>() ?: return
+        if (referencedFragmentDefinition.containingFile != psiFile) {
+          contents.append("\n\n# From ${referencedFragmentDefinition.containingFile.virtualFile.name}\n")
+          contents.append(contentsWithReferencedFragments(referencedFragmentDefinition.containingFile, referencedFragmentDefinition))
+        }
+      }
+    }
+    if (fragmentDefinition != null) {
+      visitor.visitFragmentDefinition(fragmentDefinition)
+    } else {
+      visitor.visitFile(psiFile)
+    }
+    return contents.toString()
+  }
+
   override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }
+
+private fun String.urlEncoded() = URLEncoder.encode(this, "UTF-8")
 
 private fun Map<String, Any?>.formatAsJson() = "{" + map { (key, value) -> """"$key": "$value"""" }.joinToString() + "}"
