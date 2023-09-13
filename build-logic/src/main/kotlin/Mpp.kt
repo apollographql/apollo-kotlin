@@ -244,5 +244,6 @@ fun Project.registerJavaCodegenTestTask() {
     classpath += configurations.getByName("jvmTestCompileClasspath")
   }
   javaCodegenCompilation.configurations.compileDependencyConfiguration.extendsFrom(configurations.getByName("jvmTestCompileClasspath"))
+  javaCodegenCompilation.configurations.runtimeDependencyConfiguration?.extendsFrom(configurations.getByName("jvmTestRuntimeClasspath"))
   javaCodegenCompilation.defaultSourceSet.dependsOn(commonJavaCodegenTest)
 }
