@@ -1,49 +1,80 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
-fun Project.configureJavaAndKotlinCompilers() {
-  // For Kotlin JVM projects
-  tasks.withType(KotlinCompile::class.java).configureEach {
-    kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + listOf(
-          "-opt-in=kotlin.RequiresOptIn",
-          "-Xexpect-actual-classes",
-      )
-      apiVersion = "1.9"
-      languageVersion = "1.9"
+fun KotlinCommonCompilerOptions.configure() {
+  freeCompilerArgs.add("-Xexpect-actual-classes")
 
-      (this as? KotlinJvmOptions)?.let {
-        freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
-        it.jvmTarget = "1.8"
+  /**
+   * Inside our own codebase, we opt-in ApolloInternal and ApolloExperimental
+   * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
+   */
+  freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
+
+  apiVersion.set(KotlinVersion.KOTLIN_1_9)
+  languageVersion.set(KotlinVersion.KOTLIN_1_9)
+
+  when (this) {
+    is KotlinJvmCompilerOptions -> {
+      freeCompilerArgs.add("-Xjvm-default=all")
+      jvmTarget.set(JvmTarget.JVM_1_8)
+    }
+
+    is KotlinNativeCompilerOptions -> {
+      freeCompilerArgs.add("-opt-in=kotlinx.cinterop.UnsafeNumber")
+      freeCompilerArgs.add("-opt-in=kotlinx.cinterop.ExperimentalForeignApi")
+    }
+
+    is KotlinJsCompilerOptions -> {
+      // nothing!
+    }
+  }
+}
+
+private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCompilerOptions.() -> Unit) {
+  when (this) {
+    is KotlinJvmProjectExtension -> compilerOptions.block()
+    is KotlinAndroidProjectExtension -> compilerOptions.block()
+    is KotlinMultiplatformExtension -> {
+      targets.all {
+        compilations.all {
+          compilerOptions.configure {
+            configure()
+          }
+        }
       }
     }
+    else -> error("Unknown kotlin extension $this")
   }
-  tasks.withType(KotlinNativeCompile::class.java).configureEach {
-    kotlinOptions {
-      this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.UnsafeNumber"
-      this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.ExperimentalForeignApi"
-    }
-  }
+}
 
-  // For Kotlin Multiplatform projects
-  (project.extensions.findByName("kotlin")
-      as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
-    sourceSets.all {
-      /**
-       * Inside our own codebase, we opt-in ApolloInternal and ApolloExperimental
-       * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
-       */
-      languageSettings.optIn("kotlin.RequiresOptIn")
-      languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
-      languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
-    }
+
+val Project.kotlinExtensionOrNull: KotlinProjectExtension?
+  get() {
+    return (extensions.findByName("kotlin") as? KotlinProjectExtension)
+  }
+fun Project.configureJavaAndKotlinCompilers() {
+  kotlinExtensionOrNull?.forEachCompilerOptions {
+    configure()
   }
 
   @Suppress("UnstableApiUsage")
@@ -67,6 +98,7 @@ fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
   })
 
 }
+
 fun Project.configureTests(jvmVersion: Int) {
   tasks.withType(Test::class.java).configureEach {
     val javaToolchains = this@configureTests.extensions.getByName("javaToolchains") as JavaToolchainService
@@ -85,20 +117,7 @@ internal fun Project.optIn(vararg annotations: String) {
 }
 
 fun Project.allWarningsAsErrors(allWarningsAsErrors: Boolean) {
-  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
-    kotlinOptions {
-      if (this@configureEach.name.endsWith("KotlinMetadata")) {
-        /**
-         * KotlinMetadata compilations trigger warnings such as below:
-         *
-         * w: Could not find "co.touchlab:sqliter-driver-cinterop-sqlite3" in [/Users/mbonnin/git/reproducer-apple-metadata, /Users/mbonnin/.konan/klib, /Users/mbonnin/.konan/kotlin-native-prebuilt-macos-aarch64-1.8.0/klib/common, /Users/mbonnin/.konan/kotlin-native-prebuilt-macos-aarch64-1.8.0/klib/platform/macos_arm64]
-         *
-         * I'm thinking it has to do with HMPP but not 100% yet. Ignore all warnings in these tasks
-         */
-        this.allWarningsAsErrors = false
-      } else {
-        this.allWarningsAsErrors = allWarningsAsErrors
-      }
-    }
+  kotlinExtensionOrNull?.forEachCompilerOptions {
+    this.allWarningsAsErrors.set(allWarningsAsErrors)
   }
 }
