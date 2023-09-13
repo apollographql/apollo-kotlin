@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>ApolloPushSchemaTask</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
@@ -33,26 +36,32 @@
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../index.html">
-<span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-alpha.4-SNAPSHOT
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kotlin
+                    </a>            </div>
+            <div class="library-version">4.0.0-alpha.4-SNAPSHOT
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">jvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.internal/ApolloPushSchemaTask///PointingToDeclaration//1222267165">
   <div class="breadcrumbs"><a href="../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.gradle.internal</a><span class="delimiter">/</span><span class="current">ApolloPushSchemaTask</span></div>
   <div class="cover ">
@@ -60,7 +69,7 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">ApolloPushSchemaTask</a> : <span data-unresolved-link="org.gradle.api/DefaultTask///PointingToDeclaration/">DefaultTask</span></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
@@ -75,6 +84,205 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="911301571%2FProperties%2F1222267165" anchor-label="enabled" id="911301571%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#911301571%2FProperties%2F1222267165"><span><span>enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="911301571%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Internal///PointingToDeclaration/"><span class="token annotation builtin">Internal</span></span></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="../-apollo-register-operations-task/index.html#911301571%2FProperties%2F1222267165">enabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="940839001%2FProperties%2F1222267165" anchor-label="graph" id="940839001%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="graph.html"><span><span>graph</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="940839001%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="graph.html">graph</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1037447900%2FProperties%2F1222267165" anchor-label="graphVariant" id="1037447900%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="graph-variant.html"><span>graph</span><wbr><span><span>Variant</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1037447900%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="graph-variant.html">graphVariant</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-187057180%2FProperties%2F1222267165" anchor-label="hasCustomActions" id="-187057180%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#-187057180%2FProperties%2F1222267165"><span>has</span><wbr><span>Custom</span><wbr><span><span>Actions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-187057180%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-187057180%2FProperties%2F1222267165">hasCustomActions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1232486157%2FProperties%2F1222267165" anchor-label="impliesSubProjects" id="-1232486157%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#-1232486157%2FProperties%2F1222267165"><span>implies</span><wbr><span>Sub</span><wbr><span><span>Projects</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1232486157%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../-apollo-register-operations-task/index.html#-1232486157%2FProperties%2F1222267165">impliesSubProjects</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2029987096%2FProperties%2F1222267165" anchor-label="key" id="-2029987096%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="key.html"><span><span>key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2029987096%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="key.html">key</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2033027551%2FProperties%2F1222267165" anchor-label="projectRootDir" id="-2033027551%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="project-root-dir.html"><span>project</span><wbr><span>Root</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2033027551%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="project-root-dir.html">projectRootDir</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2067984135%2FProperties%2F1222267165" anchor-label="requiredServices" id="-2067984135%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#-2067984135%2FProperties%2F1222267165"><span>required</span><wbr><span><span>Services</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2067984135%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-2067984135%2FProperties%2F1222267165">requiredServices</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api.services/BuildService///PointingToDeclaration/">BuildService</span><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1520499240%2FProperties%2F1222267165" anchor-label="revision" id="-1520499240%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="revision.html"><span><span>revision</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1520499240%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="revision.html">revision</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-568991662%2FProperties%2F1222267165" anchor-label="schema" id="-568991662%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="schema.html"><span><span>schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-568991662%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="schema.html">schema</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="666114611%2FProperties%2F1222267165" anchor-label="state" id="666114611%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#666114611%2FProperties%2F1222267165"><span><span>state</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="666114611%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#666114611%2FProperties%2F1222267165">state</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.internal.tasks/TaskStateInternal///PointingToDeclaration/">TaskStateInternal</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2129477115%2FProperties%2F1222267165" anchor-label="subgraph" id="-2129477115%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subgraph.html"><span><span>subgraph</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2129477115%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="subgraph.html">subgraph</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-776323677%2FProperties%2F1222267165" anchor-label="timeout" id="-776323677%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-apollo-register-operations-task/index.html#-776323677%2FProperties%2F1222267165"><span><span>timeout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-776323677%2FProperties%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-776323677%2FProperties%2F1222267165">timeout</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -955,213 +1163,15 @@
           </div>
         </div>
       </div>
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="911301571%2FProperties%2F1222267165" anchor-label="enabled" id="911301571%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#911301571%2FProperties%2F1222267165"><span><span>enabled</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="911301571%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Internal///PointingToDeclaration/"><span class="token annotation builtin">Internal</span></span></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="../-apollo-register-operations-task/index.html#911301571%2FProperties%2F1222267165">enabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="940839001%2FProperties%2F1222267165" anchor-label="graph" id="940839001%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="graph.html"><span><span>graph</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="940839001%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="graph.html">graph</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1037447900%2FProperties%2F1222267165" anchor-label="graphVariant" id="1037447900%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="graph-variant.html"><span>graph</span><wbr><span><span>Variant</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1037447900%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="graph-variant.html">graphVariant</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-187057180%2FProperties%2F1222267165" anchor-label="hasCustomActions" id="-187057180%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#-187057180%2FProperties%2F1222267165"><span>has</span><wbr><span>Custom</span><wbr><span><span>Actions</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-187057180%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-187057180%2FProperties%2F1222267165">hasCustomActions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1232486157%2FProperties%2F1222267165" anchor-label="impliesSubProjects" id="-1232486157%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#-1232486157%2FProperties%2F1222267165"><span>implies</span><wbr><span>Sub</span><wbr><span><span>Projects</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1232486157%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../-apollo-register-operations-task/index.html#-1232486157%2FProperties%2F1222267165">impliesSubProjects</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2029987096%2FProperties%2F1222267165" anchor-label="key" id="-2029987096%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="key.html"><span><span>key</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2029987096%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="key.html">key</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2033027551%2FProperties%2F1222267165" anchor-label="projectRootDir" id="-2033027551%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="project-root-dir.html"><span>project</span><wbr><span>Root</span><wbr><span><span>Dir</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2033027551%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="project-root-dir.html">projectRootDir</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2067984135%2FProperties%2F1222267165" anchor-label="requiredServices" id="-2067984135%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#-2067984135%2FProperties%2F1222267165"><span>required</span><wbr><span><span>Services</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2067984135%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-2067984135%2FProperties%2F1222267165">requiredServices</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api.services/BuildService///PointingToDeclaration/">BuildService</span><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1520499240%2FProperties%2F1222267165" anchor-label="revision" id="-1520499240%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="revision.html"><span><span>revision</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1520499240%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="revision.html">revision</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-568991662%2FProperties%2F1222267165" anchor-label="schema" id="-568991662%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="schema.html"><span><span>schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-568991662%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="schema.html">schema</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="666114611%2FProperties%2F1222267165" anchor-label="state" id="666114611%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#666114611%2FProperties%2F1222267165"><span><span>state</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="666114611%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#666114611%2FProperties%2F1222267165">state</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.internal.tasks/TaskStateInternal///PointingToDeclaration/">TaskStateInternal</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2129477115%2FProperties%2F1222267165" anchor-label="subgraph" id="-2129477115%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="subgraph.html"><span><span>subgraph</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2129477115%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Optional///PointingToDeclaration/"><span class="token annotation builtin">Optional</span></span></div><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="org.gradle.api.tasks/Input///PointingToDeclaration/"><span class="token annotation builtin">Input</span></span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="subgraph.html">subgraph</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-776323677%2FProperties%2F1222267165" anchor-label="timeout" id="-776323677%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../-apollo-register-operations-task/index.html#-776323677%2FProperties%2F1222267165"><span><span>timeout</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-776323677%2FProperties%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-apollo-register-operations-task/index.html#-776323677%2FProperties%2F1222267165">timeout</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 

@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.apollographql.apollo3.compiler</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
-<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
@@ -33,26 +36,32 @@
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet"></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../index.html">
-<span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-alpha.4-SNAPSHOT
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            apollo-kotlin
+                    </a>            </div>
+            <div class="library-version">4.0.0-alpha.4-SNAPSHOT
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler:dokkaHtmlPartial/main">jvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="package" id="content" pageids="apollo-compiler::com.apollographql.apollo3.compiler////PointingToDeclaration//1826250589">
   <div class="breadcrumbs"><a href="../index.html">apollo-compiler</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo3.compiler</span></div>
   <div class="cover ">
@@ -133,7 +142,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-common-codegen-options/index.html">CommonCodegenOptions</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>codegenSchema<span class="token operator">: </span><a href="-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>ir<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.ir/-ir-operations/index.html">IrOperations</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>irSchema<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.ir/-ir-schema/index.html">IrSchema</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>operationOutput<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.operationoutput/index.html#1381743924%2FClasslikes%2F1826250589">OperationOutput</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>incomingCodegenMetadata<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputDir<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageNameGenerator<span class="token operator">: </span><a href="-package-name-generator/index.html">PackageNameGenerator</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>useSemanticNaming<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateFragmentImplementations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateMethods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-generated-method/index.html">GeneratedMethod</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateResponseFields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateQueryDocument<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateSchema<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generatedSchemaName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-common-codegen-options/index.html">CommonCodegenOptions</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>codegenSchema<span class="token operator">: </span><a href="-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>ir<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.ir/-ir-operations/index.html">IrOperations</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>irSchema<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.ir/-ir-schema/index.html">IrSchema</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>operationOutput<span class="token operator">: </span><a href="../com.apollographql.apollo3.compiler.operationoutput/-operation-output/index.html">OperationOutput</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>incomingCodegenMetadata<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputDir<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageNameGenerator<span class="token operator">: </span><a href="-package-name-generator/index.html">PackageNameGenerator</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>useSemanticNaming<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateFragmentImplementations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateMethods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-generated-method/index.html">GeneratedMethod</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateResponseFields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateQueryDocument<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateSchema<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generatedSchemaName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -253,7 +262,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-operation-output-generator/index.html">OperationOutputGenerator</a></div><div class="brief "><p class="paragraph">A class that generates <a href="../com.apollographql.apollo3.compiler.operationoutput/index.html#1381743924%2FClasslikes%2F1826250589">OperationOutput</a> to compute the operationIds. <a href="-operation-output-generator/index.html">OperationOutputGenerator</a> works with a collection of <a href="../com.apollographql.apollo3.compiler.operationoutput/-operation-descriptor/index.html">OperationDescriptor</a> for implementation that need to batch compute the operationIds. For an example to send all the operation at once to a backend for whitelisting.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-operation-output-generator/index.html">OperationOutputGenerator</a></div><div class="brief "><p class="paragraph">A class that generates <a href="../com.apollographql.apollo3.compiler.operationoutput/-operation-output/index.html">OperationOutput</a> to compute the operationIds. <a href="-operation-output-generator/index.html">OperationOutputGenerator</a> works with a collection of <a href="../com.apollographql.apollo3.compiler.operationoutput/-operation-descriptor/index.html">OperationDescriptor</a> for implementation that need to batch compute the operationIds. For an example to send all the operation at once to a backend for whitelisting.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -337,212 +346,13 @@
           <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="index.html#258752312%2FClasslikes%2F1826250589"><span>Used</span><wbr><span><span>Coordinates</span></span></a></div>
+                  <div><a href="-used-coordinates/index.html"><span>Used</span><wbr><span><span>Coordinates</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="258752312%2FClasslikes%2F1826250589"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-847637123%2FFunctions%2F1826250589" anchor-label="capitalizeFirstLetter" id="-847637123%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="capitalize-first-letter.html"><span>capitalize</span><wbr><span>First</span><wbr><span><span>Letter</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-847637123%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="capitalize-first-letter.html"><span class="token function">capitalizeFirstLetter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">A variation of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/index.html">String.capitalize</a> that:</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-109424944%2FFunctions%2F1826250589" anchor-label="checkCapitalizedFields" id="-109424944%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="check-capitalized-fields.html"><span>check</span><wbr><span>Capitalized</span><wbr><span><span>Fields</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-109424944%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="check-capitalized-fields.html"><span class="token function">checkCapitalizedFields</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../apollo-ast/com.apollographql.apollo3.ast/-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">checkFragmentsOnly<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../apollo-ast/com.apollographql.apollo3.ast/-issue/index.html">Issue</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1426221348%2FFunctions%2F1826250589" anchor-label="decapitalizeFirstLetter" id="-1426221348%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="decapitalize-first-letter.html"><span>decapitalize</span><wbr><span>First</span><wbr><span><span>Letter</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1426221348%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="decapitalize-first-letter.html"><span class="token function">decapitalizeFirstLetter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">A variation of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/index.html">String.decapitalize</a> that:</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1191372188%2FFunctions%2F1826250589" anchor-label="escapeJavaReservedWord" id="1191372188%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="escape-java-reserved-word.html"><span>escape</span><wbr><span>Java</span><wbr><span>Reserved</span><wbr><span><span>Word</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1191372188%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-java-reserved-word.html"><span class="token function">escapeJavaReservedWord</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1253148667%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWord" id="1253148667%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="escape-kotlin-reserved-word.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span><span>Word</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1253148667%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word.html"><span class="token function">escapeKotlinReservedWord</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="640220385%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWordInEnum" id="640220385%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="escape-kotlin-reserved-word-in-enum.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span>Word</span><wbr><span>In</span><wbr><span><span>Enum</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="640220385%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word-in-enum.html"><span class="token function">escapeKotlinReservedWordInEnum</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="344675190%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWordInSealedClass" id="344675190%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="escape-kotlin-reserved-word-in-sealed-class.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span>Word</span><wbr><span>In</span><wbr><span>Sealed</span><wbr><span><span>Class</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="344675190%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word-in-sealed-class.html"><span class="token function">escapeKotlinReservedWordInSealedClass</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="947610827%2FFunctions%2F1826250589" anchor-label="mergeWith" id="947610827%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="merge-with.html"><span>merge</span><wbr><span><span>With</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="947610827%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a><span class="token punctuation">.</span><a href="merge-with.html"><span class="token function">mergeWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-178617187%2FFunctions%2F1826250589" anchor-label="schemaTypes" id="-178617187%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="schema-types.html"><span>schema</span><wbr><span><span>Types</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-178617187%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token punctuation">.</span><a href="schema-types.html"><span class="token function">schemaTypes</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="498144712%2FFunctions%2F1826250589" anchor-label="toCodegenMetadata" id="498144712%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="to-codegen-metadata.html"><span>to</span><wbr><span>Codegen</span><wbr><span><span>Metadata</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="498144712%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-codegen-metadata.html"><span class="token function">toCodegenMetadata</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-codegen-metadata/index.html">CodegenMetadata</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="324248342%2FFunctions%2F1826250589" anchor-label="toCodegenSchema" id="324248342%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="to-codegen-schema.html"><span>to</span><wbr><span>Codegen</span><wbr><span><span>Schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="324248342%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-codegen-schema.html"><span class="token function">toCodegenSchema</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-codegen-schema/index.html">CodegenSchema</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-2051848740%2FFunctions%2F1826250589" anchor-label="toUsedCoordinates" id="-2051848740%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="to-used-coordinates.html"><span>to</span><wbr><span>Used</span><wbr><span><span>Coordinates</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2051848740%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-used-coordinates.html"><span class="token function">toUsedCoordinates</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-866158903%2FFunctions%2F1826250589" anchor-label="writeTo" id="-866158903%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="write-to.html"><span>write</span><wbr><span><span>To</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-866158903%2FFunctions%2F1826250589"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#258752312%2FClasslikes%2F1826250589">UsedCoordinates</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-used-coordinates/index.html">UsedCoordinates</a><span class="token operator"> = </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -1228,14 +1038,214 @@
           </div>
         </div>
       </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-847637123%2FFunctions%2F1826250589" anchor-label="capitalizeFirstLetter" id="-847637123%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capitalize-first-letter.html"><span>capitalize</span><wbr><span>First</span><wbr><span><span>Letter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-847637123%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="capitalize-first-letter.html"><span class="token function">capitalizeFirstLetter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">A variation of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/index.html">String.capitalize</a> that:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-109424944%2FFunctions%2F1826250589" anchor-label="checkCapitalizedFields" id="-109424944%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="check-capitalized-fields.html"><span>check</span><wbr><span>Capitalized</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-109424944%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="check-capitalized-fields.html"><span class="token function">checkCapitalizedFields</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../apollo-ast/com.apollographql.apollo3.ast/-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">checkFragmentsOnly<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../apollo-ast/com.apollographql.apollo3.ast/-issue/index.html">Issue</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1426221348%2FFunctions%2F1826250589" anchor-label="decapitalizeFirstLetter" id="-1426221348%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="decapitalize-first-letter.html"><span>decapitalize</span><wbr><span>First</span><wbr><span><span>Letter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1426221348%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="decapitalize-first-letter.html"><span class="token function">decapitalizeFirstLetter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">A variation of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/index.html">String.decapitalize</a> that:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1191372188%2FFunctions%2F1826250589" anchor-label="escapeJavaReservedWord" id="1191372188%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="escape-java-reserved-word.html"><span>escape</span><wbr><span>Java</span><wbr><span>Reserved</span><wbr><span><span>Word</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1191372188%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-java-reserved-word.html"><span class="token function">escapeJavaReservedWord</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1253148667%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWord" id="1253148667%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="escape-kotlin-reserved-word.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span><span>Word</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1253148667%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word.html"><span class="token function">escapeKotlinReservedWord</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="640220385%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWordInEnum" id="640220385%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="escape-kotlin-reserved-word-in-enum.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span>Word</span><wbr><span>In</span><wbr><span><span>Enum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="640220385%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word-in-enum.html"><span class="token function">escapeKotlinReservedWordInEnum</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="344675190%2FFunctions%2F1826250589" anchor-label="escapeKotlinReservedWordInSealedClass" id="344675190%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="escape-kotlin-reserved-word-in-sealed-class.html"><span>escape</span><wbr><span>Kotlin</span><wbr><span>Reserved</span><wbr><span>Word</span><wbr><span>In</span><wbr><span>Sealed</span><wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="344675190%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="escape-kotlin-reserved-word-in-sealed-class.html"><span class="token function">escapeKotlinReservedWordInSealedClass</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="947610827%2FFunctions%2F1826250589" anchor-label="mergeWith" id="947610827%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="merge-with.html"><span>merge</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="947610827%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-used-coordinates/index.html">UsedCoordinates</a><span class="token punctuation">.</span><a href="merge-with.html"><span class="token function">mergeWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="-used-coordinates/index.html">UsedCoordinates</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-used-coordinates/index.html">UsedCoordinates</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-178617187%2FFunctions%2F1826250589" anchor-label="schemaTypes" id="-178617187%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="schema-types.html"><span>schema</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-178617187%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token punctuation">.</span><a href="schema-types.html"><span class="token function">schemaTypes</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="498144712%2FFunctions%2F1826250589" anchor-label="toCodegenMetadata" id="498144712%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-codegen-metadata.html"><span>to</span><wbr><span>Codegen</span><wbr><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="498144712%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-codegen-metadata.html"><span class="token function">toCodegenMetadata</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-codegen-metadata/index.html">CodegenMetadata</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="324248342%2FFunctions%2F1826250589" anchor-label="toCodegenSchema" id="324248342%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-codegen-schema.html"><span>to</span><wbr><span>Codegen</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="324248342%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-codegen-schema.html"><span class="token function">toCodegenSchema</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-codegen-schema/index.html">CodegenSchema</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2051848740%2FFunctions%2F1826250589" anchor-label="toUsedCoordinates" id="-2051848740%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-used-coordinates.html"><span>to</span><wbr><span>Used</span><wbr><span><span>Coordinates</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2051848740%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">.</span><a href="to-used-coordinates.html"><span class="token function">toUsedCoordinates</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-used-coordinates/index.html">UsedCoordinates</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-866158903%2FFunctions%2F1826250589" anchor-label="writeTo" id="-866158903%2FFunctions%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="write-to.html"><span>write</span><wbr><span><span>To</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-866158903%2FFunctions%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-metadata/index.html">CodegenMetadata</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-used-coordinates/index.html">UsedCoordinates</a><span class="token punctuation">.</span><a href="write-to.html"><span class="token function">writeTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 

@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>DefaultApolloExtension</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
     if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
@@ -16,12 +18,13 @@
         }
     }
     </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
-<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
@@ -33,26 +36,32 @@
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
 <body>
-<div class="navigation-wrapper" id="navigation-wrapper">
-    <div id="leftToggler"><span class="icon-toggler"></span></div>
-    <div class="library-name">
-<a href="../../../index.html">
-<span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-alpha.4-SNAPSHOT
-    </div>
-    <div class="pull-right d-flex">
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kotlin
+                    </a>            </div>
+            <div class="library-version">4.0.0-alpha.4-SNAPSHOT
+            </div>
+        </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">jvm</button>
         </div>
-        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
-        <div id="searchBar"></div>
     </div>
-</div>
-<div id="container">
-    <div id="leftColumn">
-        <div id="sideMenu"></div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
     </div>
-    <div id="main">
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.internal/DefaultApolloExtension///PointingToDeclaration//1222267165">
   <div class="breadcrumbs"><a href="../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.gradle.internal</a><span class="delimiter">/</span><span class="current">DefaultApolloExtension</span></div>
   <div class="cover ">
@@ -60,7 +69,7 @@
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">DefaultApolloExtension</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">defaultService<span class="token operator">: </span><a href="../-default-service/index.html">DefaultService</a></span></span><span class="token punctuation">)</span> : <a href="../../com.apollographql.apollo3.gradle.api/-apollo-extension/index.html">ApolloExtension</a>, <a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
@@ -94,460 +103,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1143334042%2FFunctions%2F1222267165" anchor-label="createAllAndroidVariantServices" id="1143334042%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="create-all-android-variant-services.html"><span>create</span><wbr><span>All</span><wbr><span>Android</span><wbr><span>Variant</span><wbr><span><span>Services</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1143334042%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create-all-android-variant-services.html"><span class="token function">createAllAndroidVariantServices</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sourceFolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">nameSuffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">registers multiple services for an android project</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="433933364%2FFunctions%2F1222267165" anchor-label="createAllKotlinSourceSetServices" id="433933364%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="create-all-kotlin-source-set-services.html"><span>create</span><wbr><span>All</span><wbr><span>Kotlin</span><wbr><span>Source</span><wbr><span>Set</span><wbr><span><span>Services</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="433933364%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create-all-kotlin-source-set-services.html"><span class="token function">createAllKotlinSourceSetServices</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sourceFolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">nameSuffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">registers multiple services for a Kotlin project</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="864227267%2FFunctions%2F1222267165" anchor-label="dependsOn" id="864227267%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/depends-on.html"><span>depends</span><wbr><span><span>On</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="864227267%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/depends-on.html"><span class="token function">dependsOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds a given dependency for the codegen</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="364386263%2FFunctions%2F1222267165" anchor-label="introspection" id="364386263%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/introspection.html"><span><span>introspection</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="364386263%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/introspection.html"><span class="token function">introspection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-introspection/index.html">Introspection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures Introspection to download an introspection Json schema</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="140433904%2FFunctions%2F1222267165" anchor-label="isADependencyOf" id="140433904%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html"><span>is</span><wbr><span>ADependency</span><wbr><span><span>Of</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="140433904%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html"><span class="token function">isADependencyOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1662238549%2FFunctions%2F1222267165" anchor-label="mapScalar" id="-1662238549%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span>map</span><wbr><span><span>Scalar</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1662238549%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type. The adapter must be configured at runtime via com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">expression<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression. The adapter will be configured at compile time and you must not call com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="2137122197%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaBoolean" id="2137122197%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Boolean</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2137122197%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-boolean.html"><span class="token function">mapScalarToJavaBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">java.lang.Boolean</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1842505806%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaDouble" id="-1842505806%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Double</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1842505806%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-double.html"><span class="token function">mapScalarToJavaDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html">java.lang.Double</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1914937783%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaFloat" id="-1914937783%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Float</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914937783%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-float.html"><span class="token function">mapScalarToJavaFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Float.html">java.lang.Float</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-686196181%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaInteger" id="-686196181%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-integer.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Integer</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686196181%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-integer.html"><span class="token function">mapScalarToJavaInteger</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html">java.lang.Integer</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-900509539%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaLong" id="-900509539%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Long</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-900509539%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-long.html"><span class="token function">mapScalarToJavaLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html">java.lang.Long</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1502330016%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaObject" id="1502330016%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-object.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Object</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1502330016%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-object.html"><span class="token function">mapScalarToJavaObject</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">java.lang.Object</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="2059291634%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaString" id="2059291634%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>String</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2059291634%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-string.html"><span class="token function">mapScalarToJavaString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">java.lang.String</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-834262694%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinAny" id="-834262694%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-any.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Any</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-834262694%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-any.html"><span class="token function">mapScalarToKotlinAny</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">kotlin.Any</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-976538858%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinBoolean" id="-976538858%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Boolean</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-976538858%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-boolean.html"><span class="token function">mapScalarToKotlinBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">kotlin.Boolean</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="412358161%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinDouble" id="412358161%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Double</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="412358161%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-double.html"><span class="token function">mapScalarToKotlinDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">kotlin.Double</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-41084918%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinFloat" id="-41084918%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Float</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-41084918%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-float.html"><span class="token function">mapScalarToKotlinFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">kotlin.Float</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1178774813%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinInt" id="1178774813%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-int.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Int</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1178774813%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-int.html"><span class="token function">mapScalarToKotlinInt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">kotlin.Int</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-424420676%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinLong" id="-424420676%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Long</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-424420676%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-long.html"><span class="token function">mapScalarToKotlinLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">kotlin.Long</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="19188305%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinString" id="19188305%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>String</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="19188305%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-string.html"><span class="token function">mapScalarToKotlinString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">kotlin.String</a> and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1471999648%2FFunctions%2F1222267165" anchor-label="mapScalarToUpload" id="1471999648%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-upload.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span><span>Upload</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1471999648%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-upload.html"><span class="token function">mapScalarToUpload</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to com.apollographql.apollo3.api.Upload and use the builtin adapter</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1914092752%2FFunctions%2F1222267165" anchor-label="operationManifestConnection" id="-1914092752%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-manifest-connection.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Connection</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914092752%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-manifest-connection.html"><span class="token function">operationManifestConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-operation-manifest-connection/index.html">Service.OperationManifestConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way the operation manifest is connected. Use this if you want to connect the generated operation manifest. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="286726932%2FFunctions%2F1222267165" anchor-label="operationOutputConnection" id="286726932%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-output-connection.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="286726932%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-output-connection.html"><span class="token function"><strike>operationOutputConnection</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-operation-output-connection/index.html">Service.OperationOutputConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way operationOutput is connected. Use this if you want to connect the generated operationOutput. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-963637315%2FFunctions%2F1222267165" anchor-label="outputDirConnection" id="-963637315%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/output-dir-connection.html"><span>output</span><wbr><span>Dir</span><wbr><span><span>Connection</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-963637315%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/output-dir-connection.html"><span class="token function">outputDirConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-directory-connection/index.html">Service.DirectoryConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Overrides the way the generated models are connected. Use this if you want to connect the generated models to another task than the default destination.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1345677535%2FFunctions%2F1222267165" anchor-label="packageNamesFromFilePaths" id="-1345677535%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/package-names-from-file-paths.html"><span>package</span><wbr><span>Names</span><wbr><span>From</span><wbr><span>File</span><wbr><span><span>Paths</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1345677535%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/package-names-from-file-paths.html"><span class="token function">packageNamesFromFilePaths</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rootPackageName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A helper method to configure a PackageNameGenerator that will use the file path relative to the source roots to generate the packageNames</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1019516621%2FFunctions%2F1222267165" anchor-label="registerOperations" id="-1019516621%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/register-operations.html"><span>register</span><wbr><span><span>Operations</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1019516621%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/register-operations.html"><span class="token function">registerOperations</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-register-operations-config/index.html">RegisterOperationsConfig</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures operation safelisting (requires an <a href="https://www.apollographql.com/docs/studio/">Apollo Studio</a> account)</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1088040431%2FFunctions%2F1222267165" anchor-label="registry" id="-1088040431%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/registry.html"><span><span>registry</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1088040431%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/registry.html"><span class="token function">registry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-registry/index.html">Registry</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures Registry to download a SDL schema from a studio registry</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="772021105%2FFunctions%2F1222267165" anchor-label="service" id="772021105%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="service.html"><span><span>service</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="772021105%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="service.html"><span class="token function">service</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call from users to explicitly register a service or by the plugin to register the implicit service</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-430141718%2FFunctions%2F1222267165" anchor-label="srcDir" id="-430141718%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/src-dir.html"><span>src</span><wbr><span><span>Dir</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-430141718%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/src-dir.html"><span class="token function">srcDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">directory<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds the given directory as a GraphQL source root</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="432579232%2FFunctions%2F1222267165" anchor-label="usedCoordinates" id="432579232%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span>used</span><wbr><span><span>Coordinates</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="432579232%2FFunctions%2F1222267165"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -1323,14 +878,469 @@
           </div>
         </div>
       </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1143334042%2FFunctions%2F1222267165" anchor-label="createAllAndroidVariantServices" id="1143334042%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-all-android-variant-services.html"><span>create</span><wbr><span>All</span><wbr><span>Android</span><wbr><span>Variant</span><wbr><span><span>Services</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1143334042%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create-all-android-variant-services.html"><span class="token function">createAllAndroidVariantServices</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sourceFolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">nameSuffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">registers multiple services for an android project</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="433933364%2FFunctions%2F1222267165" anchor-label="createAllKotlinSourceSetServices" id="433933364%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-all-kotlin-source-set-services.html"><span>create</span><wbr><span>All</span><wbr><span>Kotlin</span><wbr><span>Source</span><wbr><span>Set</span><wbr><span><span>Services</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="433933364%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create-all-kotlin-source-set-services.html"><span class="token function">createAllKotlinSourceSetServices</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sourceFolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">nameSuffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">registers multiple services for a Kotlin project</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="864227267%2FFunctions%2F1222267165" anchor-label="dependsOn" id="864227267%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/depends-on.html"><span>depends</span><wbr><span><span>On</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="864227267%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/depends-on.html"><span class="token function">dependsOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds a given dependency for the codegen</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="364386263%2FFunctions%2F1222267165" anchor-label="introspection" id="364386263%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/introspection.html"><span><span>introspection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="364386263%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/introspection.html"><span class="token function">introspection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-introspection/index.html">Introspection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures Introspection to download an introspection Json schema</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="140433904%2FFunctions%2F1222267165" anchor-label="isADependencyOf" id="140433904%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html"><span>is</span><wbr><span>ADependency</span><wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="140433904%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html"><span class="token function">isADependencyOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1662238549%2FFunctions%2F1222267165" anchor-label="mapScalar" id="-1662238549%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span>map</span><wbr><span><span>Scalar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1662238549%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type. The adapter must be configured at runtime via com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">expression<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression. The adapter will be configured at compile time and you must not call com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2137122197%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaBoolean" id="2137122197%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2137122197%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-boolean.html"><span class="token function">mapScalarToJavaBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">java.lang.Boolean</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1842505806%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaDouble" id="-1842505806%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1842505806%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-double.html"><span class="token function">mapScalarToJavaDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html">java.lang.Double</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1914937783%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaFloat" id="-1914937783%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Float</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914937783%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-float.html"><span class="token function">mapScalarToJavaFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Float.html">java.lang.Float</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-686196181%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaInteger" id="-686196181%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-integer.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Integer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686196181%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-integer.html"><span class="token function">mapScalarToJavaInteger</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html">java.lang.Integer</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-900509539%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaLong" id="-900509539%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-900509539%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-long.html"><span class="token function">mapScalarToJavaLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html">java.lang.Long</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1502330016%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaObject" id="1502330016%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-object.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1502330016%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-object.html"><span class="token function">mapScalarToJavaObject</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">java.lang.Object</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2059291634%2FFunctions%2F1222267165" anchor-label="mapScalarToJavaString" id="2059291634%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2059291634%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-java-string.html"><span class="token function">mapScalarToJavaString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">java.lang.String</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-834262694%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinAny" id="-834262694%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-any.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Any</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-834262694%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-any.html"><span class="token function">mapScalarToKotlinAny</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">kotlin.Any</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-976538858%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinBoolean" id="-976538858%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-976538858%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-boolean.html"><span class="token function">mapScalarToKotlinBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">kotlin.Boolean</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="412358161%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinDouble" id="412358161%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="412358161%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-double.html"><span class="token function">mapScalarToKotlinDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">kotlin.Double</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-41084918%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinFloat" id="-41084918%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Float</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-41084918%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-float.html"><span class="token function">mapScalarToKotlinFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">kotlin.Float</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1178774813%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinInt" id="1178774813%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-int.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Int</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1178774813%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-int.html"><span class="token function">mapScalarToKotlinInt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">kotlin.Int</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-424420676%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinLong" id="-424420676%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-424420676%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-long.html"><span class="token function">mapScalarToKotlinLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">kotlin.Long</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="19188305%2FFunctions%2F1222267165" anchor-label="mapScalarToKotlinString" id="19188305%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="19188305%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-kotlin-string.html"><span class="token function">mapScalarToKotlinString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">kotlin.String</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1471999648%2FFunctions%2F1222267165" anchor-label="mapScalarToUpload" id="1471999648%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-upload.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span><span>Upload</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1471999648%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/map-scalar-to-upload.html"><span class="token function">mapScalarToUpload</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to com.apollographql.apollo3.api.Upload and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1914092752%2FFunctions%2F1222267165" anchor-label="operationManifestConnection" id="-1914092752%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-manifest-connection.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914092752%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-manifest-connection.html"><span class="token function">operationManifestConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-operation-manifest-connection/index.html">Service.OperationManifestConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way the operation manifest is connected. Use this if you want to connect the generated operation manifest. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="286726932%2FFunctions%2F1222267165" anchor-label="operationOutputConnection" id="286726932%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-output-connection.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="286726932%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/operation-output-connection.html"><span class="token function"><strike>operationOutputConnection</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-operation-output-connection/index.html">Service.OperationOutputConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way operationOutput is connected. Use this if you want to connect the generated operationOutput. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-963637315%2FFunctions%2F1222267165" anchor-label="outputDirConnection" id="-963637315%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/output-dir-connection.html"><span>output</span><wbr><span>Dir</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-963637315%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/output-dir-connection.html"><span class="token function">outputDirConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-service/-directory-connection/index.html">Service.DirectoryConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Overrides the way the generated models are connected. Use this if you want to connect the generated models to another task than the default destination.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1345677535%2FFunctions%2F1222267165" anchor-label="packageNamesFromFilePaths" id="-1345677535%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/package-names-from-file-paths.html"><span>package</span><wbr><span>Names</span><wbr><span>From</span><wbr><span>File</span><wbr><span><span>Paths</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1345677535%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/package-names-from-file-paths.html"><span class="token function">packageNamesFromFilePaths</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rootPackageName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A helper method to configure a PackageNameGenerator that will use the file path relative to the source roots to generate the packageNames</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1019516621%2FFunctions%2F1222267165" anchor-label="registerOperations" id="-1019516621%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/register-operations.html"><span>register</span><wbr><span><span>Operations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1019516621%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/register-operations.html"><span class="token function">registerOperations</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-register-operations-config/index.html">RegisterOperationsConfig</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures operation safelisting (requires an <a href="https://www.apollographql.com/docs/studio/">Apollo Studio</a> account)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1088040431%2FFunctions%2F1222267165" anchor-label="registry" id="-1088040431%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/registry.html"><span><span>registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1088040431%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/registry.html"><span class="token function">registry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo3.gradle.api/-registry/index.html">Registry</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures Registry to download a SDL schema from a studio registry</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="772021105%2FFunctions%2F1222267165" anchor-label="service" id="772021105%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="service.html"><span><span>service</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="772021105%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="service.html"><span class="token function">service</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo3.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call from users to explicitly register a service or by the plugin to register the implicit service</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-430141718%2FFunctions%2F1222267165" anchor-label="srcDir" id="-430141718%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/src-dir.html"><span>src</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-430141718%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/src-dir.html"><span class="token function">srcDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">directory<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds the given directory as a GraphQL source root</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="432579232%2FFunctions%2F1222267165" anchor-label="usedCoordinates" id="432579232%2FFunctions%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span>used</span><wbr><span><span>Coordinates</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="432579232%2FFunctions%2F1222267165"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.apollographql.apollo3.gradle.api/-service/used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>
 

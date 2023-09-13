@@ -3,7 +3,6 @@ $dokka.linkExtension:html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/equals/#kotlin.Any?/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]equals.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/hashCode/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]hash-code.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toByte/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-byte.html
-$dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toChar/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-char.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toDouble/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-double.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toFloat/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-float.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toInt/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-int.html
