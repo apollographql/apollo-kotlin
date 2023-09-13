@@ -8,7 +8,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
-import okio.toByteString
+import okio.ByteString.Companion.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
@@ -31,14 +31,13 @@ fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
-actual class DefaultHttpEngine constructor(
+actual class DefaultHttpEngine(
     private val timeoutMillis: Long = 60_000,
     private val dataTaskFactory: DataTaskFactory,
 ) : HttpEngine {
 
   actual constructor(timeoutMillis: Long) : this(timeoutMillis, DefaultDataTaskFactory())
 
-  @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
       continuation.resumeWith(
@@ -114,6 +113,7 @@ private fun buildHttpResponse(
         HttpHeader(key.toString(), value.toString())
       }
 
+  @Suppress("RemoveRedundantCallsOfConversionMethods")
   val statusCode = httpResponse.statusCode.toInt()
 
   /**

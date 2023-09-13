@@ -31,13 +31,6 @@ kotlin {
       }
     }
 
-    findByName("javaCodegenTest")?.apply {
-      dependencies {
-        // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(libs.kotlin.test.junit)
-      }
-    }
-
     findByName("jvmTest")?.apply {
       dependencies {
         implementation(libs.okhttp.logging)
@@ -90,7 +83,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             languageVersion.set("1.5")
           }
         }
-    file("src/kotlinCodegenTest/kotlin/test").listFiles()!!
+    file("src/commonTest/kotlin/test").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
           service("${it.name}-$extra") {
@@ -119,9 +112,9 @@ fun configureApollo(generateKotlinModels: Boolean) {
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (generateKotlinModels) {
-      connectToKotlinSourceSet("kotlinCodegenTest")
+      connectToKotlinSourceSet("commonTest")
     } else {
-      connectToJavaSourceSet("javaCodegen")
+      connectToJavaSourceSet("javaCodegenTest")
     }
   }
 }

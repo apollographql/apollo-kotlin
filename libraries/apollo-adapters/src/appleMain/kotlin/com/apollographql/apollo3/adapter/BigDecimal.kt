@@ -47,12 +47,6 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
     return raw.charValue
   }
 
-  override fun toChar(): Char {
-    // Convert to `Int` first and then `Char` (unsigned 16-bit integer).
-    // UShort is experimental, and stdlib does not provide direct UShort -> Char conversion.
-    return raw.intValue.toChar()
-  }
-
   override fun toDouble(): Double {
     return raw.doubleValue
   }

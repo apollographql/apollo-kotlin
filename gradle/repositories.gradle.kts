@@ -6,10 +6,10 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
 
     exclusiveContent {
       // Uncomment to use a "dev" version of Compose when bumping Kotlin versions
-      // forRepository {
-      //   // Androidx "dev" repository for Compose
-      //   maven { url = uri("https://androidx.dev/storage/compose-compiler/repository/") }
-      // }
+      forRepository {
+        // Androidx "dev" repository for Compose
+        maven { url = uri("https://androidx.dev/storage/compose-compiler/repository/") }
+      }
       forRepository(::google)
       filter {
         includeModuleByRegex("com\\.android.*", ".*")

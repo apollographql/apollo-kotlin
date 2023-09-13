@@ -2,6 +2,7 @@ public final class com/apollographql/apollo3/mpp/Platform : java/lang/Enum {
 	public static final field Js Lcom/apollographql/apollo3/mpp/Platform;
 	public static final field Jvm Lcom/apollographql/apollo3/mpp/Platform;
 	public static final field Native Lcom/apollographql/apollo3/mpp/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/mpp/Platform;
 	public static fun values ()[Lcom/apollographql/apollo3/mpp/Platform;
 }

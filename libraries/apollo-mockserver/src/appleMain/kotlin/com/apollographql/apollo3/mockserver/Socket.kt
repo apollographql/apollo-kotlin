@@ -29,7 +29,6 @@ import platform.posix.setsockopt
 import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
-import kotlin.native.concurrent.AtomicInt
 
 class Socket(
     private val socketFd: Int,
@@ -37,7 +36,7 @@ class Socket(
     private val mockServerHandler: MockServerHandler,
 ) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
-  private val running = AtomicInt(1)
+  private val running = kotlin.concurrent.AtomicInt(1)
   private val lock = reentrantLock()
   private val recordedRequests = NSMutableArray()
 

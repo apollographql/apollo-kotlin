@@ -52,9 +52,9 @@ fun configureApollo(generateKotlinModels: Boolean) {
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (generateKotlinModels) {
-      connectToKotlinSourceSet("kotlinCodegenTest")
+      connectToKotlinSourceSet("commonTest")
     } else {
-      connectToJavaSourceSet("javaCodegen")
+      connectToJavaSourceSet("javaCodegenTest")
     }
   }
 }

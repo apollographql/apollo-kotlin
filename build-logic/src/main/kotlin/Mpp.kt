@@ -1,8 +1,6 @@
 
-import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.tasks.testing.Test
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -119,10 +117,19 @@ fun Project.configureMpp(
     }
 
     appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
-      targetFromPreset(
-          presets.getByName(presetName),
-          presetName,
-      )
+      when(presetName) {
+        "macosX64" -> macosX64()
+        "macosArm64" -> macosArm64()
+        "iosArm64" -> iosArm64()
+        "iosX64" -> iosX64()
+        "iosSimulatorArm64" -> iosSimulatorArm64()
+        "watchosArm32" -> watchosArm32()
+        "watchosArm64" -> watchosArm64()
+        "watchosSimulatorArm64" -> watchosSimulatorArm64()
+        "tvosArm64" -> tvosArm64()
+        "tvosX64" -> tvosX64()
+        "tvosSimulatorArm64" -> tvosSimulatorArm64()
+      }
     }
 
     configureSourceSetGraph()
@@ -159,16 +166,9 @@ fun Project.configureMpp(
  * appleMain --> tvosX64
  * appleMain --> tvosSimulatorArm64
  *
- * commonTest --> kotlinCodegenTest
- * commonTest --> jvmJavaCodeGen
- * kotlinCodegenTest --> macOsArm64Test
- * kotlinCodegenTest --> jvmTest
- * kotlinCodegenTest --> jsTest
- *
  * classDef kotlinPurple fill:#A97BFF,stroke:#333,stroke-width:2px,color:#333
  * classDef javaOrange fill:#b07289,stroke:#333,stroke-width:2px,color:#333
  * classDef gray fill:#AAA,stroke:#333,stroke-width:2px,color:#333
- * class kotlinCodegenTest gray
  * class jvmJavaCodeGen,macOsArm64Test,jvmTest,jsTest kotlinPurple
  * class commonTest javaOrange
  * ```
@@ -199,14 +199,6 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
       sourceSets.findByName("${it}Test")?.dependsOn(appleTest)
     }
   }
-
-  val kotlinCodegenTest = sourceSets.create("kotlinCodegenTest")
-
-  kotlinCodegenTest.dependsOn(sourceSets.getByName("commonTest"))
-
-  targets.forEach {
-    sourceSets.findByName("${it.name}Test")?.dependsOn(kotlinCodegenTest)
-  }
 }
 
 private fun KotlinMultiplatformExtension.addTestDependencies() {
@@ -219,14 +211,13 @@ private fun KotlinMultiplatformExtension.addTestDependencies() {
 
 /**
  * Registers a new testRun that substitutes the Kotlin models by the Java models.
- * Because they have the same JVM API, this is transparent to all tests that are in `kotlinCodegenTest` that work the same for Kotlin
+ * Because they have the same JVM API, this is transparent to all tests that are in `commonTest` that work the same for Kotlin
  * & Java models.
  *
- * - For Kotlin models, `kotlinCodegenTest` is directly in the sourceSet graph and generated models are wired to the source set
- * - For Java models, `kotlinCodegenTest` is not in the sourceSet graph. The generated models are wired to the separate `javaCodegen`
- * source set. Then the contents of `kotlinCodegenTest/kotlin` is sourced directly
+ * - For Java models, we create a separate compilation (and therefore sourceSet graph). The generated models are wired to the separate
+ * `commonJavaCodegenTest` source set. Then the contents of `commonTest/kotlin` is sourced directly
  *
- * This breaks IDE support because now `kotlinCodegenTest/kotlin` is used from 2 different places so clicking a model there, it's impossible
+ * This breaks IDE support because now `commonTest/kotlin` is used from 2 different places so clicking a model there, it's impossible
  * to tell which model it is. We could expect/actual all of the model APIs but that'd be a lot of very manual work
  */
 fun Project.registerJavaCodegenTestTask() {
@@ -237,29 +228,22 @@ fun Project.registerJavaCodegenTestTask() {
   val jvmTarget = kotlin.targets.getByName("jvm") as KotlinJvmTarget
   jvmTarget.withJava()
 
-  val javaCodegenCompilation = jvmTarget.compilations.create("javaCodegen")
+  /**
+   * This is an intermediate source set to make sure that we do not have expect/actual
+   * in the same Kotlin module
+   */
+  val commonJavaCodegenTest = kotlin.sourceSets.create("commonJavaCodegenTest") {
+    this.kotlin.srcDir("src/commonTest/kotlin")
+  }
+  val javaCodegenCompilation = jvmTarget.compilations.create("javaCodegenTest")
+
+  val testRun = jvmTarget.testRuns.create("javaCodegen")
+  testRun.setExecutionSourceFrom(javaCodegenCompilation)
+
   javaCodegenCompilation.compileJavaTaskProvider?.configure {
     classpath += configurations.getByName("jvmTestCompileClasspath")
   }
   javaCodegenCompilation.configurations.compileDependencyConfiguration.extendsFrom(configurations.getByName("jvmTestCompileClasspath"))
-  javaCodegenCompilation.defaultSourceSet.dependsOn(kotlin.sourceSets.getByName("commonTest"))
-  javaCodegenCompilation.defaultSourceSet.kotlin.apply {
-    srcDir("src/kotlinCodegenTest/kotlin")
-  }
-
-  val task = tasks.register("javaCodegenTest", Test::class.java) {
-    description = "Runs Java codegen tests."
-    group = "verification"
-
-    testClassesDirs = javaCodegenCompilation.output.classesDirs
-    classpath = configurations.getByName("jvmTestRuntimeClasspath") + javaCodegenCompilation.output.classesDirs
-
-    useJUnit()
-
-    testLogging {
-      events("passed")
-    }
-  }
-
-  tasks.named("allTests").dependsOn(task)
+  javaCodegenCompilation.configurations.runtimeDependencyConfiguration?.extendsFrom(configurations.getByName("jvmTestRuntimeClasspath"))
+  javaCodegenCompilation.defaultSourceSet.dependsOn(commonJavaCodegenTest)
 }

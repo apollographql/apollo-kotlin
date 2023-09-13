@@ -301,6 +301,7 @@ public final class com/apollographql/apollo3/network/http/LoggingInterceptor$Lev
 	public static final field BODY Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
 	public static final field HEADERS Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
 	public static final field NONE Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
 	public static fun values ()[Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
 }
@@ -431,6 +432,7 @@ public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTranspor
 public final class com/apollographql/apollo3/network/ws/WsFrameType : java/lang/Enum {
 	public static final field Binary Lcom/apollographql/apollo3/network/ws/WsFrameType;
 	public static final field Text Lcom/apollographql/apollo3/network/ws/WsFrameType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/network/ws/WsFrameType;
 	public static fun values ()[Lcom/apollographql/apollo3/network/ws/WsFrameType;
 }
