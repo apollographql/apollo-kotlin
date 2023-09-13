@@ -74,9 +74,9 @@ if (System.getProperty("idea.sync.active") == null) {
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (generateKotlinModels) {
-      connectToKotlinSourceSet("kotlinCodegenTest")
+      connectToKotlinSourceSet("commonTest")
     } else {
-      connectToJavaSourceSet("javaCodegen")
+      connectToJavaSourceSet("javaCodegenTest")
     }
   }
 }
