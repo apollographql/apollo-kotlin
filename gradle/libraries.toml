@@ -91,7 +91,7 @@ compose-runtime = { group = "androidx.compose.runtime", name = "runtime", versio
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref = "dokka" }
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
-gegp = "com.gradle:gradle-enterprise-gradle-plugin:3.14.1" # // sync with settings.gradle.kts
+gegp = "com.gradle:gradle-enterprise-gradle-plugin:3.15" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
