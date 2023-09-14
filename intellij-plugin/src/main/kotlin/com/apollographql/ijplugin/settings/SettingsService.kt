@@ -6,6 +6,7 @@ import com.intellij.credentialStore.generateServiceName
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.lang.jsgraphql.GraphQLSettings
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
@@ -14,6 +15,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
 
+@Service(Service.Level.PROJECT)
 @State(
     name = "com.apollographql.ijplugin.settings.SettingsState",
     storages = [Storage("apollo.xml")]

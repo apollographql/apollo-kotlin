@@ -18,20 +18,12 @@
 
   <extensions defaultExtensionNs="com.intellij">
 
-    <!-- Application -->
-    <applicationService serviceImplementation="com.apollographql.ijplugin.application.ApolloApplicationService" />
-
     <!-- Apollo project -->
     <projectService
         serviceInterface="com.apollographql.ijplugin.project.ApolloProjectService"
         serviceImplementation="com.apollographql.ijplugin.project.ApolloProjectServiceImpl"
     />
 
-    <!-- Codegen -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.codegen.ApolloCodegenService" />
-
-    <!-- Settings -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsService" />
     <!-- Note: the value of `parentId` corresponds to the settings `id` of the JS GraphQL plugin -->
     <!-- See https://github.com/JetBrains/js-graphql-intellij-plugin/blob/396770c293a57f4903acdf427ba5136db6a79d0b/resources/META-INF/plugin.xml#L151 -->
     <projectConfigurable
@@ -64,20 +56,11 @@
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 
-    <!-- Tooling model -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.gradle.GradleToolingModelService" />
-
-    <!-- Listens to availability of Tooling model, and notifies the GraphQL plugin -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.graphql.GraphQLConfigService" />
-
     <!-- Icons -->
     <!-- This may be a bit controversial, but we want to override the GraphQL plugin's icons (hence order="first") -->
     <!-- because when navigating to GraphQL files from Kotlin code, a generic GraphQL logo is nicer than a specific -->
     <!-- icon per element type -->
     <iconProvider implementation="com.apollographql.ijplugin.icons.GraphQLIconProvider" order="first" />
-
-    <!-- Studio / Sandbox -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.studio.sandbox.SandboxService" />
 
     <!-- Fields insights inspection ("expensive field") -->
     <!--suppress PluginXmlCapitalization -->

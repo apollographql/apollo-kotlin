@@ -20,6 +20,7 @@ import com.apollographql.ijplugin.util.newDisposable
 import com.apollographql.ijplugin.util.runWriteActionInEdt
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
@@ -43,6 +44,7 @@ import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.util.concurrent.Executors
 
+@Service(Service.Level.PROJECT)
 class ApolloCodegenService(
     private val project: Project,
 ) : Disposable {

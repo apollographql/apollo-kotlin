@@ -14,6 +14,7 @@ import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
@@ -36,6 +37,7 @@ import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
 
+@Service(Service.Level.PROJECT)
 class GradleToolingModelService(
     private val project: Project,
 ) : Disposable {
