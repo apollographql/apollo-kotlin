@@ -6,6 +6,7 @@ import com.apollographql.ijplugin.graphql.GraphQLConfigService
 import com.apollographql.ijplugin.settings.SettingsService
 import com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService
 import com.apollographql.ijplugin.studio.sandbox.SandboxService
+import com.apollographql.ijplugin.telemetry.TelemetryService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
@@ -26,6 +27,7 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       project.service<GraphQLConfigService>()
       project.service<SandboxService>()
       project.service<FieldInsightsService>()
+      project.service<TelemetryService>()
 
       project.apolloProjectService.isInitialized = true
     }

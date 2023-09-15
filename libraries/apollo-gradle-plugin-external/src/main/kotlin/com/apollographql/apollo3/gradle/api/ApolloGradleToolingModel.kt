@@ -9,6 +9,9 @@ interface ApolloGradleToolingModel {
   val projectName: String
   val serviceInfos: List<ServiceInfo>
 
+  // Introduced in 1.2
+  val telemetryData: TelemetryData
+
   interface ServiceInfo {
     val name: String
     val schemaFiles: Set<File>
@@ -20,6 +23,12 @@ interface ApolloGradleToolingModel {
 
     // Introduced in 1.1
     val endpointHeaders: Map<String, String>?
+  }
+
+  interface TelemetryData {
+    val gradleVersion: String?
+    val androidMinSdk: Int?
+    val androidTargetSdk: Int?
   }
 
   companion object {
@@ -34,6 +43,6 @@ interface ApolloGradleToolingModel {
      * Current minor version of the tooling model.
      * Increment this value when the model changes in compatible ways (additions).
      */
-    const val VERSION_MINOR = 1
+    const val VERSION_MINOR = 2
   }
 }

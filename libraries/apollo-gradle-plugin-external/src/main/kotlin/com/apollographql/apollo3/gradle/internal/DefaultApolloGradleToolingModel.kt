@@ -7,6 +7,7 @@ import java.io.Serializable
 internal data class DefaultApolloGradleToolingModel(
     override val projectName: String,
     override val serviceInfos: List<ApolloGradleToolingModel.ServiceInfo>,
+    override val telemetryData: ApolloGradleToolingModel.TelemetryData,
 ) : ApolloGradleToolingModel, Serializable {
   override val versionMajor: Int = ApolloGradleToolingModel.VERSION_MAJOR
   override val versionMinor: Int = ApolloGradleToolingModel.VERSION_MINOR
@@ -20,3 +21,9 @@ internal data class DefaultServiceInfo(
     override val endpointUrl: String?,
     override val endpointHeaders: Map<String, String>?,
 ) : ApolloGradleToolingModel.ServiceInfo, Serializable
+
+internal data class DefaultTelemetryData(
+    override val gradleVersion: String?,
+    override val androidMinSdk: Int?,
+    override val androidTargetSdk: Int?,
+) : ApolloGradleToolingModel.TelemetryData, Serializable

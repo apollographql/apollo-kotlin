@@ -8,6 +8,7 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
 import com.apollographql.ijplugin.settings.SettingsState
 import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
@@ -199,6 +200,14 @@ class GradleToolingModelService(
       logd("allToolingModels=$allToolingModels")
       if (isAbortRequested()) return
       computeApolloKotlinServices(allToolingModels)
+      project.telemetryService.gradleToolingModelTelemetryData = allToolingModels.mapNotNull {
+        // telemetryData was introduced in 1.2, accessing it on an older version will throw an exception
+        if (it.versionMinor < 2) {
+          null
+        } else {
+          it.telemetryData
+        }
+      }.toSet()
     }
 
     private fun isAbortRequested(): Boolean {
