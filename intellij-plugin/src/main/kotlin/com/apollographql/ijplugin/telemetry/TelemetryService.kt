@@ -70,4 +70,5 @@ private fun ApolloGradleToolingModel.TelemetryData.toTelemetryAttributes(): Set<
   gradleVersion?.let { add(TelemetryAttribute.GradleVersion(it)) }
   androidMinSdk?.let { add(TelemetryAttribute.AndroidMinSdk(it)) }
   androidTargetSdk?.let { add(TelemetryAttribute.AndroidTargetSdk(it)) }
+  androidCompileSdk?.let { add(TelemetryAttribute.AndroidCompileSdk(it)) }
 }

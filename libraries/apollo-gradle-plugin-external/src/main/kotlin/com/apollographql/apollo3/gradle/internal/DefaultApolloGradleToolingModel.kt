@@ -26,4 +26,5 @@ internal data class DefaultTelemetryData(
     override val gradleVersion: String?,
     override val androidMinSdk: Int?,
     override val androidTargetSdk: Int?,
+    override val androidCompileSdk: Int?,
 ) : ApolloGradleToolingModel.TelemetryData, Serializable

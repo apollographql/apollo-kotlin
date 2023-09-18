@@ -7,4 +7,5 @@ internal fun getTelemetryData(project: Project) = DefaultTelemetryData(
     gradleVersion = project.gradle.gradleVersion,
     androidMinSdk = project.androidExtension?.minSdk,
     androidTargetSdk = project.androidExtension?.targetSdk,
+    androidCompileSdk = project.androidExtension?.compileSdkVersion?.toIntOrNull(),
 )
