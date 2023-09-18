@@ -17,6 +17,7 @@ import com.apollographql.apollo3.api.obj
 import com.example.deprecation.TestQuery
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
@@ -73,6 +74,7 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
+      @Suppress("DEPRECATION")
       override fun toJson(
         writer: JsonWriter,
         `value`: TestQuery.Data.Hero,

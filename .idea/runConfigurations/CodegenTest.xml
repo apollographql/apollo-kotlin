@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="testFilter" value=".*.*" />
+          <entry key="testFilter" value=".*tlin-responseBased-enum_fiel.*" />
           <entry key="updateTestFixtures" value="true" />
         </map>
       </option>
@@ -26,6 +26,7 @@
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>true</RunAsTest>
     <method v="2" />
   </configuration>
 </component>

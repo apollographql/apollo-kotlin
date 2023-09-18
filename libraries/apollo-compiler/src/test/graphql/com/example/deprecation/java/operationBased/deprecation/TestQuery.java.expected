@@ -193,21 +193,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    /**
-     * The name of the character
-     */
     public String name;
 
     /**
-     * Test deprecated field
-     * For test purpose only
+     * No longer supported
      */
     @Deprecated
     public String deprecated;
 
     /**
-     * Test deprecated field
-     * For test purpose only
+     * No longer supported
      */
     @Deprecated
     public Boolean deprecatedBool;
