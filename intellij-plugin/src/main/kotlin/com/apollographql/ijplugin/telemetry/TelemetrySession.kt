@@ -31,17 +31,17 @@ sealed class TelemetryAttribute(
   ) : TelemetryAttribute("dependency_$group:$artifact", mapOf("version" to version))
 
   /**
-   * The version of Kotlin (per kotlin-stdlib).
+   * Version of Kotlin (per kotlin-stdlib).
    */
   class KotlinVersion(version: String) : TelemetryAttribute("kotlin_version", version)
 
   /**
-   * The version of Compose (per androidx.compose.runtime).
+   * Version of Compose (per androidx.compose.runtime).
    */
   class ComposeVersion(version: String) : TelemetryAttribute("compose_version", version)
 
   /**
-   * The version of Gradle.
+   * Version of Gradle.
    */
   class GradleVersion(version: String) : TelemetryAttribute("gradle_version", version)
 
@@ -58,8 +58,12 @@ sealed class TelemetryAttribute(
   /**
    * Android compileSdk value.
    */
-  class AndroidCompileSdk(version: Int) : TelemetryAttribute("android_compile_sdk", version)
+  class AndroidCompileSdk(version: String) : TelemetryAttribute("android_compile_sdk", version)
 
+  /**
+   * Version of the Android Gradle plugin.
+   */
+  class AndroidGradlePluginVersion(version: String) : TelemetryAttribute("android_agp_version", version)
 }
 
 sealed class TelemetryEvent(

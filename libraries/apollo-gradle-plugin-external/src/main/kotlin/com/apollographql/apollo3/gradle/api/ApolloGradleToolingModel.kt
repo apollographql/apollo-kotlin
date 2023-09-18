@@ -29,7 +29,8 @@ interface ApolloGradleToolingModel {
     val gradleVersion: String?
     val androidMinSdk: Int?
     val androidTargetSdk: Int?
-    val androidCompileSdk: Int?
+    val androidCompileSdk: String?
+    val androidAgpVersion: String?
   }
 
   companion object {

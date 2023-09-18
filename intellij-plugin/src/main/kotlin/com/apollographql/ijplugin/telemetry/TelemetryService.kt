@@ -1,6 +1,11 @@
 package com.apollographql.ijplugin.telemetry
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidCompileSdk
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidGradlePluginVersion
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidMinSdk
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidTargetSdk
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.GradleVersion
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
 import com.intellij.openapi.Disposable
@@ -15,7 +20,7 @@ class TelemetryService(
     private val project: Project,
 ) : Disposable {
 
-  var gradleToolingModelTelemetryData: Set<ApolloGradleToolingModel.TelemetryData> = emptySet()
+  var gradleToolingModels: Set<ApolloGradleToolingModel> = emptySet()
 
   private val telemetryEventList: TelemetryEventList = TelemetryEventList()
 
@@ -49,7 +54,7 @@ class TelemetryService(
   private fun buildTelemetrySession(): TelemetrySession {
     return TelemetrySession(
         instanceId = "TODO", // TODO
-        attributes = projectLibraries.toTelemetryAttributes() + gradleToolingModelTelemetryData.flatMap { it.toTelemetryAttributes() }.toSet(),
+        attributes = projectLibraries.toTelemetryAttributes() + gradleToolingModels.flatMap { it.toTelemetryAttributes() }.toSet(),
         events = telemetryEventList.events,
     )
   }
@@ -66,9 +71,14 @@ class TelemetryService(
 
 val Project.telemetryService get() = service<TelemetryService>()
 
-private fun ApolloGradleToolingModel.TelemetryData.toTelemetryAttributes(): Set<TelemetryAttribute> = buildSet {
-  gradleVersion?.let { add(TelemetryAttribute.GradleVersion(it)) }
-  androidMinSdk?.let { add(TelemetryAttribute.AndroidMinSdk(it)) }
-  androidTargetSdk?.let { add(TelemetryAttribute.AndroidTargetSdk(it)) }
-  androidCompileSdk?.let { add(TelemetryAttribute.AndroidCompileSdk(it)) }
+private fun ApolloGradleToolingModel.toTelemetryAttributes(): Set<TelemetryAttribute> = buildSet {
+  // telemetryData was introduced in 1.2, accessing it on an older version will throw an exception
+  if (versionMajor == 1 && versionMinor < 2) return@buildSet
+  with(telemetryData) {
+    gradleVersion?.let { add(GradleVersion(it)) }
+    androidMinSdk?.let { add(AndroidMinSdk(it)) }
+    androidTargetSdk?.let { add(AndroidTargetSdk(it)) }
+    androidCompileSdk?.let { add(AndroidCompileSdk(it)) }
+    androidAgpVersion?.let { add(AndroidGradlePluginVersion(it)) }
+  }
 }

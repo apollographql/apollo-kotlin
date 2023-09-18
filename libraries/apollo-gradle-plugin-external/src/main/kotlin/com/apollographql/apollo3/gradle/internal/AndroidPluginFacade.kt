@@ -174,3 +174,6 @@ internal val BaseExtension.minSdk: Int?
 
 internal val BaseExtension.targetSdk: Int?
   get() = defaultConfig?.targetSdkVersion?.apiLevel
+
+internal val BaseExtension.pluginVersion: String
+  get() = com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION

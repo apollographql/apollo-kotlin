@@ -200,14 +200,7 @@ class GradleToolingModelService(
       logd("allToolingModels=$allToolingModels")
       if (isAbortRequested()) return
       computeApolloKotlinServices(allToolingModels)
-      project.telemetryService.gradleToolingModelTelemetryData = allToolingModels.mapNotNull {
-        // telemetryData was introduced in 1.2, accessing it on an older version will throw an exception
-        if (it.versionMinor < 2) {
-          null
-        } else {
-          it.telemetryData
-        }
-      }.toSet()
+      project.telemetryService.gradleToolingModels = allToolingModels.toSet()
     }
 
     private fun isAbortRequested(): Boolean {
