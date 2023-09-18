@@ -68,6 +68,48 @@ abstract class DefaultApolloExtension(
     )
   }
 
+  internal fun getServiceTelemetryData(): List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData> = services.map { service ->
+    DefaultServiceTelemetryData(
+        codegenModels = service.codegenModels.orNull,
+        warnOnDeprecatedUsages = service.warnOnDeprecatedUsages.orNull,
+        failOnWarnings = service.failOnWarnings.orNull,
+        operationManifestFormat = service.operationManifestFormat.orNull,
+        generateKotlinModels = service.generateKotlinModels.orNull,
+        languageVersion = service.languageVersion.orNull,
+        useSemanticNaming = service.useSemanticNaming.orNull,
+        addJvmOverloads = service.addJvmOverloads.orNull,
+        generateAsInternal = service.generateAsInternal.orNull,
+        generateFragmentImplementations = service.generateFragmentImplementations.orNull,
+        generateQueryDocument = service.generateQueryDocument.orNull,
+        generateSchema = service.generateSchema.orNull,
+        generateOptionalOperationVariables = service.generateOptionalOperationVariables.orNull,
+        generateDataBuilders = service.generateDataBuilders.orNull,
+        generateModelBuilders = service.generateModelBuilders.orNull,
+        generateMethods = service.generateMethods.orNull,
+        generatePrimitiveTypes = service.generatePrimitiveTypes.orNull,
+        generateInputBuilders = service.generateInputBuilders.orNull,
+        nullableFieldStyle = service.nullableFieldStyle.orNull,
+        decapitalizeFields = service.decapitalizeFields.orNull,
+        jsExport = service.jsExport.orNull,
+        addTypename = service.addTypename.orNull,
+        flattenModels = service.flattenModels.orNull,
+        fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge.orNull,
+        generateApolloMetadata = service.generateApolloMetadata.orNull,
+
+        // Options for which we don't mind the value but want to know they are used
+        usedOptions = mutableSetOf<String>().apply {
+          if (service.schemaFile.isPresent) add("schemaFile")
+          if (service.operationManifest.isPresent) add("operationManifest")
+          if (service.generatedSchemaName.isPresent) add("generatedSchemaName")
+          if (service.sealedClassesForEnumsMatching.isPresent) add("sealedClassesForEnumsMatching")
+          if (service.classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
+          if (service.outputDir.isPresent) add("outputDir")
+          if (service.alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
+        },
+    )
+  }
+
+
   @get:Inject
   protected abstract val softwareComponentFactory: SoftwareComponentFactory
 

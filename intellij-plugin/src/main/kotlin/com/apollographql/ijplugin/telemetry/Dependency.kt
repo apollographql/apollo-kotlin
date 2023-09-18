@@ -15,7 +15,7 @@ fun Project.getProjectDependencies(): Set<Dependency> {
   service<ProjectRootManager>().orderEntries().librariesOnly().forEachLibrary { library ->
     val components = library.name?.substringAfter(" ")?.split(":") ?: return@forEachLibrary true
     if (components.size < 3) return@forEachLibrary true
-    dependencies.add(Dependency(components[0], components[1], components[2]))
+    dependencies.add(Dependency(components[0], components[1], components[2].substringBeforeLast("@")))
     true
   }
   return dependencies

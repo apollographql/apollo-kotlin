@@ -31,6 +31,36 @@ interface ApolloGradleToolingModel {
     val androidTargetSdk: Int?
     val androidCompileSdk: String?
     val androidAgpVersion: String?
+    val serviceTelemetryData: List<ServiceTelemetryData>
+
+    interface ServiceTelemetryData {
+      val codegenModels: String?
+      val warnOnDeprecatedUsages: Boolean?
+      val failOnWarnings: Boolean?
+      val operationManifestFormat: String?
+      val generateKotlinModels: Boolean?
+      val languageVersion: String?
+      val useSemanticNaming: Boolean?
+      val addJvmOverloads: Boolean?
+      val generateAsInternal: Boolean?
+      val generateFragmentImplementations: Boolean?
+      val generateQueryDocument: Boolean?
+      val generateSchema: Boolean?
+      val generateOptionalOperationVariables: Boolean?
+      val generateDataBuilders: Boolean?
+      val generateModelBuilders: Boolean?
+      val generateMethods: List<String>?
+      val generatePrimitiveTypes: Boolean?
+      val generateInputBuilders: Boolean?
+      val nullableFieldStyle: String?
+      val decapitalizeFields: Boolean?
+      val jsExport: Boolean?
+      val addTypename: String?
+      val flattenModels: Boolean?
+      val fieldsOnDisjointTypesMustMerge: Boolean?
+      val generateApolloMetadata: Boolean?
+      val usedOptions: Set<String>
+    }
   }
 
   companion object {

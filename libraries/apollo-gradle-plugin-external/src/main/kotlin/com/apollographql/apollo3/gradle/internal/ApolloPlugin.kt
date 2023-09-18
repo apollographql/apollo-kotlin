@@ -25,7 +25,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
             return DefaultApolloGradleToolingModel(
                 projectName = project.name,
                 serviceInfos = apolloExtension.getServiceInfos(project),
-                telemetryData = getTelemetryData(project),
+                telemetryData = getTelemetryData(project, apolloExtension),
             )
           }
         }
