@@ -54,6 +54,8 @@ class DirectiveRedefinition(val name: String, existingSourceLocation: SourceLoca
   override val message = "Directive '${name}' is defined multiple times. First definition is: ${existingSourceLocation.pretty()}"
 }
 
+class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+
 /**
  * Another GraphQL validation error as per the spec
  */
@@ -97,6 +99,12 @@ class InlineFragmentWithoutTypeCondition(override val message: String, override 
  */
 class ReservedEnumValueName(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
 
+class InvalidDeferLabel(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+class VariableDeferLabel(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+
+class InvalidDeferDirective(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
+class DuplicateDeferLabel(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
 
 /**
  * Checks that a list of issues is valid GraphQL per the spec.

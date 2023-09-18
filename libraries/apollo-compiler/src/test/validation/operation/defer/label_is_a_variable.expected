@@ -1,2 +1,2 @@
-OtherValidationIssue (3:16)
+VariableDeferLabel (3:16)
 @defer label argument must not be a variable

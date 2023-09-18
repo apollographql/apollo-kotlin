@@ -1,7 +1,9 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.ast.GQLResult
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.google.common.truth.Truth.assertThat
@@ -72,7 +74,9 @@ internal object TestUtils {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
-          it.toGQLDocument(allowJson = true).validateAsSchemaAndAddApolloDefinition().getOrThrow()
+          it.toGQLDocument(allowJson = true)
+              .validateAsSchemaAndAddApolloDefinition()
+              .apolloGetOrThrow()
         }
   }
 
@@ -122,3 +126,13 @@ internal object TestUtils {
 }
 
 internal fun String.buffer() = Buffer().writeUtf8(this)
+
+internal fun <V: Any> GQLResult<V>.apolloGetOrThrow(): V {
+  val groups = issues.group(false, true)
+
+  groups.errors.firstOrNull()?.let {
+    throw SourceAwareException(it.message, it.sourceLocation)
+  }
+
+  return value ?: error("No error and no value")
+}

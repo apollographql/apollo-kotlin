@@ -60,6 +60,12 @@ public final class com/apollographql/apollo3/ast/DirectiveRedefinition : com/apo
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
+public final class com/apollographql/apollo3/ast/DuplicateDeferLabel : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/DuplicateTypeName : com/apollographql/apollo3/ast/GraphQLValidationIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
@@ -830,48 +836,21 @@ public final class com/apollographql/apollo3/ast/InlineFragmentWithoutTypeCondit
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
-<<<<<<< HEAD
-public final class com/apollographql/apollo3/ast/Issue$DeprecatedUsage : com/apollographql/apollo3/ast/Issue {
+public final class com/apollographql/apollo3/ast/InvalidDeferDirective : com/apollographql/apollo3/ast/ApolloIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
-public final class com/apollographql/apollo3/ast/Issue$InlineFragmentWithoutTypeCondition : com/apollographql/apollo3/ast/Issue {
+public final class com/apollographql/apollo3/ast/InvalidDeferLabel : com/apollographql/apollo3/ast/ApolloIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
-public final class com/apollographql/apollo3/ast/Issue$ParsingError : com/apollographql/apollo3/ast/Issue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-}
-
-public final class com/apollographql/apollo3/ast/Issue$ReservedEnumValueName : com/apollographql/apollo3/ast/Issue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-}
-
-public final class com/apollographql/apollo3/ast/Issue$Severity : java/lang/Enum {
-	public static final field ERROR Lcom/apollographql/apollo3/ast/Issue$Severity;
-	public static final field WARNING Lcom/apollographql/apollo3/ast/Issue$Severity;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/Issue$Severity;
-	public static fun values ()[Lcom/apollographql/apollo3/ast/Issue$Severity;
-}
-
-public final class com/apollographql/apollo3/ast/Issue$UnusedVariable : com/apollographql/apollo3/ast/Issue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-}
-
-public final class com/apollographql/apollo3/ast/Issue$UpperCaseField : com/apollographql/apollo3/ast/Issue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-}
-
-public final class com/apollographql/apollo3/ast/Issue$ValidationError : com/apollographql/apollo3/ast/Issue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lcom/apollographql/apollo3/ast/ValidationDetails;)V
-	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lcom/apollographql/apollo3/ast/ValidationDetails;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getDetails ()Lcom/apollographql/apollo3/ast/ValidationDetails;
-=======
 public abstract interface class com/apollographql/apollo3/ast/Issue {
 	public abstract fun getMessage ()Ljava/lang/String;
 	public abstract fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
->>>>>>> 9e5b535b3f (update api)
 }
 
 public final class com/apollographql/apollo3/ast/IssueKt {
@@ -881,6 +860,12 @@ public final class com/apollographql/apollo3/ast/IssueKt {
 
 public final class com/apollographql/apollo3/ast/MergeOptions$Companion {
 	public final fun getDefault ()Lcom/apollographql/apollo3/ast/MergeOptions;
+}
+
+public final class com/apollographql/apollo3/ast/NoQueryType : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/NodeContainer {
@@ -1035,15 +1020,6 @@ public final class com/apollographql/apollo3/ast/UnrecognizedAntlrRule : com/apo
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 }
 
-<<<<<<< HEAD
-public final class com/apollographql/apollo3/ast/ValidationDetails : java/lang/Enum {
-	public static final field DuplicateTypeName Lcom/apollographql/apollo3/ast/ValidationDetails;
-	public static final field Other Lcom/apollographql/apollo3/ast/ValidationDetails;
-	public static final field UnknownDirective Lcom/apollographql/apollo3/ast/ValidationDetails;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/ValidationDetails;
-	public static fun values ()[Lcom/apollographql/apollo3/ast/ValidationDetails;
-=======
 public final class com/apollographql/apollo3/ast/UnusedFragment : com/apollographql/apollo3/ast/GraphQLValidationIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
@@ -1060,7 +1036,12 @@ public final class com/apollographql/apollo3/ast/UpperCaseField : com/apollograp
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
->>>>>>> 9e5b535b3f (update api)
+}
+
+public final class com/apollographql/apollo3/ast/VariableDeferLabel : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/VariableUsage {

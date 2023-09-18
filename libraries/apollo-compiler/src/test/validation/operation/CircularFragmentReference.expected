@@ -1,5 +1,2 @@
 OtherValidationIssue (7:1)
-Fragment 'characterFragment' references itself, creating a cycle at 'friend.__friendFragment.__characterFragment'
-------------
-UnusedFragment (13:1)
-Fragment 'friendFragment' is not used
+Fragment 'characterFragment' spreads itself, creating a cycle at 'friend.__friendFragment.__characterFragment'

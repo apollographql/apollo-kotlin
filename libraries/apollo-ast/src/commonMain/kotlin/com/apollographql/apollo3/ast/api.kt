@@ -27,13 +27,14 @@ import kotlin.jvm.JvmName
  * See [parseAsGQLDocument] and [validateAsExecutable] for more granular error reporting
  */
 @ApolloExperimental
-fun BufferedSource.toExecutableDefinitions(
+fun BufferedSource.toExecutableDocument(
     schema: Schema,
     filePath: String? = null,
-): List<GQLDefinition> = parseAsGQLDocument(filePath)
+): GQLDocument = parseAsGQLDocument(filePath)
     .getOrThrow()
-    .validateAsExecutable(schema)
-    .getOrThrow()
+    .also {
+      it.validateAsExecutable(schema).issues.checkValidGraphQL()
+    }
 
 private fun <T : Any> BufferedSource.parseInternal(filePath: String?, options: ParserOptions, block: Parser.() -> T): GQLResult<T> {
   return this.use { readUtf8() }.parseInternal(filePath, options, block)
@@ -299,21 +300,9 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
  * @return  a [GQLResult] containing the operation and fragment definitions in 'value', along with any potential issues
  */
 @ApolloExperimental
-fun GQLDocument.validateAsExecutable(schema: Schema): GQLResult<List<GQLDefinition>> {
-  val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-  val issues = ExecutableValidationScope(schema, fragments).validate(this)
-  return GQLResult(definitions, issues)
+fun GQLDocument.validateAsExecutable(schema: Schema): ExecutableValidationResult {
+  return ExecutableValidationScope(schema).validate(this)
 }
 
-/**
- * Infers the variables from a given fragment
- *
- * XXX: this traverses the fragments another time. Ideally it could reuse the results of a previous validation step
- */
-@ApolloExperimental
-fun GQLFragmentDefinition.inferVariables(
-    schema: Schema,
-    fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableValidationScope(schema, fragments).inferFragmentVariables(this)
-
-
+@ApolloInternal
+class ExecutableValidationResult(val fragmentVariableUsages: Map<String, List<VariableUsage>>, val issues: List<Issue>)

@@ -28,6 +28,7 @@ import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
+import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
@@ -129,7 +130,17 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
     /**
      * This is not in the specification per-se but is required for `extend schema @link` usages that are not 100% spec compliant
      */
-    schemaDefinition = DefaultValidationScope(typeDefinitions, directiveDefinitions, issues).syntheticSchemaDefinition()
+    schemaDefinition = syntheticSchemaDefinition(typeDefinitions)
+    if (schemaDefinition == null) {
+      issues.add(NoQueryType("No schema definition and no query type found", null))
+      return GQLResult(null, issues)
+    }
+  } else {
+    val queryType = Schema.rootOperationTypeDefinition("query", allDefinitions)
+    if (queryType == null) {
+      issues.add(NoQueryType("No query type", null))
+      return GQLResult(null, issues)
+    }
   }
 
   /**
@@ -164,35 +175,19 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
 
-  val apolloDirectives = apolloDefinitions("v0.1").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
-  issues.removeAll {
-    /**
-     * Because some users might have added the apollo directive to their schema, we just let that through for now
-     */
-    (it is DirectiveRedefinition && it.name in apolloDirectives)
-  }
-
-  return if (issues.isNotEmpty()) {
-    /**
-     * Schema requires a valid Query root type which might not be always the case if there are errors
-     * (other than DirectiveRedefinitions which are ignored down the road
-     */
-    GQLResult(null, issues)
-  } else {
-    GQLResult(
-        Schema(
-            definitions = mergedDefinitions,
-            keyFields = keyFields,
-            foreignNames = foreignNames,
-            directivesToStrip = directivesToStrip,
-            connectionTypes = connectionTypes,
-        ),
-        issues
-    )
-  }
+  return GQLResult(
+      Schema(
+          definitions = mergedDefinitions,
+          keyFields = keyFields,
+          foreignNames = foreignNames,
+          directivesToStrip = directivesToStrip,
+          connectionTypes = connectionTypes,
+      ),
+      issues
+  )
 }
 
-internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
+internal fun syntheticSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefinition>): GQLSchemaDefinition? {
   val operationTypeDefinitions = listOf("query", "mutation", "subscription").mapNotNull {
     // 3.3.1
     // If there is no schema definition, look for an object type named after the operationType
@@ -208,7 +203,7 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
     val typeDefinition = typeDefinitions[typeName]
     if (typeDefinition == null) {
       if (it == "query") {
-        registerIssue("No schema definition and not 'Query' type found", sourceLocation = null)
+        return null
       }
       return@mapNotNull null
     }
@@ -553,6 +548,6 @@ internal fun GQLDocument.ensureSchemaDefinition(): GQLDocument {
 
   val typeDefinitions = definitions.filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }
-  return this.copy(listOf(defaultSchemaDefinition(typeDefinitions)) +  definitions)
+  return this.copy(listOf(defaultSchemaDefinition(typeDefinitions)) + definitions)
 }
 

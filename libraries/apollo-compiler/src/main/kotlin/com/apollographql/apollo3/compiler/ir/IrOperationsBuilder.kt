@@ -9,7 +9,9 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
@@ -28,13 +30,13 @@ import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.TransformResult
+import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
-import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
@@ -55,11 +57,11 @@ internal class IrOperationsBuilder(
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
-    private val fieldsOnDisjointTypesMustMerge: Boolean,
     private val flattenModels: Boolean,
     private val decapitalizeFields: Boolean,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val generateDataBuilders: Boolean,
+    private val fragmentVariableUsages: Map<String, List<VariableUsage>>,
 ) : FieldMerger {
   private val usedFields = mutableMapOf<String, MutableSet<String>>()
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
@@ -316,7 +318,7 @@ internal class IrOperationsBuilder(
   private fun GQLFragmentDefinition.toIr(): IrFragmentDefinition {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
 
-    val inferredVariables = inferVariables(schema, allFragmentDefinitions)
+    val inferredVariables = inferFragmentVariables(this)
 
     val interfaceModelGroup = builder.buildFragmentInterface(
         fragmentName = name
@@ -341,6 +343,61 @@ internal class IrOperationsBuilder(
         source = formatToString(),
         isTypeConditionAbstract = typeDefinition !is GQLObjectTypeDefinition
     )
+  }
+
+  private fun List<GQLType>.findCompatibleType(): GQLType? {
+    return drop(1).fold<GQLType, GQLType?>(first()) { acc, gqlType ->
+      if (acc == null) {
+        return@fold null
+      }
+
+      acc.mergeWith(gqlType)
+    }
+  }
+
+  private fun GQLType.mergeWith(other: GQLType): GQLType? {
+    return if (this is GQLNonNullType && other is GQLNonNullType) {
+      type.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
+    } else if (this is GQLNonNullType && other !is GQLNonNullType) {
+      type.mergeWith(other)?.let { GQLNonNullType(null, it) }
+    } else if (this !is GQLNonNullType && other is GQLNonNullType) {
+      this.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
+    } else if (this is GQLListType && other is GQLListType) {
+      this.type.mergeWith(other.type)?.let { GQLListType(null, it) }
+    } else if (this is GQLListType && other !is GQLListType) {
+      null
+    } else if (this !is GQLListType && other is GQLListType) {
+      null
+    } else if (this is GQLNamedType && other is GQLNamedType) {
+      if (name != other.name) {
+        null
+      } else {
+        this
+      }
+    } else {
+      throw IllegalStateException()
+    }
+  }
+
+  /**
+   * Infer variables from a fragment definition. If a variable is used in both a nullable and non-nullable
+   * position, the variable is inferred as non-nullable
+   *
+   * @throws IllegalStateException if some incompatibles types are found. This should never happen
+   * because this should be caught during previous operation-wide validation.
+   */
+  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
+    return fragmentVariableUsages.get(fragment.name).orEmpty().groupBy {
+      it.variable.name
+    }.entries.map {
+      val types = it.value.map { it.locationType }
+      val inferredType = types.findCompatibleType()
+      if (inferredType == null) {
+        error("Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}")
+      } else {
+        InferredVariable(it.key, inferredType)
+      }
+    }
   }
 
   private fun InferredVariable.toIr(): IrVariable {

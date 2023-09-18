@@ -3,7 +3,9 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.DeprecatedUsage
 import com.apollographql.apollo3.ast.DifferentShape
+import com.apollographql.apollo3.ast.DirectiveRedefinition
 import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
@@ -17,6 +19,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.UnknownDirective
 import com.apollographql.apollo3.ast.UnusedFragment
 import com.apollographql.apollo3.ast.UnusedVariable
+import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.checkEmpty
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
@@ -109,7 +112,7 @@ object ApolloCompiler {
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
-    val schema = result.getOrThrow()
+    val schema = result.value!!
 
     checkScalars(schema, scalarMapping)
     return CodegenSchema(
@@ -184,7 +187,10 @@ object ApolloCompiler {
       allIssues.addAll(checkCapitalizedFields(definitions, checkFragmentsOnly = options.flattenModels))
     }
 
-    val issueGroup = allIssues.group(options.warnOnDeprecatedUsages, options.fieldsOnDisjointTypesMustMerge)
+    val issueGroup = allIssues.group(
+        options.warnOnDeprecatedUsages,
+        options.fieldsOnDisjointTypesMustMerge,
+    )
 
     issueGroup.errors.checkEmpty()
 
@@ -232,11 +238,11 @@ object ApolloCompiler {
         allFragmentDefinitions = allFragmentDefinitions,
         codegenModels = codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables,
-        fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge,
         flattenModels = options.flattenModels,
         decapitalizeFields = options.decapitalizeFields,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
-        generateDataBuilders = options.codegenSchema.generateDataBuilders
+        generateDataBuilders = options.codegenSchema.generateDataBuilders,
+        fragmentVariableUsages = validationResult.fragmentVariableUsages
     ).build()
   }
 
@@ -526,16 +532,19 @@ private enum class Severity {
   Error
 }
 
-private class IssueGroup(
+internal class IssueGroup(
     val ignored: List<Issue>,
     val warnings: List<Issue>,
     val errors: List<Issue>
 )
 
-private fun List<Issue>.group(warnOnDeprecatedUsages: Boolean, fieldsOnDisjointTypesMustMerge: Boolean): IssueGroup {
+internal fun List<Issue>.group(warnOnDeprecatedUsages: Boolean,
+                              fieldsOnDisjointTypesMustMerge: Boolean,
+): IssueGroup {
   val ignored= mutableListOf<Issue>()
   val warnings= mutableListOf<Issue>()
   val errors= mutableListOf<Issue>()
+  val apolloDirectives = apolloDefinitions("v0.1").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
 
   forEach {
     val severity = when (it) {
@@ -544,6 +553,10 @@ private fun List<Issue>.group(warnOnDeprecatedUsages: Boolean, fieldsOnDisjointT
       is UnusedVariable -> Severity.Warning
       is UnusedFragment -> Severity.None
       is UnknownDirective -> Severity.Warning
+      /**
+       * Because some users might have added the apollo directive to their schema, we just let that through for now
+       */
+      is DirectiveRedefinition -> if (it.name in apolloDirectives) Severity.None else Severity.Warning
       else -> Severity.Error
     }
 

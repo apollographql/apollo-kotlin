@@ -38,12 +38,12 @@ class Schema internal constructor(
       .filterIsInstance<GQLDirectiveDefinition>()
       .associateBy { it.name }
 
-  val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query")
+  val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query", definitions)
       ?: throw SchemaValidationException("No query root type found")
 
-  val mutationTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("mutation")
+  val mutationTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("mutation", definitions)
 
-  val subscriptionTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("subscription")
+  val subscriptionTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("subscription", definitions)
 
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = definitions,
@@ -63,19 +63,8 @@ class Schema internal constructor(
     return foreignNames[name] ?: name
   }
 
-  private fun rootOperationTypeDefinition(operationType: String): GQLTypeDefinition? {
-    return definitions.filterIsInstance<GQLSchemaDefinition>().single()
-        .rootOperationTypeDefinitions
-        .singleOrNull {
-          it.operationType == operationType
-        }
-        ?.namedType
-        ?.let { namedType ->
-          definitions.filterIsInstance<GQLObjectTypeDefinition>().single { it.name == namedType }
-        }
-  }
   fun rootTypeNameFor(operationType: String): String {
-    return rootOperationTypeDefinition(operationType)?.name ?: operationType.replaceFirstChar { it.uppercaseChar() }
+    return rootOperationTypeDefinition(operationType, definitions)?.name ?: operationType.replaceFirstChar { it.uppercaseChar() }
   }
 
   fun typeDefinition(name: String): GQLTypeDefinition {
@@ -222,6 +211,18 @@ class Schema internal constructor(
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
           connectionTypes = (map["connectionTypes"]!! as List<String>).toSet(),
       )
+    }
+
+    internal fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
+      return definitions.filterIsInstance<GQLSchemaDefinition>().single()
+          .rootOperationTypeDefinitions
+          .singleOrNull {
+            it.operationType == operationType
+          }
+          ?.namedType
+          ?.let { namedType ->
+            definitions.filterIsInstance<GQLObjectTypeDefinition>().single { it.name == namedType }
+          }
     }
   }
 

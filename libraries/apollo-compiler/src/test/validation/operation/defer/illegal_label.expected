@@ -1,2 +1,2 @@
-OtherValidationIssue (3:16)
+InvalidDeferLabel (3:16)
 @defer label 'a/b' must only contain letters, numbers, or underscores
