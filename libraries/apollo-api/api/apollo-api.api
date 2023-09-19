@@ -512,6 +512,20 @@ public final class com/apollographql/apollo3/api/Error {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/api/Error$Builder {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun build ()Lcom/apollographql/apollo3/api/Error;
+	public final fun getExtensions ()Ljava/util/Map;
+	public final fun getLocations ()Ljava/util/List;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getPath ()Ljava/util/List;
+	public final fun locations (Ljava/util/List;)Lcom/apollographql/apollo3/api/Error$Builder;
+	public final fun path (Ljava/util/List;)Lcom/apollographql/apollo3/api/Error$Builder;
+	public final fun putExtension (Ljava/lang/String;Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Error$Builder;
+	public final fun setLocations (Ljava/util/List;)V
+	public final fun setPath (Ljava/util/List;)V
+}
+
 public final class com/apollographql/apollo3/api/Error$Location {
 	public fun <init> (II)V
 	public final fun getColumn ()I

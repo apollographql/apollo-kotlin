@@ -1,10 +1,15 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 /**
  * Represents an error response returned from the GraphQL server
  * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
  */
-class Error(
+class Error
+@Deprecated("Use Builder instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+constructor(
     /**
      * Server error message
      */
@@ -33,6 +38,35 @@ class Error(
      */
     val nonStandardFields: Map<String, Any?>?,
 ) {
+  class Builder(val message: String) {
+    var locations: List<Location>? = null
+    var path: List<Any>? = null
+    val extensions = mutableMapOf<String, Any?>()
+
+    fun locations(locations: List<Location>) = apply {
+      this.locations = locations
+    }
+
+    fun path(path: List<Any>) = apply {
+      this.path = path
+    }
+
+    fun putExtension(name: String, value: Any?) = apply {
+      this.extensions.put(name, value)
+    }
+
+    fun build(): Error {
+      @Suppress("DEPRECATION")
+      return Error(
+          message = message,
+          locations = locations,
+          path = path,
+          extensions = extensions,
+          nonStandardFields = null
+      )
+    }
+  }
+
   override fun toString(): String {
     return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions, nonStandardFields = $nonStandardFields)"
   }

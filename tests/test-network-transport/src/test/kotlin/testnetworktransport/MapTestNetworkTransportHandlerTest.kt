@@ -35,12 +35,12 @@ class MapTestNetworkTransportHandlerTest {
         operation = query1,
         requestUuid = uuid4(),
         data = null,
-        errors = listOf(Error(
-            message = "There was an error",
-            locations = listOf(Error.Location(line = 1, column = 2)),
-            path = listOf("hero", "name"),
-            extensions = null,
-            nonStandardFields = null)),
+        errors = listOf(
+            Error.Builder(message = "There was an error")
+                .locations(listOf(Error.Location(line = 1, column = 2)))
+                .path(listOf("hero", "name"))
+                .build()
+        ),
         extensions = null
     ).build()
 
@@ -82,12 +82,14 @@ class MapTestNetworkTransportHandlerTest {
   @Test
   fun registerError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
-    apolloClient.registerTestResponse(query, errors = listOf(Error(
-        message = "There was an error",
-        locations = listOf(Error.Location(line = 1, column = 2)),
-        path = listOf("hero", "name"),
-        extensions = mapOf("myExtension" to true),
-        nonStandardFields = null))
+    apolloClient.registerTestResponse(
+        operation = query,
+        errors = listOf(Error.Builder(message = "There was an error")
+            .locations(listOf(Error.Location(line = 1, column = 2)))
+            .path(listOf("hero", "name"))
+            .putExtension("myExtension", true)
+            .build()
+        )
     )
 
     val actual: ApolloResponse<GetHeroQuery.Data> = apolloClient.query(query).execute()
