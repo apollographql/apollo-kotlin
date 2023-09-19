@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.ast.internal.DefaultValidationScope
+import com.apollographql.apollo3.ast.internal.constContextError
 import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
-import com.apollographql.apollo3.ast.internal.validateAndCoerceValueInConstContext
 
 /**
  * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType]
@@ -31,7 +31,9 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
  */
 fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = DefaultValidationScope(schema)
-  val coercedValue = scope.validateAndCoerceValueInConstContext(this, expectedType, false)
+  val coercedValue = scope.validateAndCoerceValue(this, expectedType, false) {
+    scope.issues.add(it.constContextError())
+  }
   scope.issues.checkNoErrors()
   return coercedValue
 }

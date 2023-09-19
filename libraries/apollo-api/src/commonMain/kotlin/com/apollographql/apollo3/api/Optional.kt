@@ -41,3 +41,8 @@ sealed class Optional<out V> {
     fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
   }
 }
+
+/**
+ * Returns the value if this [Optional] is [Present] or null else.
+ */
+fun <V> Optional<V>.getOrElse(fallback: V): V = (this as? Present)?.value ?: fallback

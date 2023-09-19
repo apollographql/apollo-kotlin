@@ -25,16 +25,6 @@ import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun ValidationScope.validateAndCoerceValueInConstContext(
-    value: GQLValue,
-    expectedType: GQLType,
-    hasLocationDefaultValue: Boolean,
-): GQLValue {
-  return validateAndCoerceValue(value, expectedType, hasLocationDefaultValue) {
-    issues.add(it.constContextError())
-  }
-}
-
 internal fun VariableUsage.constContextError(): Issue = Issue.ValidationError(
     message = "Variable '${variable.name}' used in non-variable context",
     sourceLocation = variable.sourceLocation
