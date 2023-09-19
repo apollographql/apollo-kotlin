@@ -535,7 +535,7 @@ internal class ExecutableValidationScope(
     // Also add the symmetrical error
     issues.add(
         DifferentShape(
-          message = buildMessage(fieldA, fieldB,"they have different shapes"),
+          message = buildMessage(fieldB, fieldA,"they have different shapes"),
           sourceLocation = fieldB.sourceLocation,
         )
     )
