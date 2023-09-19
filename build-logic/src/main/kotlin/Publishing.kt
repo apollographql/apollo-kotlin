@@ -1,4 +1,3 @@
-
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import kotlinx.coroutines.runBlocking
@@ -11,7 +10,6 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
@@ -20,8 +18,8 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
   apply {
-      plugin("signing")
-    }
+    plugin("signing")
+  }
   apply {
     plugin("maven-publish")
   }
@@ -67,7 +65,12 @@ fun Project.configureDokka() {
      * Speed up development. When running the Gradle integration tests, we don't need KDoc to be generated
      */
     onlyIf {
-      gradle.taskGraph.allTasks.none { it.project.name == "apollo-gradle-plugin" && it is Test }
+      if (gradle.taskGraph.allTasks.any { it.name == "publishAllPublicationsToPluginTestRepository" ||
+              it.name == "publishToMavenLocal" } ) {
+        return@onlyIf false
+      }
+
+      true
     }
   }
 }
@@ -152,11 +155,13 @@ private fun Project.configurePublishingInternal() {
             }
           }
         }
+
         plugins.hasPlugin("com.gradle.plugin-publish") -> {
           /**
            * com.gradle.plugin-publish creates all publications
            */
         }
+
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.

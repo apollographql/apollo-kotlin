@@ -27,7 +27,7 @@ kotlin {
       }
     }
 
-    getByName("jsMain") {
+    findByName("jsMain")?.apply {
       dependencies {
         implementation(libs.okio.nodefilesystem)
       }
