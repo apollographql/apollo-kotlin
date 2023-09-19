@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.telemetry
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidCompileSdk
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidGradlePluginVersion
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidMinSdk
@@ -92,7 +93,7 @@ class TelemetryService(
       apolloKotlinModuleCount?.let { add(ApolloKotlinModuleCount(it)) }
     }
     return TelemetrySession(
-        instanceId = "TODO", // TODO
+        instanceId = project.settingsState.telemetryInstanceId,
         properties = properties,
         events = telemetryEventList.events,
     )

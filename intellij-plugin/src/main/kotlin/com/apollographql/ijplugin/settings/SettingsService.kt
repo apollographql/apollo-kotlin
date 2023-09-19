@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
+import java.util.UUID
 
 @Service(Service.Level.PROJECT)
 @State(
@@ -59,6 +60,19 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       notifySettingsChanged()
     }
 
+  override var telemetryInstanceId: String
+    get() = _state.telemetryInstanceId
+    set(value) {
+      _state.telemetryInstanceId = value
+    }
+
+  override var telemetryOptIn: Boolean
+    get() = _state.telemetryOptIn
+    set(value) {
+      _state.telemetryOptIn = value
+      notifySettingsChanged()
+    }
+
   private var lastNotifiedSettingsState: SettingsState? = null
   private fun notifySettingsChanged() {
     if (lastNotifiedSettingsState != _state) {
@@ -67,11 +81,15 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
     }
   }
 
-  init {
+  override fun initializeComponent() {
     // Automatically enable the "Frameworks / Apollo Kotlin" support in the GraphQL plugin's settings
     if (!hasEnabledGraphQLPluginApolloKotlinSupport) {
-      project.service<GraphQLSettings>().setApolloKotlinSupportEnabled(true)
+      project.service<GraphQLSettings>().isApolloKotlinSupportEnabled = true
       hasEnabledGraphQLPluginApolloKotlinSupport = true
+    }
+
+    if (telemetryInstanceId.isEmpty()) {
+      telemetryInstanceId = UUID.randomUUID().toString()
     }
   }
 }
@@ -81,6 +99,8 @@ interface SettingsState {
   var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
   var contributeConfigurationToGraphqlPlugin: Boolean
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
+  var telemetryInstanceId: String
+  var telemetryOptIn: Boolean
 }
 
 data class ApolloKotlinServiceConfiguration(
@@ -115,6 +135,8 @@ data class SettingsStateImpl(
     override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false,
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
+    override var telemetryInstanceId: String = "",
+    override var telemetryOptIn: Boolean = false,
 ) : SettingsState
 
 
