@@ -198,6 +198,16 @@ sealed class TelemetryAttribute(
    * Number of defined services.
    */
   class ApolloServiceCount(serviceCount: Int) : TelemetryAttribute("ak_service_count", serviceCount)
+
+  /**
+   * Total number of Gradle modules (including the root module).
+   */
+  class GradleModuleCount(moduleCount: Int) : TelemetryAttribute("gradle_module_count", moduleCount)
+
+  /**
+   * Number of Apollo Kotlin modules (modules that apply the Apollo Kotlin Gradle plugin).
+   */
+  class ApolloKotlinModuleCount(moduleCount: Int) : TelemetryAttribute("ak_module_count", moduleCount)
 }
 
 sealed class TelemetryEvent(

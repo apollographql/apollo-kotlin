@@ -26,6 +26,7 @@ import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateQue
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateSchema
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateSourcesDuringGradleSync
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloJsExport
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloKotlinModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloLanguageVersion
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloLinkSqlite
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloNullableFieldStyle
@@ -34,6 +35,7 @@ import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUseAntlr
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUseSemanticNaming
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUsedOptions
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloWarnOnDeprecatedUsages
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.GradleModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.GradleVersion
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
@@ -50,6 +52,8 @@ class TelemetryService(
 ) : Disposable {
 
   var gradleToolingModels: Set<ApolloGradleToolingModel> = emptySet()
+  var gradleModuleCount: Int? = null
+  var apolloKotlinModuleCount: Int? = null
 
   private val telemetryEventList: TelemetryEventList = TelemetryEventList()
 
@@ -81,9 +85,15 @@ class TelemetryService(
   }
 
   private fun buildTelemetrySession(): TelemetrySession {
+    val attributes = buildSet {
+      addAll(projectLibraries.toTelemetryAttributes())
+      addAll(gradleToolingModels.flatMap { it.toTelemetryAttributes() })
+      gradleModuleCount?.let { add(GradleModuleCount(it)) }
+      apolloKotlinModuleCount?.let { add(ApolloKotlinModuleCount(it)) }
+    }
     return TelemetrySession(
         instanceId = "TODO", // TODO
-        attributes = projectLibraries.toTelemetryAttributes() + gradleToolingModels.flatMap { it.toTelemetryAttributes() }.toSet(),
+        attributes = attributes,
         events = telemetryEventList.events,
     )
   }
