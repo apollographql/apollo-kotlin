@@ -831,6 +831,10 @@ public final class com/apollographql/apollo3/api/OptionalAdapter : com/apollogra
 	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 
+public final class com/apollographql/apollo3/api/OptionalKt {
+	public static final fun getOrElse (Lcom/apollographql/apollo3/api/Optional;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo3/api/PossibleTypes {
 	public static final fun possibleTypes (Ljava/util/List;Lcom/apollographql/apollo3/api/CompiledNamedType;)Ljava/util/List;
 }
