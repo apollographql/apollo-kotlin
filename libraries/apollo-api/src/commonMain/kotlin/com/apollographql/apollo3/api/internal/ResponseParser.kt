@@ -97,6 +97,8 @@ internal object ResponseParser {
     }
     endObject()
 
+
+    @Suppress("DEPRECATION")
     return Error(message, locations, path, extensions, nonStandardFields)
   }
 

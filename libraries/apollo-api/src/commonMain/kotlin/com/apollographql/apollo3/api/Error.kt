@@ -1,10 +1,15 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 /**
  * Represents an error response returned from the GraphQL server
  * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
  */
-class Error(
+class Error
+@Deprecated("Use Builder instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+constructor(
     /**
      * Server error message
      */
@@ -51,6 +56,7 @@ class Error(
     }
 
     fun build(): Error {
+      @Suppress("DEPRECATION")
       return Error(
           message = message,
           locations = locations,
