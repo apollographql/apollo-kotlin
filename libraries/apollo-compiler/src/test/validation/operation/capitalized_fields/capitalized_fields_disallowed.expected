@@ -1,11 +1,11 @@
-ERROR: UpperCaseField (2:3)
+UpperCaseField (2:3)
 Capitalized field 'Horse' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
 ------------
-ERROR: UpperCaseField (3:5)
+UpperCaseField (3:5)
 Capitalized field 'Donkey' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
 ------------
-ERROR: UpperCaseField (5:7)
+UpperCaseField (5:7)
 Capitalized field 'Cow' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
 ------------
-ERROR: UpperCaseField (6:9)
+UpperCaseField (6:9)
 Capitalized field 'Moo' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.

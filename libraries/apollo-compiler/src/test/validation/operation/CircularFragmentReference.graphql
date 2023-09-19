@@ -1,0 +1,15 @@
+query TestQuery {
+  hero {
+    ...characterFragment
+  }
+}
+
+fragment characterFragment on Character {
+  friend {
+    ...friendFragment
+  }
+}
+
+fragment friendFragment on Character {
+  ...characterFragment
+}

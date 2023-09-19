@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
-import kotlin.jvm.JvmOverloads
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 
 fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationType) {
   "query" -> schema.queryTypeDefinition
@@ -10,9 +9,11 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
   else -> null
 }
 
-@JvmOverloads
+@Deprecated("Use GQLDocument.validate() instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun GQLOperationDefinition.validate(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-    fieldsOnDisjointTypesMustMerge: Boolean = true,
-) = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).validateOperation(this)
+): List<Issue> {
+  return GQLDocument(fragments.values + this, null).validateAsExecutable(schema).issues
+}

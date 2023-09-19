@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:23)
+OtherValidationIssue (3:23)
 Variable `condition` is not defined by operation `HeroName`

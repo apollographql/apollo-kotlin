@@ -1,2 +1,2 @@
-ERROR: ValidationError (2:17)
+OtherValidationIssue (2:17)
 Variable `episode` of type `Int` used in position expecting type `Episode!`

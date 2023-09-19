@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.DeprecatedUsage
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
@@ -19,13 +20,15 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun VariableUsage.constContextError(): Issue = Issue.ValidationError(
+
+internal fun VariableUsage.constContextError(): Issue = OtherValidationIssue(
     message = "Variable '${variable.name}' used in non-variable context",
     sourceLocation = variable.sourceLocation
 )
@@ -137,7 +140,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
     val inputValueDefinition = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
     if (inputValueDefinition?.directives?.findDeprecationReason() != null) {
       issues.add(
-          Issue.DeprecatedUsage(
+          DeprecatedUsage(
               message = "Use of deprecated input field `${inputValueDefinition.name}`",
               sourceLocation = field.sourceLocation
           )
@@ -173,7 +176,7 @@ private fun ValidationScope.validateAndCoerceEnum(value: GQLValue, enumTypeDefin
         sourceLocation = value.sourceLocation
     )
   } else if (enumValue.isDeprecated()) {
-    issues.add(Issue.DeprecatedUsage(
+    issues.add(DeprecatedUsage(
         message = "Use of deprecated enum value `${value.value}` of type `${enumTypeDefinition.name}`",
         sourceLocation = value.sourceLocation
     ))

@@ -1,2 +1,2 @@
-WARNING: ValidationError (6:1)
+DirectiveRedefinition (6:1)
 Directive 'nonnull' is defined multiple times. First definition is: null: (12, 1)

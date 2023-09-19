@@ -1,2 +1,2 @@
-ERROR: ValidationError (2:5)
+OtherValidationIssue (2:5)
 No value passed for required argument 'input'

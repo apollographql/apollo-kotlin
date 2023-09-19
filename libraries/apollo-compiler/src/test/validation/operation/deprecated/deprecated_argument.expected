@@ -1,5 +1,5 @@
-WARNING: DeprecatedUsage (2:11)
+DeprecatedUsage (2:11)
 Use of deprecated argument `arg`
 ------------
-WARNING: DeprecatedUsage (3:25)
+DeprecatedUsage (3:25)
 Use of deprecated input field `oldInputField`

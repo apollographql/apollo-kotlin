@@ -5,10 +5,9 @@
  */
 package com.apollographql.apollo3.ast.internal
 
-import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.GQLResult
+import com.apollographql.apollo3.ast.ParsingError
 import com.apollographql.apollo3.ast.SourceLocation
-import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.generated.antlr.GraphQLLexer
 import okio.BufferedSource
 import org.antlr.v4.runtime.BaseErrorListener
@@ -17,9 +16,9 @@ import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.Recognizer
 import org.antlr.v4.runtime.RuleContext
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
 import com.apollographql.apollo3.generated.antlr.GraphQLParser as AntlrGraphQLParser
-import org.antlr.v4.runtime.Token
 
 /**
  * Sets up a parser
@@ -43,7 +42,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
       )
   )
 
-  val issues = mutableListOf<Issue.ParsingError>()
+  val issues = mutableListOf<ParsingError>()
 
   with(parser) {
     removeErrorListeners()
@@ -58,7 +57,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
               msg: String?,
               e: RecognitionException?,
           ) {
-            issues.add(Issue.ParsingError(
+            issues.add(ParsingError(
                 message = "Unsupported token `${(offendingSymbol as? Token)?.text ?: offendingSymbol.toString()}`",
                 sourceLocation = SourceLocation(
                     start = 0,
@@ -78,7 +77,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
   val currentToken = parser.currentToken
   if (currentToken.type != Token.EOF) {
     issues.add(
-        Issue.ParsingError(
+        ParsingError(
             "Extra token at end of file `${currentToken.text}`",
             SourceLocation(
                 start = 0,
@@ -90,7 +89,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
     )
   }
 
-  val value = if (issues.containsError()) {
+  val value = if (issues.isNotEmpty()) {
     // If there is any parsing error, we can't convert to our internal AST
     null
   } else {

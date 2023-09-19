@@ -30,6 +30,7 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeExtension
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.toUtf8
 import kotlin.reflect.KClass
@@ -157,7 +158,7 @@ private inline fun <reified T, E> ExtensionsMerger.mergeTypedDefinition(
 ) where T : GQLDefinition, E : GQLTypeSystemExtension {
   val index = newDefinitions.indexOfFirst { it is T }
   if (index == -1) {
-    issues.add(Issue.ValidationError("Cannot find $extra definition to apply extension", extension.sourceLocation))
+    issues.add(OtherValidationIssue("Cannot find $extra definition to apply extension", extension.sourceLocation))
   } else {
     newDefinitions.set(index, merge(newDefinitions[index] as T))
   }
@@ -185,7 +186,7 @@ private inline fun <reified T, E> ExtensionsMerger.mergeNamedDefinition(
 
   when (indexedValues.size) {
     0 -> {
-      issues.add(Issue.ValidationError("Cannot find $extra type `${extension.name}` to apply extension", extension.sourceLocation))
+      issues.add(OtherValidationIssue("Cannot find $extra type `${extension.name}` to apply extension", extension.sourceLocation))
     }
 
     1 -> {
@@ -194,7 +195,7 @@ private inline fun <reified T, E> ExtensionsMerger.mergeNamedDefinition(
     }
 
     else -> {
-      issues.add(Issue.ValidationError("Multiple '${extension.name}' types found while merging extensions.", extension.sourceLocation))
+      issues.add(OtherValidationIssue("Multiple '${extension.name}' types found while merging extensions.", extension.sourceLocation))
     }
   }
 }
@@ -225,10 +226,10 @@ private fun ExtensionsMerger.mergeDirectives(
       val definition = directiveDefinitions[directiveToAdd.name]
 
       if (definition == null) {
-        issues.add(Issue.ValidationError("Cannot find directive definition `${directiveToAdd.name}`", directiveToAdd.sourceLocation))
+        issues.add(OtherValidationIssue("Cannot find directive definition `${directiveToAdd.name}`", directiveToAdd.sourceLocation))
         continue
       } else if (!definition.repeatable) {
-        issues.add(Issue.ValidationError("Cannot add non-repeatable directive `${directiveToAdd.name}`", directiveToAdd.sourceLocation))
+        issues.add(OtherValidationIssue("Cannot add non-repeatable directive `${directiveToAdd.name}`", directiveToAdd.sourceLocation))
         continue
       }
     }
@@ -244,7 +245,7 @@ private inline fun <reified T> ExtensionsMerger.mergeUniquesOrThrow(
 ): List<T> where T : GQLNamed, T : GQLNode = with(list) {
   return (this + others).apply {
     groupBy { it.name }.entries.firstOrNull { it.value.size > 1 }?.let {
-      issues.add(Issue.ValidationError("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
+      issues.add(OtherValidationIssue("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
     }
   }
 }
@@ -256,7 +257,7 @@ private fun ExtensionsMerger.mergeUniqueInterfacesOrThrow(
 ): List<String> = with(list) {
   return (this + others).apply {
     groupBy { it }.entries.firstOrNull { it.value.size > 1 }?.let {
-      issues.add(Issue.ValidationError("Cannot merge interface ${it.value.first()} as it's already defined", sourceLocation))
+      issues.add(OtherValidationIssue("Cannot merge interface ${it.value.first()} as it's already defined", sourceLocation))
     }
   }
 }
@@ -276,22 +277,22 @@ private fun ExtensionsMerger.mergeFields(
     } else {
       val existingFieldDefinition = result[index]
       if (!mergeOptions.allowFieldNullabilityModification) {
-        issues.add(Issue.ValidationError("There is already a field definition named `${newFieldDefinition.name}` for this type", newFieldDefinition.sourceLocation))
+        issues.add(OtherValidationIssue("There is already a field definition named `${newFieldDefinition.name}` for this type", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
       if (!areEqual(newFieldDefinition.arguments, existingFieldDefinition.arguments)) {
-        issues.add(Issue.ValidationError("Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition", newFieldDefinition.sourceLocation))
+        issues.add(OtherValidationIssue("Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
       if (newFieldDefinition.directives.isNotEmpty()) {
-        issues.add(Issue.ValidationError("Cannot add directives to existing field definition `${newFieldDefinition.name}`", newFieldDefinition.sourceLocation))
+        issues.add(OtherValidationIssue("Cannot add directives to existing field definition `${newFieldDefinition.name}`", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
       if (!newFieldDefinition.type.isCompatibleWith(existingFieldDefinition.type)) {
-        issues.add(Issue.ValidationError("Cannot merge field directives`${newFieldDefinition.name}`: its type is not compatible with the original type`", newFieldDefinition.sourceLocation))
+        issues.add(OtherValidationIssue("Cannot merge field directives`${newFieldDefinition.name}`: its type is not compatible with the original type`", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
@@ -355,7 +356,7 @@ private inline fun <reified T : GQLNode> ExtensionsMerger.mergeUniquesOrThrow(
 ): List<T> = with(list) {
   return (this + others).apply {
     groupBy { name(it) }.entries.firstOrNull { it.value.size > 1 }?.let {
-      issues.add(Issue.ValidationError("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
+      issues.add(OtherValidationIssue("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
     }
   }
 }

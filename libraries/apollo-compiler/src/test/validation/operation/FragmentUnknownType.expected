@@ -1,2 +1,5 @@
-ERROR: ValidationError (7:26)
+OtherValidationIssue (7:26)
 Cannot find type `Banana` for fragment `HeroFragment`
+------------
+UnusedFragment (7:1)
+Fragment 'HeroFragment' is not used

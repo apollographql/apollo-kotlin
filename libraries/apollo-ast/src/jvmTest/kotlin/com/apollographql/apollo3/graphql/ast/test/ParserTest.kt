@@ -36,7 +36,7 @@ class ParserTest {
     private const val separator = "\n------------\n"
 
     fun List<Issue>.serialize() = joinToString(separator) {
-      "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation?.line}:${it.sourceLocation?.column})\n${it.message}"
+      "${it.javaClass.simpleName} (${it.sourceLocation?.line}:${it.sourceLocation?.column})\n${it.message}"
     }
 
     fun shouldUpdateTestFixtures(): Boolean {

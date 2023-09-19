@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.DeprecatedUsage
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
@@ -27,10 +28,11 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.SourceLocation
-import com.apollographql.apollo3.ast.ValidationDetails
+import com.apollographql.apollo3.ast.UnknownDirective
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.isVariableUsageAllowed
@@ -65,15 +67,11 @@ internal interface ValidationScope : IssuesScope {
   fun registerIssue(
       message: String,
       sourceLocation: SourceLocation?,
-      severity: Issue.Severity = Issue.Severity.ERROR,
-      details: ValidationDetails = ValidationDetails.Other,
   ) {
     issues.add(
-        Issue.ValidationError(
+        OtherValidationIssue(
             message,
             sourceLocation,
-            severity,
-            details
         )
     )
   }
@@ -128,13 +126,7 @@ internal fun ValidationScope.validateDirective(
   val directiveDefinition = directiveDefinitions[directive.name]
 
   if (directiveDefinition == null) {
-    // TODO: make this an error
-    registerIssue(
-        message = "Unknown directive '@${directive.name}'",
-        sourceLocation = directive.sourceLocation,
-        details = ValidationDetails.UnknownDirective,
-        severity = Issue.Severity.WARNING
-    )
+    issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation))
 
     return
   }
@@ -257,7 +249,7 @@ private fun ValidationScope.validateArgument(
     return@with
   }
   if (schemaArgument.directives.findDeprecationReason() != null) {
-    issues.add(Issue.DeprecatedUsage(message = "Use of deprecated argument `$name`", sourceLocation = sourceLocation))
+    issues.add(DeprecatedUsage(message = "Use of deprecated argument `$name`", sourceLocation = sourceLocation))
   }
 
   // 5.6.2 Input Object Field Names

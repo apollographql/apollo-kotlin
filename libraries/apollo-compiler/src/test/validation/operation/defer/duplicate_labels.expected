@@ -1,2 +1,2 @@
-ERROR: ValidationError (3:23)
-@defer label 'foobar' must be unique within all other @defer directives in the document. Same label found in duplicate_labels.graphql: (9, 21)
+DuplicateDeferLabel (9:21)
+@defer label 'foobar' must be unique within all other @defer directives in the document. Same label found in duplicate_labels.graphql: (3, 23)

@@ -1,0 +1,5 @@
+DifferentShape (4:13)
+`meow` cannot be merged with `meow` (at merging_allowed.graphql: (7, 13)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (7:13)
+`meow` cannot be merged with `meow` (at merging_allowed.graphql: (4, 13)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.

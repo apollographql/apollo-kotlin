@@ -1,11 +1,5 @@
-ERROR: ValidationError (9:7)
+DifferentShape (9:7)
 `value` cannot be merged with `value` (at different_shapes.graphql: (12, 7)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
 ------------
-ERROR: ValidationError (12:7)
-`value` cannot be merged with `value` (at different_shapes.graphql: (9, 7)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
-------------
-ERROR: ValidationError (9:7)
-`value` cannot be merged with `value` (at different_shapes.graphql: (12, 7)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
-------------
-ERROR: ValidationError (12:7)
+DifferentShape (12:7)
 `value` cannot be merged with `value` (at different_shapes.graphql: (9, 7)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.

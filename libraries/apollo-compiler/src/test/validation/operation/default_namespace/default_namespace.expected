@@ -1,5 +1,5 @@
-ERROR: ValidationError (6:11)
+OtherValidationIssue (6:11)
 Directive 'kotlin_labs__typePolicy' cannot be applied on 'FIELD'
 ------------
-WARNING: ValidationError (9:11)
+UnknownDirective (9:11)
 Unknown directive '@nonnull'

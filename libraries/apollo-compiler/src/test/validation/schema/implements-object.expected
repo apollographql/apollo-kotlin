@@ -1,2 +1,2 @@
-ERROR: ValidationError (5:1)
+OtherValidationIssue (5:1)
 Object 'Cat' cannot implement non-interface 'Animal'

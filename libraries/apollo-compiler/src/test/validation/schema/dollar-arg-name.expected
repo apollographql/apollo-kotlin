@@ -1,2 +1,2 @@
-ERROR: ParsingError (2:29)
+ParsingError (2:29)
 Expected Name, found '$'.

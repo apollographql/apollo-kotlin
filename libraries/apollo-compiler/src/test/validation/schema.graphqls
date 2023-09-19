@@ -48,6 +48,8 @@ interface Character {
   The name of the character
   """
   name: String!
+
+  friend: Character
 }
 
 """

@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.DeprecatedUsage
+import com.apollographql.apollo3.ast.DifferentShape
+import com.apollographql.apollo3.ast.ExecutableValidationResult
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
@@ -28,15 +31,17 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
-import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.NullabilityValidationIgnore
 import com.apollographql.apollo3.ast.NullabilityValidationRegister
+import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.UnusedFragment
+import com.apollographql.apollo3.ast.UnusedVariable
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.internal.validation.validateDeferLabels
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
@@ -44,17 +49,9 @@ import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import com.apollographql.apollo3.ast.withNullability
 
-/**
- * @param fragmentDefinitions: all the fragments in the current compilation unit.
- * This is required to check the type conditions as well as fields merging
- *
- * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
- * and allow fields of different types at the same Json path as long as their parent types are disjoint.
- */
+
 internal class ExecutableValidationScope(
     private val schema: Schema,
-    private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val fieldsOnDisjointTypesMustMerge: Boolean,
 ) : ValidationScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -62,18 +59,73 @@ internal class ExecutableValidationScope(
   override val foreignNames: Map<String, String>
     get() = schema.foreignNames
 
+  /**
+   * These are scoped to the current document being validated
+   */
   override val issues = mutableListOf<Issue>()
+  private val fragmentDefinitions = mutableMapOf<String, GQLFragmentDefinition>()
+  private val fragmentVariableUsages = mutableMapOf<String, List<VariableUsage>>()
+  private val cyclicFragments = mutableSetOf<String>()
+  private val usedFragments = mutableSetOf<String>()
 
   /**
-   * As the tree is walked, variable references will be put here
+   * These are scoped to the current operation/fragment being validated
    */
   private val variableUsages = mutableListOf<VariableUsage>()
 
-  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation?>()
-  private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation?>()
+  private fun GQLFragmentDefinition.detectCycles(globallyVisitedFragments: MutableSet<String>,
+                                                 locallyVisitedFragments: MutableSet<String>,
+                                                 path: List<String>) {
+    if (globallyVisitedFragments.contains(name)) {
+      return
+    }
+    if (locallyVisitedFragments.contains(name)) {
+      registerIssue("Fragment '$name' spreads itself, creating a cycle at '${path.joinToString(".")}'", sourceLocation)
+      cyclicFragments.add(name)
+      return
+    }
+    locallyVisitedFragments.add(name)
 
-  fun validate(document: GQLDocument): List<Issue> {
+    if (typeDefinitions[typeCondition.name] == null) {
+      return
+    }
+
+    selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path)
+  }
+
+  private fun List<GQLSelection>.detectCycles(globallyVisitedFragments: MutableSet<String>, locallyVisitedFragments: MutableSet<String>, path: List<String>) {
+    forEach {
+      when (it) {
+        is GQLField -> {
+          it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + it.responseName())
+        }
+        is GQLInlineFragment -> {
+          it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__on${it.typeCondition?.name ?: ""}")
+        }
+        is GQLFragmentSpread -> {
+          val fragment = fragmentDefinitions.get(it.name)
+          if (fragment != null) {
+            fragment.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__${fragment.name}")
+          }
+        }
+      }
+    }
+  }
+
+  fun validate(document: GQLDocument): ExecutableValidationResult {
     document.validateExecutable()
+
+    document.definitions.filterIsInstance<GQLFragmentDefinition>().forEach {
+      fragmentDefinitions[it.name] = it
+    }
+
+    val globallyVisitedFragments = mutableSetOf<String>()
+    val locallyVisitedFragments = mutableSetOf<String>()
+
+    fragmentDefinitions.forEach {
+      it.value.detectCycles(globallyVisitedFragments, locallyVisitedFragments, emptyList())
+      globallyVisitedFragments.addAll(locallyVisitedFragments)
+    }
 
     val fragments = document.definitions.filterIsInstance<GQLFragmentDefinition>()
     fragments.checkDuplicateFragments()
@@ -87,81 +139,25 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
-    return issues
-  }
+    (this.fragmentDefinitions.keys - usedFragments).forEach {
+      issues.add(
+          UnusedFragment(
+            message = "Fragment '$it' is not used",
+            sourceLocation = fragmentDefinitions[it]?.sourceLocation,
+          )
+      )
+    }
 
-  fun validateOperation(operation: GQLOperationDefinition): List<Issue> {
-    operation.validate()
-
-    return issues
-  }
-
-  fun validateFragment(fragment: GQLFragmentDefinition): List<Issue> {
-    fragment.validate()
-
-    return issues
-  }
-
-  /**
-   * Infer variables from a fragment definition. If a variable is used in both a nullable and non-nullable
-   * position, the variable is inferred as non-nullable
-   *
-   * @throws IllegalStateException if some incompatibles types are found. This should never happen
-   * because this should be caught during previous operation-wide validation.
-   */
-  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
-    variableUsages.clear()
-    fragment.validate()
-
-    return variableUsages.groupBy {
-      it.variable.name
-    }.entries.mapNotNull {
-      val types = it.value.map { it.locationType }
-      val inferredType = types.findCompatibleType()
-      if (inferredType == null) {
-        error("Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}")
-      } else {
-        InferredVariable(it.key, inferredType)
+    val fragmentVariables = fragments.associate {
+      it.name to (setOf(it.name) + it.selections.collectFragmentSpreads()).fold(emptyList<VariableUsage>()) { acc, item ->
+        acc + fragmentVariableUsages.get(item).orEmpty()
       }
     }
+    return ExecutableValidationResult(fragmentVariables, issues)
   }
 
-  private fun List<GQLType>.findCompatibleType(): GQLType? {
-    return drop(1).fold<GQLType, GQLType?>(first()) { acc, gqlType ->
-      if (acc == null) {
-        return@fold null
-      }
 
-      acc.mergeWith(gqlType)
-    }
-  }
-
-  @Suppress("KotlinConstantConditions")
-  private fun GQLType.mergeWith(other: GQLType): GQLType? {
-    return if (this is GQLNonNullType && other is GQLNonNullType) {
-      type.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
-    } else if (this is GQLNonNullType && other !is GQLNonNullType) {
-      type.mergeWith(other)?.let { GQLNonNullType(null, it) }
-    } else if (this !is GQLNonNullType && other is GQLNonNullType) {
-      this.mergeWith(other.type)?.let { GQLNonNullType(null, it) }
-    } else if (this is GQLListType && other is GQLListType) {
-      this.type.mergeWith(other.type)?.let { GQLListType(null, it) }
-    } else if (this is GQLListType && other !is GQLListType) {
-      null
-    } else if (this !is GQLListType && other is GQLListType) {
-      null
-    } else if (this is GQLNamedType && other is GQLNamedType) {
-      if (name != other.name) {
-        null
-      } else {
-        this
-      }
-    } else {
-      throw IllegalStateException()
-    }
-  }
-
-  private fun GQLField.validate(parentTypeDefinition: GQLTypeDefinition, path: String) {
+  private fun GQLField.validate(parentTypeDefinition: GQLTypeDefinition) {
     val fieldDefinition = definitionFromScope(schema, parentTypeDefinition)
     if (fieldDefinition == null) {
       registerIssue(
@@ -172,7 +168,7 @@ internal class ExecutableValidationScope(
     }
 
     if (fieldDefinition.directives.findDeprecationReason() != null) {
-      issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
+      issues.add(DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
 
     validateArguments(
@@ -203,8 +199,7 @@ internal class ExecutableValidationScope(
         )
         return
       }
-      val fieldPath = if (path.isEmpty()) name else "$path.$name"
-      selections.validate(typeDefinition, this@validate, fieldPath)
+      selections.validate(typeDefinition)
     } else {
       if (selections.isNotEmpty()) {
         registerIssue(
@@ -226,7 +221,7 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
+  private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition) {
     val tc = typeCondition?.name ?: parentTypeDefinition.name
     val inlineFragmentTypeDefinition = typeDefinitions[tc]
     if (inlineFragmentTypeDefinition == null) {
@@ -245,17 +240,18 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selections.validate(inlineFragmentTypeDefinition, this@validate, path)
+    selections.validate(inlineFragmentTypeDefinition)
 
     directives.forEach {
       validateDirective(it, this) {
         variableUsages.add(it)
       }
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 
-  private fun GQLFragmentSpread.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
+  private fun GQLFragmentSpread.validate(parentTypeDefinition: GQLTypeDefinition) {
+    usedFragments.add(name)
+
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -267,10 +263,6 @@ internal class ExecutableValidationScope(
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
-      registerIssue(
-          message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
-          sourceLocation = fragmentDefinition.typeCondition.sourceLocation
-      )
       return
     }
 
@@ -282,13 +274,10 @@ internal class ExecutableValidationScope(
       return
     }
 
-    fragmentDefinition.selections.validate(fragmentTypeDefinition, this@validate, path)
-
     directives.forEach {
       validateDirective(it, this) {
         variableUsages.add(it)
       }
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 
@@ -300,9 +289,15 @@ internal class ExecutableValidationScope(
         }
   }
 
+  /**
+   * Validate the fragment outside the context of an operation
+   * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
+   * This will not catch field merging conflicts and missing variables so ultimately, validation
+   * in the context of an operation is required.
+   */
   private fun GQLFragmentDefinition.validate() {
-    val fragmentRootTypeDefinition = typeDefinitions[typeCondition.name]
-    if (fragmentRootTypeDefinition == null) {
+    val rootTypeDefinition = typeDefinitions[typeCondition.name]
+    if (rootTypeDefinition == null) {
       registerIssue(
           message = "Cannot find type `${typeCondition.name}` for fragment `$name`",
           sourceLocation = typeCondition.sourceLocation
@@ -310,24 +305,33 @@ internal class ExecutableValidationScope(
       return
     }
 
-    /**
-     * Validate the fragment outside the context of an operation
-     * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
-     * This will not catch field merging conflicts and missing variables so ultimately, validation
-     * against all fragments is required.
-     * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
-     * context of an operation.
-     */
-    selections.validate(fragmentRootTypeDefinition, this, path = "-")
+    validateCommon(this, selections, directives, rootTypeDefinition)
 
-    fieldsInSetCanMerge(selections.collectFields(fragmentRootTypeDefinition.name))
+    fragmentVariableUsages[name] = variableUsages.toList()
+  }
+
+  /**
+   * Common validation code between operations and fragments
+   * This does not do any checking of merged fields or recurse into fragment spreads
+   */
+  private fun validateCommon(
+      directiveContext: GQLNode,
+      selections: List<GQLSelection>,
+      directives: List<GQLDirective>,
+      rootTypeDefinition: GQLTypeDefinition,
+  ) {
+    variableUsages.clear()
+
+    selections.validate(rootTypeDefinition)
+
+    directives.forEach {
+      validateDirective(it, directiveContext) {
+        variableUsages.add(it)
+      }
+    }
   }
 
   private fun GQLOperationDefinition.validate() {
-    variableUsages.clear()
-    deferDirectiveLabels.clear()
-    deferDirectivePathAndLabels.clear()
-
     val rootTypeDefinition = rootTypeDefinition(schema)
 
     if (rootTypeDefinition == null) {
@@ -337,23 +341,19 @@ internal class ExecutableValidationScope(
       )
       return
     }
-
-    selections.validate(rootTypeDefinition, this)
+    validateCommon(this, selections, directives, rootTypeDefinition)
 
     fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
+    issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
 
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
-    }
-    variableUsages.forEach {
+    val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentVariableUsages.get(it) ?: emptyList() } + variableUsages
+    (allVariableUsages).forEach {
       validateVariable(this, it)
     }
     val foundVariables = variableUsages.map { it.variable.name }.toSet()
     variableDefinitions.forEach {
       if (!foundVariables.contains(it.name)) {
-        issues.add(Issue.UnusedVariable(
+        issues.add(UnusedVariable(
             message = "Variable `${it.name}` is unused",
             sourceLocation = it.sourceLocation
         ))
@@ -361,100 +361,36 @@ internal class ExecutableValidationScope(
     }
   }
 
-  /**
-   * - If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
-   * the document.
-   * - The @defer directive is not allowed to be used on root fields of the mutation or subscription type.
-   * - Check that the label can be used as part of an identifier name (Apollo-specific validation).
-   * - Check that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
-   * validation). For instance: this is invalid:
-   * ```
-   * query Query1 {
-   *   computers {
-   *   ...ComputerFields @defer  # path is computer
-   *   ...ComputerFields @defer  # path is computer
-   *   }
-   * }
-   * ```
-   *
-   * Also invalid:
-   * ```
-   * query Query2 {
-   *   computers {
-   *     ...ComputerFields
-   *     ...ComputerFields2
-   *     }
-   *   }
-   *
-   *   fragment ComputerFields on Computer {
-   *     screen {
-   *       ...ScreenFields @defer  # path is computer.screen
-   *     }
-   *   }
-   *
-   *   fragment ComputerFields2 on Computer {
-   *     screen {
-   *       ...ScreenFields @defer  # path is computer.screen
-   *     }
-   * }
-   * ```
-   */
-  private fun GQLDirective.validateDeferDirective(selectionSetParent: GQLNode, path: String) {
-    val label = arguments.firstOrNull { it.name == "label" }?.value
-    if (label is GQLVariableValue) {
-      registerIssue(
-          message = "@defer label argument must not be a variable",
-          sourceLocation = sourceLocation
-      )
-      return
-    }
-
-    if (selectionSetParent is GQLOperationDefinition && (selectionSetParent.operationType == "mutation" || selectionSetParent.operationType == "subscription")) {
-      registerIssue(
-          message = "The @defer directive is not allowed to be used on root fields of mutations or subscriptions",
-          sourceLocation = sourceLocation
-      )
-    }
-
-    var labelStringValue = ""
-    if (label != null) {
-      // If label is not a GQLStringValue, prior validation will have issued an error already, so we can ignore this one
-      if (label !is GQLStringValue) return
-      labelStringValue = label.value
-
-      // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
-      if (!labelStringValue.matches(Regex("[a-zA-Z0-9_]+"))) {
-        registerIssue(
-            message = "@defer label '$labelStringValue' must only contain letters, numbers, or underscores",
-            sourceLocation = sourceLocation
-        )
+  private fun List<GQLSelection>.collectFragmentSpreads(): Set<String> {
+    val collectedFragments = mutableSetOf<String>()
+    val stack = mutableListOf<List<GQLSelection>>()
+    stack.add(this)
+    while (stack.isNotEmpty()) {
+      val selections = stack.removeFirst()
+      selections.forEach {
+        when (it) {
+          is GQLField -> {
+            stack.add(it.selections)
+          }
+          is GQLFragmentSpread -> {
+            if (!collectedFragments.contains(it.name)) {
+              fragmentDefinitions.get(it.name)?.also {
+                collectedFragments.add(it.name)
+                stack.add(it.selections)
+              }
+            }
+          }
+          is GQLInlineFragment -> {
+            stack.add(it.selections)
+          }
+        }
       }
-
-      if (labelStringValue in deferDirectiveLabels) {
-        registerIssue(
-            message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document. " +
-                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
-            sourceLocation = sourceLocation
-        )
-        return
-      }
-      deferDirectiveLabels[labelStringValue] = sourceLocation
     }
 
-    val pathAndLabel = "$path/$labelStringValue"
-    if (pathAndLabel in deferDirectivePathAndLabels) {
-      val labelMessage = if (labelStringValue.isEmpty()) "no label" else "label '$labelStringValue'"
-      registerIssue(
-          message = "A @defer directive with the same path '$path' and $labelMessage is already defined in ${deferDirectivePathAndLabels[pathAndLabel]!!.pretty()}. " +
-              "Set a unique label to distinguish them.",
-          sourceLocation = sourceLocation
-      )
-      return
-    }
-    deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
+    return collectedFragments
   }
 
-  private fun List<GQLSelection>.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
+  private fun List<GQLSelection>.validate(parentTypeDefinition: GQLTypeDefinition) {
     if (isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
@@ -466,9 +402,9 @@ internal class ExecutableValidationScope(
 
     forEach {
       when (it) {
-        is GQLField -> it.validate(parentTypeDefinition, path)
-        is GQLInlineFragment -> it.validate(parentTypeDefinition, selectionSetParent, path)
-        is GQLFragmentSpread -> it.validate(parentTypeDefinition, selectionSetParent, path)
+        is GQLField -> it.validate(parentTypeDefinition)
+        is GQLInlineFragment -> it.validate(parentTypeDefinition)
+        is GQLFragmentSpread -> it.validate(parentTypeDefinition)
       }
     }
   }
@@ -510,7 +446,7 @@ internal class ExecutableValidationScope(
 
     // no need to call the recursive version here, it will be taken care at the end of this iteration
     if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different shapes")
+      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
       return
     }
 
@@ -580,12 +516,28 @@ internal class ExecutableValidationScope(
   private fun addFieldMergingIssue(fieldA: GQLField, fieldB: GQLField, message: String) {
     registerIssue(
         message = buildMessage(fieldA, fieldB, message),
-        sourceLocation = fieldA.sourceLocation
+        sourceLocation = fieldA.sourceLocation,
     )
     // Also add the symmetrical error
     registerIssue(
         message = buildMessage(fieldB, fieldA, message),
-        sourceLocation = fieldB.sourceLocation
+        sourceLocation = fieldB.sourceLocation,
+    )
+  }
+
+  private fun addShapeFieldMergingIssue(fieldA: GQLField, fieldB: GQLField) {
+    issues.add(
+        DifferentShape(
+          message = buildMessage(fieldA, fieldB,"they have different shapes"),
+          sourceLocation = fieldA.sourceLocation,
+        )
+    )
+    // Also add the symmetrical error
+    issues.add(
+        DifferentShape(
+          message = buildMessage(fieldB, fieldA,"they have different shapes"),
+          sourceLocation = fieldB.sourceLocation,
+        )
     )
   }
 
@@ -632,7 +584,7 @@ internal class ExecutableValidationScope(
 
   private fun sameResponseShapeRecursive(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
     if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different shapes")
+      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
       return false
     }
 
@@ -653,9 +605,6 @@ internal class ExecutableValidationScope(
 
   // 5.3.2 2.1
   private fun haveSameResponseShape(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
-    if (!fieldsOnDisjointTypesMustMerge) {
-      return true
-    }
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
@@ -716,7 +665,7 @@ internal class ExecutableValidationScope(
 
   private fun <T> List<T>.pairs(): List<Pair<T, T>> {
     val pairs = mutableListOf<Pair<T, T>>()
-    for (i in 0.until(size)) {
+    for (i in indices) {
       for (j in (i + 1).until(size)) {
         pairs.add(get(i) to get(j))
       }
@@ -744,6 +693,10 @@ internal class ExecutableValidationScope(
   private fun GQLInlineFragment.collectFields(parentType: String) = selections.collectFields(typeCondition?.name ?: parentType)
 
   private fun GQLFragmentSpread.collectFields(): List<FieldWithParent> {
+    if (name in cyclicFragments) {
+      return emptyList()
+    }
+
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       // will be caught by other validation rules
@@ -761,7 +714,7 @@ internal class ExecutableValidationScope(
     forEach {
       val existing = filtered.putIfAbsentMpp(it.name, it)
       if (existing != null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Fragment ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
         ))
@@ -775,7 +728,7 @@ internal class ExecutableValidationScope(
 
     forEach {
       if (it.name == null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Apollo does not support anonymous operations",
             sourceLocation = it.sourceLocation,
         ))
@@ -783,7 +736,7 @@ internal class ExecutableValidationScope(
       }
       val existing = filtered.putIfAbsentMpp(it.name, it)
       if (existing != null) {
-        issues.add(Issue.ValidationError(
+        issues.add(OtherValidationIssue(
             message = "Operation ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
         ))

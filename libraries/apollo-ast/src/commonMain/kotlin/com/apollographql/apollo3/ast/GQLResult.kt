@@ -2,7 +2,6 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 
-
 /**
  * The result of a parsing or validation operation. It's tri-state:
  *
@@ -11,6 +10,8 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
  * - value and issues => partial success
  *
  * - no value and no issues => not possible
+ *
+ * @property issues issues found during parsing/validations. Some of them might be Apollo specific and will not throw in [getOrThrow]
  */
 class GQLResult<out V : Any>(
     val value: V?,
@@ -18,8 +19,8 @@ class GQLResult<out V : Any>(
 ) {
 
   init {
-    check(value != null || issues.containsError()) {
-      "Apollo: GQLResult must contain a value or an error"
+    check(value != null || issues.isNotEmpty()) {
+      "Apollo: GQLResult must contain a value or issues"
     }
   }
 
@@ -30,10 +31,12 @@ class GQLResult<out V : Any>(
   }
 
   /**
-   * @throws SourceAwareException if there are validation errors
+   * @throws SourceAwareException if there are GraphQL errors
+   *
+   * [ApolloIssue] are ignored
    */
   fun getOrThrow(): V {
-    issues.checkNoErrors()
+    issues.checkValidGraphQL()
 
     check(value != null) {
       "Apollo: no value and no error found"

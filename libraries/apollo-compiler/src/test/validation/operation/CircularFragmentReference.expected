@@ -1,0 +1,2 @@
+OtherValidationIssue (7:1)
+Fragment 'characterFragment' spreads itself, creating a cycle at 'friend.__friendFragment.__characterFragment'

@@ -1,5 +1,5 @@
-ERROR: ValidationError (1:1)
+OtherValidationIssue (1:1)
 Found an executable definition. Schemas should only contain type system definitions.
 ------------
-ERROR: ValidationError (null:null)
-No schema definition and not 'Query' type found
+NoQueryType (null:null)
+No schema definition and no query type found
