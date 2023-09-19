@@ -1,7 +1,6 @@
 package com.apollographql.ijplugin.telemetry
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidCompileSdk
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidGradlePluginVersion
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.AndroidMinSdk
@@ -25,9 +24,13 @@ import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateOpt
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGeneratePrimitiveTypes
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateQueryDocument
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateSchema
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloGenerateSourcesDuringGradleSync
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloJsExport
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloLanguageVersion
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloLinkSqlite
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloNullableFieldStyle
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloServiceCount
+import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUseAntlr
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUseSemanticNaming
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloUsedOptions
 import com.apollographql.ijplugin.telemetry.TelemetryAttribute.ApolloWarnOnDeprecatedUsages
@@ -110,34 +113,37 @@ private fun ApolloGradleToolingModel.toTelemetryAttributes(): Set<TelemetryAttri
     androidCompileSdk?.let { add(AndroidCompileSdk(it)) }
     androidAgpVersion?.let { add(AndroidGradlePluginVersion(it)) }
 
-    fun <T> List<ServiceTelemetryData>.notEmptySet(mapper: ServiceTelemetryData.() -> T?): Set<T>? = mapNotNull { mapper(it) }.toSet().takeIf { it.isNotEmpty() }
-    serviceTelemetryData.notEmptySet { codegenModels }?.let { add(ApolloCodegenModels(it)) }
-    serviceTelemetryData.notEmptySet { warnOnDeprecatedUsages }?.let { add(ApolloWarnOnDeprecatedUsages(it)) }
-    serviceTelemetryData.notEmptySet { failOnWarnings }?.let { add(ApolloFailOnWarnings(it)) }
-    serviceTelemetryData.notEmptySet { generateKotlinModels }?.let { add(ApolloGenerateKotlinModels(it)) }
-    serviceTelemetryData.notEmptySet { languageVersion }?.let { add(ApolloLanguageVersion(it)) }
-    serviceTelemetryData.notEmptySet { useSemanticNaming }?.let { add(ApolloUseSemanticNaming(it)) }
-    serviceTelemetryData.notEmptySet { addJvmOverloads }?.let { add(ApolloAddJvmOverloads(it)) }
-    serviceTelemetryData.notEmptySet { generateAsInternal }?.let { add(ApolloGenerateAsInternal(it)) }
-    serviceTelemetryData.notEmptySet { generateFragmentImplementations }?.let { add(ApolloGenerateFragmentImplementations(it)) }
-    serviceTelemetryData.notEmptySet { generateQueryDocument }?.let { add(ApolloGenerateQueryDocument(it)) }
-    serviceTelemetryData.notEmptySet { generateSchema }?.let { add(ApolloGenerateSchema(it)) }
-    serviceTelemetryData.notEmptySet { generateOptionalOperationVariables }?.let { add(ApolloGenerateOptionalOperationVariables(it)) }
-    serviceTelemetryData.notEmptySet { generateDataBuilders }?.let { add(ApolloGenerateDataBuilders(it)) }
-    serviceTelemetryData.notEmptySet { generateModelBuilders }?.let { add(ApolloGenerateModelBuilders(it)) }
-    serviceTelemetryData.flatMap { it.generateMethods.orEmpty() }.toSet().let { if (it.isNotEmpty()) add(ApolloGenerateMethods(it)) }
+    apolloGenerateSourcesDuringGradleSync?.let { add(ApolloGenerateSourcesDuringGradleSync(it)) }
+    apolloLinkSqlite?.let { add(ApolloLinkSqlite(it)) }
+    apolloUseAntlr?.let { add(ApolloUseAntlr(it)) }
+    add(ApolloServiceCount(apolloServiceCount))
 
-    serviceTelemetryData.notEmptySet { generatePrimitiveTypes }?.let { add(ApolloGeneratePrimitiveTypes(it)) }
-    serviceTelemetryData.notEmptySet { generateInputBuilders }?.let { add(ApolloGenerateInputBuilders(it)) }
-    serviceTelemetryData.notEmptySet { nullableFieldStyle }?.let { add(ApolloNullableFieldStyle(it)) }
-    serviceTelemetryData.notEmptySet { decapitalizeFields }?.let { add(ApolloDecapitalizeFields(it)) }
-    serviceTelemetryData.notEmptySet { jsExport }?.let { add(ApolloJsExport(it)) }
-    serviceTelemetryData.notEmptySet { addTypename }?.let { add(ApolloAddTypename(it)) }
-    serviceTelemetryData.notEmptySet { flattenModels }?.let { add(ApolloFlattenModels(it)) }
-    serviceTelemetryData.notEmptySet { fieldsOnDisjointTypesMustMerge }?.let { add(ApolloFieldsOnDisjointTypesMustMerge(it)) }
-    serviceTelemetryData.notEmptySet { generateApolloMetadata }?.let { add(ApolloGenerateApolloMetadata(it)) }
-
-
-    serviceTelemetryData.flatMap { it.usedOptions }.toSet().let { if (it.isNotEmpty()) add(ApolloUsedOptions(it)) }
+    apolloServiceTelemetryData.forEach {
+      it.operationManifestFormat?.let { add(ApolloCodegenModels(it)) }
+      it.warnOnDeprecatedUsages?.let { add(ApolloWarnOnDeprecatedUsages(it)) }
+      it.failOnWarnings?.let { add(ApolloFailOnWarnings(it)) }
+      it.generateKotlinModels?.let { add(ApolloGenerateKotlinModels(it)) }
+      it.languageVersion?.let { add(ApolloLanguageVersion(it)) }
+      it.useSemanticNaming?.let { add(ApolloUseSemanticNaming(it)) }
+      it.addJvmOverloads?.let { add(ApolloAddJvmOverloads(it)) }
+      it.generateAsInternal?.let { add(ApolloGenerateAsInternal(it)) }
+      it.generateFragmentImplementations?.let { add(ApolloGenerateFragmentImplementations(it)) }
+      it.generateQueryDocument?.let { add(ApolloGenerateQueryDocument(it)) }
+      it.generateSchema?.let { add(ApolloGenerateSchema(it)) }
+      it.generateOptionalOperationVariables?.let { add(ApolloGenerateOptionalOperationVariables(it)) }
+      it.generateDataBuilders?.let { add(ApolloGenerateDataBuilders(it)) }
+      it.generateModelBuilders?.let { add(ApolloGenerateModelBuilders(it)) }
+      it.generateMethods?.let { add(ApolloGenerateMethods(it)) }
+      it.generatePrimitiveTypes?.let { add(ApolloGeneratePrimitiveTypes(it)) }
+      it.generateInputBuilders?.let { add(ApolloGenerateInputBuilders(it)) }
+      it.nullableFieldStyle?.let { add(ApolloNullableFieldStyle(it)) }
+      it.decapitalizeFields?.let { add(ApolloDecapitalizeFields(it)) }
+      it.jsExport?.let { add(ApolloJsExport(it)) }
+      it.addTypename?.let { add(ApolloAddTypename(it)) }
+      it.flattenModels?.let { add(ApolloFlattenModels(it)) }
+      it.fieldsOnDisjointTypesMustMerge?.let { add(ApolloFieldsOnDisjointTypesMustMerge(it)) }
+      it.generateApolloMetadata?.let { add(ApolloGenerateApolloMetadata(it)) }
+      add(ApolloUsedOptions(it.usedOptions))
+    }
   }
 }

@@ -9,5 +9,9 @@ internal fun getTelemetryData(project: Project, apolloExtension: DefaultApolloEx
     androidTargetSdk = project.androidExtension?.targetSdk,
     androidCompileSdk = project.androidExtension?.compileSdkVersion,
     androidAgpVersion = project.androidExtension?.pluginVersion,
-    serviceTelemetryData = apolloExtension.getServiceTelemetryData(),
+    apolloServiceTelemetryData = apolloExtension.getServiceTelemetryData(),
+    apolloGenerateSourcesDuringGradleSync = apolloExtension.generateSourcesDuringGradleSync.orNull,
+    apolloLinkSqlite = apolloExtension.linkSqlite.orNull,
+    apolloUseAntlr = apolloExtension.useAntlr.orNull,
+    apolloServiceCount = apolloExtension.serviceCount,
 )

@@ -31,7 +31,11 @@ interface ApolloGradleToolingModel {
     val androidTargetSdk: Int?
     val androidCompileSdk: String?
     val androidAgpVersion: String?
-    val serviceTelemetryData: List<ServiceTelemetryData>
+    val apolloServiceTelemetryData: List<ServiceTelemetryData>
+    val apolloGenerateSourcesDuringGradleSync: Boolean?
+    val apolloLinkSqlite: Boolean?
+    val apolloUseAntlr: Boolean?
+    val apolloServiceCount: Int
 
     interface ServiceTelemetryData {
       val codegenModels: String?

@@ -6,17 +6,6 @@ sealed class TelemetryAttribute(
     val type: String,
     val parameters: Any?,
 ) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    other as TelemetryAttribute
-    return type == other.type
-  }
-
-  override fun hashCode(): Int {
-    return type.hashCode()
-  }
-
   override fun toString(): String {
     return "TelemetryAttribute(type='$type', parameters=$parameters)"
   }
@@ -66,129 +55,149 @@ sealed class TelemetryAttribute(
   class AndroidGradlePluginVersion(version: String) : TelemetryAttribute("android_agp_version", version)
 
   /**
-   * Value(s) of the Apollo Kotlin option `codegenModels` if set.
+   * Value of the Apollo Kotlin option `codegenModels` if set.
    */
-  class ApolloCodegenModels(codegenModels: Set<String>) : TelemetryAttribute("ak_codegen_models", codegenModels)
+  class ApolloCodegenModels(codegenModels: String) : TelemetryAttribute("ak_codegen_models", codegenModels)
 
   /**
-   * Value(s) of the Apollo Kotlin option `warnOnDeprecatedUsages` if set.
+   * Value of the Apollo Kotlin option `warnOnDeprecatedUsages` if set.
    */
-  class ApolloWarnOnDeprecatedUsages(warnOnDeprecatedUsages: Set<Boolean>) : TelemetryAttribute("ak_warn_on_deprecated_usages", warnOnDeprecatedUsages)
+  class ApolloWarnOnDeprecatedUsages(warnOnDeprecatedUsages: Boolean) : TelemetryAttribute("ak_warn_on_deprecated_usages", warnOnDeprecatedUsages)
 
   /**
-   * Value(s) of the Apollo Kotlin option `failOnWarnings` if set.
+   * Value of the Apollo Kotlin option `failOnWarnings` if set.
    */
-  class ApolloFailOnWarnings(failOnWarnings: Set<Boolean>) : TelemetryAttribute("ak_fail_on_warnings", failOnWarnings)
+  class ApolloFailOnWarnings(failOnWarnings: Boolean) : TelemetryAttribute("ak_fail_on_warnings", failOnWarnings)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateKotlinModels` if set.
+   * Value of the Apollo Kotlin option `generateKotlinModels` if set.
    */
-  class ApolloGenerateKotlinModels(generateKotlinModels: Set<Boolean>) : TelemetryAttribute("ak_generate_kotlin_models", generateKotlinModels)
+  class ApolloGenerateKotlinModels(generateKotlinModels: Boolean) : TelemetryAttribute("ak_generate_kotlin_models", generateKotlinModels)
 
   /**
-   * Value(s) of the Apollo Kotlin option `languageVersion` if set.
+   * Value of the Apollo Kotlin option `languageVersion` if set.
    */
-  class ApolloLanguageVersion(languageVersion: Set<String>) : TelemetryAttribute("ak_language_version", languageVersion)
+  class ApolloLanguageVersion(languageVersion: String) : TelemetryAttribute("ak_language_version", languageVersion)
 
   /**
-   * Value(s) of the Apollo Kotlin option `useSemanticNaming` if set.
+   * Value of the Apollo Kotlin option `useSemanticNaming` if set.
    */
-  class ApolloUseSemanticNaming(useSemanticNaming: Set<Boolean>) : TelemetryAttribute("ak_use_semantic_naming", useSemanticNaming)
+  class ApolloUseSemanticNaming(useSemanticNaming: Boolean) : TelemetryAttribute("ak_use_semantic_naming", useSemanticNaming)
 
   /**
-   * Value(s) of the Apollo Kotlin option `addJvmOverloads` if set.
+   * Value of the Apollo Kotlin option `addJvmOverloads` if set.
    */
-  class ApolloAddJvmOverloads(addJvmOverloads: Set<Boolean>) : TelemetryAttribute("ak_add_jvm_overloads", addJvmOverloads)
+  class ApolloAddJvmOverloads(addJvmOverloads: Boolean) : TelemetryAttribute("ak_add_jvm_overloads", addJvmOverloads)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateAsInternal` if set.
+   * Value of the Apollo Kotlin option `generateAsInternal` if set.
    */
-  class ApolloGenerateAsInternal(generateAsInternal: Set<Boolean>) : TelemetryAttribute("ak_generate_as_internal", generateAsInternal)
+  class ApolloGenerateAsInternal(generateAsInternal: Boolean) : TelemetryAttribute("ak_generate_as_internal", generateAsInternal)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateFragmentImplementations` if set.
+   * Value of the Apollo Kotlin option `generateFragmentImplementations` if set.
    */
-  class ApolloGenerateFragmentImplementations(generateFragmentImplementations: Set<Boolean>) : TelemetryAttribute("ak_generate_fragment_implementations", generateFragmentImplementations)
+  class ApolloGenerateFragmentImplementations(generateFragmentImplementations: Boolean) : TelemetryAttribute("ak_generate_fragment_implementations", generateFragmentImplementations)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateQueryDocument` if set.
+   * Value of the Apollo Kotlin option `generateQueryDocument` if set.
    */
-  class ApolloGenerateQueryDocument(generateQueryDocument: Set<Boolean>) : TelemetryAttribute("ak_generate_query_document", generateQueryDocument)
+  class ApolloGenerateQueryDocument(generateQueryDocument: Boolean) : TelemetryAttribute("ak_generate_query_document", generateQueryDocument)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateSchema` if set.
+   * Value of the Apollo Kotlin option `generateSchema` if set.
    */
-  class ApolloGenerateSchema(generateSchema: Set<Boolean>) : TelemetryAttribute("ak_generate_schema", generateSchema)
+  class ApolloGenerateSchema(generateSchema: Boolean) : TelemetryAttribute("ak_generate_schema", generateSchema)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateOptionalOperationVariables` if set.
+   * Value of the Apollo Kotlin option `generateOptionalOperationVariables` if set.
    */
-  class ApolloGenerateOptionalOperationVariables(generateOptionalOperationVariables: Set<Boolean>) : TelemetryAttribute("ak_generate_optional_operation_variables", generateOptionalOperationVariables)
+  class ApolloGenerateOptionalOperationVariables(generateOptionalOperationVariables: Boolean) : TelemetryAttribute("ak_generate_optional_operation_variables", generateOptionalOperationVariables)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateDataBuilders` if set.
+   * Value of the Apollo Kotlin option `generateDataBuilders` if set.
    */
-  class ApolloGenerateDataBuilders(generateDataBuilders: Set<Boolean>) : TelemetryAttribute("ak_generate_data_builders", generateDataBuilders)
+  class ApolloGenerateDataBuilders(generateDataBuilders: Boolean) : TelemetryAttribute("ak_generate_data_builders", generateDataBuilders)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateModelBuilders` if set.
+   * Value of the Apollo Kotlin option `generateModelBuilders` if set.
    */
-  class ApolloGenerateModelBuilders(generateModelBuilders: Set<Boolean>) : TelemetryAttribute("ak_generate_model_builders", generateModelBuilders)
+  class ApolloGenerateModelBuilders(generateModelBuilders: Boolean) : TelemetryAttribute("ak_generate_model_builders", generateModelBuilders)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateMethods` if set.
+   * Value of the Apollo Kotlin option `generateMethods` if set.
    */
-  class ApolloGenerateMethods(generateMethods: Set<String>) : TelemetryAttribute("ak_generate_methods", generateMethods)
+  class ApolloGenerateMethods(generateMethods: List<String>) : TelemetryAttribute("ak_generate_methods", generateMethods)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generatePrimitiveTypes` if set.
+   * Value of the Apollo Kotlin option `generatePrimitiveTypes` if set.
    */
-  class ApolloGeneratePrimitiveTypes(generatePrimitiveTypes: Set<Boolean>) : TelemetryAttribute("ak_generate_primitive_types", generatePrimitiveTypes)
+  class ApolloGeneratePrimitiveTypes(generatePrimitiveTypes: Boolean) : TelemetryAttribute("ak_generate_primitive_types", generatePrimitiveTypes)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateInputBuilders` if set.
+   * Value of the Apollo Kotlin option `generateInputBuilders` if set.
    */
-  class ApolloGenerateInputBuilders(generateInputBuilders: Set<Boolean>) : TelemetryAttribute("ak_generate_input_builders", generateInputBuilders)
+  class ApolloGenerateInputBuilders(generateInputBuilders: Boolean) : TelemetryAttribute("ak_generate_input_builders", generateInputBuilders)
 
   /**
-   * Value(s) of the Apollo Kotlin option `nullableFieldStyle` if set.
+   * Value of the Apollo Kotlin option `nullableFieldStyle` if set.
    */
-  class ApolloNullableFieldStyle(nullableFieldStyle: Set<String>) : TelemetryAttribute("ak_nullable_field_style", nullableFieldStyle)
+  class ApolloNullableFieldStyle(nullableFieldStyle: String) : TelemetryAttribute("ak_nullable_field_style", nullableFieldStyle)
 
   /**
-   * Value(s) of the Apollo Kotlin option `decapitalizeFields` if set.
+   * Value of the Apollo Kotlin option `decapitalizeFields` if set.
    */
-  class ApolloDecapitalizeFields(decapitalizeFields: Set<Boolean>) : TelemetryAttribute("ak_decapitalize_fields", decapitalizeFields)
+  class ApolloDecapitalizeFields(decapitalizeFields: Boolean) : TelemetryAttribute("ak_decapitalize_fields", decapitalizeFields)
 
   /**
-   * Value(s) of the Apollo Kotlin option `jsExport` if set.
+   * Value of the Apollo Kotlin option `jsExport` if set.
    */
-  class ApolloJsExport(jsExport: Set<Boolean>) : TelemetryAttribute("ak_js_export", jsExport)
+  class ApolloJsExport(jsExport: Boolean) : TelemetryAttribute("ak_js_export", jsExport)
 
   /**
-   * Value(s) of the Apollo Kotlin option `addTypename` if set.
+   * Value of the Apollo Kotlin option `addTypename` if set.
    */
-  class ApolloAddTypename(addTypename: Set<String>) : TelemetryAttribute("ak_add_typename", addTypename)
+  class ApolloAddTypename(addTypename: String) : TelemetryAttribute("ak_add_typename", addTypename)
 
   /**
-   * Value(s) of the Apollo Kotlin option `flattenModels` if set.
+   * Value of the Apollo Kotlin option `flattenModels` if set.
    */
-  class ApolloFlattenModels(flattenModels: Set<Boolean>) : TelemetryAttribute("ak_flatten_models", flattenModels)
+  class ApolloFlattenModels(flattenModels: Boolean) : TelemetryAttribute("ak_flatten_models", flattenModels)
 
   /**
-   * Value(s) of the Apollo Kotlin option `fieldsOnDisjointTypesMustMerge` if set.
+   * Value of the Apollo Kotlin option `fieldsOnDisjointTypesMustMerge` if set.
    */
-  class ApolloFieldsOnDisjointTypesMustMerge(fieldsOnDisjointTypesMustMerge: Set<Boolean>) : TelemetryAttribute("ak_fields_on_disjoint_types_must_merge", fieldsOnDisjointTypesMustMerge)
+  class ApolloFieldsOnDisjointTypesMustMerge(fieldsOnDisjointTypesMustMerge: Boolean) : TelemetryAttribute("ak_fields_on_disjoint_types_must_merge", fieldsOnDisjointTypesMustMerge)
 
   /**
-   * Value(s) of the Apollo Kotlin option `generateApolloMetadata` if set.
+   * Value of the Apollo Kotlin option `generateApolloMetadata` if set.
    */
-  class ApolloGenerateApolloMetadata(generateApolloMetadata: Set<Boolean>) : TelemetryAttribute("ak_generate_apollo_metadata", generateApolloMetadata)
+  class ApolloGenerateApolloMetadata(generateApolloMetadata: Boolean) : TelemetryAttribute("ak_generate_apollo_metadata", generateApolloMetadata)
 
   /**
    * Other Apollo Kotlin Gradle plugin options that are used for which we don't care about the value.
    */
   class ApolloUsedOptions(otherOptions: Set<String>) : TelemetryAttribute("ak_used_options", otherOptions)
+
+  /**
+   * Value of the Apollo Kotlin option `generateSourcesDuringGradleSync` if set.
+   */
+  class ApolloGenerateSourcesDuringGradleSync(generateSourcesDuringGradleSync: Boolean) : TelemetryAttribute("ak_generate_sources_during_gradle_sync", generateSourcesDuringGradleSync)
+
+  /**
+   * Value of the Apollo Kotlin option `linkSqlite` if set.
+   */
+  class ApolloLinkSqlite(linkSqlite: Boolean) : TelemetryAttribute("ak_link_sqlite", linkSqlite)
+
+  /**
+   * Value of the Apollo Kotlin option `useAntlr` if set.
+   */
+  class ApolloUseAntlr(useAntlr: Boolean) : TelemetryAttribute("ak_use_antlr", useAntlr)
+
+  /**
+   * Number of defined services.
+   */
+  class ApolloServiceCount(serviceCount: Int) : TelemetryAttribute("ak_service_count", serviceCount)
 }
 
 sealed class TelemetryEvent(
