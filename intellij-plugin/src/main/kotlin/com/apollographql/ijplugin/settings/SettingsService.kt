@@ -73,6 +73,12 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       notifySettingsChanged()
     }
 
+  override var hasShownTelemetryOptInDialog: Boolean
+    get() = _state.hasShownTelemetryOptInDialog
+    set(value) {
+      _state.hasShownTelemetryOptInDialog = value
+    }
+
   private var lastNotifiedSettingsState: SettingsState? = null
   private fun notifySettingsChanged() {
     if (lastNotifiedSettingsState != _state) {
@@ -101,6 +107,7 @@ interface SettingsState {
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
   var telemetryInstanceId: String
   var telemetryOptIn: Boolean
+  var hasShownTelemetryOptInDialog: Boolean
 }
 
 data class ApolloKotlinServiceConfiguration(
@@ -137,6 +144,7 @@ data class SettingsStateImpl(
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
     override var telemetryInstanceId: String = "",
     override var telemetryOptIn: Boolean = false,
+    override var hasShownTelemetryOptInDialog: Boolean = false,
 ) : SettingsState
 
 

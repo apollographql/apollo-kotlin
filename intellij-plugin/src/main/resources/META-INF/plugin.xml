@@ -149,9 +149,15 @@
 
     <!-- Notifications -->
     <notificationGroup
-        id="Apollo"
+        id="apollo.main"
         displayType="BALLOON"
-        key="notification.group.apollo"
+        key="notification.group.apollo.main"
+    />
+
+    <notificationGroup
+        id="apollo.telemetry"
+        displayType="STICKY_BALLOON"
+        key="notification.group.apollo.telemetry"
     />
 
   </extensions>

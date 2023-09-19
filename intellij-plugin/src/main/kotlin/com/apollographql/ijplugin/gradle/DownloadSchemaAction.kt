@@ -6,6 +6,7 @@ import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
 import com.intellij.ide.BrowserUtil
+import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -72,10 +73,8 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
           title = ApolloBundle.message("action.DownloadSchemaAction.noTasksFound.title"),
           content = ApolloBundle.message("action.DownloadSchemaAction.noTasksFound.content"),
           type = NotificationType.WARNING,
-          object : AnAction(ApolloBundle.message("action.DownloadSchemaAction.openDocumentation")) {
-            override fun actionPerformed(e: AnActionEvent) {
-              BrowserUtil.browse(SCHEMA_CONFIGURATION_DOC_URL, project)
-            }
+          NotificationAction.create(ApolloBundle.message("action.DownloadSchemaAction.openDocumentation")) { _, _ ->
+            BrowserUtil.browse(SCHEMA_CONFIGURATION_DOC_URL, project)
           }
       )
       return

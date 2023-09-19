@@ -1,6 +1,8 @@
 package com.apollographql.ijplugin.telemetry
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidCompileSdk
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidGradlePluginVersion
@@ -38,14 +40,21 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloUsedOptions
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloWarnOnDeprecatedUsages
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleVersion
+import com.apollographql.ijplugin.util.NOTIFICATION_GROUP_ID_TELEMETRY
+import com.apollographql.ijplugin.util.createNotification
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
+import com.intellij.ide.BrowserUtil
+import com.intellij.notification.NotificationAction
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.roots.ModuleRootListener
+
+private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos/data-privacy/"
 
 @Service(Service.Level.PROJECT)
 class TelemetryService(
@@ -64,6 +73,8 @@ class TelemetryService(
     logd("project=${project.name}")
     onLibrariesChanged()
     startObserveLibraries()
+
+    maybeShowTelemetryOptInDialog()
   }
 
   private fun startObserveLibraries() {
@@ -108,6 +119,32 @@ class TelemetryService(
     val telemetrySession = buildTelemetrySession()
     logd("telemetrySession=$telemetrySession")
     telemetrySession.properties.forEach { logd(it) }
+  }
+
+  private fun maybeShowTelemetryOptInDialog() {
+    if (project.settingsState.hasShownTelemetryOptInDialog) return
+    project.settingsState.hasShownTelemetryOptInDialog = true
+    createNotification(
+        notificationGroupId = NOTIFICATION_GROUP_ID_TELEMETRY,
+        title = ApolloBundle.message("telemetry.optInDialog.title"),
+        content = ApolloBundle.message("telemetry.optInDialog.content"),
+        type = NotificationType.INFORMATION,
+        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.optOut")) { _, notification ->
+          project.settingsState.telemetryOptIn = false
+          notification.expire()
+        },
+        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.optIn")) { _, notification ->
+          project.settingsState.telemetryOptIn = true
+          notification.expire()
+        },
+        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.learnMore")) { _, _ ->
+          BrowserUtil.browse(DATA_PRIVACY_URL, project)
+        },
+    )
+        .apply {
+          icon = ApolloIcons.Action.ApolloColor
+        }
+        .notify(project)
   }
 }
 
