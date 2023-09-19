@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="testFilter" value=".*kotlin-operationBased-named_fragment_with.*" />
+          <entry key="testFilter" value=".*tlin-responseBased-enum_fiel.*" />
           <entry key="updateTestFixtures" value="true" />
         </map>
       </option>

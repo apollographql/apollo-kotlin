@@ -12,21 +12,12 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
 
-/**
- * The episodes in the Star Wars trilogy
- */
 public class Episode {
-  public static EnumType type = new EnumType("Episode", Arrays.asList("NEWHOPE", "EMPIRE", "JEDI", "DEPRECATED", "new"));
-
-  public static Episode NEWHOPE = new Episode("NEWHOPE");
-
-  public static Episode EMPIRE = new Episode("EMPIRE");
+  public static EnumType type = new EnumType("Episode", Arrays.asList("JEDI", "CLONES"));
 
   public static Episode JEDI = new Episode("JEDI");
 
-  public static Episode DEPRECATED = new Episode("DEPRECATED");
-
-  public static Episode new_ = new Episode("new");
+  public static Episode CLONES = new Episode("CLONES");
 
   public String rawValue;
 
@@ -37,11 +28,8 @@ public class Episode {
   @SuppressWarnings("deprecation")
   public static Episode safeValueOf(String rawValue) {
     switch(rawValue) {
-      case "NEWHOPE": return Episode.NEWHOPE;
-      case "EMPIRE": return Episode.EMPIRE;
       case "JEDI": return Episode.JEDI;
-      case "DEPRECATED": return Episode.DEPRECATED;
-      case "new": return Episode.new_;
+      case "CLONES": return Episode.CLONES;
       default: return new Episode.UNKNOWN__(rawValue);
     }
   }

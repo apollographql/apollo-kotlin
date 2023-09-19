@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
@@ -126,6 +127,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
+      @Suppress("DEPRECATION")
       override fun toJson(
         writer: JsonWriter,
         `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog,

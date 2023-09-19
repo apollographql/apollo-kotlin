@@ -114,24 +114,21 @@ class CodegenTest {
     val compileDuration = measureTime {
       if (parameters.generateKotlinModels) {
         /**
-         * Some tests generate warnings because they are using deprecated fields
-         *
-         * We want to keep this for the user to easily locate them but can't tell the compiler to ignore
-         * them specifically. See also https://youtrack.jetbrains.com/issue/KT-24746
-         */
-        val expectedWarnings = folder.name in listOf(
-            "deprecated_merged_field",
-            "deprecation",
-            "enum_field",
-        )
-
-        /**
          * Some tests use enum entries which are only available in Kotlin 1.9
          * TODO: Remove this once kotlin-compile-testing with Kotlin 1.9 is released
          */
-        val enableEnumEntriesLanguageFeature = folder.name == "enum_field"
+        val enableEnumEntriesLanguageFeature: Boolean
+        val allWarningsAsErrors: Boolean
+        if (folder.name == "enum_field") {
+          enableEnumEntriesLanguageFeature = true
+          allWarningsAsErrors = false
+        } else {
+          enableEnumEntriesLanguageFeature = false
+          allWarningsAsErrors = true
+        }
 
-        KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings, enableEnumEntriesLanguageFeature)
+
+        KotlinCompiler.assertCompiles(actualFiles.toSet(), allWarningsAsErrors, enableEnumEntriesLanguageFeature)
       } else {
         JavaCompiler.assertCompiles(actualFiles.toSet())
       }
