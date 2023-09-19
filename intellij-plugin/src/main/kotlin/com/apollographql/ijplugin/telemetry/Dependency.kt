@@ -21,11 +21,11 @@ fun Project.getProjectDependencies(): Set<Dependency> {
   return dependencies
 }
 
-fun Dependency.toTelemetryAttribute(): TelemetryAttribute? = when {
-  group == "com.apollographql.apollo" || group == "com.apollographql.apollo3" -> TelemetryAttribute.Dependency(group, artifact, version)
-  group == "org.jetbrains.kotlin" && artifact == "kotlin-stdlib" -> TelemetryAttribute.KotlinVersion(version)
-  group == "androidx.compose.runtime" && artifact == "runtime" -> TelemetryAttribute.ComposeVersion(version)
+fun Dependency.toTelemetryProperty(): TelemetryProperty? = when {
+  group == "com.apollographql.apollo" || group == "com.apollographql.apollo3" -> TelemetryProperty.Dependency(group, artifact, version)
+  group == "org.jetbrains.kotlin" && artifact == "kotlin-stdlib" -> TelemetryProperty.KotlinVersion(version)
+  group == "androidx.compose.runtime" && artifact == "runtime" -> TelemetryProperty.ComposeVersion(version)
   else -> null
 }
 
-fun Set<Dependency>.toTelemetryAttributes(): Set<TelemetryAttribute> = mapNotNull { it.toTelemetryAttribute() }.toSet()
+fun Set<Dependency>.toTelemetryProperties(): Set<TelemetryProperty> = mapNotNull { it.toTelemetryProperty() }.toSet()
