@@ -107,6 +107,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
+    @Suppress("DEPRECATION")
     public fun toJson(
       writer: JsonWriter,
       `value`: AnimalFragmentImpl.DogData,

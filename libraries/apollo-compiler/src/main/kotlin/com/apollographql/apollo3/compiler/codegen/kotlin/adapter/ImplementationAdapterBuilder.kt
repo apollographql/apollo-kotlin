@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -133,6 +134,9 @@ internal class ImplementationAdapterBuilder(
         )
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
+          if (model.properties.any { it.info.deprecationReason != null }) {
+            addAnnotation(suppressDeprecationAnnotationSpec)
+          }
           if (!addTypenameArgument) {
             addModifiers(KModifier.OVERRIDE)
           }

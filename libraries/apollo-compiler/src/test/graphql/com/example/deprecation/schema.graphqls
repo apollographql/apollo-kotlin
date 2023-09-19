@@ -1,0 +1,13 @@
+type Query {
+    hero(episode: Episode @deprecated): Character
+}
+
+enum Episode {
+    JEDI,
+    CLONES @deprecated
+}
+type Character {
+    name: String!
+    deprecated: String! @deprecated
+    deprecatedBool: Boolean! @deprecated
+}
