@@ -56,6 +56,11 @@ import com.intellij.openapi.roots.ModuleRootListener
 
 private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos/data-privacy/"
 
+/**
+ * TODO remove this
+ */
+const val TELEMETRY_ENABLED = false
+
 @Service(Service.Level.PROJECT)
 class TelemetryService(
     private val project: Project,
@@ -122,6 +127,7 @@ class TelemetryService(
   }
 
   private fun maybeShowTelemetryOptOutDialog() {
+    if (!TELEMETRY_ENABLED) return
     if (project.settingsState.hasShownTelemetryOptOutDialog) return
     project.settingsState.hasShownTelemetryOptOutDialog = true
     createNotification(

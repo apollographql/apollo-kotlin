@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.settings
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
+import com.apollographql.ijplugin.telemetry.TELEMETRY_ENABLED
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -100,10 +101,12 @@ class SettingsComponent(private val project: Project) {
         }
       }
     }
-    row {
-      checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
-          .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
-          .bindSelected(telemetryEnabledProperty)
+    if (TELEMETRY_ENABLED) {
+      row {
+        checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+            .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+            .bindSelected(telemetryEnabledProperty)
+      }
     }
   }
 
