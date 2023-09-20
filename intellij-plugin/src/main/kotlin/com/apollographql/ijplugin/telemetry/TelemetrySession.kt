@@ -250,8 +250,75 @@ sealed class TelemetryEvent(
     return "TelemetryEvent(date=$date, type='$type', parameters=$parameters)"
   }
 
-  // TODO
-  class ExampleEvent(parameters: Any?) : TelemetryEvent("example", parameters)
+  /**
+   * User used the 'Migrate to Apollo Kotlin 3' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToApollo3() : TelemetryEvent("akij_migrate_to_apollo3", null)
+
+  /**
+   * User used the 'Migrate to Apollo Kotlin 4' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToApollo4() : TelemetryEvent("akij_migrate_to_apollo4", null)
+
+  /**
+   * User used the 'Migrate to operationBased codegen' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToOperationBasedCodegen() : TelemetryEvent("akij_migrate_to_operation_based_codegen", null)
+
+  /**
+   * User used the Apollo Kotlin IntelliJ plugin action to navigate from Kotlin to a GraphQL element.
+   */
+  class ApolloIjNavigateToGraphQl(elementType: String) : TelemetryEvent("akij_navigate_to_graphql_element", elementType)
+
+  /**
+   * User used the Apollo Kotlin IntelliJ plugin action to navigate from GraphQL to a Kotlin element.
+   */
+  class ApolloIjNavigateToKotlin(elementType: String) : TelemetryEvent("akij_navigate_to_kotlin_element", elementType)
+
+  /**
+   * User used the 'Open in Apollo Sandbox' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjOpenInApolloSandbox() : TelemetryEvent("akij_open_in_apollo_sandbox", null)
+
+  /**
+   * User used the 'Download schema' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjDownloadSchema() : TelemetryEvent("akij_download_schema", null)
+
+  /**
+   * User applied the quickfix for the 'Apollo 4 available' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjApollo4AvailableQuickFix() : TelemetryEvent("akij_apollo4_available_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Endpoint not configured' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjEndpointNotConfiguredQuickFix() : TelemetryEvent("akij_endpoint_not_configured_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Schema in .graphql file' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjSchemaInGraphqlFileQuickFix() : TelemetryEvent("akij_schema_in_graphql_file_quickfix", null)
+
+  /**
+   * User applied the 'ignore field' quickfix for the 'Unused field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedFieldIgnoreFieldQuickFix() : TelemetryEvent("akij_unused_field_ignore_field_quickfix", null)
+
+  /**
+   * User applied the 'delete field' quickfix for the 'Unused field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedFieldDeleteFieldQuickFix() : TelemetryEvent("akij_unused_field_delete_field_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Unused operation' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedOperationQuickFix() : TelemetryEvent("akij_unused_operation_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'High latency field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjHighLatencyFieldQuickFix() : TelemetryEvent("akij_high_latency_field_quickfix", null)
 }
 
 class TelemetryEventList {

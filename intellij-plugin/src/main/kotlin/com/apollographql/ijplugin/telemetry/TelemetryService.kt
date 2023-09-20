@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.telemetry
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.action.ApolloToolsActionGroup
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection
@@ -57,6 +58,9 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.Service
@@ -94,6 +98,13 @@ class TelemetryService(
     startObserveLibraries()
 
     maybeShowTelemetryOptOutDialog()
+
+    // TODO
+    (ActionManager.getInstance().getAction("ApolloToolsActionGroup") as ApolloToolsActionGroup).add(object : AnAction("Send Telemetry") {
+      override fun actionPerformed(e: AnActionEvent) {
+        sendTelemetry()
+      }
+    })
   }
 
   private fun startObserveLibraries() {
@@ -154,6 +165,8 @@ class TelemetryService(
     val telemetrySession = buildTelemetrySession()
     logd("telemetrySession=$telemetrySession")
     telemetrySession.properties.forEach { logd(it) }
+    logd("---")
+    telemetrySession.events.forEach { logd(it) }
   }
 
   private fun maybeShowTelemetryOptOutDialog() {

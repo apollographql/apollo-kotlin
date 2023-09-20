@@ -2,6 +2,8 @@ package com.apollographql.ijplugin.gradle
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
@@ -28,6 +30,7 @@ class DownloadSchemaAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val project = e.project ?: return
+    project.telemetryService.addEvent(TelemetryEvent.ApolloIjDownloadSchema())
     DownloadSchemaTask(project).queue()
   }
 

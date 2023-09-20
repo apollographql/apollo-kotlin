@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.navigation.compat.KotlinFindUsagesHandlerFactoryCompat
 import com.apollographql.ijplugin.navigation.findKotlinOperationDefinitions
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.util.isProcessCanceled
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -19,7 +20,7 @@ class ApolloUnusedOperationInspection : LocalInspectionTool() {
           holder.registerProblem(
               o,
               ApolloBundle.message("inspection.unusedOperation.reportText"),
-              DeleteElementQuickFix("inspection.unusedOperation.quickFix") { it }
+              DeleteElementQuickFix(label = "inspection.unusedOperation.quickFix", telemetryEvent = { TelemetryEvent.ApolloIjUnusedOperationQuickFix() }) { it }
           )
         }
       }

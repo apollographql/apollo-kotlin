@@ -3,7 +3,10 @@ package com.apollographql.ijplugin.inspection
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.getMethodName
+import com.apollographql.ijplugin.util.isPreviewMode
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalInspectionTool
@@ -155,6 +158,7 @@ object Apollo4AvailableQuickFix : LocalQuickFix {
   override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+    if (!descriptor.isPreviewMode()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjApollo4AvailableQuickFix())
     val action = ActionManager.getInstance().getAction(ApolloV3ToV4MigrationAction.ACTION_ID)
     ActionManager.getInstance().tryToExecute(action, null, null, null, false)
   }
