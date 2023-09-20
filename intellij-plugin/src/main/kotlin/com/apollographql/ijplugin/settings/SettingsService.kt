@@ -66,17 +66,17 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       _state.telemetryInstanceId = value
     }
 
-  override var telemetryOptIn: Boolean
-    get() = _state.telemetryOptIn
+  override var telemetryEnabled: Boolean
+    get() = _state.telemetryEnabled
     set(value) {
-      _state.telemetryOptIn = value
+      _state.telemetryEnabled = value
       notifySettingsChanged()
     }
 
-  override var hasShownTelemetryOptInDialog: Boolean
-    get() = _state.hasShownTelemetryOptInDialog
+  override var hasShownTelemetryOptOutDialog: Boolean
+    get() = _state.hasShownTelemetryOptOutDialog
     set(value) {
-      _state.hasShownTelemetryOptInDialog = value
+      _state.hasShownTelemetryOptOutDialog = value
     }
 
   private var lastNotifiedSettingsState: SettingsState? = null
@@ -106,8 +106,8 @@ interface SettingsState {
   var contributeConfigurationToGraphqlPlugin: Boolean
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
   var telemetryInstanceId: String
-  var telemetryOptIn: Boolean
-  var hasShownTelemetryOptInDialog: Boolean
+  var telemetryEnabled: Boolean
+  var hasShownTelemetryOptOutDialog: Boolean
 }
 
 data class ApolloKotlinServiceConfiguration(
@@ -143,8 +143,8 @@ data class SettingsStateImpl(
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
     override var telemetryInstanceId: String = "",
-    override var telemetryOptIn: Boolean = false,
-    override var hasShownTelemetryOptInDialog: Boolean = false,
+    override var telemetryEnabled: Boolean = true,
+    override var hasShownTelemetryOptOutDialog: Boolean = false,
 ) : SettingsState
 
 

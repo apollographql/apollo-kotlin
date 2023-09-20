@@ -156,7 +156,7 @@
 
     <notificationGroup
         id="apollo.telemetry"
-        displayType="STICKY_BALLOON"
+        displayType="BALLOON"
         key="notification.group.apollo.telemetry"
     />
 

@@ -18,7 +18,7 @@ class SettingsComponent(private val project: Project) {
   private val propertyGraph = PropertyGraph()
   private val automaticCodegenTriggeringProperty = propertyGraph.property(false)
   private val contributeConfigurationToGraphqlPluginProperty = propertyGraph.property(false)
-  private val telemetryOptInProperty = propertyGraph.property(false)
+  private val telemetryEnabledProperty = propertyGraph.property(false)
 
   var automaticCodegenTriggering: Boolean by automaticCodegenTriggeringProperty
   var contributeConfigurationToGraphqlPlugin: Boolean by contributeConfigurationToGraphqlPluginProperty
@@ -27,7 +27,7 @@ class SettingsComponent(private val project: Project) {
     set(value) {
       addEditRemovePanel?.data = value.toMutableList()
     }
-  var telemetryOptIn: Boolean by telemetryOptInProperty
+  var telemetryEnabled: Boolean by telemetryEnabledProperty
 
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
   private var addEditRemovePanel: AddEditRemovePanel<ApolloKotlinServiceConfiguration>? = null
@@ -101,9 +101,9 @@ class SettingsComponent(private val project: Project) {
       }
     }
     row {
-      checkBox(ApolloBundle.message("settings.telemetry.telemetryOptIn.text"))
-          .comment(ApolloBundle.message("settings.telemetry.telemetryOptIn.comment"))
-          .bindSelected(telemetryOptInProperty)
+      checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+          .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+          .bindSelected(telemetryEnabledProperty)
     }
   }
 

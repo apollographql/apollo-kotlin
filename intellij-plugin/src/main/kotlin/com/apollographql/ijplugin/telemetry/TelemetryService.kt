@@ -74,7 +74,7 @@ class TelemetryService(
     onLibrariesChanged()
     startObserveLibraries()
 
-    maybeShowTelemetryOptInDialog()
+    maybeShowTelemetryOptOutDialog()
   }
 
   private fun startObserveLibraries() {
@@ -121,23 +121,19 @@ class TelemetryService(
     telemetrySession.properties.forEach { logd(it) }
   }
 
-  private fun maybeShowTelemetryOptInDialog() {
-    if (project.settingsState.hasShownTelemetryOptInDialog) return
-    project.settingsState.hasShownTelemetryOptInDialog = true
+  private fun maybeShowTelemetryOptOutDialog() {
+    if (project.settingsState.hasShownTelemetryOptOutDialog) return
+    project.settingsState.hasShownTelemetryOptOutDialog = true
     createNotification(
         notificationGroupId = NOTIFICATION_GROUP_ID_TELEMETRY,
-        title = ApolloBundle.message("telemetry.optInDialog.title"),
-        content = ApolloBundle.message("telemetry.optInDialog.content"),
+        title = ApolloBundle.message("telemetry.optOutDialog.title"),
+        content = ApolloBundle.message("telemetry.optOutDialog.content"),
         type = NotificationType.INFORMATION,
-        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.optOut")) { _, notification ->
-          project.settingsState.telemetryOptIn = false
+        NotificationAction.create(ApolloBundle.message("telemetry.optOutDialog.optOut")) { _, notification ->
+          project.settingsState.telemetryEnabled = false
           notification.expire()
         },
-        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.optIn")) { _, notification ->
-          project.settingsState.telemetryOptIn = true
-          notification.expire()
-        },
-        NotificationAction.create(ApolloBundle.message("telemetry.optInDialog.learnMore")) { _, _ ->
+        NotificationAction.create(ApolloBundle.message("telemetry.optOutDialog.learnMore")) { _, _ ->
           BrowserUtil.browse(DATA_PRIVACY_URL, project)
         },
     )
