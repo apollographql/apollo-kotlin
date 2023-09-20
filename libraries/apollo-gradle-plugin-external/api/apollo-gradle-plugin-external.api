@@ -35,6 +35,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public static final field VERSION_MINOR I
 	public abstract fun getProjectName ()Ljava/lang/String;
 	public abstract fun getServiceInfos ()Ljava/util/List;
+	public abstract fun getTelemetryData ()Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData;
 	public abstract fun getVersionMajor ()I
 	public abstract fun getVersionMinor ()I
 }
@@ -51,6 +52,48 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getSchemaFiles ()Ljava/util/Set;
 	public abstract fun getUpstreamProjects ()Ljava/util/Set;
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData {
+	public abstract fun getAndroidAgpVersion ()Ljava/lang/String;
+	public abstract fun getAndroidCompileSdk ()Ljava/lang/String;
+	public abstract fun getAndroidMinSdk ()Ljava/lang/Integer;
+	public abstract fun getAndroidTargetSdk ()Ljava/lang/Integer;
+	public abstract fun getApolloGenerateSourcesDuringGradleSync ()Ljava/lang/Boolean;
+	public abstract fun getApolloLinkSqlite ()Ljava/lang/Boolean;
+	public abstract fun getApolloServiceCount ()I
+	public abstract fun getApolloServiceTelemetryData ()Ljava/util/List;
+	public abstract fun getApolloUseAntlr ()Ljava/lang/Boolean;
+	public abstract fun getGradleVersion ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData$ServiceTelemetryData {
+	public abstract fun getAddJvmOverloads ()Ljava/lang/Boolean;
+	public abstract fun getAddTypename ()Ljava/lang/String;
+	public abstract fun getCodegenModels ()Ljava/lang/String;
+	public abstract fun getDecapitalizeFields ()Ljava/lang/Boolean;
+	public abstract fun getFailOnWarnings ()Ljava/lang/Boolean;
+	public abstract fun getFieldsOnDisjointTypesMustMerge ()Ljava/lang/Boolean;
+	public abstract fun getFlattenModels ()Ljava/lang/Boolean;
+	public abstract fun getGenerateApolloMetadata ()Ljava/lang/Boolean;
+	public abstract fun getGenerateAsInternal ()Ljava/lang/Boolean;
+	public abstract fun getGenerateDataBuilders ()Ljava/lang/Boolean;
+	public abstract fun getGenerateFragmentImplementations ()Ljava/lang/Boolean;
+	public abstract fun getGenerateInputBuilders ()Ljava/lang/Boolean;
+	public abstract fun getGenerateKotlinModels ()Ljava/lang/Boolean;
+	public abstract fun getGenerateMethods ()Ljava/util/List;
+	public abstract fun getGenerateModelBuilders ()Ljava/lang/Boolean;
+	public abstract fun getGenerateOptionalOperationVariables ()Ljava/lang/Boolean;
+	public abstract fun getGeneratePrimitiveTypes ()Ljava/lang/Boolean;
+	public abstract fun getGenerateQueryDocument ()Ljava/lang/Boolean;
+	public abstract fun getGenerateSchema ()Ljava/lang/Boolean;
+	public abstract fun getJsExport ()Ljava/lang/Boolean;
+	public abstract fun getLanguageVersion ()Ljava/lang/String;
+	public abstract fun getNullableFieldStyle ()Ljava/lang/String;
+	public abstract fun getOperationManifestFormat ()Ljava/lang/String;
+	public abstract fun getUseSemanticNaming ()Ljava/lang/Boolean;
+	public abstract fun getUsedOptions ()Ljava/util/Set;
+	public abstract fun getWarnOnDeprecatedUsages ()Ljava/lang/Boolean;
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Introspection {
