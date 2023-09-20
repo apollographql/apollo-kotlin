@@ -10,7 +10,6 @@ import org.gradle.tooling.provider.model.ToolingModelBuilder
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 import javax.inject.Inject
 
-@Suppress("UnstableApiUsage")
 open class ApolloPlugin
 @Inject
 constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plugin<Project> {
@@ -26,6 +25,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
             return DefaultApolloGradleToolingModel(
                 projectName = project.name,
                 serviceInfos = apolloExtension.getServiceInfos(project),
+                telemetryData = getTelemetryData(project, apolloExtension),
             )
           }
         }
