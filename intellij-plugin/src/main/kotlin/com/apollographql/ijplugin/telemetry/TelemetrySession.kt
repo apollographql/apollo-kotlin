@@ -208,6 +208,36 @@ sealed class TelemetryProperty(
    * Number of Apollo Kotlin modules (modules that apply the Apollo Kotlin Gradle plugin).
    */
   class ApolloKotlinModuleCount(moduleCount: Int) : TelemetryProperty("ak_module_count", moduleCount)
+
+  /**
+   * Name and version of the IDE.
+   */
+  class IdeVersion(version: String) : TelemetryProperty("ide_version", version)
+
+  /**
+   * Version of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginVersion(version: String) : TelemetryProperty("akij_version", version)
+
+  /**
+   * Whether the Apollo Kotlin IntelliJ plugin option `automaticCodegenTriggering` is enabled.
+   */
+  class ApolloIjPluginAutomaticCodegenTriggering(automaticCodegenTriggering: Boolean) : TelemetryProperty("akij_automatic_codegen_triggering", automaticCodegenTriggering)
+
+  /**
+   * Whether the Apollo Kotlin IntelliJ plugin option `contributeConfigurationToGraphqlPlugin` is enabled.
+   */
+  class ApolloIjPluginContributeConfigurationToGraphqlPlugin(contributeConfigurationToGraphqlPlugin: Boolean) : TelemetryProperty("akij_contribute_configuration_to_graphql_plugin", contributeConfigurationToGraphqlPlugin)
+
+  /**
+   * Whether any GraphOS API key are configured in the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginHasConfiguredGraphOsApiKeys(hasConfiguredGraphOsApiKeys: Boolean) : TelemetryProperty("akij_has_configured_graphos_api_keys", hasConfiguredGraphOsApiKeys)
+
+  /**
+   * Value of the `threshold` option of the 'High latency field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginHighLatencyFieldThreshold(threshold: Int) : TelemetryProperty("akij_high_latency_field_threshold", threshold)
 }
 
 sealed class TelemetryEvent(

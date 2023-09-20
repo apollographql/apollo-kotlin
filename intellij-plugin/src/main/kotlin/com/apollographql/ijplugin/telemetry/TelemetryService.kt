@@ -4,6 +4,7 @@ import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidCompileSdk
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidGradlePluginVersion
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidMinSdk
@@ -28,6 +29,11 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloGeneratePrim
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloGenerateQueryDocument
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloGenerateSchema
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloGenerateSourcesDuringGradleSync
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloIjPluginAutomaticCodegenTriggering
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloIjPluginContributeConfigurationToGraphqlPlugin
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloIjPluginHasConfiguredGraphOsApiKeys
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloIjPluginHighLatencyFieldThreshold
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloIjPluginVersion
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloJsExport
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloKotlinModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloLanguageVersion
@@ -40,19 +46,27 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloUsedOptions
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloWarnOnDeprecatedUsages
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleVersion
+import com.apollographql.ijplugin.telemetry.TelemetryProperty.IdeVersion
 import com.apollographql.ijplugin.util.NOTIFICATION_GROUP_ID_TELEMETRY
+import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.createNotification
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
 import com.intellij.ide.BrowserUtil
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationNamesInfo
+import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.roots.ModuleRootListener
+import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
+
 
 private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos/data-privacy/"
 
@@ -107,12 +121,28 @@ class TelemetryService(
       addAll(gradleToolingModels.flatMap { it.toTelemetryProperties() })
       gradleModuleCount?.let { add(GradleModuleCount(it)) }
       apolloKotlinModuleCount?.let { add(ApolloKotlinModuleCount(it)) }
+      addAll(getIdeTelemetryProperties())
     }
     return TelemetrySession(
         instanceId = project.settingsState.telemetryInstanceId,
         properties = properties,
         events = telemetryEventList.events,
     )
+  }
+
+  private fun getIdeTelemetryProperties(): Set<TelemetryProperty> = buildSet {
+    var appName = ApplicationInfoEx.getInstanceEx().fullApplicationName
+    ApplicationNamesInfo.getInstance().editionName?.let { edition ->
+      appName += " ($edition)"
+    }
+    add(IdeVersion(appName))
+    PluginManagerCore.getPlugin(PluginId.getId("com.apollographql.ijplugin"))?.version?.let { add(ApolloIjPluginVersion(it)) }
+    add(ApolloIjPluginAutomaticCodegenTriggering(project.settingsState.automaticCodegenTriggering))
+    add(ApolloIjPluginContributeConfigurationToGraphqlPlugin(project.settingsState.contributeConfigurationToGraphqlPlugin))
+    add(ApolloIjPluginHasConfiguredGraphOsApiKeys(project.settingsState.apolloKotlinServiceConfigurations.isNotEmpty()))
+    ProjectInspectionProfileManager.getInstance(project).currentProfile.getInspectionTool("ApolloFieldInsights", project)?.tool?.cast<ApolloFieldInsightsInspection>()?.let {
+      add(ApolloIjPluginHighLatencyFieldThreshold(it.thresholdMs))
+    }
   }
 
   override fun dispose() {
