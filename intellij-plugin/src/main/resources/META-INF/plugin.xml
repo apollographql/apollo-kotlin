@@ -253,14 +253,6 @@
       <add-to-group group-id="ApolloToolsActionGroup" />
     </action>
 
-    <!-- Tools / Apollo / Send telemetry (TODO debug only, remove before shipping -->
-    <action
-        id="SendTelemetryAction"
-        class="com.apollographql.ijplugin.telemetry.SendTelemetryAction"
-    >
-      <add-to-group group-id="ApolloToolsActionGroup" />
-    </action>
-
   </actions>
 
 </idea-plugin>
