@@ -210,6 +210,11 @@ sealed class TelemetryProperty(
   class IdeVersion(version: String) : TelemetryProperty("ide_version", version)
 
   /**
+   * OS running the IDE.
+   */
+  class IdeOS(os: String) : TelemetryProperty("ide_os", os)
+
+  /**
    * Version of the Apollo Kotlin IntelliJ plugin.
    */
   class ApolloIjPluginVersion(version: String) : TelemetryProperty("akij_version", version)

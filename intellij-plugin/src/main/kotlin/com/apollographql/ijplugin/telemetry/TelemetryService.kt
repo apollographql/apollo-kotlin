@@ -146,6 +146,7 @@ class TelemetryService(
       appName += " ($edition)"
     }
     add(IdeVersion(appName))
+    System.getProperties().getProperty("os.name")?.let { add(TelemetryProperty.IdeOS(it)) }
     PluginManagerCore.getPlugin(PluginId.getId("com.apollographql.ijplugin"))?.version?.let { add(ApolloIjPluginVersion(it)) }
     add(ApolloIjPluginAutomaticCodegenTriggering(project.settingsState.automaticCodegenTriggering))
     add(ApolloIjPluginContributeConfigurationToGraphqlPlugin(project.settingsState.contributeConfigurationToGraphqlPlugin))
