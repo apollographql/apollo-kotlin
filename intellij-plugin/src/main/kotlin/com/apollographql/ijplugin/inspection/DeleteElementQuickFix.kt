@@ -3,8 +3,8 @@ package com.apollographql.ijplugin.inspection
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
-import com.apollographql.ijplugin.util.isPreviewMode
 import com.intellij.codeInsight.intention.FileModifier.SafeFieldForPreview
+import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
@@ -24,7 +24,7 @@ class DeleteElementQuickFix(
   override fun getFamilyName() = name
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    if (!descriptor.isPreviewMode()) project.telemetryService.addEvent(telemetryEvent())
+    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(telemetryEvent())
     elementToDelete(descriptor.psiElement).delete()
   }
 }

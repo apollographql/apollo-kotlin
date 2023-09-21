@@ -3,8 +3,8 @@ package com.apollographql.ijplugin.inspection
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
-import com.apollographql.ijplugin.util.isPreviewMode
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -51,7 +51,7 @@ class ApolloSchemaInGraphqlFileInspection : LocalInspectionTool() {
     override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      if (!descriptor.isPreviewMode()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjSchemaInGraphqlFileQuickFix())
+      if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjSchemaInGraphqlFileQuickFix())
       val psiFile = descriptor.psiElement.containingFile
       val newName = psiFile.name.replace(".graphql", ".graphqls")
       psiFile.virtualFile.rename(this, newName)

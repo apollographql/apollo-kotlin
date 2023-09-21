@@ -5,7 +5,7 @@ import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.findChildrenOfType
-import com.apollographql.ijplugin.util.isPreviewMode
+import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -103,7 +103,7 @@ class ApolloFieldInsightsInspection : LocalInspectionTool() {
     override fun getFamilyName() = name
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      if (!descriptor.isPreviewMode()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjHighLatencyFieldQuickFix())
+      if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjHighLatencyFieldQuickFix())
       val resolvedIdentifier = descriptor.psiElement.reference?.resolve() as? GraphQLIdentifier ?: return
       val typeDefinition = resolvedIdentifier.findParentOfType<GraphQLTypeDefinition>() ?: return
       val typeName = typeDefinition.findChildrenOfType<GraphQLTypeNameDefinition>().firstOrNull()?.name ?: return

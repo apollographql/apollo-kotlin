@@ -5,8 +5,8 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.getMethodName
-import com.apollographql.ijplugin.util.isPreviewMode
 import com.apollographql.ijplugin.util.lambdaBlockExpression
+import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -41,7 +41,7 @@ object AddIntrospectionBlockQuickFix : LocalQuickFix {
   override fun getFamilyName() = name
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    if (!descriptor.isPreviewMode()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjEndpointNotConfiguredQuickFix())
+    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjEndpointNotConfiguredQuickFix())
     val callExpression = descriptor.psiElement.parent as KtCallExpression
     val serviceBlockExpression = callExpression.lambdaBlockExpression() ?: return
     val ktFactory = KtPsiFactory(project)
