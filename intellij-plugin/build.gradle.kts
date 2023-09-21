@@ -110,6 +110,9 @@ tasks {
     if (project.hasProperty("apolloIntellijPlugin.ideDir")) {
       ideDir.set(file(project.property("apolloIntellijPlugin.ideDir")!!))
     }
+
+    // Uncomment to disable internal mode - see https://plugins.jetbrains.com/docs/intellij/enabling-internal.html
+    // systemProperty("idea.is.internal", "false")
   }
 
   signPlugin {

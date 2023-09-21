@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logd
+import com.apollographql.ijplugin.util.urlEncoded
 import com.intellij.ide.BrowserUtil
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.ide.config.model.GraphQLConfigEndpoint
@@ -21,7 +22,6 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.parentOfType
-import java.net.URLEncoder
 
 class OpenInSandboxAction : AnAction(
     ApolloBundle.messagePointer("SandboxService.OpenInSandboxAction.text"),
@@ -109,7 +109,5 @@ class OpenInSandboxAction : AnAction(
 
   override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }
-
-private fun String.urlEncoded() = URLEncoder.encode(this, "UTF-8")
 
 private fun Map<String, Any?>.formatAsJson() = "{" + map { (key, value) -> """"$key": "$value"""" }.joinToString() + "}"
