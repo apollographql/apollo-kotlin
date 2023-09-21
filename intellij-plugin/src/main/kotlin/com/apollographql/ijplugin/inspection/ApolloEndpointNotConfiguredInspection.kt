@@ -41,7 +41,7 @@ object AddIntrospectionBlockQuickFix : LocalQuickFix {
   override fun getFamilyName() = name
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjEndpointNotConfiguredQuickFix())
+    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjEndpointNotConfiguredQuickFix())
     val callExpression = descriptor.psiElement.parent as KtCallExpression
     val serviceBlockExpression = callExpression.lambdaBlockExpression() ?: return
     val ktFactory = KtPsiFactory(project)

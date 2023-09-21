@@ -48,7 +48,7 @@ class OpenInSandboxAction : AnAction(
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val project = e.project ?: return
-    project.telemetryService.addEvent(TelemetryEvent.ApolloIjOpenInApolloSandbox())
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjOpenInApolloSandbox())
 
     // Editor will be present if the action is triggered from the editor toolbar, the main menu, the Open In popup inside the editor
     // Otherwise it will be null, and we fallback to the File (but no endpoint / variables)

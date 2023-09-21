@@ -158,7 +158,7 @@ object Apollo4AvailableQuickFix : LocalQuickFix {
   override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjApollo4AvailableQuickFix())
+    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjApollo4AvailableQuickFix())
     val action = ActionManager.getInstance().getAction(ApolloV3ToV4MigrationAction.ACTION_ID)
     ActionManager.getInstance().tryToExecute(action, null, null, null, false)
   }

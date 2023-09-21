@@ -110,7 +110,7 @@ class TelemetryService(
     projectLibraries = project.getProjectDependencies()
   }
 
-  fun addEvent(telemetryEvent: TelemetryEvent) {
+  fun logEvent(telemetryEvent: TelemetryEvent) {
     telemetryEventList.addEvent(telemetryEvent)
   }
 

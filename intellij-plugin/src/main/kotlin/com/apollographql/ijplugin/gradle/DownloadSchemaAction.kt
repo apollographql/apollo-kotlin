@@ -30,7 +30,7 @@ class DownloadSchemaAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val project = e.project ?: return
-    project.telemetryService.addEvent(TelemetryEvent.ApolloIjDownloadSchema())
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjDownloadSchema())
     DownloadSchemaTask(project).queue()
   }
 

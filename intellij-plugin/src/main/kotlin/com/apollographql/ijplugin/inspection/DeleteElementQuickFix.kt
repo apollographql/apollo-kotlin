@@ -24,7 +24,7 @@ class DeleteElementQuickFix(
   override fun getFamilyName() = name
 
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(telemetryEvent())
+    if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(telemetryEvent())
     elementToDelete(descriptor.psiElement).delete()
   }
 }

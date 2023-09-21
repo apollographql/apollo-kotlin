@@ -20,7 +20,7 @@ class ApolloV3ToV4MigrationAction : AnAction() {
 
   override fun actionPerformed(e: AnActionEvent) {
     logd()
-    e.project?.telemetryService?.addEvent(TelemetryEvent.ApolloIjMigrateToApollo4())
+    e.project?.telemetryService?.logEvent(TelemetryEvent.ApolloIjMigrateToApollo4())
     val okCancelResult = Messages.showOkCancelDialog(
         e.project,
         ApolloBundle.message("action.ApolloV3ToV4MigrationAction.confirmDialog.message"),

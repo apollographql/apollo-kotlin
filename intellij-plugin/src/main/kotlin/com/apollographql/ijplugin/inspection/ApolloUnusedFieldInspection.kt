@@ -114,7 +114,7 @@ class ApolloUnusedFieldInspection : LocalInspectionTool() {
     override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo = IntentionPreviewInfo.EMPTY
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.addEvent(TelemetryEvent.ApolloIjUnusedFieldIgnoreFieldQuickFix())
+      if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjUnusedFieldIgnoreFieldQuickFix())
       fieldsToIgnore += fieldCoordinates.replace(".", "\\.")
 
       // Save the inspection settings

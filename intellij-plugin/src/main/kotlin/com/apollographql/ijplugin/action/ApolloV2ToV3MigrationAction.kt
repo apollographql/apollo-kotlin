@@ -16,7 +16,7 @@ import com.intellij.openapi.ui.Messages
 class ApolloV2ToV3MigrationAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     logd()
-    e.project?.telemetryService?.addEvent(TelemetryEvent.ApolloIjMigrateToApollo3())
+    e.project?.telemetryService?.logEvent(TelemetryEvent.ApolloIjMigrateToApollo3())
     val okCancelResult = Messages.showOkCancelDialog(
         e.project,
         ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.message"),
