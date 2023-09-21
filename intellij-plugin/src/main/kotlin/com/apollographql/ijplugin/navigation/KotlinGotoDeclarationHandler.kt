@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.util.originalClassName
 import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler
@@ -54,7 +55,7 @@ class KotlinGotoDeclarationHandler : GotoDeclarationHandler {
 
     return buildList {
       // Add GraphQL definition(s)
-      addAll(graphQLDefinitions)
+      addAll(graphQLDefinitions.map { it.logNavigation { TelemetryEvent.ApolloIjNavigateToGraphQl() } })
 
       // Add the original referred to element
       val resolvedElement = nameReferenceExpression.resolveKtName()

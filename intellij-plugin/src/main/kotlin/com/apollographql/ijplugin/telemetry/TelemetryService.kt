@@ -111,6 +111,7 @@ class TelemetryService(
   }
 
   fun logEvent(telemetryEvent: TelemetryEvent) {
+    logd("telemetryEvent=$telemetryEvent")
     telemetryEventList.addEvent(telemetryEvent)
   }
 

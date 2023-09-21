@@ -44,8 +44,8 @@ class KotlinDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
         .setTargets(graphQLDefinitions)
         .setTooltipText(ApolloBundle.message("navigation.GraphQLDefinitionMarkerProvider.tooltip", psiLeaf.text))
         .createLineMarkerInfo(psiLeaf) { e, _ ->
-          // This behavior is already handled by NavigationGutterIcon, but we re-implement it here in order to log a telemetry event
-          element.project.telemetryService.logEvent(TelemetryEvent.ApolloIjNavigateToGraphQl("marker"))
+          // This behavior is already handled by NavigationGutterIcon, but we re-implement it here in order to log the telemetry event
+          element.project.telemetryService.logEvent(TelemetryEvent.ApolloIjMarkerToGraphQl())
           if (graphQLDefinitions.size == 1) {
             graphQLDefinitions[0].navigate()
           } else {
