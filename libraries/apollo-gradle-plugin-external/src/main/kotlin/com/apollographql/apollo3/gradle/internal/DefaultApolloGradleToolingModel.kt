@@ -31,7 +31,6 @@ internal data class DefaultTelemetryData(
     override val apolloServiceTelemetryData: List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData>,
     override val apolloGenerateSourcesDuringGradleSync: Boolean?,
     override val apolloLinkSqlite: Boolean?,
-    override val apolloUseAntlr: Boolean?,
     override val apolloServiceCount: Int,
 ) : ApolloGradleToolingModel.TelemetryData, Serializable
 

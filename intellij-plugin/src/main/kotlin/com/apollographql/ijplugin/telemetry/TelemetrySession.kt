@@ -190,11 +190,6 @@ sealed class TelemetryProperty(
   class ApolloLinkSqlite(linkSqlite: Boolean) : TelemetryProperty("ak_link_sqlite", linkSqlite)
 
   /**
-   * Value of the Apollo Kotlin option `useAntlr` if set.
-   */
-  class ApolloUseAntlr(useAntlr: Boolean) : TelemetryProperty("ak_use_antlr", useAntlr)
-
-  /**
    * Number of defined services.
    */
   class ApolloServiceCount(serviceCount: Int) : TelemetryProperty("ak_service_count", serviceCount)

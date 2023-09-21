@@ -41,7 +41,6 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloLanguageVers
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloLinkSqlite
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloNullableFieldStyle
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloServiceCount
-import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloUseAntlr
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloUseSemanticNaming
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloUsedOptions
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloWarnOnDeprecatedUsages
@@ -208,7 +207,6 @@ private fun ApolloGradleToolingModel.toTelemetryProperties(): Set<TelemetryPrope
 
     apolloGenerateSourcesDuringGradleSync?.let { add(ApolloGenerateSourcesDuringGradleSync(it)) }
     apolloLinkSqlite?.let { add(ApolloLinkSqlite(it)) }
-    apolloUseAntlr?.let { add(ApolloUseAntlr(it)) }
     add(ApolloServiceCount(apolloServiceCount))
 
     apolloServiceTelemetryData.forEach {
