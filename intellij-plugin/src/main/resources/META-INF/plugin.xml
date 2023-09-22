@@ -160,6 +160,8 @@
         key="notification.group.apollo.telemetry"
     />
 
+    <!-- Error handler: open a GitHub issue -->
+    <errorHandler implementation="com.apollographql.ijplugin.error.GitHubIssueErrorReportSubmitter" />
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
@@ -258,6 +260,34 @@
     >
       <add-to-group group-id="ApolloToolsActionGroup" />
     </action>
+
+    <!-- Tools / Apollo / Internal group that only appears when run from the IDE ("internal mode") -->
+    <!-- See https://plugins.jetbrains.com/docs/intellij/enabling-internal.html -->
+    <group
+        id="ApolloInternalActionGroup"
+        popup="true"
+        class="com.intellij.openapi.actionSystem.DefaultActionGroup"
+        internal="true"
+    >
+      <add-to-group group-id="ApolloToolsActionGroup" anchor="last" />
+    </group>
+
+    <!-- Tools / Apollo / Internal / Send telemetry -->
+    <action
+        id="SendTelemetryAction"
+        class="com.apollographql.ijplugin.telemetry.SendTelemetryAction"
+    >
+      <add-to-group group-id="ApolloInternalActionGroup" />
+    </action>
+
+    <!-- Tools / Apollo / Internal / Throw an exception -->
+    <action
+        id="ThrowAction"
+        class="com.apollographql.ijplugin.error.ThrowAction"
+    >
+      <add-to-group group-id="ApolloInternalActionGroup" />
+    </action>
+
 
   </actions>
 
