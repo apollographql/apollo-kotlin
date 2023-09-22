@@ -190,11 +190,6 @@ sealed class TelemetryProperty(
   class ApolloLinkSqlite(linkSqlite: Boolean) : TelemetryProperty("ak_link_sqlite", linkSqlite)
 
   /**
-   * Value of the Apollo Kotlin option `useAntlr` if set.
-   */
-  class ApolloUseAntlr(useAntlr: Boolean) : TelemetryProperty("ak_use_antlr", useAntlr)
-
-  /**
    * Number of defined services.
    */
   class ApolloServiceCount(serviceCount: Int) : TelemetryProperty("ak_service_count", serviceCount)
@@ -208,6 +203,41 @@ sealed class TelemetryProperty(
    * Number of Apollo Kotlin modules (modules that apply the Apollo Kotlin Gradle plugin).
    */
   class ApolloKotlinModuleCount(moduleCount: Int) : TelemetryProperty("ak_module_count", moduleCount)
+
+  /**
+   * Name and version of the IDE.
+   */
+  class IdeVersion(version: String) : TelemetryProperty("ide_version", version)
+
+  /**
+   * OS running the IDE.
+   */
+  class IdeOS(os: String) : TelemetryProperty("ide_os", os)
+
+  /**
+   * Version of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginVersion(version: String) : TelemetryProperty("akij_version", version)
+
+  /**
+   * Whether the Apollo Kotlin IntelliJ plugin option `automaticCodegenTriggering` is enabled.
+   */
+  class ApolloIjPluginAutomaticCodegenTriggering(automaticCodegenTriggering: Boolean) : TelemetryProperty("akij_automatic_codegen_triggering", automaticCodegenTriggering)
+
+  /**
+   * Whether the Apollo Kotlin IntelliJ plugin option `contributeConfigurationToGraphqlPlugin` is enabled.
+   */
+  class ApolloIjPluginContributeConfigurationToGraphqlPlugin(contributeConfigurationToGraphqlPlugin: Boolean) : TelemetryProperty("akij_contribute_configuration_to_graphql_plugin", contributeConfigurationToGraphqlPlugin)
+
+  /**
+   * Whether any GraphOS API key are configured in the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginHasConfiguredGraphOsApiKeys(hasConfiguredGraphOsApiKeys: Boolean) : TelemetryProperty("akij_has_configured_graphos_api_keys", hasConfiguredGraphOsApiKeys)
+
+  /**
+   * Value of the `threshold` option of the 'High latency field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjPluginHighLatencyFieldThreshold(threshold: Int) : TelemetryProperty("akij_high_latency_field_threshold", threshold)
 }
 
 sealed class TelemetryEvent(
@@ -220,8 +250,80 @@ sealed class TelemetryEvent(
     return "TelemetryEvent(date=$date, type='$type', parameters=$parameters)"
   }
 
-  // TODO
-  class ExampleEvent(parameters: Any?) : TelemetryEvent("example", parameters)
+  /**
+   * User used the 'Migrate to Apollo Kotlin 3' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToApollo3 : TelemetryEvent("akij_migrate_to_apollo3", null)
+
+  /**
+   * User used the 'Migrate to Apollo Kotlin 4' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToApollo4 : TelemetryEvent("akij_migrate_to_apollo4", null)
+
+  /**
+   * User used the 'Migrate to operationBased codegen' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjMigrateToOperationBasedCodegen : TelemetryEvent("akij_migrate_to_operation_based_codegen", null)
+
+  /**
+   * User used the Apollo Kotlin IntelliJ plugin marker icon to navigate from Kotlin to the GraphQL source.
+   */
+  class ApolloIjMarkerToGraphQl : TelemetryEvent("akij_marker_to_graphql_element", null)
+
+  /**
+   * User used the Apollo Kotlin IntelliJ plugin action to navigate from Kotlin to the GraphQL source.
+   */
+  class ApolloIjNavigateToGraphQl : TelemetryEvent("akij_navigate_to_graphql_element", null)
+
+  /**
+   * User used the Apollo Kotlin IntelliJ plugin action to navigate from GraphQL to the Kotlin generated code.
+   */
+  class ApolloIjNavigateToKotlin : TelemetryEvent("akij_navigate_to_kotlin_element", null)
+
+  /**
+   * User used the 'Open in Apollo Sandbox' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjOpenInApolloSandbox : TelemetryEvent("akij_open_in_apollo_sandbox", null)
+
+  /**
+   * User used the 'Download schema' Apollo Kotlin IntelliJ plugin action.
+   */
+  class ApolloIjDownloadSchema : TelemetryEvent("akij_download_schema", null)
+
+  /**
+   * User applied the quickfix for the 'Apollo 4 available' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjApollo4AvailableQuickFix : TelemetryEvent("akij_apollo4_available_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Endpoint not configured' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjEndpointNotConfiguredQuickFix : TelemetryEvent("akij_endpoint_not_configured_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Schema in .graphql file' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjSchemaInGraphqlFileQuickFix : TelemetryEvent("akij_schema_in_graphql_file_quickfix", null)
+
+  /**
+   * User applied the 'ignore field' quickfix for the 'Unused field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedFieldIgnoreFieldQuickFix : TelemetryEvent("akij_unused_field_ignore_field_quickfix", null)
+
+  /**
+   * User applied the 'delete field' quickfix for the 'Unused field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedFieldDeleteFieldQuickFix : TelemetryEvent("akij_unused_field_delete_field_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'Unused operation' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjUnusedOperationQuickFix : TelemetryEvent("akij_unused_operation_quickfix", null)
+
+  /**
+   * User applied the quickfix for the 'High latency field' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjHighLatencyFieldQuickFix : TelemetryEvent("akij_high_latency_field_quickfix", null)
 }
 
 class TelemetryEventList {

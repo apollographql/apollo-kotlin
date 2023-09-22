@@ -2,6 +2,8 @@ package com.apollographql.ijplugin.studio.sandbox
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ide.BrowserUtil
 import com.intellij.lang.jsgraphql.GraphQLFileType
@@ -46,6 +48,7 @@ class OpenInSandboxAction : AnAction(
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val project = e.project ?: return
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjOpenInApolloSandbox())
 
     // Editor will be present if the action is triggered from the editor toolbar, the main menu, the Open In popup inside the editor
     // Otherwise it will be null, and we fallback to the File (but no endpoint / variables)

@@ -34,7 +34,6 @@ interface ApolloGradleToolingModel {
     val apolloServiceTelemetryData: List<ServiceTelemetryData>
     val apolloGenerateSourcesDuringGradleSync: Boolean?
     val apolloLinkSqlite: Boolean?
-    val apolloUseAntlr: Boolean?
     val apolloServiceCount: Int
 
     interface ServiceTelemetryData {
