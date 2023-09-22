@@ -79,11 +79,6 @@ internal class ExecutableValidationScope(
     if (globallyVisitedFragments.contains(name)) {
       return
     }
-    if (locallyVisitedFragments.contains(name)) {
-      registerIssue("Fragment '$name' spreads itself, creating a cycle at '${path.joinToString(".")}'", sourceLocation)
-      cyclicFragments.add(name)
-      return
-    }
     locallyVisitedFragments.add(name)
 
     if (typeDefinitions[typeCondition.name] == null) {
@@ -105,7 +100,16 @@ internal class ExecutableValidationScope(
         is GQLFragmentSpread -> {
           val fragment = fragmentDefinitions.get(it.name)
           if (fragment != null) {
-            fragment.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__${fragment.name}")
+            val name = fragment.name
+            val index = path.indexOf("__${name}")
+            val nextPath = path + "__${fragment.name}"
+            if (index != -1) {
+              registerIssue("Fragment '$name' spreads itself, creating a cycle at '${nextPath.subList(index, nextPath.size).joinToString(".")}'", it.sourceLocation)
+              cyclicFragments.add(name)
+              return@forEach
+            }
+
+            fragment.detectCycles(globallyVisitedFragments, locallyVisitedFragments, nextPath)
           }
         }
       }
@@ -120,10 +124,10 @@ internal class ExecutableValidationScope(
     }
 
     val globallyVisitedFragments = mutableSetOf<String>()
-    val locallyVisitedFragments = mutableSetOf<String>()
 
     fragmentDefinitions.forEach {
-      it.value.detectCycles(globallyVisitedFragments, locallyVisitedFragments, emptyList())
+      val locallyVisitedFragments = mutableSetOf<String>()
+      it.value.detectCycles(globallyVisitedFragments, locallyVisitedFragments, listOf("__${it.value.name}"))
       globallyVisitedFragments.addAll(locallyVisitedFragments)
     }
 

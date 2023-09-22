@@ -34,7 +34,7 @@ kotlin {
     }
     getByName("jvmMain") {
       dependencies {
-        implementation(libs.antlr.runtime)
+        api(libs.antlr.runtime)
       }
     }
     getByName("jvmTest") {
