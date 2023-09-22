@@ -1153,9 +1153,9 @@ public abstract interface class com/apollographql/apollo3/api/json/JsonWriter : 
 
 public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollographql/apollo3/api/json/JsonReader {
 	public static final field Companion Lcom/apollographql/apollo3/api/json/MapJsonReader$Companion;
-	public fun <init> (Ljava/util/Map;)V
-	public fun <init> (Ljava/util/Map;Ljava/util/List;)V
-	public synthetic fun <init> (Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public fun beginArray ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
 	public synthetic fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
@@ -1166,7 +1166,7 @@ public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollo
 	public synthetic fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public fun endObject ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
 	public fun getPath ()Ljava/util/List;
-	public final fun getRoot ()Ljava/util/Map;
+	public final fun getRoot ()Ljava/lang/Object;
 	public fun hasNext ()Z
 	public fun nextBoolean ()Z
 	public fun nextDouble ()D
