@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.settings
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
+import com.apollographql.ijplugin.telemetry.TELEMETRY_ENABLED
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -18,6 +19,7 @@ class SettingsComponent(private val project: Project) {
   private val propertyGraph = PropertyGraph()
   private val automaticCodegenTriggeringProperty = propertyGraph.property(false)
   private val contributeConfigurationToGraphqlPluginProperty = propertyGraph.property(false)
+  private val telemetryEnabledProperty = propertyGraph.property(false)
 
   var automaticCodegenTriggering: Boolean by automaticCodegenTriggeringProperty
   var contributeConfigurationToGraphqlPlugin: Boolean by contributeConfigurationToGraphqlPluginProperty
@@ -26,6 +28,7 @@ class SettingsComponent(private val project: Project) {
     set(value) {
       addEditRemovePanel?.data = value.toMutableList()
     }
+  var telemetryEnabled: Boolean by telemetryEnabledProperty
 
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
   private var addEditRemovePanel: AddEditRemovePanel<ApolloKotlinServiceConfiguration>? = null
@@ -96,6 +99,13 @@ class SettingsComponent(private val project: Project) {
               .horizontalAlign(HorizontalAlign.FILL)
               .comment(ApolloBundle.message("settings.studio.apiKeys.comment"))
         }
+      }
+    }
+    if (TELEMETRY_ENABLED) {
+      row {
+        checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+            .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+            .bindSelected(telemetryEnabledProperty)
       }
     }
   }
