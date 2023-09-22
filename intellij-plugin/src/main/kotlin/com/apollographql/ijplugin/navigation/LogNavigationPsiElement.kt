@@ -20,6 +20,12 @@ private class LogNavigationPsiElement(
     return wrapped.navigationElement
   }
 
+  override fun equals(other: Any?): Boolean = wrapped == other
+
+  override fun hashCode(): Int = wrapped.hashCode()
+
+  override fun toString(): String = wrapped.toString()
+
   // Hack: detect if we're only hovering over the element, which we don't want to log
   private fun isHovering(): Boolean = Thread.currentThread().stackTrace.any { it.methodName == "getCtrlMouseData" }
 }
