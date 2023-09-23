@@ -99,11 +99,7 @@ class LoggingInterceptor(
         val read = this@intercept.read(tmp, byteCount)
         buffer.writeAll(tmp.peek())
         while (true) {
-          val next = buffer.indexOf('\n'.code.toByte())
-          if (next == -1L) {
-            break
-          }
-          log(buffer.readUtf8Line()!!)
+          buffer.readUtf8Line()?.let { log(it) } ?: break
         }
         sink.writeAll(tmp)
         return read
