@@ -6,6 +6,25 @@ sealed class TelemetryProperty(
     val type: String,
     val parameters: Any?,
 ) {
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as TelemetryProperty
+
+    if (type != other.type) return false
+    if (parameters != other.parameters) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = type.hashCode()
+    result = 31 * result + (parameters?.hashCode() ?: 0)
+    return result
+  }
+
   override fun toString(): String {
     return "TelemetryProperty(type='$type', parameters=$parameters)"
   }

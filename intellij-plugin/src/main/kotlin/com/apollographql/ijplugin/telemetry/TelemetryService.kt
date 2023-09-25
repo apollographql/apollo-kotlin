@@ -3,6 +3,8 @@ package com.apollographql.ijplugin.telemetry
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
+import com.apollographql.ijplugin.settings.SettingsListener
+import com.apollographql.ijplugin.settings.SettingsState
 import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidCompileSdk
@@ -65,6 +67,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 
 private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos/data-privacy/"
@@ -73,6 +79,9 @@ private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos
  * TODO remove this
  */
 const val TELEMETRY_ENABLED = false
+
+private const val SEND_PERIOD_MINUTES = 30L
+
 
 @Service(Service.Level.PROJECT)
 class TelemetryService(
@@ -87,12 +96,18 @@ class TelemetryService(
 
   private var projectLibraries: Set<Dependency> = emptySet()
 
+  private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+  private var sendTelemetryFuture: ScheduledFuture<*>? = null
+  private var lastSentProperties: Set<TelemetryProperty>? = null
+
   init {
     logd("project=${project.name}")
     onLibrariesChanged()
     startObserveLibraries()
+    startObserveSettings()
 
     maybeShowTelemetryOptOutDialog()
+    scheduleSendTelemetry()
   }
 
   private fun startObserveLibraries() {
@@ -110,7 +125,23 @@ class TelemetryService(
     projectLibraries = project.getProjectDependencies()
   }
 
+  private fun startObserveSettings() {
+    logd()
+    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      var telemetryEnabled = project.settingsState.telemetryEnabled
+      override fun settingsChanged(settingsState: SettingsState) {
+        val telemetryEnabledChanged = telemetryEnabled != settingsState.telemetryEnabled
+        telemetryEnabled = settingsState.telemetryEnabled
+        logd("telemetryEnabledChanged=$telemetryEnabledChanged")
+        if (telemetryEnabledChanged) {
+          scheduleSendTelemetry()
+        }
+      }
+    })
+  }
+
   fun logEvent(telemetryEvent: TelemetryEvent) {
+    if (!project.settingsState.telemetryEnabled) return
     logd("telemetryEvent=$telemetryEvent")
     telemetryEventList.addEvent(telemetryEvent)
   }
@@ -146,14 +177,33 @@ class TelemetryService(
     }
   }
 
-  override fun dispose() {
-    logd("project=${project.name}")
+  private fun scheduleSendTelemetry() {
+    logd("telemetryEnabled=${project.settingsState.telemetryEnabled}")
+    sendTelemetryFuture?.cancel(true)
+    if (!project.settingsState.telemetryEnabled) return
+    sendTelemetryFuture = executor.scheduleAtFixedRate(::sendTelemetry, SEND_PERIOD_MINUTES, SEND_PERIOD_MINUTES, TimeUnit.MINUTES)
   }
 
   fun sendTelemetry() {
-    // TODO
     val telemetrySession = buildTelemetrySession()
     logd("telemetrySession=$telemetrySession")
+    val shouldSend = telemetrySession.events.isNotEmpty() || telemetrySession.properties != lastSentProperties
+    if (!shouldSend) {
+      logd("Telemetry data has not changed: not sending")
+      return
+    }
+    try {
+      doSendTelemetry(telemetrySession)
+      lastSentProperties = telemetrySession.properties
+      telemetryEventList.clear()
+    } catch (e: Exception) {
+      logd(e, "Could not send telemetry")
+    }
+  }
+
+  private fun doSendTelemetry(telemetrySession: TelemetrySession) {
+    logd()
+    // TODO Send to the network
     telemetrySession.properties.forEach { logd(it) }
     logd("---")
     telemetrySession.events.forEach { logd(it) }
@@ -180,6 +230,11 @@ class TelemetryService(
           icon = ApolloIcons.Action.ApolloColor
         }
         .notify(project)
+  }
+
+  override fun dispose() {
+    logd("project=${project.name}")
+    executor.shutdown()
   }
 }
 
