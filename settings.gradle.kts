@@ -16,9 +16,6 @@ rootProject.projectDir
     .filter { it.isDirectory }
     .filter { it.name.startsWith("apollo-") }
     .filter { File(it, "build.gradle.kts").exists() }
-    // Exclude compose modules for now due to a Compose incompatibility with Kotlin 1.9.20
-    // TODO remove this once Compose supports Kotlin 1.9.20
-    .filterNot { it.name.startsWith("apollo-compose") }
     .forEach {
       include(it.name)
       project(":${it.name}").projectDir = it
