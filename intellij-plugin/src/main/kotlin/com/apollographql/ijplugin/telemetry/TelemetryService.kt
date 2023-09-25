@@ -52,6 +52,7 @@ import com.apollographql.ijplugin.util.NOTIFICATION_GROUP_ID_TELEMETRY
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.createNotification
 import com.apollographql.ijplugin.util.logd
+import com.apollographql.ijplugin.util.logw
 import com.intellij.ProjectTopics
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManagerCore
@@ -197,7 +198,7 @@ class TelemetryService(
       lastSentProperties = telemetrySession.properties
       telemetryEventList.clear()
     } catch (e: Exception) {
-      logd(e, "Could not send telemetry")
+      logw(e, "Could not send telemetry")
     }
   }
 
