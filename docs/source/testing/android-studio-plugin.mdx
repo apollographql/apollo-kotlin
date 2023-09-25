@@ -90,3 +90,25 @@ For the plugin to be able to fetch the metrics, you need to configure your proje
 If you wish to try the latest features, you can install the weekly snapshots. To do so, add the following repository in <kbd>Settings</kbd> | <kbd>Plugins</kbd> | <kbd>⚙</kbd>️ | <kbd>Manage Plugin Repositories</kbd> | <kbd>+</kbd>: `https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml`.
 
 Then installing the plugin by searching "Apollo GraphQL" in the Marketplace will install the latest snapshot.
+
+## Privacy and data collection
+
+By default, the plugin collects some anonymous usage data to help us improve the product.
+
+**To opt out of data collection,** go to <kbd>Settings</kbd> | <kbd>Languages & Frameworks</kbd> | <kbd>
+GraphQL</kbd> | <kbd>Apollo Kotlin</kbd> and uncheck <kbd>Send usage statistics</kbd>.
+
+> The plugin doesn't collect *any* personally identifiable information (such as source code or file names). For more
+> information on how Apollo collects and uses this data,
+> see [our privacy policy](https://www.apollographql.com/docs/graphos/data-privacy/).
+
+### Collected data
+
+Unless you opt out, the plugin reports properties and events related to:
+
+- usage of the Apollo Kotlin library (e.g. which options of the Gradle plugin are used)
+- information about the project (e.g. version of Android and Kotlin)
+- usage of the IDE plugin (e.g. which features are enabled in the settings)
+
+The exact list of properties and events can be found in
+the [source code](https://github.com/apollographql/apollo-kotlin/blob/main/intellij-plugin/src/main/kotlin/com/apollographql/ijplugin/telemetry/TelemetrySession.kt).
