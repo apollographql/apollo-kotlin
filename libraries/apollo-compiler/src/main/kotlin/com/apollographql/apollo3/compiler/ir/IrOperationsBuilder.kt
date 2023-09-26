@@ -787,7 +787,8 @@ internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? 
 
   val labelArgumentValue = arguments.firstOrNull { it.name == "label" }?.value
   if (labelArgumentValue != null && labelArgumentValue !is GQLStringValue) throw IllegalStateException("Apollo: cannot pass ${labelArgumentValue.toUtf8()} to 'label' argument of 'defer' directive")
-  val label = labelArgumentValue?.value
+  @Suppress("USELESS_CAST", "KotlinRedundantDiagnosticSuppress")
+  val label = (labelArgumentValue as GQLStringValue?)?.value
   return when (ifArgumentValue) {
     is GQLBooleanValue -> {
       if (!ifArgumentValue.value) {
