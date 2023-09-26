@@ -30,11 +30,8 @@ fun KotlinCommonCompilerOptions.configure() {
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
 
-  // languageVersion 2.0 is experimental and produces a warning
-  freeCompilerArgs.add("-Xsuppress-version-warnings")
-
   apiVersion.set(KotlinVersion.KOTLIN_1_9)
-  languageVersion.set(KotlinVersion.KOTLIN_2_0)
+  languageVersion.set(KotlinVersion.KOTLIN_1_9)
 
   when (this) {
     is KotlinJvmCompilerOptions -> {

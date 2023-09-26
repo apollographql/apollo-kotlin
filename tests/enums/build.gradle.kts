@@ -46,6 +46,6 @@ apollo {
 tasks.withType(KotlinCompile::class.java).configureEach {
   kotlinOptions {
     apiVersion = "1.9"
-    languageVersion = "2.0"
+    languageVersion = "1.9"
   }
 }
