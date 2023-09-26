@@ -276,6 +276,7 @@
     <action
         id="SendTelemetryAction"
         class="com.apollographql.ijplugin.telemetry.SendTelemetryAction"
+        internal="true"
     >
       <add-to-group group-id="ApolloInternalActionGroup" />
     </action>
@@ -284,6 +285,7 @@
     <action
         id="ThrowAction"
         class="com.apollographql.ijplugin.error.ThrowAction"
+        internal="true"
     >
       <add-to-group group-id="ApolloInternalActionGroup" />
     </action>
