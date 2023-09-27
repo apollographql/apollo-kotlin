@@ -16,7 +16,7 @@ antlr = "4.12.0"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-alpha.4-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "4.0.0-alpha.1"
+apollo-published = "4.0.0-alpha.3"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.4-dev-k1.9.20-Beta2-ac5f960bdaf"
@@ -185,6 +185,7 @@ vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5"
 
 [plugins]
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+apollo-published = { id = "com.apollographql.apollo3", version.ref = "apollo-published" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
 kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }
