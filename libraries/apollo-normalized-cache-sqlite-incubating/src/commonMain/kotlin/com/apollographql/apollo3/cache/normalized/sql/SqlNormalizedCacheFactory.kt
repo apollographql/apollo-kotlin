@@ -2,6 +2,7 @@ package com.apollographql.apollo3.cache.normalized.sql
 
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import app.cash.sqldelight.db.SqlDriver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 
 /**
  * Creates a new [NormalizedCacheFactory] that uses a persistent cache based on Sqlite
@@ -19,5 +20,7 @@ import app.cash.sqldelight.db.SqlDriver
  */
 expect class SqlNormalizedCacheFactory(name: String? = "apollo.db", withDates: Boolean = false) : NormalizedCacheFactory {
   constructor(driver: SqlDriver, withDates: Boolean = false)
+
+  override fun create(): NormalizedCache
 }
 

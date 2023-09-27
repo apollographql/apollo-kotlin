@@ -15,7 +15,6 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Properties;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Properties;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
-	public fun create ()Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache;
+	public fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
 }
 

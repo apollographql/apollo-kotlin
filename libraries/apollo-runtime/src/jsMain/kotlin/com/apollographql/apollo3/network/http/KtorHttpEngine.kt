@@ -39,7 +39,7 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
     }
   }
 
-  override suspend fun execute(request: HttpRequest): HttpResponse {
+  actual override suspend fun execute(request: HttpRequest): HttpResponse {
     try {
       val response = client.request(request.url) {
         method = when (request.method) {
@@ -70,7 +70,7 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
     }
   }
 
-  override fun dispose() {
+  actual override fun dispose() {
     if (!disposed) {
       client.close()
       disposed = true

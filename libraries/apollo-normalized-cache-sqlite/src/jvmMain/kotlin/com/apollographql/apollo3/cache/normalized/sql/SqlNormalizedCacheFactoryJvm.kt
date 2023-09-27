@@ -6,6 +6,7 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatab
 import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import java.util.Properties
 
 actual class SqlNormalizedCacheFactory internal constructor(
@@ -30,7 +31,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
   constructor(name: String?,  baseDir: String?) : this(createDriver(name, baseDir, getSchema()), )
   actual constructor(name: String?, ) : this(name, null)
 
-  override fun create(): SqlNormalizedCache {
+  actual override fun create(): NormalizedCache {
     return SqlNormalizedCache(createRecordDatabase(driver))
   }
 }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import app.cash.sqldelight.db.SqlDriver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.sql.internal.createDriver
 import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatabase
@@ -23,7 +24,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
   constructor(name: String) : this(name, false)
   constructor() : this("apollo.db", false)
 
-  override fun create(): SqlNormalizedCache {
+  actual override fun create(): NormalizedCache {
     return SqlNormalizedCache(
         recordDatabase = createRecordDatabase(driver, withDates)
     )

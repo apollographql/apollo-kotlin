@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 
 /**
@@ -13,5 +14,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
  * Default: "apollo.db"
  *
  */
-expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory
+expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory {
+  override fun create(): NormalizedCache
+}
 

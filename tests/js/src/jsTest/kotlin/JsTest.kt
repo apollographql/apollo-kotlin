@@ -13,7 +13,7 @@ class JsTest {
 
   @Test
   fun dynamicJsonReaderCanParseIntoAdapter() {
-    val dynamicResponse = JSON.parse("""
+    val dynamicResponse: dynamic = JSON.parse("""
           {
             "data": {
               "getSalesPeople": [
@@ -25,7 +25,7 @@ class JsTest {
               ]
             }
           }
-        """.trimIndent()) as dynamic
+        """.trimIndent())
     val query = GetSalesPeopleQuery()
     val jsonReader = DynamicJsJsonReader(dynamicResponse)
     val response = jsonReader.toApolloResponse(operation = query)

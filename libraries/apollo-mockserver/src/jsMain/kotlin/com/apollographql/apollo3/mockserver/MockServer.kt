@@ -17,7 +17,7 @@ import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
+actual class MockServer actual constructor(actual override val mockServerHandler: MockServerHandler) : MockServerInterface {
 
   private val requests = mutableListOf<MockRequest>()
 
@@ -49,23 +49,23 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
     }
   }.listen()
 
-  override suspend fun url() = url ?: suspendCoroutine { cont ->
+  actual override suspend fun url() = url ?: suspendCoroutine { cont ->
     url = "http://127.0.0.1:${server.address().unsafeCast<AddressInfo>().port}/"
     server.on("listening") { _ ->
       cont.resume(url!!)
     }
   }
 
-  override fun enqueue(mockResponse: MockResponse) {
+  actual override fun enqueue(mockResponse: MockResponse) {
     (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
         ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
-  override fun takeRequest(): MockRequest {
+  actual override fun takeRequest(): MockRequest {
     return requests.removeFirst()
   }
 
-  override suspend fun stop() = suspendCoroutine<Unit> { cont ->
+  actual override suspend fun stop() = suspendCoroutine<Unit> { cont ->
     server.close {
       cont.resume(Unit)
     }

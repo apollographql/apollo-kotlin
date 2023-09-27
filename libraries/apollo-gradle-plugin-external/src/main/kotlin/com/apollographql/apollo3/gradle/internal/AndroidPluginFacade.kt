@@ -47,6 +47,7 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
     else -> error("Unsupported extension: $extension")
   }
 
+  @Suppress("USELESS_IS_CHECK", "KotlinRedundantDiagnosticSuppress")
   if (extension is TestedExtension) {
     extension.testVariants.all { variant ->
       container.add(variant)

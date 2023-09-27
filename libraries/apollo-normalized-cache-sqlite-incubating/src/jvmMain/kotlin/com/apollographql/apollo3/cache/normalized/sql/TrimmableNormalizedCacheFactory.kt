@@ -6,6 +6,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.sql.internal.Blob2RecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.maybeCreateOrMigrateSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import java.io.File
 
 /**
@@ -25,7 +26,7 @@ class TrimmableNormalizedCacheFactory internal constructor(
 ) : NormalizedCacheFactory() {
   private val driver = JdbcSqliteDriver(url)
 
-  override fun create(): SqlNormalizedCache {
+  override fun create(): NormalizedCache {
     maybeCreateOrMigrateSchema(driver, Blob2Database.Schema)
 
     val database = Blob2Database(driver)

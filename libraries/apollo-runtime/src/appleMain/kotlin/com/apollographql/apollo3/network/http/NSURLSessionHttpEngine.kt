@@ -38,7 +38,7 @@ actual class DefaultHttpEngine(
 
   actual constructor(timeoutMillis: Long) : this(timeoutMillis, DefaultDataTaskFactory())
 
-  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
+  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
       continuation.resumeWith(
           buildHttpResponse(
@@ -83,7 +83,7 @@ actual class DefaultHttpEngine(
     task.resume()
   }
 
-  override fun dispose() {
+  actual override fun dispose() {
   }
 }
 

@@ -38,8 +38,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var registered = false
 
   init {
-    @Suppress("LeakingThis")
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     if (GradleVersion.current() >= GradleVersion.version("6.2")) {
       // This allows users to call includes.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485

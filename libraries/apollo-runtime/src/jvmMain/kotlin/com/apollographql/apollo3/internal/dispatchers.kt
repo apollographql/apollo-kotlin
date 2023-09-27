@@ -15,7 +15,7 @@ internal actual class CloseableSingleThreadDispatcher actual constructor() : Clo
   actual val coroutineDispatcher: CoroutineDispatcher
     get() = _dispatcher
 
-  override fun close() {
+  actual override fun close() {
     if (!closed) {
       _dispatcher.close()
       closed = true

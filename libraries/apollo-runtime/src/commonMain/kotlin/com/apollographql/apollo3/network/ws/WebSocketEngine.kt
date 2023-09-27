@@ -48,7 +48,9 @@ interface WebSocketConnection {
   fun close()
 }
 
-expect class DefaultWebSocketEngine() : WebSocketEngine
+expect class DefaultWebSocketEngine() : WebSocketEngine{
+  override suspend fun open(url: String, headers: List<HttpHeader>): WebSocketConnection
+}
 
 const val CLOSE_NORMAL = 1000
 const val CLOSE_GOING_AWAY = 1001
