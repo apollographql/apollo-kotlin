@@ -3,7 +3,7 @@ plugins {
   id("apollo.library")
 
   // Depend on a published version of the plugin to avoid a "chicken and egg" problem
-  id("com.apollographql.apollo3") version "4.0.0-alpha.1"
+  alias(libs.plugins.apollo.published)
 }
 
 dependencies {
