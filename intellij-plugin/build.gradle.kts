@@ -123,10 +123,9 @@ tasks {
 
   publishPlugin {
     token.set(System.getenv("PUBLISH_TOKEN"))
-    // Currently we release to a specific "preview" release channel so the plugin is not listed on the Marketplace
-    // Change to "default" to release to the main channel.
-    // Read more: https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-    channels.set(listOf("preview"))
+    // Uncomment to release to the preview channel.
+    // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
+    // channels.set(listOf("preview"))
   }
 
   // Log tests
