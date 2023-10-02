@@ -15,13 +15,12 @@ This plugin for Android Studio and IntelliJ helps you work with the
 - Unused operations and fields highlighting
 - Migration helpers:
   - Apollo Android 2.x → Apollo Kotlin 3.x
-  - Apollo Kotlin 3.x → Apollo Kotlin 4.x (WIP)
+  - Apollo Kotlin 3.x → Apollo Kotlin 4.x
   - `compat` codegen → `operationBased` codegen
 - More to come!
 
 ## Compatibility
 
-- Note: this plugin is currently under development
 - Most features are intended to work with Apollo Kotlin 4.x which is currently under development
 - Automatic code generation works with Apollo Kotlin 3.x and above
 
@@ -30,18 +29,9 @@ This plugin for Android Studio and IntelliJ helps you work with the
 The plugin is supported on:
 
 - IntelliJ 2022.3 and above
-- Android Studio 2022.6 (Giraffe) and above
+- Android Studio 2022.3 (Giraffe) and above
 
 ## Installation instructions
-
-<kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>⚙</kbd>️ > <kbd>Manage Plugin
-Repositories</kbd> > <kbd>+</kbd> > <kbd>https://plugins.jetbrains.com/plugins/preview/20645</kbd>
-
-<img src="assets/instructions-1-manage-repositories.png" width="600" />
-
-<img src="assets/instructions-2-add-repository.png" width="600" />
-
-Then:
 
 <kbd>Marketplace</kbd> > Search for "Apollo GraphQL" > <kbd>Install</kbd>
 
@@ -49,5 +39,14 @@ Then:
 
 ### Weekly snapshots
 
-The plugin is published every Sunday in a specific **snapshots** repository. To use it, follow the instructions
-above with this repository URL instead: <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>.
+The plugin is published every Sunday in a specific **snapshots** repository. To use it, the repository URL must be
+configured:
+
+<kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>⚙</kbd>️ > <kbd>Manage Plugin
+Repositories</kbd> > <kbd>+</kbd> > <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>
+
+<img src="assets/instructions-1-manage-repositories.png" width="600" />
+
+<img src="assets/instructions-2-add-repository.png" width="600" />
+
+Then search for "Apollo GraphQL" and install the plugin as usual.
