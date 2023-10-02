@@ -1,6 +1,135 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.1
+
+_2023-10-02_
+
+The first beta of the next major version of Apollo Kotlin is here!
+
+From this point on, we don't expect any change in the API surface (expect perhaps a few tweaks) and we'll focus on stability.
+This is a perfect time to try out the new version and report any issues you might find!
+
+## 💙️ External contributors
+
+Many thanks to @baconz and @hbmartin for their awesome contributions to this release! 
+
+## ❗️ Schema Nullability Extensions (#5191)
+
+It is now possible to change the nullability of fields _and_ list elements at the schema level with a new syntax:
+
+Given the following SDL:
+```graphql
+# schema.graphqls
+type Query {
+  random: Int
+  list: [String]
+  required: Int!
+}
+```
+
+You can extend it like so:
+```graphql
+# extra.graphqls
+extend type Query {
+  # make random non-nullable
+  random: Int!
+  # make list and list items non-nullable
+  list: [String!]!
+  # make required nullable
+  required: Int
+  # add a new field
+  new: Float
+}
+```
+
+## 📜️ Code generation
+
+### `generateMethods` option to control which model methods are generated (#5212)
+
+By default all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
+auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN`. If you don't think you need all of those
+methods, and/or you are worried about the size of the generated code, you can now choose which methods to generate with the `generateMethods` option:
+
+```kotlin
+apollo {
+  service("service") {
+    // Generates equals/hashCode
+    generateMethods.set(listOf("equalsHashCode"))
+    // Also generates toString, equals, and hashcode
+    generateMethods.set(listOf("equalsHashCode", "toString"))
+    // Only generates copy
+    generateMethods.set(listOf("copy"))
+    // Generates data classes (the default)
+    generateMethods.set(listOf("dataClass"))
+  }
+}
+```
+
+### Other codegen tweaks
+
+* `Enum.values()` is no longer recommended when using Kotlin 1.9+ and the generated code now uses `entries` instead (#5208)
+* Deprecation warnings in generated code are suppressed (#5242)
+
+## 🧩 IntelliJ plugin
+
+* You can now suppress reported unused fields, by adding a comment on the field, or by configuring a regex in the settings (#5195, #5197)
+* Opening an operation in Sandbox now includes all referenced fragments (#5236)
+
+## 🪲 Bug fixes 
+
+* Detect cyclic fragment references (#5229)
+* Fix `Optional<V>.getOrThrow()` when V is nullable (#5192)
+* `useV3ExceptionHandling` only throws when there are no errors populated (#5231)
+* Tweak the `urlEncode` algorithm (#5234)
+* Add a validation for adding `keyFields` on non-existent fields (#5215)
+* Fix logging when the response body is a single line (#5254)
+
+## 👷‍ All changes
+
+* [Infra] Count tests in CI (#5181)
+* Test: remove flake  (#5167)
+* Use compilations instead of multiple mpp targets for java codegen tests (#5164)
+* [IJ plugin] Add fragment usages when going to fragment declaration (#5189)
+* Add `mergeExtensions` and `toFullSchemaGQLDocument` (#5162)
+* Fix `Optional<V>.getOrThrow()` when V is nullable (#5192)
+* Schema Nullability Extensions (#5191)
+* [IJ plugin] Add inspection suppressor to allow suppression on fields (#5195)
+* Add PQL support to `registerOperations {}`  (#5196)
+* Add WebSocketMockServer and tests for WebSocketEngine  (#5187)
+* [IJ plugin] Add options to ignore fields when reporting unused fields (#5197)
+* Unbreak benchmarks (#5202)
+* Bump uuid and okio (#5204)
+* [IJ plugin] Update references to 4.0.0-alpha.2 to 4.0.0-alpha.3 (#5205)
+* Use entries instead of values() when using Kotlin 1.9 (#5208)
+* Add `generateMethods` options to control which methods are generated on "data" classes (#5212)
+* Add a validation for adding keyFields on non-existent fields (#5215)
+* Engine tests: use compilations to share logic between ktor/default engines (#5216)
+* Skip Dokka during development (#5219)
+* Introduce JsonReader.toApolloResponse (#5218)
+* Add tests for empty objects in last chunk (#5223)
+* useV3ExceptionHandling should only throw when there are no errors populated (#5231)
+* Tweak the urlencode algorithm (#5234)
+* [IJ plugin] Gather referenced fragments when opening in Apollo Sandbox (#5236)
+* Kotlin 1.9.20-Beta (#5232)
+* Suppress Kotlin warnings in generated code (#5242)
+* Add Optional.getOrElse(value) (#5243)
+* Add Error.Builder() (#5244)
+* Add APOLLO_RELOCATE_JAR and APOLLO_JVM_ONLY (#5245)
+* Detect cyclic fragment references (#5229)
+* [IJ plugin] Telemetry: collect properties (#5246)
+* Bump kotlin to 1.9.20-Beta2 (#5249)
+* [IJ plugin] Telemetry: settings and opt-out dialog (#5247)
+* [IJ plugin] Telemetry: add IDE/plugin related properties and events (#5250)
+* Fix cyclic fragment detection (#5252)
+* [IJ plugin] Add an ErrorReportSubmitter (#5253)
+* Logging a single line response body by @hbmartin in https://github.com/apollographql/apollo-kotlin/pull/5254
+* [IJ plugin] Schedule send telemetry (#5256)
+* Allow MapJsonReader to read non-Map instances (#5251)
+* [IJ plugin] Fix a crash when loading plugin (#5260)
+* Tweaks for K2 (#5259)
+* Update apollo published (#5263)
+
 # Version 4.0.0-alpha.3
 
 _2023-08-08_
