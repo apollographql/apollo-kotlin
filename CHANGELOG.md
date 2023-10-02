@@ -15,7 +15,9 @@ Many thanks to @baconz and @hbmartin for their awesome contributions to this rel
 
 ## ❗️ Schema Nullability Extensions (#5191)
 
-It is now possible to change the nullability of fields _and_ list elements at the schema level with a new syntax:
+The GraphQL community [is working hard at making it easier to work with nullability in GraphQL](https://github.com/graphql/client-controlled-nullability-wg/). 
+
+In Apollo Kotlin, it is now possible to change the nullability of fields _and_ list elements at the schema level using schema extensions. This is useful if you believe the schema made a field nullable for error reasons only and you don't want to handle those errors. In these cases, the whole query will return as an error.
 
 Given the following SDL:
 ```graphql
