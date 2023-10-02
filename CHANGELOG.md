@@ -7,8 +7,7 @@ _2023-10-02_
 
 The first beta of the next major version of Apollo Kotlin is here!
 
-From this point on, we don't expect any change in the API surface (expect perhaps a few tweaks) and we'll focus on stability.
-This is a perfect time to try out the new version and report any issues you might find!
+While there still may be a few API changes before the stable release, we are getting close and this is a great time to try out the new version and report any issues you might find!
 
 ## 💙️ External contributors
 
