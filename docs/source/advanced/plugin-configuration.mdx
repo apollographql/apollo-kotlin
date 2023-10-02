@@ -223,13 +223,13 @@ Here are some possible configurations:
 apollo {
   service("service") {
     // Generates equals/hashCode
-    modelMethods.set(listOf("equalsHashCode"))
+    generateMethods.set(listOf("equalsHashCode"))
     // Also generates toString, equals, and hashcode
-    modelMethods.set(listOf("equalsHashCode", "toString"))
+    generateMethods.set(listOf("equalsHashCode", "toString"))
     // Only generates copy
-    modelMethods.set(listOf("copy"))
+    generateMethods.set(listOf("copy"))
     // Generates data classes
-    modelMethods.set(listOf("dataClass"))
+    generateMethods.set(listOf("dataClass"))
   }
 }
 ```
