@@ -17,6 +17,7 @@ dependencies {
   api(project(":apollo-compiler"))
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-ast"))
+  implementation(libs.asm)
 }
 
 gradlePlugin {

@@ -6,7 +6,6 @@
 package com.example.fragment_spread_with_include_directive.adapter
 
 import com.apollographql.apollo3.api.BooleanAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.Optional
@@ -27,33 +26,31 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("withDetails")
-    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.withDetails)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.withDetails)
     writer.name("skipHumanDetails")
-    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipHumanDetails)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.skipHumanDetails)
     if (value.optionalWithDefaultFalse is Optional.Present) {
       writer.name("optionalWithDefaultFalse")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
           value.optionalWithDefaultFalse)
     }
     else if (withBooleanDefaultValues) {
       writer.name("optionalWithDefaultFalse")
-      BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, false)
+      BooleanAdapter.toJson(writer, customScalarAdapters, false)
     }
     if (value.optionalWithDefaultTrue is Optional.Present) {
       writer.name("optionalWithDefaultTrue")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
           value.optionalWithDefaultTrue)
     }
     else if (withBooleanDefaultValues) {
       writer.name("optionalWithDefaultTrue")
-      BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, true)
+      BooleanAdapter.toJson(writer, customScalarAdapters, true)
     }
     if (value.optionalWithNoDefault is Optional.Present) {
       writer.name("optionalWithNoDefault")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
           value.optionalWithNoDefault)
     }
   }

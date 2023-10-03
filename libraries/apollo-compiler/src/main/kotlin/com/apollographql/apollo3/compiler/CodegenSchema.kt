@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -27,12 +28,14 @@ class CodegenSchema(
     val generateDataBuilders: Boolean,
 )
 
-internal class CodegenType(
+@ApolloInternal
+class CodegenType(
     val name: String,
     val targetName: String?,
 )
 
-internal fun CodegenSchema.allTypes(): List<CodegenType> {
+@ApolloInternal
+fun CodegenSchema.allTypes(): List<CodegenType> {
   return schema.typeDefinitions.values.map {
     CodegenType(it.name, it.directives.findTargetName(schema))
   }.sortedBy { it.name }

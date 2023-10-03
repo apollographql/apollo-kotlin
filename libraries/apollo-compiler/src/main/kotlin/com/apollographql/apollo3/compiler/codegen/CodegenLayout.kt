@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
@@ -17,7 +18,8 @@ import com.apollographql.apollo3.compiler.singularize
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-internal abstract class CodegenLayout(
+@ApolloInternal
+abstract class CodegenLayout(
     allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
@@ -79,13 +81,15 @@ internal abstract class CodegenLayout(
 
   fun schemaPackageName() = "$schemaPackageName.schema"
 
+  fun executionPackageName() = "$schemaPackageName.execution"
+
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
   // ------------------------ Names ---------------------------------
 
   internal fun compiledTypeName(name: String) = className(name)
 
-  internal fun enumName(name: String) = className(name)
+  fun enumName(name: String) = className(name)
 
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
@@ -115,7 +119,7 @@ internal abstract class CodegenLayout(
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  internal fun inputObjectName(name: String) = className(name)
+  fun inputObjectName(name: String) = className(name)
   internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
@@ -130,7 +134,7 @@ internal abstract class CodegenLayout(
 
   protected fun regularIdentifier(name: String) = escapeReservedWord(name)
 
-  private fun capitalizedIdentifier(name: String): String {
+  internal fun capitalizedIdentifier(name: String): String {
     return escapeReservedWord(name.capitalizeFirstLetter())
   }
 
@@ -159,13 +163,13 @@ internal abstract class CodegenLayout(
   }
 
   companion object {
-    fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
+    internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {
         it.capitalizeFirstLetter()
       }.joinToString("")
     }
 
-    fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
+    internal fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {
         it.decapitalizeFirstLetter()
       }.joinToString("")

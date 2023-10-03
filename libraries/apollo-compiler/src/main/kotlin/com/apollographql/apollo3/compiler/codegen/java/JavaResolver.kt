@@ -23,6 +23,7 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
+import com.apollographql.apollo3.compiler.ir.IrObjectType
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
@@ -260,6 +261,8 @@ internal class JavaResolver(
         val adapterClassName = if (!type.ofType.rawType().isComposite()) optionalAdapterClassName else optionalCompositeAdapterClassName
         CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
+
+      is IrObjectType -> error("IrObjectType cannot be adapted")
     }
   }
 

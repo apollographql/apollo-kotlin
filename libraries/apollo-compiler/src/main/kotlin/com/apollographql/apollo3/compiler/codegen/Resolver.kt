@@ -44,7 +44,7 @@ enum class ResolverKeyKind {
   BuilderFun,
   Schema,
   CustomScalarAdapters,
-  Pagination
+  Pagination,
 }
 
 @Serializable

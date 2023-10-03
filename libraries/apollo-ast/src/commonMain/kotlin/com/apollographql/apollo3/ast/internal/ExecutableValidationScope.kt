@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.ast.AnonymousOperation
 import com.apollographql.apollo3.ast.DeprecatedUsage
 import com.apollographql.apollo3.ast.DifferentShape
 import com.apollographql.apollo3.ast.ExecutableValidationResult
@@ -50,6 +52,7 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import com.apollographql.apollo3.ast.withNullability
 
 
+@OptIn(ApolloInternal::class)
 internal class ExecutableValidationScope(
     private val schema: Schema,
 ) : ValidationScope {
@@ -732,7 +735,7 @@ internal class ExecutableValidationScope(
 
     forEach {
       if (it.name == null) {
-        issues.add(OtherValidationIssue(
+        issues.add(AnonymousOperation(
             message = "Apollo does not support anonymous operations",
             sourceLocation = it.sourceLocation,
         ))

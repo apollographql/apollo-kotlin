@@ -16,13 +16,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal sealed class IrType {
-  open fun rawType() = this
+sealed interface IrType {
+  fun rawType(): IrNamedType
 }
 
 @Serializable
 @SerialName("nonnull")
-internal data class IrNonNullType(val ofType: IrType) : IrType() {
+data class IrNonNullType(val ofType: IrType) : IrType {
   init {
     check(ofType !is IrNonNullType)
   }
@@ -32,13 +32,13 @@ internal data class IrNonNullType(val ofType: IrType) : IrType() {
 
 @Serializable
 @SerialName("optional")
-internal data class IrOptionalType(val ofType: IrType) : IrType() {
+data class IrOptionalType(val ofType: IrType) : IrType {
   override fun rawType() = ofType.rawType()
 }
 
 @Serializable
 @SerialName("list")
-internal data class IrListType(val ofType: IrType) : IrType() {
+data class IrListType(val ofType: IrType) : IrType {
   init {
     check(ofType !is IrOptionalType)
   }
@@ -47,19 +47,30 @@ internal data class IrListType(val ofType: IrType) : IrType() {
 }
 
 @Serializable
-internal sealed interface IrNamedType {
+sealed interface IrNamedType: IrType {
   val name: String
 }
 
 @Serializable
 @SerialName("scalar")
-internal data class IrScalarType(override val name: String) : IrType(), IrNamedType
+data class IrScalarType(override val name: String) : IrType, IrNamedType {
+  override fun rawType() = this
+}
 @Serializable
 @SerialName("input")
-internal data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
+data class IrInputObjectType(override val name: String) : IrType, IrNamedType {
+  override fun rawType() = this
+}
 @Serializable
 @SerialName("enum")
-internal data class IrEnumType(override val name: String) : IrType(), IrNamedType
+data class IrEnumType(override val name: String) : IrType, IrNamedType {
+  override fun rawType() = this
+}
+@Serializable
+@SerialName("object")
+data class IrObjectType(override val name: String) : IrType, IrNamedType {
+  override fun rawType() = this
+}
 
 
 /**
@@ -82,7 +93,11 @@ internal data class IrEnumType(override val name: String) : IrType(), IrNamedTyp
  */
 @Serializable
 @SerialName("model")
-internal data class IrModelType(val path: String) : IrType()
+internal data class IrModelType(val path: String) : IrType, IrNamedType {
+  override val name: String
+    get() =  path
+  override fun rawType() = this
+}
 
 internal const val MODEL_OPERATION_DATA = "operationData"
 internal const val MODEL_FRAGMENT_DATA = "fragmentData"

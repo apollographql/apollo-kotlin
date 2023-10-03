@@ -5,7 +5,6 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
@@ -26,11 +25,9 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.operation is Optional.Present) {
       writer.name("operation")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.operation)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.operation)
     }
   }
 }
