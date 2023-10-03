@@ -10,7 +10,7 @@ env:
 
 jobs:
   benchmarks:
-    runs-on: macos-11
+    runs-on: macos-13-xlarge
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0

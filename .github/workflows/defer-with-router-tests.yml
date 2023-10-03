@@ -8,7 +8,7 @@ env:
 
 jobs:
   defer-with-router-tests:
-    runs-on: macos-11
+    runs-on: macos-13-xlarge
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - name: Checkout project
