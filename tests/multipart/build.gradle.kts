@@ -1,12 +1,9 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-apolloTest {
-  mpp {}
-}
+apolloTest()
 
 kotlin {
   sourceSets {

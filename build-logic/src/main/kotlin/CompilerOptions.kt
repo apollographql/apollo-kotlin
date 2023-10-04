@@ -108,7 +108,7 @@ fun Project.configureTests(jvmVersion: Int) {
   }
 }
 
-internal fun Project.optIn(vararg annotations: String) {
+internal fun Project.addOptIn(vararg annotations: String) {
   tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
       freeCompilerArgs = freeCompilerArgs + annotations.map { "-opt-in=$it" }

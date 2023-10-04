@@ -1,9 +1,11 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
   id("application")
 }
 
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.cli"
+)
 dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-annotations"))

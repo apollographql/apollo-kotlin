@@ -54,6 +54,7 @@ dependencies {
 java {
   toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
+
 tasks.withType<JavaCompile>().configureEach {
   options.release.set(11)
 }
@@ -63,14 +64,9 @@ tasks.withType(KotlinJvmCompile::class.java).configureEach {
 
 gradlePlugin {
   plugins {
-    register("apollo.library") {
-      id = "apollo.library"
-      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.LibraryConventionPlugin"
-    }
-
-    register("apollo.test") {
-      id = "apollo.test"
-      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.TestConventionPlugin"
+    register("build.logic") {
+      id = "build.logic"
+      implementationClass = "build.logic.Plugin"
     }
   }
 }

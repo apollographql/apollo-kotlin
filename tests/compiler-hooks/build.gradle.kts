@@ -16,11 +16,12 @@ import javax.lang.model.element.Modifier
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.test")
 
   // Note: using the external plugin here to be able to reference KotlinPoet classes
   id("com.apollographql.apollo3.external")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)

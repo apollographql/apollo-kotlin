@@ -1,11 +1,10 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.cache.http")
-}
+apolloLibrary(
+  javaModuleName = "com.apollographql.apollo3.cache.http"
+)
 
 dependencies {
   api(libs.okhttp)

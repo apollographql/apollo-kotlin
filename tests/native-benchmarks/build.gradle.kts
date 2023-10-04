@@ -1,15 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-apolloTest {
-  mpp {
-    withJs.set(false)
-    withJvm.set(false)
-  }
-}
+apolloTest(
+    withJs = false,
+    withJvm = false
+)
 
 kotlin {
   sourceSets {

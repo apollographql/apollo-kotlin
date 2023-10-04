@@ -1,12 +1,10 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.annotations")
-  mpp {}
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.annotations"
+)
 
 kotlin {
   sourceSets {

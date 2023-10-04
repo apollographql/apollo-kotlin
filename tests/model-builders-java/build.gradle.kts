@@ -1,8 +1,9 @@
 plugins {
   id("com.apollographql.apollo3")
   id("java")
-  id("apollo.test")
 }
+
+apolloTest()
 
 dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime")

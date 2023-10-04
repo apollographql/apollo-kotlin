@@ -2,8 +2,9 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.kotlin.plugin.spring")
   id("application")
-  id("apollo.test")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.graphqlkotlin)
