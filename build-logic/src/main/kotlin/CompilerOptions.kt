@@ -99,15 +99,6 @@ fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
 
 }
 
-fun Project.configureTests(jvmVersion: Int) {
-  tasks.withType(Test::class.java).configureEach {
-    val javaToolchains = this@configureTests.extensions.getByName("javaToolchains") as JavaToolchainService
-    javaLauncher.set(javaToolchains.launcherFor {
-      languageVersion.set(JavaLanguageVersion.of(jvmVersion))
-    })
-  }
-}
-
 internal fun Project.addOptIn(vararg annotations: String) {
   tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
