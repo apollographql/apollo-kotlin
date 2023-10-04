@@ -4,7 +4,8 @@ plugins {
 }
 
 apolloLibrary(
-  javaModuleName = "com.apollographql.apollo3.execution"
+    javaModuleName = "com.apollographql.apollo3.execution",
+    publish = false,
 )
 
 kotlin {

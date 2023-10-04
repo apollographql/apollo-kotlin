@@ -3,8 +3,9 @@ plugins {
 }
 
 apolloLibrary(
-  javaModuleName = "com.apollographql.apollo3.cache.normalized",
-  withLinux = false
+    javaModuleName = "com.apollographql.apollo3.cache.normalized",
+    withLinux = false,
+    publish = false,
 )
 
 kotlin {

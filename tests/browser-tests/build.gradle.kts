@@ -4,7 +4,7 @@ plugins {
 
 apolloTest(
     browserTest = true,
-    withJvm = true,
+    withJvm = false,
     withJs = true,
     appleTargets = emptySet()
 )

@@ -11,6 +11,13 @@ dependencies {
   testImplementation(libs.junit)
 }
 
+/**
+ * Because of:
+ *
+ * w: GetNewFieldQuery_ResponseAdapter.kt:50:82 Apollo: This symbol requires opt-in
+ */
+allWarningsAsErrors(false)
+
 apollo {
   service("default") {
     srcDir("graphql")

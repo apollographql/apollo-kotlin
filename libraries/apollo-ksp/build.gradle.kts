@@ -3,7 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-  javaModuleName = "com.apollographql.apollo3.ksp"
+  javaModuleName = "com.apollographql.apollo3.ksp",
+    publish = false,
 )
 
 dependencies {

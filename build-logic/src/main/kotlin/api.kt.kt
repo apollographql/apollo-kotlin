@@ -6,6 +6,7 @@ fun Project.apolloLibrary(
     javaModuleName: String?,
     withJs: Boolean = true,
     withLinux: Boolean = true,
+    publish: Boolean = true
 ) {
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
@@ -20,7 +21,9 @@ fun Project.apolloLibrary(
 
   configureTesting()
 
-  configurePublishing()
+  if (publish) {
+    configurePublishing()
+  }
 
   // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
   // But we don't want this, for example apollo-tooling depends on a published version of apollo-api.
