@@ -3,7 +3,7 @@ mutation RegisterOperations(
   $clientIdentity: RegisteredClientIdentityInput!
   $operations: [RegisteredOperationInput!]!
   $manifestVersion: Int!
-  $graphVariant: String
+  $graphVariant: String!
 ) {
   service(id: $id) {
     registerOperationsWithResponse(
@@ -42,4 +42,8 @@ query FieldLatencies($serviceId: ID!, $fromTimestamp: Timestamp!, $percentile: F
       }
     }
   }
+}
+
+mutation TrackApolloKotlinUsage($instanceId: ID!, $properties: [ApolloKotlinUsagePropertyInput!]!, $events: [ApolloKotlinUsageEventInput!]!) {
+  trackApolloKotlinUsage(instanceId: $instanceId, properties: $properties, events: $events)
 }

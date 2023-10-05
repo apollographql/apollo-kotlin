@@ -4,6 +4,11 @@ import java.time.Instant
 
 sealed class TelemetryProperty(
     val type: String,
+
+    /**
+     * Allowed types: primitives, Map<String, Any?>, List<Any?>.
+     * Keeping the parameters flat helps with the analysis of the data.
+     */
     val parameters: Any?,
 ) {
 
@@ -30,13 +35,13 @@ sealed class TelemetryProperty(
   }
 
   /**
-   * Gradle dependencies used by the project.
+   * Apollo Kotlin Gradle dependency used by the project.
    */
   class Dependency(
       group: String,
       artifact: String,
       version: String,
-  ) : TelemetryProperty("dependency_$group:$artifact", mapOf("version" to version))
+  ) : TelemetryProperty("dependency_$group:$artifact", version)
 
   /**
    * Version of Kotlin (per kotlin-stdlib).
@@ -196,7 +201,7 @@ sealed class TelemetryProperty(
   /**
    * Other Apollo Kotlin Gradle plugin options that are used for which we don't care about the value.
    */
-  class ApolloUsedOptions(otherOptions: Set<String>) : TelemetryProperty("ak_used_options", otherOptions)
+  class ApolloUsedOptions(otherOptions: List<String>) : TelemetryProperty("ak_used_options", otherOptions)
 
   /**
    * Value of the Apollo Kotlin option `generateSourcesDuringGradleSync` if set.
@@ -261,6 +266,11 @@ sealed class TelemetryProperty(
 
 sealed class TelemetryEvent(
     val type: String,
+
+    /**
+     * Allowed types: primitives, Map<String, Any?>, List<Any?>.
+     * Keeping the parameters flat helps with the analysis of the data.
+     */
     val parameters: Any?,
 ) {
   val date: Instant = Instant.now()

@@ -249,7 +249,7 @@ object RegisterOperations {
               )
             },
             manifestVersion = 2,
-            graphVariant = Optional.present(graphVariant)
+            graphVariant = graphVariant,
         )
     )
 

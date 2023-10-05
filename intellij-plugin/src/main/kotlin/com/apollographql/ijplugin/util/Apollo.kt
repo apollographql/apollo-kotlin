@@ -11,10 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile
 fun Project.getApolloVersion(): ApolloVersion {
   var foundVersion = ApolloVersion.NONE
   service<ProjectRootManager>().orderEntries().librariesOnly().forEachLibrary { library ->
-    val components = library.name?.substringAfter(" ")?.split(":") ?: return@forEachLibrary true
-    if (components.size < 3) return@forEachLibrary true
-    val (group, _, version) = components
-    when (group) {
+    val mavenCoordinates = library.toMavenCoordinates() ?: return@forEachLibrary true
+    when (mavenCoordinates.group) {
       "com.apollographql.apollo" -> {
         foundVersion = ApolloVersion.V2
         false
@@ -22,12 +20,12 @@ fun Project.getApolloVersion(): ApolloVersion {
 
       "com.apollographql.apollo3" -> {
         when {
-          version.startsWith("3.") -> {
+          mavenCoordinates.version.startsWith("3.") -> {
             foundVersion = ApolloVersion.V3
             false
           }
 
-          version.startsWith("4.") -> {
+          mavenCoordinates.version.startsWith("4.") -> {
             foundVersion = ApolloVersion.V4
             false
           }
