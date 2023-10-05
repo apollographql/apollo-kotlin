@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.tooling
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -9,7 +9,7 @@ import com.apollographql.apollo3.tooling.platformapi.internal.type.ApolloKotlinU
 import com.apollographql.apollo3.tooling.platformapi.internal.type.ApolloKotlinUsagePropertyInput
 import java.time.Instant
 
-@ApolloExperimental
+@ApolloInternal
 object Telemetry {
   /**
    * Track Apollo Kotlin usage.
@@ -59,13 +59,13 @@ object Telemetry {
     }
   }
 
-  @ApolloExperimental
+  @ApolloInternal
   class TelemetryProperty(
       val type: String,
       val payload: Any?,
   )
 
-  @ApolloExperimental
+  @ApolloInternal
   class TelemetryEvent(
       val type: String,
       val date: Instant,
