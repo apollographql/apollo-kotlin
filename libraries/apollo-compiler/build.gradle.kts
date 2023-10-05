@@ -2,13 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
   id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.compiler")
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.compiler"
+)
 
 dependencies {
   implementation(project(":apollo-ast"))

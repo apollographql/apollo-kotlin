@@ -1,8 +1,9 @@
 plugins {
   id("com.apollographql.apollo3")
   id("java")
-  id("apollo.test")
 }
+
+apolloTest()
 
 dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime")
@@ -15,9 +16,4 @@ apollo {
     generateKotlinModels.set(false)
     generateModelBuilders.set(true)
   }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }

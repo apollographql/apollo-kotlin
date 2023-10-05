@@ -1,14 +1,11 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.cache.normalized.api")
-  mpp {
-    withLinux.set(false)
-  }
-}
+apolloLibrary(
+  javaModuleName = "com.apollographql.apollo3.cache.normalized.api",
+    withLinux = false
+)
 
 kotlin {
   sourceSets {

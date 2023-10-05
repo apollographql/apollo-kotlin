@@ -1,14 +1,11 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.engine.ktor")
-  mpp {
-    withLinux.set(false)
-  }
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.engine.ktor",
+    withLinux = false
+)
 
 kotlin {
   sourceSets {

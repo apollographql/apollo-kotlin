@@ -1,14 +1,11 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.runtime")
-  mpp {
-    withLinux.set(false)
-  }
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.runtime",
+    withLinux = false
+)
 
 kotlin {
   sourceSets {
@@ -31,7 +28,7 @@ kotlin {
           // w: duplicate library name: com.apollographql.apollo3:apollo-mockserver
           // See https://youtrack.jetbrains.com/issue/KT-51110
           // We should probably remove this circular dependency but for the time being, just use excludes
-          exclude(group =  "com.apollographql.apollo3", module = "apollo-runtime")
+          exclude(group = "com.apollographql.apollo3", module = "apollo-runtime")
         }
       }
     }

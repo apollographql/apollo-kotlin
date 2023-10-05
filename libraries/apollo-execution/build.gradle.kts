@@ -1,13 +1,12 @@
 plugins {
   antlr
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.execution")
-  mpp {}
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.execution",
+    publish = false,
+)
 
 kotlin {
   sourceSets {

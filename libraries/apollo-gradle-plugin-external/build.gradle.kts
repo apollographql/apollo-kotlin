@@ -1,13 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
-  id("apollo.library")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.gradle")
-}
+apolloLibrary(
+  javaModuleName = "com.apollographql.apollo3.gradle"
+)
 
 dependencies {
   compileOnly(libs.gradle.api.min)

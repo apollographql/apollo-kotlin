@@ -3,12 +3,11 @@
  */
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.rx3")
-}
+apolloLibrary (
+  javaModuleName = "com.apollographql.apollo3.rx3"
+)
 
 dependencies {
   implementation(project(":apollo-api"))
