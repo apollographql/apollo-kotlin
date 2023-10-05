@@ -9,6 +9,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.StoragePathMacros
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializerUtil
@@ -16,19 +17,24 @@ import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
 import java.util.UUID
 
+/**
+ * Project level settings.
+ * These settings are not meant to be shared with the team, which is why they are not stored in workspace.xml which is typically
+ * ignored by VCS.
+ */
 @Service(Service.Level.PROJECT)
 @State(
-    name = "com.apollographql.ijplugin.settings.SettingsState",
-    storages = [Storage("apollo.xml")]
+    name = "com.apollographql.ijplugin.settings.ProjectSettingsState",
+    storages = [Storage(StoragePathMacros.WORKSPACE_FILE)]
 )
-class SettingsService(private val project: Project) : PersistentStateComponent<SettingsStateImpl>, SettingsState {
-  private val _state = SettingsStateImpl()
+class ProjectSettingsService(private val project: Project) : PersistentStateComponent<ProjectSettingsStateImpl>, ProjectSettingsState {
+  private val _state = ProjectSettingsStateImpl()
 
-  override fun getState(): SettingsStateImpl {
+  override fun getState(): ProjectSettingsStateImpl {
     return _state
   }
 
-  override fun loadState(state: SettingsStateImpl) {
+  override fun loadState(state: ProjectSettingsStateImpl) {
     XmlSerializerUtil.copyBean(state, this._state)
     notifySettingsChanged()
   }
@@ -66,24 +72,11 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
       _state.telemetryInstanceId = value
     }
 
-  override var telemetryEnabled: Boolean
-    get() = _state.telemetryEnabled
-    set(value) {
-      _state.telemetryEnabled = value
-      notifySettingsChanged()
-    }
-
-  override var hasShownTelemetryOptOutDialog: Boolean
-    get() = _state.hasShownTelemetryOptOutDialog
-    set(value) {
-      _state.hasShownTelemetryOptOutDialog = value
-    }
-
-  private var lastNotifiedSettingsState: SettingsState? = null
+  private var lastNotifiedState: ProjectSettingsState? = null
   private fun notifySettingsChanged() {
-    if (lastNotifiedSettingsState != _state) {
-      lastNotifiedSettingsState = _state.copy()
-      project.messageBus.syncPublisher(SettingsListener.TOPIC).settingsChanged(_state)
+    if (lastNotifiedState != _state) {
+      lastNotifiedState = _state.copy()
+      project.messageBus.syncPublisher(ProjectSettingsListener.TOPIC).settingsChanged(_state)
     }
   }
 
@@ -100,14 +93,12 @@ class SettingsService(private val project: Project) : PersistentStateComponent<S
   }
 }
 
-interface SettingsState {
+interface ProjectSettingsState {
   var automaticCodegenTriggering: Boolean
   var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
   var contributeConfigurationToGraphqlPlugin: Boolean
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
   var telemetryInstanceId: String
-  var telemetryEnabled: Boolean
-  var hasShownTelemetryOptOutDialog: Boolean
 }
 
 data class ApolloKotlinServiceConfiguration(
@@ -137,15 +128,13 @@ data class ApolloKotlinServiceConfiguration(
   }
 }
 
-data class SettingsStateImpl(
+data class ProjectSettingsStateImpl(
     override var automaticCodegenTriggering: Boolean = true,
     override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false,
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
     override var telemetryInstanceId: String = "",
-    override var telemetryEnabled: Boolean = true,
-    override var hasShownTelemetryOptOutDialog: Boolean = false,
-) : SettingsState
+) : ProjectSettingsState
 
 
-val Project.settingsState get(): SettingsState = service<SettingsService>()
+val Project.projectSettingsState get(): ProjectSettingsState = service<ProjectSettingsService>()

@@ -16,24 +16,24 @@ class SettingsConfigurable(private val project: Project) : Configurable {
   }
 
   override fun isModified(): Boolean {
-    return settingsComponent!!.automaticCodegenTriggering != project.settingsState.automaticCodegenTriggering ||
-        settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.settingsState.contributeConfigurationToGraphqlPlugin ||
-        settingsComponent!!.apolloKotlinServiceConfigurations != project.settingsState.apolloKotlinServiceConfigurations ||
-        settingsComponent!!.telemetryEnabled != project.settingsState.telemetryEnabled
+    return settingsComponent!!.automaticCodegenTriggering != project.projectSettingsState.automaticCodegenTriggering ||
+        settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.projectSettingsState.contributeConfigurationToGraphqlPlugin ||
+        settingsComponent!!.apolloKotlinServiceConfigurations != project.projectSettingsState.apolloKotlinServiceConfigurations ||
+        settingsComponent!!.telemetryEnabled != appSettingsState.telemetryEnabled
   }
 
   override fun apply() {
-    project.settingsState.automaticCodegenTriggering = settingsComponent!!.automaticCodegenTriggering
-    project.settingsState.contributeConfigurationToGraphqlPlugin = settingsComponent!!.contributeConfigurationToGraphqlPlugin
-    project.settingsState.apolloKotlinServiceConfigurations = settingsComponent!!.apolloKotlinServiceConfigurations
-    project.settingsState.telemetryEnabled = settingsComponent!!.telemetryEnabled
+    project.projectSettingsState.automaticCodegenTriggering = settingsComponent!!.automaticCodegenTriggering
+    project.projectSettingsState.contributeConfigurationToGraphqlPlugin = settingsComponent!!.contributeConfigurationToGraphqlPlugin
+    project.projectSettingsState.apolloKotlinServiceConfigurations = settingsComponent!!.apolloKotlinServiceConfigurations
+    appSettingsState.telemetryEnabled = settingsComponent!!.telemetryEnabled
   }
 
   override fun reset() {
-    settingsComponent!!.automaticCodegenTriggering = project.settingsState.automaticCodegenTriggering
-    settingsComponent!!.contributeConfigurationToGraphqlPlugin = project.settingsState.contributeConfigurationToGraphqlPlugin
-    settingsComponent!!.apolloKotlinServiceConfigurations = project.settingsState.apolloKotlinServiceConfigurations
-    settingsComponent!!.telemetryEnabled = project.settingsState.telemetryEnabled
+    settingsComponent!!.automaticCodegenTriggering = project.projectSettingsState.automaticCodegenTriggering
+    settingsComponent!!.contributeConfigurationToGraphqlPlugin = project.projectSettingsState.contributeConfigurationToGraphqlPlugin
+    settingsComponent!!.apolloKotlinServiceConfigurations = project.projectSettingsState.apolloKotlinServiceConfigurations
+    settingsComponent!!.telemetryEnabled = appSettingsState.telemetryEnabled
   }
 
   override fun getPreferredFocusedComponent() = settingsComponent!!.preferredFocusedComponent

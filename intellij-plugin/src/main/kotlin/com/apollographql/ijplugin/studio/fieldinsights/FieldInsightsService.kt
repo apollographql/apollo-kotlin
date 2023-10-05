@@ -6,9 +6,9 @@ import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.gradle.ApolloKotlinServiceListener
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.settings.ApolloKotlinServiceConfiguration
-import com.apollographql.ijplugin.settings.SettingsListener
-import com.apollographql.ijplugin.settings.SettingsState
-import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.settings.ProjectSettingsListener
+import com.apollographql.ijplugin.settings.ProjectSettingsState
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
@@ -47,17 +47,17 @@ class FieldInsightsServiceImpl(private val project: Project) : FieldInsightsServ
 
   init {
     logd("project=${project.name}")
-    startObservingSettings()
-    startObservingApolloKotlinServices()
+    startObserveSettings()
+    startObserveApolloKotlinServices()
   }
 
-  private fun startObservingSettings() {
+  private fun startObserveSettings() {
     logd()
-    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = project.settingsState.apolloKotlinServiceConfigurations
-      override fun settingsChanged(settingsState: SettingsState) {
-        val apolloKotlinServiceConfigurationsChanged = apolloKotlinServiceConfigurations != settingsState.apolloKotlinServiceConfigurations
-        apolloKotlinServiceConfigurations = settingsState.apolloKotlinServiceConfigurations
+    project.messageBus.connect(this).subscribe(ProjectSettingsListener.TOPIC, object : ProjectSettingsListener {
+      var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = project.projectSettingsState.apolloKotlinServiceConfigurations
+      override fun settingsChanged(projectSettingsState: ProjectSettingsState) {
+        val apolloKotlinServiceConfigurationsChanged = apolloKotlinServiceConfigurations != projectSettingsState.apolloKotlinServiceConfigurations
+        apolloKotlinServiceConfigurations = projectSettingsState.apolloKotlinServiceConfigurations
         logd("apolloKotlinServiceConfigurationsChanged=$apolloKotlinServiceConfigurationsChanged")
         if (apolloKotlinServiceConfigurationsChanged) {
           scheduleFetchLatencies()
@@ -66,7 +66,7 @@ class FieldInsightsServiceImpl(private val project: Project) : FieldInsightsServ
     })
   }
 
-  private fun startObservingApolloKotlinServices() {
+  private fun startObserveApolloKotlinServices() {
     project.messageBus.connect(this).subscribe(ApolloKotlinServiceListener.TOPIC, object : ApolloKotlinServiceListener {
       override fun apolloKotlinServicesAvailable() {
         logd()
@@ -84,7 +84,7 @@ class FieldInsightsServiceImpl(private val project: Project) : FieldInsightsServ
     logd()
     val apolloKotlinServices = GradleToolingModelService.getApolloKotlinServices(project)
     val apolloKotlinServicesWithConfigurations: Map<ApolloKotlinService, ApolloKotlinServiceConfiguration> = apolloKotlinServices.associateWith { service ->
-      project.settingsState.apolloKotlinServiceConfigurations.firstOrNull { configuration ->
+      project.projectSettingsState.apolloKotlinServiceConfigurations.firstOrNull { configuration ->
         service.id == configuration.apolloKotlinServiceId
       }
     }.filterValues { it != null }.mapValues { it.value!! }
