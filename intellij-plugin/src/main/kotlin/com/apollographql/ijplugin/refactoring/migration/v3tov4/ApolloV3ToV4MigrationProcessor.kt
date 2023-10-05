@@ -24,7 +24,7 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiM
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
-private const val apollo4LatestVersion = "4.0.0-alpha.3"
+private const val apollo4LatestVersion = "4.0.0-beta.1"
 
 /**
  * Migrations of Apollo Kotlin v3 to v4.
