@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-object TimestampAdapter : Adapter<Instant> {
+internal object TimestampAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
     return Instant.from(DateTimeFormatter.ISO_INSTANT.parse(reader.nextString()))
   }
