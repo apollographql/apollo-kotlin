@@ -20,8 +20,3 @@ apollo {
     mapScalar("Long2", "data.builders.MyLong")
   }
 }
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
