@@ -19,8 +19,7 @@ import java.util.UUID
 
 /**
  * Project level settings.
- * These settings are not meant to be shared with the team, which is why they are not stored in workspace.xml which is typically
- * ignored by VCS.
+ * These settings are not meant to be shared with the team, which is why they are stored in workspace.xml, typically ignored by VCS.
  */
 @Service(Service.Level.PROJECT)
 @State(
