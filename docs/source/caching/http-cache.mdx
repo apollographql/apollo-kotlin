@@ -89,4 +89,12 @@ val response = apolloClient.query(query)
 
 ## Clearing the cache
 
-Call `apolloClient.httpCache.clearAll()` to clear the cache of all entries.
+Call below to clear the cache of all entries, note that `clearAll()` will throw an `IllegalStateException` if a cache has not been configured on the client.
+
+```kotlin
+try {
+    apolloClient.apolloStore.clearAll()
+} catch (e: IllegalStateException) {
+    println("Failed to clear Apollo cache because none was found")
+}
+```
