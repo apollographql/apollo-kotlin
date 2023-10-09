@@ -182,31 +182,31 @@ fun String.parseGetGraphQLRequest(): GraphQLRequestResult {
   return builder.build()
 }
 
-internal sealed interface ApolloWebsocketClientMessageResult
+sealed interface ApolloWebsocketClientMessageResult
 
-internal class ApolloWebsocketClientMessageParseError internal constructor(
+class ApolloWebsocketClientMessageParseError internal constructor(
     val message: String,
 ) : ApolloWebsocketClientMessageResult
 
-internal sealed interface ApolloWebsocketClientMessage : ApolloWebsocketClientMessageResult
+sealed interface ApolloWebsocketClientMessage : ApolloWebsocketClientMessageResult
 
-internal class ApolloWebsocketInit(
+class ApolloWebsocketInit(
     val connectionParams: Any?,
 ) : ApolloWebsocketClientMessage
 
-internal class ApolloWebsocketStart(
+class ApolloWebsocketStart(
     val id: String,
     val request: GraphQLRequest,
 ) : ApolloWebsocketClientMessage
 
-internal class ApolloWebsocketStop(
+class ApolloWebsocketStop(
     val id: String,
 ) : ApolloWebsocketClientMessage
 
 
-internal object ApolloWebsocketTerminate : ApolloWebsocketClientMessage
+object ApolloWebsocketTerminate : ApolloWebsocketClientMessage
 
-internal sealed interface ApolloWebsocketServerMessage {
+sealed interface ApolloWebsocketServerMessage {
   fun serialize(sink: Sink)
 }
 
@@ -222,19 +222,19 @@ private fun Sink.writeMessage(type: String, block: (JsonWriter.() -> Unit)? = nu
   }
 }
 
-internal object ApolloWebsocketConnectionAck : ApolloWebsocketServerMessage {
+object ApolloWebsocketConnectionAck : ApolloWebsocketServerMessage {
   override fun serialize(sink: Sink) {
     sink.writeMessage("connection_ack")
   }
 }
 
-internal class ApolloWebsocketConnectionError : ApolloWebsocketServerMessage {
+class ApolloWebsocketConnectionError : ApolloWebsocketServerMessage {
   override fun serialize(sink: Sink) {
     sink.writeMessage("connection_error")
   }
 }
 
-internal class ApolloWebsocketData(
+class ApolloWebsocketData(
     val id: String,
     val response: GraphQLResponse,
 ) : ApolloWebsocketServerMessage {
@@ -248,7 +248,7 @@ internal class ApolloWebsocketData(
   }
 }
 
-internal class ApolloWebsocketError(
+class ApolloWebsocketError(
     val id: String?,
     val error: Error,
 ) : ApolloWebsocketServerMessage {
@@ -264,7 +264,7 @@ internal class ApolloWebsocketError(
   }
 }
 
-internal class ApolloWebsocketComplete(
+class ApolloWebsocketComplete(
     val id: String,
 ) : ApolloWebsocketServerMessage {
   override fun serialize(sink: Sink) {
@@ -276,7 +276,7 @@ internal class ApolloWebsocketComplete(
 }
 
 @OptIn(ApolloInternal::class)
-internal fun String.parseApolloWebsocketClientMessage(): ApolloWebsocketClientMessageResult {
+fun String.parseApolloWebsocketClientMessage(): ApolloWebsocketClientMessageResult {
   val map = try {
     Buffer().writeUtf8(this).jsonReader().readAny() as Map<String, Any?>
   } catch (e: Exception) {
