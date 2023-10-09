@@ -20,10 +20,15 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.responseName
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 private object UnusedRoot
 
 internal class OperationExecutor(
+    val operation: GQLOperationDefinition,
     val fragments: Map<String, GQLFragmentDefinition>,
     val executionContext: ExecutionContext,
     val variables: Map<String, Any?>,
@@ -36,22 +41,107 @@ internal class OperationExecutor(
   private var errors = mutableListOf<Error>()
   private val introspectionResolvers = IntrospectionResolvers(schema)
 
-  fun execute(operationDefinition: GQLOperationDefinition): GraphQLResponse {
-
-    // XXX: we should throw if it's an unsupported operation
-    val rootTypename = schema.rootTypeNameFor(operationDefinition.operationType)
+  fun execute(): GraphQLResponse {
+    val operationDefinition = operation
+    val rootTypename = schema.rootTypeNameOrNullFor(operationDefinition.operationType)
+    if (rootTypename == null) {
+      return errorResponse("'${operationDefinition.operationType}' is not supported")
+    }
     val rootObject = when (operationDefinition.operationType) {
       "query" -> mainResolver.rootQueryObject()
       "mutation" -> mainResolver.rootMutationObject()
-      "subscription" -> mainResolver.rootSubscriptionObject()
-      else -> error("Unsupported operation type '$mainResolver.rootQueryObject()'")
+      "subscription" -> error("Use executeSubscription() to execute subscriptions")
+      else -> error("Unknown operation type '${operationDefinition.operationType}")
     }
-    val data = resolveObject(operationDefinition.selections, rootObject ?: UnusedRoot, rootTypename)
+    val data = adaptToJson(emptyList(), rootObject ?: UnusedRoot, GQLNamedType(null, rootTypename), operationDefinition.selections)
 
     return GraphQLResponse(data, errors, null)
   }
 
-  private fun resolveObject(selections: List<GQLSelection>, parentObject: Any, knownTypename: String?): Map<String, Any?>? {
+  private fun Resolver.tryResolve(path: List<Any>, resolveInfo: ResolveInfo): Any? {
+    return try {
+      resolve(resolveInfo)
+    } catch (e: Exception) {
+      errors.add(
+          Error.Builder("Cannot resolve '${resolveInfo.fieldName}': ${e.message}")
+              .path(path)
+              .build()
+      )
+      null
+    }
+  }
+
+  private fun errorFlow(message: String): Flow<SubscriptionItem> {
+    return flowOf(SubscriptionItemError(Error.Builder(message).build()))
+  }
+
+  fun executeSubscription(): Flow<SubscriptionItem> {
+    val operationDefinition = operation
+    val rootTypename = schema.rootTypeNameOrNullFor(operationDefinition.operationType)
+    if (rootTypename == null) {
+      return errorFlow("'${operationDefinition.operationType}' is not supported")
+    }
+    val rootObject = when (operationDefinition.operationType) {
+      "subscription" -> mainResolver.rootSubscriptionObject()
+      else -> return errorFlow("Unknown operation type '${operationDefinition.operationType}.")
+    }
+
+    val field = operationDefinition.selections.singleOrNull() as? GQLField
+    if (field == null) {
+      return errorFlow("Subscriptions must have a single root field")
+    }
+
+    val resolveInfo = ResolveInfo(
+        rootObject ?: UnusedRoot,
+        executionContext,
+        MergedField(field, selections = field.selections),
+        schema = schema,
+        variables = variables,
+        adapters = adapters,
+        parentType = rootTypename
+    )
+
+    instrumentations.forEach { it.beforeResolve(resolveInfo) }
+    val flow = try {
+      mainResolver.resolve(resolveInfo)
+    } catch (e: Exception) {
+      return errorFlow(e.message ?: "Cannot resolve root field")
+    }
+
+    if (flow == null) {
+      return errorFlow("root subscription field returned null")
+    }
+
+    if (flow !is Flow<*>) {
+      error("Subscription resolvers must return a Flow<> for root fields")
+    }
+
+    val definition = field.definitionFromScope(schema, rootTypename)!!
+
+    return flow.map {
+      errors.clear()
+      val path = listOf(field.responseName())
+
+      val data = try {
+        mapOf(field.responseName() to adaptToJson(path, it, definition.type, field.selections))
+      } catch (e: UnexpectedNull) {
+        null
+      }
+      GraphQLResponse(data = data, errors = errors, extensions = null)
+    }.map {
+      @Suppress("USELESS_CAST")
+      SubscriptionItemResponse(it) as SubscriptionItem
+    }.catch {
+      emit(SubscriptionItemError(Error.Builder(it.message ?: "Error executing subscription").build()))
+    }
+  }
+
+  private fun resolveObject(
+      path: List<Any>,
+      selections: List<GQLSelection>,
+      parentObject: Any,
+      knownTypename: String?,
+  ): Map<String, Any?>? {
     val typename = knownTypename ?: introspectionResolvers.typename(parentObject) ?: mainResolver.typename(parentObject)
     if (typename == null) {
       errors.add(
@@ -63,6 +153,7 @@ internal class OperationExecutor(
     val mergedFields = collectAndMergeFields(selections, typename)
     return mergedFields.associate { mergedField ->
       val responseName = mergedField.first.responseName()
+      val fieldPath = path + responseName
 
 
       val resolveInfo = ResolveInfo(
@@ -82,29 +173,26 @@ internal class OperationExecutor(
         resolveInfo.fieldName == "__typename" -> typename
         else -> {
           val resolver = introspectionResolvers.resolver(typename, mergedField.first.name) ?: mainResolver
-          try {
-            resolver.resolve(resolveInfo)
-          } catch (e: Exception) {
-            errors.add(
-                Error.Builder("No resolver for $typename.${mergedField.first.name}")
-                    .build()
-            )
-            null
-          }
+          resolver.tryResolve(fieldPath, resolveInfo)
         }
       }
 
       val type = mergedField.first.definitionFromScope(schema, typename)
           ?: error("No field definition for $responseName")
-      responseName to adaptToJson(ret, type.type, mergedField.selections)
+      responseName to adaptToJson(fieldPath, ret, type.type, mergedField.selections)
     }
   }
 
-  private fun adaptToJson(value: Any?, type: GQLType, selections: List<GQLSelection>): Any? {
+  object UnexpectedNull : Exception("A resolver returned null in a non-null position")
+
+  private fun adaptToJson(path: List<Any>, value: Any?, type: GQLType, selections: List<GQLSelection>): Any? {
     return when (type) {
       is GQLNonNullType -> {
-        check(value != null)
-        adaptToJson(value, type.type, selections)
+        if (value == null) {
+          throw UnexpectedNull
+        } else {
+          adaptToJson(path, value, type.type, selections)
+        }
       }
 
       is GQLListType -> {
@@ -112,7 +200,13 @@ internal class OperationExecutor(
           value
         } else {
           check(value is List<*>)
-          value.map { adaptToJson(it, type.type, selections) }
+          try {
+            value.mapIndexed { index, any ->
+              adaptToJson(path + index, any, type.type, selections)
+            }
+          } catch (e: UnexpectedNull) {
+            null
+          }
         }
       }
 
@@ -130,7 +224,11 @@ internal class OperationExecutor(
               } else {
                 null
               }
-              resolveObject(selections, value, knownTypename)
+              try {
+                resolveObject(path, selections, value, knownTypename)
+              } catch (e: UnexpectedNull) {
+                null
+              }
             }
 
             else -> {

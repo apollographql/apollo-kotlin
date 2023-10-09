@@ -53,7 +53,9 @@ class SampleServerTest {
     runBlocking {
       val list = apolloClient.subscription(CountSubscription(5, 0))
           .toFlow()
-          .map { it.data!!.count }
+          .map {
+            it.data?.count
+          }
           .toList()
       assertEquals(0.until(5).toList(), list)
     }
@@ -172,10 +174,6 @@ class SampleServerTest {
           .single()
       assertIs<SubscriptionOperationException>(response.exception)
       val error = response.exception.cast<SubscriptionOperationException>().payload
-          .cast<Map<String, *>>()
-          .get("errors")
-          .cast<List<*>>()
-          .first()
           .cast<Map<String, String>>()
           .get("message")
       assertEquals("Woops", error)
