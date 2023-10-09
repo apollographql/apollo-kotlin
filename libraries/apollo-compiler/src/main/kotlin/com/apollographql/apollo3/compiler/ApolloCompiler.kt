@@ -383,7 +383,7 @@ object ApolloCompiler {
       packageName: String,
       serviceName: String,
   ): List<FileSpec> {
-    return KotlinCodeGen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName, serviceName)
+    return KotlinCodeGen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName = packageName, serviceName = serviceName)
   }
 
   fun writeKotlin(

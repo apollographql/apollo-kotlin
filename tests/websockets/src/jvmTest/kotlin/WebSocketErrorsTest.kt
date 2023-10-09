@@ -119,24 +119,8 @@ class WebSocketErrorsTest {
           .toList()
     }
 
-    /**
-     * The timings in the sample-server are a bit weird. It takes 500ms for the query to reach the
-     * backend code during which the subscription code hasn't started yet and then suddendly starts
-     * just as the WebSocket is going to be closed. If that ever happen to be an issue in CI or in
-     * another place, relaxing the timings should be ok
-     *
-     * 1639070973776: wait...
-     * 1639070973986: triggering an error
-     * 1639070974311: closing session...
-     * 1639070974326: emitting 0
-     * 1639070974353: session closed.
-     * 1639070974373: emitting 0
-     * 1639070974877: emitting 1
-     */
-    println("${System.currentTimeMillis()}: wait...")
     delay(200)
 
-    println("${System.currentTimeMillis()}: triggering an error")
     // Trigger an error
     val response = apolloClient.query(CloseSocketQuery()).execute()
 

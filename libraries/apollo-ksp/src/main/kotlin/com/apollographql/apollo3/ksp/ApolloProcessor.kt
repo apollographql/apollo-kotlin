@@ -91,7 +91,7 @@ internal class ValidationScope(
             validateAndCoerce(
                 ksTypeReference.element!!.typeArguments.single().type!!,
                 expectedNullableType.type,
-                allowCovariant
+                allowCovariant,
             )
         )
       }
@@ -337,6 +337,7 @@ class ApolloProcessor(
       val objectName = entry.key
       val typeDefinition = schema.typeDefinition(objectName)
 
+      val isSubscriptionRootField = typeDefinition.name == schema.rootTypeNameFor("subscription")
       val fields = entry.value.classDeclaration.declarations.mapNotNull {
         when (it) {
           is KSFunctionDeclaration -> {
@@ -359,6 +360,14 @@ class ApolloProcessor(
               error("No field '$objectName.$graphQLName' found at ${it.location}")
             }
 
+            val reference = if (isSubscriptionRootField) {
+              check(it.returnType!!.resolve().declaration.acClassName() == flowClassName) {
+                error("Subscription root fields must be of Flow<T> type")
+              }
+              it.returnType!!.element!!.typeArguments.single().type!!
+            } else {
+              it.returnType!!
+            }
             IrTargetField(
                 isFunction = true,
                 targetName = targetName,
@@ -370,7 +379,7 @@ class ApolloProcessor(
                       objectName
                   )
                 },
-                type = validationScope.validateAndCoerce(it.returnType!!, fieldDefinition.type, true)
+                type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
             )
           }
 
@@ -390,12 +399,21 @@ class ApolloProcessor(
               error("No field '$objectName.$graphQLName' found at ${it.location}")
             }
 
+            val reference = if (isSubscriptionRootField) {
+              check(it.type.resolve().declaration.acClassName() == flowClassName) {
+                error("Subscription root fields must be of Flow<T> type")
+              }
+              it.type.element!!.typeArguments.single().type!!
+            } else {
+              it.type
+            }
+
             IrTargetField(
                 isFunction = false,
                 targetName = targetName,
                 name = graphQLName,
                 arguments = emptyList(),
-                type = validationScope.validateAndCoerce(it.type, fieldDefinition.type, true)
+                type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
             )
           }
 
@@ -593,6 +611,7 @@ private fun KSDeclaration.acClassName(): IrClassName {
   return IrClassName(packageName.asString(), listOf(simpleName.asString()))
 }
 
+private val flowClassName = IrClassName("kotlinx.coroutines.flow", listOf("Flow"))
 private val listClassName = IrClassName("kotlin.collections", listOf("List"))
 private val optionalClassName = IrClassName("com.apollographql.apollo3.api", listOf("Optional"))
 private val executionContextClassName = IrClassName("com.apollographql.apollo3.api", listOf("ExecutionContext"))

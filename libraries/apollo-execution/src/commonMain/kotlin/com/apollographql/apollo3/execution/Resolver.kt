@@ -70,6 +70,9 @@ object ThrowingResolver: RootlessResolver() {
 }
 
 interface Instrumentation {
+  /**
+   * For subscriptions, this is called only once on the root field and then for every data in the nested fields
+   */
   fun beforeResolve(resolveInfo: ResolveInfo)
 }
 

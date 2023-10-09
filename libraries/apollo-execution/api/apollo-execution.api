@@ -1,5 +1,6 @@
 public final class com/apollographql/apollo3/execution/ExecutableSchema {
 	public final fun execute (Lcom/apollographql/apollo3/execution/GraphQLRequest;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/execution/GraphQLResponse;
+	public final fun executeSubscription (Lcom/apollographql/apollo3/execution/GraphQLRequest;Lcom/apollographql/apollo3/api/ExecutionContext;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/execution/ExecutableSchema$Builder {
@@ -14,13 +15,13 @@ public final class com/apollographql/apollo3/execution/ExecutableSchema$Builder 
 	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
 	public final fun persistedDocumentCache (Lcom/apollographql/apollo3/execution/PersistedDocumentCache;)Lcom/apollographql/apollo3/execution/ExecutableSchema$Builder;
 	public final fun resolver (Lcom/apollographql/apollo3/execution/MainResolver;)Lcom/apollographql/apollo3/execution/ExecutableSchema$Builder;
+	public final fun schema (Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/execution/ExecutableSchema$Builder;
 	public final fun schema (Ljava/lang/String;)Lcom/apollographql/apollo3/execution/ExecutableSchema$Builder;
 	public final fun setAdapterRegistry (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 	public final fun setInstrumentations (Ljava/util/List;)V
 	public final fun setPersistedDocumentCache (Lcom/apollographql/apollo3/execution/PersistedDocumentCache;)V
 	public final fun setResolver (Lcom/apollographql/apollo3/execution/MainResolver;)V
 	public final fun setSchema (Lcom/apollographql/apollo3/ast/Schema;)V
-	public final fun shema (Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/execution/ExecutableSchema$Builder;
 }
 
 public final class com/apollographql/apollo3/execution/GraphQLRequest : com/apollographql/apollo3/execution/GraphQLRequestResult {
@@ -54,15 +55,17 @@ public final class com/apollographql/apollo3/execution/GraphQLRequestError : com
 public final class com/apollographql/apollo3/execution/GraphQLRequestKt {
 	public static final fun parseGetGraphQLRequest (Ljava/lang/String;)Lcom/apollographql/apollo3/execution/GraphQLRequestResult;
 	public static final fun parsePostGraphQLRequest (Lokio/BufferedSource;)Lcom/apollographql/apollo3/execution/GraphQLRequestResult;
+	public static final fun toGraphQLRequest (Ljava/util/Map;)Lcom/apollographql/apollo3/execution/GraphQLRequestResult;
 }
 
 public abstract interface class com/apollographql/apollo3/execution/GraphQLRequestResult {
 }
 
 public final class com/apollographql/apollo3/execution/GraphQLResponse {
-	public final fun getData ()Ljava/util/Map;
+	public final fun getData ()Ljava/lang/Object;
 	public final fun getErrors ()Ljava/util/List;
 	public final fun getExtensions ()Ljava/util/Map;
+	public final fun serialize (Lcom/apollographql/apollo3/api/json/JsonWriter;)V
 	public final fun serialize (Lokio/Sink;)V
 }
 
@@ -138,6 +141,19 @@ public abstract class com/apollographql/apollo3/execution/RootlessResolver : com
 	public final fun rootMutationObject ()Ljava/lang/Object;
 	public final fun rootQueryObject ()Ljava/lang/Object;
 	public final fun rootSubscriptionObject ()Ljava/lang/Object;
+}
+
+public abstract interface class com/apollographql/apollo3/execution/SubscriptionItem {
+}
+
+public final class com/apollographql/apollo3/execution/SubscriptionItemError : com/apollographql/apollo3/execution/SubscriptionItem {
+	public fun <init> (Lcom/apollographql/apollo3/api/Error;)V
+	public final fun getError ()Lcom/apollographql/apollo3/api/Error;
+}
+
+public final class com/apollographql/apollo3/execution/SubscriptionItemResponse : com/apollographql/apollo3/execution/SubscriptionItem {
+	public fun <init> (Lcom/apollographql/apollo3/execution/GraphQLResponse;)V
+	public final fun getResponse ()Lcom/apollographql/apollo3/execution/GraphQLResponse;
 }
 
 public final class com/apollographql/apollo3/execution/ThrowingResolver : com/apollographql/apollo3/execution/RootlessResolver {
