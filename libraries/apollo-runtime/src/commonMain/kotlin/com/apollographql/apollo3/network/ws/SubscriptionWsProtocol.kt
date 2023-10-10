@@ -57,6 +57,7 @@ constructor(
           listener.generalError(messageMap["payload"] as Map<String, Any?>?)
         }
       }
+
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       else -> Unit // unknown message...
     }

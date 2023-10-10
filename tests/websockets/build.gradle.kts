@@ -34,6 +34,9 @@ apollo {
     it.isDirectory
   }?.forEach {
     service(it.name) {
+      if (it.name == "sample-server") {
+        schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
+      }
       srcDir(it)
       packageName.set(it.name.replace("-", "."))
     }

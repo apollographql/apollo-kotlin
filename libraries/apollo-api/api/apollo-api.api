@@ -1314,6 +1314,10 @@ public final class com/apollographql/apollo3/exception/MissingValueException : c
 	public fun <init> ()V
 }
 
+public final class com/apollographql/apollo3/exception/NoDataException : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
 public final class com/apollographql/apollo3/exception/SubscriptionOperationException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

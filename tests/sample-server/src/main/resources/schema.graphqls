@@ -1,13 +1,11 @@
-schema {
-  query: Query
-  subscription: Subscription
-}
-
 type Query {
-  "Closes the socket"
-  closeWebSocket: String!
   random: Int!
   time: Int!
+}
+
+type Mutation {
+  "Force close all websockets"
+  closeAllWebSockets: String!
 }
 
 type Subscription {
@@ -19,5 +17,9 @@ type Subscription {
   operationError: String!
   "Returns a GraphQL error after 'after' items"
   graphqlAccessError(after: Int! = 1): Int
+
+  "Force close the websocket this subscription is executing on"
+  closeWebSocket: String!
+
   time: Int!
 }

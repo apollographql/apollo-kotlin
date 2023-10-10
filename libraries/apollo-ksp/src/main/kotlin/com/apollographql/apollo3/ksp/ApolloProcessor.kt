@@ -210,13 +210,31 @@ class ApolloProcessor(
 
     val allFiles = resolver.getAllFiles()
 
+    var dirtyFiles = 0
+
     // Retrieve the scalar and objects mappings
     allFiles.forEach {
       val visitor = ApolloFileVisitor()
       it.accept(visitor, Unit)
       scalarMapping.putAll(visitor.getScalarMapping())
-      objectMapping.putAll(visitor.getObjectMapping())
+      visitor.getObjectMapping().forEach {
+        val existing = objectMapping.put(it.key, it.value)
+        if (existing != null) {
+          error("""Duplicate object found for type '${it.key}:
+            |* ${existing.classDeclaration.location}
+            |* ${it.value.classDeclaration.location}
+          """.trimMargin())
+        }
+      }
+
+      dirtyFiles++
     }
+
+    if (dirtyFiles == 0) {
+      // Everything was generated already
+      return emptyList()
+    }
+
     if (!scalarMapping.contains("String")) {
       scalarMapping.put(
           "String",
@@ -306,7 +324,8 @@ class ApolloProcessor(
 
     fileSpecs.forEach { fileSpec ->
       codeGenerator.createNewFile(
-          Dependencies(aggregating = false),
+          // XXX: make more incremental
+          Dependencies.ALL_FILES,
           packageName = fileSpec.packageName,
           fileName = fileSpec.name,
 
@@ -445,6 +464,7 @@ class ApolloProcessor(
 
     fileSpecs.forEach { fileSpec ->
       codeGenerator.createNewFile(
+          // XXX: make more incremental
           Dependencies.ALL_FILES,
           packageName = fileSpec.packageName,
           fileName = fileSpec.name,

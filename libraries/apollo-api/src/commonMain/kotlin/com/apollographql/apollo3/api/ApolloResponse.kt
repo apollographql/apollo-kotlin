@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo3.exception.NoDataException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -110,7 +111,9 @@ private constructor(
   /**
    * Return [data] if not null or throws [exception] else
    */
-  fun dataOrThrow(): D = data ?: throw exception!!
+  fun dataOrThrow(): D {
+    return data ?: throw NoDataException(cause = exception)
+  }
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
