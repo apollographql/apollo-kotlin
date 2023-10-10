@@ -8,6 +8,7 @@ import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.closeConnection
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import sample.server.CloseSocketQuery
+import sample.server.CloseSocketMutation
 import sample.server.CountSubscription
 import sample.server.TimeSubscription
 import kotlin.test.assertEquals
@@ -122,9 +123,8 @@ class WebSocketErrorsTest {
     delay(200)
 
     // Trigger an error
-    val response = apolloClient.query(CloseSocketQuery()).execute()
-
-    assertEquals(response.dataOrThrow().closeWebSocket, "Closed 1 session(s)")
+    val response = apolloClient.mutation(CloseSocketMutation()).toFlow().first()
+    assertEquals(response.dataOrThrow().closeAllWebSockets, "Closed 1 session(s)")
 
     /**
      * The subscription should be restarted and complete successfully the second time
@@ -162,7 +162,7 @@ class WebSocketErrorsTest {
         .build()
 
     delay(1000)
-    val response = apolloClient.query(CloseSocketQuery()).execute()
+    val response = apolloClient.mutation(CloseSocketMutation()).execute()
 
     println(response.dataOrThrow())
   }
@@ -183,21 +183,20 @@ class WebSocketErrorsTest {
 
     launch {
       delay(200)
-      apolloClient.query(CloseSocketQuery()).execute()
+      apolloClient.mutation(CloseSocketMutation()).execute()
     }
 
     apolloClient.subscription(CountSubscription(2, 500))
         .toFlow()
-        .map {
-          it.dataOrThrow().count
-        }
         .test {
           awaitItem()
-          val exception = awaitError()
+          var exception: Throwable? = awaitItem().exception
           assertIs<ApolloNetworkException>(exception)
-          val cause = exception.cause
-          assertIs<ApolloWebSocketClosedException>(cause)
-          assertEquals(1011, cause.code)
+          exception = exception.cause
+          assertIs<ApolloWebSocketClosedException>(exception)
+          assertEquals(1011, exception.code)
+
+          cancelAndIgnoreRemainingEvents()
         }
 
     apolloClient.close()

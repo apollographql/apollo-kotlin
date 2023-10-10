@@ -12,7 +12,7 @@ import com.apollographql.apollo3.runtime.java.network.ws.protocol.ApolloWsProtoc
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
-import javatest.CloseSocketQuery;
+import javatest.CloseSocketMutation;
 import javatest.CountSubscription;
 import javatest.OperationErrorSubscription;
 import org.jetbrains.annotations.NotNull;
@@ -207,9 +207,9 @@ public class ApolloWsTest {
           items.add(response.dataOrThrow().count);
           if (response.dataOrThrow().count == 2) {
             // Provoke a network error by closing the websocket
-            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            apolloClient.mutation(new CloseSocketMutation()).enqueue(new ApolloCallback<CloseSocketMutation.Data>() {
               @Override
-              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              public void onResponse(@NotNull ApolloResponse<CloseSocketMutation.Data> response) {
               }
             });
           }
@@ -258,9 +258,9 @@ public class ApolloWsTest {
           }
           if (response.dataOrThrow().count == 2) {
             // Provoke a network error by closing the websocket
-            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            apolloClient.mutation(new CloseSocketMutation()).enqueue(new ApolloCallback<CloseSocketMutation.Data>() {
               @Override
-              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              public void onResponse(@NotNull ApolloResponse<CloseSocketMutation.Data> response) {
               }
             });
           }

@@ -1,39 +1,30 @@
 package com.apollographql.apollo.sample.server
 
-import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.execution.ApolloWebsocketClientMessageParseError
-import com.apollographql.apollo3.execution.ApolloWebsocketComplete
-import com.apollographql.apollo3.execution.ApolloWebsocketConnectionAck
-import com.apollographql.apollo3.execution.ApolloWebsocketConnectionError
-import com.apollographql.apollo3.execution.ApolloWebsocketData
-import com.apollographql.apollo3.execution.ApolloWebsocketError
-import com.apollographql.apollo3.execution.ApolloWebsocketInit
-import com.apollographql.apollo3.execution.ApolloWebsocketServerMessage
-import com.apollographql.apollo3.execution.ApolloWebsocketStart
-import com.apollographql.apollo3.execution.ApolloWebsocketStop
-import com.apollographql.apollo3.execution.ApolloWebsocketTerminate
 import com.apollographql.apollo3.execution.ExecutableSchema
 import com.apollographql.apollo3.execution.GraphQLRequest
 import com.apollographql.apollo3.execution.GraphQLRequestError
-import com.apollographql.apollo3.execution.SubscriptionItemError
-import com.apollographql.apollo3.execution.SubscriptionItemResponse
-import com.apollographql.apollo3.execution.parseApolloWebsocketClientMessage
+import com.apollographql.apollo3.execution.WebSocketBinaryMessage
+import com.apollographql.apollo3.execution.WebSocketMessage
+import com.apollographql.apollo3.execution.WebSocketTextMessage
 import com.apollographql.apollo3.execution.parseGetGraphQLRequest
 import com.apollographql.apollo3.execution.parsePostGraphQLRequest
+import com.apollographql.apollo3.execution.websocket.ApolloWebSocketHandler
+import com.apollographql.apollo3.execution.websocket.ConnectionInitAck
+import com.apollographql.apollo3.execution.websocket.ConnectionInitError
+import com.apollographql.apollo3.execution.websocket.ConnectionInitHandler
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import okio.Buffer
 import okio.buffer
 import okio.source
 import okio.withLock
 import org.http4k.core.HttpHandler
+import org.http4k.core.MemoryBody
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
@@ -86,21 +77,15 @@ class GraphQLHttpHandler(val executableSchema: ExecutableSchema, val executionCo
     }
 
     if (graphQLRequestResult is GraphQLRequestError) {
-      println("Got Request: ${graphQLRequestResult.message}")
       return Response(BAD_REQUEST).body(graphQLRequestResult.message)
     }
     graphQLRequestResult as GraphQLRequest
-
-    println("Got Request")
-    println("document=${graphQLRequestResult.document}")
-    println("variables=${graphQLRequestResult.variables}")
 
     val response = executableSchema.execute(graphQLRequestResult, executionContext)
 
     val buffer = Buffer()
     response.serialize(buffer)
     val responseText = buffer.readUtf8()
-    println("response: $responseText")
 
     return Response(OK)
         .header("content-type", "application/json")
@@ -114,164 +99,121 @@ class SandboxHandler : HttpHandler {
   }
 }
 
-private fun ApolloWebsocketServerMessage.toWsMessage(): WsMessage {
-  // XXX: avoid the encoding/decoding to utf8
-  return WsMessage(Buffer().apply { serialize(this) }.readUtf8())
-}
-
-
-class WebsocketSession {
-  val subscriptions = mutableMapOf<String, Job>()
-}
-
-
-class WebsocketRegistry : ExecutionContext.Element {
+class WebSocketRegistry : ExecutionContext.Element {
+  private val activeSockets = mutableListOf<Websocket>()
   private val lock = reentrantLock()
 
-  private val sessions = mutableMapOf<Websocket, WebsocketSession>()
-
-  fun startSession(ws: Websocket) {
+  fun rememberWebSocket(ws: Websocket) {
     lock.withLock {
-      check(sessions.put(ws, WebsocketSession()) == null) {
-        "This session was already started"
-      }
+      activeSockets.add(ws)
     }
   }
 
-  fun stopSession(ws: Websocket) {
+  fun forgetWebSocket(ws: Websocket) {
     lock.withLock {
-      val session = sessions.remove(ws)
-      if (session == null) {
-        // Session already removed
-        // Might happen because we call this both from onError and onClose, so we need to be idempotent
-        return@withLock
-      }
-
-      session.subscriptions.forEach {
-        it.value.cancel()
-      }
+      activeSockets.remove(ws)
     }
   }
 
-  fun addSubscription(ws: Websocket, id: String, job: Job) {
-    lock.withLock {
-      sessions.get(ws)!!.subscriptions.put(id, job)
-    }
-  }
-
-  fun removeSubscription(ws: Websocket, id: String): Boolean {
-    val removed = lock.withLock {
-      sessions.get(ws)!!.subscriptions.remove(id)
-    }
-
-    removed?.cancel()
-
-    return removed != null
-  }
-
-  fun closeAllSessions(): Int {
-
-    var count = 0
-    lock.withLock {
-      // Create a copy to avoid concurrent modification
-      sessions.keys.toList().forEach {
-        // Close should trigger the onClose call and remove from the `sessions`
+  fun closeAllWebSockets(): Int {
+    return lock.withLock {
+      var count = 0
+      activeSockets.toList().forEach {
         it.close(WsStatus(1011, "closed"))
         count++
       }
+      count
     }
-    return count
   }
 
-  override val key: ExecutionContext.Key<WebsocketRegistry>
-    get() = Key
+  override val key: ExecutionContext.Key<WebSocketRegistry> = Key
 
-  companion object Key : ExecutionContext.Key<WebsocketRegistry>
+  companion object Key : ExecutionContext.Key<WebSocketRegistry>
 }
 
-fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, websocketRegistry: WebsocketRegistry): WsHandler {
+class CurrentWebSocket(val ws: Websocket): ExecutionContext.Element {
+
+  override val key: ExecutionContext.Key<CurrentWebSocket> = Key
+
+  companion object Key : ExecutionContext.Key<CurrentWebSocket>
+}
+
+fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry: WebSocketRegistry): WsHandler {
 
   val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
   return { _: Request ->
     WsResponse { ws: Websocket ->
+      webSocketRegistry.rememberWebSocket(ws)
 
-      websocketRegistry.startSession(ws)
+      val connectionInitHandler: ConnectionInitHandler = { connectionParams: Any? ->
+        @Suppress("UNCHECKED_CAST")
+        val shouldReturn = (connectionParams as? Map<String, Any?>)?.get("return")?.toString()
 
-      ws.onMessage {
-        when (val message = String(it.body.payload.array()).parseApolloWebsocketClientMessage()) {
-          is ApolloWebsocketInit -> {
-            @Suppress("UNCHECKED_CAST")
-            val shouldReturn = (message.connectionParams as? Map<String, Any?>)?.get("return")?.toString()
-
-            when {
-              shouldReturn == "error" -> {
-                ws.send(ApolloWebsocketConnectionError().toWsMessage())
-              }
-
-              shouldReturn != null && shouldReturn.toString().startsWith("close") -> {
-                val code = Regex("close\\(([0-9]*)\\)").matchEntire(shouldReturn)
-                    ?.let { it.groupValues[1].toIntOrNull() }
-                    ?: 1001
-
-                ws.close(WsStatus(code, "closed"))
-              }
-              else -> {
-                ws.send(ApolloWebsocketConnectionAck.toWsMessage())
-              }
-            }
+        when {
+          shouldReturn == "error" -> {
+            ConnectionInitError()
           }
 
-          is ApolloWebsocketStart -> {
-            val flow = executableSchema.executeSubscription(message.request, ExecutionContext.Empty)
+          shouldReturn != null && shouldReturn.toString().startsWith("close") -> {
+            val code = Regex("close\\(([0-9]*)\\)").matchEntire(shouldReturn)
+                ?.let { it.groupValues[1].toIntOrNull() }
+                ?: 1001
 
-            val job = scope.launch {
-              flow.collect {
-                when (it) {
-                  is SubscriptionItemResponse -> {
-                    ws.send(ApolloWebsocketData(id = message.id, response = it.response).toWsMessage())
-                  }
+            ws.close(WsStatus(code, "closed"))
 
-                  is SubscriptionItemError -> {
-                    ws.send(ApolloWebsocketError(id = message.id, error = it.error).toWsMessage())
-                  }
-                }
-              }
-              ws.send(ApolloWebsocketComplete(id = message.id).toWsMessage())
-              websocketRegistry.removeSubscription(ws, message.id)
-            }
-            websocketRegistry.addSubscription(ws, message.id, job)
+            ConnectionInitError()
           }
 
-          is ApolloWebsocketStop -> {
-            if (!websocketRegistry.removeSubscription(ws, message.id)) {
-              ws.send(ApolloWebsocketError(message.id, Error.Builder("No active subscription found for '${message.id}'").build()).toWsMessage())
-            }
+          else -> {
+            ConnectionInitAck
           }
-
-          ApolloWebsocketTerminate -> {
-            // nothing to do
-          }
-
-          is ApolloWebsocketClientMessageParseError -> {
-            ws.send(ApolloWebsocketError(null, Error.Builder("Cannot handle message (${message.message})").build()).toWsMessage())
-          }
-        }
-        ws.onClose {
-          websocketRegistry.stopSession(ws)
-        }
-        ws.onError {
-          websocketRegistry.stopSession(ws)
         }
       }
+
+      val sendMessage = { webSocketMessage: WebSocketMessage ->
+        ws.send(webSocketMessage.toWsMessage())
+      }
+
+      val handler = ApolloWebSocketHandler(
+          executableSchema = executableSchema,
+          scope = scope,
+          executionContext = webSocketRegistry + CurrentWebSocket(ws),
+          sendMessage = sendMessage,
+          connectionInitHandler = connectionInitHandler
+      )
+
+      ws.onMessage {
+        handler.handleMessage(WebSocketTextMessage(it.body.payload.array().decodeToString()))
+      }
+      ws.onClose {
+        handler.close()
+        webSocketRegistry.forgetWebSocket(ws)
+      }
+      ws.onError {
+        handler.close()
+        webSocketRegistry.forgetWebSocket(ws)
+      }
+    }
+  }
+}
+
+private fun WebSocketMessage.toWsMessage(): WsMessage {
+  return when (this) {
+    is WebSocketBinaryMessage -> {
+      WsMessage(MemoryBody(data))
+    }
+
+    is WebSocketTextMessage -> {
+      WsMessage(data)
     }
   }
 }
 
 fun AppHandler(): PolyHandler {
   val executableSchema = ExecutableSchema()
-  val websocketRegistry = WebsocketRegistry()
-  val ws = websockets("/subscriptions" wsBind ApolloWebsocketHandler(executableSchema, websocketRegistry))
+  val forceClose = WebSocketRegistry()
+  val ws = websockets("/subscriptions" wsBind ApolloWebsocketHandler(executableSchema, webSocketRegistry = forceClose))
 
   val http = ServerFilters.CatchAll {
     it.printStackTrace()
@@ -280,8 +222,8 @@ fun AppHandler(): PolyHandler {
       .then(ServerFilters.Cors(UnsafeGlobalPermissive))
       .then(
           routes(
-              "/graphql" bind Method.POST to GraphQLHttpHandler(executableSchema, websocketRegistry),
-              "/graphql" bind Method.GET to GraphQLHttpHandler(executableSchema, websocketRegistry),
+              "/graphql" bind Method.POST to GraphQLHttpHandler(executableSchema, forceClose),
+              "/graphql" bind Method.GET to GraphQLHttpHandler(executableSchema, forceClose),
               "/sandbox" bind Method.GET to SandboxHandler()
           )
       )

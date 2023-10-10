@@ -18,5 +18,6 @@ apollo {
   service("service") {
     generateDataBuilders.set(true)
     packageName.set("com.example")
+    schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
   }
 }
