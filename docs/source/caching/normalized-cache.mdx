@@ -259,3 +259,15 @@ There are two methods for specifying an object's cache ID:
 
 * **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen where to find the ID and make sure at compile time that all the `id` fields are requested so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
 * **[Programmatically](programmatic-ids).** You can implement custom APIs that retrieve the ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that you manually request `id` fields.
+
+## Clearing the cache
+
+Call below to clear the cache of all entries, note that retrieving `apolloClient.apolloStore` will throw an exception if a cache has not been configured on the client.
+
+```kotlin
+try {
+    apolloClient.apolloStore.clearAll()
+} catch (e: IllegalStateException) {
+    println("Failed to clear Apollo normalized cache because none was found")
+}
+```
