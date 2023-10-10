@@ -68,7 +68,7 @@ val generateQueries: Provider<Task> = tasks.register("generateQueries") {
   inputs.file("src/main/graphql/api/operations.graphql")
       .withPropertyName("inputGraphQLFile")
       .withPathSensitivity(PathSensitivity.RELATIVE)
-  outputs.dir(buildDir.resolve("generated/graphql/api"))
+  outputs.dir(layout.buildDirectory.dir("generated/graphql/api"))
       .withPropertyName("outputDir")
 
   doLast {

@@ -357,7 +357,7 @@ internal class ExecutableValidationScope(
     (allVariableUsages).forEach {
       validateVariable(this, it)
     }
-    val foundVariables = variableUsages.map { it.variable.name }.toSet()
+    val foundVariables = allVariableUsages.map { it.variable.name }.toSet()
     variableDefinitions.forEach {
       if (!foundVariables.contains(it.name)) {
         issues.add(UnusedVariable(

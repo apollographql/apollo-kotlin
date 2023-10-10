@@ -18,12 +18,21 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Constraints
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.parseResponse
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.apolloStore
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.sample.GetResponse0Query
 import com.apollographql.sample.GetResponse1Query
 import com.apollographql.sample.GetResponse2Query
@@ -34,18 +43,11 @@ import com.apollographql.sample.GetResponse6Query
 import com.apollographql.sample.GetResponse7Query
 import com.apollographql.sample.GetResponse8Query
 import com.apollographql.sample.GetResponse9Query
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import okio.Buffer
 
 class MainActivity : ComponentActivity() {
 
@@ -90,7 +92,6 @@ fun Label(modifier: Modifier = Modifier, value: Int) {
   })
 }
 
-@OptIn(ApolloExperimental::class)
 private fun doStuff(context: Context): Flow<Int> {
   val client: ApolloClient = ApolloClient.Builder()
       .serverUrl("https://unused.com")
@@ -99,7 +100,7 @@ private fun doStuff(context: Context): Flow<Int> {
 
   val response = context.resources.openRawResource(R.raw.largesample).reader().readText()
 
-  val data: GetResponse0Query.Data = GetResponse0Query().parseJsonResponse(response).dataOrThrow()
+  val data: GetResponse0Query.Data = GetResponse0Query().parseResponse(Buffer().writeUtf8(response).jsonReader()).dataOrThrow()
 
   runBlocking {
     client.apolloStore.writeOperation(GetResponse0Query(), data)
