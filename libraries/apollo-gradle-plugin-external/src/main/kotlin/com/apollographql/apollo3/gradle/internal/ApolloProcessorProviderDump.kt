@@ -9,6 +9,23 @@ import org.objectweb.asm.Opcodes
 /**
  * Generated from ASMifier and slightly tweaked to customize serviceName and packageName
  *
+ * The equivalent Kotlin code is this:
+ *
+ * ```kotlin
+ * class ApolloProcessorProvider : SymbolProcessorProvider {
+ *     override fun create(
+ *         environment: SymbolProcessorEnvironment
+ *     ): SymbolProcessor {
+ *         return ApolloProcessor(
+ *             environment.codeGenerator,
+ *             environment.logger,
+ *             packageName = $packageName,
+ *             serviceName = $serviceName
+ *         )
+ *     }
+ * }
+ * ```
+ *
  * To run ASMifier, add this to a build.gradle.kts file:
  *
  * ```kotlin
