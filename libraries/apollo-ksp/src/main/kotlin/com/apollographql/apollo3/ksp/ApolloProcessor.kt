@@ -2,42 +2,23 @@ package com.apollographql.apollo3.ksp
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLFieldDefinition
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.allTypes
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegenLayout
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
-import com.apollographql.apollo3.compiler.ir.IrInputObjectType
-import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrObjectType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
-import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrTargetField
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
-import com.apollographql.apollo3.compiler.ir.IrType
 import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -54,123 +35,13 @@ import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeAlias
-import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
-import com.google.devtools.ksp.symbol.Nullability
 import com.google.devtools.ksp.visitor.KSEmptyVisitor
 
 internal class ObjectInfo(
     val className: IrClassName,
     val classDeclaration: KSClassDeclaration
 )
-
-class IncompatibleType(message: String) : Exception(message)
-
-@OptIn(ApolloInternal::class)
-internal class ValidationScope(
-    val objectMapping: Map<String, ObjectInfo>,
-    val scalarMapping: Map<String, ScalarInfo>,
-    val schema: Schema,
-    val layout: KotlinCodegenLayout
-) {
-  fun validateAndCoerce(ksTypeReference: KSTypeReference, expectedType: GQLType, allowCovariant: Boolean): IrType {
-    val ksType = ksTypeReference.resolve()
-    val className = ksType.declaration.acClassName()
-
-    var expectedNullableType = expectedType
-    if (expectedType is GQLNonNullType) {
-      expectedNullableType = expectedType.type
-    }
-
-    val irType = when (expectedNullableType) {
-      is GQLListType -> {
-        if (className != listClassName) {
-          throw IncompatibleType("Expected list type at ${ksTypeReference.location}")
-        }
-        IrListType(
-            validateAndCoerce(
-                ksTypeReference.element!!.typeArguments.single().type!!,
-                expectedNullableType.type,
-                allowCovariant,
-            )
-        )
-      }
-
-      is GQLNamedType -> {
-        when (val typeDefinition = schema.typeDefinition(expectedNullableType.name)) {
-          is GQLScalarTypeDefinition -> {
-            val scalarInfo = scalarMapping.get(typeDefinition.name)
-            if (scalarInfo == null) {
-              throw IncompatibleType("Expected scalar type '${typeDefinition.name}' but no adapter found. Did you forget a @ApolloAdapter? at ${ksTypeReference.location}")
-            }
-            if (scalarInfo.targetName != className.asString()) {
-              throw IncompatibleType("Scalar type '${typeDefinition.name}' is mapped to '${scalarInfo.targetName} but '${className.asString()} was found at ${ksTypeReference.location}")
-            }
-            IrScalarType(typeDefinition.name)
-          }
-
-          is GQLInputObjectTypeDefinition -> {
-            val expectedFQDN = "${layout.typePackageName()}.${layout.inputObjectName(typeDefinition.name)}"
-            if (className.asString() != expectedFQDN) {
-              throw IncompatibleType("Input object type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
-            }
-
-            IrInputObjectType(typeDefinition.name)
-          }
-
-          is GQLEnumTypeDefinition -> {
-            val expectedFQDN = "${layout.typePackageName()}.${layout.enumName(typeDefinition.name)}"
-            if (className.asString() != expectedFQDN) {
-              throw IncompatibleType("Enum type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
-            }
-
-            IrInputObjectType(typeDefinition.name)
-          }
-
-          is GQLObjectTypeDefinition, is GQLUnionTypeDefinition, is GQLInterfaceTypeDefinition -> {
-            /**
-             * Because of interfaces we do the lookup the other way around. Contrary to scalars, there cannot be multiple objects mapped to the same target
-             */
-            /**
-             * Because of interfaces we do the lookup the other way around. Contrary to scalars, there cannot be multiple objects mapped to the same target
-             */
-            val objectInfoEntry =
-                objectMapping.entries.firstOrNull { it.value.className.asString() == className.asString() }
-
-            if (objectInfoEntry == null) {
-              throw IncompatibleType("Expected a composite type '${typeDefinition.name}' but no object found. Did you forget a @ApolloObject? at ${ksTypeReference.location}")
-            }
-            if (!schema.possibleTypes(typeDefinition.name).contains(objectInfoEntry.key)) {
-              throw IncompatibleType("Expected type '${typeDefinition.name}' but '${objectInfoEntry.key}' is not a subtype at ${ksTypeReference.location}")
-            }
-
-            IrObjectType(typeDefinition.name)
-          }
-        }
-      }
-
-      is GQLNonNullType -> error("")
-    }
-
-    if (expectedType is GQLNonNullType) {
-      if (ksType.nullability != Nullability.NOT_NULL) {
-        throw IncompatibleType("Expected non-nullable type at ${ksTypeReference.location}, got nullable")
-      }
-    } else {
-      if (!allowCovariant) {
-        if (ksType.nullability == Nullability.NOT_NULL) {
-          throw IncompatibleType("Expected nullable type at ${ksTypeReference.location}, got non nullable")
-        }
-      }
-    }
-
-    return if (ksType.nullability == Nullability.NOT_NULL) {
-      IrNonNullType(irType)
-    } else {
-      irType
-    }
-  }
-}
 
 @OptIn(ApolloInternal::class, ApolloExperimental::class)
 class ApolloProcessor(
@@ -338,15 +209,8 @@ class ApolloProcessor(
   }
 
   private fun generateMainResolver(): List<KSAnnotated> {
-    val layout = KotlinCodegenLayout(
-        allTypes = codegenSchema.allTypes(),
-        useSemanticNaming = false,
-        packageNameGenerator = PackageNameGenerator.Flat(packageName),
-        schemaPackageName = packageName,
-        decapitalizeFields = false,
-    )
 
-    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, layout)
+    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata)
 
     check (objectMapping.isNotEmpty()) {
       "No @ApolloObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
@@ -360,80 +224,11 @@ class ApolloProcessor(
       val fields = entry.value.classDeclaration.declarations.mapNotNull {
         when (it) {
           is KSFunctionDeclaration -> {
-            val targetName = it.simpleName.asString()
-
-            if (targetName == "<init>") {
-              return@mapNotNull null
-            }
-
-            if (it.isPrivate()) {
-              return@mapNotNull null
-            }
-
-            val graphQLName = it.graphqlName() ?: targetName
-            val fieldDefinition = (typeDefinition as GQLObjectTypeDefinition).fields.firstOrNull {
-              it.name == graphQLName
-            }
-
-            check(fieldDefinition != null) {
-              error("No field '$objectName.$graphQLName' found at ${it.location}")
-            }
-
-            val reference = if (isSubscriptionRootField) {
-              check(it.returnType!!.resolve().declaration.acClassName() == flowClassName) {
-                error("Subscription root fields must be of Flow<T> type")
-              }
-              it.returnType!!.element!!.typeArguments.single().type!!
-            } else {
-              it.returnType!!
-            }
-            IrTargetField(
-                isFunction = true,
-                targetName = targetName,
-                name = graphQLName,
-                arguments = it.parameters.map {
-                  it.toIrTargetArgument(
-                      fieldDefinition,
-                      validationScope,
-                      objectName
-                  )
-                },
-                type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
-            )
+            it.toIrTargetField(validationScope, typeDefinition, isSubscriptionRootField)
           }
 
           is KSPropertyDeclaration -> {
-            val targetName = it.simpleName.asString()
-            val graphQLName = it.graphqlName() ?: targetName
-
-            if (it.isPrivate()) {
-              return@mapNotNull null
-            }
-
-            val fieldDefinition = (typeDefinition as GQLObjectTypeDefinition).fields.firstOrNull {
-              it.name == graphQLName
-            }
-
-            check(fieldDefinition != null) {
-              error("No field '$objectName.$graphQLName' found at ${it.location}")
-            }
-
-            val reference = if (isSubscriptionRootField) {
-              check(it.type.resolve().declaration.acClassName() == flowClassName) {
-                error("Subscription root fields must be of Flow<T> type")
-              }
-              it.type.element!!.typeArguments.single().type!!
-            } else {
-              it.type
-            }
-
-            IrTargetField(
-                isFunction = false,
-                targetName = targetName,
-                name = graphQLName,
-                arguments = emptyList(),
-                type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
-            )
+            it.toIrTargetField(validationScope, typeDefinition, isSubscriptionRootField)
           }
 
           else -> null
@@ -603,38 +398,91 @@ private fun KSValueParameter.toIrTargetArgument(
   )
 }
 
-private fun ValidationScope.validateAndCoerceArgumentType(
-    targetName: String,
-    typeReference: KSTypeReference,
-    gqlType: GQLType,
-    hasDefault: Boolean
-): IrType {
-  val type = typeReference.resolve()
-  val className = type.declaration.acClassName()
-  val gqlOptional = gqlType !is GQLNonNullType && !hasDefault
-  if (className == optionalClassName != gqlOptional) {
-    if (gqlOptional) {
-      throw IncompatibleType("The '$targetName' argument can be absent in GraphQL and must be of Optional<> type in Kotlin at ${typeReference.location}")
-    } else {
-      throw IncompatibleType("The '$targetName' argument is always present in GraphQL and must not be of Optional<> type in Kotlin at ${typeReference.location}")
-    }
+private fun KSPropertyDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+  val targetName = simpleName.asString()
+  val graphQLName = graphqlName() ?: targetName
+
+  if (isPrivate()) {
+    return null
   }
 
-  return if (className == optionalClassName) {
-    IrOptionalType(validateAndCoerce(typeReference.element!!.typeArguments.first().type!!, gqlType, false))
-  } else {
-    validateAndCoerce(typeReference, gqlType, false)
+  val fieldDefinition = (typeDefinition as GQLObjectTypeDefinition).fields.firstOrNull {
+    it.name == graphQLName
   }
+
+  check(fieldDefinition != null) {
+    error("No field '${typeDefinition.name}.$graphQLName' found at ${location}")
+  }
+
+  val reference = if (isSubscriptionRootField) {
+    check(type.resolve().declaration.acClassName() == flowClassName) {
+      error("Subscription root fields must be of Flow<T> type")
+    }
+    type.element!!.typeArguments.single().type!!
+  } else {
+    type
+  }
+
+  return IrTargetField(
+      isFunction = false,
+      targetName = targetName,
+      name = graphQLName,
+      arguments = emptyList(),
+      type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
+  )
 }
 
-private fun KSDeclaration.acClassName(): IrClassName {
+private fun KSFunctionDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+  val targetName = simpleName.asString()
+
+  if (targetName == "<init>") {
+    return null
+  }
+
+  if (isPrivate()) {
+    return null
+  }
+
+  val graphQLName = graphqlName() ?: targetName
+  val fieldDefinition = (typeDefinition as GQLObjectTypeDefinition).fields.firstOrNull {
+    it.name == graphQLName
+  }
+
+  check(fieldDefinition != null) {
+    error("No field '${typeDefinition.name}.$graphQLName' found at ${location}")
+  }
+
+  val reference = if (isSubscriptionRootField) {
+    check(returnType!!.resolve().declaration.acClassName() == flowClassName) {
+      error("Subscription root fields must be of Flow<T> type")
+    }
+    returnType!!.element!!.typeArguments.single().type!!
+  } else {
+    returnType!!
+  }
+  return IrTargetField(
+      isFunction = true,
+      targetName = targetName,
+      name = graphQLName,
+      arguments = parameters.map {
+        it.toIrTargetArgument(
+            fieldDefinition,
+            validationScope,
+            typeDefinition.name
+        )
+      },
+      type = validationScope.validateAndCoerce(reference, fieldDefinition.type, true)
+  )
+}
+
+internal fun KSDeclaration.acClassName(): IrClassName {
   return IrClassName(packageName.asString(), listOf(simpleName.asString()))
 }
 
-private val flowClassName = IrClassName("kotlinx.coroutines.flow", listOf("Flow"))
-private val listClassName = IrClassName("kotlin.collections", listOf("List"))
-private val optionalClassName = IrClassName("com.apollographql.apollo3.api", listOf("Optional"))
-private val executionContextClassName = IrClassName("com.apollographql.apollo3.api", listOf("ExecutionContext"))
+internal val flowClassName = IrClassName("kotlinx.coroutines.flow", listOf("Flow"))
+internal val listClassName = IrClassName("kotlin.collections", listOf("List"))
+internal val optionalClassName = IrClassName("com.apollographql.apollo3.api", listOf("Optional"))
+internal val executionContextClassName = IrClassName("com.apollographql.apollo3.api", listOf("ExecutionContext"))
 
 
 

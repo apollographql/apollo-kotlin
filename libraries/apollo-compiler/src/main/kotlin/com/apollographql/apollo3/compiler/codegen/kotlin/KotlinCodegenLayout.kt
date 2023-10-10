@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
@@ -8,8 +7,7 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInEnum
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInSealedClass
 
-@ApolloInternal
-class KotlinCodegenLayout(
+internal class KotlinCodegenLayout(
     allTypes: List<CodegenType>,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
@@ -18,8 +17,7 @@ import com.apollographql.apollo3.compiler.singularize
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-@ApolloInternal
-abstract class CodegenLayout(
+internal abstract class CodegenLayout(
     allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
@@ -119,7 +117,7 @@ abstract class CodegenLayout(
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  fun inputObjectName(name: String) = className(name)
+  internal fun inputObjectName(name: String) = className(name)
   internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
