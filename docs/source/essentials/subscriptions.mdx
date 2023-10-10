@@ -74,6 +74,46 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
+### AWS (Amplitude) AppSync
+
+Configuring AppSync is easy but has some subtle nuances due to AppSync's [authorization](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html#header-parameter-format-based-on-appsync-api-authorization-mode) and [domain](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html#handshake-details-to-establish-the-websocket-connection) requirements.
+In particular, AppSync subscriptions on custom domains must append "/realtime" to their endpoint. By contrast non-custom domains do not append "realtime" to the path and instead incorporate it into the domain.
+
+```kotlin
+private const val REALTIME = "realtime"
+
+private fun wsUrl(url: String, auth: Map<String, String>): String {
+    val realtimeUrl = when {
+        url.contains(REALTIME) -> url
+        url.contains("amazonaws.com") -> {
+            val awsUrlParts = url.split("appsync-api")
+            require(awsUrlParts.size == 2) { "Invalid AWS url: $url" }
+            "${awsUrlParts[0]}appsync-realtime-api${awsUrlParts[1]}"
+        }
+        url.endsWith("/") -> "$url$REALTIME"
+        else -> "$url/$REALTIME"
+    }
+    return AppSyncWsProtocol.buildUrl(
+        baseUrl = realtimeUrl,
+        authorization = auth,
+    )
+}
+
+// assumes host and key variables have already been set
+private fun wsAuth(): Map<String, String> = mapOf("host" to host, "x-api-key" to key)
+
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            // if you know that your URL is correct for realtime then below could be
+            // .serverUrl(AppSyncWsProtocol.buildUrl(url, wsAuth())
+            .serverUrl(wsUrl(url, wsAuth()))
+            .protocol(AppSyncWsProtocol.Factory(connectionPayload = { wsAuth() }))
+            .build(),
+    )
+    .build()
+```
+
 ### Authentication
 
 Please refer to [this section](../advanced/authentication#authenticating-your-websockets) about authentication with WebSocket.
