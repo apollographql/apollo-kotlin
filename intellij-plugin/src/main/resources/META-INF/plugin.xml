@@ -169,6 +169,7 @@
         icon="com.apollographql.ijplugin.icons.ApolloIcons.ToolWindow.NormalizedCacheViewer"
         anchor="bottom"
         factoryClass="com.apollographql.ijplugin.normalizedcache.NormalizedCacheToolWindowFactory"
+        canCloseContents="true"
     />
   </extensions>
 
