@@ -2,6 +2,20 @@
 title: Uploading files
 ---
 
+## An important caveat about file uploads
+
+Apollo recommends only using GraphQL file uploading for proof-of-concept applications. While there is a spec we presently support for making `multipart-form` requests with GraphQL, we've found that, in practice, it's much simpler to use more purpose-built tools for file upload.
+
+Apollo recommends using more traditional methods to upload your files, such as REST `multipart-form` uploads or SDK's that support file uploads, such as AmazonS3. 
+
+Also note that the [Apollo Router](https://www.apollographql.com/docs/router/) doest not support `multipart-form` uploads.
+
+[This article](https://www.apollographql.com/blog/backend/file-uploads/file-upload-best-practices/) contains recommendations about file uploads with GraphQL and Apollo.
+
+If you'd still prefer to upload directly with Apollo Kotlin, continue reading.
+
+## Uploading files with Apollo Kotlin
+
 Apollo Kotlin supports file uploads via the [GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec).
 
 First, add the following custom scalar mapping to the Apollo Gradle plugin configuration:
