@@ -3,6 +3,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -100,14 +101,16 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
+    val variables = operation.variables(customScalarAdapters, true)
     return lock.read {
       operation.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
+          variables = variables
       )
-    }.toData(operation.adapter(), customScalarAdapters)
+    }.toData(operation.adapter(), customScalarAdapters, variables)
   }
 
   override suspend fun <D : Fragment.Data> readFragment(
@@ -116,15 +119,17 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-      return lock.read {
-        fragment.readDataFromCacheInternal(
-            customScalarAdapters = customScalarAdapters,
-            cache = cache,
-            cacheResolver = cacheResolver,
-            cacheHeaders = cacheHeaders,
-            cacheKey = cacheKey
-        )
-      }.toData(fragment.adapter(), customScalarAdapters)
+    val variables = fragment.variables(customScalarAdapters, true)
+    return lock.read {
+      fragment.readDataFromCacheInternal(
+          customScalarAdapters = customScalarAdapters,
+          cache = cache,
+          cacheResolver = cacheResolver,
+          cacheHeaders = cacheHeaders,
+          cacheKey = cacheKey,
+          variables = variables,
+      )
+    }.toData(fragment.adapter(), customScalarAdapters, variables)
   }
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
@@ -166,7 +171,7 @@ internal class DefaultApolloStore(
     ).values
 
     val changedKeys = lock.write {
-        cache.merge(records, cacheHeaders)
+      cache.merge(records, cacheHeaders)
     }
 
     if (publish) {

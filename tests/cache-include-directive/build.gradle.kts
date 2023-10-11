@@ -14,6 +14,6 @@ dependencies {
 
 apollo {
   service("service") {
-    packageName.set("com.example")
+    packageName.set("cache.include")
   }
 }
