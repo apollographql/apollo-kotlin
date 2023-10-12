@@ -1,10 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
-
   // Depend on a published version of the plugin to avoid a "chicken and egg" problem
   alias(libs.plugins.apollo.published)
 }
+
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.tooling"
+)
 
 dependencies {
   api(project(":apollo-compiler"))

@@ -8,7 +8,7 @@ import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.GetRandomQuery;
-import javatest.PingMutation;
+import scalars.PingMutation;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;

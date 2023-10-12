@@ -1,19 +1,15 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
 }
 
 apply(plugin = "com.android.library")
 apply(plugin = "app.cash.sqldelight")
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.cache.normalized.sql")
-  mpp {
-    withLinux.set(false)
-    // https://github.com/cashapp/sqldelight/pull/1486
-    withJs.set(false)
-  }
-}
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.cache.normalized.sql",
+    withLinux = false,
+    withJs = false, // https://github.com/cashapp/sqldelight/pull/1486,
+)
 
 configure<app.cash.sqldelight.gradle.SqlDelightExtension> {
   databases.create("JsonDatabase") {

@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_with_variables.type.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.Optional
@@ -17,20 +16,20 @@ import com.apollographql.apollo3.api.present
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.IllegalStateException
 
-public object UserQuery_InputAdapter : CompositeAdapter<UserQuery> {
-  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): UserQuery =
+public object UserQuery_InputAdapter : Adapter<UserQuery> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): UserQuery =
       throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: UserQuery,
-    adapterContext: CompositeAdapterContext,
   ) {
     writer.name("name")
-    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+    StringAdapter.toJson(writer, customScalarAdapters, value.name)
     if (value.isAdmin is Optional.Present) {
       writer.name("isAdmin")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.isAdmin)
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters, value.isAdmin)
     }
   }
 }

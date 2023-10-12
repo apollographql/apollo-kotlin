@@ -162,6 +162,15 @@
 
     <!-- Error handler: open a GitHub issue -->
     <errorHandler implementation="com.apollographql.ijplugin.error.GitHubIssueErrorReportSubmitter" />
+
+    <!-- Normalized cache viewer -->
+    <toolWindow
+        id="NormalizedCacheViewer"
+        factoryClass="com.apollographql.ijplugin.normalizedcache.NormalizedCacheToolWindowFactory"
+        icon="com.apollographql.ijplugin.icons.ApolloIcons.ToolWindow.NormalizedCacheViewer"
+        anchor="bottom"
+        canCloseContents="true"
+    />
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">

@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.BooleanAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferWithIf
@@ -24,9 +23,7 @@ public object InlineMultipleWithDeferWithIf_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("cond")
-    BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.cond)
   }
 }

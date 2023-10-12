@@ -3,8 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("apollo.library")
 }
+
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.compose"
+)
 
 dependencies {
   api(libs.compose.runtime)

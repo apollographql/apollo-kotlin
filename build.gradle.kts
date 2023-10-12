@@ -1,9 +1,8 @@
+
 import JapiCmp.configureJapiCmp
-import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult
-import org.gradle.api.internal.tasks.testing.junit.result.TestResultSerializer
 
 plugins {
-  id("apollo.library") apply false
+  id("build.logic") apply false
 }
 
 apply(plugin = "com.github.ben-manes.versions")

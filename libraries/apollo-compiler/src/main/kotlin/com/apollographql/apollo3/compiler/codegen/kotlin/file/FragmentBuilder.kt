@@ -75,7 +75,7 @@ internal class FragmentBuilder(
         .maybeAddDescription(description)
         .makeClassFromParameters(
             context.generateMethods,
-            namedTypes.map { it.toParameterSpec(context) },
+            namedTypes.map { it.toParameterSpec(context, true) },
             addJvmOverloads,
             context.resolver.resolveFragment(fragment.name)
         )

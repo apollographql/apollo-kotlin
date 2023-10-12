@@ -2,12 +2,12 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
-  id("apollo.library")
   id("com.gradleup.gr8")
 }
 
-apolloLibrary {
-}
+apolloLibrary(
+    javaModuleName = null
+)
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
 configurations.create("gr8Classpath")

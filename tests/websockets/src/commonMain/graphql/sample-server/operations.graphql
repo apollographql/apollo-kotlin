@@ -18,7 +18,11 @@ query TimeQuery {
   time
 }
 
-query CloseSocket {
+mutation CloseSocketMutation {
+  closeAllWebSockets
+}
+
+subscription CloseSocketSubscription {
   closeWebSocket
 }
 

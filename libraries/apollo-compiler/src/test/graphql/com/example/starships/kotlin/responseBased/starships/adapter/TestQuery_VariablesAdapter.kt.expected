@@ -5,7 +5,6 @@
 //
 package com.example.starships.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,9 +23,7 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("id")
-    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+    StringAdapter.toJson(writer, customScalarAdapters, value.id)
   }
 }

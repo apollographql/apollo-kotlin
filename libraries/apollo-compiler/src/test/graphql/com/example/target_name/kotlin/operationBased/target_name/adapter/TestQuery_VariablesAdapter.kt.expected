@@ -5,7 +5,6 @@
 //
 package com.example.target_name.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Optional
@@ -30,20 +29,18 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.input is Optional.Present) {
       writer.name("input")
-      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, value.input,
-          adapterContext)
+      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
+          value.input)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
-      NullableAnyAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.scalar)
+      NullableAnyAdapter.present().toJson(writer, customScalarAdapters, value.scalar)
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.`enum`)
     }
   }
