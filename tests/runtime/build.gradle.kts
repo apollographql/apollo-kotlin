@@ -1,8 +1,9 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
@@ -17,5 +18,6 @@ apollo {
   service("service") {
     generateDataBuilders.set(true)
     packageName.set("com.example")
+    schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
   }
 }

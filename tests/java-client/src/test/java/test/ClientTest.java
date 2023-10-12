@@ -14,9 +14,9 @@ import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.annotations.NonNull;
-import javatest.CreateCatMutation;
+import scalars.CreateCatMutation;
 import javatest.GetRandomQuery;
-import javatest.LocationQuery;
+import scalars.LocationQuery;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
@@ -139,7 +139,7 @@ public class ClientTest {
   public void scalarAdapters() {
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .addCustomScalarAdapter(javatest.type.GeoPoint.type, new GeoPointAdapter())
+        .addCustomScalarAdapter(scalars.type.GeoPoint.type, new GeoPointAdapter())
         .build();
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"location\": {\"latitude\": 10.5, \"longitude\": 20.5}}}").build());

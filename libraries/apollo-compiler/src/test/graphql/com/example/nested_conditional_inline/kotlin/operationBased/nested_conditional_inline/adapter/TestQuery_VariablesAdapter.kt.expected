@@ -5,7 +5,6 @@
 //
 package com.example.nested_conditional_inline.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,11 +26,9 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.episode)
     }
   }

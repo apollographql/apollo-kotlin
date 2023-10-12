@@ -5,7 +5,6 @@
 //
 package com.example.java_guava_optionals.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
@@ -30,30 +29,27 @@ public object MyQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
+      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
+    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
-          value.nonNullableIntWithDefault)
+      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
-      MyInput_InputAdapter.obj().nullable().present().toJson(writer, value.nullableInput,
-          adapterContext)
+      MyInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
+          value.nullableInput)
     }
     writer.name("nonNullableInput")
-    MyInput_InputAdapter.obj().toJson(writer, value.nonNullableInput, adapterContext)
+    MyInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.nonNullableInput)
     if (value.nonNullableInputWithDefault is Optional.Present) {
       writer.name("nonNullableInputWithDefault")
-      MyInput_InputAdapter.obj().present().toJson(writer, value.nonNullableInputWithDefault,
-          adapterContext)
+      MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters,
+          value.nonNullableInputWithDefault)
     }
   }
 }

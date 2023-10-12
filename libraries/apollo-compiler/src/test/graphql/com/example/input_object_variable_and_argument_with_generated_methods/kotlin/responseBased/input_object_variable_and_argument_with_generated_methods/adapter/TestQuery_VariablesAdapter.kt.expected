@@ -5,7 +5,6 @@
 //
 package com.example.input_object_variable_and_argument_with_generated_methods.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.IntAdapter
@@ -29,16 +28,14 @@ public object TestQuery_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.episode)
     }
     writer.name("stars")
-    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
+    IntAdapter.toJson(writer, customScalarAdapters, value.stars)
     writer.name("greenValue")
-    DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.greenValue)
+    DoubleAdapter.toJson(writer, customScalarAdapters, value.greenValue)
   }
 }

@@ -335,9 +335,8 @@ class DeferNormalizedCacheTest {
 
     mockServer.enqueue(statusCode = 500)
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
-    val exception = assertFailsWith<CacheMissException> {
-      apolloClient.query(WithFragmentSpreadsQuery()).execute().dataOrThrow()
-    }
+    val exception = apolloClient.query(WithFragmentSpreadsQuery()).execute().exception
+    check(exception is CacheMissException)
     assertIs<ApolloHttpException>(exception.suppressedExceptions.first())
     assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.message)
     mockServer.takeRequest()

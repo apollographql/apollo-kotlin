@@ -1,5 +1,5 @@
 plugins {
-  id("apollo.test") apply false
+  id("build.logic") apply false
 }
 
 

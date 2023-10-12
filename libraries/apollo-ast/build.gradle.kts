@@ -5,14 +5,12 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 plugins {
   antlr
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.library")
   id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-apolloLibrary {
-  javaModuleName("com.apollographql.apollo3.ast")
-  mpp {}
-}
+apolloLibrary(
+  javaModuleName = "com.apollographql.apollo3.ast"
+)
 
 kotlin {
   jvm {

@@ -1,9 +1,10 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.androidx.espresso.idlingresource)

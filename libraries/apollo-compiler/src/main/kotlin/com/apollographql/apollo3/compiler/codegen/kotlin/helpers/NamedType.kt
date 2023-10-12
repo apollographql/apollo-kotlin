@@ -26,7 +26,7 @@ internal class NamedType(
     val defaultValue: IrValue?,
 )
 
-internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
+internal fun NamedType.toParameterSpec(context: KotlinContext, withDefaultArguments: Boolean): ParameterSpec {
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes
@@ -36,7 +36,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
       .maybeAddRequiresOptIn(context.resolver, optInFeature)
-      .applyIf(type.isOptional()) { defaultValue("%T", KotlinSymbols.Absent) }
+      .applyIf(type.isOptional() && withDefaultArguments) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }
 

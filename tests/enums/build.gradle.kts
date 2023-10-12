@@ -3,9 +3,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)

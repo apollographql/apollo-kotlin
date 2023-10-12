@@ -2,76 +2,24 @@ query GetRandom {
   random
 }
 
-mutation Ping {
-  ping
-}
-
-query GetScalars {
-  languageCode
-  json
-  long
-}
-
-query Animal {
-  animal {
-    ... on Dog {
-      species
-    }
-
-    ...catFragment
-  }
-}
-
-fragment catFragment on Cat {
-  species
-  habitat {
-    temperature
-  }
-}
-
-mutation CreateCat {
-  createAnimal(
-    input: {
-      class: MAMMAL
-      name: "cat"
-    }
-  ) {
-    ...catFragment
-  }
-}
-
-subscription AnimalCreated {
-  animalCreated {
-    ...catFragment
-  }
-}
-
-query Location {
-  location
-}
-
-
-subscription Count($to: Int!, $delayMillis: Int!)  {
-  count(to: $to, delayMillis: $delayMillis)
-}
-
-subscription CountString($to: Int!, $delayMillis: Int!)  {
-  countString(to: $to, delayMillis: $delayMillis)
-}
-
-subscription TimeSubscription  {
+query TimeQuery {
   time
 }
+
 
 subscription OperationError {
   operationError
 }
 
-query TimeQuery {
-  time
+subscription Count($to: Int!, $delayMillis: Int!)  {
+  count(to: $to, delayMillis: $delayMillis)
 }
 
-query CloseSocket {
+mutation CloseSocketMutation {
+  closeAllWebSockets
+}
+
+subscription CloseSocket {
   closeWebSocket
 }
 

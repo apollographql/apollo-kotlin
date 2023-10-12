@@ -1,0 +1,22 @@
+public final class com/apollographql/apollo3/ksp/ApolloFileVisitor : com/google/devtools/ksp/visitor/KSEmptyVisitor {
+	public fun <init> ()V
+	public synthetic fun defaultHandler (Lcom/google/devtools/ksp/symbol/KSNode;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun defaultHandler (Lcom/google/devtools/ksp/symbol/KSNode;Lkotlin/Unit;)V
+	public synthetic fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Lkotlin/Unit;)V
+	public synthetic fun visitFile (Lcom/google/devtools/ksp/symbol/KSFile;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitFile (Lcom/google/devtools/ksp/symbol/KSFile;Lkotlin/Unit;)V
+	public synthetic fun visitTypeAlias (Lcom/google/devtools/ksp/symbol/KSTypeAlias;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitTypeAlias (Lcom/google/devtools/ksp/symbol/KSTypeAlias;Lkotlin/Unit;)V
+}
+
+public final class com/apollographql/apollo3/ksp/ApolloProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
+	public fun <init> (Lcom/google/devtools/ksp/processing/CodeGenerator;Lcom/google/devtools/ksp/processing/KSPLogger;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/ksp/IncompatibleType : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+

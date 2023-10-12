@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,8 +15,9 @@ internal class ResolverInfo(
     val entries: List<ResolverEntry>
 )
 
+@ApolloInternal
 @Serializable
-internal class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
+class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }
 
@@ -44,7 +46,7 @@ enum class ResolverKeyKind {
   BuilderFun,
   Schema,
   CustomScalarAdapters,
-  Pagination
+  Pagination,
 }
 
 @Serializable

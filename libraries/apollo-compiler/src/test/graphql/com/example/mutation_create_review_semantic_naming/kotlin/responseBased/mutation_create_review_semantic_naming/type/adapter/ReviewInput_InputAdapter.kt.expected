@@ -5,9 +5,8 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableAnyAdapter
@@ -25,113 +24,111 @@ import com.apollographql.apollo3.api.present
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.IllegalStateException
 
-public object ReviewInput_InputAdapter : CompositeAdapter<ReviewInput> {
-  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): ReviewInput =
-      throw IllegalStateException("Input type used in output position")
+public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ReviewInput
+      = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: ReviewInput,
-    adapterContext: CompositeAdapterContext,
   ) {
     writer.name("stars")
-    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
+    IntAdapter.toJson(writer, customScalarAdapters, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue")
-      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableIntAdapter.present().toJson(writer, customScalarAdapters,
           value.nullableIntFieldWithDefaultValue)
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.commentary)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.commentary)
     }
     writer.name("favoriteColor")
-    ColorInput_InputAdapter.obj().toJson(writer, value.favoriteColor, adapterContext)
+    ColorInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.favoriteColor)
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.enumWithDefaultValue)
     }
     if (value.nonNullableEnumWithDefaultValue is Optional.Present) {
       writer.name("nonNullableEnumWithDefaultValue")
-      Episode_ResponseAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.present().toJson(writer, customScalarAdapters,
           value.nonNullableEnumWithDefaultValue)
     }
     if (value.nullableEnum is Optional.Present) {
       writer.name("nullableEnum")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.nullableEnum)
     }
     if (value.listOfCustomScalar is Optional.Present) {
       writer.name("listOfCustomScalar")
-      NullableAnyAdapter.list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableAnyAdapter.list().nullable().present().toJson(writer, customScalarAdapters,
           value.listOfCustomScalar)
     }
     if (value.customScalar is Optional.Present) {
       writer.name("customScalar")
-      NullableAnyAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.customScalar)
+      NullableAnyAdapter.present().toJson(writer, customScalarAdapters, value.customScalar)
     }
     if (value.listOfEnums is Optional.Present) {
       writer.name("listOfEnums")
       Episode_ResponseAdapter.nullable().list().nullable().present().toJson(writer,
-          CustomScalarAdapters.Empty, value.listOfEnums)
+          customScalarAdapters, value.listOfEnums)
     }
     if (value.listOfInt is Optional.Present) {
       writer.name("listOfInt")
-      NullableIntAdapter.list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableIntAdapter.list().nullable().present().toJson(writer, customScalarAdapters,
           value.listOfInt)
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      NullableStringAdapter.list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableStringAdapter.list().nullable().present().toJson(writer, customScalarAdapters,
           value.listOfString)
     }
     writer.name("listOfStringNonOptional")
-    NullableStringAdapter.list().toJson(writer, CustomScalarAdapters.Empty,
-        value.listOfStringNonOptional)
+    NullableStringAdapter.list().toJson(writer, customScalarAdapters, value.listOfStringNonOptional)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
       ColorInput_InputAdapter.obj().nullable().list().nullable().present().toJson(writer,
-          value.listOfInputTypes, adapterContext)
+          customScalarAdapters, value.listOfInputTypes)
     }
     if (value.booleanWithDefaultValue is Optional.Present) {
       writer.name("booleanWithDefaultValue")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
           value.booleanWithDefaultValue)
     }
     if (value.booleanNonOptional is Optional.Present) {
       writer.name("booleanNonOptional")
-      NullableBooleanAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
           value.booleanNonOptional)
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
-      StringAdapter.list().list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      StringAdapter.list().list().nullable().present().toJson(writer, customScalarAdapters,
           value.listOfListOfString)
     }
     if (value.listOfListOfEnum is Optional.Present) {
       writer.name("listOfListOfEnum")
       Episode_ResponseAdapter.list().list().nullable().present().toJson(writer,
-          CustomScalarAdapters.Empty, value.listOfListOfEnum)
+          customScalarAdapters, value.listOfListOfEnum)
     }
     if (value.listOfListOfCustom is Optional.Present) {
       writer.name("listOfListOfCustom")
-      AnyAdapter.list().list().nullable().present().toJson(writer, CustomScalarAdapters.Empty,
+      AnyAdapter.list().list().nullable().present().toJson(writer, customScalarAdapters,
           value.listOfListOfCustom)
     }
     if (value.listOfListOfObject is Optional.Present) {
       writer.name("listOfListOfObject")
       ColorInput_InputAdapter.obj().list().list().nullable().present().toJson(writer,
-          value.listOfListOfObject, adapterContext)
+          customScalarAdapters, value.listOfListOfObject)
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      NullableStringAdapter.present().toJson(writer, CustomScalarAdapters.Empty,
-          value.CapitalizedField)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.CapitalizedField)
     }
     if (value.CapitalizedInt is Optional.Present) {
       writer.name("CapitalizedInt")
-      NullableIntAdapter.present().toJson(writer, CustomScalarAdapters.Empty, value.CapitalizedInt)
+      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.CapitalizedInt)
     }
   }
 }

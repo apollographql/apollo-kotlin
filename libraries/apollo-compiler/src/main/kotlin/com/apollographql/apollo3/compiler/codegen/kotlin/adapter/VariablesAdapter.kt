@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -13,7 +11,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
 import com.apollographql.apollo3.compiler.ir.IrBooleanValue
-import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
@@ -58,7 +55,6 @@ private fun List<NamedType>.serializeVariablesFunSpec(
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("val $adapterContext = %T.Builder().$customScalarAdapters($customScalarAdapters).build()", KotlinSymbols.CompositeAdapterContext)
 
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
@@ -67,7 +63,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): Co
 }
 
 private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport)
+  val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 
@@ -75,16 +71,15 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("$writer.name(%S)", graphQlName)
-  builder.addSerializeStatement(type, adapterInitializer, propertyName)
+  builder.addSerializeStatement(adapterInitializer, propertyName)
   if (type.isOptional()) {
     builder.endControlFlow()
     if (defaultValue is IrBooleanValue) {
       builder.beginControlFlow("else if ($withBooleanDefaultValues)")
       builder.addStatement("$writer.name(%S)", graphQlName)
       builder.addStatement(
-          "%M.toJson($writer, %T.$Empty, %L)",
+          "%M.toJson($writer, $customScalarAdapters, %L)",
           KotlinSymbols.BooleanAdapter,
-          KotlinSymbols.CustomScalarAdapters,
           defaultValue.value,
       )
 

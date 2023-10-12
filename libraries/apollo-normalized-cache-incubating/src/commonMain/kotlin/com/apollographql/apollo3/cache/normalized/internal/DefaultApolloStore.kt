@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheData
@@ -109,15 +110,17 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
+    val variables = operation.variables(customScalarAdapters, true)
     return lock.read {
       operation.readDataFromCachePrivate(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
-          cacheKey = CacheKey.rootKey()
+          cacheKey = CacheKey.rootKey(),
+          variables = variables
       )
-    }.toData(operation.adapter(), customScalarAdapters)
+    }.toData(operation.adapter(), customScalarAdapters, variables)
   }
 
   override suspend fun <D : Fragment.Data> readFragment(
@@ -126,15 +129,18 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
+    val variables = fragment.variables(customScalarAdapters, true)
+
     return lock.read {
       fragment.readDataFromCachePrivate(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
-          cacheKey = cacheKey
+          cacheKey = cacheKey,
+          variables = variables,
       )
-    }.toData(fragment.adapter(), customScalarAdapters)
+    }.toData(fragment.adapter(), customScalarAdapters, variables)
   }
 
 
@@ -284,6 +290,7 @@ internal class DefaultApolloStore(
         cache: ReadOnlyNormalizedCache,
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
+        variables: Executable.Variables,
     ): CacheData {
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCacheInternal(
@@ -291,7 +298,8 @@ internal class DefaultApolloStore(
             customScalarAdapters,
             cache,
             cacheResolver,
-            cacheHeaders
+            cacheHeaders,
+            variables
         )
 
         is ApolloResolver -> readDataFromCacheInternal(
@@ -299,7 +307,8 @@ internal class DefaultApolloStore(
             customScalarAdapters,
             cache,
             cacheResolver,
-            cacheHeaders
+            cacheHeaders,
+            variables
         )
 
         else -> throw IllegalStateException()

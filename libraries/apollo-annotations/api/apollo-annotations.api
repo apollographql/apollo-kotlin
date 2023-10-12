@@ -2,6 +2,9 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 	public abstract fun adapter ()Ljava/lang/Class;
 }
 
+public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloAdapter : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloDeprecatedSince : java/lang/annotation/Annotation {
 	public abstract fun version ()Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
 }
@@ -33,6 +36,13 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloInternal : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloObject : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLName : java/lang/annotation/Annotation {
+	public abstract fun name ()Ljava/lang/String;
 }
 

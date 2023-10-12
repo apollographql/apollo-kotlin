@@ -1,15 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-apolloTest {
-  mpp {
-    withJvm.set(false)
-    appleTargets.set(emptySet())
-  }
-}
+apolloTest(
+    withJvm = false,
+    appleTargets = emptySet()
+)
 
 kotlin {
   sourceSets {

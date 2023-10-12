@@ -1,12 +1,9 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-apolloTest {
-  mpp {}
-}
+apolloTest()
 
 kotlin {
   sourceSets {
@@ -37,6 +34,9 @@ apollo {
     it.isDirectory
   }?.forEach {
     service(it.name) {
+      if (it.name == "sample-server") {
+        schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
+      }
       srcDir(it)
       packageName.set(it.name.replace("-", "."))
     }

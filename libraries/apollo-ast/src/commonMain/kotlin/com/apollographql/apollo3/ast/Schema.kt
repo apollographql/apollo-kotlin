@@ -63,8 +63,12 @@ class Schema internal constructor(
     return foreignNames[name] ?: name
   }
 
+  fun rootTypeNameOrNullFor(operationType: String): String? {
+    return rootOperationTypeDefinition(operationType, definitions)?.name
+  }
+
   fun rootTypeNameFor(operationType: String): String {
-    return rootOperationTypeDefinition(operationType, definitions)?.name ?: operationType.replaceFirstChar { it.uppercaseChar() }
+    return rootTypeNameOrNullFor(operationType) ?: operationType.replaceFirstChar { it.uppercaseChar() }
   }
 
   fun typeDefinition(name: String): GQLTypeDefinition {

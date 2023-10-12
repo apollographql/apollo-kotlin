@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -76,7 +77,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               val variableName = context.layout.variableName(property.info.responseName)
-              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
+              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport, "$adapterContext.$customScalarAdapters")
               if (!property.info.type.rawType().isComposite()) {
                 CodeBlock.of(
                     "%L·->·%N·=·%L.$fromJson($reader,·%T.$Empty)",
@@ -231,9 +232,9 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val propertyName = context.layout.propertyName(info.responseName)
 
   if (!isSynthetic) {
-    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
+    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport, "$adapterContext.$customScalarAdapters")
     builder.addStatement("${writer}.name(%S)", info.responseName)
-    builder.addSerializeStatement(info.type, adapterInitializer, propertyName)
+    builder.addMaybeCompositeSerializeStatement(info.type, adapterInitializer, propertyName)
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
 
@@ -257,6 +258,17 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
 }
 
 internal fun CodeBlock.Builder.addSerializeStatement(
+    adapterInitializer: CodeBlock,
+    propertyName: String,
+) {
+  addStatement(
+      "%L.$toJson($writer, ${customScalarAdapters}, $value.%N)",
+      adapterInitializer,
+      propertyName,
+  )
+}
+
+internal fun CodeBlock.Builder.addMaybeCompositeSerializeStatement(
     type: IrType,
     adapterInitializer: CodeBlock,
     propertyName: String,
@@ -276,7 +288,6 @@ internal fun CodeBlock.Builder.addSerializeStatement(
     )
   }
 }
-
 
 internal fun ClassName.Companion.from(path: List<String>) = ClassName(
     packageName = path.first(),
