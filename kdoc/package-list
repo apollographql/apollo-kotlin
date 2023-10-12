@@ -16,6 +16,7 @@ com.apollographql.apollo3.annotations
 module:apollo-api
 com.apollographql.apollo3.api
 com.apollographql.apollo3.api.http
+com.apollographql.apollo3.api.http.internal
 com.apollographql.apollo3.api.json
 com.apollographql.apollo3.exception
 module:apollo-api-java
@@ -26,8 +27,6 @@ com.apollographql.apollo3.ast
 com.apollographql.apollo3.ast.internal
 com.apollographql.apollo3.ast.introspection
 com.apollographql.apollo3.generated.antlr
-module:apollo-cli
-com.apollographql.apollo3.cli
 module:apollo-compiler
 com.apollographql.apollo3.compiler
 com.apollographql.apollo3.compiler.codegen
