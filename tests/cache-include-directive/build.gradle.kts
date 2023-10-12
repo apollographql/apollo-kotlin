@@ -8,8 +8,6 @@ dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.normalizedcache)
   testImplementation(libs.kotlin.test)
-  testImplementation(libs.okhttp)
-  testImplementation(project(mapOf("path" to ":input")))
 }
 
 apollo {
