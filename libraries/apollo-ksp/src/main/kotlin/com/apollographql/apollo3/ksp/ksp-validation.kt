@@ -94,9 +94,6 @@ internal class ValidationScope(
             /**
              * Because of interfaces we do the lookup the other way around. Contrary to scalars, there cannot be multiple objects mapped to the same target
              */
-            /**
-             * Because of interfaces we do the lookup the other way around. Contrary to scalars, there cannot be multiple objects mapped to the same target
-             */
             val objectInfoEntry =
                 objectMapping.entries.firstOrNull { it.value.className.asString() == className.asString() }
 
