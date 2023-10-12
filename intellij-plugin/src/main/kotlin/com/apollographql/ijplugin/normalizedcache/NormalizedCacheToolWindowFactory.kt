@@ -7,6 +7,7 @@ import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbAware
@@ -17,6 +18,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.openapi.wm.ex.ToolWindowEx
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
+import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.ScrollingUtil
@@ -30,8 +32,9 @@ import com.intellij.ui.content.ContentManager
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
-import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
+import com.intellij.util.ui.UIUtil
+import java.awt.Color
 import java.awt.Cursor
 import java.awt.Point
 import java.awt.event.KeyEvent
@@ -39,14 +42,16 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.DefaultListModel
 import javax.swing.JComponent
+import javax.swing.JTable
 import javax.swing.ListSelectionModel
-import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.TreePath
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
-  override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-    createNewTab(toolWindow.contentManager)
+  // TODO remove when feature is complete
+  override fun isApplicable(project: Project) = false
 
+  override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
       override fun actionPerformed(e: AnActionEvent) {
         createNewTab(toolWindow.contentManager)
@@ -67,16 +72,15 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
           }
         }
     )
+
+    createNewTab(toolWindow.contentManager)
   }
 
   private fun createNewTab(contentManager: ContentManager) {
-    val setTabName: (String) -> Unit = {
-      contentManager.selectedContent?.displayName = it
-    }
     contentManager.addContent(
         ContentFactory.getInstance().createContent(
-            NormalizedCacheWindowPanel(setTabName),
-            "Empty", // TODO
+            NormalizedCacheWindowPanel { tabName -> contentManager.selectedContent?.displayName = tabName },
+            ApolloBundle.message("normalizedCacheViewer.tabName.empty"),
             false
         )
     )
@@ -86,25 +90,15 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
   override fun dispose() {}
 }
 
-class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : SimpleToolWindowPanel(false, true) {
+class NormalizedCacheWindowPanel(
+    private val setTabName: (tabName: String) -> Unit,
+) : SimpleToolWindowPanel(false, true) {
   private lateinit var normalizedCache: NormalizedCache
 
-  private val fieldTreeTableModel = ListTreeTableModel(
-      DefaultMutableTreeNode(),
-      arrayOf(
-          object : ColumnInfo<Unit, Unit>(ApolloBundle.message("normalizedCacheViewer.fields.column.key")) {
-            override fun getColumnClass() = TreeTableModel::class.java
-            override fun valueOf(item: Unit) = Unit
-          },
-          object : ColumnInfo<NormalizedCacheFieldTreeNode, NormalizedCache.Field>(ApolloBundle.message("normalizedCacheViewer.fields.column.value")) {
-            override fun getColumnClass() = NormalizedCache.Field::class.java
-            override fun valueOf(item: NormalizedCacheFieldTreeNode) = item.field
-          },
-      ),
-  )
+  private lateinit var recordList: JBList<NormalizedCache.Record>
 
+  private lateinit var fieldTreeTableModel: ListTreeTableModel
   private lateinit var fieldTreeExpander: TreeExpander
-  private lateinit var keyList: JBList<NormalizedCache.Record>
 
   init {
     setContent(createEmptyContent())
@@ -112,6 +106,7 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
 
   private fun createEmptyContent(): JComponent {
     return JBPanelWithEmptyText().apply {
+      // TODO implement drag and drop
       emptyText.text = ApolloBundle.message("normalizedCacheViewer.empty.message")
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
         openFile()
@@ -119,43 +114,38 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
     }
   }
 
-  private fun openFile() {
-    // TODO
-    normalizedCache = NormalizedCache.getFakeNormalizedCache()
-    setContent(createNormalizedCacheContent())
-    toolbar = createToolbar()
-    setTabName("xxx-aaa-bbb.db")
-  }
-
   private fun createToolbar(): JComponent {
-    val group = DefaultActionGroup()
-    group.add(CommonActionsManager.getInstance().createExpandAllAction(fieldTreeExpander, this).apply {
-      getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.expandAll"))
-    })
-    group.add(CommonActionsManager.getInstance().createCollapseAllAction(fieldTreeExpander, this).apply {
-      getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.collapseAll"))
-    })
+    val group = DefaultActionGroup().apply {
+      add(CommonActionsManager.getInstance().createExpandAllAction(fieldTreeExpander, this@NormalizedCacheWindowPanel).apply {
+        getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.expandAll"))
+      })
+      add(CommonActionsManager.getInstance().createCollapseAllAction(fieldTreeExpander, this@NormalizedCacheWindowPanel).apply {
+        getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.collapseAll"))
+      })
+    }
 
-    val actionToolBar = ActionManager.getInstance().createActionToolbar(NormalizedCacheWindowPanel::class.java.name, group, false);
+    val actionToolBar = ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, group, false)
     actionToolBar.targetComponent = this
-    return JBUI.Panels.simplePanel(actionToolBar.component)
+    return actionToolBar.component
   }
 
   private fun createNormalizedCacheContent(): JComponent {
+    val fieldTreeTable = createFieldTreeTable()
+    val recordList = createRecordList()
     val splitter = OnePixelSplitter(false, .25F).apply {
-      firstComponent = createKeyList()
-      secondComponent = createFieldTreeTable()
+      firstComponent = recordList
+      secondComponent = fieldTreeTable
       setResizeEnabled(true)
       splitterProportionKey = "${NormalizedCacheToolWindowFactory::class.java}.splitterProportionKey"
     }
     return splitter
   }
 
-  private fun createKeyList(): JComponent {
+  private fun createRecordList(): JComponent {
     val listModel = DefaultListModel<NormalizedCache.Record>().apply {
       addAll(normalizedCache.records)
     }
-    keyList = JBList(listModel).apply {
+    recordList = JBList(listModel).apply {
       selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
       ScrollingUtil.installActions(this)
       ListUiUtil.Selection.installSelectionOnFocus(this)
@@ -169,26 +159,55 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
 
       selectedIndex = 0
     }
-    return ScrollPaneFactory.createScrollPane(keyList)
+    return ScrollPaneFactory.createScrollPane(recordList)
   }
 
   @Suppress("UnstableApiUsage")
   private fun createFieldTreeTable(): JComponent {
-    val treeTable = JBTreeTable(fieldTreeTableModel).apply {
+    fieldTreeTableModel = ListTreeTableModel(
+        DefaultMutableTreeNode(),
+        arrayOf(
+            object : ColumnInfo<Unit, Unit>(ApolloBundle.message("normalizedCacheViewer.fields.column.key")) {
+              override fun getColumnClass() = TreeTableModel::class.java
+              override fun valueOf(item: Unit) = Unit
+            },
+            object : ColumnInfo<NormalizedCacheFieldTreeNode, NormalizedCache.Field>(ApolloBundle.message("normalizedCacheViewer.fields.column.value")) {
+              override fun getColumnClass() = NormalizedCache.Field::class.java
+              override fun valueOf(item: NormalizedCacheFieldTreeNode) = item.field
+            },
+        ),
+    )
+
+    val treeTable = object : JBTreeTable(fieldTreeTableModel) {
+      override fun getPathBackground(path: TreePath, row: Int): Color? {
+        return if (row % 2 == 0) {
+          UIUtil.getDecoratedRowColor()
+        } else {
+          null
+        }
+      }
+    }.apply {
       columnProportion = .75F
-      setDefaultRenderer(NormalizedCache.Field::class.java, object : DefaultTableCellRenderer() {
-        override fun setValue(value: Any?) {
+      setDefaultRenderer(NormalizedCache.Field::class.java, object : ColoredTableCellRenderer() {
+        override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
           value as NormalizedCache.Field
-          val formatted = when (val v = value.value) {
-            is NormalizedCache.FieldValue.StringValue -> "\"${v.value}\""
-            is NormalizedCache.FieldValue.NumberValue -> v.value.toString()
-            is NormalizedCache.FieldValue.BooleanValue -> v.value.toString()
-            is NormalizedCache.FieldValue.ListValue -> "<html><i>[${v.value.size} items]" // TODO
-            is NormalizedCache.FieldValue.CompositeValue -> "<html><i>{...}"
-            NormalizedCache.FieldValue.Null -> "null"
-            is NormalizedCache.FieldValue.Reference -> "<html>→ <u><a href=\"\">${v.key}"
+          when (val v = value.value) {
+            is NormalizedCache.FieldValue.StringValue -> append("\"${v.value}\"")
+            is NormalizedCache.FieldValue.NumberValue -> append(v.value.toString())
+            is NormalizedCache.FieldValue.BooleanValue -> append(v.value.toString())
+            is NormalizedCache.FieldValue.ListValue -> append(when (val size = v.value.size) {
+              0 -> ApolloBundle.message("normalizedCacheViewer.fields.list.empty")
+              1 -> ApolloBundle.message("normalizedCacheViewer.fields.list.single")
+              else -> ApolloBundle.message("normalizedCacheViewer.fields.list.multiple", size)
+            }, SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
+
+            is NormalizedCache.FieldValue.CompositeValue -> append("{...}", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
+            NormalizedCache.FieldValue.Null -> append("null")
+            is NormalizedCache.FieldValue.Reference -> {
+              append("→ ", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
+              append(v.key, SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES)
+            }
           }
-          text = formatted
         }
       })
 
@@ -206,10 +225,7 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
           table.cursor = Cursor(Cursor.DEFAULT_CURSOR)
           val field = getFieldUnderPointer(e) ?: return
           if (field.value is NormalizedCache.FieldValue.Reference) {
-            val index = normalizedCache.records.indexOfFirst { it.key == field.value.key }
-            if (index == -1) return
-            keyList.selectedIndex = index
-            keyList.ensureIndexIsVisible(keyList.selectedIndex)
+            selectRecord(field.value.key)
           }
         }
 
@@ -230,9 +246,18 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
       table.addMouseListener(mouseAdapter)
       table.addMouseMotionListener(mouseAdapter)
 
+      table.isStriped = true
+
       fieldTreeExpander = DefaultTreeExpander { tree }
     }
     return treeTable
+  }
+
+  private fun selectRecord(key: String) {
+    val index = normalizedCache.records.indexOfFirst { it.key == key }
+    if (index == -1) return
+    recordList.selectedIndex = index
+    recordList.ensureIndexIsVisible(index)
   }
 
   private fun getRootNodeForRecord(record: NormalizedCache.Record) = DefaultMutableTreeNode().apply {
@@ -250,10 +275,18 @@ class NormalizedCacheWindowPanel(private val setTabName: (String) -> Unit) : Sim
       }
     }
   }
-}
 
-private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {
-  init {
-    userObject = field.name
+  private fun openFile() {
+    // TODO open file, read file, etc.
+    normalizedCache = NormalizedCache.getFakeNormalizedCache()
+    setContent(createNormalizedCacheContent())
+    toolbar = createToolbar()
+    setTabName("filename.db")
+  }
+
+  private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {
+    init {
+      userObject = field.name
+    }
   }
 }

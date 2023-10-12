@@ -31,11 +31,42 @@ data class NormalizedCache(
           Record("Launch:110.mission", listOf(
               Field("name", FieldValue.StringValue("CRS-21")),
               Field("missionPatch({\"size\":\"SMALL\"})", FieldValue.StringValue("https://imgur.com/jHNFSY6.png")),
+              Field("someCustomScalar", FieldValue.CompositeValue(listOf(
+                  Field("a", FieldValue.StringValue("b")),
+                  Field("c", FieldValue.NumberValue(1)),
+                  Field("d", FieldValue.BooleanValue(true)),
+                  Field("e", FieldValue.Null),
+                  Field("f", FieldValue.ListValue(listOf(
+                      FieldValue.StringValue("g"),
+                      FieldValue.NumberValue(2),
+                      FieldValue.BooleanValue(false),
+                      FieldValue.Null,
+                      FieldValue.ListValue(listOf(
+                          FieldValue.StringValue("h"),
+                          FieldValue.NumberValue(3),
+                          FieldValue.BooleanValue(true),
+                          FieldValue.Null,
+                      )),
+                      FieldValue.CompositeValue(listOf(
+                          Field("i", FieldValue.StringValue("j")),
+                          Field("k", FieldValue.NumberValue(4)),
+                          Field("l", FieldValue.BooleanValue(false)),
+                          Field("m", FieldValue.Null),
+                      )),
+
+                      ))),
+                  Field("n", FieldValue.CompositeValue(listOf(
+                      Field("o", FieldValue.StringValue("p")),
+                      Field("q", FieldValue.NumberValue(5)),
+                      Field("r", FieldValue.BooleanValue(true)),
+                      Field("s", FieldValue.Null),
+                  ))),
+              ))),
           )),
           Record("Launch:110", listOf(
               Field("__typename", FieldValue.StringValue("Launch")),
               Field("id", FieldValue.NumberValue(110)),
-              Field("site", FieldValue.StringValue("KSC LC 39A")),
+              Field("site", FieldValue.Null),
               Field("mission", FieldValue.Reference("Launch:110.mission")),
           )),
           Record("Launch:109.mission", listOf(
