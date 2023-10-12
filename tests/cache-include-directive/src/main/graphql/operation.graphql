@@ -1,0 +1,11 @@
+query GetUser($withDetails: Boolean!) {
+  user {
+    id
+    ...userDetails @include(if: $withDetails)
+  }
+}
+
+fragment userDetails on User {
+  name
+  email
+}
