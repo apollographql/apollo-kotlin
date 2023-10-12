@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api.http.internal
 
+import okio.Buffer
+
 /**
  * Return true if the unicode code point is an unreserved char as in
  * https://datatracker.ietf.org/doc/html/rfc3986#section-2.3
@@ -42,7 +44,7 @@ private fun Int.isUnreserved(): Boolean {
  * Somewhere in 2023-2024, NSURL will begin percent-encoding those characters:
  * https://developer.apple.com/documentation/foundation/nsurl
  */
-internal fun String.urlEncode(): String = buildString {
+fun String.urlEncode(): String = buildString {
   this@urlEncode.encodeToByteArray().forEach { byte ->
     val b = byte.toInt().and(0xff)
 
@@ -52,6 +54,26 @@ internal fun String.urlEncode(): String = buildString {
       append(b.percentEncode())
     }
   }
+}
+
+fun String.urlDecode(): String {
+  val buffer = Buffer()
+
+  var i = 0
+  while (i < length) {
+    val c = get(i)
+    if (c == '%') {
+      check(i + 3 <= length)
+      buffer.writeByte(substring(i + 1, i + 3).toInt(16))
+      i += 3
+    } else {
+      // XXX probably wrong if there is a surrogate pair
+      buffer.writeUtf8CodePoint(c.code)
+      i++
+    }
+  }
+
+  return buffer.readUtf8()
 }
 
 private fun Int.percentEncode(): String {

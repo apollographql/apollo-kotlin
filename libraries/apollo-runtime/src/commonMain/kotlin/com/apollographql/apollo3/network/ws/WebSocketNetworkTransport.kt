@@ -48,13 +48,12 @@ import kotlinx.coroutines.launch
 import okio.use
 
 /**
- * A [NetworkTransport] that works with WebSockets. Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol]
- * also support queries and mutations.
+ * A [NetworkTransport] that manages a single instance of a [WebSocketConnection].
  *
- * @param serverUrl the url to use to establish the WebSocket connection. It can start with 'https://' or 'wss://' (respectively 'http://'
- * or 'ws://' for unsecure versions), both are handled the same way by the underlying code.
- * @param webSocketEngine a [WebSocketEngine] that can handle the WebSocket
+ * Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol] also support queries and mutations.
  *
+ * The [WebSocketConnection] is opened when the first subscription is started and closed if there are no active subscriptions
+ * after a given timeout.
  */
 class WebSocketNetworkTransport
 private constructor(
@@ -369,15 +368,24 @@ private constructor(
     private var protocolFactory: WsProtocol.Factory? = null
     private var reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
+    /**
+     * Configure the server URL.
+     *
+     * @param serverUrl the url to use to establish the WebSocket connection. It can start with 'https://' or 'wss://' (respectively 'http://'
+     * or 'ws://' for unsecure versions), both are handled the same way by the underlying code.
+     */
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = { serverUrl }
     }
 
     /**
-     * Configure the server URL dynamically.
+     * Configure the server URL.
      *
-     * @param serverUrl a function returning the new server URL.
-     * This function will be called every time a WebSocket is opened. For example, you can use it to update your
+     * @param serverUrl a function return the url to use to establish the WebSocket connection.
+     * The url can start with 'https://' or 'wss://' (respectively 'http://'
+     * or 'ws://' for unsecure versions), both are handled the same way by the underlying code.
+     *
+     * [serverUrl] is called every time a WebSocket is opened. For example, you can use it to update your
      * auth credentials in case of an unauthorized error.
      *
      * It is a suspending function, so it can be used to introduce delay before setting the new serverUrl.

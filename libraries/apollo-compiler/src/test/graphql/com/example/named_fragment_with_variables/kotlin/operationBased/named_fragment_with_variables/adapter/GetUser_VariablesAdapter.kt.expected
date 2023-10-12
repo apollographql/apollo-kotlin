@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -27,13 +26,11 @@ public object GetUser_VariablesAdapter {
     customScalarAdapters: CustomScalarAdapters,
     withBooleanDefaultValues: Boolean,
   ) {
-    val adapterContext =
-        CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build()
     writer.name("organizationId")
-    StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.organizationId)
+    StringAdapter.toJson(writer, customScalarAdapters, value.organizationId)
     writer.name("query")
-    UserQuery_InputAdapter.obj().toJson(writer, value.query, adapterContext)
+    UserQuery_InputAdapter.obj().toJson(writer, customScalarAdapters, value.query)
     writer.name("size")
-    IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size)
+    IntAdapter.toJson(writer, customScalarAdapters, value.size)
   }
 }

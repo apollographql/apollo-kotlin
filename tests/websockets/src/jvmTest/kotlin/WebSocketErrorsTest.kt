@@ -8,6 +8,7 @@ import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.closeConnection
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import sample.server.CloseSocketQuery
+import sample.server.CloseSocketMutation
 import sample.server.CountSubscription
 import sample.server.TimeSubscription
 import kotlin.test.assertEquals
@@ -119,28 +120,11 @@ class WebSocketErrorsTest {
           .toList()
     }
 
-    /**
-     * The timings in the sample-server are a bit weird. It takes 500ms for the query to reach the
-     * backend code during which the subscription code hasn't started yet and then suddendly starts
-     * just as the WebSocket is going to be closed. If that ever happen to be an issue in CI or in
-     * another place, relaxing the timings should be ok
-     *
-     * 1639070973776: wait...
-     * 1639070973986: triggering an error
-     * 1639070974311: closing session...
-     * 1639070974326: emitting 0
-     * 1639070974353: session closed.
-     * 1639070974373: emitting 0
-     * 1639070974877: emitting 1
-     */
-    println("${System.currentTimeMillis()}: wait...")
     delay(200)
 
-    println("${System.currentTimeMillis()}: triggering an error")
     // Trigger an error
-    val response = apolloClient.query(CloseSocketQuery()).execute()
-
-    assertEquals(response.dataOrThrow().closeWebSocket, "Closed 1 session(s)")
+    val response = apolloClient.mutation(CloseSocketMutation()).toFlow().first()
+    assertEquals(response.dataOrThrow().closeAllWebSockets, "Closed 1 session(s)")
 
     /**
      * The subscription should be restarted and complete successfully the second time
@@ -178,7 +162,7 @@ class WebSocketErrorsTest {
         .build()
 
     delay(1000)
-    val response = apolloClient.query(CloseSocketQuery()).execute()
+    val response = apolloClient.mutation(CloseSocketMutation()).execute()
 
     println(response.dataOrThrow())
   }
@@ -199,21 +183,20 @@ class WebSocketErrorsTest {
 
     launch {
       delay(200)
-      apolloClient.query(CloseSocketQuery()).execute()
+      apolloClient.mutation(CloseSocketMutation()).execute()
     }
 
     apolloClient.subscription(CountSubscription(2, 500))
         .toFlow()
-        .map {
-          it.dataOrThrow().count
-        }
         .test {
           awaitItem()
-          val exception = awaitError()
+          var exception: Throwable? = awaitItem().exception
           assertIs<ApolloNetworkException>(exception)
-          val cause = exception.cause
-          assertIs<ApolloWebSocketClosedException>(cause)
-          assertEquals(1011, cause.code)
+          exception = exception.cause
+          assertIs<ApolloWebSocketClosedException>(exception)
+          assertEquals(1011, exception.code)
+
+          cancelAndIgnoreRemainingEvents()
         }
 
     apolloClient.close()

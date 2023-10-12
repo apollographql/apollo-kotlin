@@ -25,6 +25,7 @@ import com.squareup.kotlinpoet.joinToCode
 internal class EnumAsEnumBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
+    private val withUnknown: Boolean
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
@@ -63,7 +64,9 @@ internal class EnumAsEnumBuilder(
           values.forEach { value ->
             addEnumConstant(layout.enumAsEnumValueName(value.targetName), value.enumConstTypeSpec())
           }
-          addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
+          if (withUnknown) {
+            addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
+          }
         }
         .build()
   }
@@ -72,7 +75,12 @@ internal class EnumAsEnumBuilder(
     return TypeSpec.companionObjectBuilder()
         .addProperty(typePropertySpec())
         .addProperty(knownEntriesPropertySpec())
-        .addFunction(knownValuesFunSpec())
+        .apply {
+          if (withUnknown) {
+            // !withUnknown is a new thing, no need to add deprecated symbols there
+            addFunction(knownValuesFunSpec())
+          }
+        }
         .addFunction(safeValueOfFunSpec())
         .build()
   }
@@ -118,7 +126,14 @@ internal class EnumAsEnumBuilder(
         .addParameter("rawValue", String::
         class)
         .returns(selfClassName)
-        .addStatement("return·$entries.find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
+        .addCode("return·$entries.find·{·it.rawValue·==·rawValue·} ?: ")
+        .apply {
+          if (withUnknown) {
+            addCode(UNKNOWN__)
+          } else {
+            addCode("error(\"No enum value found '${'$'}rawValue'\")")
+          }
+        }
         .build()
   }
 

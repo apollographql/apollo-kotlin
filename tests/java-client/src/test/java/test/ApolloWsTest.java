@@ -12,7 +12,7 @@ import com.apollographql.apollo3.runtime.java.network.ws.protocol.ApolloWsProtoc
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
-import javatest.CloseSocketQuery;
+import javatest.CloseSocketMutation;
 import javatest.CountSubscription;
 import javatest.OperationErrorSubscription;
 import org.jetbrains.annotations.NotNull;
@@ -128,8 +128,7 @@ public class ApolloWsTest {
     Truth.assertThat(failure[0]).isInstanceOf(SubscriptionOperationException.class);
     SubscriptionOperationException exception = (SubscriptionOperationException) failure[0];
     Map<String, Object> payload = (Map<String, Object>) exception.getPayload();
-    List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
-    Truth.assertThat(errors.get(0).get("message")).isEqualTo("Woops");
+    Truth.assertThat(payload.get("message")).isEqualTo("Woops");
   }
 
   @Test
@@ -141,8 +140,7 @@ public class ApolloWsTest {
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValue(responses -> {
           Map<String, Object> payload = (Map<String, Object>) ((SubscriptionOperationException) responses.get(0).exception).getPayload();
-          List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
-          return errors.get(0).get("message").equals("Woops");
+          return payload.get("message").equals("Woops");
         });
   }
 
@@ -199,7 +197,7 @@ public class ApolloWsTest {
     List<Integer> items = new ArrayList<>();
     ApolloException[] failure = {null};
     CountDownLatch latch = new CountDownLatch(1);
-    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 500)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
         if (response.exception != null) {
@@ -207,11 +205,11 @@ public class ApolloWsTest {
           latch.countDown();
         } else {
           items.add(response.dataOrThrow().count);
-          if (response.dataOrThrow().count == 5) {
+          if (response.dataOrThrow().count == 2) {
             // Provoke a network error by closing the websocket
-            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            apolloClient.mutation(new CloseSocketMutation()).enqueue(new ApolloCallback<CloseSocketMutation.Data>() {
               @Override
-              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              public void onResponse(@NotNull ApolloResponse<CloseSocketMutation.Data> response) {
               }
             });
           }
@@ -219,9 +217,9 @@ public class ApolloWsTest {
       }
     });
 
-    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
+    Truth.assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
     // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
-    Truth.assertThat(items).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    Truth.assertThat(items).containsAtLeast(0, 1, 2).inOrder();
     // But definitely not the whole list
     Truth.assertThat(items.size()).isLessThan(50);
     Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
@@ -246,7 +244,7 @@ public class ApolloWsTest {
     List<Integer> itemsAfterReopen = new ArrayList<>();
     ApolloException[] failure = {null};
     CountDownLatch latch = new CountDownLatch(1);
-    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 500)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
         if (response.exception != null) {
@@ -258,11 +256,11 @@ public class ApolloWsTest {
           } else {
             itemsBeforeReopen.add(response.dataOrThrow().count);
           }
-          if (response.dataOrThrow().count == 5) {
+          if (response.dataOrThrow().count == 2) {
             // Provoke a network error by closing the websocket
-            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            apolloClient.mutation(new CloseSocketMutation()).enqueue(new ApolloCallback<CloseSocketMutation.Data>() {
               @Override
-              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              public void onResponse(@NotNull ApolloResponse<CloseSocketMutation.Data> response) {
               }
             });
           }
@@ -270,15 +268,15 @@ public class ApolloWsTest {
       }
     });
 
-    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
+    Truth.assertThat(latch.await(4, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(hasReopenOccurred.get()).isTrue();
     // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
-    Truth.assertThat(itemsBeforeReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    Truth.assertThat(itemsBeforeReopen).containsAtLeast(0, 1, 2).inOrder();
     // But definitely not the whole list
     Truth.assertThat(itemsBeforeReopen.size()).isLessThan(50);
 
     // reopen re-subscribed the subscription, so we should received the items again
-    Truth.assertThat(itemsAfterReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    Truth.assertThat(itemsAfterReopen).containsAtLeast(0, 1, 2).inOrder();
     Truth.assertThat(itemsAfterReopen.size()).isLessThan(50);
 
     Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);

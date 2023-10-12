@@ -43,6 +43,12 @@ object BuildDirLayout {
     )
   }
 
+  internal fun kspProcessorJar(project: Project, serviceName: String): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/jar/apollo/${serviceName}Processor.jar"
+    )
+  }
+
   internal fun versionCheck(project: Project): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/checks/apollo/versionCheck"

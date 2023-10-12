@@ -408,7 +408,7 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 @Serializable
-data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)
+data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer, val userDefined: Boolean = true)
 
 private val NoOpLogger = object : ApolloCompiler.Logger {
   override fun warning(message: String) {

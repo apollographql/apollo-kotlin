@@ -1,0 +1,48 @@
+mutation Ping {
+  ping
+}
+
+query GetScalars {
+  languageCode
+  json
+  long
+}
+
+query Animal {
+  animal {
+    ... on Dog {
+      species
+    }
+
+    ...catFragment
+  }
+}
+
+fragment catFragment on Cat {
+  species
+  habitat {
+    temperature
+  }
+}
+
+mutation CreateCat {
+  createAnimal(
+    input: {
+      class: MAMMAL
+      name: "cat"
+    }
+  ) {
+    ...catFragment
+  }
+}
+
+subscription AnimalCreated {
+  animalCreated {
+    ...catFragment
+  }
+}
+
+query Location {
+  location
+}
+

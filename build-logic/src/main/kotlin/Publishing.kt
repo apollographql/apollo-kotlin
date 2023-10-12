@@ -65,8 +65,10 @@ fun Project.configureDokka() {
      * Speed up development. When running the Gradle integration tests, we don't need KDoc to be generated
      */
     onlyIf {
-      if (gradle.taskGraph.allTasks.any { it.name == "publishAllPublicationsToPluginTestRepository" ||
-              it.name == "publishToMavenLocal" } ) {
+      if (gradle.taskGraph.allTasks.any {
+            it.name == "publishAllPublicationsToPluginTestRepository" ||
+                it.name == "publishToMavenLocal"
+          }) {
         return@onlyIf false
       }
 
@@ -218,7 +220,7 @@ private fun Project.configurePublishingInternal() {
     repositories {
       maven {
         name = "pluginTest"
-        url = uri("file://${rootProject.buildDir}/localMaven")
+        url = uri(rootProject.layout.buildDirectory.dir("localMaven"))
       }
 
       maven {

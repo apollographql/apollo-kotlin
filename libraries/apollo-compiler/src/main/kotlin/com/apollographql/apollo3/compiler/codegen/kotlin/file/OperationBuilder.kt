@@ -97,7 +97,7 @@ internal class OperationBuilder(
         .maybeAddDescription(operation.description)
         .makeClassFromParameters(
             context.generateMethods,
-            namedTypes.map { it.toParameterSpec(context) },
+            namedTypes.map { it.toParameterSpec(context, true) },
             addJvmOverloads,
             className = context.resolver.resolveOperation(operation.name)
         )

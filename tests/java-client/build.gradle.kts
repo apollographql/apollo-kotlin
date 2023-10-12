@@ -1,8 +1,9 @@
 plugins {
   id("java")
-  id("apollo.test")
   id("com.apollographql.apollo3")
 }
+
+apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime.java)
@@ -15,13 +16,20 @@ dependencies {
 
 apollo {
   service("main") {
+    schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
     srcDir("src/main/graphql/main")
     packageName.set("javatest")
     generateModelBuilders.set(true)
+  }
+
+  service("scalars") {
+    srcDir("src/main/graphql/scalars")
     mapScalarToJavaString("LanguageCode")
     mapScalarToJavaObject("Json")
     mapScalarToJavaLong("Long")
     mapScalar("GeoPoint", "scalar.GeoPoint")
+    packageName.set("scalars")
+    generateModelBuilders.set(true)
   }
 
   service("graphql-ws") {

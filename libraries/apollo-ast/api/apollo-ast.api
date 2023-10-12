@@ -1,3 +1,9 @@
+public final class com/apollographql/apollo3/ast/AnonymousOperation : com/apollographql/apollo3/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public abstract interface class com/apollographql/apollo3/ast/ApolloIssue : com/apollographql/apollo3/ast/Issue {
 }
 
@@ -953,6 +959,7 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public final fun possibleTypes (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;)Ljava/util/Set;
 	public final fun possibleTypes (Ljava/lang/String;)Ljava/util/Set;
 	public final fun rootTypeNameFor (Ljava/lang/String;)Ljava/lang/String;
+	public final fun rootTypeNameOrNullFor (Ljava/lang/String;)Ljava/lang/String;
 	public final fun superTypes (Lcom/apollographql/apollo3/ast/GQLObjectTypeDefinition;)Ljava/util/Set;
 	public final fun toGQLDocument ()Lcom/apollographql/apollo3/ast/GQLDocument;
 	public final fun typeDefinition (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/GQLTypeDefinition;

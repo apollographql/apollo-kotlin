@@ -24,6 +24,7 @@ internal class InputObjectBuilder(
     val context: KotlinContext,
     val inputObject: IrInputObject,
     val generateInputBuilders: Boolean,
+    val withDefaultArguments: Boolean
 ) : CgFileBuilder {
   private val packageName = context.layout.typePackageName()
   private val simpleName = context.layout.inputObjectName(inputObject.name)
@@ -53,7 +54,7 @@ internal class InputObjectBuilder(
         .maybeAddDescription(description)
         .makeClassFromParameters(
             context.generateMethods,
-            namedTypes.map { it.toParameterSpec(context) },
+            namedTypes.map { it.toParameterSpec(context, withDefaultArguments) },
             className = context.resolver.resolveSchemaType(inputObject.name)
         )
         .apply {

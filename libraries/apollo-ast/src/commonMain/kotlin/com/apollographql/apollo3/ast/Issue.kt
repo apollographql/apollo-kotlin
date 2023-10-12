@@ -56,6 +56,8 @@ class DirectiveRedefinition(val name: String, existingSourceLocation: SourceLoca
 
 class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
 
+class AnonymousOperation(override val message: String, override val sourceLocation: SourceLocation?): ApolloIssue
+
 /**
  * Another GraphQL validation error as per the spec
  */

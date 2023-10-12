@@ -35,12 +35,14 @@ import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
+import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.writeTo
 import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
 import com.apollographql.apollo3.compiler.pqm.writeTo
+import com.squareup.kotlinpoet.FileSpec
 import java.io.File
 
 @ApolloExperimental
@@ -367,6 +369,22 @@ object ApolloCompiler {
     )
   }
 
+  fun schemaFileSpecs(
+      codegenSchema: CodegenSchema,
+      packageName: String,
+  ): Pair<CodegenMetadata, List<FileSpec>> {
+    return KotlinCodeGen.schemaFileSpecs(codegenSchema, packageName)
+  }
+
+  fun resolverFileSpecs(
+      codegenSchema: CodegenSchema,
+      codegenMetadata: CodegenMetadata,
+      irTargetObjects: List<IrTargetObject>,
+      packageName: String,
+      serviceName: String,
+  ): List<FileSpec> {
+    return KotlinCodeGen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName = packageName, serviceName = serviceName)
+  }
 
   fun writeKotlin(
       commonCodegenOptions: CommonCodegenOptions,
@@ -375,7 +393,7 @@ object ApolloCompiler {
     codegenSetup(commonCodegenOptions)
 
     return CodegenMetadata(
-        KotlinCodeGen.write(
+        KotlinCodeGen.writeOperations(
             commonCodegenOptions = commonCodegenOptions,
             kotlinCodegenOptions = kotlinCodegenOptions,
         )

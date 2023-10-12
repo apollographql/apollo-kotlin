@@ -1,9 +1,0 @@
-graphql:
-  packages: "com.apollographql.apollo.sample.server"
-
-server:
-  port : 0
-
-spring:
-  main:
-    allow-bean-definition-overriding: true

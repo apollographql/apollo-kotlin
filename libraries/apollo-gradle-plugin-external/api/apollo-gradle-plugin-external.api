@@ -22,6 +22,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttri
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension {
+	public abstract fun apolloKspProcessor (Ljava/io/File;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;

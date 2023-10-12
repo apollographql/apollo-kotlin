@@ -2,14 +2,15 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.api.json.writeObject
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -117,6 +118,22 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
   }
 }
 
+@JvmName("-obj")
+fun <T> Adapter<T>.obj() = ObjectAdapter(this)
+
+class ObjectAdapter<T>(private val wrappedAdapter: Adapter<T>): Adapter<T> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+    throw IllegalStateException("Input type used in output position")
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+    writer.writeObject {
+      wrappedAdapter.toJson(this, customScalarAdapters, value)
+    }
+  }
+
+}
+
 @JvmField
 val StringAdapter = object : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
@@ -193,6 +210,7 @@ val BooleanAdapter = object : Adapter<Boolean> {
   }
 }
 
+@OptIn(ApolloInternal::class)
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
