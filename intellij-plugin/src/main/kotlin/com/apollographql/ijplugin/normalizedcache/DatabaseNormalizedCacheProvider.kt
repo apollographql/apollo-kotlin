@@ -21,13 +21,12 @@ import java.sql.DriverManager
 
 private const val REFERENCE_PREFIX = "ApolloCacheReference{"
 
-class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<DatabaseNormalizedCacheProvider.Parameters> {
-  class Parameters(val file: File) : NormalizedCacheProvider.Parameters
-
-  override fun provide(parameters: Parameters): Result<NormalizedCache> {
+class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
+  override fun provide(parameters: File): Result<NormalizedCache> {
     Class.forName("org.sqlite.JDBC")
     return runCatching {
-      DriverManager.getConnection("jdbc:sqlite:${parameters.file.absolutePath}").use { connection ->
+      // TODO report different kind of errors (file not found, not a db file, no 'records' table, etc.)
+      DriverManager.getConnection("jdbc:sqlite:${parameters.absolutePath}").use { connection ->
         val resultSet = connection.createStatement().executeQuery("SELECT key, record FROM records")
         val records = mutableListOf<NormalizedCache.Record>()
         while (resultSet.next()) {

@@ -1,7 +1,5 @@
 package com.apollographql.ijplugin.normalizedcache
 
-interface NormalizedCacheProvider<P : NormalizedCacheProvider.Parameters> {
-  interface Parameters
-
+interface NormalizedCacheProvider<P> {
   fun provide(parameters: P): Result<NormalizedCache>
 }

@@ -10,6 +10,11 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
@@ -62,7 +67,7 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
       override fun actionPerformed(e: AnActionEvent) {
-        createNewTab(toolWindow.contentManager)
+        createNewTab(project, toolWindow.contentManager)
       }
     }.apply {
       registerCustomShortcutSet(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, toolWindow.component)
@@ -75,19 +80,19 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
         object : ToolWindowManagerListener {
           override fun toolWindowShown(shownToolWindow: ToolWindow) {
             if (toolWindow === shownToolWindow && toolWindow.isVisible && toolWindow.contentManager.isEmpty) {
-              createNewTab(toolWindow.contentManager)
+              createNewTab(project, toolWindow.contentManager)
             }
           }
         }
     )
 
-    createNewTab(toolWindow.contentManager)
+    createNewTab(project, toolWindow.contentManager)
   }
 
-  private fun createNewTab(contentManager: ContentManager) {
+  private fun createNewTab(project: Project, contentManager: ContentManager) {
     contentManager.addContent(
         ContentFactory.getInstance().createContent(
-            NormalizedCacheWindowPanel { tabName -> contentManager.selectedContent?.displayName = tabName },
+            NormalizedCacheWindowPanel(project) { tabName -> contentManager.selectedContent?.displayName = tabName },
             ApolloBundle.message("normalizedCacheViewer.tabName.empty"),
             false
         )
@@ -99,6 +104,7 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
 }
 
 class NormalizedCacheWindowPanel(
+    private val project: Project,
     private val setTabName: (tabName: String) -> Unit,
 ) : SimpleToolWindowPanel(false, true) {
   private lateinit var normalizedCache: NormalizedCache
@@ -120,6 +126,12 @@ class NormalizedCacheWindowPanel(
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
         openFile()
       }
+    }
+  }
+
+  private fun createLoadingContent(): JComponent {
+    return JBPanelWithEmptyText().apply {
+      emptyText.text = ApolloBundle.message("normalizedCacheViewer.loading.message")
     }
   }
 
@@ -223,7 +235,7 @@ class NormalizedCacheWindowPanel(
         }
       }
     }.apply {
-      columnProportion = .75F
+      columnProportion = .8F
       setDefaultRenderer(NormalizedCache.Field::class.java, object : ColoredTableCellRenderer() {
         override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
           value as NormalizedCache.Field
@@ -315,11 +327,33 @@ class NormalizedCacheWindowPanel(
   }
 
   private fun openFile() {
-    // TODO open file, read file, etc.
-    normalizedCache = DatabaseNormalizedCacheProvider().provide(DatabaseNormalizedCacheProvider.Parameters(File("/Users/bod/gitrepo/apollo-kotlin-template/apollo.db"))).getOrThrow()
-    setContent(createNormalizedCacheContent())
-    toolbar = createToolbar()
-    setTabName("filename.db")
+    val virtualFile = FileChooser.chooseFiles(
+        FileChooserDescriptor(true, false, false, false, false, false)
+            .withFileFilter { it.extension == "db" },
+        project,
+        null
+    ).firstOrNull() ?: return
+    setContent(createLoadingContent())
+    object : Task.Backgroundable(
+        project,
+        ApolloBundle.message("normalizedCacheViewer.loading.message"),
+        false,
+    ) {
+      override fun run(indicator: ProgressIndicator) {
+        val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(File(virtualFile.path))
+        invokeLater {
+          if (normalizedCacheResult.isFailure) {
+            // TODO show error message
+            setContent(createEmptyContent())
+            return@invokeLater
+          }
+          normalizedCache = normalizedCacheResult.getOrThrow()
+          setContent(createNormalizedCacheContent())
+          toolbar = createToolbar()
+          setTabName(virtualFile.name)
+        }
+      }
+    }.queue()
   }
 
   private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {
