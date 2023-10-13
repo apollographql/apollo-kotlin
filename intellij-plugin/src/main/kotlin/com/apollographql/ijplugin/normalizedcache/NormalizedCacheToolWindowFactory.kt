@@ -38,6 +38,7 @@ import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
+import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import java.awt.Color
 import java.awt.Cursor
@@ -45,6 +46,7 @@ import java.awt.Point
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.io.File
 import javax.swing.DefaultListModel
 import javax.swing.JComponent
 import javax.swing.JList
@@ -55,7 +57,7 @@ import javax.swing.tree.TreePath
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
   // TODO remove when feature is complete
-  override fun isApplicable(project: Project) = false
+  override fun isApplicable(project: Project) = isApplicationInternalMode()
 
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
@@ -314,7 +316,7 @@ class NormalizedCacheWindowPanel(
 
   private fun openFile() {
     // TODO open file, read file, etc.
-    normalizedCache = NormalizedCache.getFakeNormalizedCache()
+    normalizedCache = DatabaseNormalizedCacheProvider().provide(DatabaseNormalizedCacheProvider.Parameters(File("/Users/bod/gitrepo/apollo-kotlin-template/apollo.db"))).getOrThrow()
     setContent(createNormalizedCacheContent())
     toolbar = createToolbar()
     setTabName("filename.db")
