@@ -3,9 +3,10 @@ package com.apollographql.ijplugin.telemetry
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
-import com.apollographql.ijplugin.settings.SettingsListener
-import com.apollographql.ijplugin.settings.SettingsState
-import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.settings.AppSettingsListener
+import com.apollographql.ijplugin.settings.AppSettingsState
+import com.apollographql.ijplugin.settings.appSettingsState
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.studio.fieldinsights.ApolloFieldInsightsInspection
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidCompileSdk
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.AndroidGradlePluginVersion
@@ -48,9 +49,11 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloWarnOnDeprec
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleVersion
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.IdeVersion
+import com.apollographql.ijplugin.util.MavenCoordinates
 import com.apollographql.ijplugin.util.NOTIFICATION_GROUP_ID_TELEMETRY
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.createNotification
+import com.apollographql.ijplugin.util.getLibraryMavenCoordinates
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.ProjectTopics
@@ -59,6 +62,7 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.Service
@@ -68,6 +72,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
@@ -76,13 +81,7 @@ import java.util.concurrent.TimeUnit
 
 private const val DATA_PRIVACY_URL = "https://www.apollographql.com/docs/graphos/data-privacy/"
 
-/**
- * TODO remove this
- */
-const val TELEMETRY_ENABLED = false
-
 private const val SEND_PERIOD_MINUTES = 30L
-
 
 @Service(Service.Level.PROJECT)
 class TelemetryService(
@@ -95,7 +94,7 @@ class TelemetryService(
 
   private val telemetryEventList: TelemetryEventList = TelemetryEventList()
 
-  private var projectLibraries: Set<Dependency> = emptySet()
+  private var projectLibraries: Set<MavenCoordinates> = emptySet()
 
   private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
   private var sendTelemetryFuture: ScheduledFuture<*>? = null
@@ -123,16 +122,16 @@ class TelemetryService(
 
   private fun onLibrariesChanged() {
     logd()
-    projectLibraries = project.getProjectDependencies()
+    projectLibraries = project.getLibraryMavenCoordinates()
   }
 
   private fun startObserveSettings() {
     logd()
-    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      var telemetryEnabled = project.settingsState.telemetryEnabled
-      override fun settingsChanged(settingsState: SettingsState) {
-        val telemetryEnabledChanged = telemetryEnabled != settingsState.telemetryEnabled
-        telemetryEnabled = settingsState.telemetryEnabled
+    ApplicationManager.getApplication().messageBus.connect(this).subscribe(AppSettingsListener.TOPIC, object : AppSettingsListener {
+      var telemetryEnabled = appSettingsState.telemetryEnabled
+      override fun settingsChanged(appSettingsState: AppSettingsState) {
+        val telemetryEnabledChanged = telemetryEnabled != appSettingsState.telemetryEnabled
+        telemetryEnabled = appSettingsState.telemetryEnabled
         logd("telemetryEnabledChanged=$telemetryEnabledChanged")
         if (telemetryEnabledChanged) {
           scheduleSendTelemetry()
@@ -142,7 +141,7 @@ class TelemetryService(
   }
 
   fun logEvent(telemetryEvent: TelemetryEvent) {
-    if (!project.settingsState.telemetryEnabled) return
+    if (!appSettingsState.telemetryEnabled) return
     logd("telemetryEvent=$telemetryEvent")
     telemetryEventList.addEvent(telemetryEvent)
   }
@@ -156,7 +155,7 @@ class TelemetryService(
       addAll(getIdeTelemetryProperties())
     }
     return TelemetrySession(
-        instanceId = project.settingsState.telemetryInstanceId,
+        instanceId = project.projectSettingsState.telemetryInstanceId,
         properties = properties,
         events = telemetryEventList.events,
     )
@@ -170,18 +169,18 @@ class TelemetryService(
     add(IdeVersion(appName))
     System.getProperties().getProperty("os.name")?.let { add(TelemetryProperty.IdeOS(it)) }
     PluginManagerCore.getPlugin(PluginId.getId("com.apollographql.ijplugin"))?.version?.let { add(ApolloIjPluginVersion(it)) }
-    add(ApolloIjPluginAutomaticCodegenTriggering(project.settingsState.automaticCodegenTriggering))
-    add(ApolloIjPluginContributeConfigurationToGraphqlPlugin(project.settingsState.contributeConfigurationToGraphqlPlugin))
-    add(ApolloIjPluginHasConfiguredGraphOsApiKeys(project.settingsState.apolloKotlinServiceConfigurations.isNotEmpty()))
+    add(ApolloIjPluginAutomaticCodegenTriggering(project.projectSettingsState.automaticCodegenTriggering))
+    add(ApolloIjPluginContributeConfigurationToGraphqlPlugin(project.projectSettingsState.contributeConfigurationToGraphqlPlugin))
+    add(ApolloIjPluginHasConfiguredGraphOsApiKeys(project.projectSettingsState.apolloKotlinServiceConfigurations.isNotEmpty()))
     ProjectInspectionProfileManager.getInstance(project).currentProfile.getInspectionTool("ApolloFieldInsights", project)?.tool?.cast<ApolloFieldInsightsInspection>()?.let {
       add(ApolloIjPluginHighLatencyFieldThreshold(it.thresholdMs))
     }
   }
 
   private fun scheduleSendTelemetry() {
-    logd("telemetryEnabled=${project.settingsState.telemetryEnabled}")
+    logd("telemetryEnabled=${appSettingsState.telemetryEnabled}")
     sendTelemetryFuture?.cancel(true)
-    if (!project.settingsState.telemetryEnabled) return
+    if (!appSettingsState.telemetryEnabled) return
     sendTelemetryFuture = executor.scheduleAtFixedRate(::sendTelemetry, SEND_PERIOD_MINUTES, SEND_PERIOD_MINUTES, TimeUnit.MINUTES)
   }
 
@@ -194,7 +193,7 @@ class TelemetryService(
       return
     }
     try {
-      doSendTelemetry(telemetrySession)
+      runBlocking { executeTelemetryNetworkCall(telemetrySession) }
       lastSentProperties = telemetrySession.properties
       telemetryEventList.clear()
     } catch (e: Exception) {
@@ -202,25 +201,16 @@ class TelemetryService(
     }
   }
 
-  private fun doSendTelemetry(telemetrySession: TelemetrySession) {
-    logd()
-    // TODO Send to the network
-    telemetrySession.properties.forEach { logd(it) }
-    logd("---")
-    telemetrySession.events.forEach { logd(it) }
-  }
-
   private fun maybeShowTelemetryOptOutDialog() {
-    if (!TELEMETRY_ENABLED) return
-    if (project.settingsState.hasShownTelemetryOptOutDialog) return
-    project.settingsState.hasShownTelemetryOptOutDialog = true
+    if (appSettingsState.hasShownTelemetryOptOutDialog) return
+    appSettingsState.hasShownTelemetryOptOutDialog = true
     createNotification(
         notificationGroupId = NOTIFICATION_GROUP_ID_TELEMETRY,
         title = ApolloBundle.message("telemetry.optOutDialog.title"),
         content = ApolloBundle.message("telemetry.optOutDialog.content"),
         type = NotificationType.INFORMATION,
         NotificationAction.create(ApolloBundle.message("telemetry.optOutDialog.optOut")) { _, notification ->
-          project.settingsState.telemetryEnabled = false
+          appSettingsState.telemetryEnabled = false
           notification.expire()
         },
         NotificationAction.create(ApolloBundle.message("telemetry.optOutDialog.learnMore")) { _, _ ->
@@ -281,7 +271,7 @@ private fun ApolloGradleToolingModel.toTelemetryProperties(): Set<TelemetryPrope
       it.flattenModels?.let { add(ApolloFlattenModels(it)) }
       it.fieldsOnDisjointTypesMustMerge?.let { add(ApolloFieldsOnDisjointTypesMustMerge(it)) }
       it.generateApolloMetadata?.let { add(ApolloGenerateApolloMetadata(it)) }
-      add(ApolloUsedOptions(it.usedOptions))
+      add(ApolloUsedOptions(it.usedOptions.toList()))
     }
   }
 }
