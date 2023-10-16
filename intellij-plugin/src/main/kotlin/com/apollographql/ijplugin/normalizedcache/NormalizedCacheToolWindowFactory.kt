@@ -12,6 +12,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
@@ -127,6 +128,9 @@ class NormalizedCacheWindowPanel(
   private lateinit var fieldTreeTableModel: ListTreeTableModel
   private lateinit var fieldTreeExpander: TreeExpander
 
+  private val history = History<NormalizedCache.Record>()
+  private var updateHistory = true
+
   init {
     setContent(createEmptyContent())
   }
@@ -184,6 +188,33 @@ class NormalizedCacheWindowPanel(
 
   private fun createToolbar(): JComponent {
     val group = DefaultActionGroup().apply {
+      add(object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.toolbar.back"), AllIcons.Actions.Back) {
+        override fun actionPerformed(e: AnActionEvent) {
+          val record = history.back() ?: return
+          updateHistory = false
+          selectRecord(record.key)
+        }
+
+        override fun update(e: AnActionEvent) {
+          e.presentation.isEnabled = history.canGoBack()
+        }
+
+        override fun getActionUpdateThread() = ActionUpdateThread.BGT
+      })
+      add(object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.toolbar.forward"), AllIcons.Actions.Forward) {
+        override fun actionPerformed(e: AnActionEvent) {
+          val record = history.forward() ?: return
+          updateHistory = false
+          selectRecord(record.key)
+        }
+
+        override fun update(e: AnActionEvent) {
+          e.presentation.isEnabled = history.canGoForward()
+        }
+
+        override fun getActionUpdateThread() = ActionUpdateThread.BGT
+      })
+      addSeparator()
       add(CommonActionsManager.getInstance().createExpandAllAction(fieldTreeExpander, this@NormalizedCacheWindowPanel).apply {
         getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.expandAll"))
       })
@@ -233,7 +264,14 @@ class NormalizedCacheWindowPanel(
       }
 
       addListSelectionListener {
-        if (selectedValue != null) fieldTreeTableModel.setRoot(getRootNodeForRecord(selectedValue))
+        if (selectedValue != null) {
+          fieldTreeTableModel.setRoot(getRootNodeForRecord(selectedValue))
+          if (!updateHistory) {
+            updateHistory = true
+          } else {
+            history.push(selectedValue)
+          }
+        }
       }
 
       selectedIndex = 0
