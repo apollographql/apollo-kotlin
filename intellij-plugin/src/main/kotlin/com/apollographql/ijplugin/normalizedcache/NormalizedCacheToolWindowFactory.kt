@@ -351,7 +351,7 @@ class NormalizedCacheWindowPanel(
             setContent(createEmptyContent())
             return@invokeLater
           }
-          normalizedCache = normalizedCacheResult.getOrThrow()
+          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
           setContent(createNormalizedCacheContent())
           toolbar = createToolbar()
           setTabName(virtualFile.name)

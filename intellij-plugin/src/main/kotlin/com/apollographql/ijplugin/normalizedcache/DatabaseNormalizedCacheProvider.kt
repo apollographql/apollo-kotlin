@@ -26,7 +26,7 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
     Class.forName("org.sqlite.JDBC")
     return runCatching {
       DriverManager.getConnection("jdbc:sqlite:${parameters.absolutePath}").use { connection ->
-        val resultSet = connection.createStatement().executeQuery("SELECT key, record FROM records")
+        val resultSet = connection.createStatement().executeQuery("SELECT key, record FROM records ORDER BY key COLLATE NOCASE")
         val records = mutableListOf<NormalizedCache.Record>()
         while (resultSet.next()) {
           val key = resultSet.getString(1)
