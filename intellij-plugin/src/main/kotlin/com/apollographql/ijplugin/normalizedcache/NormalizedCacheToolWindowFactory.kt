@@ -1,6 +1,13 @@
 package com.apollographql.ijplugin.normalizedcache
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.BooleanValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.CompositeValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ListValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Null
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Reference
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.StringValue
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons
@@ -18,11 +25,14 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.JBMenuItem
+import com.intellij.openapi.ui.JBPopupMenu
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
@@ -43,6 +53,7 @@ import com.intellij.ui.content.ContentManager
 import com.intellij.ui.speedSearch.FilteringListModel
 import com.intellij.ui.speedSearch.ListWithFilter
 import com.intellij.ui.speedSearch.SpeedSearchUtil
+import com.intellij.ui.table.JBTable
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
@@ -53,8 +64,10 @@ import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import org.sqlite.SQLiteException
 import java.awt.Color
+import java.awt.Component
 import java.awt.Cursor
 import java.awt.Point
+import java.awt.datatransfer.StringSelection
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetAdapter
@@ -70,8 +83,12 @@ import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
+import javax.swing.SwingUtilities
+import javax.swing.event.PopupMenuEvent
+import javax.swing.event.PopupMenuListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
+
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
   // TODO remove when feature is complete
@@ -325,18 +342,18 @@ class NormalizedCacheWindowPanel(
         override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
           value as NormalizedCache.Field
           when (val v = value.value) {
-            is NormalizedCache.FieldValue.StringValue -> append("\"${v.value}\"")
-            is NormalizedCache.FieldValue.NumberValue -> append(v.value.toString())
-            is NormalizedCache.FieldValue.BooleanValue -> append(v.value.toString())
-            is NormalizedCache.FieldValue.ListValue -> append(when (val size = v.value.size) {
+            is StringValue -> append("\"${v.value}\"")
+            is NumberValue -> append(v.value.toString())
+            is BooleanValue -> append(v.value.toString())
+            is ListValue -> append(when (val size = v.value.size) {
               0 -> ApolloBundle.message("normalizedCacheViewer.fields.list.empty")
               1 -> ApolloBundle.message("normalizedCacheViewer.fields.list.single")
               else -> ApolloBundle.message("normalizedCacheViewer.fields.list.multiple", size)
             }, SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
 
-            is NormalizedCache.FieldValue.CompositeValue -> append("{...}", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
-            NormalizedCache.FieldValue.Null -> append("null")
-            is NormalizedCache.FieldValue.Reference -> {
+            is CompositeValue -> append("{...}", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
+            Null -> append("null")
+            is Reference -> {
               append("→ ", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
               append(v.key, SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES)
             }
@@ -346,25 +363,18 @@ class NormalizedCacheWindowPanel(
 
       // Handle reference clicks and cursor changes
       val mouseAdapter = object : MouseAdapter() {
-        private fun getFieldUnderPointer(e: MouseEvent): NormalizedCache.Field? {
-          val point = Point(e.x, e.y)
-          val row = table.rowAtPoint(point)
-          // Add 1 to account for the tree column
-          val column = table.columnAtPoint(point) + 1
-          return table.model.getValueAt(row, column) as NormalizedCache.Field?
-        }
-
         override fun mouseClicked(e: MouseEvent) {
+          if (e.button != MouseEvent.BUTTON1) return
           table.cursor = Cursor(Cursor.DEFAULT_CURSOR)
-          val field = getFieldUnderPointer(e) ?: return
-          if (field.value is NormalizedCache.FieldValue.Reference) {
+          val field = table.getFieldAtPoint(e) ?: return
+          if (field.value is Reference) {
             selectRecord(field.value.key)
           }
         }
 
         override fun mouseMoved(e: MouseEvent) {
           table.cursor = Cursor(
-              if (getFieldUnderPointer(e)?.value is NormalizedCache.FieldValue.Reference) {
+              if (table.getFieldAtPoint(e)?.value is Reference) {
                 Cursor.HAND_CURSOR
               } else {
                 Cursor.DEFAULT_CURSOR
@@ -381,9 +391,73 @@ class NormalizedCacheWindowPanel(
 
       table.isStriped = true
 
+      installPopupMenu(table)
+
       fieldTreeExpander = DefaultTreeExpander { tree }
     }
     return treeTable
+  }
+
+  private fun installPopupMenu(table: JBTable) {
+    val popupMenu = object : JBPopupMenu() {
+      override fun show(invoker: Component, x: Int, y: Int) {
+        when (table.getFieldAtPoint(x, y)?.value) {
+          is StringValue,
+          is NumberValue,
+          is BooleanValue,
+          is Reference,
+          Null,
+          -> {
+            super.show(invoker, x, y)
+          }
+
+          else -> {}
+        }
+      }
+    }
+    popupMenu.add(JBMenuItem(ApolloBundle.message("normalizedCacheViewer.fields.popupMenu.copyValue")).apply {
+      addActionListener {
+        val field = table.getValueAt(table.selectedRow, table.selectedColumn) as NormalizedCache.Field
+        val valueStr = when (val value = field.value) {
+          is StringValue -> value.value
+          is NumberValue -> value.value.toString()
+          is BooleanValue -> value.value.toString()
+          is Reference -> value.key
+          Null -> "null"
+          else -> return@addActionListener
+        }
+        CopyPasteManager.getInstance().setContents(StringSelection(valueStr))
+      }
+    })
+
+    // Select the row under the popup menu
+    popupMenu.addPopupMenuListener(object : PopupMenuListener {
+      override fun popupMenuWillBecomeVisible(e: PopupMenuEvent) {
+        invokeLater {
+          val row = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, Point(0, 0), table))
+          val column = table.columnAtPoint(SwingUtilities.convertPoint(popupMenu, Point(0, 0), table))
+          table.setRowSelectionInterval(row, row)
+          table.setColumnSelectionInterval(column, column)
+        }
+      }
+
+      override fun popupMenuWillBecomeInvisible(e: PopupMenuEvent) {}
+
+      override fun popupMenuCanceled(e: PopupMenuEvent) {}
+    })
+    table.componentPopupMenu = popupMenu
+  }
+
+  private fun JBTable.getFieldAtPoint(x: Int, y: Int): NormalizedCache.Field? {
+    val point = Point(x, y)
+    val row = rowAtPoint(point)
+    // Add 1 to account for the tree column
+    val column = columnAtPoint(point) + 1
+    return model.getValueAt(row, column) as NormalizedCache.Field?
+  }
+
+  private fun JBTable.getFieldAtPoint(e: MouseEvent): NormalizedCache.Field? {
+    return getFieldAtPoint(e.x, e.y)
   }
 
   private fun selectRecord(key: String) {
@@ -404,8 +478,8 @@ class NormalizedCacheWindowPanel(
       val childNode = NormalizedCacheFieldTreeNode(field)
       add(childNode)
       when (val value = field.value) {
-        is NormalizedCache.FieldValue.ListValue -> childNode.addFields(value.value.mapIndexed { i, v -> NormalizedCache.Field(i.toString(), v) })
-        is NormalizedCache.FieldValue.CompositeValue -> childNode.addFields(value.value)
+        is ListValue -> childNode.addFields(value.value.mapIndexed { i, v -> NormalizedCache.Field(i.toString(), v) })
+        is CompositeValue -> childNode.addFields(value.value)
         else -> {}
       }
     }
