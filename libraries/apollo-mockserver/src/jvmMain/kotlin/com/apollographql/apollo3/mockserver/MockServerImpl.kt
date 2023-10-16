@@ -15,7 +15,7 @@ import java.net.Socket
 import java.util.concurrent.Executors
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class MockServerImpl constructor(
+internal class MockServerImpl constructor(
     override val mockServerHandler: MockServerHandler,
 ) : MockServer {
   private val serverSocket = ServerSocket(0)
@@ -86,4 +86,4 @@ class MockServerImpl constructor(
   }
 }
 
-fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)

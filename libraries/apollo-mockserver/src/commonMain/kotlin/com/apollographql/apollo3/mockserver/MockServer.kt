@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
 
-interface MockServer: Closeable {
+interface MockServer : Closeable {
   /**
    * Returns the root url for this server
    *
@@ -22,7 +24,7 @@ interface MockServer: Closeable {
   /**
    * The mock server handler used to respond to requests.
    *
-   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueue]).
+   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueueString]).
    */
   val mockServerHandler: MockServerHandler
 
@@ -39,7 +41,10 @@ interface MockServer: Closeable {
 
 expect fun MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()): MockServer
 
-fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
+@Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
+fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
+
+fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .body(string)
@@ -48,22 +53,37 @@ fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int =
 }
 
 @ApolloExperimental
+interface MultipartBody : Closeable {
+  fun enqueuePart(bytes: ByteString)
+  fun enqueueDelay(delayMillis: Long)
+  override fun close()
+}
+
+@ApolloExperimental
+fun MultipartBody.enqueueStrings(parts: List<String>, responseDelayMillis: Long = 0, chunksDelayMillis: Long = 0) {
+  enqueueDelay(responseDelayMillis)
+  parts.forEach {
+    enqueueDelay(chunksDelayMillis)
+    enqueuePart(it.encodeUtf8())
+  }
+  close()
+}
+
+@ApolloExperimental
 fun MockServer.enqueueMultipart(
-    parts: List<String>,
-    statusCode: Int = 200,
-    partsContentType: String = "application/json; charset=utf-8",
+    partsContentType: String,
     headers: Map<String, String> = emptyMap(),
-    responseDelayMillis: Long = 0,
-    chunksDelayMillis: Long = 0,
     boundary: String = "-",
-) {
-  enqueue(createMultipartMixedChunkedResponse(
-      parts = parts,
-      statusCode = statusCode,
-      partsContentType = partsContentType,
-      headers = headers,
-      responseDelayMillis = responseDelayMillis,
-      chunksDelayMillis = chunksDelayMillis,
-      boundary = boundary
-  ))
+): MultipartBody {
+  val multipartBody = MultipartBodyImpl(boundary, partsContentType)
+  enqueue(
+      MockResponse.Builder()
+          .body(multipartBody.consumeAsFlow())
+          .headers(headers)
+          .addHeader("Content-Type", """"multipart/mixed; boundary="$boundary"""")
+          .addHeader("Transfer-Encoding", "chunked")
+          .build()
+  )
+
+  return multipartBody
 }

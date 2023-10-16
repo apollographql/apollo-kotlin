@@ -1,11 +1,8 @@
 package com.apollographql.apollo3.mockserver
 
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.receiveAsFlow
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -48,89 +45,4 @@ internal fun Flow<ByteString>.asChunked(): Flow<ByteString> {
     buffer.readByteString()
   }
       .onCompletion { emit("0\r\n\r\n".encodeUtf8()) }
-}
-
-internal fun createMultipartMixedChunkedResponse(
-    parts: List<String>,
-    statusCode: Int = 200,
-    partsContentType: String = "application/json; charset=utf-8",
-    headers: Map<String, String> = emptyMap(),
-    responseDelayMillis: Long = 0,
-    chunksDelayMillis: Long = 0,
-    boundary: String = "-",
-): MockResponse {
-  return ChunkedResponse(
-      statusCode = statusCode,
-      partsContentType = partsContentType,
-      headers = headers,
-      responseDelayMillis = responseDelayMillis,
-      chunksDelayMillis = chunksDelayMillis,
-      boundary = boundary,
-  ).apply {
-    parts.withIndex().forEach { (index, part) ->
-      send(content = part, isFirst = index == 0, isLast = index == parts.lastIndex)
-    }
-  }.response
-}
-
-private class ChunkedResponse(
-    statusCode: Int = 200,
-    private val partsContentType: String = "application/json; charset=utf-8",
-    headers: Map<String, String> = emptyMap(),
-    responseDelayMillis: Long = 0,
-    chunksDelayMillis: Long = 0,
-    private val boundary: String = "-",
-) {
-  private val chunkChannel = Channel<ByteString>(Channel.UNLIMITED)
-
-  val response = MockResponse.Builder()
-      .statusCode(statusCode)
-      .body(
-          chunkChannel.receiveAsFlow().map {
-            delay(chunksDelayMillis)
-            it
-          }.asChunked()
-      )
-      .headers(
-          headers + mapOf(
-              "Content-Type" to """multipart/mixed; boundary="$boundary"""",
-              "Transfer-Encoding" to "chunked",
-          )
-      )
-      .delayMillis(responseDelayMillis)
-      .build()
-
-  fun send(
-      content: String,
-      isFirst: Boolean = false,
-      isLast: Boolean = false,
-  ) {
-    chunkChannel.trySend(createMultipartMixedPart(
-        content = content,
-        isFirst = isFirst,
-        isLast = isLast,
-        contentType = partsContentType,
-        boundary = boundary,
-    ).encodeUtf8())
-    if (isLast) chunkChannel.close()
-  }
-}
-
-internal fun createMultipartMixedPart(
-    content: String,
-    contentType: String = "application/json; charset=utf-8",
-    boundary: String = "-",
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
-): String {
-  val startBoundary = if (isFirst) "--$boundary\r\n" else ""
-  val contentLengthHeader = "Content-Length: ${content.length}"
-  val contentTypeHeader = "Content-Type: $contentType"
-  val endBoundary = if (isLast) "--$boundary--" else "--$boundary"
-  return startBoundary +
-      "$contentLengthHeader\r\n" +
-      "$contentTypeHeader\r\n" +
-      "\r\n" +
-      "$content\r\n" +
-      "$endBoundary\r\n"
 }

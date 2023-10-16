@@ -17,7 +17,7 @@ import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class MockServerImpl constructor(override val mockServerHandler: MockServerHandler) : MockServer {
+internal class MockServerImpl constructor(override val mockServerHandler: MockServerHandler) : MockServer {
 
   private val requests = mutableListOf<MockRequest>()
 
