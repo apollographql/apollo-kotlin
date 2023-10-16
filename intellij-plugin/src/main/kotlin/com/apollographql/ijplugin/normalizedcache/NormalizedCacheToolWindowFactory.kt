@@ -1,10 +1,13 @@
 package com.apollographql.ijplugin.normalizedcache
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -45,6 +48,7 @@ import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
 import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
+import org.sqlite.SQLiteException
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Point
@@ -343,7 +347,7 @@ class NormalizedCacheWindowPanel(
         val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(File(virtualFile.path))
         invokeLater {
           if (normalizedCacheResult.isFailure) {
-            // TODO show error message
+            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
             setContent(createEmptyContent())
             return@invokeLater
           }
@@ -354,6 +358,15 @@ class NormalizedCacheWindowPanel(
         }
       }
     }.queue()
+  }
+
+  private fun showOpenFileError(exception: Throwable) {
+    logw(exception, "Could not open file")
+    val details = when (exception) {
+      is SQLiteException -> exception.resultCode.message
+      else -> exception.message ?: exception.javaClass.simpleName
+    }
+    showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.openFileError.title"), content = details, type = NotificationType.ERROR)
   }
 
   private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {

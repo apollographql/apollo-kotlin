@@ -25,13 +25,12 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
   override fun provide(parameters: File): Result<NormalizedCache> {
     Class.forName("org.sqlite.JDBC")
     return runCatching {
-      // TODO report different kind of errors (file not found, not a db file, no 'records' table, etc.)
       DriverManager.getConnection("jdbc:sqlite:${parameters.absolutePath}").use { connection ->
         val resultSet = connection.createStatement().executeQuery("SELECT key, record FROM records")
         val records = mutableListOf<NormalizedCache.Record>()
         while (resultSet.next()) {
-          val key = resultSet.getString("key")
-          val recordJsonStr = resultSet.getString("record")
+          val key = resultSet.getString(1)
+          val recordJsonStr = resultSet.getString(2)
           val recordJson = Json.parseToJsonElement(recordJsonStr).jsonObject
           records.add(NormalizedCache.Record(key, recordJson.map {
             Field(it.key, it.value.toFieldValue())
