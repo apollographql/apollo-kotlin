@@ -1,5 +1,8 @@
+@file:OptIn(ApolloInternal::class)
+
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse

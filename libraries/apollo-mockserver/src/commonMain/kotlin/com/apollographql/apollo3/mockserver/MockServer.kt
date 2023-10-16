@@ -41,3 +41,12 @@ expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHa
   override fun enqueue(mockResponse: MockResponse)
   override fun takeRequest(): MockRequest
 }
+
+@ApolloExperimental
+fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
+  enqueue(MockResponse.Builder()
+      .statusCode(statusCode)
+      .body(string)
+      .delayMillis(delayMs)
+      .build())
+}
