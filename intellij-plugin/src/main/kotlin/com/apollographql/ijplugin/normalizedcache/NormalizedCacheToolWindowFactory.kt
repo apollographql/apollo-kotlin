@@ -7,6 +7,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
+import com.intellij.ide.dnd.FileCopyPasteUtil
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -44,6 +45,7 @@ import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
 import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
@@ -52,6 +54,12 @@ import org.sqlite.SQLiteException
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Point
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetAdapter
+import java.awt.dnd.DropTargetDragEvent
+import java.awt.dnd.DropTargetDropEvent
+import java.awt.dnd.DropTargetEvent
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -125,11 +133,46 @@ class NormalizedCacheWindowPanel(
 
   private fun createEmptyContent(): JComponent {
     return JBPanelWithEmptyText().apply {
-      // TODO implement drag and drop
       emptyText.text = ApolloBundle.message("normalizedCacheViewer.empty.message")
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
-        openFile()
+        pickFile()
       }
+
+      val defaultBackground = background
+      dropTarget = DropTarget(this, DnDConstants.ACTION_COPY, object : DropTargetAdapter() {
+        override fun dragEnter(e: DropTargetDragEvent) {
+          if (FileCopyPasteUtil.isFileListFlavorAvailable(e.currentDataFlavors)) {
+            e.acceptDrag(DnDConstants.ACTION_COPY)
+            background = JBUI.CurrentTheme.DragAndDrop.Area.BACKGROUND
+          } else {
+            e.rejectDrag()
+          }
+        }
+
+        override fun dragOver(e: DropTargetDragEvent) {
+          dragEnter(e)
+        }
+
+        override fun dropActionChanged(e: DropTargetDragEvent) {
+          dragEnter(e)
+        }
+
+        override fun dragExit(dte: DropTargetEvent?) {
+          background = defaultBackground
+        }
+
+        override fun drop(e: DropTargetDropEvent) {
+          e.acceptDrop(DnDConstants.ACTION_COPY)
+          val paths = FileCopyPasteUtil.getFileList(e.transferable)
+          if (!paths.isNullOrEmpty()) {
+            openFile(paths.first())
+            e.dropComplete(true)
+          } else {
+            e.dropComplete(false)
+          }
+          background = defaultBackground
+        }
+      })
     }
   }
 
@@ -330,13 +373,17 @@ class NormalizedCacheWindowPanel(
     }
   }
 
-  private fun openFile() {
+  private fun pickFile() {
     val virtualFile = FileChooser.chooseFiles(
         FileChooserDescriptor(true, false, false, false, false, false)
             .withFileFilter { it.extension == "db" },
         project,
         null
     ).firstOrNull() ?: return
+    openFile(File(virtualFile.path))
+  }
+
+  private fun openFile(file: File) {
     setContent(createLoadingContent())
     object : Task.Backgroundable(
         project,
@@ -344,7 +391,7 @@ class NormalizedCacheWindowPanel(
         false,
     ) {
       override fun run(indicator: ProgressIndicator) {
-        val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(File(virtualFile.path))
+        val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(file)
         invokeLater {
           if (normalizedCacheResult.isFailure) {
             showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
@@ -354,7 +401,7 @@ class NormalizedCacheWindowPanel(
           normalizedCache = normalizedCacheResult.getOrThrow().sorted()
           setContent(createNormalizedCacheContent())
           toolbar = createToolbar()
-          setTabName(virtualFile.name)
+          setTabName(file.name)
         }
       }
     }.queue()
