@@ -27,6 +27,6 @@ class SocketTest {
 
     assertEquals(response.body!!.readUtf8(), str)
 
-    mockServer.stop()
+    mockServer.close()
   }
 }

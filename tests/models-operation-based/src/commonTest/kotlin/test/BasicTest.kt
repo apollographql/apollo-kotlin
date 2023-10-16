@@ -14,7 +14,7 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -37,11 +37,11 @@ class BasicTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8(resourceName))
+    mockServer.enqueueString(testFixtureToUtf8(resourceName))
     var response = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     response.block()
     response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

@@ -563,7 +563,7 @@ class WatcherTest {
       assertEquals("R2-D2", response.data?.hero?.name)
     }
 
-    mockServer.stop()
+    mockServer.close()
     apolloClient.close()
   }
 

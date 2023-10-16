@@ -1,7 +1,10 @@
+@file:OptIn(ApolloInternal::class)
+
 package test
 
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
@@ -20,7 +23,6 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
@@ -28,7 +30,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -62,7 +64,7 @@ class FetchPolicyTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
     apolloClient.close()
   }
 
@@ -88,7 +90,7 @@ class FetchPolicyTest {
 
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     apolloClient.query(query).execute().exception.let {
       assertIs<CacheMissException>(it)
       assertIs<JsonEncodingException>(it.suppressedExceptions.first())
@@ -119,7 +121,7 @@ class FetchPolicyTest {
 
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     try {
       apolloClient.query(query).execute()
       fail("we expected the query to fail")
@@ -163,7 +165,7 @@ class FetchPolicyTest {
 
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     responses = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.CacheFirst)
         .toFlow()
@@ -194,14 +196,14 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Network error -> we should hit now the cache
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     response = call.execute()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
 
     // Network error and no cache -> we should get an error
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     store.clearAll()
 
     call.execute().exception.let {
@@ -234,14 +236,14 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Network error -> we should hit now the cache
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     response = call.execute()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
 
     // Network error and no cache -> we should get an error
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     store.clearAll()
     try {
       call.execute()
@@ -282,7 +284,7 @@ class FetchPolicyTest {
     }
 
     // Network error -> we should hit now the cache
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     responses = call.toFlow()
     responses.test {
       val response1 = awaitItem()
@@ -292,7 +294,7 @@ class FetchPolicyTest {
     }
 
     // Network error and no cache -> we should get an error
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     store.clearAll()
     responses = call.toFlow()
     responses.test {
@@ -335,7 +337,7 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Offer a malformed response, it should fail
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     assertNotNull(call.execute().exception)
   }
 
@@ -356,7 +358,7 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Offer a malformed response, it should fail
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     try {
       call.execute()
       fail("we expected a failure")
@@ -373,7 +375,7 @@ class FetchPolicyTest {
 
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception.let {
       assertIs<CacheMissException>(it)
       assertIs<ApolloHttpException>(it.suppressedExceptions.first())
@@ -395,7 +397,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response with cache value + 1 response with network exception
     caught = null
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
 
     assertNull(caught)
@@ -445,7 +447,7 @@ class FetchPolicyTest {
     var caught: Throwable? = null
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertFailsWith<CacheMissException> {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
     }
@@ -464,7 +466,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response + 1 network exception
     caught = null
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
 
     assertIs<ApolloException>(caught)
@@ -512,7 +514,7 @@ class FetchPolicyTest {
      * Make a first query that is disjoint from the watcher
      */
     val operation2 = CharacterNameByIdQuery("83")
-    mockServer.enqueue(
+    mockServer.enqueueString(
         buildJsonString {
           operation2.composeJsonResponse(
               this,
@@ -539,7 +541,7 @@ class FetchPolicyTest {
     } catch (_: TimeoutCancellationException) {
     }
 
-    mockServer.enqueue(
+    mockServer.enqueueString(
         buildJsonString {
           operation1.composeJsonResponse(
               this,
@@ -568,7 +570,7 @@ class FetchPolicyTest {
      */
     store.clearAll()
 
-    mockServer.enqueue(
+    mockServer.enqueueString(
         buildJsonString {
           operation1.composeJsonResponse(
               this,

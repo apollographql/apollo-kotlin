@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
@@ -21,11 +21,11 @@ class HttpEngineTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   private fun errorWithBody(httpEngine: HttpEngine) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(
+    mockServer.enqueueString(
         statusCode = 500,
         string = "Ooops"
     )

@@ -17,7 +17,7 @@ import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-internal class MockServerImpl constructor(override val mockServerHandler: MockServerHandler) : MockServer {
+internal class JsMockServer constructor(override val mockServerHandler: MockServerHandler) : MockServer {
 
   private val requests = mutableListOf<MockRequest>()
 
@@ -65,7 +65,16 @@ internal class MockServerImpl constructor(override val mockServerHandler: MockSe
     return requests.removeFirst()
   }
 
-  override suspend fun stop() = close()
+  override suspend fun closeSynchronously(): Unit = suspendCoroutine { continuation ->
+    server.close {
+      continuation.resume(Unit)
+    }
+  }
+
+  override fun close() {
+    server.close()
+  }
+
 
   private fun Uint8Array.asByteArray(): ByteArray {
     return Int8Array(buffer, byteOffset, length).unsafeCast<ByteArray>()
@@ -91,12 +100,6 @@ internal class MockServerImpl constructor(override val mockServerHandler: MockSe
     override fun flush() {}
     override fun timeout() = Timeout.NONE
   }
-
-  override fun close() {
-    GlobalScope.launch {
-      server.close()
-    }
-  }
 }
 
-fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = JsMockServer(mockServerHandler)

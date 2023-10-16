@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
 import okhttp3.MultipartReader
@@ -18,7 +19,7 @@ class MultipartTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   /**
@@ -29,7 +30,8 @@ class MultipartTest {
     val part0 = """{"data":{"song":{"firstVerse":"Now I know my ABC's."}},"hasNext":true}"""
     val part1 = """{"data":{"secondVerse":"Next time won't you sing with me?"},"path":["song"],"hasNext":false}"""
     val boundary = "-"
-    mockServer.enqueueMultipart(listOf(part0, part1), boundary = boundary)
+    mockServer.enqueueMultipart(boundary = boundary, partsContentType = "application/json; charset=utf-8")
+        .enqueueStrings(listOf(part0, part1))
 
     val httpResponse = DefaultHttpEngine().execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url()).build())
 

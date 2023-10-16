@@ -16,7 +16,7 @@ class iOSTest {
     mockServer.enqueueData(GlobalBuilder.buildQuery { random = 42 })
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 }
 

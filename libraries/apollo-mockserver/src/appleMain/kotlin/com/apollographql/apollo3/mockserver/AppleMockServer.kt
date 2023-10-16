@@ -26,11 +26,11 @@ import platform.posix.sockaddr_in
 import platform.posix.socket
 
 /**
- * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
+ * @param acceptDelayMillis an artificial delay introduced before each `accept()`
  * call. Can be used to simulate slow connections.
  */
 @OptIn(ExperimentalStdlibApi::class)
-internal class MockServerImpl(
+class AppleMockServer(
     private val acceptDelayMillis: Long,
     override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
 ) : MockServer {
@@ -111,22 +111,15 @@ internal class MockServerImpl(
     queueMockServerHandler.enqueue(mockResponse)
   }
 
-  /**
-   * [MockServerImpl] can only stop in between complete request/responses pairs
-   * If stop() is called while we're reading a request, this might wait forever
-   * Revisit once okio has native Timeout
-   */
-  override suspend fun stop() {
+  override suspend fun closeSynchronously() {
     close()
   }
 
-  override fun takeRequest(): MockRequest {
-    check(socket != null) {
-      "Cannot take a request from a stopped MockServer"
-    }
-    return socket!!.takeRequest()
-  }
-
+  /**
+   * [AppleMockServer] can only stop in between complete request/responses pairs
+   * If stop() is called while we're reading a request, this might wait forever
+   * Revisit once okio has native Timeout
+   */
   override fun close() {
     if (socket == null) {
       return
@@ -139,6 +132,13 @@ internal class MockServerImpl(
 
     socket = null
   }
+
+  override fun takeRequest(): MockRequest {
+    check(socket != null) {
+      "Cannot take a request from a stopped MockServer"
+    }
+    return socket!!.takeRequest()
+  }
 }
 
-actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = AppleMockServer(mockServerHandler)

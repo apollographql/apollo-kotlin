@@ -29,6 +29,6 @@ fun mockServerTest(
       MockServerTest(mockServer, it, this).block()
     }
   } finally {
-    mockServer.stop()
+    mockServer.close()
   }
 }

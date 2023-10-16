@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.mockServerTest
 import com.example.Get1Query
 import com.example.GetListQuery
@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 class CcnTest {
   @Test
   fun testScalar() = mockServerTest {
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": {
           "nullable": 41,
@@ -46,7 +46,7 @@ class CcnTest {
         }
       }
     """.trimIndent()
-    mockServer.enqueue(json)
+    mockServer.enqueueString(json)
 
     val response = apolloClient.query(GetListQuery()).execute()
 

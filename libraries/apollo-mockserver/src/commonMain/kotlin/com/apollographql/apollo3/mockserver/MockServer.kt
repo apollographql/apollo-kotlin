@@ -5,7 +5,7 @@ import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
 
-interface MockServer : Closeable {
+interface MockServer: Closeable {
   /**
    * Returns the root url for this server
    *
@@ -13,12 +13,22 @@ interface MockServer : Closeable {
    */
   suspend fun url(): String
 
-  /**
-   * Stops the server
-   */
-  @Deprecated("Use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
-  suspend fun stop()
+  @Deprecated("use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
+  suspend fun stop() = close()
 
+  /**
+   * Closes the server and waits for all active connections to terminate.
+   *
+   * XXX: refine the semantics on different platforms:
+   * - should this force close all connections
+   * - should it gracefully wait
+   */
+  @ApolloExperimental
+  suspend fun closeSynchronously()
+
+  /**
+   * Closes the server. Might be asynchronous on some platforms.
+   */
   override fun close()
 
   /**
@@ -53,20 +63,18 @@ fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode:
 }
 
 @ApolloExperimental
-interface MultipartBody : Closeable {
-  fun enqueuePart(bytes: ByteString)
+interface MultipartBody {
+  fun enqueuePart(bytes: ByteString, isLast: Boolean)
   fun enqueueDelay(delayMillis: Long)
-  override fun close()
 }
 
 @ApolloExperimental
 fun MultipartBody.enqueueStrings(parts: List<String>, responseDelayMillis: Long = 0, chunksDelayMillis: Long = 0) {
   enqueueDelay(responseDelayMillis)
-  parts.forEach {
+  parts.withIndex().forEach {(index, value) ->
     enqueueDelay(chunksDelayMillis)
-    enqueuePart(it.encodeUtf8())
+    enqueuePart(value.encodeUtf8(), index == parts.lastIndex)
   }
-  close()
 }
 
 @ApolloExperimental
@@ -80,7 +88,7 @@ fun MockServer.enqueueMultipart(
       MockResponse.Builder()
           .body(multipartBody.consumeAsFlow())
           .headers(headers)
-          .addHeader("Content-Type", """"multipart/mixed; boundary="$boundary"""")
+          .addHeader("Content-Type", """multipart/mixed; boundary="$boundary""")
           .addHeader("Transfer-Encoding", "chunked")
           .build()
   )

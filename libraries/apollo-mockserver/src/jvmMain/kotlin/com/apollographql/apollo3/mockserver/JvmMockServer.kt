@@ -15,8 +15,8 @@ import java.net.Socket
 import java.util.concurrent.Executors
 
 @Suppress("BlockingMethodInNonBlockingContext")
-internal class MockServerImpl constructor(
-    override val mockServerHandler: MockServerHandler,
+class JvmMockServer @JvmOverloads constructor(
+    override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
 ) : MockServer {
   private val serverSocket = ServerSocket(0)
   private val mockRequests = mutableListOf<MockRequest>()
@@ -75,7 +75,7 @@ internal class MockServerImpl constructor(
     return "http://${serverSocket.inetAddress.hostAddress}:${serverSocket.localPort}/"
   }
 
-  override suspend fun stop() {
+  override suspend fun closeSynchronously() {
     close()
   }
 
@@ -86,4 +86,4 @@ internal class MockServerImpl constructor(
   }
 }
 
-actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = JvmMockServer(mockServerHandler)

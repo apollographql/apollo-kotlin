@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.HeroAppearsInQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +36,7 @@ class CacheMissLoggingInterceptorTest {
         .normalizedCache(MemoryCacheFactory())
         .build()
 
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": {
           "hero": {
@@ -57,7 +57,7 @@ class CacheMissLoggingInterceptorTest {
         ),
         recordedLogs
     )
-    mockServer.stop()
+    mockServer.close()
     apolloClient.close()
   }
 

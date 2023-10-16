@@ -5,18 +5,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.mapNotNull
+import okio.Buffer
 import okio.ByteString
-import okio.ByteString.Companion.encodeUtf8
 
 
 private sealed interface Item
 private class BytesItem(val bytes: ByteString): Item
 private class DelayItem(val delayMillis: Long): Item
 
-private fun String.toBytesItem(): Item = BytesItem(encodeUtf8())
-
 internal class MultipartBodyImpl(private val boundary: String, private val partsContentType: String) : MultipartBody {
-  private var isFirst = false
+  private var isFirst = true
 
   private val channel = Channel<Item>(Channel.UNLIMITED)
 
@@ -32,26 +30,29 @@ internal class MultipartBodyImpl(private val boundary: String, private val parts
     }.asChunked()
   }
 
-  override fun enqueuePart(bytes: ByteString) {
-    if (isFirst) {
-      channel.trySend("--$boundary\r\n".toBytesItem())
-    }
-    val headers = """
-      "Content-Length: ${bytes.size}\r\n" +
-      "Content-Type: $partsContentType\r\n" +
-      "\r\n"
-    """.trimIndent()
+  override fun enqueuePart(bytes: ByteString, isLast: Boolean) {
 
-    channel.trySend(headers.toBytesItem())
-    channel.trySend("--$boundary\r\n".toBytesItem())
+    val b = Buffer().apply {
+      if (isFirst) {
+        writeUtf8("--$boundary\r\n")
+        isFirst = false
+      }
+      val endBoundary = if (isLast) "--$boundary--" else "--$boundary"
+
+      writeUtf8("Content-Length: ${bytes.size}\r\n")
+      writeUtf8("Content-Type: $partsContentType\r\n")
+      writeUtf8("\r\n")
+      write(bytes)
+      writeUtf8("\r\n$endBoundary\r\n")
+    }.readByteString()
+
+    channel.trySend(BytesItem(b))
+    if (isLast) {
+      channel.close()
+    }
   }
 
   override fun enqueueDelay(delayMillis: Long) {
     channel.trySend(DelayItem(delayMillis))
   }
-
-  override fun close() {
-    channel.trySend("--".toBytesItem())
-  }
-
 }
