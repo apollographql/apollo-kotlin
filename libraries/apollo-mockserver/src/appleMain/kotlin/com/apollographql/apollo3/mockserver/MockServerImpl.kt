@@ -30,10 +30,10 @@ import platform.posix.socket
  * call. Can be used to simulate slow connections.
  */
 @OptIn(ExperimentalStdlibApi::class)
-actual class MockServer(
+internal class MockServerImpl(
     private val acceptDelayMillis: Long,
-    actual override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
-) : MockServerInterface {
+    override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
+) : MockServer {
 
   init {
     check(isExperimentalMM()) {
@@ -42,7 +42,7 @@ actual class MockServer(
     }
   }
 
-  actual constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
+  constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
 
   private val pthreadT: pthread_tVar
   private val port: Int
@@ -98,11 +98,11 @@ actual class MockServer(
     }, stableRef.asCPointer())
   }
 
-  actual override suspend fun url(): String {
+  override suspend fun url(): String {
     return "http://localhost:$port/"
   }
 
-  actual override fun enqueue(mockResponse: MockResponse) {
+  override fun enqueue(mockResponse: MockResponse) {
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
@@ -112,11 +112,22 @@ actual class MockServer(
   }
 
   /**
-   * [MockServer] can only stop in between complete request/responses pairs
+   * [MockServerImpl] can only stop in between complete request/responses pairs
    * If stop() is called while we're reading a request, this might wait forever
    * Revisit once okio has native Timeout
    */
-  actual override suspend fun stop() {
+  override suspend fun stop() {
+    close()
+  }
+
+  override fun takeRequest(): MockRequest {
+    check(socket != null) {
+      "Cannot take a request from a stopped MockServer"
+    }
+    return socket!!.takeRequest()
+  }
+
+  override fun close() {
     if (socket == null) {
       return
     }
@@ -128,11 +139,6 @@ actual class MockServer(
 
     socket = null
   }
-
-  actual override fun takeRequest(): MockRequest {
-    check(socket != null) {
-      "Cannot take a request from a stopped MockServer"
-    }
-    return socket!!.takeRequest()
-  }
 }
+
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = MockServerImpl(mockServerHandler)

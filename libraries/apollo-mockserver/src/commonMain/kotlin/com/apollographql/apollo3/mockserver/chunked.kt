@@ -116,27 +116,6 @@ private class ChunkedResponse(
   }
 }
 
-
-internal fun MockServer.enqueueMultipart(
-    parts: List<String>,
-    statusCode: Int = 200,
-    partsContentType: String = "application/json; charset=utf-8",
-    headers: Map<String, String> = emptyMap(),
-    responseDelayMillis: Long = 0,
-    chunksDelayMillis: Long = 0,
-    boundary: String = "-",
-) {
-  enqueue(createMultipartMixedChunkedResponse(
-      parts = parts,
-      statusCode = statusCode,
-      partsContentType = partsContentType,
-      headers = headers,
-      responseDelayMillis = responseDelayMillis,
-      chunksDelayMillis = chunksDelayMillis,
-      boundary = boundary
-  ))
-}
-
 internal fun createMultipartMixedPart(
     content: String,
     contentType: String = "application/json; charset=utf-8",

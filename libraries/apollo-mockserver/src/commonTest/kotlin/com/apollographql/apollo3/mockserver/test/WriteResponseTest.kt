@@ -1,4 +1,4 @@
-@file:OptIn(ApolloInternal::class)
+@file:OptIn(ApolloInternal::class, ApolloInternal::class)
 
 package com.apollographql.apollo3.mockserver.test
 

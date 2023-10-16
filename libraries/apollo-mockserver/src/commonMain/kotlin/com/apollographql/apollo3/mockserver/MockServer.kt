@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import okio.Closeable
 
-interface MockServerInterface {
+interface MockServer: Closeable {
   /**
    * Returns the root url for this server
    *
@@ -13,7 +14,10 @@ interface MockServerInterface {
   /**
    * Stops the server
    */
+  @Deprecated("Use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
   suspend fun stop()
+
+  override fun close()
 
   /**
    * The mock server handler used to respond to requests.
@@ -33,20 +37,33 @@ interface MockServerInterface {
   fun takeRequest(): MockRequest
 }
 
-@ApolloExperimental
-expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : MockServerInterface {
-  override suspend fun url(): String
-  override suspend fun stop()
-  override val mockServerHandler: MockServerHandler
-  override fun enqueue(mockResponse: MockResponse)
-  override fun takeRequest(): MockRequest
-}
+expect fun MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()): MockServer
 
-@ApolloExperimental
 fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .body(string)
       .delayMillis(delayMs)
       .build())
+}
+
+@ApolloExperimental
+fun MockServer.enqueueMultipart(
+    parts: List<String>,
+    statusCode: Int = 200,
+    partsContentType: String = "application/json; charset=utf-8",
+    headers: Map<String, String> = emptyMap(),
+    responseDelayMillis: Long = 0,
+    chunksDelayMillis: Long = 0,
+    boundary: String = "-",
+) {
+  enqueue(createMultipartMixedChunkedResponse(
+      parts = parts,
+      statusCode = statusCode,
+      partsContentType = partsContentType,
+      headers = headers,
+      responseDelayMillis = responseDelayMillis,
+      chunksDelayMillis = chunksDelayMillis,
+      boundary = boundary
+  ))
 }
