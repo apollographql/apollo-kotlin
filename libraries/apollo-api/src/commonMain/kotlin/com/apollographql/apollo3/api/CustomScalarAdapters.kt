@@ -14,6 +14,7 @@ class CustomScalarAdapters private constructor(
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
   fun <T: Any> adapterFor(name: String): Adapter<T>? {
+    @Suppress("UNCHECKED_CAST")
     return adaptersMap[name] as Adapter<T>?
   }
 

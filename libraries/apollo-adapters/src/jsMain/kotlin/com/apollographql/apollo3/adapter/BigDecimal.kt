@@ -70,7 +70,7 @@ actual class BigDecimal {
   }
 
   fun toChar(): Char {
-    return jsNumber(raw).toChar()
+    return jsNumber(raw).toInt().toChar()
   }
 
   fun toDouble(): Double {

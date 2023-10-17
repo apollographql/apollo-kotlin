@@ -104,7 +104,6 @@ internal class DefaultApolloStore(
     val variables = operation.variables(customScalarAdapters, true)
     return lock.read {
       operation.readDataFromCacheInternal(
-          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
@@ -122,7 +121,6 @@ internal class DefaultApolloStore(
     val variables = fragment.variables(customScalarAdapters, true)
     return lock.read {
       fragment.readDataFromCacheInternal(
-          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,

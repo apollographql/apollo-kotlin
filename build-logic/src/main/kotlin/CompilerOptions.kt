@@ -55,7 +55,7 @@ private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCom
       targets.all {
         compilations.all {
           compilerOptions.configure {
-            configure()
+            block()
           }
         }
       }
@@ -69,9 +69,15 @@ val Project.kotlinExtensionOrNull: KotlinProjectExtension?
   get() {
     return (extensions.findByName("kotlin") as? KotlinProjectExtension)
   }
+
 fun Project.configureJavaAndKotlinCompilers() {
   kotlinExtensionOrNull?.forEachCompilerOptions {
     configure()
+  }
+
+  (kotlinExtensionOrNull as? KotlinMultiplatformExtension)?.sourceSets?.configureEach {
+    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
+    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
   }
 
   @Suppress("UnstableApiUsage")
