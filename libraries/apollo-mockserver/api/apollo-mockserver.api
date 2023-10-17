@@ -1,3 +1,20 @@
+public final class com/apollographql/apollo3/mockserver/JvmMockServer : com/apollographql/apollo3/mockserver/MockServer {
+	public fun <init> ()V
+	public fun <init> (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/mockserver/MockServerHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public fun closeSynchronously (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun enqueue (Lcom/apollographql/apollo3/mockserver/MockResponse;)V
+	public fun getMockServerHandler ()Lcom/apollographql/apollo3/mockserver/MockServerHandler;
+	public fun takeRequest ()Lcom/apollographql/apollo3/mockserver/MockRequest;
+	public fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/mockserver/JvmMockServerKt {
+	public static final fun MockServer (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static synthetic fun MockServer$default (Lcom/apollographql/apollo3/mockserver/MockServerHandler;ILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockServer;
+}
+
 public final class com/apollographql/apollo3/mockserver/MockRequest {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lokio/ByteString;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lokio/ByteString;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -32,18 +49,14 @@ public abstract interface class com/apollographql/apollo3/mockserver/MockServer 
 	public abstract fun close ()V
 	public abstract fun enqueue (Lcom/apollographql/apollo3/mockserver/MockResponse;)V
 	public abstract fun getMockServerHandler ()Lcom/apollographql/apollo3/mockserver/MockServerHandler;
-	public abstract fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun stop$suspendImpl (Lcom/apollographql/apollo3/mockserver/MockServer;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun takeRequest ()Lcom/apollographql/apollo3/mockserver/MockRequest;
 	public abstract fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/apollographql/apollo3/mockserver/MockServerHandler {
 	public abstract fun handle (Lcom/apollographql/apollo3/mockserver/MockRequest;)Lcom/apollographql/apollo3/mockserver/MockResponse;
-}
-
-public final class com/apollographql/apollo3/mockserver/MockServerImplKt {
-	public static final fun MockServer (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer;
-	public static synthetic fun MockServer$default (Lcom/apollographql/apollo3/mockserver/MockServerHandler;ILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockServer;
 }
 
 public final class com/apollographql/apollo3/mockserver/MockServerKt {
