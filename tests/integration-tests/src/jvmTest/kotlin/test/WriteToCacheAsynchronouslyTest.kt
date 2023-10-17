@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.asCoroutineDispatcher
 import testFixtureToUtf8
@@ -39,7 +39,7 @@ class WriteToCacheAsynchronouslyTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
     dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
   }
 
@@ -50,7 +50,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheAsynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(true)
         .execute()
@@ -67,7 +67,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheSynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(false)
         .execute()

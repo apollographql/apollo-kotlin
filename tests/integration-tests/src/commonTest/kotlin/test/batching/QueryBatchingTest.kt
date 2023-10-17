@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -31,7 +31,7 @@ class QueryBatchingTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
     // This is important. JS will hang if the BatchingHttpInterceptor scope is not cancelled
     apolloClient.close()
   }
@@ -60,7 +60,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 1000)
@@ -95,8 +95,8 @@ class QueryBatchingTest {
 
   @Test
   fun queriesAreNotBatchedIfSubmittedFarApart() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
-    mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"83"}}}]""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 10)
@@ -120,8 +120,8 @@ class QueryBatchingTest {
 
   @Test
   fun queriesCanBeOptOutOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""{"data":{"launch":{"id":"83"}}}""")
-    mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
+    mockServer.enqueueString("""{"data":{"launch":{"id":"83"}}}""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 1000)
@@ -153,7 +153,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 1000)
@@ -200,7 +200,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 1000)
@@ -237,7 +237,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 1000)

@@ -4,20 +4,20 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.test.AfterClass
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
-@OptIn(ExperimentalTime::class)
 class BenchmarksTest {
-  private val server = MockServer()
+  private val mockServer = MockServer()
   private lateinit var client: ApolloClient
 
   private fun benchmark(name: String, test: suspend (Int) -> Unit) = runTest {
@@ -35,11 +35,11 @@ class BenchmarksTest {
   private suspend fun simpleQuery(iteration: Int) {
     if (iteration == 0) {
       client = ApolloClient.Builder()
-          .serverUrl(server.url())
+          .serverUrl(mockServer.url())
           .build()
     }
 
-    server.enqueueData(
+    mockServer.enqueueData(
         GetRandomQuery.Data {
           random = 42
         }
@@ -53,10 +53,10 @@ class BenchmarksTest {
     if (iteration == 0) {
       client = ApolloClient.Builder()
           .normalizedCache(MemoryCacheFactory())
-          .serverUrl(server.url())
+          .serverUrl(mockServer.url())
           .build()
 
-      server.enqueue("""
+      mockServer.enqueueString("""
       {
         "data": {
           "random": 42

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
@@ -23,12 +23,12 @@ class ExceptionsTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
 
     val response = apolloClient.query(HeroNameQuery()).execute()
     assertTrue(response.exception != null)
@@ -36,7 +36,7 @@ class ExceptionsTest {
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(statusCode = 404)
+    mockServer.enqueueString(statusCode = 404)
 
     val response = apolloClient.query(HeroNameQuery()).execute()
     val exception = response.exception
@@ -46,7 +46,7 @@ class ExceptionsTest {
 
   @Test
   fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
-    mockServer.stop()
+    mockServer.close()
 
     val response = apolloClient.query(HeroNameQuery()).execute()
     assertTrue(response.exception is ApolloNetworkException)
@@ -55,7 +55,7 @@ class ExceptionsTest {
   @Test
   @Suppress("DEPRECATION")
   fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
 
     val throwingClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     var result = kotlin.runCatching {
@@ -66,7 +66,7 @@ class ExceptionsTest {
   @Test
   @Suppress("DEPRECATION")
   fun toFlowDoesNotThrowOnV3() = runTest(before = { setUp() }, after = { tearDown() }) {
-      mockServer.enqueue("""
+      mockServer.enqueueString("""
         {
           "errors": [
               {

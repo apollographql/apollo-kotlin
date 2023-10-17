@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
-import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okio.ByteString.Companion.encodeUtf8
 import org.junit.Ignore
 import org.junit.Test
 import supergraph.ProductQuery
@@ -43,14 +44,13 @@ class DeferJvmTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun payloadsAreReceivedIncrementallyWithHttpCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     val delayMillis = 200L
-    val chunkedResponse = ChunkedResponse(chunksDelayMillis = delayMillis)
-    mockServer.enqueue(chunkedResponse.response)
+    val multipartBody = mockServer.enqueueMultipart("application/json")
 
     val syncChannel = Channel<Unit>()
     val job = launch {
@@ -69,11 +69,8 @@ class DeferJvmTest {
 
     for ((index, json) in jsonList.withIndex()) {
       val isLast = index == jsonList.lastIndex
-      chunkedResponse.send(
-          content = json,
-          isFirst = index == 0,
-          isLast = isLast,
-      )
+      multipartBody.enqueueDelay(delayMillis)
+      multipartBody.enqueuePart(json.encodeUtf8(), isLast)
       val timeBeforeReceive = currentTimeMillis()
       syncChannel.receive()
       assertTrue(currentTimeMillis() - timeBeforeReceive >= delayMillis)

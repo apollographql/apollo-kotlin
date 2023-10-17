@@ -25,7 +25,7 @@ class HTTPHeadersTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test

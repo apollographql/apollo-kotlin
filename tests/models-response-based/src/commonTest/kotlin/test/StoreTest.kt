@@ -14,7 +14,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -35,12 +35,12 @@ class StoreTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun readFragmentFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsWithTypename.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsWithTypename.json"))
     apolloClient.query(HeroAndFriendsWithTypenameQuery()).execute()
 
     val heroWithFriendsFragment = store.readFragment(
@@ -85,7 +85,7 @@ class StoreTest {
    */
   @Test
   fun fragments() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query).execute()
     assertEquals(response.data?.hero?.__typename, "Droid")

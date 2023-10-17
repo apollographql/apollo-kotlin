@@ -15,7 +15,7 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import kotlinx.coroutines.Job
@@ -41,7 +41,7 @@ class WatcherErrorHandlingTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -50,7 +50,7 @@ class WatcherErrorHandlingTest {
     val jobs = mutableListOf<Job>()
 
     jobs += launch {
-      mockServer.enqueue(statusCode = 500)
+      mockServer.enqueueString(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch()
@@ -69,7 +69,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(statusCode = 500)
+      mockServer.enqueueString(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch()
@@ -79,7 +79,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(statusCode = 500)
+      mockServer.enqueueString(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .watch()
@@ -89,7 +89,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(statusCode = 500)
+      mockServer.enqueueString(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheAndNetwork)
           .watch()
@@ -110,7 +110,7 @@ class WatcherErrorHandlingTest {
 
     // The first query should get a "R2-D2" name
     val job = launch {
-      mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseWithId.json"))
+      mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseWithId.json"))
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
@@ -124,8 +124,8 @@ class WatcherErrorHandlingTest {
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is emitted
-    mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
+    mockServer.enqueueString(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)
@@ -134,7 +134,7 @@ class WatcherErrorHandlingTest {
 
   @Test
   fun fetchEmitsExceptions() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertIs<CacheMissException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.CacheFirst)
@@ -151,7 +151,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertIs<ApolloHttpException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -160,7 +160,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertIs<ApolloHttpException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -169,7 +169,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertIs<CacheMissException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.CacheAndNetwork)
@@ -189,7 +189,7 @@ class WatcherErrorHandlingTest {
 
     // The first query should get a "R2-D2" name
     val job = launch {
-      mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseWithId.json"))
+      mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseWithId.json"))
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
@@ -204,8 +204,8 @@ class WatcherErrorHandlingTest {
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is emitted
-    mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
+    mockServer.enqueueString(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)

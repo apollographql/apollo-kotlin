@@ -26,7 +26,7 @@ val mockServer = MockServer()
 val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
 
 // Enqueue HTTP responses
-mockServer.enqueue("""{"data": {"random": 42}}""")
+mockServer.enqueueString("""{"data": {"random": 42}}""")
 mockServer.enqueue(
     MockResponse(
         body = "Internal server error",

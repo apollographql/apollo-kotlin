@@ -10,7 +10,7 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.type.Json
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -32,13 +32,13 @@ class JsonScalarTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   // see https://github.com/apollographql/apollo-android/issues/2854
   @Test
   fun jsonScalar() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("JsonScalar.json"))
+    mockServer.enqueueString(testFixtureToUtf8("JsonScalar.json"))
     var response = apolloClient.query(GetJsonScalarQuery()).execute()
 
     assertFalse(response.hasErrors())
@@ -51,7 +51,7 @@ class JsonScalarTest {
     /**
      * Update the json value, it should be replaced, not merged
      */
-    mockServer.enqueue(testFixtureToUtf8("JsonScalarModified.json"))
+    mockServer.enqueueString(testFixtureToUtf8("JsonScalarModified.json"))
     apolloClient.query(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
     response = apolloClient.query(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
 

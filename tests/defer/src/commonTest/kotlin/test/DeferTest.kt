@@ -3,9 +3,9 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.platform
@@ -19,6 +19,7 @@ import defer.fragment.ScreenFields
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -36,7 +37,7 @@ class DeferTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -92,7 +93,7 @@ class DeferTest {
         ),
     )
 
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
@@ -150,7 +151,7 @@ class DeferTest {
         ),
     )
 
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
@@ -243,7 +244,7 @@ class DeferTest {
         ).build(),
     )
 
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val actualResponseList = apolloClient.query(query).toFlow().toList()
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
@@ -255,8 +256,8 @@ class DeferTest {
       return@runTest
     }
     val delayMillis = 200L
-    val chunkedResponse = ChunkedResponse(chunksDelayMillis = delayMillis)
-    mockServer.enqueue(chunkedResponse.response)
+
+    val multipartBody = mockServer.enqueueMultipart("application/json")
 
     val syncChannel = Channel<Unit>()
     val job = launch {
@@ -273,17 +274,15 @@ class DeferTest {
         """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
     )
 
-    for ((index, json) in jsonList.withIndex()) {
-      val isLast = index == jsonList.lastIndex
-      chunkedResponse.send(
-          content = json,
-          isFirst = index == 0,
-          isLast = isLast,
-      )
+    jsonList.withIndex().forEach { (index, value) ->
+      multipartBody.enqueueDelay(delayMillis)
+      multipartBody.enqueuePart(value.encodeUtf8(), index == jsonList.lastIndex)
+
       val timeBeforeReceive = currentTimeMillis()
       syncChannel.receive()
       assertTrue(currentTimeMillis() - timeBeforeReceive >= delayMillis)
     }
+
     job.cancel()
   }
 
@@ -308,11 +307,11 @@ class DeferTest {
         ),
     )
 
-    mockServer.enqueueMultipart(jsonWithEmptyPayload)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonWithEmptyPayload)
     var actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
 
-    mockServer.enqueueMultipart(jsonWithoutEmptyPayload)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonWithoutEmptyPayload)
     actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }

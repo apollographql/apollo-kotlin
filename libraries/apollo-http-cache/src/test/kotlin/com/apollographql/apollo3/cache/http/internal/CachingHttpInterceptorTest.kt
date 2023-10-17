@@ -8,7 +8,7 @@ import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class CachingHttpInterceptorTest {
   @Test
   fun successResponsesAreCached() {
     val body = "success"
-    mockServer.enqueue(body)
+    mockServer.enqueueString(body)
 
     runBlocking {
       val request = HttpRequest.Builder(
@@ -99,7 +99,7 @@ class CachingHttpInterceptorTest {
   @Test
   fun timeoutWorks() {
     val body = "success"
-    mockServer.enqueue(body)
+    mockServer.enqueueString(body)
     runBlocking {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
@@ -143,7 +143,7 @@ class CachingHttpInterceptorTest {
   fun cacheInParallel() {
     val concurrency = 2
     repeat(concurrency) {
-      mockServer.enqueue("success")
+      mockServer.enqueueString("success")
     }
     val jobs = mutableListOf<Job>()
     runBlocking {

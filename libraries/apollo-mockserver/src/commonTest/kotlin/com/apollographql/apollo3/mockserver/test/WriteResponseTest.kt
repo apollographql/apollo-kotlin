@@ -1,8 +1,12 @@
+@file:OptIn(ApolloInternal::class, ApolloInternal::class)
+
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.MultipartBodyImpl
 import com.apollographql.apollo3.mockserver.asChunked
-import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
+import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.mockserver.writeResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.flowOf
@@ -61,10 +65,16 @@ class WriteResponseTest {
 
   @Test
   fun writeMultipartChunkedResponse() = runTest {
-    val mockResponse = createMultipartMixedChunkedResponse(listOf(
+    val multipartBody = MultipartBodyImpl(boundary = "-", partsContentType = "application/json; charset=utf-8")
+    multipartBody.enqueueStrings(listOf(
         """{"data":{"song":{"firstVerse":"Now I know my ABC's."}},"hasNext":true}""",
         """{"data":{"secondVerse":"Next time won't you sing with me?"},"path":["song"],"hasNext":false}"""
     ))
+    val mockResponse = MockResponse.Builder()
+        .body(multipartBody.consumeAsFlow())
+        .addHeader("Content-Type", "multipart/mixed; boundary=\"-\"")
+        .addHeader("Transfer-Encoding", "chunked")
+        .build()
 
     val buffer = Buffer()
     writeResponse(buffer, mockResponse, "1.1")
@@ -96,5 +106,4 @@ class WriteResponseTest {
         buffer.readUtf8()
     )
   }
-
 }
