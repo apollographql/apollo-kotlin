@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
@@ -14,6 +15,7 @@ interface MockServer: Closeable {
   suspend fun url(): String
 
   @Deprecated("use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   suspend fun stop() = close()
 
   /**
@@ -52,6 +54,7 @@ interface MockServer: Closeable {
 expect fun MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()): MockServer
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
 
 fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
