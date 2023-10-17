@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockResponse
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.flowOf
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 
-@ApolloInternal
 class EnqueueTest {
   private lateinit var mockServer: MockServer
 
