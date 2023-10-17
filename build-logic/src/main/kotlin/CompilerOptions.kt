@@ -1,12 +1,9 @@
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
-
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
@@ -82,7 +79,6 @@ fun Project.configureJavaAndKotlinCompilers() {
     // Keep in sync with build-logic/build.gradle.kts
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
   }
-  @Suppress("UnstableApiUsage")
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
@@ -91,6 +87,7 @@ fun Project.configureJavaAndKotlinCompilers() {
   allWarningsAsErrors(true)
 }
 
+@Suppress("UnstableApiUsage")
 fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
   val javaToolchains = project.extensions.getByName("javaToolchains") as JavaToolchainService
   test.javaLauncher.set(javaToolchains.launcherFor {

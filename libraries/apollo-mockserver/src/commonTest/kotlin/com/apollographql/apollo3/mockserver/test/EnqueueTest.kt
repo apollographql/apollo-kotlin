@@ -20,7 +20,7 @@ class EnqueueTest {
     mockServer = MockServer()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
   }
 
