@@ -5,6 +5,7 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
@@ -16,7 +17,7 @@ import kotlin.test.assertTrue
 
 class NativeThreadTest {
   @Test
-  @OptIn(ExperimentalCoroutinesApi::class)
+  @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
   fun canExecuteOperationsFromAnyThread() {
     val context = newSingleThreadContext("test")
     try {

@@ -76,10 +76,11 @@ class CacheFlagsTest {
   }
 
   private val partialResponseData = HeroNameQuery.Data(null)
-  private val partialResponseErrors = listOf(Error(
-      message = "An error Happened",
-      locations = listOf(Error.Location(0, 0)),
-      path = null, extensions = null, nonStandardFields = null))
+  private val partialResponseErrors = listOf(
+      Error.Builder(message = "An error Happened")
+          .locations(listOf(Error.Location(0, 0)))
+          .build()
+  )
 
 
   @Test

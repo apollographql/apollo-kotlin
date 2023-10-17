@@ -82,7 +82,6 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
   val variables = variables(customScalarAdapters, true)
   return readInternal(
       cacheKey = cacheKey,
-      customScalarAdapters = customScalarAdapters,
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
@@ -100,7 +99,6 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
   val variables = variables(customScalarAdapters, true)
   return readInternal(
       cacheKey = cacheKey,
-      customScalarAdapters = customScalarAdapters,
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
@@ -111,14 +109,12 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
-    variables: Executable.Variables
-) = readInternal(
+    variables: Executable.Variables,
+): CacheData = readInternal(
     cacheKey = cacheKey,
-    customScalarAdapters = customScalarAdapters,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
@@ -128,14 +124,12 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: ApolloResolver,
     cacheHeaders: CacheHeaders,
-    variables: Executable.Variables
-):CacheData = readInternal(
+    variables: Executable.Variables,
+): CacheData = readInternal(
     cacheKey = cacheKey,
-    customScalarAdapters = customScalarAdapters,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
@@ -145,7 +139,6 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
 
 private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: Any,
     cacheHeaders: CacheHeaders,
@@ -169,7 +162,7 @@ fun Collection<Record>?.dependentKeys(): Set<String> {
 }
 
 @ApolloInternal
-fun <D: Executable.Data> CacheData.toData(
+fun <D : Executable.Data> CacheData.toData(
     adapter: CompositeAdapter<D>,
     customScalarAdapters: CustomScalarAdapters,
     variables: Executable.Variables,

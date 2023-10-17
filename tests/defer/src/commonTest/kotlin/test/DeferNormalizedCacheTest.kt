@@ -18,8 +18,8 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
@@ -56,7 +56,7 @@ class DeferNormalizedCacheTest {
     apolloClient = ApolloClient.Builder().httpEngine(getStreamingHttpEngine()).serverUrl(mockServer.url()).store(store).build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
     apolloClient.close()
   }
@@ -322,12 +322,10 @@ class DeferNormalizedCacheTest {
         )
             .errors(
                 listOf(
-                    Error(
-                        message = "Cannot resolve isColor",
-                        locations = listOf(Error.Location(1, 119)),
-                        path = listOf("computers", 0, "screen", "isColor"),
-                        extensions = null, nonStandardFields = null
-                    )
+                    Error.Builder(message = "Cannot resolve isColor")
+                        .locations(listOf(Error.Location(1, 119)))
+                        .path(listOf("computers", 0, "screen", "isColor"))
+                        .build()
                 )
             )
             .build(),

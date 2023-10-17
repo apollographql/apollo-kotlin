@@ -36,7 +36,7 @@ class DeferTest {
         .build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
   }
 
@@ -206,12 +206,10 @@ class DeferTest {
         )
             .errors(
                 listOf(
-                    Error(
-                        message = "Cannot resolve isColor",
-                        locations = listOf(Error.Location(1, 119)),
-                        path = listOf("computers", 0, "screen", "isColor"),
-                        extensions = null, nonStandardFields = null
-                    )
+                    Error.Builder(message = "Cannot resolve isColor")
+                        .locations(listOf(Error.Location(1, 119)))
+                        .path(listOf("computers", 0, "screen", "isColor"))
+                        .build()
                 )
             )
             .build(),
