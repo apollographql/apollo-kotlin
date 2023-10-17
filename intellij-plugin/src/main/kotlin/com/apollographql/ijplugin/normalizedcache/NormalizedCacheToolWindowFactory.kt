@@ -47,6 +47,7 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.ScrollingUtil
 import com.intellij.ui.SearchTextField
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBTreeTable
@@ -68,6 +69,7 @@ import org.sqlite.SQLiteException
 import java.awt.Color
 import java.awt.Component
 import java.awt.Cursor
+import java.awt.MouseInfo
 import java.awt.Point
 import java.awt.datatransfer.StringSelection
 import java.awt.dnd.DnDConstants
@@ -159,6 +161,25 @@ class NormalizedCacheWindowPanel(
       emptyText.text = ApolloBundle.message("normalizedCacheViewer.empty.message")
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
         pickFile()
+      }
+      if (isAndroidPluginPresent) {
+        emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.pullFromDevice"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
+          object : Task.Backgroundable(
+              project,
+              ApolloBundle.message("normalizedCacheViewer.loading.message"),
+              false,
+          ) {
+            override fun run(indicator: ProgressIndicator) {
+              val pullFromDeviceActionGroup = createPullFromDeviceActionGroup(project) { file ->
+                openFile(file)
+              }
+              invokeLater {
+                val actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(ActionPlaces.TOOLWINDOW_POPUP, pullFromDeviceActionGroup)
+                JBPopupMenu.showAt(RelativePoint(MouseInfo.getPointerInfo().location), actionPopupMenu.component)
+              }
+            }
+          }.queue()
+        }
       }
 
       val defaultBackground = background
