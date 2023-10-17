@@ -90,7 +90,8 @@ fun Project.configureJavaAndKotlinCompilers() {
     options.release.set(8)
   }
 
-  allWarningsAsErrors(true)
+  // https://youtrack.jetbrains.com/issue/KT-62653
+  // allWarningsAsErrors(true)
 }
 
 @Suppress("UnstableApiUsage")
