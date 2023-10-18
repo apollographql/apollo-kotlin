@@ -3,17 +3,21 @@ package com.apollographql.ijplugin.normalizedcache
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.android.ddmlib.SyncService
+import com.android.tools.idea.adb.AdbShellCommandResult
 import com.android.tools.idea.adb.AdbShellCommandsUtil
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.UpdateSession
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import java.io.File
@@ -26,7 +30,6 @@ val isAndroidPluginPresent = try {
   false
 }
 
-@Suppress("LABEL_NAME_CLASH")
 fun createPullFromDeviceActionGroup(project: Project, onFilePullError: (Throwable) -> Unit, onFilePulled: (File) -> Unit): ActionGroup {
   return DefaultActionGroup().apply {
     try {
@@ -37,51 +40,111 @@ fun createPullFromDeviceActionGroup(project: Project, onFilePullError: (Throwabl
       }
       for (device in adb.devices) {
         add(DefaultActionGroup.createPopupGroup { device.name }.apply {
-          if (device.clients.isEmpty()) {
-            add(DisabledAction(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.noRunningApp")))
-            return@apply
-          }
+          // Add running apps
           for (client in device.clients) {
             val appPackageName = client.clientData.clientDescription
-            add(DefaultActionGroup.createPopupGroup { appPackageName }.apply {
-              val databasesDir = client.clientData.dataDir + "/databases"
-              val commandResult = AdbShellCommandsUtil.create(device).executeCommandBlocking("run-as $appPackageName ls $databasesDir")
-              if (commandResult.isError) {
-                add(DisabledAction(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listDatabases.error")))
-                return@apply
-              }
-              val databaseFileNames = commandResult.output.filter { it.endsWith(".db") }
-              if (databaseFileNames.isEmpty()) {
-                add(DisabledAction(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listDatabases.noDatabases")))
-                return@apply
-              }
-              for (databaseFileName in databaseFileNames) {
-                add(DumbAwareAction.create(databaseFileName) {
-                  object : Task.Backgroundable(
-                      project,
-                      ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pulling"),
-                      false,
-                  ) {
-                    override fun run(indicator: ProgressIndicator) {
-                      val pullResult = pullFile(device = device, appPackageName = appPackageName, databasesDir = databasesDir, databaseFileName = databaseFileName)
-                      invokeLater {
-                        pullResult.onSuccess {
-                          onFilePulled(it)
-                        }.onFailure {
-                          logw(it, "Pull failed")
-                          onFilePullError(it)
-                        }
-                      }
-                    }
-                  }.queue()
-                })
-              }
-            })
+            val databasesDir = client.clientData.dataDir + "/databases"
+            add(PackageDatabasesActionGroup(project, device, appPackageName, databasesDir, onFilePulled, onFilePullError))
           }
+          addSeparator()
+          // Add other debuggable apps
+          add(DebuggablePackagesActionGroup(project, device, onFilePulled, onFilePullError))
         })
       }
     } catch (e: Exception) {
       add(DisabledAction(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.list.error", e.message ?: "")))
+    }
+  }
+}
+
+private class PackageDatabasesActionGroup(
+    private val project: Project,
+    private val device: IDevice,
+    private val appPackageName: String,
+    private val databasesDir: String,
+    private val onFilePulled: (File) -> Unit,
+    private val onFilePullError: (Throwable) -> Unit,
+) : DefaultActionGroup(appPackageName, true), DumbAware {
+  init {
+    templatePresentation.isDisableGroupIfEmpty = false
+  }
+
+  val databaseFilesResult by lazy {
+    AdbShellCommandsUtil.create(device).executeCommandBlocking("run-as $appPackageName ls $databasesDir")
+  }
+
+  override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+  override fun getChildren(e: AnActionEvent?) = arrayOf(DisabledAction("Loading..."))
+
+  override fun postProcessVisibleChildren(visibleChildren: List<AnAction>, updateSession: UpdateSession): List<AnAction> {
+    if (databaseFilesResult.isError) {
+      return listOf(DisabledAction(ApolloBundle.message(
+          if (databaseFilesResult.output.any { it.contains("No such file or directory") }) {
+            "normalizedCacheViewer.pullFromDevice.listDatabases.noDatabases"
+          } else {
+            "normalizedCacheViewer.pullFromDevice.listDatabases.error"
+          }
+      )))
+    }
+    val databaseFileNames = databaseFilesResult.output.filter { it.endsWith(".db") }
+    if (databaseFileNames.isEmpty()) {
+      return listOf(DisabledAction(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listDatabases.noDatabases")))
+    }
+    return databaseFileNames.map { databaseFileName ->
+      DumbAwareAction.create(databaseFileName) {
+        object : Task.Backgroundable(
+            project,
+            ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pulling"),
+            false,
+        ) {
+          override fun run(indicator: ProgressIndicator) {
+            val pullResult = pullFile(device = device, appPackageName = appPackageName, databasesDir = databasesDir, databaseFileName = databaseFileName)
+            invokeLater {
+              pullResult.onSuccess {
+                onFilePulled(it)
+              }.onFailure {
+                logw(it, "Pull failed")
+                onFilePullError(it)
+              }
+            }
+          }
+        }.queue()
+      }
+    }
+  }
+}
+
+private class DebuggablePackagesActionGroup(
+    private val project: Project,
+    private val device: IDevice,
+    private val onFilePulled: (File) -> Unit,
+    private val onFilePullError: (Throwable) -> Unit,
+) : DefaultActionGroup("All packages", true), DumbAware {
+  init {
+    templatePresentation.isDisableGroupIfEmpty = false
+  }
+
+  private val debuggablePackagesResult: AdbShellCommandResult by lazy {
+    // List all packages, and try run-as on them - if it succeeds, it's debuggable
+    AdbShellCommandsUtil.create(device).executeCommandBlocking("for p in \$(pm list packages -3 | cut -d : -f 2); do (run-as \$p true >/dev/null 2>&1 && echo \$p); done; true")
+  }
+
+  override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+  override fun getChildren(e: AnActionEvent?): Array<AnAction> {
+    return arrayOf(DisabledAction("Loading..."))
+  }
+
+  override fun postProcessVisibleChildren(visibleChildren: List<AnAction>, updateSession: UpdateSession): List<AnAction> {
+    return when {
+      debuggablePackagesResult.isError -> listOf(DisabledAction("Could not list debuggable apps"))
+      debuggablePackagesResult.output.filter { it.isNotEmpty() }.isEmpty() -> listOf(DisabledAction("No debuggable apps"))
+      else -> {
+        debuggablePackagesResult.output.filter { it.isNotEmpty() }.map { packageName ->
+          PackageDatabasesActionGroup(project, device, packageName, "/data/data/$packageName/databases", onFilePulled, onFilePullError)
+        }
+      }
     }
   }
 }
@@ -121,11 +184,12 @@ private object NullSyncProgressMonitor : SyncService.ISyncProgressMonitor {
   override fun stop() {}
 }
 
-private class DisabledAction(text: String) : DumbAwareAction(text) {
-  override fun actionPerformed(e: AnActionEvent) {}
-  override fun update(e: AnActionEvent) {
-    e.presentation.isEnabled = false
+private class DisabledAction(text: String) : AnAction(text) {
+  init {
+    templatePresentation.isEnabled = false
   }
+
+  override fun actionPerformed(e: AnActionEvent) {}
 
   override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }
