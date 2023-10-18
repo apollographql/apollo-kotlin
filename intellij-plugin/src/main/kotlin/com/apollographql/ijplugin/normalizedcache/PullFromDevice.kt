@@ -86,21 +86,21 @@ private fun pullFile(device: IDevice, appPackageName: String, databasesDir: Stri
   val localFile = File.createTempFile(databaseFileName.substringBeforeLast("."), ".db")
   val remoteFilePath = "$databasesDir/$databaseFileName"
   logd("Pulling $remoteFilePath to ${localFile.absolutePath}")
-  val intermediaryRemoteFilePath = "/data/local/tmp/${localFile.name}"
+  val intermediateRemoteFilePath = "/data/local/tmp/${localFile.name}"
   val shellCommandsUtil = AdbShellCommandsUtil.create(device)
-  var commandResult = shellCommandsUtil.executeCommandBlocking("touch $intermediaryRemoteFilePath")
+  var commandResult = shellCommandsUtil.executeCommandBlocking("touch $intermediateRemoteFilePath")
   if (commandResult.isError) {
     logw("touch failed")
     return Result.failure(Exception("touch failed"))
   }
-  commandResult = shellCommandsUtil.executeCommandBlocking("run-as $appPackageName sh -c 'cp $remoteFilePath $intermediaryRemoteFilePath'")
+  commandResult = shellCommandsUtil.executeCommandBlocking("run-as $appPackageName sh -c 'cp $remoteFilePath $intermediateRemoteFilePath'")
   if (commandResult.isError) {
     logw("copy failed")
     return Result.failure(Exception("copy failed"))
   }
   return runCatching {
     try {
-      device.syncService.pullFile(intermediaryRemoteFilePath, localFile.absolutePath, object : SyncService.ISyncProgressMonitor {
+      device.syncService.pullFile(intermediateRemoteFilePath, localFile.absolutePath, object : SyncService.ISyncProgressMonitor {
         override fun isCanceled() = false
 
         override fun start(totalWork: Int) {}
@@ -112,7 +112,7 @@ private fun pullFile(device: IDevice, appPackageName: String, databasesDir: Stri
         override fun stop() {}
       })
     } finally {
-      commandResult = shellCommandsUtil.executeCommandBlocking("rm $intermediaryRemoteFilePath")
+      commandResult = shellCommandsUtil.executeCommandBlocking("rm $intermediateRemoteFilePath")
       if (commandResult.isError) {
         logw("rm failed")
       }
