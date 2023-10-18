@@ -170,9 +170,14 @@ class NormalizedCacheWindowPanel(
               false,
           ) {
             override fun run(indicator: ProgressIndicator) {
-              val pullFromDeviceActionGroup = createPullFromDeviceActionGroup(project) { file ->
-                openFile(file)
-              }
+              val pullFromDeviceActionGroup = createPullFromDeviceActionGroup(
+                  project,
+                  onFilePullError = { throwable ->
+                    showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.error"), content = throwable.message
+                        ?: "", type = NotificationType.ERROR)
+                  },
+                  onFilePulled = ::openFile
+              )
               invokeLater {
                 val actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(ActionPlaces.TOOLWINDOW_POPUP, pullFromDeviceActionGroup)
                 JBPopupMenu.showAt(RelativePoint(MouseInfo.getPointerInfo().location), actionPopupMenu.component)
