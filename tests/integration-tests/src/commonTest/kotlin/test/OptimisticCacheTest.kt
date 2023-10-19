@@ -20,7 +20,7 @@ import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.benasher44.uuid.uuid4
@@ -42,7 +42,7 @@ class OptimisticCacheTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   /**
@@ -53,7 +53,7 @@ class OptimisticCacheTest {
   fun programmaticOptimiticUpdates() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     val mutationId = uuid4()
@@ -100,7 +100,7 @@ class OptimisticCacheTest {
     val mutationId1 = uuid4()
 
     // execute query1 from the network
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(query1).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     // now write some optimistic updates for query1
@@ -140,7 +140,7 @@ class OptimisticCacheTest {
     val query2 = HeroNameWithIdQuery()
     val mutationId2 = uuid4()
 
-    mockServer.enqueue(testFixtureToUtf8("HeroNameWithIdResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameWithIdResponse.json"))
     apolloClient.query(query2).execute()
 
     // write optimistic data2
@@ -200,7 +200,7 @@ class OptimisticCacheTest {
 
   @Test
   fun mutation_and_query_watcher() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("ReviewsEmpireEpisodeResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("ReviewsEmpireEpisodeResponse.json"))
     val channel = Channel<ReviewsByEpisodeQuery.Data?>()
     val job = launch {
       apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE))
@@ -232,7 +232,7 @@ class OptimisticCacheTest {
      *
      * To limit the occurence of this happening, we introduce a small delay in the network response here.
      */
-    mockServer.enqueue(testFixtureToUtf8("UpdateReviewResponse.json"), 100)
+    mockServer.enqueueString(testFixtureToUtf8("UpdateReviewResponse.json"), 100)
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
@@ -294,10 +294,10 @@ class OptimisticCacheTest {
     val query2 = HeroNameWithIdQuery()
     val mutationId2 = uuid4()
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(query1).execute()
 
-    mockServer.enqueue(testFixtureToUtf8("HeroNameWithIdResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameWithIdResponse.json"))
     apolloClient.query(query2).execute()
 
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(

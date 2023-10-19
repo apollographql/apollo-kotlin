@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import custom.scalars.Address
 import custom.scalars.AddressQuery
@@ -25,8 +25,8 @@ class CustomScalarTest {
    */
   @Test
   fun builtInAdapters() = runTest {
-    val server = MockServer()
-    server.enqueue("""
+    val mockServer = MockServer()
+    mockServer.enqueueString("""
       {
         "data": {
           "id": "1",
@@ -46,7 +46,7 @@ class CustomScalarTest {
       }
     """.trimIndent())
 
-    val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
+    val data = ApolloClient.Builder().serverUrl(serverUrl = mockServer.url()).build()
         .query(BuiltInAdaptersQuery())
         .execute()
         .dataOrThrow()
@@ -70,8 +70,8 @@ class CustomScalarTest {
    */
   @Test
   fun compileTimeAdapters() = runTest {
-    val server = MockServer()
-    server.enqueue("""
+    val mockServer = MockServer()
+    mockServer.enqueueString("""
       {
         "data": {
           "int": 1,
@@ -82,7 +82,7 @@ class CustomScalarTest {
       }
     """.trimIndent())
 
-    val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
+    val data = ApolloClient.Builder().serverUrl(serverUrl = mockServer.url()).build()
         .query(CompileTimeAdaptersQuery())
         .execute()
         .dataOrThrow()
@@ -96,8 +96,8 @@ class CustomScalarTest {
 
   @Test
   fun bigDecimal() = runTest {
-    val server = MockServer()
-    server.enqueue("""
+    val mockServer = MockServer()
+    mockServer.enqueueString("""
       {
         "data": {
           "decimal": 1000000000000000000000000000000000000000000
@@ -106,7 +106,7 @@ class CustomScalarTest {
     """.trimIndent())
 
     val data = ApolloClient.Builder()
-        .serverUrl(serverUrl = server.url())
+        .serverUrl(serverUrl = mockServer.url())
         .build()
         .query(DecimalQuery())
         .execute()
@@ -120,8 +120,8 @@ class CustomScalarTest {
    */
   @Test
   fun addCustomTypeAdapter() = runTest {
-    val server = MockServer()
-    server.enqueue("""
+    val mockServer = MockServer()
+    mockServer.enqueueString("""
       {
         "data": {
           "address": {
@@ -150,7 +150,7 @@ class CustomScalarTest {
       }
     }
     val data = ApolloClient.Builder()
-        .serverUrl(serverUrl = server.url())
+        .serverUrl(serverUrl = mockServer.url())
         .addCustomScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
         .build()
         .query(AddressQuery())

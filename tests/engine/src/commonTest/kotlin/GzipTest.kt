@@ -46,7 +46,7 @@ class GzipTest {
       e.printStackTrace()
     }
 
-    mockServer.stop()
+    mockServer.close()
     engine.dispose()
   }
 

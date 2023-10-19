@@ -56,7 +56,7 @@ class MultipartTest {
     assertEquals(1, responses.size)
     assertEquals(42, responses[0].dataOrThrow().counter?.count)
 
-    mockServer.stop()
+    mockServer.close()
     apolloClient.close()
   }
 
@@ -83,7 +83,7 @@ class MultipartTest {
 
     assertEquals(0, responses.size)
 
-    mockServer.stop()
+    mockServer.close()
     apolloClient.close()
   }
 }

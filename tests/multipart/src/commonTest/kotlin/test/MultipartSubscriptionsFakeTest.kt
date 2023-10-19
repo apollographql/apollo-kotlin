@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
@@ -31,7 +32,7 @@ class MultipartSubscriptionsFakeTest {
 
   private suspend fun tearDown() {
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -42,7 +43,8 @@ class MultipartSubscriptionsFakeTest {
         """{"incremental": [{"data":{"counter":{"count":2}},"path":[]}],"hasNext":true}""",
         """{"incremental": [{"data":{"counter":{"count":3}},"path":[]}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(parts, chunksDelayMillis = 100)
+    mockServer.enqueueMultipart(partsContentType = "application/json")
+        .enqueueStrings(parts, chunksDelayMillis = 100)
 
     val expectedDataList = listOf(
         CounterSubscription.Data(CounterSubscription.Counter(0)),

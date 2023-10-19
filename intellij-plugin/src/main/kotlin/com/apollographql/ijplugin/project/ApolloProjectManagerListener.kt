@@ -3,7 +3,7 @@ package com.apollographql.ijplugin.project
 import com.apollographql.ijplugin.codegen.ApolloCodegenService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.graphql.GraphQLConfigService
-import com.apollographql.ijplugin.settings.SettingsService
+import com.apollographql.ijplugin.settings.ProjectSettingsService
 import com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService
 import com.apollographql.ijplugin.studio.sandbox.SandboxService
 import com.apollographql.ijplugin.telemetry.TelemetryService
@@ -23,7 +23,7 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       logd("apolloVersion=" + project.apolloProjectService.apolloVersion)
       project.service<ApolloCodegenService>()
       project.service<GradleToolingModelService>()
-      project.service<SettingsService>()
+      project.service<ProjectSettingsService>()
       project.service<GraphQLConfigService>()
       project.service<SandboxService>()
       project.service<FieldInsightsService>()

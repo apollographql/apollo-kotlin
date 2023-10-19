@@ -1,8 +1,12 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
+import okio.Closeable
 
-interface MockServerInterface {
+interface MockServer: Closeable {
   /**
    * Returns the root url for this server
    *
@@ -10,15 +14,29 @@ interface MockServerInterface {
    */
   suspend fun url(): String
 
+  @Deprecated("use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  suspend fun stop() = close()
+
   /**
-   * Stops the server
+   * Closes the server and waits for all active connections to terminate.
+   *
+   * XXX: refine the semantics on different platforms:
+   * - should this force close all connections
+   * - should it gracefully wait
    */
-  suspend fun stop()
+  @ApolloExperimental
+  suspend fun closeSynchronously()
+
+  /**
+   * Closes the server. Might be asynchronous on some platforms.
+   */
+  override fun close()
 
   /**
    * The mock server handler used to respond to requests.
    *
-   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueue]).
+   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueueString]).
    */
   val mockServerHandler: MockServerHandler
 
@@ -33,11 +51,50 @@ interface MockServerInterface {
   fun takeRequest(): MockRequest
 }
 
+expect fun MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()): MockServer
+
+@Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
+
+fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
+  enqueue(MockResponse.Builder()
+      .statusCode(statusCode)
+      .body(string)
+      .delayMillis(delayMs)
+      .build())
+}
+
 @ApolloExperimental
-expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : MockServerInterface {
-  override suspend fun url(): String
-  override suspend fun stop()
-  override val mockServerHandler: MockServerHandler
-  override fun enqueue(mockResponse: MockResponse)
-  override fun takeRequest(): MockRequest
+interface MultipartBody {
+  fun enqueuePart(bytes: ByteString, isLast: Boolean)
+  fun enqueueDelay(delayMillis: Long)
+}
+
+@ApolloExperimental
+fun MultipartBody.enqueueStrings(parts: List<String>, responseDelayMillis: Long = 0, chunksDelayMillis: Long = 0) {
+  enqueueDelay(responseDelayMillis)
+  parts.withIndex().forEach {(index, value) ->
+    enqueueDelay(chunksDelayMillis)
+    enqueuePart(value.encodeUtf8(), index == parts.lastIndex)
+  }
+}
+
+@ApolloExperimental
+fun MockServer.enqueueMultipart(
+    partsContentType: String,
+    headers: Map<String, String> = emptyMap(),
+    boundary: String = "-",
+): MultipartBody {
+  val multipartBody = MultipartBodyImpl(boundary, partsContentType)
+  enqueue(
+      MockResponse.Builder()
+          .body(multipartBody.consumeAsFlow())
+          .headers(headers)
+          .addHeader("Content-Type", """multipart/mixed; boundary="$boundary""")
+          .addHeader("Transfer-Encoding", "chunked")
+          .build()
+  )
+
+  return multipartBody
 }

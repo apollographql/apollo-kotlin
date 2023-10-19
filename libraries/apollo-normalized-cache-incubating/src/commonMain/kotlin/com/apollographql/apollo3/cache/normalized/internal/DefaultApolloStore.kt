@@ -113,7 +113,6 @@ internal class DefaultApolloStore(
     val variables = operation.variables(customScalarAdapters, true)
     return lock.read {
       operation.readDataFromCachePrivate(
-          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
@@ -133,7 +132,6 @@ internal class DefaultApolloStore(
 
     return lock.read {
       fragment.readDataFromCachePrivate(
-          customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
@@ -269,7 +267,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+  fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     return lock.write {
       cache.merge(record, cacheHeaders, recordMerger)
     }
@@ -286,7 +284,6 @@ internal class DefaultApolloStore(
   companion object {
     private fun <D : Executable.Data> Executable<D>.readDataFromCachePrivate(
         cacheKey: CacheKey,
-        customScalarAdapters: CustomScalarAdapters,
         cache: ReadOnlyNormalizedCache,
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
@@ -295,7 +292,6 @@ internal class DefaultApolloStore(
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCacheInternal(
             cacheKey,
-            customScalarAdapters,
             cache,
             cacheResolver,
             cacheHeaders,
@@ -304,7 +300,6 @@ internal class DefaultApolloStore(
 
         is ApolloResolver -> readDataFromCacheInternal(
             cacheKey,
-            customScalarAdapters,
             cache,
             cacheResolver,
             cacheHeaders,

@@ -5,9 +5,9 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService
-import com.apollographql.ijplugin.settings.SettingsListener
-import com.apollographql.ijplugin.settings.SettingsState
-import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.settings.ProjectSettingsListener
+import com.apollographql.ijplugin.settings.ProjectSettingsState
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
@@ -53,7 +53,7 @@ class GradleToolingModelService(
     startObserveApolloProject()
     startOrStopObserveGradleHasSynced()
     startOrAbortFetchToolingModels()
-    startObservingSettings()
+    startObserveSettings()
   }
 
   private fun startObserveApolloProject() {
@@ -68,7 +68,7 @@ class GradleToolingModelService(
   }
 
   private fun shouldFetchToolingModels() = project.apolloProjectService.apolloVersion.isAtLeastV4 &&
-      project.settingsState.contributeConfigurationToGraphqlPlugin
+      project.projectSettingsState.contributeConfigurationToGraphqlPlugin
 
   private fun startOrStopObserveGradleHasSynced() {
     logd()
@@ -101,14 +101,14 @@ class GradleToolingModelService(
     gradleHasSyncedDisposable = null
   }
 
-  private fun startObservingSettings() {
+  private fun startObserveSettings() {
     logd()
-    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      private var contributeConfigurationToGraphqlPlugin: Boolean = project.settingsState.contributeConfigurationToGraphqlPlugin
+    project.messageBus.connect(this).subscribe(ProjectSettingsListener.TOPIC, object : ProjectSettingsListener {
+      private var contributeConfigurationToGraphqlPlugin: Boolean = project.projectSettingsState.contributeConfigurationToGraphqlPlugin
 
-      override fun settingsChanged(settingsState: SettingsState) {
-        val contributeConfigurationToGraphqlPluginChanged = contributeConfigurationToGraphqlPlugin != settingsState.contributeConfigurationToGraphqlPlugin
-        contributeConfigurationToGraphqlPlugin = settingsState.contributeConfigurationToGraphqlPlugin
+      override fun settingsChanged(projectSettingsState: ProjectSettingsState) {
+        val contributeConfigurationToGraphqlPluginChanged = contributeConfigurationToGraphqlPlugin != projectSettingsState.contributeConfigurationToGraphqlPlugin
+        contributeConfigurationToGraphqlPlugin = projectSettingsState.contributeConfigurationToGraphqlPlugin
         logd("contributeConfigurationToGraphqlPluginChanged=$contributeConfigurationToGraphqlPluginChanged")
         if (contributeConfigurationToGraphqlPluginChanged) {
           startOrAbortFetchToolingModels()

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.rx2.rxFlowable
 import kotlinx.coroutines.runBlocking
 import rxjava.GetRandomQuery
@@ -34,7 +34,7 @@ class RxJavaTest {
 
   @Test
   fun querySucceeds() {
-    mockServer.enqueue(response)
+    mockServer.enqueueString(response)
 
     apolloClient.query(GetRandomQuery())
         .rxFlowable()
@@ -51,7 +51,7 @@ class RxJavaTest {
 
   @Test
   fun errorsAreReceived() {
-    mockServer.enqueue("bad response")
+    mockServer.enqueueString("bad response")
 
     apolloClient.query(GetRandomQuery())
         .rxFlowable()

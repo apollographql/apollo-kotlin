@@ -8,9 +8,9 @@ import com.apollographql.ijplugin.gradle.getGradleRootPath
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService
-import com.apollographql.ijplugin.settings.SettingsListener
-import com.apollographql.ijplugin.settings.SettingsState
-import com.apollographql.ijplugin.settings.settingsState
+import com.apollographql.ijplugin.settings.ProjectSettingsListener
+import com.apollographql.ijplugin.settings.ProjectSettingsState
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoots
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
@@ -62,7 +62,7 @@ class ApolloCodegenService(
     logd("project=${project.name}")
     startOrStopCodegenObservers()
     startObserveApolloProject()
-    startObservingSettings()
+    startObserveSettings()
   }
 
   private fun startObserveApolloProject() {
@@ -75,17 +75,17 @@ class ApolloCodegenService(
     })
   }
 
-  private fun startObservingSettings() {
+  private fun startObserveSettings() {
     logd()
-    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
-      override fun settingsChanged(settingsState: SettingsState) {
-        logd("settingsState=$settingsState")
+    project.messageBus.connect(this).subscribe(ProjectSettingsListener.TOPIC, object : ProjectSettingsListener {
+      override fun settingsChanged(projectSettingsState: ProjectSettingsState) {
+        logd("projectSettingsState=$projectSettingsState")
         startOrStopCodegenObservers()
       }
     })
   }
 
-  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.apolloVersion.isAtLeastV3 && project.settingsState.automaticCodegenTriggering
+  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.apolloVersion.isAtLeastV3 && project.projectSettingsState.automaticCodegenTriggering
 
   private fun startOrStopCodegenObservers() {
     if (shouldTriggerCodegenAutomatically()) {

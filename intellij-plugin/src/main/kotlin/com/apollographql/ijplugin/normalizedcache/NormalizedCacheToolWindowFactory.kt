@@ -18,22 +18,27 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.openapi.wm.ex.ToolWindowEx
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener
+import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.ScrollingUtil
-import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.SearchTextField
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBTreeTable
 import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.content.ContentManager
+import com.intellij.ui.speedSearch.FilteringListModel
+import com.intellij.ui.speedSearch.ListWithFilter
+import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
+import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Point
@@ -42,6 +47,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.DefaultListModel
 import javax.swing.JComponent
+import javax.swing.JList
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.tree.DefaultMutableTreeNode
@@ -96,6 +102,7 @@ class NormalizedCacheWindowPanel(
   private lateinit var normalizedCache: NormalizedCache
 
   private lateinit var recordList: JBList<NormalizedCache.Record>
+  private lateinit var recordListFilter: ListWithFilter<NormalizedCache.Record>
 
   private lateinit var fieldTreeTableModel: ListTreeTableModel
   private lateinit var fieldTreeExpander: TreeExpander
@@ -151,15 +158,42 @@ class NormalizedCacheWindowPanel(
       ListUiUtil.Selection.installSelectionOnFocus(this)
       ListUiUtil.Selection.installSelectionOnRightClick(this)
 
-      cellRenderer = SimpleListCellRenderer.create("") { it.key }
+      cellRenderer = object : ColoredListCellRenderer<NormalizedCache.Record>() {
+        override fun customizeCellRenderer(
+            list: JList<out NormalizedCache.Record>,
+            value: NormalizedCache.Record,
+            index: Int,
+            selected: Boolean,
+            hasFocus: Boolean,
+        ) {
+          append(value.key)
+          SpeedSearchUtil.applySpeedSearchHighlighting(list, this, true, selected)
+        }
+      }
 
       addListSelectionListener {
-        fieldTreeTableModel.setRoot(getRootNodeForRecord(selectedValue))
+        if (selectedValue != null) fieldTreeTableModel.setRoot(getRootNodeForRecord(selectedValue))
       }
 
       selectedIndex = 0
     }
-    return ScrollPaneFactory.createScrollPane(recordList)
+    @Suppress("UNCHECKED_CAST")
+    recordListFilter = ListWithFilter.wrap(
+        recordList,
+        ScrollPaneFactory.createScrollPane(recordList),
+        { it.key },
+        true,
+        true,
+        true,
+    ) as ListWithFilter<NormalizedCache.Record>
+
+    // Fix clicking on the search field not focusing the list
+    recordListFilter.components.firstIsInstance<SearchTextField>().textEditor.addMouseListener(object : MouseAdapter() {
+      override fun mouseClicked(e: MouseEvent) {
+        recordList.requestFocusInWindow()
+      }
+    })
+    return recordListFilter
   }
 
   @Suppress("UnstableApiUsage")
@@ -254,10 +288,12 @@ class NormalizedCacheWindowPanel(
   }
 
   private fun selectRecord(key: String) {
-    val index = normalizedCache.records.indexOfFirst { it.key == key }
-    if (index == -1) return
-    recordList.selectedIndex = index
-    recordList.ensureIndexIsVisible(index)
+    val record = normalizedCache.records.firstOrNull { it.key == key } ?: return
+    if (!(recordList.model as FilteringListModel).contains(record)) {
+      // Filtered list doesn't contain the record, so clear the filter
+      recordListFilter.resetFilter()
+    }
+    recordList.setSelectedValue(record, true)
   }
 
   private fun getRootNodeForRecord(record: NormalizedCache.Record) = DefaultMutableTreeNode().apply {

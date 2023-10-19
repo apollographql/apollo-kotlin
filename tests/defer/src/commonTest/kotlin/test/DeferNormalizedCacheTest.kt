@@ -17,10 +17,10 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -55,8 +56,8 @@ class DeferNormalizedCacheTest {
     apolloClient = ApolloClient.Builder().httpEngine(getStreamingHttpEngine()).serverUrl(mockServer.url()).store(store).build()
   }
 
-  private suspend fun tearDown() {
-    mockServer.stop()
+  private fun tearDown() {
+    mockServer.close()
     apolloClient.close()
   }
 
@@ -75,7 +76,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
     mockServer.takeRequest()
 
@@ -102,12 +103,12 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
     mockServer.takeRequest()
 
     // Cache is not empty, but NetworkOnly still goes to the server
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
     mockServer.takeRequest()
 
@@ -137,7 +138,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
     // Cache is empty, so this goes to the server
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
@@ -179,7 +180,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
     // Cache is empty, so this goes to the server
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
@@ -201,7 +202,7 @@ class DeferNormalizedCacheTest {
     )
     assertEquals(networkExpected, networkActual)
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     // Network will fail, so we get the cached version
     val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataOrThrow()
 
@@ -219,7 +220,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList1)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList1)
 
     // Cache is empty
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
@@ -248,7 +249,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":true},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList2)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList2)
 
     // Cache is not empty
     val cacheAndNetworkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
@@ -284,7 +285,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
         """{"incremental": [{"data":null,"path":["computers",0,"screen"],"label":"b","errors":[{"message":"Cannot resolve isColor","locations":[{"line":1,"column":119}],"path":["computers",0,"screen","isColor"]}]}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
     // Cache is empty, so this goes to the server
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().drop(1)
@@ -321,19 +322,17 @@ class DeferNormalizedCacheTest {
         )
             .errors(
                 listOf(
-                    Error(
-                        message = "Cannot resolve isColor",
-                        locations = listOf(Error.Location(1, 119)),
-                        path = listOf("computers", 0, "screen", "isColor"),
-                        extensions = null, nonStandardFields = null
-                    )
+                    Error.Builder(message = "Cannot resolve isColor")
+                        .locations(listOf(Error.Location(1, 119)))
+                        .path(listOf("computers", 0, "screen", "isColor"))
+                        .build()
                 )
             )
             .build(),
     )
     assertResponseListEquals(networkExpected, networkActual)
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
     val exception = apolloClient.query(WithFragmentSpreadsQuery()).execute().exception
     check(exception is CacheMissException)
@@ -410,7 +409,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataOrThrow() }
     mockServer.takeRequest()
 
@@ -449,7 +448,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(jsonList)
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val responses = apolloClient.mutation(WithFragmentSpreadsMutation()).optimisticUpdates(
         WithFragmentSpreadsMutation.Data(
             listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", null))
@@ -468,16 +467,15 @@ class DeferNormalizedCacheTest {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }
-    val chunkedResponse = ChunkedResponse()
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
         """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
     )
-    mockServer.enqueue(chunkedResponse.response)
-    chunkedResponse.send(jsonList[0], isFirst = true)
+    val multipartBody = mockServer.enqueueMultipart("application/json")
+    multipartBody.enqueuePart(jsonList[0].encodeUtf8(), false)
     val recordFields = apolloClient.query(SimpleDeferQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().map {
       apolloClient.apolloStore.accessCache { it.loadRecord("computers.0", CacheHeaders.NONE)!!.fields }.also {
-        chunkedResponse.send(jsonList[1], isLast = true)
+        multipartBody.enqueuePart(jsonList[1].encodeUtf8(), true)
       }
     }.toList()
     assertEquals(mapOf("__typename" to "Computer", "id" to "Computer1"), recordFields[0])

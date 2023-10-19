@@ -19,7 +19,7 @@ import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -49,7 +49,7 @@ class BasicTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   private fun <D : Query.Data> basicTest(
@@ -57,7 +57,7 @@ class BasicTest {
       query: Query<D>,
       block: ApolloResponse<D>.() -> Unit,
   ) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8(resourceName))
+    mockServer.enqueueString(testFixtureToUtf8(resourceName))
     var response = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()

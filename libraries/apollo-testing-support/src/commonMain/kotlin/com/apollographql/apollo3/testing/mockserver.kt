@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
@@ -19,7 +19,7 @@ fun <D : Operation.Data> MockServer.enqueue(
   val json = buildJsonString {
     operation.composeJsonResponse(jsonWriter = this, data = data, customScalarAdapters = customScalarAdapters)
   }
-  enqueue(json, delayMs)
+  enqueueString(json, delayMs)
 }
 
 fun MockServer.enqueueData(

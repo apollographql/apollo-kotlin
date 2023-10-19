@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.FieldLatenciesQuery
+import java.time.Instant
 
 @ApolloExperimental
 object FieldInsights {
@@ -27,7 +28,7 @@ object FieldInsights {
     val response = apolloClient.query(
         FieldLatenciesQuery(
             serviceId = serviceId,
-            fromTimestamp = -fromSeconds,
+            fromTimestamp = Instant.ofEpochSecond(Instant.now().epochSecond - fromSeconds),
             percentile = percentile,
         )
     ).execute()

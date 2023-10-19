@@ -31,7 +31,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -51,7 +51,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -71,7 +71,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -91,7 +91,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -110,6 +110,6 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 }

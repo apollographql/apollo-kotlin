@@ -43,7 +43,6 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
   val variables = variables(customScalarAdapters, true)
   return readInternal(
       cacheKey = CacheKey.rootKey(),
-      customScalarAdapters = customScalarAdapters,
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
@@ -61,7 +60,6 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
   val variables = variables(customScalarAdapters, true)
   return readInternal(
       cacheKey = cacheKey,
-      customScalarAdapters = customScalarAdapters,
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
@@ -71,14 +69,12 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
 
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
 ): CacheData = readInternal(
     cacheKey = CacheKey.rootKey(),
-    customScalarAdapters = customScalarAdapters,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
@@ -88,14 +84,12 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
 @ApolloInternal
 fun <D : Fragment.Data> Fragment<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables
-) = readInternal(
+): CacheData = readInternal(
     cacheKey = cacheKey,
-    customScalarAdapters = customScalarAdapters,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
@@ -104,7 +98,6 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCacheInternal(
 
 private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,

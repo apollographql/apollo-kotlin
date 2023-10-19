@@ -17,7 +17,7 @@ import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer actual constructor(actual override val mockServerHandler: MockServerHandler) : MockServerInterface {
+internal class JsMockServer constructor(override val mockServerHandler: MockServerHandler) : MockServer {
 
   private val requests = mutableListOf<MockRequest>()
 
@@ -49,27 +49,32 @@ actual class MockServer actual constructor(actual override val mockServerHandler
     }
   }.listen()
 
-  actual override suspend fun url() = url ?: suspendCoroutine { cont ->
+  override suspend fun url() = url ?: suspendCoroutine { cont ->
     url = "http://127.0.0.1:${server.address().unsafeCast<AddressInfo>().port}/"
     server.on("listening") { _ ->
       cont.resume(url!!)
     }
   }
 
-  actual override fun enqueue(mockResponse: MockResponse) {
+  override fun enqueue(mockResponse: MockResponse) {
     (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
         ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
-  actual override fun takeRequest(): MockRequest {
+  override fun takeRequest(): MockRequest {
     return requests.removeFirst()
   }
 
-  actual override suspend fun stop() = suspendCoroutine<Unit> { cont ->
+  override suspend fun closeSynchronously(): Unit = suspendCoroutine { continuation ->
     server.close {
-      cont.resume(Unit)
+      continuation.resume(Unit)
     }
   }
+
+  override fun close() {
+    server.close()
+  }
+
 
   private fun Uint8Array.asByteArray(): ByteArray {
     return Int8Array(buffer, byteOffset, length).unsafeCast<ByteArray>()
@@ -90,8 +95,11 @@ actual class MockServer actual constructor(actual override val mockServerHandler
       skip(count)
       return array
     }
+
     override fun close() {}
     override fun flush() {}
     override fun timeout() = Timeout.NONE
   }
 }
+
+actual fun MockServer(mockServerHandler: MockServerHandler): MockServer = JsMockServer(mockServerHandler)

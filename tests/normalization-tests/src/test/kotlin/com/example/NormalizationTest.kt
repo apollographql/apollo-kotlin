@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -17,7 +16,7 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
@@ -114,7 +113,7 @@ class NormalizationTest {
         .normalizedCache(MemoryCacheFactory())
         .build()
 
-    mockserver.enqueue("""
+    mockserver.enqueueString("""
       {
         "data": {
           "country": {
@@ -127,6 +126,6 @@ class NormalizationTest {
       check(data?.country?.name == "Foo")
     }
     apolloClient.close()
-    mockserver.stop()
+    mockserver.close()
   }
 }

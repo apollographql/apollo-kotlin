@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -143,7 +144,7 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
 
       request.fetchPolicyInterceptor.intercept(request, chain)
           .collect {
-            if (!hasEmitted && it.exception != null) {
+            if (!hasEmitted && it.exception != null && it.exception !is ApolloGraphQLException) {
               // Remember to send the exception later
               exceptions.add(it.exception!!)
               return@collect

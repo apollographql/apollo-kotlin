@@ -294,13 +294,9 @@ class DeferWithRouterTest {
         )
             .errors(
                 listOf(
-                    Error(
-                        message = "Subgraph errors redacted",
-                        locations = null,
-                        path = listOf("computer", "errorField"),
-                        extensions = null,
-                        nonStandardFields = null,
-                    )
+                    Error.Builder(message = "Subgraph errors redacted")
+                        .path(listOf("computer", "errorField"))
+                        .build()
                 )
             )
             .build(),
@@ -340,17 +336,7 @@ class DeferWithRouterTest {
                 )
             )
         )
-            .errors(
-                listOf(
-                    Error(
-                        message = "Subgraph errors redacted",
-                        locations = null,
-                        path = null,
-                        extensions = null,
-                        nonStandardFields = null,
-                    )
-                )
-            )
+            .errors(listOf(Error.Builder(message = "Subgraph errors redacted").build()))
             .build(),
     )
     val actualResponseList = apolloClient.query(query).toFlow().toList()
@@ -375,13 +361,9 @@ class DeferWithRouterTest {
         )
             .errors(
                 listOf(
-                    Error(
-                        message = "Subgraph errors redacted",
-                        locations = null,
-                        path = listOf("computer", "nonNullErrorField"),
-                        extensions = null,
-                        nonStandardFields = null,
-                    )
+                    Error.Builder(message = "Subgraph errors redacted")
+                        .path(listOf("computer", "nonNullErrorField"))
+                        .build()
                 )
             )
             .build()
