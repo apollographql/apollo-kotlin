@@ -1,12 +1,12 @@
+
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
-import org.jetbrains.kotlin.konan.target.Family
 
 private val allAppleTargets = setOf(
     "macosX64",
@@ -175,30 +175,14 @@ fun Project.configureMpp(
  * class commonTest javaOrange
  * ```
  */
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
-  val hasAppleTarget = targets.any {
-    it is KotlinNativeTarget && it.konanTarget.family in setOf(Family.IOS, Family.OSX, Family.WATCHOS, Family.TVOS)
-  }
-
-  val concurrentMain = sourceSets.create("concurrentMain")
-  val concurrentTest = sourceSets.create("concurrentTest")
-
-  concurrentMain.dependsOn(sourceSets.getByName("commonMain"))
-  concurrentTest.dependsOn(sourceSets.getByName("commonTest"))
-
-  sourceSets.findByName("jvmMain")?.dependsOn(concurrentMain)
-  sourceSets.findByName("jvmTest")?.dependsOn(concurrentTest)
-
-  if (hasAppleTarget) {
-    val appleMain = sourceSets.create("appleMain")
-    val appleTest = sourceSets.create("appleTest")
-
-    appleMain.dependsOn(concurrentMain)
-    appleTest.dependsOn(concurrentTest)
-
-    allAppleTargets.forEach {
-      sourceSets.findByName("${it}Main")?.dependsOn(appleMain)
-      sourceSets.findByName("${it}Test")?.dependsOn(appleTest)
+  applyDefaultHierarchyTemplate {
+    group("common") {
+      group("concurrent") {
+        group("apple")
+        withJvm()
+      }
     }
   }
 }
