@@ -22,6 +22,8 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
@@ -206,6 +208,11 @@ class NormalizedCacheWindowPanel(
   private fun createToolbar(): JComponent {
     val group = DefaultActionGroup().apply {
       add(object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.toolbar.back"), AllIcons.Actions.Back) {
+        init {
+          ActionUtil.copyFrom(this, IdeActions.ACTION_GOTO_BACK)
+          registerCustomShortcutSet(this.shortcutSet, this@NormalizedCacheWindowPanel)
+        }
+
         override fun actionPerformed(e: AnActionEvent) {
           val record = history.back() ?: return
           updateHistory = false
@@ -219,6 +226,11 @@ class NormalizedCacheWindowPanel(
         override fun getActionUpdateThread() = ActionUpdateThread.BGT
       })
       add(object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.toolbar.forward"), AllIcons.Actions.Forward) {
+        init {
+          ActionUtil.copyFrom(this, IdeActions.ACTION_GOTO_FORWARD)
+          registerCustomShortcutSet(this.shortcutSet, this@NormalizedCacheWindowPanel)
+        }
+
         override fun actionPerformed(e: AnActionEvent) {
           val record = history.forward() ?: return
           updateHistory = false
