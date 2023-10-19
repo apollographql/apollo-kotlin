@@ -3,7 +3,9 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
@@ -63,10 +65,11 @@ class ExceptionsTest {
     }
     assertNotNull(result.exceptionOrNull())
   }
+
   @Test
   @Suppress("DEPRECATION")
   fun toFlowDoesNotThrowOnV3() = runTest(before = { setUp() }, after = { tearDown() }) {
-      mockServer.enqueueString("""
+    mockServer.enqueueString("""
         {
           "errors": [
               {
@@ -81,8 +84,46 @@ class ExceptionsTest {
             ]
           }
       """.trimIndent())
-      val errorClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
-      val response = errorClient.query(HeroNameQuery()).toFlow().toList()
-      assertTrue(response.first().errors?.isNotEmpty() ?: false)
+    val errorClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    val response = errorClient.query(HeroNameQuery()).toFlow().toList()
+    assertTrue(response.first().errors?.isNotEmpty() ?: false)
+  }
+
+  @Test
+  @Suppress("DEPRECATION")
+  fun v3ExceptionHandlingKeepsPartialData() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .useV3ExceptionHandling(true)
+        .build()
+    mockServer.enqueueString("""
+      {
+        "data": {
+          "hero": {
+            "name": "R2-D2",
+            "friends": null
+          }
+        },
+        "errors": [
+            {
+              "message": "Could not get friends",
+              "locations": [
+                {
+                  "line": 1,
+                  "column": 1
+                }
+              ],
+              "path": [
+                "hero",
+                "friends"
+              ]
+            }
+          ]
+        }
+    """.trimIndent())
+    val errorClient = apolloClient.newBuilder().build()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).execute()
+    assertNotNull(response.data)
+    assertTrue(response.errors?.isNotEmpty() == true)
   }
 }
