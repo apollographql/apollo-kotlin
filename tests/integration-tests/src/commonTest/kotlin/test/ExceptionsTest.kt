@@ -1,6 +1,8 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
@@ -89,14 +91,7 @@ class ExceptionsTest {
     assertTrue(response.first().errors?.isNotEmpty() ?: false)
   }
 
-  @Test
-  @Suppress("DEPRECATION")
-  fun v3ExceptionHandlingKeepsPartialData() = runTest(before = { setUp() }, after = { tearDown() }) {
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .useV3ExceptionHandling(true)
-        .build()
-    mockServer.enqueueString("""
+  private val PARTIAL_DATA_RESPONSE = """
       {
         "data": {
           "hero": {
@@ -120,8 +115,28 @@ class ExceptionsTest {
             }
           ]
         }
-    """.trimIndent())
-    val errorClient = apolloClient.newBuilder().build()
+    """.trimIndent()
+
+  @Test
+  @Suppress("DEPRECATION")
+  fun v3ExceptionHandlingKeepsPartialData() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(PARTIAL_DATA_RESPONSE)
+    val errorClient = apolloClient.newBuilder()
+        .useV3ExceptionHandling(true)
+        .build()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).execute()
+    assertNotNull(response.data)
+    assertTrue(response.errors?.isNotEmpty() == true)
+  }
+
+  @Test
+  @Suppress("DEPRECATION")
+  fun v3ExceptionHandlingKeepsPartialDataWithCache() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(PARTIAL_DATA_RESPONSE.trimIndent())
+    val errorClient = apolloClient.newBuilder()
+        .normalizedCache(MemoryCacheFactory(1024 * 1024))
+        .useV3ExceptionHandling(true)
+        .build()
     val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).execute()
     assertNotNull(response.data)
     assertTrue(response.errors?.isNotEmpty() == true)
