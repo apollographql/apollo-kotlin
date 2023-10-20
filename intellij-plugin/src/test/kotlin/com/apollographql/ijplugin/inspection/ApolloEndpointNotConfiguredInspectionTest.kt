@@ -20,7 +20,7 @@ class ApolloEndpointNotConfiguredInspectionTest : ApolloTestCase() {
 
   @Test
   fun testInspectionBuildGradleKts() {
-    myFixture.openFileInEditor(myFixture.copyFileToProject("EndpointNotConfigured.gradle.kts", "build.gradle.kts"))
+    myFixture.openFileInEditor(myFixture.createFile("build.gradle.kt", loadKtsAsKt("EndpointNotConfigured.gradle.kts")))
     var highlightInfos = doHighlighting().filter { it.description == "GraphQL endpoint not configured" }
     assertSize(2, highlightInfos)
     assertTrue(highlightInfos[0].line == 6)
@@ -36,7 +36,7 @@ class ApolloEndpointNotConfiguredInspectionTest : ApolloTestCase() {
     assertNotNull(introspectionQuickFixAction)
     myFixture.launchAction(introspectionQuickFixAction)
 
-    myFixture.checkResultByFile("EndpointNotConfigured_after.gradle.kts")
+    myFixture.checkResult(loadKtsAsKt("EndpointNotConfigured_after.gradle.kts"))
     highlightInfos = doHighlighting()
     assertTrue(highlightInfos.none { it.description == "GraphQL endpoint not configured" })
   }
