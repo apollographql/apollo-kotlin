@@ -1,15 +1,24 @@
 package com.apollographql.ijplugin.normalizedcache
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
+import com.intellij.ide.dnd.FileCopyPasteUtil
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
@@ -36,15 +45,25 @@ import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
+import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
+import org.sqlite.SQLiteException
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Point
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetAdapter
+import java.awt.dnd.DropTargetDragEvent
+import java.awt.dnd.DropTargetDropEvent
+import java.awt.dnd.DropTargetEvent
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.io.File
 import javax.swing.DefaultListModel
 import javax.swing.JComponent
 import javax.swing.JList
@@ -55,12 +74,12 @@ import javax.swing.tree.TreePath
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
   // TODO remove when feature is complete
-  override fun isApplicable(project: Project) = false
+  override fun isApplicable(project: Project) = isApplicationInternalMode()
 
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
       override fun actionPerformed(e: AnActionEvent) {
-        createNewTab(toolWindow.contentManager)
+        createNewTab(project, toolWindow.contentManager)
       }
     }.apply {
       registerCustomShortcutSet(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, toolWindow.component)
@@ -73,19 +92,19 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
         object : ToolWindowManagerListener {
           override fun toolWindowShown(shownToolWindow: ToolWindow) {
             if (toolWindow === shownToolWindow && toolWindow.isVisible && toolWindow.contentManager.isEmpty) {
-              createNewTab(toolWindow.contentManager)
+              createNewTab(project, toolWindow.contentManager)
             }
           }
         }
     )
 
-    createNewTab(toolWindow.contentManager)
+    createNewTab(project, toolWindow.contentManager)
   }
 
-  private fun createNewTab(contentManager: ContentManager) {
+  private fun createNewTab(project: Project, contentManager: ContentManager) {
     contentManager.addContent(
         ContentFactory.getInstance().createContent(
-            NormalizedCacheWindowPanel { tabName -> contentManager.selectedContent?.displayName = tabName },
+            NormalizedCacheWindowPanel(project) { tabName -> contentManager.selectedContent?.displayName = tabName },
             ApolloBundle.message("normalizedCacheViewer.tabName.empty"),
             false
         )
@@ -97,6 +116,7 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
 }
 
 class NormalizedCacheWindowPanel(
+    private val project: Project,
     private val setTabName: (tabName: String) -> Unit,
 ) : SimpleToolWindowPanel(false, true) {
   private lateinit var normalizedCache: NormalizedCache
@@ -113,11 +133,52 @@ class NormalizedCacheWindowPanel(
 
   private fun createEmptyContent(): JComponent {
     return JBPanelWithEmptyText().apply {
-      // TODO implement drag and drop
       emptyText.text = ApolloBundle.message("normalizedCacheViewer.empty.message")
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
-        openFile()
+        pickFile()
       }
+
+      val defaultBackground = background
+      dropTarget = DropTarget(this, DnDConstants.ACTION_COPY, object : DropTargetAdapter() {
+        override fun dragEnter(e: DropTargetDragEvent) {
+          if (FileCopyPasteUtil.isFileListFlavorAvailable(e.currentDataFlavors)) {
+            e.acceptDrag(DnDConstants.ACTION_COPY)
+            background = JBUI.CurrentTheme.DragAndDrop.Area.BACKGROUND
+          } else {
+            e.rejectDrag()
+          }
+        }
+
+        override fun dragOver(e: DropTargetDragEvent) {
+          dragEnter(e)
+        }
+
+        override fun dropActionChanged(e: DropTargetDragEvent) {
+          dragEnter(e)
+        }
+
+        override fun dragExit(dte: DropTargetEvent?) {
+          background = defaultBackground
+        }
+
+        override fun drop(e: DropTargetDropEvent) {
+          e.acceptDrop(DnDConstants.ACTION_COPY)
+          val paths = FileCopyPasteUtil.getFileList(e.transferable)
+          if (!paths.isNullOrEmpty()) {
+            openFile(paths.first())
+            e.dropComplete(true)
+          } else {
+            e.dropComplete(false)
+          }
+          background = defaultBackground
+        }
+      })
+    }
+  }
+
+  private fun createLoadingContent(): JComponent {
+    return JBPanelWithEmptyText().apply {
+      emptyText.text = ApolloBundle.message("normalizedCacheViewer.loading.message")
     }
   }
 
@@ -221,7 +282,7 @@ class NormalizedCacheWindowPanel(
         }
       }
     }.apply {
-      columnProportion = .75F
+      columnProportion = .8F
       setDefaultRenderer(NormalizedCache.Field::class.java, object : ColoredTableCellRenderer() {
         override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
           value as NormalizedCache.Field
@@ -312,12 +373,47 @@ class NormalizedCacheWindowPanel(
     }
   }
 
-  private fun openFile() {
-    // TODO open file, read file, etc.
-    normalizedCache = NormalizedCache.getFakeNormalizedCache()
-    setContent(createNormalizedCacheContent())
-    toolbar = createToolbar()
-    setTabName("filename.db")
+  private fun pickFile() {
+    val virtualFile = FileChooser.chooseFiles(
+        FileChooserDescriptor(true, false, false, false, false, false)
+            .withFileFilter { it.extension == "db" },
+        project,
+        null
+    ).firstOrNull() ?: return
+    openFile(File(virtualFile.path))
+  }
+
+  private fun openFile(file: File) {
+    setContent(createLoadingContent())
+    object : Task.Backgroundable(
+        project,
+        ApolloBundle.message("normalizedCacheViewer.loading.message"),
+        false,
+    ) {
+      override fun run(indicator: ProgressIndicator) {
+        val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(file)
+        invokeLater {
+          if (normalizedCacheResult.isFailure) {
+            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
+            setContent(createEmptyContent())
+            return@invokeLater
+          }
+          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
+          setContent(createNormalizedCacheContent())
+          toolbar = createToolbar()
+          setTabName(file.name)
+        }
+      }
+    }.queue()
+  }
+
+  private fun showOpenFileError(exception: Throwable) {
+    logw(exception, "Could not open file")
+    val details = when (exception) {
+      is SQLiteException -> exception.resultCode.message
+      else -> exception.message ?: exception.javaClass.simpleName
+    }
+    showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.openFileError.title"), content = details, type = NotificationType.ERROR)
   }
 
   private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {

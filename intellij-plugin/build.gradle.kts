@@ -217,6 +217,8 @@ publishing {
 dependencies {
   implementation(project(":apollo-gradle-plugin-external"))
   implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-normalized-cache-sqlite"))
+  implementation(libs.sqlite.jdbc)
 }
 
 fun isSnapshotBuild() = System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()

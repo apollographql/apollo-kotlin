@@ -175,6 +175,7 @@ sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", ver
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
 sqldelight-sqlite = "app.cash.sqldelight:sqlite-dialect:2.0.0-alpha01"
+sqlite-jdbc = "org.xerial:sqlite-jdbc:3.43.2.0"
 jar-relocator = "me.lucko:jar-relocator:1.5"
 benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
 asm = "org.ow2.asm:asm-commons:9.5"
