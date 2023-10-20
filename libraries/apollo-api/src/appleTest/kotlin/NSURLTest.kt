@@ -20,6 +20,7 @@ class NSURLTest {
         OsFamily.IOS -> 17
         OsFamily.TVOS -> 17
         OsFamily.WATCHOS -> 10
+        OsFamily.MACOSX -> 14
         else -> Int.MAX_VALUE
       }
 
