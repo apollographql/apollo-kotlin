@@ -22,7 +22,7 @@ kotlin {
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(libs.kotlinx.nodejs)
+        implementation(libs.kotlin.node)
       }
     }
 

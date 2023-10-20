@@ -1,30 +1,30 @@
 package com.apollographql.apollo3.mockserver
 
-import Buffer
+import js.typedarrays.toUint8Array
 import kotlinx.coroutines.channels.Channel
-import net.AddressInfo
-import net.createServer
+import node.buffer.Buffer
+import node.events.Event
+import node.net.AddressInfo
+import node.net.Server
+import node.net.createServer
 import okio.IOException
-import org.khronos.webgl.Int8Array
-import org.khronos.webgl.Uint8Array
-import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import net.Socket as NetSocket
+import node.net.Socket as NetSocket
 
 internal class NodeSocket(private val netSocket: NetSocket) : Socket {
   private val readQueue = Channel<ByteArray>(Channel.UNLIMITED)
   init {
-    netSocket.on("data") { chunk ->
+    netSocket.on(Event.DATA) { chunk ->
       val bytes = when (chunk) {
         is String -> chunk.encodeToByteArray()
-        is Buffer -> chunk.asByteArray()
+        is Buffer -> chunk.toByteArray()
         else -> error("Unexpected chunk type: ${chunk::class}")
       }
       readQueue.trySend(bytes)
     }
 
-    netSocket.on("close") { _ ->
+    netSocket.on(Event.CLOSE) { _ ->
       readQueue.close(IOException("The socket was closed"))
     }
   }
@@ -35,7 +35,7 @@ internal class NodeSocket(private val netSocket: NetSocket) : Socket {
 
   // XXX: flow control
   override fun write(data: ByteArray): Boolean {
-    return netSocket.write(data.asUint8Array())
+    return netSocket.write(data.toUint8Array())
   }
 
   override fun close() {
@@ -45,7 +45,7 @@ internal class NodeSocket(private val netSocket: NetSocket) : Socket {
 }
 
 internal class NodeSocketServer : SocketServer {
-  private var server: net.Server? = null
+  private var server: Server? = null
   private var address: Address? = null
 
 
@@ -63,7 +63,7 @@ internal class NodeSocketServer : SocketServer {
     }
 
     return address ?: suspendCoroutine { cont ->
-      server!!.on("listening") { _ ->
+      server!!.on(Event.LISTENING) {
         val address = server!!.address().unsafeCast<AddressInfo>()
 
         this.address = Address(address.address, address.port.toInt())
@@ -77,18 +77,6 @@ internal class NodeSocketServer : SocketServer {
       "server is not started"
     }
     server!!.close()
-  }
-}
-
-private fun Uint8Array.asByteArray(): ByteArray {
-  return Int8Array(buffer, byteOffset, length).unsafeCast<ByteArray>()
-}
-
-private fun ByteArray.asUint8Array(): Uint8Array {
-  return Uint8Array(length = size).apply {
-    for (i in indices) {
-      set(i, get(i))
-    }
   }
 }
 

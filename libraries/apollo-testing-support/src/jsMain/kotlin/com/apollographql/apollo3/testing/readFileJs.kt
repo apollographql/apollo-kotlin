@@ -3,7 +3,6 @@ package com.apollographql.apollo3.testing
 import okio.FileSystem
 import okio.NodeJsFileSystem
 
-
 actual val HostFileSystem: FileSystem = NodeJsFileSystem
 
 actual fun shouldUpdateTestFixtures(): Boolean = false
