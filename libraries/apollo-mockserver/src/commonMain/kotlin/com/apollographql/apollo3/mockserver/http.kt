@@ -1,8 +1,13 @@
 package com.apollographql.apollo3.mockserver
 
 import okio.Buffer
-import okio.BufferedSink
-import okio.BufferedSource
+
+internal interface Reader {
+  val buffer: Buffer
+  suspend fun fillBuffer()
+}
+
+internal typealias WriteData = (ByteArray) -> Unit
 
 private fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -13,21 +18,6 @@ private fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-internal suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
-  sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
-  // We don't support 'Connection: Keep-Alive', so indicate it to the client
-  val headers = mockResponse.headers + mapOf("Connection" to "close")
-  headers.forEach {
-    sink.writeUtf8("${it.key}: ${it.value}\r\n")
-  }
-  sink.writeUtf8("\r\n")
-  sink.flush()
-
-  mockResponse.body.collect {
-    sink.write(it)
-    sink.flush()
-  }
-}
 
 private fun parseRequestLine(line: String): Triple<String, String, String> {
   val regex = Regex("([A-Z-a-z]*) ([^ ]*) (.*)")
@@ -44,27 +34,48 @@ private fun parseRequestLine(line: String): Triple<String, String, String> {
   return Triple(method, match.groupValues[2], match.groupValues[3])
 }
 
-internal fun readRequest(source: BufferedSource): MockRequest? {
-  var line = source.readUtf8Line()
-  if (line == null) {
-    // the connection was closed
-    return null
+internal suspend fun readRequest(reader: Reader): MockRequest {
+  suspend fun nextLine(): String {
+    while (true) {
+      val newline = reader.buffer.indexOf('\n'.code.toByte())
+      if (newline != -1L) {
+        return reader.buffer.readUtf8(newline + 1)
+      } else {
+        reader.fillBuffer()
+      }
+    }
   }
 
-  val (method, path, version) = parseRequestLine(line)
+  suspend fun readBytes(size: Long): Buffer {
+    val buffer2 = Buffer()
+    while (buffer2.size < size) {
+      if (reader.buffer.size == 0L) {
+        reader.fillBuffer()
+      }
+
+      buffer2.write(reader.buffer, minOf(size, reader.buffer.size))
+    }
+
+    return buffer2
+  }
+
+  var line = nextLine()
+
+  val (method, path, version) = parseRequestLine(line.trimEol())
+  //println("Line: ${line.trimEol()}")
 
   val headers = mutableMapOf<String, String>()
   /**
    * Read headers
    */
   while (true) {
-    line = source.readUtf8Line()
-    //println("Header Line: $line")
-    if (line.isNullOrBlank()) {
+    line = nextLine()
+    //println("Headers: ${line.trimEol()}")
+    if (line == "\r\n") {
       break
     }
 
-    val (key, value) = parseHeader(line)
+    val (key, value) = parseHeader(line.trimEol())
     headers.put(key, value)
   }
 
@@ -74,18 +85,55 @@ internal fun readRequest(source: BufferedSource): MockRequest? {
     "Transfer-Encoding $transferEncoding is not supported"
   }
 
-  val buffer = Buffer()
-  if (contentLength > 0) {
-    source.read(buffer, contentLength)
+  val body = if (contentLength > 0) {
+    readBytes(contentLength)
   } else if (transferEncoding == "chunked") {
-    source.readChunked(buffer)
+    val buffer2 = Buffer()
+    /**
+     * Read a source encoded in the "Transfer-Encoding: chunked" encoding.
+     * This format is a sequence of:
+     * - chunk-size (in hexadecimal) + CRLF
+     * - chunk-data + CRLF
+     */
+    while (true) {
+      val chunkSize = nextLine().trimEol().toLong(16)
+      if (chunkSize == 0L) {
+        check(nextLine() == "\r\n") // CRLF
+        break
+      } else {
+        buffer2.writeAll(readBytes(chunkSize))
+        check(nextLine() == "\r\n") // CRLF
+      }
+    }
+    buffer2
+  } else {
+    Buffer()
   }
+
 
   return MockRequest(
       method = method,
       path = path,
       version = version,
       headers = headers,
-      body = buffer.readByteString()
+      body = body.readByteString()
   )
+}
+
+private fun String.trimEol() = this.trimEnd('\r', '\n')
+
+internal suspend fun writeResponse(response: MockResponse, version: String, writeData: WriteData) {
+  writeData("$version ${response.statusCode}\r\n".encodeToByteArray())
+
+  // We don't support 'Connection: Keep-Alive', so indicate it to the client
+  val headers = response.headers //+ mapOf("Connection" to "close")
+  headers.forEach {
+    writeData("${it.key}: ${it.value}\r\n".encodeToByteArray())
+  }
+  writeData("\r\n".encodeToByteArray())
+
+  response.body.collect {
+    // XXX: flow control
+    writeData(it.toByteArray())
+  }
 }
