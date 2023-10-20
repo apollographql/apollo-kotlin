@@ -4,29 +4,22 @@ import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSProcessInfo
 import platform.Foundation.NSURL
+import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-enum class AppleOs {
-  iOS,
-  macOS,
-  tvOS,
-  visionOS,
-  watchOS
-}
-
-expect val appleOs: AppleOs
 
 class NSURLTest {
-  @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
+  @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class, ExperimentalNativeApi::class)
   @Test
   fun invalidCharThrows() {
     // Behaviour changed in newer OS versions. See https://developer.apple.com/documentation/foundation/nsurl
     val isFixed = NSProcessInfo.processInfo().operatingSystemVersion().useContents {
-      val fixVersion = when(appleOs) {
-        AppleOs.iOS -> 17
-        AppleOs.watchOS -> 10
+      val fixVersion = when(Platform.osFamily) {
+        OsFamily.IOS -> 17
+        OsFamily.TVOS -> 17
+        OsFamily.WATCHOS -> 10
         else -> Int.MAX_VALUE
       }
 
