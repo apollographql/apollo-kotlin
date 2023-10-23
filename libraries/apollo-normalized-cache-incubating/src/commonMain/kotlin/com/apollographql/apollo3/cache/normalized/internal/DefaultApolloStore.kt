@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
@@ -31,6 +32,7 @@ import kotlin.reflect.KClass
 internal class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheKeyGenerator: CacheKeyGenerator,
+    private val fieldNameGenerator: FieldNameGenerator,
     private val metadataGenerator: MetadataGenerator,
     private val cacheResolver: Any,
     private val recordMerger: RecordMerger,
@@ -107,6 +109,7 @@ internal class DefaultApolloStore(
         customScalarAdapters = customScalarAdapters,
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
+        fieldNameGenerator = fieldNameGenerator,
     )
   }
 
@@ -121,7 +124,8 @@ internal class DefaultApolloStore(
         cacheResolver = cacheResolver,
         cacheHeaders = cacheHeaders,
         cacheKey = CacheKey.rootKey(),
-        variables = variables
+        variables = variables,
+        fieldNameGenerator = fieldNameGenerator,
     ).toData(operation.adapter(), customScalarAdapters, variables)
   }
 
@@ -139,6 +143,7 @@ internal class DefaultApolloStore(
         cacheHeaders = cacheHeaders,
         cacheKey = cacheKey,
         variables = variables,
+        fieldNameGenerator = fieldNameGenerator,
     ).toData(fragment.adapter(), customScalarAdapters, variables)
   }
 
@@ -157,6 +162,7 @@ internal class DefaultApolloStore(
         customScalarAdapters = customScalarAdapters,
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
+        fieldNameGenerator = fieldNameGenerator,
     ).values.toSet()
 
     return cache.merge(records, cacheHeaders, recordMerger)
@@ -174,6 +180,7 @@ internal class DefaultApolloStore(
         customScalarAdapters = customScalarAdapters,
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
+        fieldNameGenerator = fieldNameGenerator,
         rootKey = cacheKey.key
     ).values
 
@@ -191,6 +198,7 @@ internal class DefaultApolloStore(
         customScalarAdapters = customScalarAdapters,
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
+        fieldNameGenerator = fieldNameGenerator,
     ).values.map { record ->
       Record(
           key = record.key,
@@ -228,22 +236,25 @@ internal class DefaultApolloStore(
         cacheResolver: Any,
         cacheHeaders: CacheHeaders,
         variables: Executable.Variables,
+        fieldNameGenerator: FieldNameGenerator,
     ): CacheData {
       return when (cacheResolver) {
         is CacheResolver -> readDataFromCacheInternal(
-            cacheKey,
-            cache,
-            cacheResolver,
-            cacheHeaders,
-            variables
+            cacheKey = cacheKey,
+            cache = cache,
+            cacheResolver = cacheResolver,
+            cacheHeaders = cacheHeaders,
+            variables = variables,
+            fieldNameGenerator = fieldNameGenerator,
         )
 
         is ApolloResolver -> readDataFromCacheInternal(
-            cacheKey,
-            cache,
-            cacheResolver,
-            cacheHeaders,
-            variables
+            cacheKey = cacheKey,
+            cache = cache,
+            cacheResolver = cacheResolver,
+            cacheHeaders = cacheHeaders,
+            variables = variables,
+            fieldNameGenerator = fieldNameGenerator,
         )
 
         else -> throw IllegalStateException()

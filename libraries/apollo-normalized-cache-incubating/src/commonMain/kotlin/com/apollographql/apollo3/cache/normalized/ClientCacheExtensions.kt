@@ -20,6 +20,8 @@ import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
@@ -119,6 +121,7 @@ fun ApolloClient.Builder.normalizedCache(
     metadataGenerator: MetadataGenerator,
     apolloResolver: ApolloResolver,
     recordMerger: RecordMerger,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
   return store(
@@ -127,7 +130,8 @@ fun ApolloClient.Builder.normalizedCache(
           cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
           apolloResolver = apolloResolver,
-          recordMerger = recordMerger
+          recordMerger = recordMerger,
+          fieldNameGenerator = fieldNameGenerator,
       ), writeToCacheAsynchronously)
 }
 

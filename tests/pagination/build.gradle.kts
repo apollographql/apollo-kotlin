@@ -46,6 +46,12 @@ apollo {
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
+  service("pagination.offsetBasedWithPageAndInput") {
+    packageName.set("pagination.offsetBasedWithPageAndInput")
+    srcDir("src/commonMain/graphql/pagination/offsetBasedWithPageAndInput")
+    @OptIn(ApolloExperimental::class)
+    generateDataBuilders.set(true)
+  }
   service("pagination.cursorBased") {
     packageName.set("pagination.cursorBased")
     srcDir("src/commonMain/graphql/pagination/cursorBased")
