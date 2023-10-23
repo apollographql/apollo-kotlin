@@ -1,6 +1,49 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.2
+
+_2023-10-23_
+
+We're continuing to progress towards the stable release of Apollo Kotlin v4 with this 2nd beta, which contains a few bug
+fixes and a new normalized cache viewer in the IDE plugin.
+
+This is a great time to try out the new version and report any issues you might find!
+
+## 🧩 IDE plugin: normalized cache viewer
+
+The IDE plugin now has a graphical tool to inspect a normalized cache database. It lets you browse the records and see
+their contents.
+This is useful to debug cache issues, or to understand how the normalized cache works.
+
+The tool is available from `View` | `Tool Windows` | `Apollo Normalized Cache`.
+
+More information about the plugin can be
+found [here](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin).
+
+## 👷‍ All changes
+
+* Fragment variables: fix false warning about unused variables (#5290)
+* Fix reading fragment with include directives from the cache (#5296)
+* Fix partial data throwing with useV3ExceptionHandling and normalized cache (#5313)
+* Unbreak benchmarks (#5284)
+* Bump to gradle 8.4 and IJGP 1.16.0 (#5286)
+* Add apollo-execution and apollo-ksp (#5281)
+* [IJ plugin] Normalized cache viewer: UI (#5298)
+* Fix build (#5301)
+* Bump to Kotlin 1.9.20-RC (#5300)
+* [IJ plugin] Telemetry: networking (#5285)
+* [IJ plugin] Cache viewer: record quick filter (#5302)
+* Update release script to update versions in IJ plugin (#5303)
+* MockServer API cleanup (#5307)
+* Remove some warnings (#5308)
+* Use the default hierarchy template (#5309)
+* [IJ plugin] Cache viewer: open/read db file (#5306)
+* [IJ plugin] Cache viewer: add back/forward buttons, and copy action (#5310)
+* Fix NSURL tests on recent apple OSes (#5315)
+* [IJ plugin] Cache viewer: pull file from attached devices (#5314)
+* Make more of MockServer common code, only abstract the socket part (#5316)
+
 # Version 4.0.0-beta.1
 
 _2023-10-02_
