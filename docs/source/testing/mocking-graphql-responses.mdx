@@ -12,13 +12,6 @@ Add the dependency to your project's `build.gradle` file:
 dependencies {
   testImplementation("com.apollographql.apollo3:apollo-testing-support:4.0.0-beta.1")
 }
-
-// Also add jcenter() to your repositories
-// See https://github.com/Kotlin/kotlinx-nodejs/issues/16
-repositories {
-  mavenCentral()
-  jcenter()
-}
 ```
 
 Enable the `QueueTestNetworkTransport` by passing it to the `ApolloClient` builder:

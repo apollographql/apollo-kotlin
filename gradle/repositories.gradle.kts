@@ -39,14 +39,5 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
       }
     }
-
-    exclusiveContent {
-      @Suppress("DEPRECATION")
-      forRepository(::jcenter)
-      filter {
-        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
-        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
-      }
-    }
   }
 }

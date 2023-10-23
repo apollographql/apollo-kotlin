@@ -3,10 +3,10 @@ package test;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.mockserver.JvmMockServer;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
@@ -39,7 +39,7 @@ public class ClientTest {
 
   @Before
   public void before() {
-    mockServer = new JvmMockServer();
+    mockServer = MockServerKt.MockServer();
 
     /*
       Because url doesn't suspend on the JVM, we can just use the return value
