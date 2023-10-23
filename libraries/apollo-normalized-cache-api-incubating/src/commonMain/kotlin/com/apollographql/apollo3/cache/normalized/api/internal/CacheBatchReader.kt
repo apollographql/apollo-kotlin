@@ -9,6 +9,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.ResolverContext
@@ -29,6 +30,7 @@ internal class CacheBatchReader(
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>,
     private val rootTypename: String,
+    private val fieldNameGenerator: FieldNameGenerator,
 ) {
   /**
    * @param key: the key of the record we need to fetch
@@ -120,7 +122,15 @@ internal class CacheBatchReader(
           val value = when (cacheResolver) {
             is CacheResolver -> cacheResolver.resolveField(it, variables, record, record.key)
             is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(it, variables, record, record.key, cacheHeaders))
+              cacheResolver.resolveField(ResolverContext(
+                  field = it,
+                  variables = variables,
+                  parent = record,
+                  parentId = record.key,
+                  parentType = pendingReference.parentType,
+                  cacheHeaders = cacheHeaders,
+                  fieldNameGenerator = fieldNameGenerator,
+              ))
             }
             else -> throw IllegalStateException()
           }
@@ -168,7 +178,15 @@ internal class CacheBatchReader(
           val value = when (cacheResolver) {
             is CacheResolver -> cacheResolver.resolveField(it, variables, this, "")
             is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(it, variables, this, "", cacheHeaders))
+              cacheResolver.resolveField(ResolverContext(
+                  field = it,
+                  variables = variables,
+                  parent = this,
+                  parentId = "",
+                  parentType = parentType,
+                  cacheHeaders = cacheHeaders,
+                  fieldNameGenerator = fieldNameGenerator,
+              ))
             }
             else -> throw IllegalStateException()
           }

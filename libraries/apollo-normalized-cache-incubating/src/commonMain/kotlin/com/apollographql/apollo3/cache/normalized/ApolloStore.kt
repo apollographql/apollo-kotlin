@@ -9,8 +9,10 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
@@ -196,7 +198,8 @@ fun ApolloStore(
     cacheKeyGenerator = cacheKeyGenerator,
     metadataGenerator = EmptyMetadataGenerator,
     cacheResolver = cacheResolver,
-    recordMerger = DefaultRecordMerger
+    recordMerger = DefaultRecordMerger,
+    fieldNameGenerator = DefaultFieldNameGenerator,
 )
 
 @ApolloExperimental
@@ -206,10 +209,12 @@ fun ApolloStore(
     metadataGenerator: MetadataGenerator,
     apolloResolver: ApolloResolver,
     recordMerger: RecordMerger = DefaultRecordMerger,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
 ): ApolloStore = DefaultApolloStore(
     normalizedCacheFactory = normalizedCacheFactory,
     cacheKeyGenerator = cacheKeyGenerator,
     metadataGenerator = metadataGenerator,
     cacheResolver = apolloResolver,
-    recordMerger = recordMerger
+    recordMerger = recordMerger,
+    fieldNameGenerator = fieldNameGenerator,
 )

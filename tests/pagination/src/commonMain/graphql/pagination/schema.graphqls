@@ -1,7 +1,7 @@
 extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.2", import: ["@typePolicy", "@fieldPolicy"])
 
 type Query
-@typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage" connectionFields: "usersCursorBased2, usersCursorBased3")
+@typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage, usersOffsetBasedWithPageAndInput" connectionFields: "usersCursorBased2, usersCursorBased3")
 @fieldPolicy(forField: "usersCursorBased", paginationArgs: "first, after, last, before")
 @fieldPolicy(forField: "usersOffsetBasedWithArray", paginationArgs: "offset, limit")
 @fieldPolicy(forField: "usersOffsetBasedWithPage", paginationArgs: "offset, limit")
@@ -13,6 +13,14 @@ type Query
   usersOffsetBasedWithArray(offset: Int = 0, limit: Int = 10): [User!]!
 
   usersOffsetBasedWithPage(offset: Int = 0, limit: Int = 10): UserPage!
+
+  usersOffsetBasedWithPageAndInput(usersInput: UsersInput!): UserPage!
+}
+
+input UsersInput {
+  sessionId: ID!
+  offset: Int = 0
+  limit: Int = 10
 }
 
 type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {

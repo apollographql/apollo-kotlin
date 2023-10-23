@@ -42,3 +42,13 @@ query UsersOffsetBasedWithPage($offset: Int, $limit: Int) {
     }
   }
 }
+
+query UsersOffsetBasedWithPageAndInput($offset: Int, $limit: Int) {
+  usersOffsetBasedWithPageAndInput(usersInput: {sessionId: "42", offset: $offset, limit: $limit}) {
+    users {
+      id
+      name
+      email
+    }
+  }
+}

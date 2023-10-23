@@ -85,7 +85,9 @@ class ResolverContext(
     val variables: Executable.Variables,
     val parent: Map<String, @JvmSuppressWildcards Any?>,
     val parentId: String,
+    val parentType: String,
     val cacheHeaders: CacheHeaders,
+    val fieldNameGenerator: FieldNameGenerator,
 )
 
 /**
@@ -120,6 +122,19 @@ object DefaultCacheResolver : CacheResolver {
   }
 }
 
+/**
+ * An [ApolloResolver] that uses the parent to resolve fields.
+ */
+object DefaultApolloResolver : ApolloResolver {
+  override fun resolveField(context: ResolverContext): Any? {
+    val name = context.fieldNameGenerator.getFieldName(FieldNameContext(context.parentType, context.field, context.variables))
+    if (!context.parent.containsKey(name)) {
+      throw CacheMissException(context.parentId, name)
+    }
+
+    return context.parent[name]
+  }
+}
 
 /**
  * A cache resolver that uses the cache date as a receive date and expires after a fixed max age
@@ -160,7 +175,7 @@ class ReceiveDateApolloResolver(private val maxAge: Int) : ApolloResolver {
  * A cache resolver that uses the cache date as an expiration date and expires past it
  */
 @ApolloExperimental
-class ExpireDateCacheResolver() : CacheResolver {
+class ExpireDateCacheResolver : CacheResolver {
   /**
    * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
    */
@@ -211,12 +226,18 @@ object FieldPolicyCacheResolver : CacheResolver {
 }
 
 /**
- * A [ApolloResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultCacheResolver] else
+ * A [ApolloResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultApolloResolver] else
  */
 object FieldPolicyApolloResolver : ApolloResolver {
   override fun resolveField(context: ResolverContext): Any? {
-    return FieldPolicyCacheResolver.resolveField(context.field, context.variables, context.parent, context.parentId)
+    val keyArgsValues = context.field.arguments.filter { it.isKey }.map {
+      resolveVariables(it.value, context.variables).toString()
+    }
+
+    if (keyArgsValues.isNotEmpty()) {
+      return CacheKey(context.field.type.rawType().name, keyArgsValues)
+    }
+
+    return DefaultApolloResolver.resolveField(context)
   }
 }
-
-
