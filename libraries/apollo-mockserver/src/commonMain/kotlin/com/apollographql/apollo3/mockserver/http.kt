@@ -125,8 +125,7 @@ private fun String.trimEol() = this.trimEnd('\r', '\n')
 internal suspend fun writeResponse(response: MockResponse, version: String, writeData: WriteData) {
   writeData("$version ${response.statusCode}\r\n".encodeToByteArray())
 
-  // We don't support 'Connection: Keep-Alive', so indicate it to the client
-  val headers = response.headers //+ mapOf("Connection" to "close")
+  val headers = response.headers
   headers.forEach {
     writeData("${it.key}: ${it.value}\r\n".encodeToByteArray())
   }
