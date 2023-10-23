@@ -8,6 +8,8 @@ import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Nul
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Reference
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.StringValue
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons
@@ -530,6 +532,7 @@ class NormalizedCacheWindowPanel(
   }
 
   private fun openFile(file: File) {
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenFile())
     setContent(createLoadingContent())
     object : Task.Backgroundable(
         project,
