@@ -22,7 +22,7 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
     DriverManager.getConnection(url).use { connection ->
       connection.createStatement().executeQuery("SELECT key, record FROM records").use { resultSet ->
         if (!resultSet.next()) {
-          error("No records found")
+          error("Empty cache: no records were found")
         }
       }
     }
