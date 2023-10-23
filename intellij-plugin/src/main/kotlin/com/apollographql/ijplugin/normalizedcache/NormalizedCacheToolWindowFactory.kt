@@ -63,7 +63,6 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
-import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import org.sqlite.SQLiteException
 import java.awt.Color
@@ -95,9 +94,6 @@ import javax.swing.tree.TreePath
 
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
-  // TODO remove when feature is complete
-  override fun isApplicable(project: Project) = isApplicationInternalMode()
-
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
       override fun actionPerformed(e: AnActionEvent) {
