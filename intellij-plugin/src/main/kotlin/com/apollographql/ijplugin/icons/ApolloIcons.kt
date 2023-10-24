@@ -25,6 +25,12 @@ object ApolloIcons {
     val NormalizedCacheViewer = load("/icons/toolwindow-normalized-cache-viewer.svg")
   }
 
+  object Node {
+    val Database by lazy { load("/icons/node-database.svg") }
+    val Device by lazy { load("/icons/node-device.svg") }
+    val Package by lazy { load("/icons/node-package.svg") }
+  }
+
   private fun load(path: String): Icon {
     return IconLoader.getIcon(path, ApolloIcons::class.java)
   }
