@@ -40,6 +40,9 @@ suspend fun test() {
   println(compositeException!!.first)
   println(compositeException!!.second)
 
+  val first = Exception("first")
+  throw ApolloCompositeException(first = first, Exception("second"))
+
   apolloClient!!.query(query!!).executeCacheAndNetwork()
 
   apolloClient!!.apolloStore.clearAll()
