@@ -12,6 +12,13 @@ class MockResponse internal constructor(
     val headers: Map<String, String> = mapOf("Content-Length" to "0"),
     val delayMillis: Long = 0,
 ) {
+  fun newBuilder(): Builder {
+    return Builder()
+        .statusCode(statusCode)
+        .headers(headers)
+        .delayMillis(delayMillis)
+        .body(body)
+  }
   class Builder {
     private var statusCode: Int = 200
     private var body: Flow<ByteString> = emptyFlow()

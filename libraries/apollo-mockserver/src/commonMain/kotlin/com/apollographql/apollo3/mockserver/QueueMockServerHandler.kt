@@ -15,9 +15,15 @@ internal class QueueMockServerHandler : MockServerHandler {
     }
   }
 
-  override fun handle(request: MockRequest): MockResponse {
-    return lock.withLock {
+  override fun handle(request: MockRequestBase): MockResponse {
+    var response = lock.withLock {
       queue.removeFirstOrNull() ?: error("No more responses in queue")
     }
+
+    if (request is WebsocketMockRequest) {
+      response = response.replaceWebSocketHeaders(request)
+    }
+
+    return response
   }
 }

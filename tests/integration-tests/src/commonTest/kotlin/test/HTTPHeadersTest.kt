@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
@@ -39,7 +40,7 @@ class HTTPHeadersTest {
 
     assertNotNull(response.data)
 
-    val recordedRequest = mockServer.takeRequest()
+    val recordedRequest = mockServer.awaitRequest()
     assertEquals("POST", recordedRequest.method)
     assertNotEquals(null, recordedRequest.headers["Content-Length"])
     assertNotEquals("0", recordedRequest.headers["Content-Length"])

@@ -1,161 +1,145 @@
-
-import app.cash.turbine.test
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.mockserver.WebSocketMockServer
-import com.apollographql.apollo3.mockserver.WebSocketMockServer.WebSocketEvent
+import com.apollographql.apollo3.mockserver.BinaryMessage
+import com.apollographql.apollo3.mockserver.CloseFrame
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.TextMessage
+import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
+import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.testing.internal.runTest
-import okio.Buffer
+import kotlinx.coroutines.delay
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class WebSocketEngineTest {
 
-  private fun textFrames(webSocketEngine: WebSocketEngine) = runTest {
-    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
-    val webSocketServer = WebSocketMockServer()
-    webSocketServer.start()
-    webSocketServer.events.test {
-      val connection = webSocketEngine.open(webSocketServer.url())
-      val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketEvent.Connect)
+  @Test
+  fun textFrames() = runTest {
+    val webSocketEngine = webSocketEngine()
+    val webSocketServer = MockServer()
 
-      val sessionId = connectEvent.sessionId
-      connection.send("client->server")
-      val textFrame = awaitItem()
-      assertTrue(textFrame is WebSocketEvent.TextMessage)
-      assertEquals("client->server", textFrame.text)
+    val responseBody = webSocketServer.enqueueWebSocket()
+    val connection = webSocketEngine.open(webSocketServer.url())
+    connection.send("client->server")
 
-      webSocketServer.sendText(sessionId, "server->client")
-      val message = connection.receive()
-      assertEquals("server->client", message)
+    val request = webSocketServer.awaitWebSocketRequest()
 
-      connection.close()
-      val closeEvent = awaitItem()
-      assertTrue(closeEvent is WebSocketEvent.Close)
+    var clientMessage = request.awaitMessage()
+    assertIs<TextMessage>(clientMessage)
+    assertEquals("client->server", clientMessage.text)
 
-      cancelAndIgnoreRemainingEvents()
-    }
+    responseBody.enqueueMessage(TextMessage("server->client"))
+    assertEquals("server->client", connection.receive())
+
+    connection.close()
+
+    clientMessage = request.awaitMessage()
+    assertIs<CloseFrame>(clientMessage)
+
+    webSocketServer.close()
+  }
+
+
+  @Test
+  fun binaryFrames() = runTest {
+    if (platform() == Platform.Js) return@runTest // Binary frames are not supported by the JS WebSocketEngine
+
+    val webSocketEngine = webSocketEngine()
+    val webSocketServer = MockServer()
+
+    val responseBody = webSocketServer.enqueueWebSocket()
+    val connection = webSocketEngine.open(webSocketServer.url())
+    connection.send("client->server".encodeUtf8())
+
+    val request = webSocketServer.awaitWebSocketRequest()
+
+    var clientMessage = request.awaitMessage()
+    assertIs<BinaryMessage>(clientMessage)
+    assertEquals("client->server", clientMessage.bytes.decodeToString())
+
+    responseBody.enqueueMessage(BinaryMessage("server->client".encodeToByteArray()))
+    assertEquals("server->client", connection.receive())
+
+    connection.close()
+
+    clientMessage = request.awaitMessage()
+    assertIs<CloseFrame>(clientMessage)
+
     webSocketServer.close()
   }
 
   @Test
-  fun textFrames() = textFrames(webSocketEngine())
+  fun serverCloseNicely() = runTest {
+    if (platform() == Platform.Js) return@runTest // It's not clear how termination works on JS
 
-  private fun binaryFrames(webSocketEngine: WebSocketEngine) = runTest {
-    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
-    val webSocketServer = WebSocketMockServer()
-    webSocketServer.start()
-    webSocketServer.events.test {
-      val connection = webSocketEngine.open(webSocketServer.url())
-      val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketEvent.Connect)
+    val webSocketEngine = webSocketEngine()
+    val webSocketServer = MockServer()
 
-      val sessionId = connectEvent.sessionId
-      connection.send("client->server".encodeUtf8())
-      val binaryFrame = awaitItem()
-      assertTrue(binaryFrame is WebSocketEvent.BinaryMessage)
-      assertEquals("client->server", binaryFrame.bytes.decodeToString())
+    val responseBody = webSocketServer.enqueueWebSocket()
+    val connection = webSocketEngine.open(webSocketServer.url())
 
-      webSocketServer.sendBinary(sessionId, "server->client".toByteArray())
-      val message = connection.receive()
-      assertEquals("server->client", message)
-
-      connection.close()
-      val closeEvent = awaitItem()
-      assertTrue(closeEvent is WebSocketEvent.Close)
-
-      cancelAndIgnoreRemainingEvents()
+    responseBody.enqueueMessage(CloseFrame(4200, "Bye now"))
+    val e = assertFailsWith<ApolloException> {
+      connection.receive()
     }
-    webSocketServer.close()
-  }
 
-  private fun String.toByteArray() = Buffer().writeUtf8(this).readByteArray()
-
-  @Test
-  fun binaryFrames() = binaryFrames(webSocketEngine())
-
-  private fun serverCloseNicely(webSocketEngine: WebSocketEngine, checkCodeAndReason: Boolean = true) = runTest {
-    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
-    val webSocketServer = WebSocketMockServer()
-    webSocketServer.start()
-    webSocketServer.events.test {
-      val connection = webSocketEngine.open(webSocketServer.url())
-      val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketEvent.Connect)
-
-      val sessionId = connectEvent.sessionId
-      webSocketServer.sendClose(sessionId, reasonCode = 4200, reasonMessage = "Bye now")
-
-      val e = assertFailsWith<ApolloException> {
-        connection.receive()
-      }
-      if (checkCodeAndReason) {
-        assertTrue(e is ApolloWebSocketClosedException)
-        assertEquals(4200, e.code)
-        assertEquals("Bye now", e.reason)
-      }
-
-      cancelAndIgnoreRemainingEvents()
+    // On Apple, the close code and reason are not available - https://youtrack.jetbrains.com/issue/KTOR-6198
+    if (!isKtor || platform() != Platform.Native) {
+      assertTrue(e is ApolloWebSocketClosedException)
+      assertEquals(4200, e.code)
+      assertEquals("Bye now", e.reason)
     }
+
     webSocketServer.close()
   }
 
   @Test
-  fun serverCloseNicely() = serverCloseNicely(webSocketEngine(),
-      // On Apple, the close code and reason are not available - https://youtrack.jetbrains.com/issue/KTOR-6198
-      checkCodeAndReason = !isKtor || platform() != Platform.Native
-  )
+  fun serverCloseAbruptly() = runTest {
+    if (platform() == Platform.Js) return@runTest // It's not clear how termination works on JS
+    if (platform() == Platform.Native) return@runTest // https://youtrack.jetbrains.com/issue/KTOR-6406
+    
+    val webSocketEngine = webSocketEngine()
+    val webSocketServer = MockServer()
 
-  private fun serverCloseAbruptly(webSocketEngine: WebSocketEngine) = runTest {
-    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
-    val webSocketServer = WebSocketMockServer()
-    webSocketServer.start()
-    webSocketServer.events.test {
-      val connection = webSocketEngine.open(webSocketServer.url())
-      val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketEvent.Connect)
+    webSocketServer.enqueueWebSocket()
+    val connection = webSocketEngine.open(webSocketServer.url())
 
-      webSocketServer.close()
-      assertFailsWith<ApolloNetworkException> {
-        connection.receive()
-      }
-      cancelAndIgnoreRemainingEvents()
+    webSocketServer.close()
+
+    assertFailsWith<ApolloNetworkException> {
+      connection.receive()
     }
+
+    connection.close()
   }
 
   @Test
-  fun serverCloseAbruptly() = serverCloseAbruptly(webSocketEngine())
+  fun headers() = runTest {
+    val webSocketEngine = webSocketEngine()
+    val webSocketServer = MockServer()
 
-  private fun headers(webSocketEngine: WebSocketEngine) = runTest {
-    if (platform() == Platform.Js) return@runTest // JS doesn't have a WebSocketMockServer yet
-    val webSocketServer = WebSocketMockServer()
-    webSocketServer.start()
-    webSocketServer.events.test {
+    webSocketServer.enqueueWebSocket()
+
       webSocketEngine.open(webSocketServer.url(), listOf(
           HttpHeader("Sec-WebSocket-Protocol", "graphql-ws"),
           HttpHeader("header1", "value1"),
           HttpHeader("header2", "value2"),
       ))
-      val connectEvent = awaitItem()
-      assertTrue(connectEvent is WebSocketEvent.Connect)
-      assertEquals("graphql-ws", connectEvent.headers["Sec-WebSocket-Protocol"])
-      assertEquals("value1", connectEvent.headers["header1"])
-      assertEquals("value2", connectEvent.headers["header2"])
 
-      cancelAndIgnoreRemainingEvents()
-    }
+    val request = webSocketServer.awaitWebSocketRequest()
+
+    assertEquals("graphql-ws", request.headers["Sec-WebSocket-Protocol"])
+    assertEquals("value1", request.headers["header1"])
+    assertEquals("value2", request.headers["header2"])
+
     webSocketServer.close()
   }
-
-  @Test
-  fun headers() = headers(webSocketEngine())
 }

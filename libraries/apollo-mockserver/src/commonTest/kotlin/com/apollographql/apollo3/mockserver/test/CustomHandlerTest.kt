@@ -2,7 +2,7 @@ package com.apollographql.apollo3.mockserver.test
 
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockRequest
+import com.apollographql.apollo3.mockserver.MockRequestBase
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.MockServerHandler
@@ -31,7 +31,7 @@ class CustomHandlerTest {
         .build()
 
     val mockServerHandler = object : MockServerHandler {
-      override fun handle(request: MockRequest): MockResponse {
+      override fun handle(request: MockRequestBase): MockResponse {
         return when (request.path) {
           "/0" -> mockResponse0
           "/1" -> mockResponse1

@@ -18,6 +18,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.enqueueStrings
@@ -78,7 +79,7 @@ class DeferNormalizedCacheTest {
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     // Cache is not empty, so this doesn't go to the server
     val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataOrThrow()
@@ -105,12 +106,12 @@ class DeferNormalizedCacheTest {
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     // Cache is not empty, but NetworkOnly still goes to the server
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
@@ -144,7 +145,7 @@ class DeferNormalizedCacheTest {
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
     assertTrue(responses[0].exception is CacheMissException)
     val networkActual = responses.drop(1).map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
@@ -184,7 +185,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is empty, so this goes to the server
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
@@ -226,7 +227,7 @@ class DeferNormalizedCacheTest {
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
     assertTrue(responses[0].exception is CacheMissException)
     val networkActual = responses.drop(1).map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
@@ -253,7 +254,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is not empty
     val cacheAndNetworkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     // We get a combination of the last/fully formed data from the cache + the new network data
     val cacheAndNetworkExpected = listOf(
@@ -289,7 +290,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is empty, so this goes to the server
     val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().drop(1)
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val query = WithFragmentSpreadsQuery()
     val uuid = uuid4()
@@ -338,7 +339,7 @@ class DeferNormalizedCacheTest {
     check(exception is CacheMissException)
     assertIs<ApolloHttpException>(exception.suppressedExceptions.first())
     assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.message)
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
   }
 
   @Test
@@ -411,7 +412,7 @@ class DeferNormalizedCacheTest {
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataOrThrow() }
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     val networkExpected = listOf(
         WithFragmentSpreadsMutation.Data(
