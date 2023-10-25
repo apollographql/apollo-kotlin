@@ -50,7 +50,7 @@ class ExceptionsTest {
 
   @Test
   fun whenNetworkErrorAssertApolloNetworkException() = runTest {
-    apolloClient = ApolloClient.Builder().serverUrl("badurl").build()
+    apolloClient = ApolloClient.Builder().serverUrl("http://badhost/").build()
 
     val response = apolloClient.query(HeroNameQuery()).execute()
     assertTrue(response.exception is ApolloNetworkException)

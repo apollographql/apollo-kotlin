@@ -32,7 +32,10 @@ interface MockServer : Closeable {
   suspend fun stop() = close()
 
   /**
-   * Closes the server. Might be asynchronous on some platforms.
+   * Closes the server.
+   *
+   * The locally bound address is freed immediately
+   * Active connections might stay alive after this call but will eventually terminate
    */
   override fun close()
 
@@ -58,15 +61,14 @@ interface MockServer : Closeable {
 
 internal class MockServerImpl(
     private val mockServerHandler: MockServerHandler,
-    acceptDelayMillis: Int,
     private val handlePings: Boolean,
 ) : MockServer {
-  private val server = SocketServer(acceptDelayMillis)
+  private val server = Server()
   private val requests = Channel<MockRequestBase>(Channel.UNLIMITED)
   private val scope = CoroutineScope(SupervisorJob())
 
   init {
-    server.start(::onSocket)
+    server.listen(::onSocket)
   }
 
   private fun onSocket(socket: Socket) {
@@ -117,7 +119,7 @@ internal class MockServerImpl(
             readFrames(reader) { message ->
               when {
                 handlePings && message is PingFrame -> {
-                  socket.write(pongFrame())
+                  socket.send(pongFrame())
                 }
 
                 handlePings && message is PongFrame -> {
@@ -132,7 +134,7 @@ internal class MockServerImpl(
           }
         }
         writeResponse(response, request.version) {
-          socket.write(it)
+          socket.send(it)
         }
       }
     }
@@ -171,9 +173,8 @@ internal class MockServerImpl(
 @JvmOverloads
 fun MockServer(
     mockServerHandler: MockServerHandler = QueueMockServerHandler(),
-    acceptDelayMillis: Int = 0,
     handlePings: Boolean = true,
-): MockServer = MockServerImpl(mockServerHandler, acceptDelayMillis, handlePings)
+): MockServer = MockServerImpl(mockServerHandler, handlePings)
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
