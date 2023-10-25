@@ -84,10 +84,6 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
   @get:Optional
   abstract val decapitalizeFields: Property<Boolean>
 
-  @get:Input
-  @get:Optional
-  abstract val useAntlr: Property<Boolean>
-
   @TaskAction
   fun taskAction() {
     val codegenSchema = ApolloCompiler.buildCodegenSchema(
@@ -115,7 +111,6 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
-        useAntlr = useAntlr.getOrElse(false)
     )
 
     val irOperations = ApolloCompiler.buildIrOperations(irOptions)

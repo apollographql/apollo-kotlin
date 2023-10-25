@@ -13,9 +13,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
  * The structure of the different nodes matches closely the one of the GraphQL specification
  * (https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document)
  *
- * Compared to the Antlr [com.apollographql.apollo3.generated.antlr.GraphQLParser.DocumentContext], a GQLDocument
- * is a lot simpler and allows for easy modifying a document (using [GQLNode.transform]()) and outputing them to a [okio.BufferedSink].
- *
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
 sealed interface GQLNode {

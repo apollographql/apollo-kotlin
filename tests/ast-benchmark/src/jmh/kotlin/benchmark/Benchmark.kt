@@ -44,16 +44,9 @@ open class Benchmark {
   }
 
   @Benchmark
-  fun antlrTest(): Double {
-    return testFiles.sumOf {
-      it.source().buffer().parseAsGQLDocument(options = ParserOptions.Builder().useAntlr(true).build()).getOrThrow().definitions.size.toDouble()
-    }
-  }
-
-  @Benchmark
   fun parserTest(): Double {
     return testFiles.sumOf {
-      it.source().buffer().parseAsGQLDocument(options = ParserOptions.Builder().useAntlr(false).build()).getOrThrow().definitions.size.toDouble()
+      it.source().buffer().parseAsGQLDocument(options = ParserOptions.Builder().build()).getOrThrow().definitions.size.toDouble()
     }
   }
 }
