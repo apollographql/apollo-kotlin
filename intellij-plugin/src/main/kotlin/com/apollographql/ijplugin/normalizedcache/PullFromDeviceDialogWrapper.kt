@@ -25,6 +25,7 @@ import com.intellij.ui.treeStructure.NullNode
 import com.intellij.ui.treeStructure.SimpleTree
 import com.intellij.ui.treeStructure.SimpleTreeStructure
 import com.intellij.util.ui.tree.TreeUtil
+import icons.StudioIcons
 import java.awt.event.InputEvent
 import java.io.File
 import javax.swing.event.TreeExpansionEvent
@@ -147,7 +148,7 @@ class PullFromDeviceDialogWrapper(
   private inner class DeviceNode(project: Project, parent: DynamicNode, private val device: IDevice) : DynamicNode(project, parent) {
     init {
       myName = device.name
-      icon = ApolloIcons.Node.Device
+      icon = if (device.isEmulator) StudioIcons.DeviceExplorer.VIRTUAL_DEVICE_PHONE else StudioIcons.DeviceExplorer.PHYSICAL_DEVICE_PHONE
     }
 
     override fun computeChildren() {
@@ -245,7 +246,7 @@ class PullFromDeviceDialogWrapper(
   ) : NullNode() {
     init {
       myName = databaseFileName
-      icon = ApolloIcons.Node.Database
+      icon = StudioIcons.DatabaseInspector.DATABASE
     }
 
     override fun handleDoubleClickOrEnter(tree: SimpleTree, inputEvent: InputEvent) {

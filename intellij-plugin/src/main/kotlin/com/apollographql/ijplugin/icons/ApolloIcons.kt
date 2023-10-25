@@ -26,8 +26,6 @@ object ApolloIcons {
   }
 
   object Node {
-    val Database by lazy { load("/icons/node-database.svg") }
-    val Device by lazy { load("/icons/node-device.svg") }
     val Package by lazy { load("/icons/node-package.svg") }
   }
 
