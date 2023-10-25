@@ -21,6 +21,7 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchM
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowApolloCompositeException
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
@@ -39,6 +40,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldName("$apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "first", "suppressedExceptions.first()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
+      UpdateThrowApolloCompositeException,
       UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
       UpdateClassName("$apollo3.exception.ApolloCanceledException", "$apollo3.exception.ApolloException"),
       UpdateClassName("$apollo3.exception.ApolloGenericException", "$apollo3.exception.ApolloException"),

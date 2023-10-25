@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 
@@ -37,6 +38,9 @@ suspend fun test() {
   val compositeException: ApolloException? = null
   println(compositeException!!.suppressedExceptions.first())
   println(compositeException!!.suppressedExceptions.getOrNull(1))
+
+  val first = Exception("first")
+  throw DefaultApolloException(cause = first).apply { addSuppressed(Exception("second")) }
 
   apolloClient!!.query(query!!).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()
 
