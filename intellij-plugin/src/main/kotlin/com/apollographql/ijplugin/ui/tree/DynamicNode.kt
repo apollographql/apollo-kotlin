@@ -8,11 +8,27 @@ import com.intellij.ui.treeStructure.NullNode
 import com.intellij.ui.treeStructure.SimpleNode
 import org.jetbrains.kotlin.idea.util.application.executeOnPooledThread
 
-abstract class DynamicNode(project: Project, parent: DynamicNode?) : SimpleNode(project, parent) {
+abstract class DynamicNode(
+    project: Project,
+    parent: DynamicNode?,
+    private val computeChildrenOn: ComputeChildrenOn = ComputeChildrenOn.EXPANDED,
+) : SimpleNode(project, parent) {
   private var children: List<SimpleNode> = listOf(LoadingNode())
   private var computeChildrenRequested: Boolean = false
 
+  init {
+    if (computeChildrenOn == ComputeChildrenOn.INIT) {
+      requestUpdateChildren()
+    }
+  }
+
   fun onExpanded() {
+    if (computeChildrenOn == ComputeChildrenOn.EXPANDED) {
+      requestUpdateChildren()
+    }
+  }
+
+  private fun requestUpdateChildren() {
     if (computeChildrenRequested) {
       return
     }
@@ -45,9 +61,18 @@ abstract class DynamicNode(project: Project, parent: DynamicNode?) : SimpleNode(
   }
 
   abstract fun computeChildren()
+
+  enum class ComputeChildrenOn {
+    INIT,
+    EXPANDED,
+  }
 }
 
-abstract class RootDynamicNode(project: Project, private val invalidate: () -> Unit) : DynamicNode(project, null) {
+abstract class RootDynamicNode(
+    project: Project,
+    private val invalidate: () -> Unit,
+    computeChildrenOn: ComputeChildrenOn = ComputeChildrenOn.EXPANDED,
+) : DynamicNode(project, null, computeChildrenOn) {
   init {
     onExpanded()
   }

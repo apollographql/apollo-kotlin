@@ -64,8 +64,8 @@ class PullFromDeviceDialog(
   private fun createTree(): SimpleTree {
     tree = object : SimpleTree() {
       override fun configureUiHelper(helper: TreeUIHelper?) {
-        TreeSpeedSearch(this, true) {
-          it.lastPathComponent.toString()
+        TreeSpeedSearch(this).apply {
+          setCanExpand(true)
         }
       }
     }.apply {
@@ -161,13 +161,23 @@ class PullFromDeviceDialog(
       updateChildren(
           buildList {
             // Add running apps
-            addAll(device.clients
+            val clients = device.clients
                 .filter { it.isValid && it.clientData.packageName != null }
+            val autoExpand = clients.size <= 4
+            addAll(clients
                 .sortedBy { it.clientData.packageName }
                 .map { client ->
                   val packageName = client.clientData.packageName
                   val databasesDir = client.clientData.dataDir + "/databases"
-                  PackageNode(project, this@DeviceNode, device, packageName, databasesDir)
+                  PackageNode(
+                      project = project,
+                      parent = this@DeviceNode,
+                      device = device,
+                      packageName = packageName,
+                      databasesDir = databasesDir,
+                      computeChildrenOn = ComputeChildrenOn.INIT,
+                      autoExpand = autoExpand,
+                  )
                 }
             )
 
@@ -201,7 +211,15 @@ class PullFromDeviceDialog(
         } else {
           updateChildren(
               it.map { packageName ->
-                PackageNode(project, this, device, packageName, "/data/data/$packageName/databases")
+                PackageNode(
+                    project = project,
+                    parent = this,
+                    device = device,
+                    packageName = packageName,
+                    databasesDir = "/data/data/$packageName/databases",
+                    computeChildrenOn = ComputeChildrenOn.EXPANDED,
+                    autoExpand = false,
+                )
               }
           )
         }
@@ -215,7 +233,9 @@ class PullFromDeviceDialog(
       private val device: IDevice,
       private val packageName: String,
       private val databasesDir: String,
-  ) : DynamicNode(project, parent) {
+      computeChildrenOn: ComputeChildrenOn,
+      private val autoExpand: Boolean,
+  ) : DynamicNode(project, parent, computeChildrenOn) {
     init {
       myName = packageName
       icon = ApolloIcons.Node.Package
@@ -241,6 +261,10 @@ class PullFromDeviceDialog(
           )
         }
       }
+    }
+
+    override fun isAutoExpandNode(): Boolean {
+      return autoExpand
     }
   }
 
