@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-10-03**
+**Last updated: 2023-10-26**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -27,7 +27,7 @@ Here's a high-level overview of what to expect:
 
 - [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
 - [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
-- Better error handling ([RFC here](https://github.com/apollographql/apollo-kotlin/issues/4711))
+- Better error handling ([RFC](https://github.com/apollographql/apollo-kotlin/issues/4711)), potentially with the `@catch` directive ([RFC](https://github.com/apollographql/apollo-kotlin/issues/5337))
 - [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
 - Client-controlled nullability (experimental)
 
