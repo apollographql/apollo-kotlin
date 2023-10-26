@@ -16,6 +16,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
+import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign
 import com.intellij.ui.tree.AsyncTreeModel
@@ -34,7 +35,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeModel
 import javax.swing.tree.TreeSelectionModel
 
-class PullFromDeviceDialogWrapper(
+class PullFromDeviceDialog(
     private val project: Project,
     private val onFilePullSuccess: (File) -> Unit,
     private val onFilePullError: (Throwable) -> Unit,
@@ -57,18 +58,23 @@ class PullFromDeviceDialogWrapper(
   }.withPreferredWidth(450)
 
   override fun getDimensionServiceKey(): String? {
-    return PullFromDeviceDialogWrapper::class.java.simpleName
+    return PullFromDeviceDialog::class.java.simpleName
   }
 
   private fun createTree(): SimpleTree {
-    tree = SimpleTree().apply {
+    tree = object : SimpleTree() {
+      override fun configureUiHelper(helper: TreeUIHelper?) {
+        TreeSpeedSearch(this, true) {
+          it.lastPathComponent.toString()
+        }
+      }
+    }.apply {
       emptyText.setText(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.loading"))
       selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
       isRootVisible = false
       showsRootHandles = true
       isLargeModel = true
       TreeUtil.installActions(this)
-      TreeSpeedSearch(this)
 
       model = createModel(this)
 
@@ -156,7 +162,7 @@ class PullFromDeviceDialogWrapper(
           buildList {
             // Add running apps
             addAll(device.clients
-                .filter { it.isValid }
+                .filter { it.isValid && it.clientData.packageName != null }
                 .sortedBy { it.clientData.packageName }
                 .map { client ->
                   val packageName = client.clientData.packageName

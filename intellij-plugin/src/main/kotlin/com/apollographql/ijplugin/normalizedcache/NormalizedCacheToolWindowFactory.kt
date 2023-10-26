@@ -160,7 +160,7 @@ class NormalizedCacheWindowPanel(
       }
       if (isAndroidPluginPresent) {
         emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.pullFromDevice"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
-          PullFromDeviceDialogWrapper(
+          PullFromDeviceDialog(
               project,
               onFilePullError = { throwable ->
                 showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.error"), content = throwable.message
