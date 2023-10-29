@@ -12,7 +12,7 @@ import kotlin.coroutines.suspendCoroutine
 import node.net.Server as WrappedServer
 import node.net.Socket as WrappedSocket
 
-internal class NodeSocket(private val netSocket: WrappedSocket) : Socket {
+internal class NodeTcpSocket(private val netSocket: WrappedSocket) : TcpSocket {
   private val readQueue = Channel<ByteArray>(Channel.UNLIMITED)
   init {
     netSocket.on(Event.DATA) { chunk ->
@@ -46,14 +46,14 @@ internal class NodeSocket(private val netSocket: WrappedSocket) : Socket {
   }
 }
 
-internal class NodeServer : Server {
+internal class NodeTcpServer : TcpServer {
   private var server: WrappedServer? = null
   private var address: Address? = null
 
 
-  override fun listen(block: (socket: Socket) -> Unit) {
+  override fun listen(block: (socket: TcpSocket) -> Unit) {
     server = createServer { netSocket ->
-      block(NodeSocket(netSocket))
+      block(NodeTcpSocket(netSocket))
     }
 
     server!!.listen()
@@ -82,4 +82,4 @@ internal class NodeServer : Server {
   }
 }
 
-internal actual fun Server(): Server = NodeServer()
+actual fun TcpServer(): TcpServer = NodeTcpServer()

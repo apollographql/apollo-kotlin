@@ -19,9 +19,9 @@ import kotlinx.coroutines.withTimeout
 import okio.IOException
 import io.ktor.network.sockets.Socket as WrappedSocket
 
-internal actual fun Server(): Server = KtorServer(0)
+actual fun TcpServer(): TcpServer = KtorTcpServer(0)
 
-internal class KtorServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : Server {
+class KtorTcpServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
   private val selectorManager = SelectorManager(dispatcher)
   private val scope = CoroutineScope(SupervisorJob() + dispatcher)
   private val serverSocket = aSocket(selectorManager).tcp().bind("127.0.0.1")
@@ -32,14 +32,14 @@ internal class KtorServer(private val acceptDelayMillis: Int = 0, dispatcher: Co
     serverSocket.close()
   }
 
-  override fun listen(block: (socket: Socket) -> Unit) {
+  override fun listen(block: (socket: TcpSocket) -> Unit) {
     scope.launch {
       while (true) {
         if (acceptDelayMillis > 0) {
           delay(acceptDelayMillis.toLong())
         }
         val socket: WrappedSocket = serverSocket.accept()
-        val ktorSocket = KtorSocket(socket)
+        val ktorSocket = KtorTcpSocket(socket)
         block(ktorSocket)
 
         launch {
@@ -68,7 +68,7 @@ internal class KtorServer(private val acceptDelayMillis: Int = 0, dispatcher: Co
   }
 }
 
-internal class KtorSocket(private val socket: WrappedSocket) : Socket {
+internal class KtorTcpSocket(private val socket: WrappedSocket) : TcpSocket {
   private val receiveChannel = socket.openReadChannel()
   private val writeChannel = socket.openWriteChannel()
 

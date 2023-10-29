@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.mockserver.KtorTcpServer
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -47,7 +48,10 @@ class HttpEngineTest {
   @OptIn(ApolloInternal::class)
   @Test
   fun connectTimeoutIsWorking() = runTest {
-    val mockServer = MockServer(acceptDelayMillis = 2_000)
+    val mockServer = MockServer.Builder()
+        .tcpServer(KtorTcpServer(acceptDelayMillis = 2_000))
+        .build()
+
     // Enqueue a trivial response to not crash in the mockServer
     mockServer.enqueueString("")
 

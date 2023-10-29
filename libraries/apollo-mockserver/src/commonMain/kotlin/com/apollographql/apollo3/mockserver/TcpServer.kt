@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.Closeable
 
-internal interface Socket: Closeable {
+@ApolloExperimental
+interface TcpSocket: Closeable {
   /**
    * Suspend until data is received and returns any available data
    *
@@ -28,11 +30,12 @@ internal interface Socket: Closeable {
   override fun close()
 }
 
-internal interface Server : Closeable {
+@ApolloExperimental
+interface TcpServer : Closeable {
   /**
    * Starts listening and calls [block] when on incoming connections
    */
-  fun listen(block: (socket: Socket) -> Unit)
+  fun listen(block: (socket: TcpSocket) -> Unit)
 
   /**
    * Returns the local address the server is bound to. Only valid after calling [listen]
@@ -46,9 +49,11 @@ internal interface Server : Closeable {
   override fun close()
 }
 
-internal class Address(
+@ApolloExperimental
+class Address(
     val hostname: String,
     val port: Int
 )
 
-internal expect fun Server(): Server
+@ApolloExperimental
+expect fun TcpServer(): TcpServer

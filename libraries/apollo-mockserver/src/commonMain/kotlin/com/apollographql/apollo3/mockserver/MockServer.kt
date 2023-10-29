@@ -15,7 +15,7 @@ import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
-import kotlin.jvm.JvmOverloads
+import kotlin.js.JsName
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -57,13 +57,39 @@ interface MockServer : Closeable {
    * @see [awaitRequest] and [awaitWebSocketRequest]
    */
   suspend fun awaitAnyRequest(timeout: Duration = 1.seconds): MockRequestBase
+
+  class Builder {
+    private var handler: MockServerHandler? = null
+    private var handlePings: Boolean? = null
+    private var tcpServer: TcpServer? = null
+
+    fun handler(handler: MockServerHandler) = apply {
+      this.handler = handler
+    }
+
+    fun handlePings(handlePings: Boolean)  = apply {
+      this.handlePings = handlePings
+    }
+
+    fun tcpServer(tcpServer: TcpServer) = apply {
+      this.tcpServer = tcpServer
+    }
+
+    fun build(): MockServer {
+      return MockServerImpl(
+          handler ?: QueueMockServerHandler(),
+          handlePings ?: true,
+          tcpServer ?: TcpServer()
+      )
+    }
+  }
 }
 
 internal class MockServerImpl(
     private val mockServerHandler: MockServerHandler,
     private val handlePings: Boolean,
+    private val server: TcpServer,
 ) : MockServer {
-  private val server = Server()
   private val requests = Channel<MockRequestBase>(Channel.UNLIMITED)
   private val scope = CoroutineScope(SupervisorJob())
 
@@ -71,7 +97,7 @@ internal class MockServerImpl(
     server.listen(::onSocket)
   }
 
-  private fun onSocket(socket: Socket) {
+  private fun onSocket(socket: TcpSocket) {
     scope.launch {
       //println("Socket bound: ${url()}")
       try {
@@ -93,7 +119,7 @@ internal class MockServerImpl(
     }
   }
 
-  private suspend fun handleRequests(handler: MockServerHandler, socket: Socket, onRequest: (MockRequestBase) -> Unit) {
+  private suspend fun handleRequests(handler: MockServerHandler, socket: TcpSocket, onRequest: (MockRequestBase) -> Unit) {
     val buffer = Buffer()
     val reader = object : Reader {
       override val buffer: Buffer
@@ -170,11 +196,8 @@ internal class MockServerImpl(
   }
 }
 
-@JvmOverloads
-fun MockServer(
-    mockServerHandler: MockServerHandler = QueueMockServerHandler(),
-    handlePings: Boolean = true,
-): MockServer = MockServerImpl(mockServerHandler, handlePings)
+@JsName("createMockServer")
+fun MockServer(): MockServer = MockServerImpl(QueueMockServerHandler(), true, TcpServer())
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
