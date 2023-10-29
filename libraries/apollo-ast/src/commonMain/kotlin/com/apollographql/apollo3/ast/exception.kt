@@ -53,13 +53,6 @@ open class SourceAwareException(
 }
 
 /**
- * Something went wrong while building the GraphQL AST, analyzing the schema, ...
- *
- * This most likely a bug. For an example, an Antlr rule was added to the grammar but the Kotlin code does not handle it
- */
-class UnrecognizedAntlrRule(error: String, sourceLocation: SourceLocation?) : SourceAwareException(error, sourceLocation)
-
-/**
  * An exception while converting to/from introspection
  *
  * This most likely means the json/sdl was inconsistent or corrupted

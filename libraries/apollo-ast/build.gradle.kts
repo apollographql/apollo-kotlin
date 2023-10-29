@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 plugins {
-  antlr
   id("org.jetbrains.kotlin.multiplatform")
   id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -30,11 +29,6 @@ kotlin {
         implementation(libs.okio.nodefilesystem)
       }
     }
-    getByName("jvmMain") {
-      dependencies {
-        api(libs.antlr.runtime)
-      }
-    }
     getByName("jvmTest") {
       dependencies {
         implementation(libs.google.testparameterinjector)
@@ -43,41 +37,10 @@ kotlin {
   }
 }
 
-dependencies {
-  antlr(libs.antlr)
-}
-
 tasks.named("jvmTest") {
   inputs.dir("test-fixtures/parser")
       .withPropertyName("testFixtures")
       .withPathSensitivity(PathSensitivity.RELATIVE)
-}
-
-// Only expose the antlr runtime dependency
-// See https://github.com/gradle/gradle/issues/820#issuecomment-288838412
-configurations["jvmMainApi"].apply {
-  setExtendsFrom(extendsFrom.filter { it.name != "antlr" })
-}
-
-/**
- * By default, antlr doesn't know about MPP, so we wire everything manually
- */
-kotlin.sourceSets.getByName("jvmMain").kotlin.srcDir(file("build/generated-src/antlr/main"))
-sourceSets.getByName("main").java.srcDir(file("build/generated-src/antlr/main"))
-
-// See https://github.com/gradle/gradle/issues/19555
-tasks.named("compileKotlinJvm") {
-  dependsOn("generateGrammarSource")
-}
-// See https://github.com/gradle/gradle/issues/19555
-tasks.named("compileJava") {
-  dependsOn("generateGrammarSource")
-}
-tasks.named("compileKotlinJvm") {
-  dependsOn("generateTestGrammarSource")
-}
-tasks.named("jvmSourcesJar") {
-  dependsOn("generateGrammarSource")
 }
 
 /**

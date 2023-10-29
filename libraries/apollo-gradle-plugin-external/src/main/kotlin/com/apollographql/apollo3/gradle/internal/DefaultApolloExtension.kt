@@ -607,7 +607,6 @@ abstract class DefaultApolloExtension(
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching())
 
       task.outputFile.set(BuildDirLayout.ir(project, service))
-      task.useAntlr.set(useAntlr)
     }
   }
 
@@ -783,7 +782,6 @@ abstract class DefaultApolloExtension(
       task.generateDataBuilders.set(service.generateDataBuilders)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)
-      task.useAntlr.set(useAntlr)
 
       configureBaseCodegenTask(project, task, service)
     }
@@ -906,7 +904,6 @@ abstract class DefaultApolloExtension(
 
   abstract override val linkSqlite: Property<Boolean>
   abstract override val generateSourcesDuringGradleSync: Property<Boolean>
-  abstract override val useAntlr: Property<Boolean>
 
   companion object {
     private const val TASK_GROUP = "apollo"

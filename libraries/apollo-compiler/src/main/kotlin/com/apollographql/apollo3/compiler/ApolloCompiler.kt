@@ -131,11 +131,11 @@ object ApolloCompiler {
   /**
    * Parses the given files. Throws if there are parsing errors
    */
-  private fun Collection<File>.definitions(useAntlr: Boolean): List<GQLDefinition> {
+  private fun Collection<File>.definitions(): List<GQLDefinition> {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     map { file ->
-      val parseResult = file.parseAsGQLDocument(options = ParserOptions.Builder().useAntlr(useAntlr).build())
+      val parseResult = file.parseAsGQLDocument(options = ParserOptions.Builder().build())
       if (parseResult.issues.isNotEmpty()) {
         parseIssues.addAll(parseResult.issues)
       } else {
@@ -160,7 +160,7 @@ object ApolloCompiler {
     /**
      * Step 1: parse the documents
      */
-    val definitions = executableFiles.definitions(options.useAntlr)
+    val definitions = executableFiles.definitions()
 
     val incomingFragments = options.incomingFragments
 
@@ -473,7 +473,6 @@ object ApolloCompiler {
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
         generateOptionalOperationVariables = generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        useAntlr = true
     )
 
     val irOperations = buildIrOperations(irOptions)
