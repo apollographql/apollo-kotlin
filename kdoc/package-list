@@ -26,7 +26,6 @@ module:apollo-ast
 com.apollographql.apollo3.ast
 com.apollographql.apollo3.ast.internal
 com.apollographql.apollo3.ast.introspection
-com.apollographql.apollo3.generated.antlr
 module:apollo-compiler
 com.apollographql.apollo3.compiler
 com.apollographql.apollo3.compiler.codegen
