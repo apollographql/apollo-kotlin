@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.mockserver
 
 import okio.Buffer
+import okio.IOException
 
 internal interface Reader {
   val buffer: Buffer
@@ -34,6 +35,8 @@ private fun parseRequestLine(line: String): Triple<String, String, String> {
   return Triple(method, match.groupValues[2], match.groupValues[3])
 }
 
+internal class ConnectionClosed(cause: Throwable?): Exception("client closed the connection", cause)
+
 internal suspend fun readRequest(reader: Reader): MockRequestBase {
   suspend fun nextLine(): String {
     while (true) {
@@ -57,6 +60,15 @@ internal suspend fun readRequest(reader: Reader): MockRequestBase {
     }
 
     return buffer2
+  }
+
+  /**
+   * Check if the client closed the connection
+   */
+  try {
+    reader.fillBuffer()
+  } catch (e: IOException) {
+    throw ConnectionClosed(e)
   }
 
   var line = nextLine()

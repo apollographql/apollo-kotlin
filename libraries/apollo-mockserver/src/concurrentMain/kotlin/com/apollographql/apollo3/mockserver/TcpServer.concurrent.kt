@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
@@ -21,6 +22,7 @@ import io.ktor.network.sockets.Socket as WrappedSocket
 
 actual fun TcpServer(): TcpServer = KtorTcpServer(0)
 
+@ApolloExperimental
 class KtorTcpServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
   private val selectorManager = SelectorManager(dispatcher)
   private val scope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -80,8 +82,8 @@ internal class KtorTcpSocket(private val socket: WrappedSocket) : TcpSocket {
     while (true) {
       val ret = receiveChannel.readAvailable(buffer, 0, buffer.size)
       if (ret == -1) {
-        receiveChannel.closedCause?.printStackTrace()
         readQueue.close(IOException("Error reading socket", receiveChannel.closedCause))
+        break
       } else if (ret > 0) {
         readQueue.send(ByteArray(ret) { buffer[it] })
       }

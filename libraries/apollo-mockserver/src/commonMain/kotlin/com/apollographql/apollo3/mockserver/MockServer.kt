@@ -67,7 +67,7 @@ interface MockServer : Closeable {
       this.handler = handler
     }
 
-    fun handlePings(handlePings: Boolean)  = apply {
+    fun handlePings(handlePings: Boolean) = apply {
       this.handlePings = handlePings
     }
 
@@ -105,14 +105,23 @@ internal class MockServerImpl(
           requests.trySend(it)
         }
       } catch (e: Exception) {
-        if (e is CancellationException) {
-          // We got cancelled from closing the server
-          throw e
-        }
+        when (e) {
+          is CancellationException -> {
+            // We got cancelled from closing the server => propagate the exception
+            throw e
+          }
 
-        println("handling request failed")
-        // There was a network exception
-        e.printStackTrace()
+          is ConnectionClosed -> {
+            println("Connection Closed")
+            // Nothing, ignore those
+          }
+
+          else -> {
+            println("handling request failed")
+            // There was a network exception while reading a request
+            e.printStackTrace()
+          }
+        }
       } finally {
         socket.close()
       }
@@ -198,6 +207,10 @@ internal class MockServerImpl(
 
 @JsName("createMockServer")
 fun MockServer(): MockServer = MockServerImpl(QueueMockServerHandler(), true, TcpServer())
+
+@Deprecated("Use MockServer.Builder() instead", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+fun MockServer(handler: MockServerHandler): MockServer = MockServerImpl(handler, true, TcpServer())
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
