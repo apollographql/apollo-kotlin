@@ -40,7 +40,7 @@ class CustomHandlerTest {
       }
     }
 
-    mockServer = MockServer(mockServerHandler)
+    mockServer = MockServer.Builder().handler(mockServerHandler).build()
 
     val engine = DefaultHttpEngine()
 
