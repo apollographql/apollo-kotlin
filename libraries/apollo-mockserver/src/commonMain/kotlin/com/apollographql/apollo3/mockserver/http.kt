@@ -65,10 +65,12 @@ internal suspend fun readRequest(reader: Reader): MockRequestBase {
   /**
    * Check if the client closed the connection
    */
-  try {
-    reader.fillBuffer()
-  } catch (e: IOException) {
-    throw ConnectionClosed(e)
+  if (reader.buffer.size == 0L) {
+    try {
+      reader.fillBuffer()
+    } catch (e: IOException) {
+      throw ConnectionClosed(e)
+    }
   }
 
   var line = nextLine()
