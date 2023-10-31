@@ -11,7 +11,6 @@ import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.coroutines.delay
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,28 +20,39 @@ import kotlin.test.assertTrue
 
 class WebSocketEngineTest {
 
+  /**
+   * NSURLSession has a bug that sometimes skips the close frame
+   * See https://developer.apple.com/forums/thread/679446
+   */
+  private fun maySkipCloseFrame(): Boolean {
+    return !isKtor && platform() == Platform.Native
+  }
+
   @Test
   fun textFrames() = runTest {
     val webSocketEngine = webSocketEngine()
     val webSocketServer = MockServer()
 
     val responseBody = webSocketServer.enqueueWebSocket()
-    val connection = webSocketEngine.open(webSocketServer.url())
-    connection.send("client->server")
 
+    val connection = webSocketEngine.open(webSocketServer.url())
     val request = webSocketServer.awaitWebSocketRequest()
 
-    var clientMessage = request.awaitMessage()
-    assertIs<TextMessage>(clientMessage)
-    assertEquals("client->server", clientMessage.text)
+    connection.send("client->server")
+    request.awaitMessage().apply {
+      assertIs<TextMessage>(this)
+      assertEquals("client->server", text)
+    }
 
     responseBody.enqueueMessage(TextMessage("server->client"))
     assertEquals("server->client", connection.receive())
 
     connection.close()
-
-    clientMessage = request.awaitMessage()
-    assertIs<CloseFrame>(clientMessage)
+    if (!maySkipCloseFrame()) {
+      request.awaitMessage().apply {
+        assertIs<CloseFrame>(this)
+      }
+    }
 
     webSocketServer.close()
   }
@@ -56,22 +66,25 @@ class WebSocketEngineTest {
     val webSocketServer = MockServer()
 
     val responseBody = webSocketServer.enqueueWebSocket()
-    val connection = webSocketEngine.open(webSocketServer.url())
-    connection.send("client->server".encodeUtf8())
 
+    val connection = webSocketEngine.open(webSocketServer.url())
     val request = webSocketServer.awaitWebSocketRequest()
 
-    var clientMessage = request.awaitMessage()
-    assertIs<BinaryMessage>(clientMessage)
-    assertEquals("client->server", clientMessage.bytes.decodeToString())
+    connection.send("client->server".encodeUtf8())
+    request.awaitMessage().apply {
+      assertIs<BinaryMessage>(this)
+      assertEquals("client->server", bytes.decodeToString())
+    }
 
     responseBody.enqueueMessage(BinaryMessage("server->client".encodeToByteArray()))
     assertEquals("server->client", connection.receive())
 
     connection.close()
-
-    clientMessage = request.awaitMessage()
-    assertIs<CloseFrame>(clientMessage)
+    if (!maySkipCloseFrame()) {
+      request.awaitMessage().apply {
+        assertIs<CloseFrame>(this)
+      }
+    }
 
     webSocketServer.close()
   }
