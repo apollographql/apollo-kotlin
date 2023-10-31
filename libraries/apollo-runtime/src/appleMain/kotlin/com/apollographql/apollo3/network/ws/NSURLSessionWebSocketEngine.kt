@@ -8,9 +8,7 @@ import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import platform.Foundation.NSData
@@ -18,7 +16,6 @@ import platform.Foundation.NSError
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSString
-import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLSession
@@ -49,16 +46,10 @@ actual class DefaultWebSocketEngine(
 
   actual constructor() : this(
       webSocketFactory = { request, connectionListener ->
-        // We must not use the main thread's queue for the delegateQueue
-        val delegateQueue = if (NSThread.isMainThread) {
-          runBlocking(Dispatchers.Default) { NSOperationQueue.currentQueue() }
-        } else {
-          NSOperationQueue.currentQueue()
-        }
         NSURLSession.sessionWithConfiguration(
             configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
             delegate = NSURLSessionWebSocketDelegate(connectionListener),
-            delegateQueue = delegateQueue
+            delegateQueue = NSOperationQueue.currentQueue()
         ).webSocketTaskWithRequest(request)
       }
   )

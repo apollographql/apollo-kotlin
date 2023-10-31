@@ -82,8 +82,6 @@ internal class KtorTcpSocket(private val socket: WrappedSocket) : TcpSocket {
     while (true) {
       val ret = receiveChannel.readAvailable(buffer, 0, buffer.size)
       if (ret == -1) {
-        println("receiveChannel.closedCause= ${receiveChannel.closedCause}")
-        receiveChannel.closedCause?.printStackTrace()
         readQueue.close(IOException("Error reading socket", receiveChannel.closedCause))
         break
       } else if (ret > 0) {
