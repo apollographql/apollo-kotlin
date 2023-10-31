@@ -25,7 +25,7 @@ class WebSocketEngineTest {
    * See https://developer.apple.com/forums/thread/679446
    */
   private fun maySkipCloseFrame(): Boolean {
-    return !isKtor && platform() == Platform.Native
+    return platform() == Platform.Native
   }
 
   @Test
