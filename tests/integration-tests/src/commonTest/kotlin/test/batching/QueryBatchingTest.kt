@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
@@ -79,7 +80,7 @@ class QueryBatchingTest {
     assertEquals("83", result1.await().data?.launch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
 
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     val requests = AnyAdapter.fromJson(Buffer().write(request.body).jsonReader(), CustomScalarAdapters.Empty)
 
     assertIs<List<Map<String, Any?>>>(requests)
@@ -89,7 +90,7 @@ class QueryBatchingTest {
 
     // Only one request must have been sent
     assertFails {
-      mockServer.takeRequest()
+      mockServer.awaitRequest()
     }
   }
 
@@ -114,8 +115,8 @@ class QueryBatchingTest {
     assertEquals("83", result1.await().data?.launch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
 
-    mockServer.takeRequest()
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
+    mockServer.awaitRequest()
   }
 
   @Test
@@ -143,8 +144,8 @@ class QueryBatchingTest {
     assertEquals("83", result1.await().data?.launch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
 
-    mockServer.takeRequest()
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
+    mockServer.awaitRequest()
   }
 
   @Test
@@ -180,7 +181,7 @@ class QueryBatchingTest {
     assertEquals("83", result1.await().data?.launch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
 
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     val requests = AnyAdapter.fromJson(Buffer().write(request.body).jsonReader(), CustomScalarAdapters.Empty)
 
     assertIs<List<Map<String, Any?>>>(requests)
@@ -190,7 +191,7 @@ class QueryBatchingTest {
 
     // Only one request must have been sent
     assertFails {
-      mockServer.takeRequest()
+      mockServer.awaitRequest()
     }
   }
 
@@ -221,10 +222,10 @@ class QueryBatchingTest {
     }
     result1.await()
     result2.await()
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     // Only one request must have been sent
     assertFails {
-      mockServer.takeRequest()
+      mockServer.awaitRequest()
     }
     assertTrue(request.headers["client0"] == "0")
     assertTrue(request.headers["client1"] == "1")
@@ -262,7 +263,7 @@ class QueryBatchingTest {
     }
     result1.await()
     result2.await()
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     assertTrue(request.headers["query1+query2-same-value"] == "0")
     assertFalse(request.headers.keys.contains("query1-only"))
     assertFalse(request.headers.keys.contains("query2-only"))

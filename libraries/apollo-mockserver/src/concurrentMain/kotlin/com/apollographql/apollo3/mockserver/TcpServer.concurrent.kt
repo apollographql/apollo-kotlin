@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
@@ -17,12 +18,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import okio.IOException
-import io.ktor.network.sockets.Socket as KtorSocket
+import io.ktor.network.sockets.Socket as WrappedSocket
 
-internal actual fun SocketServer(acceptDelayMillis: Int): SocketServer = KtorSocketServer(acceptDelayMillis)
+actual fun TcpServer(): TcpServer = KtorTcpServer(0)
 
-
-internal class KtorSocketServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : SocketServer {
+@ApolloExperimental
+class KtorTcpServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
   private val selectorManager = SelectorManager(dispatcher)
   private val scope = CoroutineScope(SupervisorJob() + dispatcher)
   private val serverSocket = aSocket(selectorManager).tcp().bind("127.0.0.1")
@@ -33,18 +34,18 @@ internal class KtorSocketServer(private val acceptDelayMillis: Int = 0, dispatch
     serverSocket.close()
   }
 
-  override fun start(block: (socket: Socket) -> Unit) {
+  override fun listen(block: (socket: TcpSocket) -> Unit) {
     scope.launch {
       while (true) {
         if (acceptDelayMillis > 0) {
           delay(acceptDelayMillis.toLong())
         }
-        val socket: KtorSocket = serverSocket.accept()
-        val socketImpl = SocketImpl(socket)
-        block(socketImpl)
+        val socket: WrappedSocket = serverSocket.accept()
+        val ktorSocket = KtorTcpSocket(socket)
+        block(ktorSocket)
 
         launch {
-          socketImpl.loop()
+          ktorSocket.loop()
         }
       }
     }
@@ -69,7 +70,7 @@ internal class KtorSocketServer(private val acceptDelayMillis: Int = 0, dispatch
   }
 }
 
-internal class SocketImpl(private val socket: KtorSocket) : Socket {
+internal class KtorTcpSocket(private val socket: WrappedSocket) : TcpSocket {
   private val receiveChannel = socket.openReadChannel()
   private val writeChannel = socket.openWriteChannel()
 
@@ -81,7 +82,8 @@ internal class SocketImpl(private val socket: KtorSocket) : Socket {
     while (true) {
       val ret = receiveChannel.readAvailable(buffer, 0, buffer.size)
       if (ret == -1) {
-        readQueue.close(IOException("Error reading socket"))
+        readQueue.close(IOException("Error reading socket", receiveChannel.closedCause))
+        break
       } else if (ret > 0) {
         readQueue.send(ByteArray(ret) { buffer[it] })
       }
@@ -115,8 +117,7 @@ internal class SocketImpl(private val socket: KtorSocket) : Socket {
     return readQueue.receive()
   }
 
-  override fun write(data: ByteArray): Boolean {
+  override fun send(data: ByteArray) {
     writeQueue.trySend(data)
-    return true
   }
 }

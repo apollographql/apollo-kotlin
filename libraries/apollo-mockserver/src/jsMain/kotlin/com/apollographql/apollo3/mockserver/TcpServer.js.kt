@@ -5,14 +5,14 @@ import kotlinx.coroutines.channels.Channel
 import node.buffer.Buffer
 import node.events.Event
 import node.net.AddressInfo
-import node.net.Server
 import node.net.createServer
 import okio.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import node.net.Socket as NetSocket
+import node.net.Server as WrappedServer
+import node.net.Socket as WrappedSocket
 
-internal class NodeSocket(private val netSocket: NetSocket) : Socket {
+internal class NodeTcpSocket(private val netSocket: WrappedSocket) : TcpSocket {
   private val readQueue = Channel<ByteArray>(Channel.UNLIMITED)
   init {
     netSocket.on(Event.DATA) { chunk ->
@@ -33,25 +33,27 @@ internal class NodeSocket(private val netSocket: NetSocket) : Socket {
     return readQueue.receive()
   }
 
-  // XXX: flow control
-  override fun write(data: ByteArray): Boolean {
-    return netSocket.write(data.toUint8Array())
+  override fun send(data: ByteArray) {
+    // Enqueue everything
+    netSocket.write(data.toUint8Array())
   }
 
   override fun close() {
-    readQueue.close()
+    /**
+     * [Event.CLOSE] will be invoked and the readQueue will be closed
+     */
     netSocket.destroy()
   }
 }
 
-internal class NodeSocketServer : SocketServer {
-  private var server: Server? = null
+internal class NodeTcpServer : TcpServer {
+  private var server: WrappedServer? = null
   private var address: Address? = null
 
 
-  override fun start(block: (socket: Socket) -> Unit) {
+  override fun listen(block: (socket: TcpSocket) -> Unit) {
     server = createServer { netSocket ->
-      block(NodeSocket(netSocket))
+      block(NodeTcpSocket(netSocket))
     }
 
     server!!.listen()
@@ -80,4 +82,4 @@ internal class NodeSocketServer : SocketServer {
   }
 }
 
-internal actual fun SocketServer(acceptDelayMillis: Int): SocketServer = NodeSocketServer()
+actual fun TcpServer(): TcpServer = NodeTcpServer()

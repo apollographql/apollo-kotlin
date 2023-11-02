@@ -2,19 +2,22 @@ package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import kotlinx.atomicfu.locks.reentrantLock
-import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
-import kotlin.jvm.JvmOverloads
+import kotlin.js.JsName
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 interface MockServer : Closeable {
   /**
@@ -29,16 +32,12 @@ interface MockServer : Closeable {
   suspend fun stop() = close()
 
   /**
-   * Closes the server. Might be asynchronous on some platforms.
+   * Closes the server.
+   *
+   * The locally bound address is freed immediately
+   * Active connections might stay alive after this call but will eventually terminate
    */
   override fun close()
-
-  /**
-   * The mock server handler used to respond to requests.
-   *
-   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueueString]).
-   */
-  val mockServerHandler: MockServerHandler
 
   /**
    * Enqueue a response
@@ -46,67 +45,132 @@ interface MockServer : Closeable {
   fun enqueue(mockResponse: MockResponse)
 
   /**
-   * Returns a request from the recorded requests or throws if no request has been received
+   * Return a request from the recorded requests or throw if no request has been received
+   *
+   * @see [awaitRequest] and [awaitWebSocketRequest]
    */
   fun takeRequest(): MockRequest
+
+  /**
+   * Wait for a request and return it
+   *
+   * @see [awaitRequest] and [awaitWebSocketRequest]
+   */
+  suspend fun awaitAnyRequest(timeout: Duration = 1.seconds): MockRequestBase
+
+  class Builder {
+    private var handler: MockServerHandler? = null
+    private var handlePings: Boolean? = null
+    private var tcpServer: TcpServer? = null
+
+    fun handler(handler: MockServerHandler) = apply {
+      this.handler = handler
+    }
+
+    fun handlePings(handlePings: Boolean) = apply {
+      this.handlePings = handlePings
+    }
+
+    fun tcpServer(tcpServer: TcpServer) = apply {
+      this.tcpServer = tcpServer
+    }
+
+    fun build(): MockServer {
+      return MockServerImpl(
+          handler ?: QueueMockServerHandler(),
+          handlePings ?: true,
+          tcpServer ?: TcpServer()
+      )
+    }
+  }
 }
 
-internal class MockServerImpl(override val mockServerHandler: MockServerHandler, acceptDelayMillis: Int) : MockServer {
-  private val server = SocketServer(acceptDelayMillis)
-  private val requests = mutableListOf<MockRequest>()
-  private val lock = reentrantLock()
+internal class MockServerImpl(
+    private val mockServerHandler: MockServerHandler,
+    private val handlePings: Boolean,
+    private val server: TcpServer,
+) : MockServer {
+  private val requests = Channel<MockRequestBase>(Channel.UNLIMITED)
   private val scope = CoroutineScope(SupervisorJob())
 
   init {
-    server.start(::onSocket)
+    server.listen(::onSocket)
   }
 
-  private fun onSocket(socket: Socket) {
+  private fun onSocket(socket: TcpSocket) {
     scope.launch {
       //println("Socket bound: ${url()}")
       try {
         handleRequests(mockServerHandler, socket) {
-          lock.withLock {
-            requests.add(it)
-          }
+          requests.trySend(it)
         }
       } catch (e: Exception) {
-        if (e is CancellationException) {
-          // We got cancelled from closing the server
-          throw e
-        }
+        when (e) {
+          is CancellationException -> {
+            // We got cancelled from closing the server => propagate the exception
+            throw e
+          }
 
-        println("handling request failed")
-        // There was a network exception
-        e.printStackTrace()
+          is ConnectionClosed -> {
+            println("Connection Closed")
+            // Nothing, ignore those
+          }
+
+          else -> {
+            println("handling request failed")
+            // There was a network exception while reading a request
+            e.printStackTrace()
+          }
+        }
       } finally {
         socket.close()
       }
     }
   }
 
-  private suspend fun handleRequests(handler: MockServerHandler, socket: Socket, onRequest: (MockRequest) -> Unit) {
+  private suspend fun handleRequests(handler: MockServerHandler, socket: TcpSocket, onRequest: (MockRequestBase) -> Unit) {
     val buffer = Buffer()
-    while (true) {
-      val request = readRequest(
-          object : Reader {
-            override val buffer: Buffer
-              get() = buffer
+    val reader = object : Reader {
+      override val buffer: Buffer
+        get() = buffer
 
-            override suspend fun fillBuffer() {
-              val data = socket.receive()
-              buffer.write(data)
-            }
-          }
-      )
+      override suspend fun fillBuffer() {
+        val data = socket.receive()
+        buffer.write(data)
+      }
+    }
+
+    while (true) {
+      val request = readRequest(reader)
       onRequest(request)
 
       val response = handler.handle(request)
 
       delay(response.delayMillis)
 
-      writeResponse(response, request.version) {
-        socket.write(it)
+      coroutineScope {
+        if (request is WebsocketMockRequest) {
+          launch {
+            readFrames(reader) { message ->
+              when {
+                handlePings && message is PingFrame -> {
+                  socket.send(pongFrame())
+                }
+
+                handlePings && message is PongFrame -> {
+                  // do nothing
+                }
+
+                else -> {
+                  request.messages.trySend(message)
+                }
+              }
+            }
+          }
+        }
+        writeResponse(response, request.version) {
+          socket.send(it)
+        }
       }
     }
   }
@@ -129,15 +193,24 @@ internal class MockServerImpl(override val mockServerHandler: MockServerHandler,
   }
 
   override fun takeRequest(): MockRequest {
-    return lock.withLock {
-      requests.removeFirst()
-    }
+    val result = requests.tryReceive()
+
+    return result.getOrThrow() as MockRequest
   }
 
+  override suspend fun awaitAnyRequest(timeout: Duration): MockRequestBase {
+    return withTimeout(timeout) {
+      requests.receive()
+    }
+  }
 }
 
-@JvmOverloads
-fun MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler(), acceptDelayMillis: Int = 0): MockServer = MockServerImpl(mockServerHandler, acceptDelayMillis)
+@JsName("createMockServer")
+fun MockServer(): MockServer = MockServerImpl(QueueMockServerHandler(), true, TcpServer())
+
+@Deprecated("Use MockServer.Builder() instead", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+fun MockServer(handler: MockServerHandler): MockServer = MockServerImpl(handler, true, TcpServer())
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -183,4 +256,38 @@ fun MockServer.enqueueMultipart(
   )
 
   return multipartBody
+}
+
+@ApolloExperimental
+interface WebSocketBody {
+  fun enqueueMessage(message: WebSocketMessage)
+}
+
+@ApolloExperimental
+fun MockServer.enqueueWebSocket(
+    headers: Map<String, String> = emptyMap(),
+): WebSocketBody {
+  val webSocketBody = WebSocketBodyImpl()
+  enqueue(
+      MockResponse.Builder()
+          .statusCode(101)
+          .body(webSocketBody.consumeAsFlow())
+          .headers(headers)
+          .addHeader("Upgrade", "websocket")
+          .addHeader("Connection", "upgrade")
+          .addHeader("Sec-WebSocket-Accept", "APOLLO_REPLACE_ME")
+          .addHeader("Sec-WebSocket-Protocol", "APOLLO_REPLACE_ME")
+          .build()
+  )
+
+  return webSocketBody
+}
+
+@ApolloExperimental
+suspend fun MockServer.awaitWebSocketRequest(timeout: Duration = 1.seconds): WebsocketMockRequest {
+  return awaitAnyRequest(timeout) as WebsocketMockRequest
+}
+
+suspend fun MockServer.awaitRequest(timeout: Duration = 1.seconds): MockRequest {
+  return awaitAnyRequest(timeout) as MockRequest
 }

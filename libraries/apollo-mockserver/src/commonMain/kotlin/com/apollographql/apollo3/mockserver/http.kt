@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.mockserver
 
 import okio.Buffer
+import okio.IOException
 
 internal interface Reader {
   val buffer: Buffer
@@ -34,7 +35,9 @@ private fun parseRequestLine(line: String): Triple<String, String, String> {
   return Triple(method, match.groupValues[2], match.groupValues[3])
 }
 
-internal suspend fun readRequest(reader: Reader): MockRequest {
+internal class ConnectionClosed(cause: Throwable?): Exception("client closed the connection", cause)
+
+internal suspend fun readRequest(reader: Reader): MockRequestBase {
   suspend fun nextLine(): String {
     while (true) {
       val newline = reader.buffer.indexOf('\n'.code.toByte())
@@ -57,6 +60,17 @@ internal suspend fun readRequest(reader: Reader): MockRequest {
     }
 
     return buffer2
+  }
+
+  /**
+   * Check if the client closed the connection
+   */
+  if (reader.buffer.size == 0L) {
+    try {
+      reader.fillBuffer()
+    } catch (e: IOException) {
+      throw ConnectionClosed(e)
+    }
   }
 
   var line = nextLine()
@@ -85,39 +99,50 @@ internal suspend fun readRequest(reader: Reader): MockRequest {
     "Transfer-Encoding $transferEncoding is not supported"
   }
 
-  val body = if (contentLength > 0) {
-    readBytes(contentLength)
-  } else if (transferEncoding == "chunked") {
-    val buffer2 = Buffer()
-    /**
-     * Read a source encoded in the "Transfer-Encoding: chunked" encoding.
-     * This format is a sequence of:
-     * - chunk-size (in hexadecimal) + CRLF
-     * - chunk-data + CRLF
-     */
-    while (true) {
-      val chunkSize = nextLine().trimEol().toLong(16)
-      if (chunkSize == 0L) {
-        check(nextLine() == "\r\n") // CRLF
-        break
-      } else {
-        buffer2.writeAll(readBytes(chunkSize))
-        check(nextLine() == "\r\n") // CRLF
+  val body = when {
+    headers.get("Upgrade") == "websocket" -> null
+    contentLength > 0 -> readBytes(contentLength)
+    transferEncoding == "chunked" -> {
+      val buffer2 = Buffer()
+      /**
+       * Read a source encoded in the "Transfer-Encoding: chunked" encoding.
+       * This format is a sequence of:
+       * - chunk-size (in hexadecimal) + CRLF
+       * - chunk-data + CRLF
+       */
+      while (true) {
+        val chunkSize = nextLine().trimEol().toLong(16)
+        if (chunkSize == 0L) {
+          check(nextLine() == "\r\n") // CRLF
+          break
+        } else {
+          buffer2.writeAll(readBytes(chunkSize))
+          check(nextLine() == "\r\n") // CRLF
+        }
       }
+      buffer2
     }
-    buffer2
-  } else {
-    Buffer()
+
+    else -> Buffer()
   }
 
 
-  return MockRequest(
-      method = method,
-      path = path,
-      version = version,
-      headers = headers,
-      body = body.readByteString()
-  )
+  return if (body != null) {
+    MockRequest(
+        method = method,
+        path = path,
+        version = version,
+        headers = headers,
+        body = body.readByteString()
+    )
+  } else {
+    WebsocketMockRequest(
+        method = method,
+        path = path,
+        version = version,
+        headers = headers,
+    )
+  }
 }
 
 private fun String.trimEol() = this.trimEnd('\r', '\n')

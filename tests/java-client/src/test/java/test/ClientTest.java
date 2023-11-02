@@ -3,7 +3,7 @@ package test;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.mockserver.MockRequest;
+import com.apollographql.apollo3.mockserver.MockRequestBase;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
@@ -99,7 +99,7 @@ public class ClientTest {
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     blockingQuery(apolloClient, GetRandomQuery.builder().build());
-    MockRequest mockRequest = mockServer.takeRequest();
+    MockRequestBase mockRequest = mockServer.takeRequest();
     Truth.assertThat(mockRequest.getHeaders().get("interceptor1")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor2")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor3")).isEqualTo("true");
@@ -130,7 +130,7 @@ public class ClientTest {
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     blockingQuery(apolloClient, GetRandomQuery.builder().build());
-    MockRequest mockRequest = mockServer.takeRequest();
+    MockRequestBase mockRequest = mockServer.takeRequest();
     Truth.assertThat(mockRequest.getHeaders().get("interceptor1")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor2")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor3")).isEqualTo("true");

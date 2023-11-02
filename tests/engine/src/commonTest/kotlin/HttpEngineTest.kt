@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
@@ -51,7 +52,7 @@ class HttpEngineTest {
             .addHeader("requestHeader2", "requestValue2")
             .build()
     )
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     assertEquals("requestValue1", request.headers["requestHeader1"])
     assertEquals("requestValue2", request.headers["requestHeader2"])
 
@@ -73,7 +74,7 @@ class HttpEngineTest {
             .body(ByteStringHttpBody("text/plain", "body"))
             .build()
     )
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
     assertEquals("POST", request.method)
     assertEquals("body", request.body.utf8())
     // With ktor we get "text/plain; charset=UTF-8"

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.Reader
 import com.apollographql.apollo3.mockserver.readRequest
 import com.apollographql.apollo3.testing.internal.runTest
@@ -8,20 +9,20 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class ReadRequestTest {
-  private fun String.toReader(): Reader {
-    val buffer = Buffer().writeUtf8(this)
+private fun String.toReader(): Reader {
+  val buffer = Buffer().writeUtf8(this)
 
-    return object : Reader {
-      override val buffer: Buffer
-        get() = buffer
+  return object : Reader {
+    override val buffer: Buffer
+      get() = buffer
 
-      override suspend fun fillBuffer() {
-        error("Buffer is exhausted")
-      }
+    override suspend fun fillBuffer() {
+      error("Buffer is exhausted")
     }
   }
+}
 
+class ReadRequestTest {
   @Test
   fun readGetRequest() = runTest {
     val request = """
@@ -34,6 +35,7 @@ class ReadRequestTest {
         .joinToString(separator = "\r\n", postfix = "\r\n\r\n")
 
     val recordedRequest = readRequest(request.toReader())
+
     assertNotNull(recordedRequest)
     assertEquals("GET", recordedRequest.method)
     assertEquals("/", recordedRequest.path)
@@ -43,7 +45,7 @@ class ReadRequestTest {
         "User-Agent" to "curl/7.64.1",
         "Accept" to "*/*"
     ), recordedRequest.headers)
-    assertEquals(0, recordedRequest.body.size)
+    assertEquals(0, (recordedRequest as MockRequest).body.size)
   }
 
   @Test
@@ -61,6 +63,6 @@ class ReadRequestTest {
 
     assertNotNull(recordedRequest)
     assertEquals("POST", recordedRequest.method)
-    assertEquals("Hello world", recordedRequest.body.utf8())
+    assertEquals("Hello world", (recordedRequest as MockRequest).body.utf8())
   }
 }

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.internal.runTest
@@ -57,13 +58,13 @@ class CookiesTest {
     // first query should set the cookie
     apolloClient.query(HeroNameQuery()).execute()
     // consume the first request
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
 
     mockServer.enqueueString(json)
     // first query should send the cookie
     apolloClient.query(HeroNameQuery()).execute()
 
-    val cookie = mockServer.takeRequest().headers["Cookie"]
+    val cookie = mockServer.awaitRequest().headers["Cookie"]
     assertEquals("yummy_cookie=choco", cookie)
   }
 }

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -44,7 +45,7 @@ class HttpRequestComposerTest {
       apolloClient.query(AllPlanetsQuery()).addHttpHeader("test", "is passing").execute()
     }
 
-    val response = mockServer.takeRequest()
+    val response = mockServer.awaitRequest()
     assertEquals("is passing", response.headers["test"])
   }
 }

@@ -8,6 +8,7 @@ import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
@@ -38,7 +39,7 @@ class AutoPersistedQueriesTest {
 
     apolloClient.query(HeroNameQuery()).execute()
 
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
 
     assertFalse(request.body.utf8().contains("query"))
   }
@@ -53,7 +54,7 @@ class AutoPersistedQueriesTest {
         .enableAutoPersistedQueries(false)
         .execute()
 
-    val request = mockServer.takeRequest()
+    val request = mockServer.awaitRequest()
 
     assertTrue(request.method.lowercase() == "post")
     assertTrue(request.body.utf8().contains("query"))
@@ -78,9 +79,9 @@ class AutoPersistedQueriesTest {
 
     apolloClient.query(HeroNameQuery()).execute()
 
-    var request = mockServer.takeRequest()
+    var request = mockServer.awaitRequest()
     assertFalse(request.body.utf8().contains("query"))
-    request = mockServer.takeRequest()
+    request = mockServer.awaitRequest()
     assertTrue(request.body.utf8().contains("query"))
   }
 
@@ -106,9 +107,9 @@ class AutoPersistedQueriesTest {
 
     apolloClient.mutation(UpdateReviewMutation("100", ReviewInput(5, Optional.Absent, ColorInput(Optional.Absent, Optional.Absent, Optional.Absent)))).execute()
 
-    var request = mockServer.takeRequest()
+    var request = mockServer.awaitRequest()
     assertEquals("POST", request.method)
-    request = mockServer.takeRequest()
+    request = mockServer.awaitRequest()
     assertEquals("POST", request.method)
   }
 
