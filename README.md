@@ -9,7 +9,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 [![Gradle Plugin](https://img.shields.io/gradle-plugin-portal/v/com.apollographql.apollo3)](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 [![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo3/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo3/)
-[![Revved up by Gradle Enterprise](https://img.shields.io/badge/Revved%20up%20by-Gradle%20Enterprise-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.apollographql.com/scans)
+[![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.apollographql.com/scans)
 
 Apollo Kotlin (formerly known as Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
 
