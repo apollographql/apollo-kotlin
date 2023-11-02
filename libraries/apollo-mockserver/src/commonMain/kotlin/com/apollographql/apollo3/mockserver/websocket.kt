@@ -248,6 +248,7 @@ internal fun MockResponse.replaceWebSocketHeaders(request: MockRequestBase): Moc
 }
 
 internal fun webSocketAccept(request: MockRequestBase): String {
+  // See https://www.rfc-editor.org/rfc/rfc6455#section-1.3
   val guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
   val key = request.headers.entries.first { it.key.lowercase() == "sec-websocket-key" }.value
 
