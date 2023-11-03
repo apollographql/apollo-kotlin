@@ -3,7 +3,6 @@
 
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
@@ -13,7 +12,6 @@ import com.apollographql.apollo3.ast.internal.ParserException
 import com.apollographql.apollo3.ast.internal.validateSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import okio.Buffer
 import okio.BufferedSource
 import okio.Path
 import okio.buffer
@@ -79,22 +77,14 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
 }
 
 class ParserOptions private constructor(
-    @Deprecated("This is used as a fallback the time to stabilize the new parser but will be removed")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    val useAntlr: Boolean,
     val allowEmptyDocuments: Boolean,
     val allowClientControlledNullability: Boolean,
     val withSourceLocation: Boolean,
 ) {
   class Builder {
-    var useAntlr: Boolean = false
     var allowEmptyDocuments = true
     var allowClientControlledNullability = true
     var withSourceLocation = true
-
-    fun useAntlr(useAntlr: Boolean) = apply {
-      this.useAntlr = useAntlr
-    }
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -110,7 +100,6 @@ class ParserOptions private constructor(
 
     fun build(): ParserOptions {
       return ParserOptions(
-          useAntlr = useAntlr,
           allowEmptyDocuments = allowEmptyDocuments,
           allowClientControlledNullability = allowClientControlledNullability,
           withSourceLocation = withSourceLocation
@@ -123,18 +112,8 @@ class ParserOptions private constructor(
   }
 }
 
-internal expect fun parseDocumentWithAntlr(source: BufferedSource, filePath: String?): GQLResult<GQLDocument>
-internal expect fun parseValueWithAntlr(source: BufferedSource, filePath: String?): GQLResult<GQLValue>
-internal expect fun parseTypeWithAntlr(source: BufferedSource, filePath: String?): GQLResult<GQLType>
-internal expect fun parseSelectionsWithAntlr(source: BufferedSource, filePath: String?): GQLResult<List<GQLSelection>>
-
 fun String.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    Buffer().writeUtf8(this).parseAsGQLDocument(options = options)
-  } else {
-    parseInternal(null, options) { parseDocument() }
-  }
+  return parseInternal(null, options) { parseDocument() }
 }
 
 fun String.toGQLDocument(options: ParserOptions = ParserOptions.Default): GQLDocument {
@@ -142,12 +121,7 @@ fun String.toGQLDocument(options: ParserOptions = ParserOptions.Default): GQLDoc
 }
 
 fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    Buffer().writeUtf8(this).parseAsGQLValue(options = options)
-  } else {
-    parseInternal(null, options) { parseValue() }
-  }
+  return parseInternal(null, options) { parseValue() }
 }
 
 fun String.toGQLValue(options: ParserOptions = ParserOptions.Default): GQLValue {
@@ -155,12 +129,7 @@ fun String.toGQLValue(options: ParserOptions = ParserOptions.Default): GQLValue 
 }
 
 fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    Buffer().writeUtf8(this).parseAsGQLType(options = options)
-  } else {
-    parseInternal(null, options) { parseType() }
-  }
+  return parseInternal(null, options) { parseType() }
 }
 
 fun String.toGQLType(options: ParserOptions = ParserOptions.Default): GQLType {
@@ -168,8 +137,6 @@ fun String.toGQLType(options: ParserOptions = ParserOptions.Default): GQLType {
 }
 
 internal fun String.parseAsGQLNullability(options: ParserOptions = ParserOptions.Default): GQLResult<GQLNullability> {
-  @Suppress("DEPRECATION")
-  check(!options.useAntlr)
   return parseInternal(null, options) { parseNullability() ?: error("No nullability") }
 }
 
@@ -178,12 +145,7 @@ fun String.toGQLNullability(options: ParserOptions = ParserOptions.Default): GQL
 }
 
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    Buffer().writeUtf8(this).parseAsGQLSelections(options = options)
-  } else {
-    parseInternal(null, options) { parseSelections() }
-  }
+  return parseInternal(null, options) { parseSelections() }
 }
 
 fun String.toGQLSelections(options: ParserOptions = ParserOptions.Default): List<GQLSelection> {
@@ -214,12 +176,7 @@ fun Path.toGQLDocument(options: ParserOptions = ParserOptions.Default, allowJson
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLDocument(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    parseDocumentWithAntlr(this, filePath)
-  } else {
-    parseInternal(filePath, options) { parseDocument() }
-  }
+  return parseInternal(filePath, options) { parseDocument() }
 }
 
 /**
@@ -229,12 +186,7 @@ fun BufferedSource.parseAsGQLDocument(filePath: String? = null, options: ParserO
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    parseValueWithAntlr(this, filePath)
-  } else {
-    parseInternal(filePath, options) { parseValue() }
-  }
+  return parseInternal(filePath, options) { parseValue() }
 }
 
 /**
@@ -244,12 +196,7 @@ fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOpti
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
-  @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    parseTypeWithAntlr(this, filePath)
-  } else {
-    parseInternal(filePath, options) { parseType() }
-  }
+  return parseInternal(filePath, options) { parseType() }
 }
 
 /**
@@ -263,11 +210,7 @@ fun BufferedSource.parseAsGQLSelections(
     options: ParserOptions = ParserOptions.Default,
 ): GQLResult<List<GQLSelection>> {
   @Suppress("DEPRECATION")
-  return if (options.useAntlr) {
-    parseSelectionsWithAntlr(this, filePath)
-  } else {
-    parseInternal(filePath, options) { parseSelections() }
-  }
+  return parseInternal(filePath, options) { parseSelections() }
 }
 
 /**

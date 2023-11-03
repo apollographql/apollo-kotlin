@@ -232,11 +232,11 @@ fun setVersionInIntelliJPlugin(version: String) {
   }
   File("intellij-plugin/src/test/testData/migration/v3-to-v4/updateGradleDependenciesInLibsVersionsToml_after.versions.toml").let { file ->
     file.writeText(file.readText()
-        .replace(Regex("""com\.apollographql\.apollo3:apollo-runtime:4(.+)""")) {
-          """com.apollographql.apollo3:apollo-runtime:$version"""
+        .replace(Regex(""""com\.apollographql\.apollo3:apollo-runtime:4(.+)"""")) {
+          """"com.apollographql.apollo3:apollo-runtime:$version""""
         }
-        .replace(Regex("""com\.apollographql\.apollo3:4(.+)""")) {
-          """com.apollographql.apollo3:$version"""
+        .replace(Regex(""""com\.apollographql\.apollo3:4(.+)"""")) {
+          """"com.apollographql.apollo3:$version""""
         }
         .replace(Regex(""""4(.+)"""")) {
           """"$version""""

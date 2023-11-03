@@ -2,14 +2,14 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
-import util.TestUtils
-import util.TestUtils.withTestProject
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
+import util.TestUtils
+import util.TestUtils.withTestProject
 import java.io.File
 
 class GradleVersionTests {
@@ -23,6 +23,12 @@ class GradleVersionTests {
 
   @Test
   fun `minGradleVersion is working and does not show warnings`() {
+
+    if (System.getenv("APOLLO_RELOCATE_JAR") == "false") {
+      // Fails with java.lang.NoClassDefFoundError: kotlin/enums/EnumEntriesKt without relocation
+      return
+    }
+
     withTestProject("gradle-min-version") { dir ->
       dir.setApolloPluginVersion()
       val result = TestUtils.executeGradleWithVersion(dir, MIN_GRADLE_VERSION, "generateApolloSources")

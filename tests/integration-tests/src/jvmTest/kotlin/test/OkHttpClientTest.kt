@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import kotlinx.coroutines.runBlocking
@@ -33,7 +34,7 @@ class OkHttpClientTest {
         apolloClient.query(HeroNameQuery()).execute()
       }
 
-      assertEquals("Test-Value", mockServer.takeRequest().headers["Test-Header"])
+      assertEquals("Test-Value", mockServer.awaitRequest().headers["Test-Header"])
     }
   }
 }

@@ -6,10 +6,10 @@ import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.mockserver.JvmMockServer;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.google.common.truth.Truth;
@@ -41,7 +41,7 @@ public class BatchingTest {
 
   @Before
   public void before() {
-    mockServer = new JvmMockServer();
+    mockServer = MockServerKt.MockServer();
 
     /*
       Because url doesn't suspend on the JVM, we can just use the return value

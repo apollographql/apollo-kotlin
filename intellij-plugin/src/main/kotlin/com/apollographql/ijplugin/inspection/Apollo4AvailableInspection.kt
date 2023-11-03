@@ -17,6 +17,7 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -32,6 +33,9 @@ import org.toml.lang.psi.ext.kind
 private const val apollo3 = "com.apollographql.apollo3"
 
 class Apollo4AvailableInspection : LocalInspectionTool() {
+  // XXX kts files are not highlighted in tests
+  private val buildGradleFileName = if (isUnitTestMode()) "build.gradle.kt" else "build.gradle.kts"
+
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : PsiElementVisitor() {
       private val registeredTomlVersionValues = mutableSetOf<PsiElement>()
@@ -43,7 +47,7 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
             visitVersionsToml(element, holder)
           }
 
-          element.containingFile.name == "build.gradle.kts" && element is KtCallExpression -> {
+          element.containingFile.name == buildGradleFileName && element is KtCallExpression -> {
             visitBuildGradleKts(element, holder)
           }
         }

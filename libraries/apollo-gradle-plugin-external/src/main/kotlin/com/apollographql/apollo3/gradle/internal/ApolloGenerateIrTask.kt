@@ -3,7 +3,6 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.IrOptions
 import com.apollographql.apollo3.compiler.defaultAddTypename
-import com.apollographql.apollo3.compiler.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.defaultFieldsOnDisjointTypesMustMerge
@@ -71,10 +70,6 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
   @get:OutputFile
   abstract val outputFile: RegularFileProperty
 
-  @get:Input
-  @get:Optional
-  abstract val useAntlr: Property<Boolean>
-
   @TaskAction
   fun taskAction() {
     val irOperations = upstreamIrFiles.map { it.absolutePath to it.toIrOperations() }
@@ -92,7 +87,6 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.get(),
-        useAntlr = useAntlr.getOrElse(false)
     )
 
     ApolloCompiler.buildIrOperations(options).writeTo(outputFile.asFile.get())

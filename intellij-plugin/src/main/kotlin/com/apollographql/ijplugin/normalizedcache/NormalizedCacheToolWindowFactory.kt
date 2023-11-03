@@ -8,6 +8,8 @@ import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Nul
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Reference
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.StringValue
+import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons
@@ -62,7 +64,6 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
-import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import org.sqlite.SQLiteException
 import java.awt.Color
@@ -93,9 +94,6 @@ import javax.swing.tree.TreePath
 
 
 class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposable {
-  // TODO remove when feature is complete
-  override fun isApplicable(project: Project) = isApplicationInternalMode()
-
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val newTabAction = object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.newTab"), AllIcons.General.Add) {
       override fun actionPerformed(e: AnActionEvent) {
@@ -159,6 +157,18 @@ class NormalizedCacheWindowPanel(
       emptyText.text = ApolloBundle.message("normalizedCacheViewer.empty.message")
       emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.openFile"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
         pickFile()
+      }
+      if (isAndroidPluginPresent) {
+        emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.pullFromDevice"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
+          PullFromDeviceDialog(
+              project,
+              onFilePullError = { throwable ->
+                showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.error"), content = throwable.message
+                    ?: "", type = NotificationType.ERROR)
+              },
+              onFilePullSuccess = ::openFile,
+          ).show()
+        }
       }
 
       val defaultBackground = background
@@ -499,8 +509,7 @@ class NormalizedCacheWindowPanel(
 
   private fun pickFile() {
     val virtualFile = FileChooser.chooseFiles(
-        FileChooserDescriptor(true, false, false, false, false, false)
-            .withFileFilter { it.extension == "db" },
+        FileChooserDescriptor(true, false, false, false, false, false),
         project,
         null
     ).firstOrNull() ?: return
@@ -508,6 +517,7 @@ class NormalizedCacheWindowPanel(
   }
 
   private fun openFile(file: File) {
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenFile())
     setContent(createLoadingContent())
     object : Task.Backgroundable(
         project,

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
-import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,7 +16,7 @@ class SocketTest {
 
     val builder = StringBuilder()
     0.until(10000).forEach {
-      builder.append(Random.nextInt())
+      builder.append("aa")
     }
 
     mockServer.enqueueString(builder.toString())

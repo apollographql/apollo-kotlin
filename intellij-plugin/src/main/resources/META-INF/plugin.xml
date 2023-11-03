@@ -13,6 +13,7 @@
   <depends>com.intellij.gradle</depends>
   <depends>com.intellij.lang.jsgraphql</depends>
   <depends>org.toml.lang</depends>
+  <depends optional="true" config-file="com.apollographql.ijplugin-android.xml">org.jetbrains.android</depends>
 
   <resource-bundle>messages.ApolloBundle</resource-bundle>
 
@@ -266,6 +267,14 @@
     <action
         id="DownloadSchemaAction"
         class="com.apollographql.ijplugin.gradle.DownloadSchemaAction"
+    >
+      <add-to-group group-id="ApolloToolsActionGroup" />
+    </action>
+
+    <!-- Tools / Apollo / Normalized Cache Viewer -->
+    <action
+        id="ShowNormalizedCacheToolWindowAction"
+        class="com.apollographql.ijplugin.normalizedcache.ShowNormalizedCacheToolWindowAction"
     >
       <add-to-group group-id="ApolloToolsActionGroup" />
     </action>

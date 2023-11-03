@@ -1,14 +1,30 @@
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.mockserver.MockRequest
+import com.apollographql.apollo3.mockserver.Reader
 import com.apollographql.apollo3.mockserver.readRequest
+import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+private fun String.toReader(): Reader {
+  val buffer = Buffer().writeUtf8(this)
+
+  return object : Reader {
+    override val buffer: Buffer
+      get() = buffer
+
+    override suspend fun fillBuffer() {
+      error("Buffer is exhausted")
+    }
+  }
+}
+
 class ReadRequestTest {
   @Test
-  fun readGetRequest() {
+  fun readGetRequest() = runTest {
     val request = """
       GET / HTTP/2
       Host: github.com
@@ -18,7 +34,8 @@ class ReadRequestTest {
         .split("\n")
         .joinToString(separator = "\r\n", postfix = "\r\n\r\n")
 
-    val recordedRequest = readRequest(Buffer().apply { writeUtf8(request) })
+    val recordedRequest = readRequest(request.toReader())
+
     assertNotNull(recordedRequest)
     assertEquals("GET", recordedRequest.method)
     assertEquals("/", recordedRequest.path)
@@ -28,11 +45,11 @@ class ReadRequestTest {
         "User-Agent" to "curl/7.64.1",
         "Accept" to "*/*"
     ), recordedRequest.headers)
-    assertEquals(0, recordedRequest.body.size)
+    assertEquals(0, (recordedRequest as MockRequest).body.size)
   }
 
   @Test
-  fun readPostRequest() {
+  fun readPostRequest() = runTest {
     val request = """
       POST / HTTP/2
       Content-Length: 11
@@ -42,9 +59,10 @@ class ReadRequestTest {
         .split("\n")
         .joinToString(separator = "\r\n", postfix = "")
 
-    val recordedRequest = readRequest(Buffer().apply { writeUtf8(request) })
+    val recordedRequest = readRequest(request.toReader())
+
     assertNotNull(recordedRequest)
     assertEquals("POST", recordedRequest.method)
-    assertEquals("Hello world", recordedRequest.body.utf8())
+    assertEquals("Hello world", (recordedRequest as MockRequest).body.utf8())
   }
 }

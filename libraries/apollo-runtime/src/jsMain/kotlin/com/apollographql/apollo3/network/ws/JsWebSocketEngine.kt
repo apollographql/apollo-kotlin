@@ -64,7 +64,6 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
         //close the message channel as well, since it is idempotent there is no harm
         messageChannel.close()
       }
-
     }
   }
 

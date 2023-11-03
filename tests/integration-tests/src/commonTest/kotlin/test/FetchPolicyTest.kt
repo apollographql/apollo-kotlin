@@ -30,6 +30,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
@@ -594,9 +595,9 @@ class FetchPolicyTest {
     /**
      * Check that 3 network requests have been made
      */
-    mockServer.takeRequest()
-    mockServer.takeRequest()
-    mockServer.takeRequest()
+    mockServer.awaitRequest()
+    mockServer.awaitRequest()
+    mockServer.awaitRequest()
 
     job.cancel()
     channel.cancel()

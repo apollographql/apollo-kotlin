@@ -9,7 +9,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 [![Gradle Plugin](https://img.shields.io/gradle-plugin-portal/v/com.apollographql.apollo3)](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 [![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo3/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo3/)
-[![Revved up by Gradle Enterprise](https://img.shields.io/badge/Revved%20up%20by-Gradle%20Enterprise-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.apollographql.com/scans)
+[![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.apollographql.com/scans)
 
 Apollo Kotlin (formerly known as Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
 
@@ -84,7 +84,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "4.0.0-beta.1"
+  id("com.apollographql.apollo3") version "4.0.0-beta.2"
 }
 ```
 
@@ -92,7 +92,7 @@ Add the runtime dependency:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.1")
+  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.2")
 }
 ```
 
@@ -183,7 +183,7 @@ Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollo
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo3") version "4.0.0-beta.1"
+  id("com.apollographql.apollo3") version "4.0.0-beta.2"
 }
 
 repositories {
@@ -191,13 +191,13 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.1")
+  implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.2")
 
   // optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:4.0.0-beta.1")
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:4.0.0-beta.2")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
-  implementation("com.apollographql.apollo3:apollo-api:4.0.0-beta.1")
+  implementation("com.apollographql.apollo3:apollo-api:4.0.0-beta.2")
 }
 ```
 
@@ -228,7 +228,7 @@ pluginManagement {
 }
 ```
 
-And then use the `4.0.0-beta.2-SNAPSHOT` version for the plugin and libraries.
+And then use the `4.0.0-beta.3-SNAPSHOT` version for the plugin and libraries.
 
 ### Android Studio / IntelliJ plugin
 

@@ -26,7 +26,7 @@ class Apollo4AvailableInspectionTest : ApolloTestCase() {
 
   @Test
   fun testInspectionBuildGradleKts() {
-    myFixture.openFileInEditor(myFixture.copyFileToProject("Apollo4Available.gradle.kts", "build.gradle.kts"))
+    myFixture.openFileInEditor(myFixture.createFile("build.gradle.kt", loadKtsAsKt("Apollo4Available.gradle.kts")))
     val highlightInfos = doHighlighting().filter { it.description == "Apollo Kotlin 4 is available" }
     assertSize(4, highlightInfos)
     assertTrue(highlightInfos[0].line == 6)

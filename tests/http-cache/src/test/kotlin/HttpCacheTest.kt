@@ -7,6 +7,7 @@ import com.apollographql.apollo3.cache.http.isFromHttpCache
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.enqueueData
@@ -183,7 +184,7 @@ class HttpCacheTest {
           .execute()
     }
 
-    assertEquals("Test-Value", mockServer.takeRequest().headers["Test-Header"])
+    assertEquals("Test-Value", mockServer.awaitRequest().headers["Test-Header"])
   }
 
   @Test
@@ -203,7 +204,7 @@ class HttpCacheTest {
           .execute()
 
       // The HTTP request should hit the network
-      mockServer.takeRequest()
+      mockServer.awaitRequest()
     }
   }
 

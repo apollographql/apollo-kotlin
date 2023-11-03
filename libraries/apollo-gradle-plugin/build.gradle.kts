@@ -166,6 +166,7 @@ fun createTests(javaVersion: Int) {
     testClassesDirs = sourceSet.output.classesDirs
     classpath = configurations[sourceSet.runtimeClasspathConfigurationName] + sourceSet.output
 
+    environment("APOLLO_RELOCATE_JAR", System.getenv("APOLLO_RELOCATE_JAR"))
     setTestToolchain(project, this, javaVersion)
   }
 

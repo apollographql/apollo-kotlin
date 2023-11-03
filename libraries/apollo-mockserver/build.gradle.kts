@@ -22,7 +22,7 @@ kotlin {
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(libs.kotlinx.nodejs)
+        implementation(libs.kotlin.node)
       }
     }
 
@@ -47,6 +47,7 @@ kotlin {
         implementation(libs.ktor.server.core)
         implementation(libs.ktor.server.cio)
         implementation(libs.ktor.server.websockets)
+        implementation(libs.ktor.network)
       }
     }
   }

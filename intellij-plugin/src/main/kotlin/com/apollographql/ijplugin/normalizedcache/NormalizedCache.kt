@@ -25,5 +25,13 @@ data class NormalizedCache(
     data class Reference(val key: String) : FieldValue
   }
 
-  fun sorted() = NormalizedCache(records.sortedWith { o1, o2 -> if (o1.key == "QUERY_ROOT") -1 else o1.key.compareTo(o2.key, ignoreCase = true) })
+  fun sorted() = NormalizedCache(
+      records.sortedWith { o1, o2 ->
+        when {
+          o1.key == "QUERY_ROOT" -> -1
+          o2.key == "QUERY_ROOT" -> 1
+          else -> o1.key.compareTo(o2.key, ignoreCase = true)
+        }
+      }
+  )
 }

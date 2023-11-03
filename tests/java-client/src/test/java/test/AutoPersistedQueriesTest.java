@@ -1,6 +1,6 @@
 package test;
 
-import com.apollographql.apollo3.mockserver.JvmMockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.mockserver.MockRequest;
@@ -27,7 +27,7 @@ public class AutoPersistedQueriesTest {
 
   @Before
   public void setup() {
-    mockServer = new JvmMockServer();
+    mockServer = MockServerKt.MockServer();
 
     /**
      * Because url doesn't suspend on the JVM, we can just use the return value

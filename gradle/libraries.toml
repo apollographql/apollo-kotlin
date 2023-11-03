@@ -12,14 +12,13 @@ android-sdkversion-compose-min = "21"
 android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
-antlr = "4.12.0"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "4.0.0-beta.2-SNAPSHOT"
+apollo = "4.0.0-beta.3-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-alpha.3"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-compose-compiler = "1.5.4-dev-k1.9.20-RC-1edce5fd625"
+compose-compiler = "1.5.4-dev-k1.9.20-50f08dfa4b4"
 compose = "1.5.1"
 dokka = "1.9.0"
 guava = "31.1-jre"
@@ -27,13 +26,13 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
 kotlin-plugin-min = "1.8.0"
-kotlin-plugin = "1.9.20-RC"
-kotlin-plugin-max = "1.9.20-RC"
-kotlin-stdlib = "1.9.20-RC"
+kotlin-plugin = "1.9.20"
+kotlin-plugin-max = "1.9.20"
+kotlin-stdlib = "1.9.20"
 kotlinx-coroutines = "1.7.3"
 kotlinx-datetime = "0.4.1"
 kotlinx-serialization-runtime = "1.5.0"
-ksp = "1.9.20-RC-1.0.13"
+ksp = "1.9.20-1.0.13"
 ktor = "2.3.3"
 okhttp = "4.11.0"
 rx-android = "2.0.1"
@@ -56,8 +55,6 @@ androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
-antlr = { group = "org.antlr", name = "antlr4", version.ref = "antlr" }
-antlr-runtime = { group = "org.antlr", name = "antlr4-runtime", version.ref = "antlr" }
 apollo-adapters = { group = "com.apollographql.apollo3", name = "apollo-adapters", version.ref = "apollo" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version.ref = "apollo" }
@@ -117,7 +114,7 @@ intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
-kotlin-compiletesting = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing", version = "1.5.0" }
+kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.4.0" }
 graphql-java = "com.graphql-java:graphql-java:20.4"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
@@ -142,7 +139,7 @@ kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlinx-nodejs = { group = "org.jetbrains.kotlinx", name = "kotlinx-nodejs", version = "0.0.7" }
+kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
@@ -158,6 +155,7 @@ ktor-client-websockets = { group = "io.ktor", name = "ktor-client-websockets", v
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
 ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
+ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }

@@ -113,22 +113,7 @@ class CodegenTest {
      */
     val compileDuration = measureTime {
       if (parameters.generateKotlinModels) {
-        /**
-         * Some tests use enum entries which are only available in Kotlin 1.9
-         * TODO: Remove this once kotlin-compile-testing with Kotlin 1.9 is released
-         */
-        val enableEnumEntriesLanguageFeature: Boolean
-        val allWarningsAsErrors: Boolean
-        if (folder.name == "enum_field") {
-          enableEnumEntriesLanguageFeature = true
-          allWarningsAsErrors = false
-        } else {
-          enableEnumEntriesLanguageFeature = false
-          allWarningsAsErrors = true
-        }
-
-
-        KotlinCompiler.assertCompiles(actualFiles.toSet(), allWarningsAsErrors, enableEnumEntriesLanguageFeature)
+        KotlinCompiler.assertCompiles(actualFiles.toSet())
       } else {
         JavaCompiler.assertCompiles(actualFiles.toSet())
       }

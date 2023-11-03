@@ -1,19 +1,29 @@
 package com.apollographql.apollo3.mockserver
 
-internal expect class QueueMockServerHandler() : MockServerHandler {
-  fun enqueue(response: MockResponse)
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 
-  override fun handle(request: MockRequest): MockResponse
-}
 
-internal class CommonQueueMockServerHandler : MockServerHandler {
+internal class QueueMockServerHandler : MockServerHandler {
+
+  private val lock = reentrantLock()
   private val queue = ArrayDeque<MockResponse>()
 
   fun enqueue(response: MockResponse) {
-    queue.add(response)
+    lock.withLock {
+      queue.add(response)
+    }
   }
 
-  override fun handle(request: MockRequest): MockResponse {
-    return queue.removeFirstOrNull() ?: error("No more responses in queue")
+  override fun handle(request: MockRequestBase): MockResponse {
+    var response = lock.withLock {
+      queue.removeFirstOrNull() ?: error("No more responses in queue")
+    }
+
+    if (request is WebsocketMockRequest) {
+      response = response.replaceWebSocketHeaders(request)
+    }
+
+    return response
   }
 }

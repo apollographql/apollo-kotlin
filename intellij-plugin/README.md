@@ -13,6 +13,7 @@ This plugin for Android Studio and IntelliJ helps you work with the
 - Integration with the [GraphQL IntelliJ Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql): the structure of the Apollo project is automatically contributed, so there is no need to create a `graphql.config.yml` / `.graphqlconfig` file
 - Navigation Kotlin code ⇄ GraphQL definitions
 - Unused operations and fields highlighting
+- Normalized cache viewer
 - Migration helpers:
   - Apollo Android 2.x → Apollo Kotlin 3.x
   - Apollo Kotlin 3.x → Apollo Kotlin 4.x
