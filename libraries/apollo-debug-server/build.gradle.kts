@@ -1,7 +1,5 @@
 import com.android.build.gradle.tasks.BundleAar
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
@@ -13,6 +11,8 @@ plugins {
 apolloLibrary(
     javaModuleName = "com.apollographql.apollo3.debugserver",
     withLinux = false,
+    withApple = false,
+    withJs = false,
 )
 
 kotlin {
@@ -62,14 +62,6 @@ android {
 
 // KMP ksp configuration inspired by https://medium.com/@actiwerks/setting-up-kotlin-multiplatform-with-ksp-7f598b1681bf
 tasks.withType<KotlinCompile>().configureEach {
-  dependsOn("kspCommonMainKotlinMetadata")
-}
-
-tasks.withType<Kotlin2JsCompile>().configureEach {
-  dependsOn("kspCommonMainKotlinMetadata")
-}
-
-tasks.withType<KotlinNativeCompile>().configureEach {
   dependsOn("kspCommonMainKotlinMetadata")
 }
 
