@@ -25,6 +25,7 @@ kotlin {
 
         // apollo-execution is not published: we bundle it into the aar artifact
         compileOnly(project(":apollo-execution"))
+        api(project(":apollo-ast"))
       }
     }
 
