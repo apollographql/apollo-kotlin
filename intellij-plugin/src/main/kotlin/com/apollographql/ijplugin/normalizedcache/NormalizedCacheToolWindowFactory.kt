@@ -1,6 +1,8 @@
 package com.apollographql.ijplugin.normalizedcache
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient
+import com.apollographql.ijplugin.apollodebugserver.normalizedCacheSimpleName
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.BooleanValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.CompositeValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ListValue
@@ -8,6 +10,8 @@ import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Nul
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Reference
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.StringValue
+import com.apollographql.ijplugin.normalizedcache.provider.ApolloDebugNormalizedCacheProvider
+import com.apollographql.ijplugin.normalizedcache.provider.DatabaseNormalizedCacheProvider
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logw
@@ -64,6 +68,7 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListUiUtil
 import com.intellij.util.ui.UIUtil
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 import org.sqlite.SQLiteException
 import java.awt.Color
@@ -136,7 +141,7 @@ class NormalizedCacheToolWindowFactory : ToolWindowFactory, DumbAware, Disposabl
 class NormalizedCacheWindowPanel(
     private val project: Project,
     private val setTabName: (tabName: String) -> Unit,
-) : SimpleToolWindowPanel(false, true) {
+) : SimpleToolWindowPanel(false, true), Disposable {
   private lateinit var normalizedCache: NormalizedCache
 
   private lateinit var recordList: JBList<NormalizedCache.Record>
@@ -147,6 +152,10 @@ class NormalizedCacheWindowPanel(
 
   private val history = History<NormalizedCache.Record>()
   private var updateHistory = true
+
+  private var apolloDebugClient: ApolloDebugClient? = null
+  private var apolloDebugCacheId: String? = null
+  private var isRefreshing = false
 
   init {
     setContent(createEmptyContent())
@@ -162,11 +171,12 @@ class NormalizedCacheWindowPanel(
         emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.pullFromDevice"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
           PullFromDeviceDialog(
               project,
-              onFilePullError = { throwable ->
+              onPullError = { throwable ->
                 showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.error"), content = throwable.message
                     ?: "", type = NotificationType.ERROR)
               },
               onFilePullSuccess = ::openFile,
+              onApolloDebugCacheSelected = ::openApolloDebugNormalizedCache,
           ).show()
         }
       }
@@ -260,6 +270,25 @@ class NormalizedCacheWindowPanel(
       add(CommonActionsManager.getInstance().createCollapseAllAction(fieldTreeExpander, this@NormalizedCacheWindowPanel).apply {
         getTemplatePresentation().setDescription(ApolloBundle.message("normalizedCacheViewer.toolbar.collapseAll"))
       })
+      addSeparator()
+      add(object : DumbAwareAction(ApolloBundle.messagePointer("normalizedCacheViewer.toolbar.refresh"), AllIcons.Actions.Refresh) {
+        init {
+          ActionUtil.copyFrom(this, IdeActions.ACTION_REFRESH)
+          registerCustomShortcutSet(this.shortcutSet, this@NormalizedCacheWindowPanel)
+        }
+
+        override fun actionPerformed(e: AnActionEvent) {
+          refreshApolloDebugNormalizedCache()
+        }
+
+        override fun update(e: AnActionEvent) {
+          e.presentation.isVisible = apolloDebugCacheId != null && apolloDebugClient != null
+          e.presentation.isEnabled = !isRefreshing
+        }
+
+        override fun getActionUpdateThread() = ActionUpdateThread.BGT
+      })
+
     }
 
     val actionToolBar = ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, group, false)
@@ -550,9 +579,75 @@ class NormalizedCacheWindowPanel(
     showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.openFileError.title"), content = details, type = NotificationType.ERROR)
   }
 
+  private fun openApolloDebugNormalizedCache(apolloDebugClient: ApolloDebugClient, normalizedCacheId: String) {
+    project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenApolloDebugCache())
+    setContent(createLoadingContent())
+    object : Task.Backgroundable(
+        project,
+        ApolloBundle.message("normalizedCacheViewer.loading.message"),
+        false,
+    ) {
+      override fun run(indicator: ProgressIndicator) {
+        var tabName = ""
+        val normalizedCacheResult = runBlocking {
+          apolloDebugClient.getNormalizedCache(normalizedCacheId)
+        }.mapCatching { apolloDebugNormalizedCache ->
+          val tabNamePrefix = apolloDebugNormalizedCache.clientDisplayName.takeIf { it != "client" }?.let { "$it - " } ?: ""
+          tabName = tabNamePrefix + apolloDebugNormalizedCache.displayName.normalizedCacheSimpleName
+          ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
+        }
+        invokeLater {
+          if (normalizedCacheResult.isFailure) {
+            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
+            setContent(createEmptyContent())
+            return@invokeLater
+          }
+          this@NormalizedCacheWindowPanel.apolloDebugClient = apolloDebugClient
+          this@NormalizedCacheWindowPanel.apolloDebugCacheId = normalizedCacheId
+          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
+          setContent(createNormalizedCacheContent())
+          toolbar = createToolbar()
+          setTabName(tabName)
+        }
+      }
+    }.queue()
+  }
+
+  private fun refreshApolloDebugNormalizedCache() {
+    object : Task.Backgroundable(
+        project,
+        ApolloBundle.message("normalizedCacheViewer.loading.message"),
+        false,
+    ) {
+      override fun run(indicator: ProgressIndicator) {
+        isRefreshing = true
+        val normalizedCacheResult = runBlocking {
+          apolloDebugClient!!.getNormalizedCache(apolloDebugCacheId!!)
+        }.mapCatching { apolloDebugNormalizedCache ->
+          ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
+        }
+        isRefreshing = false
+        invokeLater {
+          if (normalizedCacheResult.isFailure) {
+            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
+            return@invokeLater
+          }
+          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
+          setContent(createNormalizedCacheContent())
+          toolbar = null
+          toolbar = createToolbar()
+        }
+      }
+    }.queue()
+  }
+
   private class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {
     init {
       userObject = field.name
     }
+  }
+
+  override fun dispose() {
+    apolloDebugClient?.close()
   }
 }

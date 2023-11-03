@@ -10,6 +10,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij")
   id("maven-publish")
+  alias(libs.plugins.apollo.published)
 }
 
 commonSetup()
@@ -219,6 +220,25 @@ dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
+  implementation(libs.apollo.runtime.published)
 }
 
 fun isSnapshotBuild() = System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()
+
+apollo {
+  service("apolloDebug") {
+    packageName.set("com.apollographql.apollo3.debug")
+    schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+    introspection {
+      endpointUrl.set("http://localhost:12200/")
+      schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+    }
+  }
+}
+
+// We're using project(":apollo-gradle-plugin-external") and the published "apollo-runtime" which do not have the same version
+tasks.configureEach {
+  if (name == "checkApolloVersions") {
+    enabled = false
+  }
+}

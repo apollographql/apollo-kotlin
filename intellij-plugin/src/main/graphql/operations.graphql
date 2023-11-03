@@ -1,0 +1,22 @@
+query GetClients {
+  clients {
+    displayName
+    normalizedCacheInfos {
+      id
+      displayName
+      recordCount
+    }
+  }
+}
+
+query GetNormalizedCache($id: ID!){
+  normalizedCache(id: $id) {
+    displayName
+    clientDisplayName
+    records {
+      key
+      size
+      record
+    }
+  }
+}

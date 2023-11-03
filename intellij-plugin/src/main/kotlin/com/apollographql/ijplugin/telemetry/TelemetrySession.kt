@@ -295,6 +295,11 @@ sealed class TelemetryEvent(
   class ApolloIjNormalizedCacheOpenFile : TelemetryEvent("akij_normalized_cache_open_file", null)
 
   /**
+   * User opened a normalized cache pulled from an app using Apollo Debug in the Normalized cache viewer.
+   */
+  class ApolloIjNormalizedCacheOpenApolloDebugCache : TelemetryEvent("akij_normalized_cache_open_apollo_debug_cache", null)
+
+  /**
    * User used the 'Migrate to operationBased codegen' Apollo Kotlin IntelliJ plugin action.
    */
   class ApolloIjMigrateToOperationBasedCodegen : TelemetryEvent("akij_migrate_to_operation_based_codegen", null)
