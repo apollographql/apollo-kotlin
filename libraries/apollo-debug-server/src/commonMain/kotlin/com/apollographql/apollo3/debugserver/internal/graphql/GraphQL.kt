@@ -114,6 +114,10 @@ internal class GraphQLApolloClient(
   fun displayName() = displayName
 
   fun normalizedCaches(): List<NormalizedCache> = normalizedCaches
+
+  fun normalizedCache(id: String): NormalizedCache? {
+    return normalizedCaches.firstOrNull { it.id() == id }
+  }
 }
 
 @ApolloObject
