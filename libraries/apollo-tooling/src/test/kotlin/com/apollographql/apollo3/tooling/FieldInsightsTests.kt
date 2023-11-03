@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.google.common.truth.Truth
 import org.junit.Test
@@ -13,8 +13,8 @@ class FieldInsightsTests {
     mockServer = MockServer()
   }
 
-  private suspend fun tearDown() {
-    mockServer.stop()
+  private fun tearDown() {
+    mockServer.close()
   }
 
   private val fieldLatenciesResponse = """
@@ -76,7 +76,7 @@ class FieldInsightsTests {
 
   @Test
   fun fetchFieldLatenciesSuccess() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(fieldLatenciesResponse)
+    mockServer.enqueueString(fieldLatenciesResponse)
     val results = FieldInsights.fetchFieldLatencies(serverUrl = mockServer.url(), apiKey = "apiKey", serviceId = "serviceId")
     Truth.assertThat(results).isInstanceOf(FieldInsights.FieldLatencies::class.java)
     Truth.assertThat((results as FieldInsights.FieldLatencies).fieldLatencies).hasSize(4)
@@ -92,7 +92,7 @@ class FieldInsightsTests {
 
   @Test
   fun fetchFieldLatenciesFail() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("There was an issue", statusCode = 400)
+    mockServer.enqueueString("There was an issue", statusCode = 400)
     val results = FieldInsights.fetchFieldLatencies(serverUrl = mockServer.url(), apiKey = "apiKey", serviceId = "serviceId")
     Truth.assertThat(results).isInstanceOf(FieldInsights.FieldLatenciesResult.Error::class.java)
     val cause = (results as FieldInsights.FieldLatenciesResult.Error).cause
