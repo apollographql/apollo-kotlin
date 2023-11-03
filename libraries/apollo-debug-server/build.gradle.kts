@@ -23,9 +23,8 @@ kotlin {
       dependencies {
         implementation(project(":apollo-normalized-cache"))
 
-        // apollo-execution is not published: we bundle it into the aar artifact
-        compileOnly(project(":apollo-execution"))
         api(project(":apollo-ast"))
+        api(project(":apollo-api"))
       }
     }
 
@@ -52,12 +51,13 @@ dependencies {
           packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
       )
   )
+  // apollo-execution is not published: we bundle it into the aar artifact
   add(shadow.name, project(":apollo-execution")) {
     isTransitive = false
   }
 }
 
-configurations.getByName("compileOnly").extendsFrom(shadow)
+configurations.getByName(kotlin.sourceSets.getByName("commonMain").compileOnlyConfigurationName).extendsFrom(shadow)
 
 android {
   compileSdk = libs.versions.android.sdkversion.compile.get().toInt()

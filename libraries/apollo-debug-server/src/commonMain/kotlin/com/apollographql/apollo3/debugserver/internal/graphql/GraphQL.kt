@@ -9,10 +9,9 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.writeObject
+import com.apollographql.apollo3.api.json.writeAny
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerExecutableSchemaBuilder
@@ -34,15 +33,8 @@ internal class GraphQL(
         .toGQLDocument()
         .toSchema()
 
-    val dumps = apolloClients.mapValues { (apolloClient, _) ->
-      runBlocking {
-        apolloClient.apolloStore.dump()
-      }
-    }
-    val apolloDebugContext = ApolloDebugContext(apolloClients, dumps)
-
     ApolloDebugServerExecutableSchemaBuilder(schema) {
-      Query(apolloDebugContext)
+      Query(apolloClients)
     }.build()
   }
 
@@ -67,20 +59,12 @@ internal class ApolloDebugContext(
 )
 
 @ApolloObject
-internal class Query(private val apolloDebugContext: ApolloDebugContext) {
+internal class Query(private val apolloClients: Map<ApolloClient, String>) {
   private fun graphQLApolloClients() =
-      apolloDebugContext.apolloClients.map { (apolloClient, apolloClientId) ->
+      apolloClients.map { (apolloClient, apolloClientId) ->
         GraphQLApolloClient(
             id = apolloClientId,
-            displayName = apolloClientId,
-            normalizedCaches = apolloDebugContext.dumps[apolloClient]!!.keys.map { clazz ->
-              NormalizedCache(
-                  id = "$apolloClientId:${clazz.normalizedCacheName()}",
-                  displayName = clazz.normalizedCacheName(),
-                  recordCount = apolloDebugContext.dumps[apolloClient]!![clazz]!!.size,
-                  records = apolloDebugContext.dumps[apolloClient]!![clazz]!!.values.map { record -> GraphQLRecord(record) }
-              )
-            }
+            apolloClient = apolloClient
         )
       }
 
@@ -88,7 +72,7 @@ internal class Query(private val apolloDebugContext: ApolloDebugContext) {
     return graphQLApolloClients()
   }
 
-  fun apolloClient(executionContext: ExecutionContext, id: String): GraphQLApolloClient? {
+  fun apolloClient(id: String): GraphQLApolloClient? {
     return graphQLApolloClients().firstOrNull { it.id() == id }
   }
 }
@@ -97,34 +81,35 @@ internal class Query(private val apolloDebugContext: ApolloDebugContext) {
 @GraphQLName("ApolloClient")
 internal class GraphQLApolloClient(
     private val id: String,
-    private val displayName: String,
-    private val normalizedCaches: List<NormalizedCache>,
+    private val apolloClient: ApolloClient,
 ) {
   fun id() = id
 
-  fun displayName() = displayName
+  fun displayName() = id
 
-  fun normalizedCaches(): List<NormalizedCache> = normalizedCaches
+  fun normalizedCaches(): List<NormalizedCache> = runBlocking { apolloClient.apolloStore.dump() }.map {
+    NormalizedCache(id, it.key, it.value)
+  }
 
   fun normalizedCache(id: String): NormalizedCache? {
-    return normalizedCaches.firstOrNull { it.id() == id }
+    return normalizedCaches().firstOrNull { it.id() == id }
   }
 }
 
 @ApolloObject
 internal class NormalizedCache(
-    private val id: String,
-    private val displayName: String,
-    private val recordCount: Int,
-    private val records: List<GraphQLRecord>,
+    private val apolloClientId: String,
+    private val clazz: KClass<*>,
+    private val records: Map<String, Record>
 ) {
+  private val id: String = "$apolloClientId:${clazz.normalizedCacheName()}"
   fun id() = id
 
-  fun displayName() = displayName
+  fun displayName() = clazz.normalizedCacheName()
 
-  fun recordCount() = recordCount
+  fun recordCount() = records.count()
 
-  fun records(): List<GraphQLRecord> = records
+  fun records(): List<GraphQLRecord> = records.map { GraphQLRecord(it.value) }
 }
 
 @ApolloObject
@@ -147,40 +132,7 @@ internal class FieldsAdapter : Adapter<Map<String, Any?>> {
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Map<String, Any?>) {
-    writer.writeObject {
-      for ((k, v) in value) {
-        writer.name(k).writeJsonValue(v)
-      }
-    }
-  }
-
-  // Taken from JsonRecordSerializer
-  @Suppress("UNCHECKED_CAST")
-  private fun JsonWriter.writeJsonValue(value: Any?) {
-    when (value) {
-      null -> this.nullValue()
-      is String -> this.value(value)
-      is Boolean -> this.value(value)
-      is Int -> this.value(value)
-      is Long -> this.value(value)
-      is Double -> this.value(value)
-      is CacheKey -> this.value(value.serialize())
-      is List<*> -> {
-        this.beginArray()
-        value.forEach { writeJsonValue(it) }
-        this.endArray()
-      }
-
-      is Map<*, *> -> {
-        this.beginObject()
-        for (entry in value as Map<String, Any?>) {
-          this.name(entry.key).writeJsonValue(entry.value)
-        }
-        this.endObject()
-      }
-
-      else -> error("Unsupported record value type: '$value'")
-    }
+    writer.writeAny(value)
   }
 }
 
