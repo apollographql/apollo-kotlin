@@ -3,7 +3,7 @@ package com.apollographql.ijplugin.apollodebugserver
 import com.android.ddmlib.IDevice
 import com.android.tools.idea.adb.AdbShellCommandsUtil
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debug.GetClientsQuery
+import com.apollographql.apollo3.debug.GetApolloClientsQuery
 import com.apollographql.apollo3.debug.GetNormalizedCacheQuery
 import com.apollographql.ijplugin.util.logw
 import java.io.Closeable
@@ -79,14 +79,18 @@ class ApolloDebugClient(
     }
   }
 
-  suspend fun getClients(): Result<List<GetClientsQuery.Client>> = runCatching {
+  suspend fun getApolloClients(): Result<List<GetApolloClientsQuery.ApolloClient>> = runCatching {
     ensurePortForward()
-    apolloClient.query(GetClientsQuery()).execute().dataOrThrow().clients
+    apolloClient.query(GetApolloClientsQuery()).execute().dataOrThrow().apolloClients
   }
 
-  suspend fun getNormalizedCache(id: String): Result<GetNormalizedCacheQuery.NormalizedCache> = runCatching {
+  suspend fun getNormalizedCache(
+      apolloClientId: String,
+      normalizedCacheId: String,
+  ): Result<GetNormalizedCacheQuery.NormalizedCache> = runCatching {
     ensurePortForward()
-    apolloClient.query(GetNormalizedCacheQuery(id)).execute().dataOrThrow().normalizedCache
+    apolloClient.query(GetNormalizedCacheQuery(apolloClientId, normalizedCacheId)).execute().dataOrThrow().apolloClient?.normalizedCache
+        ?: error("No normalized cache returned by server")
   }
 
   override fun close() {

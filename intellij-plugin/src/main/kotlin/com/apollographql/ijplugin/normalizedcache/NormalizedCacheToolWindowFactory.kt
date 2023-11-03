@@ -154,7 +154,8 @@ class NormalizedCacheWindowPanel(
   private var updateHistory = true
 
   private var apolloDebugClient: ApolloDebugClient? = null
-  private var apolloDebugCacheId: String? = null
+  private var apolloDebugApolloClientId: String? = null
+  private var apolloDebugNormalizedCacheId: String? = null
   private var isRefreshing = false
 
   init {
@@ -282,7 +283,7 @@ class NormalizedCacheWindowPanel(
         }
 
         override fun update(e: AnActionEvent) {
-          e.presentation.isVisible = apolloDebugCacheId != null && apolloDebugClient != null
+          e.presentation.isVisible = apolloDebugNormalizedCacheId != null && apolloDebugClient != null
           e.presentation.isEnabled = !isRefreshing
         }
 
@@ -579,7 +580,7 @@ class NormalizedCacheWindowPanel(
     showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.openFileError.title"), content = details, type = NotificationType.ERROR)
   }
 
-  private fun openApolloDebugNormalizedCache(apolloDebugClient: ApolloDebugClient, normalizedCacheId: String) {
+  private fun openApolloDebugNormalizedCache(apolloDebugClient: ApolloDebugClient, apolloClientId: String, normalizedCacheId: String) {
     project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenApolloDebugCache())
     setContent(createLoadingContent())
     object : Task.Backgroundable(
@@ -590,9 +591,9 @@ class NormalizedCacheWindowPanel(
       override fun run(indicator: ProgressIndicator) {
         var tabName = ""
         val normalizedCacheResult = runBlocking {
-          apolloDebugClient.getNormalizedCache(normalizedCacheId)
+          apolloDebugClient.getNormalizedCache(apolloClientId = apolloClientId, normalizedCacheId = normalizedCacheId)
         }.mapCatching { apolloDebugNormalizedCache ->
-          val tabNamePrefix = apolloDebugNormalizedCache.clientDisplayName.takeIf { it != "client" }?.let { "$it - " } ?: ""
+          val tabNamePrefix = apolloClientId.takeIf { it != "client" }?.let { "$it - " } ?: ""
           tabName = tabNamePrefix + apolloDebugNormalizedCache.displayName.normalizedCacheSimpleName
           ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
         }
@@ -603,7 +604,8 @@ class NormalizedCacheWindowPanel(
             return@invokeLater
           }
           this@NormalizedCacheWindowPanel.apolloDebugClient = apolloDebugClient
-          this@NormalizedCacheWindowPanel.apolloDebugCacheId = normalizedCacheId
+          this@NormalizedCacheWindowPanel.apolloDebugApolloClientId = apolloClientId
+          this@NormalizedCacheWindowPanel.apolloDebugNormalizedCacheId = normalizedCacheId
           normalizedCache = normalizedCacheResult.getOrThrow().sorted()
           setContent(createNormalizedCacheContent())
           toolbar = createToolbar()
@@ -622,7 +624,7 @@ class NormalizedCacheWindowPanel(
       override fun run(indicator: ProgressIndicator) {
         isRefreshing = true
         val normalizedCacheResult = runBlocking {
-          apolloDebugClient!!.getNormalizedCache(apolloDebugCacheId!!)
+          apolloDebugClient!!.getNormalizedCache(apolloClientId = apolloDebugApolloClientId!!, normalizedCacheId = apolloDebugNormalizedCacheId!!)
         }.mapCatching { apolloDebugNormalizedCache ->
           ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
         }

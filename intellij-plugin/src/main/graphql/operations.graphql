@@ -1,7 +1,8 @@
-query GetClients {
-  clients {
+query GetApolloClients {
+  apolloClients {
+    id
     displayName
-    normalizedCacheInfos {
+    normalizedCaches {
       id
       displayName
       recordCount
@@ -9,14 +10,15 @@ query GetClients {
   }
 }
 
-query GetNormalizedCache($id: ID!){
-  normalizedCache(id: $id) {
-    displayName
-    clientDisplayName
-    records {
-      key
-      size
-      record
+query GetNormalizedCache($apolloClientId: ID!, $normalizedCacheId: ID!) {
+  apolloClient(id: $apolloClientId) {
+    normalizedCache(id: $normalizedCacheId) {
+      displayName
+      records {
+        key
+        size
+        fields
+      }
     }
   }
 }

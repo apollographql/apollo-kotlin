@@ -3,7 +3,7 @@ package com.apollographql.ijplugin.normalizedcache
 import android.annotation.SuppressLint
 import com.android.ddmlib.Client
 import com.android.ddmlib.IDevice
-import com.apollographql.apollo3.debug.GetClientsQuery
+import com.apollographql.apollo3.debug.GetApolloClientsQuery
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient.Companion.getApolloDebugClients
@@ -44,7 +44,7 @@ import javax.swing.tree.TreeSelectionModel
 class PullFromDeviceDialog(
     private val project: Project,
     private val onFilePullSuccess: (File) -> Unit,
-    private val onApolloDebugCacheSelected: (ApolloDebugClient, String) -> Unit,
+    private val onApolloDebugCacheSelected: (apolloDebugClient: ApolloDebugClient, apolloClientId: String, normalizedCacheId: String) -> Unit,
     private val onPullError: (Throwable) -> Unit,
 ) : DialogWrapper(project, true), Disposable {
   private lateinit var tree: SimpleTree
@@ -132,7 +132,7 @@ class PullFromDeviceDialog(
       is ApolloDebugNormalizedCacheNode -> {
         // Don't close the apolloClient, it will be closed later by the caller
         apolloDebugClientsToClose.remove(selectedNode.apolloDebugClient)
-        onApolloDebugCacheSelected(selectedNode.apolloDebugClient, selectedNode.normalizedCacheInfo.id)
+        onApolloDebugCacheSelected(selectedNode.apolloDebugClient, selectedNode.apolloClient.id,  selectedNode.normalizedCache.id)
       }
     }
     super.doOKAction()
@@ -332,22 +332,22 @@ class PullFromDeviceDialog(
     }
 
     override fun computeChildren() {
-      runBlocking { apolloDebugClient.getClients() }.onFailure {
+      runBlocking { apolloDebugClient.getApolloClients() }.onFailure {
         updateChild(ErrorNode(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listApolloClients.error")))
-      }.onSuccess { clients ->
-        if (clients.isEmpty()) {
+      }.onSuccess { apolloClients ->
+        if (apolloClients.isEmpty()) {
           updateChild(EmptyNode(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listApolloClients.empty")))
         } else {
-          val showClientName = clients.size > 1
+          val showClientName = apolloClients.size > 1
           updateChildren(
-              clients
-                  .flatMap { client -> client.normalizedCacheInfos.map { normalizedCacheInfo -> client to normalizedCacheInfo } }
+              apolloClients
+                  .flatMap { apolloClient -> apolloClient.normalizedCaches.map { normalizedCache -> apolloClient to normalizedCache } }
                   .filter { (_, normalizedCacheInfo) -> normalizedCacheInfo.recordCount != 0 }
-                  .map { (client, normalizedCacheInfo) ->
+                  .map { (apolloClient, normalizedCache) ->
                     ApolloDebugNormalizedCacheNode(
                         apolloDebugClient = apolloDebugClient,
-                        client = client,
-                        normalizedCacheInfo = normalizedCacheInfo,
+                        apolloClient = apolloClient,
+                        normalizedCache = normalizedCache,
                         showClientName = showClientName,
                     )
                   }
@@ -379,17 +379,17 @@ class PullFromDeviceDialog(
 
   private inner class ApolloDebugNormalizedCacheNode(
       val apolloDebugClient: ApolloDebugClient,
-      client: GetClientsQuery.Client,
-      val normalizedCacheInfo: GetClientsQuery.NormalizedCacheInfo,
+      val apolloClient: GetApolloClientsQuery.ApolloClient,
+      val normalizedCache: GetApolloClientsQuery.NormalizedCach,
       showClientName: Boolean,
   ) : NullNode() {
     init {
       myName = if (showClientName) {
-        "${client.displayName} - ${normalizedCacheInfo.displayName.normalizedCacheSimpleName}"
+        "${apolloClient.displayName} - ${normalizedCache.displayName.normalizedCacheSimpleName}"
       } else {
-        normalizedCacheInfo.displayName.normalizedCacheSimpleName
+        normalizedCache.displayName.normalizedCacheSimpleName
       }
-      presentation.locationString = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.apolloDebugNormalizedCache.records", normalizedCacheInfo.recordCount)
+      presentation.locationString = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.apolloDebugNormalizedCache.records", normalizedCache.recordCount)
       icon = StudioIcons.DatabaseInspector.DATABASE
     }
 
