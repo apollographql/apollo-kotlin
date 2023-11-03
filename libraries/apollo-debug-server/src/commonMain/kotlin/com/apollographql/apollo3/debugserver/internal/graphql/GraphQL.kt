@@ -25,8 +25,6 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import kotlin.reflect.KClass
 
-internal expect fun KClass<*>.normalizedCacheName(): String
-
 internal expect fun getExecutableSchema(): String
 
 internal class GraphQL(
@@ -72,94 +70,66 @@ internal class GraphQL(
 
 @ApolloObject
 internal class Query {
-  fun version() = 1
-
-  fun clients(executionContext: ExecutionContext): List<Client> {
-    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
-    return apolloDebugContext.apolloClients.map { (apolloClient, id) ->
-      Client(
-          id = id,
-          displayName = id,
-          normalizedCacheInfos = apolloDebugContext.dumps[apolloClient]!!.keys.map { clazz ->
-            NormalizedCacheInfo(
-                id = "$id:${clazz.normalizedCacheName()}",
-                displayName = clazz.normalizedCacheName(),
-                recordCount = apolloDebugContext.dumps[apolloClient]!![clazz]!!.size
-            )
-          }
-      )
-    }
-  }
-
-  fun normalizedCache(executionContext: ExecutionContext, id: String): NormalizedCache {
-    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
-    val clientId = id.substringBeforeLast(":")
-    val cacheId = id.substringAfterLast(":")
-    val entry = apolloDebugContext.apolloClients.entries.firstOrNull { it.value == clientId }
-    val apolloClient = entry?.key
-    if (apolloClient == null) {
-      error("Unknown client '$clientId'")
-    } else {
-      val cache = apolloDebugContext.dumps[apolloClient]!!.entries.firstOrNull { it.key.normalizedCacheName() == cacheId }?.value
-      if (cache == null) {
-        error("Unknown cache '$cacheId' for client '$clientId'")
-      } else {
-        return NormalizedCache(
-            id = id,
-            displayName = cacheId,
-            clientDisplayName = entry.value,
-            records = cache.map { (key, record) ->
-              KeyedRecord(
-                  key = key,
-                  record = record
+  private fun graphQLApolloClients(apolloDebugContext: GraphQL.ApolloDebugContext) =
+      apolloDebugContext.apolloClients.map { (apolloClient, apolloClientId) ->
+        GraphQLApolloClient(
+            id = apolloClientId,
+            displayName = apolloClientId,
+            normalizedCaches = apolloDebugContext.dumps[apolloClient]!!.keys.map { clazz ->
+              NormalizedCache(
+                  id = "$apolloClientId:${clazz.normalizedCacheName()}",
+                  displayName = clazz.normalizedCacheName(),
+                  recordCount = apolloDebugContext.dumps[apolloClient]!![clazz]!!.size,
+                  keyedRecords = apolloDebugContext.dumps[apolloClient]!![clazz]!!.map { (key, record) ->
+                    KeyedRecord(
+                        key = key,
+                        record = record
+                    )
+                  }
               )
             }
         )
       }
-    }
+
+  fun apolloClients(executionContext: ExecutionContext): List<GraphQLApolloClient> {
+    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
+    return graphQLApolloClients(apolloDebugContext)
+  }
+
+  fun apolloClient(executionContext: ExecutionContext, id: String): GraphQLApolloClient? {
+    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
+    return graphQLApolloClients(apolloDebugContext).firstOrNull { it.id() == id }
   }
 }
 
 @ApolloObject
-internal class Client(
+@GraphQLName("ApolloClient")
+internal class GraphQLApolloClient(
     private val id: String,
     private val displayName: String,
-    private val normalizedCacheInfos: List<NormalizedCacheInfo>,
+    private val normalizedCaches: List<NormalizedCache>,
 ) {
   fun id() = id
 
   fun displayName() = displayName
 
-  fun normalizedCacheInfos(): List<NormalizedCacheInfo> = normalizedCacheInfos
-}
-
-@ApolloObject
-internal class NormalizedCacheInfo(
-    private val id: String,
-    private val displayName: String,
-    private val recordCount: Int,
-) {
-  fun id() = id
-
-  fun displayName() = displayName
-
-  fun recordCount() = recordCount
+  fun normalizedCaches(): List<NormalizedCache> = normalizedCaches
 }
 
 @ApolloObject
 internal class NormalizedCache(
     private val id: String,
     private val displayName: String,
-    private val clientDisplayName: String,
-    private val records: List<KeyedRecord>,
+    private val recordCount: Int,
+    private val keyedRecords: List<KeyedRecord>,
 ) {
   fun id() = id
 
   fun displayName() = displayName
 
-  fun clientDisplayName() = clientDisplayName
+  fun recordCount() = recordCount
 
-  fun records(): List<KeyedRecord> = records
+  fun keyedRecords(): List<KeyedRecord> = keyedRecords
 }
 
 @ApolloObject
@@ -218,3 +188,5 @@ internal class RecordAdapter : Adapter<Record> {
     }
   }
 }
+
+private fun KClass<*>.normalizedCacheName(): String = qualifiedName ?: toString()

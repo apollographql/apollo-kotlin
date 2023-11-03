@@ -10,5 +10,3 @@ internal actual fun getExecutableSchema(): String = Server::class.java.classLoad
     .source()
     .buffer()
     .readUtf8()
-
-internal actual fun KClass<*>.normalizedCacheName(): String = qualifiedName ?: toString()

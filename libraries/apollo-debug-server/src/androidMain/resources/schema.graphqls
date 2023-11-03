@@ -1,32 +1,25 @@
 type Query {
-    version: Int!
-    clients: [Client!]!
-    normalizedCache(id: ID!): NormalizedCache!
+    apolloClients: [ApolloClient!]!
+    apolloClient(id: ID!): ApolloClient
 }
 
-type Client {
+type ApolloClient {
     id: ID!
     displayName: String!
-    normalizedCacheInfos: [NormalizedCacheInfo!]!
-}
-
-type NormalizedCacheInfo {
-    id: ID!
-    displayName: String!
-    recordCount: Int!
+    normalizedCaches: [NormalizedCache!]!
 }
 
 type NormalizedCache {
     id: ID!
     displayName: String!
-    clientDisplayName: String!
-    records: [KeyedRecord!]!
+    recordCount: Int!
+    keyedRecords: [KeyedRecord!]!
 }
 
 type KeyedRecord {
     key: String!
-    record: Record!
     size: Int!
+    record: Record!
 }
 
 scalar Record
