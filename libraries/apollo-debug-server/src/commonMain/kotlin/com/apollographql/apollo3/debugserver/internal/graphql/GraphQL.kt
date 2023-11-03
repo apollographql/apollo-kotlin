@@ -21,6 +21,7 @@ import com.apollographql.apollo3.execution.ExecutableSchema
 import com.apollographql.apollo3.execution.GraphQLRequest
 import com.apollographql.apollo3.execution.GraphQLRequestError
 import com.apollographql.apollo3.execution.parsePostGraphQLRequest
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import kotlin.reflect.KClass
 
@@ -43,14 +44,14 @@ internal class GraphQL(
         .build()
   }
 
-  suspend fun executeGraphQL(jsonBody: String): String {
+  fun executeGraphQL(jsonBody: String): String {
     val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parsePostGraphQLRequest()
     if (graphQLRequestResult is GraphQLRequestError) {
       return graphQLRequestResult.message
     }
     graphQLRequestResult as GraphQLRequest
     val dumps = apolloClients.mapValues { (apolloClient, _) ->
-      apolloClient.apolloStore.dump()
+      runBlocking { apolloClient.apolloStore.dump() }
     }
     val apolloDebugContext = ApolloDebugContext(apolloClients, dumps)
     val graphQlResponse = executableSchema.execute(graphQLRequestResult, apolloDebugContext)

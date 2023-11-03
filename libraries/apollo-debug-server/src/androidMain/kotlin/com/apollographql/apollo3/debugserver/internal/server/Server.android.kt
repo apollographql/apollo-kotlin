@@ -49,7 +49,7 @@ private class AndroidServer(
     }
   }
 
-  private suspend fun handleClient(clientSocket: LocalSocket) {
+  private fun handleClient(clientSocket: LocalSocket) {
     try {
       val bufferedReader = clientSocket.inputStream.bufferedReader()
       val printWriter = PrintStream(clientSocket.outputStream.buffered(), true)
