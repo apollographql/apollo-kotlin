@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -18,8 +18,8 @@ class SchemaDownloaderTests {
     tempFile = File.createTempFile("schema", ".json")
   }
 
-  private suspend fun tearDown() {
-    mockServer.stop()
+  private fun tearDown() {
+    mockServer.close()
     tempFile.delete()
   }
 
@@ -127,8 +127,8 @@ class SchemaDownloaderTests {
 
   @Test
   fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments`() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(statusCode = 400)
-    mockServer.enqueue(schemaString1)
+    mockServer.enqueueString(statusCode = 400)
+    mockServer.enqueueString(schemaString1)
 
     SchemaDownloader.download(
         endpoint = mockServer.url(),
@@ -152,9 +152,9 @@ class SchemaDownloaderTests {
 
   @Test
   fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments nor isRepeatable on directives`() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(statusCode = 400)
-    mockServer.enqueue(statusCode = 400)
-    mockServer.enqueue(schemaString1)
+    mockServer.enqueueString(statusCode = 400)
+    mockServer.enqueueString(statusCode = 400)
+    mockServer.enqueueString(schemaString1)
 
     SchemaDownloader.download(
         endpoint = mockServer.url(),
