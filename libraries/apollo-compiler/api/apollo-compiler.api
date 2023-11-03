@@ -666,8 +666,9 @@ public final class com/apollographql/apollo3/compiler/ir/IrTargetKt {
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrTargetObject {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrClassName;ZLjava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrClassName;ZZLjava/lang/String;Ljava/util/List;)V
 	public final fun getFields ()Ljava/util/List;
+	public final fun getHasNoArgsConstructor ()Z
 	public final fun getName ()Ljava/lang/String;
 	public final fun getOperationType ()Ljava/lang/String;
 	public final fun getTargetClassName ()Lcom/apollographql/apollo3/compiler/ir/IrClassName;

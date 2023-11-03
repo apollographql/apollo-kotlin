@@ -15,8 +15,7 @@ import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerAdapterRegistry
-import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerResolver
+import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerExecutableSchemaBuilder
 import com.apollographql.apollo3.execution.ExecutableSchema
 import com.apollographql.apollo3.execution.GraphQLRequest
 import com.apollographql.apollo3.execution.GraphQLRequestError
@@ -35,11 +34,16 @@ internal class GraphQL(
         .toGQLDocument()
         .toSchema()
 
-    ExecutableSchema.Builder()
-        .schema(schema)
-        .resolver(ApolloDebugServerResolver())
-        .adapterRegistry(ApolloDebugServerAdapterRegistry)
-        .build()
+    val dumps = apolloClients.mapValues { (apolloClient, _) ->
+      runBlocking {
+        apolloClient.apolloStore.dump()
+      }
+    }
+    val apolloDebugContext = ApolloDebugContext(apolloClients, dumps)
+
+    ApolloDebugServerExecutableSchemaBuilder(schema) {
+      Query(apolloDebugContext)
+    }.build()
   }
 
   fun executeGraphQL(jsonBody: String): String {
@@ -48,29 +52,23 @@ internal class GraphQL(
       return graphQLRequestResult.message
     }
     graphQLRequestResult as GraphQLRequest
-    val dumps = apolloClients.mapValues { (apolloClient, _) ->
-      runBlocking { apolloClient.apolloStore.dump() }
-    }
-    val apolloDebugContext = ApolloDebugContext(apolloClients, dumps)
-    val graphQlResponse = executableSchema.execute(graphQLRequestResult, apolloDebugContext)
+
+    val graphQlResponse = executableSchema.execute(graphQLRequestResult, ExecutionContext.Empty)
+
     val buffer = Buffer()
     graphQlResponse.serialize(buffer)
     return buffer.readUtf8()
   }
-
-  internal class ApolloDebugContext(
-      val apolloClients: Map<ApolloClient, String>,
-      val dumps: Map<ApolloClient, Map<KClass<*>, Map<String, Record>>>,
-  ) : ExecutionContext.Element {
-    override val key: ExecutionContext.Key<ApolloDebugContext> = Key
-
-    companion object Key : ExecutionContext.Key<ApolloDebugContext>
-  }
 }
 
+internal class ApolloDebugContext(
+    val apolloClients: Map<ApolloClient, String>,
+    val dumps: Map<ApolloClient, Map<KClass<*>, Map<String, Record>>>,
+)
+
 @ApolloObject
-internal class Query {
-  private fun graphQLApolloClients(apolloDebugContext: GraphQL.ApolloDebugContext) =
+internal class Query(private val apolloDebugContext: ApolloDebugContext) {
+  private fun graphQLApolloClients() =
       apolloDebugContext.apolloClients.map { (apolloClient, apolloClientId) ->
         GraphQLApolloClient(
             id = apolloClientId,
@@ -86,14 +84,12 @@ internal class Query {
         )
       }
 
-  fun apolloClients(executionContext: ExecutionContext): List<GraphQLApolloClient> {
-    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
-    return graphQLApolloClients(apolloDebugContext)
+  fun apolloClients(): List<GraphQLApolloClient> {
+    return graphQLApolloClients()
   }
 
   fun apolloClient(executionContext: ExecutionContext, id: String): GraphQLApolloClient? {
-    val apolloDebugContext = executionContext[GraphQL.ApolloDebugContext]!!
-    return graphQLApolloClients(apolloDebugContext).firstOrNull { it.id() == id }
+    return graphQLApolloClients().firstOrNull { it.id() == id }
   }
 }
 

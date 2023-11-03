@@ -33,6 +33,7 @@ class IrTargetObject(
     val name: String,
     val targetClassName: IrClassName,
     val isSingleton: Boolean,
+    val hasNoArgsConstructor: Boolean,
     val operationType: String?,
     val fields: List<IrTargetField>,
 )

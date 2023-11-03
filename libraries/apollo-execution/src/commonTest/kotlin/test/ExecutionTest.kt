@@ -10,12 +10,12 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.execution.ExecutableSchema
 import com.apollographql.apollo3.execution.GraphQLRequest
+import com.apollographql.apollo3.execution.MainResolver
 import com.apollographql.apollo3.execution.ResolveInfo
 import com.apollographql.apollo3.execution.Resolver
-import com.apollographql.apollo3.execution.RootlessResolver
 import kotlin.test.Test
 
-private val randomResolver = object : RootlessResolver() {
+private val randomResolver = object : MainResolver {
     fun GQLType.randomValue(schema: Schema): Any? {
         return when (this) {
             is GQLNonNullType -> type.randomValue(schema)
@@ -70,7 +70,7 @@ class ExecutionTest {
             }
         """.trimIndent()
 
-        val simpleMainResolver = object : RootlessResolver() {
+        val simpleMainResolver = object : MainResolver {
             override fun resolve(resolveInfo: ResolveInfo): Any? {
                 if (resolveInfo.parentType != "Query" || resolveInfo.fieldName != "foo") return null
                 return Resolver { 42 }

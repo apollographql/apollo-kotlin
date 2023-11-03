@@ -44,7 +44,14 @@ val shadow = configurations.create("shadow") {
 
 dependencies {
   add("kspCommonMainMetadata", project(":apollo-ksp"))
-  add("kspCommonMainMetadata", apollo.apolloKspProcessor(file("src/androidMain/resources/schema.graphqls"), "apolloDebugServer", "com.apollographql.apollo3.debugserver.internal.graphql"))
+  add(
+      "kspCommonMainMetadata",
+      apollo.apolloKspProcessor(
+          schema = file(path = "src/androidMain/resources/schema.graphqls"),
+          service = "apolloDebugServer",
+          packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
+      )
+  )
   add(shadow.name, project(":apollo-execution")) {
     isTransitive = false
   }

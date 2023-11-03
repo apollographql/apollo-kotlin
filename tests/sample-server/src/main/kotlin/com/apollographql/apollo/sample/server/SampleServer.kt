@@ -46,6 +46,7 @@ import org.http4k.websocket.WsMessage
 import org.http4k.websocket.WsResponse
 import org.http4k.websocket.WsStatus
 import sample.server.execution.SampleserverAdapterRegistry
+import sample.server.execution.SampleserverExecutableSchemaBuilder
 import sample.server.execution.SampleserverResolver
 import java.io.Closeable
 import java.time.Duration
@@ -60,10 +61,7 @@ fun ExecutableSchema(): ExecutableSchema {
       .toGQLDocument()
       .toSchema()
 
-  return ExecutableSchema.Builder()
-      .schema(schema)
-      .resolver(SampleserverResolver())
-      .adapterRegistry(SampleserverAdapterRegistry)
+  return SampleserverExecutableSchemaBuilder(schema)
       .build()
 }
 

@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
 
 internal class AdapterRegistryBuilder(
@@ -23,8 +24,10 @@ internal class AdapterRegistryBuilder(
     val serviceName: String,
     val codegenSchema: CodegenSchema
 ) : CgFileBuilder {
-  val packageName = context.layout.executionPackageName()
-  val simpleName = context.layout.capitalizedIdentifier("${serviceName}AdapterRegistry")
+  private val packageName = context.layout.executionPackageName()
+  private val simpleName = context.layout.capitalizedIdentifier("${serviceName}AdapterRegistry")
+
+  val memberName = MemberName(packageName, simpleName)
 
   override fun prepare() {
   }

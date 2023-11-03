@@ -19,6 +19,7 @@ import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrTargetField
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
+import com.google.devtools.ksp.getConstructors
 import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -244,6 +245,7 @@ class ApolloProcessor(
           targetClassName = entry.value.className,
           fields = fields.toList(),
           isSingleton = entry.value.classDeclaration.classKind == ClassKind.OBJECT,
+          hasNoArgsConstructor = entry.value.classDeclaration.hasNoArgsConstructor(),
           operationType = operationType
       )
     }
@@ -270,6 +272,12 @@ class ApolloProcessor(
     }
 
     return emptyList()
+  }
+}
+
+private fun KSClassDeclaration.hasNoArgsConstructor(): Boolean {
+  return getConstructors().any {
+    it.parameters.isEmpty()
   }
 }
 

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -30,8 +29,8 @@ internal class MainResolverBuilder(
     val serviceName: String,
     val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {
-  val packageName = context.layout.executionPackageName()
-  val simpleName = context.layout.capitalizedIdentifier("${serviceName}Resolver")
+  private val packageName = context.layout.executionPackageName()
+  private val simpleName = context.layout.capitalizedIdentifier("${serviceName}Resolver")
 
   val className = ClassName(packageName, simpleName)
 
@@ -45,47 +44,15 @@ internal class MainResolverBuilder(
     )
   }
 
-  private fun primaryConstructor(): FunSpec {
-    return FunSpec.constructorBuilder()
-        .build()
-  }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.classBuilder(simpleName)
-        .primaryConstructor(primaryConstructor())
+    return TypeSpec.objectBuilder(simpleName)
         .addSuperinterface(ClassName("com.apollographql.apollo3.execution", "MainResolver"))
         .addProperty(typenamesPropertySpec())
         .addProperty(resolversPropertySpec())
         .addFunction(typenameFunSpec())
         .addFunction(resolveFunSpec())
         .addAnnotation(suppressDeprecationAnnotationSpec)
-        .apply {
-          listOf("query", "mutation", "subscription").forEach { operationType ->
-            val rootTargetObject = irTargetObjects.firstOrNull { it.operationType == operationType }
-
-            addFunction(rootObjectFunSpec(operationType, rootTargetObject))
-          }
-        }
-        .build()
-  }
-
-  private fun rootObjectFunSpec(operationType: String, irTargetObject: IrTargetObject?): FunSpec {
-
-    return FunSpec.builder("root${operationType.capitalizeFirstLetter()}Object")
-        .addModifiers(KModifier.OVERRIDE)
-        .returns(KotlinSymbols.Any.copy(nullable = true))
-        .apply {
-          if (irTargetObject == null) {
-            addCode("return null")
-          } else {
-            val maybeParenthesis = if (irTargetObject.isSingleton) {
-              ""
-            } else {
-              "()"
-            }
-            addCode("return %T$maybeParenthesis", irTargetObject.targetClassName.asKotlinPoet())
-          }
-        }
         .build()
   }
 
@@ -232,7 +199,7 @@ internal class MainResolverBuilder(
         builder.add(
             "%L·=·it.getArgument<%T>(%S)",
             irTargetArgument.targetName,
-            context.resolver.resolveIrType(type, false, false),
+            context.resolver.resolveIrType(type = type, jsExport = false, isInterface = false),
             irTargetArgument.name,
         )
         if (irTargetArgument.type !is IrOptionalType) {
