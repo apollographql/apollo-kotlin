@@ -14,13 +14,13 @@ type NormalizedCache {
     id: ID!
     displayName: String!
     recordCount: Int!
-    keyedRecords: [KeyedRecord!]!
+    records: [Record!]!
 }
 
-type KeyedRecord {
+type Record {
     key: String!
     size: Int!
-    record: Record!
+    fields: Fields!
 }
 
-scalar Record
+scalar Fields

@@ -80,12 +80,7 @@ internal class Query {
                   id = "$apolloClientId:${clazz.normalizedCacheName()}",
                   displayName = clazz.normalizedCacheName(),
                   recordCount = apolloDebugContext.dumps[apolloClient]!![clazz]!!.size,
-                  keyedRecords = apolloDebugContext.dumps[apolloClient]!![clazz]!!.map { (key, record) ->
-                    KeyedRecord(
-                        key = key,
-                        record = record
-                    )
-                  }
+                  records = apolloDebugContext.dumps[apolloClient]!![clazz]!!.values.map { record -> GraphQLRecord(record) }
               )
             }
         )
@@ -125,7 +120,7 @@ internal class NormalizedCache(
     private val id: String,
     private val displayName: String,
     private val recordCount: Int,
-    private val keyedRecords: List<KeyedRecord>,
+    private val records: List<GraphQLRecord>,
 ) {
   fun id() = id
 
@@ -133,31 +128,31 @@ internal class NormalizedCache(
 
   fun recordCount() = recordCount
 
-  fun keyedRecords(): List<KeyedRecord> = keyedRecords
+  fun records(): List<GraphQLRecord> = records
 }
 
 @ApolloObject
-internal class KeyedRecord(
-    private val key: String,
+@GraphQLName("Record")
+internal class GraphQLRecord(
     private val record: Record,
 ) {
-  fun key() = key
+  fun key() = record.key
 
-  fun record() = record
+  fun fields() = record.fields
 
   fun size() = record.sizeInBytes
 }
 
 @ApolloAdapter
-@GraphQLName(name = "Record")
-internal class RecordAdapter : Adapter<Record> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Record {
+@GraphQLName(name = "Fields")
+internal class FieldsAdapter : Adapter<Map<String, Any?>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Map<String, Any?> {
     throw UnsupportedOperationException()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Record) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Map<String, Any?>) {
     writer.writeObject {
-      for ((k, v) in value.fields) {
+      for ((k, v) in value) {
         writer.name(k).writeJsonValue(v)
       }
     }
