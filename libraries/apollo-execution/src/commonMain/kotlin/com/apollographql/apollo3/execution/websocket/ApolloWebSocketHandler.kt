@@ -74,6 +74,14 @@ class ApolloWebSocketHandler(
       }
 
       is ApolloWebsocketStart -> {
+        val isActive = lock.withLock {
+          activeSubscriptions.containsKey(clientMessage.id)
+        }
+        if (isActive) {
+          sendMessage(ApolloWebsocketError(id = clientMessage.id, error = Error.Builder("Subscription ${clientMessage.id} is already active").build()).toWsMessage())
+          return
+        }
+
         val flow = executableSchema.executeSubscription(clientMessage.request, executionContext)
 
         val job = scope.launch {
@@ -89,7 +97,9 @@ class ApolloWebSocketHandler(
             }
           }
           sendMessage(ApolloWebsocketComplete(id = clientMessage.id).toWsMessage())
-          activeSubscriptions.remove(clientMessage.id)?.cancel()
+          lock.withLock {
+            activeSubscriptions.remove(clientMessage.id)?.cancel()
+          }
         }
 
         lock.withLock {
@@ -98,7 +108,9 @@ class ApolloWebSocketHandler(
       }
 
       is ApolloWebsocketStop -> {
-        activeSubscriptions.remove(clientMessage.id)?.cancel()
+        lock.withLock {
+          activeSubscriptions.remove(clientMessage.id)?.cancel()
+        }
       }
 
       ApolloWebsocketTerminate -> {
