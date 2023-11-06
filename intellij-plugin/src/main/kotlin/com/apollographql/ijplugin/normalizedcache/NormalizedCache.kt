@@ -6,6 +6,7 @@ data class NormalizedCache(
   data class Record(
       val key: String,
       val fields: List<Field>,
+      val size: Int,
   )
 
   data class Field(

@@ -1,7 +1,8 @@
-package com.apollographql.ijplugin.normalizedcache
+package com.apollographql.ijplugin.normalizedcache.provider
 
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.Field
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.BooleanValue
@@ -37,10 +38,11 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
       NormalizedCache(
           apolloRecords.map { (key, apolloRecord) ->
             NormalizedCache.Record(
-                key,
-                apolloRecord.map { (fieldName, fieldValue) ->
+                key = key,
+                fields = apolloRecord.map { (fieldName, fieldValue) ->
                   Field(fieldName, fieldValue.toFieldValue())
-                }
+                },
+                size = apolloRecord.size
             )
           }
       )

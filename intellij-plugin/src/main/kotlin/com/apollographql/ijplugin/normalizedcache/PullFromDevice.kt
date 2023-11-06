@@ -68,7 +68,6 @@ fun IDevice.getDatabaseList(packageName: String, databasesDir: String): Result<L
   return Result.success(result.output.filter { it.isDatabaseFileName() }.sorted())
 }
 
-
 fun pullFileAsync(
     project: Project,
     device: IDevice,
@@ -100,7 +99,7 @@ fun pullFileAsync(
 
 private fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, remoteFileName: String): Result<File> {
   val remoteFilePath = "$remoteDirName/$remoteFileName"
-  val localFile = File.createTempFile(remoteFileName.substringBeforeLast(".")+"-tmp", ".db")
+  val localFile = File.createTempFile(remoteFileName.substringBeforeLast(".") + "-tmp", ".db")
   logd("Pulling $remoteFilePath to ${localFile.absolutePath}")
   val intermediateRemoteFilePath = "/data/local/tmp/${localFile.name}"
   val shellCommandsUtil = AdbShellCommandsUtil.create(device)
