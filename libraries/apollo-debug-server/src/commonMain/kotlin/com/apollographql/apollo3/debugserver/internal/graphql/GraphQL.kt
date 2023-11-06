@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerExecutableSchemaBuilder
@@ -95,7 +96,7 @@ internal class GraphQLApolloClient(
 internal class NormalizedCache(
     apolloClientId: String,
     private val clazz: KClass<*>,
-    private val records: Map<String, Record>
+    private val records: Map<String, Record>,
 ) {
   private val id: String = "$apolloClientId:${clazz.normalizedCacheName()}"
   fun id() = id
@@ -127,7 +128,40 @@ internal class FieldsAdapter : Adapter<Map<String, Any?>> {
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Map<String, Any?>) {
-    writer.writeAny(value)
+    writer.writeObject {
+      for ((k, v) in value) {
+        writer.name(k).writeJsonValue(v)
+      }
+    }
+  }
+
+  // Taken from JsonRecordSerializer
+  @Suppress("UNCHECKED_CAST")
+  private fun JsonWriter.writeJsonValue(value: Any?) {
+    when (value) {
+      null -> this.nullValue()
+      is String -> this.value(value)
+      is Boolean -> this.value(value)
+      is Int -> this.value(value)
+      is Long -> this.value(value)
+      is Double -> this.value(value)
+      is CacheKey -> this.value(value.serialize())
+      is List<*> -> {
+        this.beginArray()
+        value.forEach { writeJsonValue(it) }
+        this.endArray()
+      }
+
+      is Map<*, *> -> {
+        this.beginObject()
+        for (entry in value as Map<String, Any?>) {
+          this.name(entry.key).writeJsonValue(entry.value)
+        }
+        this.endObject()
+      }
+
+      else -> error("Unsupported record value type: '$value'")
+    }
   }
 }
 
