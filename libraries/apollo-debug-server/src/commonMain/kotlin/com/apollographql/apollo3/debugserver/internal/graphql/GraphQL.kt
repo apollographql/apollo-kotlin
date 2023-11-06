@@ -22,12 +22,13 @@ import com.apollographql.apollo3.execution.GraphQLRequestError
 import com.apollographql.apollo3.execution.parsePostGraphQLRequest
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
 internal expect fun getExecutableSchema(): String
 
 internal class GraphQL(
-    private val apolloClients: Map<ApolloClient, String>,
+    private val apolloClients: AtomicReference<Map<ApolloClient, String>>,
 ) {
   private val executableSchema: ExecutableSchema by lazy {
     val schema = getExecutableSchema()
@@ -55,9 +56,9 @@ internal class GraphQL(
 }
 
 @ApolloObject
-internal class Query(private val apolloClients: Map<ApolloClient, String>) {
+internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
-      apolloClients.map { (apolloClient, apolloClientId) ->
+      apolloClients.get().map { (apolloClient, apolloClientId) ->
         GraphQLApolloClient(
             id = apolloClientId,
             apolloClient = apolloClient
