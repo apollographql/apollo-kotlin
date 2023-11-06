@@ -210,7 +210,7 @@ class ApolloProcessor(
 
   private fun generateMainResolver(): List<KSAnnotated> {
 
-    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata)
+    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata, logger)
 
     check (objectMapping.isNotEmpty()) {
       "No @ApolloObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
@@ -380,7 +380,7 @@ private fun KSValueParameter.toIrTargetArgument(
   val argumentDefinition = fieldDefinition.arguments.firstOrNull { it.name == name }
 
   if (argumentDefinition == null) {
-    error("No argument found for '$objectName.${fieldDefinition.name}($name) at $location")
+    error("No GraphQL argument found for Kotlin argument '$objectName.${fieldDefinition.name}($name)' at $location\nUse @GraphQLName if the GraphQLName is different from the Kotlin name ")
   }
 
   if (this.hasDefault) {

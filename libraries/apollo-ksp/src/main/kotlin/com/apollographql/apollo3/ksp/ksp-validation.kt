@@ -24,6 +24,7 @@ import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.resolveSchemaType
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
 
@@ -34,8 +35,24 @@ internal class ValidationScope(
     private val objectMapping: Map<String, ObjectInfo>,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val schema: Schema,
-    private val codegenMetadata: CodegenMetadata
+    private val codegenMetadata: CodegenMetadata,
+    private val logger: KSPLogger,
 ) {
+  private val possibleTypes = mutableMapOf<IrClassName, MutableSet<String>>()
+
+  init {
+    objectMapping.forEach { entry ->
+      val superTypes = entry.value.classDeclaration.superTypes.map { it.resolve().declaration.acClassName() }
+
+      superTypes.forEach {
+        possibleTypes.getOrPut(it, { mutableSetOf() }).add(entry.key)
+      }
+
+      // also add an entry for the object itself
+      possibleTypes[entry.value.className] = mutableSetOf(entry.key)
+    }
+  }
+
   fun validateAndCoerce(ksTypeReference: KSTypeReference, expectedType: GQLType, allowCovariant: Boolean): IrType {
     val ksType = ksTypeReference.resolve()
     val className = ksType.declaration.acClassName()
@@ -73,7 +90,8 @@ internal class ValidationScope(
           }
 
           is GQLInputObjectTypeDefinition -> {
-            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName() ?: error("Cannot resolve input ${typeDefinition.name}")
+            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName()
+                ?: error("Cannot resolve input ${typeDefinition.name}")
             if (className != expectedFQDN) {
               throw IncompatibleType("Input object type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
             }
@@ -82,7 +100,8 @@ internal class ValidationScope(
           }
 
           is GQLEnumTypeDefinition -> {
-            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName() ?: error("Cannot resolve enum ${typeDefinition.name}")
+            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName()
+                ?: error("Cannot resolve enum ${typeDefinition.name}")
             if (className != expectedFQDN) {
               throw IncompatibleType("Enum type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
             }
@@ -94,14 +113,23 @@ internal class ValidationScope(
             /**
              * Because of interfaces we do the lookup the other way around. Contrary to scalars, there cannot be multiple objects mapped to the same target
              */
-            val objectInfoEntry =
-                objectMapping.entries.firstOrNull { it.value.className.asString() == className.asString() }
-
-            if (objectInfoEntry == null) {
-              throw IncompatibleType("Expected a composite type '${typeDefinition.name}' but no object found. Did you forget a @ApolloObject? at ${ksTypeReference.location}")
+            val schemaPossibleTypes = schema.possibleTypes(typeDefinition.name)
+            val possibleTypes: Set<String>? = possibleTypes[className]
+            if (possibleTypes == null) {
+              if (typeDefinition is GQLObjectTypeDefinition) {
+                error("Expected a Kotlin object for type '${typeDefinition.name}' but none found. Did you forget a @ApolloObject? at ${ksTypeReference.location}")
+              } else {
+                error("Expected that Kotlin '$className' is an object or interface for type '${typeDefinition.name}' but none found.")
+              }
             }
-            if (!schema.possibleTypes(typeDefinition.name).contains(objectInfoEntry.key)) {
-              throw IncompatibleType("Expected type '${typeDefinition.name}' but '${objectInfoEntry.key}' is not a subtype at ${ksTypeReference.location}")
+
+            if (!schemaPossibleTypes.containsAll(possibleTypes)) {
+              val wrong = possibleTypes - schemaPossibleTypes
+              if (typeDefinition is GQLObjectTypeDefinition) {
+                throw IncompatibleType("Expected type '${typeDefinition.name}' but got '${wrong}' instead at ${ksTypeReference.location}")
+              } else {
+                throw IncompatibleType("Expected type '${typeDefinition.name}' but '${wrong}' are not subtype(s) at ${ksTypeReference.location}")
+              }
             }
 
             IrObjectType(typeDefinition.name)
@@ -141,7 +169,7 @@ internal fun ValidationScope.validateAndCoerceArgumentType(
     targetName: String,
     typeReference: KSTypeReference,
     gqlType: GQLType,
-    hasDefault: Boolean
+    hasDefault: Boolean,
 ): IrType {
   val type = typeReference.resolve()
   val className = type.declaration.acClassName()
