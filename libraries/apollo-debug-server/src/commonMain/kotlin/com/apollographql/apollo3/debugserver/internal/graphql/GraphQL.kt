@@ -53,11 +53,6 @@ internal class GraphQL(
   }
 }
 
-internal class ApolloDebugContext(
-    val apolloClients: Map<ApolloClient, String>,
-    val dumps: Map<ApolloClient, Map<KClass<*>, Map<String, Record>>>,
-)
-
 @ApolloObject
 internal class Query(private val apolloClients: Map<ApolloClient, String>) {
   private fun graphQLApolloClients() =
@@ -98,7 +93,7 @@ internal class GraphQLApolloClient(
 
 @ApolloObject
 internal class NormalizedCache(
-    private val apolloClientId: String,
+    apolloClientId: String,
     private val clazz: KClass<*>,
     private val records: Map<String, Record>
 ) {
