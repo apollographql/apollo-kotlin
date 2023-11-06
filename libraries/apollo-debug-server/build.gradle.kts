@@ -1,4 +1,5 @@
 import com.android.build.gradle.tasks.BundleAar
+import org.gradle.api.internal.artifacts.transform.UnzipTransform
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -39,6 +40,17 @@ kotlin {
 val shadow = configurations.create("shadow") {
   isCanBeConsumed = false
   isCanBeResolved = true
+}
+
+val artifactType = Attribute.of("artifactType", String::class.java)
+
+val shadowUnzipped = configurations.create("shadowUnzipped") {
+  isCanBeConsumed = false
+  isCanBeResolved = true
+  attributes {
+    attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
+  }
+  extendsFrom(shadow)
 }
 
 dependencies {
@@ -82,13 +94,18 @@ tasks.configureEach {
 // apollo-execution is not published: we bundle it into the aar artifact
 val jarApolloExecution = tasks.register<Jar>("jarApolloExecution") {
   archiveBaseName.set("apollo-execution")
-  from(provider {
-    shadow.files.map { zipTree(it) }
-  })
+  from(shadowUnzipped)
 }
 
 tasks.withType<BundleAar>().configureEach {
   from(jarApolloExecution) {
     into("libs")
+  }
+}
+
+dependencies {
+  registerTransform(UnzipTransform::class.java) {
+    from.attribute(artifactType, ArtifactTypeDefinition.JAR_TYPE)
+    to.attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
   }
 }
