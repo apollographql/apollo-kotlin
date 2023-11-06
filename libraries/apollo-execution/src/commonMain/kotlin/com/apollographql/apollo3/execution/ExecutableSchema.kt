@@ -26,14 +26,16 @@ class ExecutableSchema internal constructor(
     private val instrumentations: List<Instrumentation>,
     private val mainResolver: MainResolver,
     private val adapterRegistry: CustomScalarAdapters,
+    private val roots: Roots,
 ) {
 
   class Builder {
-    var persistedDocumentCache: PersistedDocumentCache? = null
-    var instrumentations = mutableListOf<Instrumentation>()
-    var resolver: MainResolver? = null
-    var adapterRegistry: CustomScalarAdapters? = null
-    var schema: Schema? = null
+    private var persistedDocumentCache: PersistedDocumentCache? = null
+    private var instrumentations = mutableListOf<Instrumentation>()
+    private var resolver: MainResolver? = null
+    private var adapterRegistry: CustomScalarAdapters? = null
+    private var schema: Schema? = null
+    private var roots: Roots? = null
 
     fun persistedDocumentCache(persistedDocumentCache: PersistedDocumentCache?): Builder = apply {
       this.persistedDocumentCache = persistedDocumentCache
@@ -59,6 +61,10 @@ class ExecutableSchema internal constructor(
       this.resolver = mainResolver
     }
 
+    fun roots(roots: Roots): Builder = apply {
+      this.roots = roots
+    }
+
     fun build(): ExecutableSchema {
       return ExecutableSchema(
           schema ?: error("A schema is required to build an ExecutableSchema"),
@@ -66,6 +72,7 @@ class ExecutableSchema internal constructor(
           instrumentations,
           resolver ?: ThrowingResolver,
           adapterRegistry ?: CustomScalarAdapters.Empty,
+          roots ?: NullRoots
       )
     }
   }
@@ -201,6 +208,7 @@ class ExecutableSchema internal constructor(
             mainResolver = mainResolver,
             adapters = adapterRegistry,
             instrumentations = instrumentations,
+            roots = roots
         )
     )
   }

@@ -36,6 +36,7 @@ internal class OperationExecutor(
     val mainResolver: MainResolver,
     val adapters: CustomScalarAdapters,
     val instrumentations: List<Instrumentation>,
+    val roots: Roots,
 ) {
 
   private var errors = mutableListOf<Error>()
@@ -48,8 +49,8 @@ internal class OperationExecutor(
       return errorResponse("'${operationDefinition.operationType}' is not supported")
     }
     val rootObject = when (operationDefinition.operationType) {
-      "query" -> mainResolver.rootQueryObject()
-      "mutation" -> mainResolver.rootMutationObject()
+      "query" -> roots.query()
+      "mutation" -> roots.mutation()
       "subscription" -> error("Use executeSubscription() to execute subscriptions")
       else -> error("Unknown operation type '${operationDefinition.operationType}")
     }
@@ -82,7 +83,7 @@ internal class OperationExecutor(
       return errorFlow("'${operationDefinition.operationType}' is not supported")
     }
     val rootObject = when (operationDefinition.operationType) {
-      "subscription" -> mainResolver.rootSubscriptionObject()
+      "subscription" -> roots.subscription()
       else -> return errorFlow("Unknown operation type '${operationDefinition.operationType}.")
     }
 

@@ -14,13 +14,14 @@ import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.PrintStream
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicReference
 
 internal actual fun createServer(
-    apolloClients: Map<ApolloClient, String>,
+    apolloClients: AtomicReference<Map<ApolloClient, String>>,
 ): Server = AndroidServer(apolloClients)
 
 private class AndroidServer(
-    apolloClients: Map<ApolloClient, String>,
+    apolloClients: AtomicReference<Map<ApolloClient, String>>,
 ) : Server {
   companion object {
     private const val SOCKET_NAME_PREFIX = "apollo_debug_"

@@ -28,29 +28,45 @@ fun interface Resolver {
 
 /**
  * A [Resolver] that also has global knowledge about the graph and is able to resolve the typename of any given instance
- * as well as provide root objects to bootstrap the execution
  */
 interface MainResolver: Resolver {
   fun typename(obj: Any): String?
-
-  fun rootQueryObject(): Any?
-  fun rootMutationObject(): Any?
-  fun rootSubscriptionObject(): Any?
 }
 
-/**
- * a [MainResolver] that doesn't need root objects to start resolving a graph
- */
-abstract class RootlessResolver: MainResolver {
-  final override fun rootQueryObject(): Any? {
+interface Roots {
+  fun query(): Any?
+  fun mutation(): Any?
+  fun subscription(): Any?
+
+  companion object {
+    fun create(queryObject: () -> Any?, mutationObject: (() -> Any?)?, subscriptionObject: (() -> Any?)?): Roots {
+      return object : Roots {
+        override fun query(): Any? {
+          return queryObject()
+        }
+
+        override fun mutation(): Any? {
+          return mutationObject?.invoke()
+        }
+
+        override fun subscription(): Any? {
+          return subscriptionObject?.invoke()
+        }
+      }
+    }
+  }
+}
+
+object NullRoots: Roots {
+  override fun query(): Any? {
     return null
   }
 
-  final override fun rootMutationObject(): Any? {
+  override fun mutation(): Any? {
     return null
   }
 
-  final override fun rootSubscriptionObject(): Any? {
+  override fun subscription(): Any? {
     return null
   }
 }
@@ -59,7 +75,7 @@ abstract class RootlessResolver: MainResolver {
  * A resolver that will always throw
  * Only useful to test introspection and/or errors
  */
-object ThrowingResolver: RootlessResolver() {
+object ThrowingResolver: MainResolver {
   override fun typename(obj: Any): String? {
     TODO("Not implemented")
   }

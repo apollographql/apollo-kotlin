@@ -15,8 +15,11 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  * Symbols can be [ClassName] or [MemberName]
  */
 internal object KotlinSymbols {
+  val ExecutableSchemaBuilder = ClassName("com.apollographql.apollo3.execution", "ExecutableSchema", "Builder")
   val Resolver = ClassName("com.apollographql.apollo3.execution", "Resolver")
   val ResolveInfo = ClassName("com.apollographql.apollo3.execution", "ResolveInfo")
+  val Roots = ClassName("com.apollographql.apollo3.execution", "Roots")
+  val Schema = ClassName("com.apollographql.apollo3.ast", "Schema")
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
   val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()

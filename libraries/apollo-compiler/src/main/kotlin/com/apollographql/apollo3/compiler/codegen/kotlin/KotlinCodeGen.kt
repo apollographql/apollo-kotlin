@@ -389,18 +389,27 @@ internal object KotlinCodeGen {
 
     val builders = mutableListOf<CgFileBuilder>()
 
-    builders.add(
-        MainResolverBuilder(
-            context = context,
-            serviceName = serviceName,
-            irTargetObjects = irTargetObjects
-        )
+    val mainResolverBuilder = MainResolverBuilder(
+        context = context,
+        serviceName = serviceName,
+        irTargetObjects = irTargetObjects
     )
+    builders.add(mainResolverBuilder)
+
+    val adapterRegistryBuilder = AdapterRegistryBuilder(
+        context = context,
+        serviceName = serviceName,
+        codegenSchema = codegenSchema
+    )
+    builders.add(adapterRegistryBuilder)
+
     builders.add(
-        AdapterRegistryBuilder(
+        ExecutableSchemaBuilderBuilder(
             context = context,
             serviceName = serviceName,
-            codegenSchema = codegenSchema
+            mainResolver = mainResolverBuilder.className,
+            adapterRegistry = adapterRegistryBuilder.memberName,
+            irTargetObjects = irTargetObjects
         )
     )
 
