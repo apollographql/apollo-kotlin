@@ -1,0 +1,26 @@
+type Query {
+    apolloClients: [ApolloClient!]!
+    apolloClient(id: ID!): ApolloClient
+}
+
+type ApolloClient {
+    id: ID!
+    displayName: String!
+    normalizedCaches: [NormalizedCache!]!
+    normalizedCache(id: ID!): NormalizedCache
+}
+
+type NormalizedCache {
+    id: ID!
+    displayName: String!
+    recordCount: Int!
+    records: [Record!]!
+}
+
+type Record {
+    key: String!
+    size: Int!
+    fields: Fields!
+}
+
+scalar Fields

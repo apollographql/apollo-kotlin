@@ -1,4 +1,3 @@
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -34,13 +33,19 @@ private val enableLinux = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?
 private val enableJs = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 private val enableApple = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 
-fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
+fun Project.configureMppDefaults(
+    withJvm: Boolean,
+    withJs: Boolean,
+    withLinux: Boolean,
+    withAndroid: Boolean,
+    withApple: Boolean,
+) {
   configureMpp(
-      withJvm = true,
+      withJvm = withJvm,
       withJs = withJs,
       browserTest = false,
       withLinux = withLinux,
-      appleTargets = allAppleTargets,
+      appleTargets = if (!withApple) emptySet() else allAppleTargets,
       withAndroid = withAndroid,
   )
 }

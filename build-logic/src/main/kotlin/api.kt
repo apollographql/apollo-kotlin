@@ -6,6 +6,8 @@ fun Project.apolloLibrary(
     javaModuleName: String?,
     withJs: Boolean = true,
     withLinux: Boolean = true,
+    withApple: Boolean = true,
+    withJvm: Boolean = true,
     publish: Boolean = true
 ) {
   group = property("GROUP")!!
@@ -34,9 +36,11 @@ fun Project.apolloLibrary(
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {
     configureMppDefaults(
-        withJs,
-        withLinux,
-        extensions.findByName("android") != null
+        withJvm = withJvm,
+        withJs = withJs,
+        withLinux = withLinux,
+        withAndroid = extensions.findByName("android") != null,
+        withApple = withApple,
     )
   }
 

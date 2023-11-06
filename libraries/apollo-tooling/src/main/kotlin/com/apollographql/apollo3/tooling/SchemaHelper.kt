@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -57,7 +57,7 @@ internal object SchemaHelper {
     }
     // Make sure the response is a valid schema
     try {
-      query.parseJsonResponse(
+      query.parseResponse(
           jsonReader = Buffer().writeUtf8(bodyStr).jsonReader(),
           customScalarAdapters = CustomScalarAdapters.Empty
       )
