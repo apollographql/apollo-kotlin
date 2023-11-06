@@ -45,7 +45,6 @@ internal class ValidationScope(
       val superTypes = entry.value.classDeclaration.superTypes.map { it.resolve().declaration.acClassName() }
 
       superTypes.forEach {
-        logger.warn("${entry.value.className} extends $it")
         possibleTypes.getOrPut(it, { mutableSetOf() }).add(entry.key)
       }
 
