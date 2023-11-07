@@ -12,7 +12,7 @@ import javax.swing.ListSelectionModel
 import javax.swing.SwingConstants
 import javax.swing.table.DefaultTableCellRenderer
 
-class RecordTable(normalizedCache: NormalizedCache ) : JBTable(RecordTableModel(normalizedCache)) {
+class RecordTable(normalizedCache: NormalizedCache) : JBTable(RecordTableModel(normalizedCache)) {
   private val filterHighlightTableCellRenderer = FilterHighlightTableCellRenderer()
 
   init {

@@ -132,7 +132,7 @@ class PullFromDeviceDialog(
       is ApolloDebugNormalizedCacheNode -> {
         // Don't close the apolloClient, it will be closed later by the caller
         apolloDebugClientsToClose.remove(selectedNode.apolloDebugClient)
-        onApolloDebugCacheSelected(selectedNode.apolloDebugClient, selectedNode.apolloClient.id,  selectedNode.normalizedCache.id)
+        onApolloDebugCacheSelected(selectedNode.apolloDebugClient, selectedNode.apolloClient.id, selectedNode.normalizedCache.id)
       }
     }
     super.doOKAction()
