@@ -28,7 +28,7 @@ class RecordSearchTextField(private val recordTable: RecordTable) : SearchTextFi
 
     addDocumentListener(object : DocumentAdapter() {
       override fun textChanged(e: DocumentEvent) {
-        recordTable.model.setFilter { t -> t.contains(text.trim(), ignoreCase = true) }
+        recordTable.model.setFilter(text.trim())
       }
     })
   }

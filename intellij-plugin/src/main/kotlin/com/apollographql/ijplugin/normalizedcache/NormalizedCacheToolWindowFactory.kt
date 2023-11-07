@@ -14,7 +14,6 @@ import com.apollographql.ijplugin.normalizedcache.provider.ApolloDebugNormalized
 import com.apollographql.ijplugin.normalizedcache.provider.DatabaseNormalizedCacheProvider
 import com.apollographql.ijplugin.normalizedcache.ui.RecordSearchTextField
 import com.apollographql.ijplugin.normalizedcache.ui.RecordTable
-import com.apollographql.ijplugin.normalizedcache.ui.RecordTableModel
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logw
@@ -52,7 +51,6 @@ import com.intellij.openapi.wm.ex.ToolWindowManagerListener
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.ScrollingUtil
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBTreeTable
@@ -85,7 +83,6 @@ import java.io.File
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTable
-import javax.swing.ListSelectionModel
 import javax.swing.SwingUtilities
 import javax.swing.event.PopupMenuEvent
 import javax.swing.event.PopupMenuListener
@@ -306,18 +303,11 @@ class NormalizedCacheWindowPanel(
   }
 
   private fun createRecordTableWithFilter(): JComponent {
-    val recordTableModel = RecordTableModel(normalizedCache)
-    recordTable = RecordTable(recordTableModel).apply {
-      selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
-      ScrollingUtil.installActions(this)
-      setShowGrid(false)
-      setShowColumns(true)
-      setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-      columnSelectionAllowed = false
-      tableHeader.reorderingAllowed = false
-
+    recordTable = RecordTable(normalizedCache).apply {
       selectionModel.addListSelectionListener {
-        recordTableModel.getRecordAt(selectedRow)?.let { record ->
+        if (selectedRow == -1) return@addListSelectionListener
+        val selectedRowAfterSort = convertRowIndexToModel(selectedRow)
+        model.getRecordAt(selectedRowAfterSort)?.let { record ->
           fieldTreeTableModel.setRoot(getRootNodeForRecord(record))
           if (!updateHistory) {
             updateHistory = true

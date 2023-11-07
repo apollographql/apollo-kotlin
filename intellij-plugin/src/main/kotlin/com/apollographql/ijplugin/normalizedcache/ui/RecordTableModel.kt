@@ -3,29 +3,25 @@ package com.apollographql.ijplugin.normalizedcache.ui
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.ui.speedSearch.FilteringTableModel
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 
-private class CoreRecordTableModel(normalizedCache: NormalizedCache) : ListTableModel<NormalizedCache.Record>(
+class RecordTableModel(private val normalizedCache: NormalizedCache) : ListTableModel<NormalizedCache.Record>(
     object : ColumnInfo<NormalizedCache.Record, String>(ApolloBundle.message("normalizedCacheViewer.records.table.key")) {
       override fun valueOf(item: NormalizedCache.Record) = item.key
+      override fun getComparator(): Comparator<NormalizedCache.Record> = NormalizedCache.RecordKeyComparator
     },
     object : ColumnInfo<NormalizedCache.Record, String>(ApolloBundle.message("normalizedCacheViewer.records.table.size")) {
       override fun valueOf(item: NormalizedCache.Record) = StringUtil.formatFileSize(item.sizeInBytes.toLong())
+      override fun getComparator(): Comparator<NormalizedCache.Record> = Comparator.comparingInt { it.sizeInBytes }
     },
 ) {
   init {
     setItems(normalizedCache.records)
   }
-}
-
-class RecordTableModel(private val normalizedCache: NormalizedCache) : FilteringTableModel<String>(CoreRecordTableModel(normalizedCache), String::class.java) {
-  init {
-    refilter()
-  }
 
   fun getRecordAt(row: Int): NormalizedCache.Record? {
+    if (row < 0 || row >= rowCount) return null
     return getValueAt(row, 0)?.let { selectedKey ->
       normalizedCache.records.first { it.key == selectedKey }
     }
@@ -43,5 +39,9 @@ class RecordTableModel(private val normalizedCache: NormalizedCache) : Filtering
       }
     }
     return -1
+  }
+
+  fun setFilter(filter: String) {
+    setItems(normalizedCache.records.filter { it.key.contains(filter, ignoreCase = true) })
   }
 }
