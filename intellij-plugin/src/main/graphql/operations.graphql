@@ -16,7 +16,7 @@ query GetNormalizedCache($apolloClientId: ID!, $normalizedCacheId: ID!) {
       displayName
       records {
         key
-        size
+        sizeInBytes
         fields
       }
     }

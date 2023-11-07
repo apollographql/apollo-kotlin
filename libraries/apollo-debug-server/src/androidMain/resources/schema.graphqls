@@ -19,7 +19,7 @@ type NormalizedCache {
 
 type Record {
     key: String!
-    size: Int!
+    sizeInBytes: Int!
     fields: Fields!
 }
 
