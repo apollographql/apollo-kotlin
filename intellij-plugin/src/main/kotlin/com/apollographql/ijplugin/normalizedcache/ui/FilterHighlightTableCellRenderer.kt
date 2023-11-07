@@ -6,7 +6,7 @@ import com.intellij.ui.speedSearch.SpeedSearchUtil
 import javax.swing.JTable
 
 class FilterHighlightTableCellRenderer : ColoredTableCellRenderer() {
-  var filter: (() -> String)? = null
+  var filter: String? = null
 
   override fun customizeCellRenderer(
       table: JTable,
@@ -18,11 +18,12 @@ class FilterHighlightTableCellRenderer : ColoredTableCellRenderer() {
   ) {
     append(value as String)
 
-    val filter = filter?.invoke() ?: return
-    if (filter.isEmpty()) return
-    val matchIndex = value.indexOf(filter, ignoreCase = true)
-    if (matchIndex == -1) return
-    val textRange = TextRange(matchIndex, matchIndex + filter.length)
-    SpeedSearchUtil.applySpeedSearchHighlighting(this, listOf(textRange), selected)
+    filter?.let { filter ->
+      if (filter.isEmpty()) return
+      val matchIndex = value.indexOf(filter, ignoreCase = true)
+      if (matchIndex == -1) return
+      val textRange = TextRange(matchIndex, matchIndex + filter.length)
+      SpeedSearchUtil.applySpeedSearchHighlighting(this, listOf(textRange), selected)
+    }
   }
 }

@@ -46,10 +46,6 @@ class RecordTable(normalizedCache: NormalizedCache ) : JBTable(RecordTableModel(
     tableHeader.reorderingAllowed = false
   }
 
-  fun setFilter(filter: () -> String) {
-    filterHighlightTableCellRenderer.filter = filter
-  }
-
   public override fun processKeyEvent(e: KeyEvent) {
     super.processKeyEvent(e)
   }
@@ -66,5 +62,10 @@ class RecordTable(normalizedCache: NormalizedCache ) : JBTable(RecordTableModel(
         height *= 2
       })
     }
+  }
+
+  fun setFilter(filter: String) {
+    model.setFilter(filter)
+    filterHighlightTableCellRenderer.filter = filter
   }
 }

@@ -321,7 +321,6 @@ class NormalizedCacheWindowPanel(
 
     recordSearchTextField = RecordSearchTextField(recordTable)
     recordTable.addKeyListener(recordSearchTextField)
-    recordTable.setFilter { recordSearchTextField.text.trim() }
 
     val tableWithFilter = JPanel(BorderLayout()).apply {
       add(recordSearchTextField, BorderLayout.NORTH)
