@@ -1,0 +1,41 @@
+---
+title: Apollo Debug Server
+---
+
+The [Android Studio plugin](android-studio-plugin) features the normalized cache viewer, a graphical tool to inspect [normalized caches](../caching/normalized-cache).
+
+To be able to get information about your app's normalized caches, the plugin needs to communicate with it.
+
+To make this happen, the Apollo Debug Server is a small library that you can add to your app. It will open a server that the plugin can connect to (via adb) to list and pull caches that your app is using. 
+
+## Installation
+
+Add the `apollo-debug-server` dependency to your project:
+
+```kotlin title="build.gradle[.kts]"
+dependencies {
+  // ...
+
+  // For security, add the dependency to your debug builds only
+  debugImplementation("com.apollographql.apollo3:apollo-debug-server:4.0.0-beta.2")
+}
+```
+
+## Registering your client
+
+Call `ApolloDebugServer.registerClient` to start the server.
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    // ...
+    .build()
+if (BuildConfig.DEBUG) ApolloDebugServer.registerApolloClient(apolloClient)
+```
+
+Optionally pass a unique `name` to `registerApolloClient` to distinguish between clients if you have several.
+
+Unregister the client when it's no longer in use:
+
+```kotlin
+if (BuildConfig.DEBUG) ApolloDebugServer.unregisterApolloClient(apolloClient)
+```
