@@ -21,7 +21,7 @@ class ApolloDebugNormalizedCacheProvider : NormalizedCacheProvider<GetNormalized
             NormalizedCache.Record(
                 key = record.key,
                 fields = record.fields.toFields(),
-                size = record.size
+                sizeInBytes = record.sizeInBytes,
             )
           }
       )

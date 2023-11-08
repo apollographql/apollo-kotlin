@@ -42,7 +42,7 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
                 fields = apolloRecord.map { (fieldName, fieldValue) ->
                   Field(fieldName, fieldValue.toFieldValue())
                 },
-                size = apolloRecord.size
+                sizeInBytes = apolloRecord.sizeInBytes
             )
           }
       )

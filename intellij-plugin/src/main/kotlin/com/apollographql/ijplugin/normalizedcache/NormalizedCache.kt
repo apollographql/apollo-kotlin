@@ -6,7 +6,7 @@ data class NormalizedCache(
   data class Record(
       val key: String,
       val fields: List<Field>,
-      val size: Int,
+      val sizeInBytes: Int,
   )
 
   data class Field(
@@ -27,12 +27,16 @@ data class NormalizedCache(
   }
 
   fun sorted() = NormalizedCache(
-      records.sortedWith { o1, o2 ->
-        when {
-          o1.key == "QUERY_ROOT" -> -1
-          o2.key == "QUERY_ROOT" -> 1
-          else -> o1.key.compareTo(o2.key, ignoreCase = true)
-        }
-      }
+      records.sortedWith(RecordKeyComparator)
   )
+
+  companion object {
+    val RecordKeyComparator = Comparator<Record> { o1, o2 ->
+      when {
+        o1.key == "QUERY_ROOT" -> -1
+        o2.key == "QUERY_ROOT" -> 1
+        else -> o1.key.compareTo(o2.key, ignoreCase = true)
+      }
+    }
+  }
 }

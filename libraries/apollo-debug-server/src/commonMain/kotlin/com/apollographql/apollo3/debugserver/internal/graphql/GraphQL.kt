@@ -118,7 +118,7 @@ internal class GraphQLRecord(
 
   fun fields() = record.fields
 
-  fun size() = record.sizeInBytes
+  fun sizeInBytes() = record.sizeInBytes
 }
 
 @ApolloAdapter
