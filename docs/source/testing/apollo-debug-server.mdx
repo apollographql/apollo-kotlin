@@ -4,9 +4,9 @@ title: Apollo Debug Server
 
 The [Android Studio plugin](android-studio-plugin) features the normalized cache viewer, a graphical tool to inspect [normalized caches](../caching/normalized-cache).
 
-While it can open databases from the file system or pull them from a connected device or emulator via adb, to be able to inspect _in-memory_ caches, the plugin needs to communicate with a running application.
+To be able to get information about your app's normalized caches, the plugin needs to communicate with it.
 
-To make this happen, the Apollo Debug Server is a small library that you can add to your application. It will open a server that the plugin can connect to (via adb) to list and pull caches that your app is using. 
+To make this happen, the Apollo Debug Server is a small library that you can add to your app. It will open a server that the plugin can connect to (via adb) to list and pull caches that your app is using. 
 
 ## Installation
 
