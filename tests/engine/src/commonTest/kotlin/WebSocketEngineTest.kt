@@ -2,7 +2,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.mockserver.BinaryMessage
+import com.apollographql.apollo3.mockserver.DataMessage
 import com.apollographql.apollo3.mockserver.CloseFrame
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
@@ -72,11 +72,11 @@ class WebSocketEngineTest {
 
     connection.send("client->server".encodeUtf8())
     request.awaitMessage().apply {
-      assertIs<BinaryMessage>(this)
-      assertEquals("client->server", bytes.decodeToString())
+      assertIs<DataMessage>(this)
+      assertEquals("client->server", data.decodeToString())
     }
 
-    responseBody.enqueueMessage(BinaryMessage("server->client".encodeToByteArray()))
+    responseBody.enqueueMessage(DataMessage("server->client".encodeToByteArray()))
     assertEquals("server->client", connection.receive())
 
     connection.close()

@@ -107,7 +107,7 @@ internal suspend fun readFrames(reader: Reader, onMessage: (WebSocketMessage) ->
       OPCODE_BINARY -> {
         currentMessage.write(payload, payloadLength)
         if (fin) {
-          onMessage(BinaryMessage(currentMessage.readByteArray()))
+          onMessage(DataMessage(currentMessage.readByteArray()))
           currentOpcode = null
         } else {
           currentOpcode = opcode
@@ -226,7 +226,7 @@ private fun WebSocketMessage.toFrame(): ByteString {
     is PingFrame -> pingFrame().toByteString()
     is CloseFrame -> closeFrame(code, reason)
     is TextMessage -> textFrame(text)
-    is BinaryMessage -> binaryFrame(bytes)
+    is DataMessage -> binaryFrame(data)
   }
 }
 
