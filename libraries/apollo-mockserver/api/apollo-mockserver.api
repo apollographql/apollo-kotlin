@@ -52,7 +52,13 @@ public final class com/apollographql/apollo3/mockserver/MockServer$Builder {
 	public final fun build ()Lcom/apollographql/apollo3/mockserver/MockServer;
 	public final fun handlePings (Z)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
 	public final fun handler (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
+	public final fun listener (Lcom/apollographql/apollo3/mockserver/MockServer$Listener;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
 	public final fun tcpServer (Lcom/apollographql/apollo3/mockserver/TcpServer;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
+}
+
+public abstract interface class com/apollographql/apollo3/mockserver/MockServer$Listener {
+	public abstract fun onMessage (Lcom/apollographql/apollo3/mockserver/WebSocketMessage;)V
+	public abstract fun onRequest (Lcom/apollographql/apollo3/mockserver/MockRequestBase;)V
 }
 
 public abstract interface class com/apollographql/apollo3/mockserver/MockServerHandler {
