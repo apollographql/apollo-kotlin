@@ -45,7 +45,7 @@ sealed interface WebSocketMessage
 @ApolloExperimental
 class TextMessage(val text: String) : WebSocketMessage
 @ApolloExperimental
-class BinaryMessage(val bytes: ByteArray) : WebSocketMessage
+class DataMessage(val data: ByteArray) : WebSocketMessage
 @ApolloExperimental
 class CloseFrame(val code: Int?, val reason: String?) : WebSocketMessage
 @ApolloExperimental
