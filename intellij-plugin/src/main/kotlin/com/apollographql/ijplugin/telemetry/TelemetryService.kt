@@ -49,14 +49,12 @@ import com.apollographql.ijplugin.telemetry.TelemetryProperty.ApolloWarnOnDeprec
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleModuleCount
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.GradleVersion
 import com.apollographql.ijplugin.telemetry.TelemetryProperty.IdeVersion
-import com.apollographql.ijplugin.util.MavenCoordinates
 import com.apollographql.ijplugin.util.NOTIFICATION_GROUP_ID_TELEMETRY
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.createNotification
 import com.apollographql.ijplugin.util.getLibraryMavenCoordinates
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
-import com.intellij.ProjectTopics
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationAction
@@ -69,8 +67,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootEvent
-import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
@@ -94,35 +90,16 @@ class TelemetryService(
 
   private val telemetryEventList: TelemetryEventList = TelemetryEventList()
 
-  private var projectLibraries: Set<MavenCoordinates> = emptySet()
-
   private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
   private var sendTelemetryFuture: ScheduledFuture<*>? = null
   private var lastSentProperties: Set<TelemetryProperty>? = null
 
   init {
     logd("project=${project.name}")
-    onLibrariesChanged()
-    startObserveLibraries()
     startObserveSettings()
 
     maybeShowTelemetryOptOutDialog()
     scheduleSendTelemetry()
-  }
-
-  private fun startObserveLibraries() {
-    logd()
-    project.messageBus.connect(this).subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
-      override fun rootsChanged(event: ModuleRootEvent) {
-        logd("event=$event")
-        onLibrariesChanged()
-      }
-    })
-  }
-
-  private fun onLibrariesChanged() {
-    logd()
-    projectLibraries = project.getLibraryMavenCoordinates()
   }
 
   private fun startObserveSettings() {
@@ -148,7 +125,7 @@ class TelemetryService(
 
   private fun buildTelemetrySession(): TelemetrySession {
     val properties = buildSet {
-      addAll(projectLibraries.toTelemetryProperties())
+      addAll(project.getLibraryMavenCoordinates().toTelemetryProperties())
       addAll(gradleToolingModels.flatMap { it.toTelemetryProperties() })
       gradleModuleCount?.let { add(GradleModuleCount(it)) }
       apolloKotlinModuleCount?.let { add(ApolloKotlinModuleCount(it)) }
