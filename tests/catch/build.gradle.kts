@@ -16,5 +16,6 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("com.example")
+    enableCatchAndNullOnlyOnError.set(true)
   }
 }
