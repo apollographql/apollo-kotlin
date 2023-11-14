@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter
@@ -33,7 +34,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       }
 
       return CharacterAppearsInImpl.Data(
-        appearsIn = _appearsIn!!
+        appearsIn = _appearsIn ?: missingField(reader, "appearsIn")
       )
     }
 

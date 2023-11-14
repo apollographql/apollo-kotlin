@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.String
 import kotlin.collections.List
 
@@ -32,7 +33,7 @@ public object HeroFragmentImpl_ResponseAdapter {
       }
 
       return com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment(
-        name = _name!!
+        name = _name ?: missingField(reader, "name")
       )
     }
 

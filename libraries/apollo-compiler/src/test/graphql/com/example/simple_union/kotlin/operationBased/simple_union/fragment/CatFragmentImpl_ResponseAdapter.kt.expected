@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.String
 import kotlin.collections.List
 
@@ -30,7 +31,7 @@ public object CatFragmentImpl_ResponseAdapter {
       }
 
       return com.example.simple_union.fragment.CatFragment(
-        meow = _meow!!
+        meow = _meow ?: missingField(reader, "meow")
       )
     }
 

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.String
 import kotlin.collections.List
 
@@ -32,7 +33,7 @@ public object OtherDroidDetailsImpl_ResponseAdapter {
       }
 
       return com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails(
-        id = _id!!
+        id = _id ?: missingField(reader, "id")
       )
     }
 

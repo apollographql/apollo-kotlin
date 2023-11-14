@@ -31,6 +31,6 @@ fun <V> missingFieldResult(jsonReader: JsonReader, adapterContext: CompositeAdap
   return Result.Error(errors)
 }
 
-fun <V> missingField(jsonReader: JsonReader): V {
-  throw DefaultApolloException("No field returned at ${jsonReader.getPath()}")
+fun <V> missingField(jsonReader: JsonReader, name: String): V {
+  throw DefaultApolloException("Field '$name' is missing at path ${jsonReader.getPath()}")
 }

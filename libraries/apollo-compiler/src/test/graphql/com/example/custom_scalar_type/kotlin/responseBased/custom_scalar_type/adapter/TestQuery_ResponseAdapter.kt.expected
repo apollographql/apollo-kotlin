@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.TestQuery
@@ -80,13 +81,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Hero(
-          id = _id!!,
-          name = _name!!,
-          birthDate = _birthDate!!,
-          appearanceDates = _appearanceDates!!,
-          fieldWithUnsupportedType = _fieldWithUnsupportedType!!,
-          profileLink = _profileLink!!,
-          links = _links!!
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
+          birthDate = _birthDate ?: missingField(reader, "birthDate"),
+          appearanceDates = _appearanceDates ?: missingField(reader, "appearanceDates"),
+          fieldWithUnsupportedType = _fieldWithUnsupportedType ?: missingField(reader, "fieldWithUnsupportedType"),
+          profileLink = _profileLink ?: missingField(reader, "profileLink"),
+          links = _links ?: missingField(reader, "links")
         )
       }
 

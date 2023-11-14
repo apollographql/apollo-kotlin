@@ -1,12 +1,11 @@
 package test
 
+import com.apollographql.apollo3.exception.DefaultApolloException
 import data.builders.fragment.AnimalDetailsImpl
 import data.builders.fragment.CatDetailsImpl
-import data.builders.fragment.TrivialFragment
 import data.builders.fragment.TrivialFragmentImpl
 import data.builders.type.Animal
 import data.builders.type.buildLion
-import org.junit.Assert.assertNull
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -44,7 +43,7 @@ class FragmentTest {
     // __typename is unknown so this fails
     // XXX: we could be smarter about this (the parsers are
     // data.builders.fragment.AnimalDetailsImpl_ResponseAdapter$OnAnimal.fromJson(AnimalDetailsImpl_ResponseAdapter.kt:85)
-    assertFailsWith(NullPointerException::class) {
+    assertFailsWith(DefaultApolloException::class) {
       TrivialFragmentImpl.Data(Animal) {
         __typename = "Brontaroc"
         species = "alien"

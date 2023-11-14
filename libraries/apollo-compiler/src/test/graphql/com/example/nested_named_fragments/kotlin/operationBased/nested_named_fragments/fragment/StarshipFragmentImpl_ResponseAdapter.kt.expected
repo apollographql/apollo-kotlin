@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
@@ -39,7 +40,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       }
 
       return com.example.nested_named_fragments.fragment.StarshipFragment(
-        id = _id!!,
+        id = _id ?: missingField(reader, "id"),
         name = _name,
         pilotConnection = _pilotConnection
       )
@@ -141,7 +142,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
                 adapterContext)
 
             return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node(
-              __typename = __typename!!,
+              __typename = __typename ?: missingField(reader, "__typename"),
               pilotFragment = _pilotFragment
             )
           }

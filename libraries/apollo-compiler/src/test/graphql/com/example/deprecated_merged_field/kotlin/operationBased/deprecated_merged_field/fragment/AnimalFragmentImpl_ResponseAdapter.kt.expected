@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.Suppress
@@ -93,7 +94,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         return com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat(
-          name = _name!!
+          name = _name ?: missingField(reader, "name")
         )
       }
 
@@ -123,7 +124,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         return com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog(
-          name = _name!!
+          name = _name ?: missingField(reader, "name")
         )
       }
 

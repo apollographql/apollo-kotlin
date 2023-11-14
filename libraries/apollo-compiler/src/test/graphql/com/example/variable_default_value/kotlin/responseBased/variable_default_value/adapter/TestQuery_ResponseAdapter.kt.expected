@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.variable_default_value.TestQuery
@@ -61,7 +62,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Hero(
-          name = _name!!
+          name = _name ?: missingField(reader, "name")
         )
       }
 

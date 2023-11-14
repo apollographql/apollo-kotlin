@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
@@ -34,8 +35,8 @@ public object CharacterDetailsImpl_ResponseAdapter {
       }
 
       return CharacterDetailsImpl.Data(
-        name = _name!!,
-        birthDate = _birthDate!!
+        name = _name ?: missingField(reader, "name"),
+        birthDate = _birthDate ?: missingField(reader, "birthDate")
       )
     }
 

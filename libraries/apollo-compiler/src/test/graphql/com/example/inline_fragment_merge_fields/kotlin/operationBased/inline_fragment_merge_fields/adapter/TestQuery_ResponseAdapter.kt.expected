@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_merge_fields.TestQuery
@@ -72,9 +73,9 @@ public object TestQuery_ResponseAdapter {
             adapterContext)
 
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
-          name = _name!!,
-          friendsConnection = _friendsConnection!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection"),
           onCharacter = _onCharacter
         )
       }
@@ -168,7 +169,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.Hero.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 
@@ -203,9 +204,9 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Hero.OnCharacter(
-            name = _name!!,
-            profileLink = _profileLink!!,
-            friendsConnection = _friendsConnection!!
+            name = _name ?: missingField(reader, "name"),
+            profileLink = _profileLink ?: missingField(reader, "profileLink"),
+            friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
           )
         }
 
@@ -298,7 +299,7 @@ public object TestQuery_ResponseAdapter {
                 }
 
                 return TestQuery.Data.Hero.OnCharacter.FriendsConnection.Edge.Node(
-                  name = _name!!
+                  name = _name ?: missingField(reader, "name")
                 )
               }
 

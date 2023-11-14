@@ -70,7 +70,7 @@ class ExceptionsTest {
 
   @Test
   @Suppress("DEPRECATION")
-  fun toFlowDoesNotThrowOnV3() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun toFlowDoesNotThrowForGraphQLErrorsOnV3() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString("""
         {
           "errors": [

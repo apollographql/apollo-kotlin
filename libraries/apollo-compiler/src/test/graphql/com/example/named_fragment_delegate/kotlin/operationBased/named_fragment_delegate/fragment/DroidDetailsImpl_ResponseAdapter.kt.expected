@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
@@ -39,7 +40,7 @@ public object DroidDetailsImpl_ResponseAdapter {
       }
 
       return com.example.named_fragment_delegate.fragment.DroidDetails(
-        name = _name!!,
+        name = _name ?: missingField(reader, "name"),
         primaryFunction = _primaryFunction,
         friends = _friends
       )
@@ -76,7 +77,7 @@ public object DroidDetailsImpl_ResponseAdapter {
         }
 
         return com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
-          name = _name!!
+          name = _name ?: missingField(reader, "name")
         )
       }
 

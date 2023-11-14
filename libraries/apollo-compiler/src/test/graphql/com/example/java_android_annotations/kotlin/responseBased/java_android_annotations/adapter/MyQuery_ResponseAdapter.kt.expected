@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.java_android_annotations.MyQuery
@@ -51,9 +52,9 @@ public object MyQuery_ResponseAdapter {
 
       return MyQuery.Data(
         nullableInt = _nullableInt,
-        nonNullableInt = _nonNullableInt!!,
+        nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt"),
         nullableMyType = _nullableMyType,
-        nonNullableMyType = _nonNullableMyType!!,
+        nonNullableMyType = _nonNullableMyType ?: missingField(reader, "nonNullableMyType"),
         nullableListOfNullableString = _nullableListOfNullableString,
         nullableListOfNonNullableString = _nullableListOfNonNullableString
       )
@@ -103,7 +104,7 @@ public object MyQuery_ResponseAdapter {
 
         return MyQuery.Data.NullableMyType(
           nullableInt = _nullableInt,
-          nonNullableInt = _nonNullableInt!!
+          nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt")
         )
       }
 
@@ -138,7 +139,7 @@ public object MyQuery_ResponseAdapter {
 
         return MyQuery.Data.NonNullableMyType(
           nullableInt = _nullableInt,
-          nonNullableInt = _nonNullableInt!!
+          nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt")
         )
       }
 

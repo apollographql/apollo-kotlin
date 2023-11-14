@@ -25,6 +25,11 @@ class DefaultApolloException(message: String? = null, cause: Throwable? = null):
 class NoDataException(cause: Throwable?): ApolloException("No data was found", cause)
 
 /**
+ * No data and no error found.
+ */
+class NoDataAndNoErrorsException(cause: Throwable?): ApolloException("No data and no error found", cause)
+
+/**
  * A network error happened: socket closed, DNS issue, TLS problem, etc...
  *
  * @param message a message indicating what the error was.

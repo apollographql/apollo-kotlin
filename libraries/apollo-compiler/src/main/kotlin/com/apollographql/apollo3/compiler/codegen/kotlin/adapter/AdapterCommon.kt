@@ -181,7 +181,7 @@ internal fun readFromResponseCodeBlock(
           property.info.type.isResult() -> CodeBlock.of("·?:·%M(reader,·adapterContext)", KotlinSymbols.missingFieldResult)
           // Type is non-null but was already checked by the code above
           checkedProperties.contains(property.info.responseName) -> CodeBlock.of("")
-          else -> CodeBlock.of("·?:·%M(reader)", KotlinSymbols.missingField)
+          else -> CodeBlock.of("·?:·%M(reader,·%S)", KotlinSymbols.missingField, property.info.responseName)
         }
 
         CodeBlock.of(

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.java8annotation.LoginBarber
 import kotlin.String
@@ -32,7 +33,7 @@ public object LoginBarber_ResponseAdapter {
       }
 
       return LoginBarber.Data(
-        login = _login!!
+        login = _login ?: missingField(reader, "login")
       )
     }
 
@@ -60,7 +61,7 @@ public object LoginBarber_ResponseAdapter {
         }
 
         return LoginBarber.Data.Login(
-          response = _response!!
+          response = _response ?: missingField(reader, "response")
         )
       }
 

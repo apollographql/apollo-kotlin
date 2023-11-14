@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo3.exception.NoDataAndNoErrorsException
 import com.apollographql.apollo3.exception.NoDataException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField
@@ -87,10 +88,10 @@ private constructor(
    *
    * See also [data]
    */
-  @JvmField
+
   val exception: ApolloException? = when  {
     exception != null -> exception
-    data == null -> DefaultApolloException("No data and no error was returned")
+    data == null -> NoDataAndNoErrorsException(exception)
     else -> null
   }
 

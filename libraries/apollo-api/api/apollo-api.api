@@ -921,7 +921,7 @@ public final class com/apollographql/apollo3/api/ResultCompositeAdapter : com/ap
 
 public final class com/apollographql/apollo3/api/ResultKt {
 	public static final fun getOrElse (Lcom/apollographql/apollo3/api/Result;Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun missingField (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public static final fun missingField (Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/lang/String;)Ljava/lang/Object;
 	public static final fun missingFieldResult (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CompositeAdapterContext;)Lcom/apollographql/apollo3/api/Result;
 }
 

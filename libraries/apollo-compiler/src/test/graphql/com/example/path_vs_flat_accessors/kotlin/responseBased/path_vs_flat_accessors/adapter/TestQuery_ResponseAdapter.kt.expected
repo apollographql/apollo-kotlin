@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.path_vs_flat_accessors.TestQuery
@@ -101,7 +102,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.ABRoot(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           fieldB1 = _fieldB1,
           fieldB2 = _fieldB2
         )
@@ -141,7 +142,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherRoot(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 
@@ -173,7 +174,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherARoot(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 
@@ -207,7 +208,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherBRoot(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           fieldB2 = _fieldB2
         )
       }

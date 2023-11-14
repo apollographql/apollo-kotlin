@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
@@ -38,8 +39,8 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       return com.example.fragment_spread_with_nested_fields.fragment.HeroDetails(
-        name = _name!!,
-        friendsConnection = _friendsConnection!!
+        name = _name ?: missingField(reader, "name"),
+        friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
       )
     }
 
@@ -138,7 +139,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             }
 
             return com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node(
-              name = _name!!
+              name = _name ?: missingField(reader, "name")
             )
           }
 
