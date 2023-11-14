@@ -81,14 +81,13 @@ private constructor(
 ) {
 
   /**
-   * An [ApolloException] if a complete GraphQL response wasn't received, an instance of [ApolloGraphQLException] if GraphQL
-   * errors were return or another instance of [ApolloException] if a network, parsing, caching or other error happened.
+   * An [ApolloException] if a network, parsing, caching or other error happened.
    *
    * For example, `exception` is non-null if there is a network failure or cache miss.
    *
    * See also [data]
    */
-
+  @JvmField
   val exception: ApolloException? = when  {
     exception != null -> exception
     data == null -> NoDataAndNoErrorsException(exception)
