@@ -71,4 +71,33 @@ fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
 }
 
 @ApolloInternal
+fun List<GQLDirective>.findCatchLevels(schema: Schema): List<Int?> {
+  return filter {
+    schema.originalDirectiveName(it.name) == Schema.CATCH
+  }.map {
+    val argument = it.arguments.firstOrNull { it.name == "level" }
+    if (argument == null) {
+       null
+    } else {
+      (argument.value as? GQLIntValue)?.value ?: error("bad @catch directive")
+    }
+  }
+}
+
+@ApolloInternal
+fun List<GQLDirective>.findNullOnlyOnErrorLevels(schema: Schema): List<Int?> {
+  return filter {
+    schema.originalDirectiveName(it.name) == Schema.NULL_ONLY_ON_ERROR
+  }.map {
+    val argument = it.arguments.firstOrNull { it.name == "level" }
+    if (argument == null) {
+      null
+    } else {
+      (argument.value as? GQLIntValue)?.value ?: error("bad @nullOnlyOnError directive")
+    }
+  }
+}
+
+
+@ApolloInternal
 fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirectiveName(it.name) == Schema.NONNULL }

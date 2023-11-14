@@ -34,7 +34,7 @@ internal object ResponseParser {
       when (jsonReader.nextName()) {
         "data" -> {
           val falseVariables = operation.falseVariables(customScalarAdapters)
-          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds)
+          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds, errors ?: emptyList())
         }
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>

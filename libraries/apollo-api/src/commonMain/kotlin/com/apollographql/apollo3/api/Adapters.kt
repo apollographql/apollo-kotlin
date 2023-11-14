@@ -68,6 +68,25 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
   }
 }
 
+class ResultAdapter<T : Any>(private val wrappedAdapter: Adapter<T>, private val adapterContext: CompositeAdapterContext) : Adapter<Result<T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Result<T> {
+    if (reader.peek() == JsonReader.Token.NULL) {
+      val errors = adapterContext.errorsForPath(reader.getPath())
+      if (errors.isNotEmpty()) {
+        reader.skipValue()
+        return Result.Error(errors)
+      }
+    }
+    return Result.Data(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Result<T>) {
+    // We do not support serializing errors
+    wrappedAdapter.toJson(writer, customScalarAdapters, value.getOrThrow())
+  }
+}
+
+
 @Deprecated("Use PresentAdapter instead")
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
@@ -121,7 +140,7 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
 @JvmName("-obj")
 fun <T> Adapter<T>.obj() = ObjectAdapter(this)
 
-class ObjectAdapter<T>(private val wrappedAdapter: Adapter<T>): Adapter<T> {
+class ObjectAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     throw IllegalStateException("Input type used in output position")
   }
@@ -302,6 +321,9 @@ fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
 
+@JvmName("-result")
+fun <T : Any> Adapter<T>.result(adapterContext: CompositeAdapterContext) = ResultAdapter(this, adapterContext)
+
 /**
  * Note that Arrays require their type to be known at compile time, so we construct an anonymous object with reference to
  * function with reified type parameters as a workaround.
@@ -310,7 +332,11 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 @JvmName("-array")
 inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
 
-  private inline fun <reified T> arrayFromJson(wrappedAdapter: Adapter<T>, reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+  private inline fun <reified T> arrayFromJson(
+      wrappedAdapter: Adapter<T>,
+      reader: JsonReader,
+      customScalarAdapters: CustomScalarAdapters,
+  ): Array<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
@@ -324,7 +350,7 @@ inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
       wrappedAdapter: Adapter<T>,
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: Array<T>
+      value: Array<T>,
   ) {
     writer.beginArray()
     value.forEach {

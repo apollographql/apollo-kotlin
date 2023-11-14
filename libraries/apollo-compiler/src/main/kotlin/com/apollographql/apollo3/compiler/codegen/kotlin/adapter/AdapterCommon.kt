@@ -23,12 +23,12 @@ import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.isResult
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -49,14 +49,13 @@ internal fun readFromResponseCodeBlock(
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       useTypenameFromArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinSymbols.Absent)
       else -> CodeBlock.of("null")
     }
 
     CodeBlock.of(
         "var·%N:·%T·=·%L",
         context.layout.variableName(property.info.responseName),
-        context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.isOptional()),
+        context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = true),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -174,15 +173,17 @@ internal fun readFromResponseCodeBlock(
       .addStatement("return·%T(", context.resolver.resolveModel(model.id))
       .indent()
       .add(model.properties.map { property ->
-        val maybeAssertNotNull = if (
-            property.info.type is IrNonNullType
-            && !property.info.type.isOptional()
-            && !checkedProperties.contains(property.info.responseName)
-        ) {
-          "!!"
-        } else {
-          ""
+
+        val maybeAssertNotNull = when {
+          // Type is nullable, no need to assert
+          property.info.type !is IrNonNullType -> CodeBlock.of("")
+          property.info.type.isOptional() -> CodeBlock.of("·?:·%T", KotlinSymbols.Absent)
+          property.info.type.isResult() -> CodeBlock.of("·?:·%M(reader,·adapterContext)", KotlinSymbols.missingFieldResult)
+          // Type is non-null but was already checked by the code above
+          checkedProperties.contains(property.info.responseName) -> CodeBlock.of("")
+          else -> CodeBlock.of("·?:·%M(reader)", KotlinSymbols.missingField)
         }
+
         CodeBlock.of(
             "%N·=·%N%L",
             context.layout.propertyName(property.info.responseName),

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.exception.DefaultApolloException
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
@@ -52,6 +53,27 @@ class NullableCompositeAdapter<T : Any>(private val wrappedAdapter: CompositeAda
     } else {
       wrappedAdapter.toJson(writer, value, adapterContext)
     }
+  }
+}
+
+class ResultCompositeAdapter<T : Any>(private val wrappedAdapter: CompositeAdapter<T>): CompositeAdapter<Result<T>> {
+  override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext): Result<T> {
+    try {
+      return Result.Data(wrappedAdapter.fromJson(reader, adapterContext))
+    } catch (e: Exception) {
+      val errors = adapterContext.errorsForPath(reader.getPath())
+      if (errors.isNotEmpty()) {
+        reader.skipValue()
+        return Result.Error(errors)
+      }
+
+      throw DefaultApolloException("no error found for @catch field at '${reader.getPath()}'")
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, value: Result<T>, adapterContext: CompositeAdapterContext) {
+    // We do not support serializing errors
+    wrappedAdapter.toJson(writer, value.getOrThrow(), adapterContext)
   }
 }
 
@@ -132,6 +154,9 @@ class ObjectCompositeAdapter<T>(
   }
 }
 
+@JvmName("-result")
+fun <T : Any> CompositeAdapter<T>.result() = ResultCompositeAdapter(this)
+
 @JvmName("-nullable")
 fun <T : Any> CompositeAdapter<T>.nullable() = NullableCompositeAdapter(this)
 
@@ -143,6 +168,7 @@ fun <T> CompositeAdapter<T>.obj(buffered: Boolean = false) = ObjectCompositeAdap
 
 @JvmName("-present")
 fun <T> CompositeAdapter<T>.present() = PresentCompositeAdapter(this)
+
 
 
 @JvmName("-toJson")

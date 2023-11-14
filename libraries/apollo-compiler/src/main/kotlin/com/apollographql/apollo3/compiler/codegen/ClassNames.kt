@@ -23,6 +23,7 @@ internal object ClassNames {
   val Input = ResolverClassName(apolloApiPackageName, "Input")
   val CustomScalarAdaptersBuilder = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters", "Builder")
   val Optional = ResolverClassName(apolloApiPackageName, "Optional")
+  val Result = ResolverClassName(apolloApiPackageName, "Result")
   val Absent = ResolverClassName(apolloApiPackageName, "Optional", "Absent")
   val Present = ResolverClassName(apolloApiPackageName, "Optional", "Present")
   val Adapter = ResolverClassName(apolloApiPackageName, "Adapter")

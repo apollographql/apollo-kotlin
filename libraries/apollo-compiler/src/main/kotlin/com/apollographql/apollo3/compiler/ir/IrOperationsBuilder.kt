@@ -34,8 +34,10 @@ import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
+import com.apollographql.apollo3.ast.findCatchLevels
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
+import com.apollographql.apollo3.ast.findNullOnlyOnErrorLevels
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.optionalValue
@@ -473,11 +475,13 @@ internal class IrOperationsBuilder(
 
       val description: String?,
       val type: GQLType,
+      val nullOnlyOnErrorLevels: List<Int?>,
       val nullability: GQLNullability?,
       val deprecationReason: String?,
       val optInFeature: String?,
       val forceNonNull: Boolean,
       val forceOptional: Boolean,
+      val catchLevels: List<Int?>,
 
       /**
        * Merged field will merge their conditions and selectionSets
@@ -507,12 +511,14 @@ internal class IrOperationsBuilder(
           selections = gqlField.selections,
           type = fieldDefinition.type,
           nullability = gqlField.nullability,
+          nullOnlyOnErrorLevels = fieldDefinition.directives.findNullOnlyOnErrorLevels(schema),
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           optInFeature = fieldDefinition.directives.findOptInFeature(schema),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
+          catchLevels = gqlField.directives.findCatchLevels(schema),
       )
     }.groupBy {
       it.responseName
@@ -582,7 +588,14 @@ internal class IrOperationsBuilder(
        */
       usedFields.putType(first.type.rawType().name)
 
-      var irType = first.type.withNullability(first.nullability).toIr()
+      var irType = first
+          .type
+          .withNullability(first.nullability)
+          .toIr()
+          .nooe(first.nullOnlyOnErrorLevels, 0)
+          .catch(first.catchLevels, 0)
+
+
       if (forceNonNull) {
         irType = irType.makeNonNull()
       } else if (forceOptional) {
@@ -695,6 +708,48 @@ internal class IrOperationsBuilder(
         }
       }
     }
+  }
+}
+
+private fun IrType.nooe2(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
+  return when(this) {
+    is IrNamedType -> this
+    is IrListType -> IrListType(ofType.nooe(nullOnlyOnErrorLevels, level + 1))
+    is IrNonNullType -> error("")
+    is IrOptionalType -> error("")
+    is IrResultType -> error("")
+  }
+}
+
+private fun IrType.nooe(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
+  val shouldWrap = nullOnlyOnErrorLevels.any { it == null || it == level }
+
+  if (this is IrNonNullType) {
+    return IrNonNullType(ofType.nooe2(nullOnlyOnErrorLevels, level))
+  } else if (!shouldWrap) {
+    return this.nooe2(nullOnlyOnErrorLevels, level)
+  } else {
+    return IrNonNullType(this.nooe2(nullOnlyOnErrorLevels, level))
+  }
+}
+
+private fun IrType.catch2(catchLevels: List<Int?>, level: Int): IrType {
+  return when(this) {
+    is IrNamedType -> this
+    is IrListType -> IrListType(ofType.catch(catchLevels, level + 1))
+    is IrNonNullType -> IrNonNullType(ofType.catch2(catchLevels, level))
+    is IrOptionalType -> error("")
+    is IrResultType -> error("")
+  }
+}
+
+private fun IrType.catch(catchLevels: List<Int?>, level: Int): IrType {
+  val shouldWrap = catchLevels.any { it == null || it == level }
+
+  return if (shouldWrap) {
+    IrNonNullType(IrResultType(this.catch2(catchLevels, level)))
+  } else {
+    this.catch2(catchLevels, level)
   }
 }
 

@@ -73,14 +73,31 @@ fun <D : Executable.Data> Executable<D>.parseData(
     falseVariables: Set<String>? = null,
     deferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
 ): D? {
+  return parseData(
+      jsonReader = jsonReader,
+      customScalarAdapters = customScalarAdapters,
+      falseVariables = falseVariables,
+      deferredFragmentIds = deferredFragmentIds,
+      errors = emptyList()
+  )
+}
+
+@ApolloInternal
+fun <D : Executable.Data> Executable<D>.parseData(
+    jsonReader: JsonReader,
+    customScalarAdapters: CustomScalarAdapters,
+    falseVariables: Set<String>?,
+    deferredFragmentIds: Set<DeferredFragmentIdentifier>?,
+    errors: List<Error>,
+): D? {
   val adapterContext = CompositeAdapterContext.Builder()
       .customScalarAdapters(customScalarAdapters)
       .falseVariables(falseVariables)
       .deferredFragmentIdentifiers(deferredFragmentIds)
+      .errors(errors)
       .build()
   return adapter().nullable().fromJson(jsonReader, adapterContext)
 }
-
 
 fun <D : Executable.Data> Executable<D>.composeData(
     jsonWriter: JsonWriter,

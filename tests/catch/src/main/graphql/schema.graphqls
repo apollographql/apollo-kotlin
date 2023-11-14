@@ -1,0 +1,16 @@
+directive @nullOnlyOnError(level: Int = null) on FIELD_DEFINITION
+directive @catch(level: Int = null) on FIELD
+
+type Query {
+  nullable: Int
+  nullOnlyOnError: Int @nullOnlyOnError
+  deep: [[[Int]]] @nullOnlyOnError
+  user: User @nullOnlyOnError
+}
+
+type User {
+  name: String @nullOnlyOnError
+  friends: [User] @nullOnlyOnError
+}
+
+

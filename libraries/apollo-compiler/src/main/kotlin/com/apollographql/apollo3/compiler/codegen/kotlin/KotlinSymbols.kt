@@ -32,6 +32,7 @@ internal object KotlinSymbols {
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
   val CustomScalarAdaptersBuilder = ClassNames.CustomScalarAdaptersBuilder.toKotlinPoetClassName()
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
+  val Result = ClassNames.Result.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
   val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
@@ -112,6 +113,10 @@ internal object KotlinSymbols {
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
 
   val JsExport = ClassName("kotlin.js", "JsExport")
+
+  val missingFieldResult = MemberName(apolloApiPackageName, "missingFieldResult")
+  val missingField = MemberName(apolloApiPackageName, "missingField")
+  val resultAdapter = MemberName(apolloApiPackageName, "result")
 }
 
 internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

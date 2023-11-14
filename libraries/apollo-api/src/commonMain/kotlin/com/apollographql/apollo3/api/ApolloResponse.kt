@@ -90,7 +90,6 @@ private constructor(
   @JvmField
   val exception: ApolloException? = when  {
     exception != null -> exception
-    !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
     data == null -> DefaultApolloException("No data and no error was returned")
     else -> null
   }

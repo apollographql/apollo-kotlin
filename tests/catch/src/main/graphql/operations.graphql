@@ -1,0 +1,19 @@
+query GetUserOrThrow {
+  user {
+    name
+  }
+}
+
+query GetUserPartial {
+  user @catch {
+    name
+  }
+}
+
+query GetNooePartial {
+  nullOnlyOnError @catch
+}
+
+query GetNooeOrThrow {
+  nullOnlyOnError
+}

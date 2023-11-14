@@ -25,6 +25,7 @@ import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrObjectType
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
+import com.apollographql.apollo3.compiler.ir.IrResultType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
@@ -137,6 +138,7 @@ internal class JavaResolver(
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+      is IrResultType -> error("Java codegen doesn't support @catch yet")
     }.let { if (wrapNullableFieldsInOptional) it.wrapInOptional() else it.addNullableAnnotation() }
   }
 
@@ -263,6 +265,7 @@ internal class JavaResolver(
       }
 
       is IrObjectType -> error("IrObjectType cannot be adapted")
+      is IrResultType -> error("Java codegen does not support @catch")
     }
   }
 

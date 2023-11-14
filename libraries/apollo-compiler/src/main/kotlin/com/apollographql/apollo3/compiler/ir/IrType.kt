@@ -37,6 +37,12 @@ data class IrOptionalType(val ofType: IrType) : IrType {
 }
 
 @Serializable
+@SerialName("result")
+data class IrResultType(val ofType: IrType) : IrType {
+  override fun rawType() = ofType.rawType()
+}
+
+@Serializable
 @SerialName("list")
 data class IrListType(val ofType: IrType) : IrType {
   init {
@@ -105,6 +111,8 @@ internal const val MODEL_FRAGMENT_INTERFACE = "fragmentInterface"
 internal const val MODEL_UNKNOWN = "?"
 
 internal fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
+internal fun IrType.makeResult(): IrType = IrNonNullType(IrResultType(this))
+
 internal fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
   this.ofType.makeNullable()
 } else {
@@ -118,6 +126,7 @@ internal fun IrType.makeNonNull(): IrType = if (this is IrNonNullType) {
 }
 
 internal fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
+internal fun IrType.isResult() = (this is IrNonNullType) && (this.ofType is IrResultType)
 
 internal fun IrType.makeNonOptional(): IrType {
   return ((this as? IrNonNullType)?.ofType as? IrOptionalType)?.ofType ?: error("${Identifier.type} is not an optional type")
@@ -129,6 +138,7 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
     is IrNonNullType -> IrNonNullType(ofType = ofType.replacePlaceholder(newPath))
     is IrListType -> IrListType(ofType = ofType.replacePlaceholder(newPath))
     is IrModelType -> copy(path = newPath)
+    is IrResultType -> copy(ofType = ofType.replacePlaceholder(newPath))
     else -> error("Not a compound type?")
   }
 }
