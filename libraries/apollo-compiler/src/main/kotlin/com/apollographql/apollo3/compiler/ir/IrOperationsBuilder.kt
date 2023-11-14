@@ -515,8 +515,10 @@ internal class IrOperationsBuilder(
           type = fieldDefinition.type,
           nullability = gqlField.nullability,
           nullOnlyOnErrorLevels = fieldDefinition.directives.findNullOnlyOnErrorLevels(schema).also {
-            check(it.isEmpty()) {
-              "@catch and @nullOnlyOnError are experimental features, you need to opt-in with enableCatchAndNullOnlyOnError.set(true)"
+            if (!enableCatchAndNullOnlyOnError) {
+              check(it.isEmpty()) {
+                "@catch and @nullOnlyOnError are experimental features, you need to opt-in with enableCatchAndNullOnlyOnError.set(true)"
+              }
             }
           },
           description = fieldDefinition.description,
