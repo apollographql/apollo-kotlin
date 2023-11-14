@@ -634,6 +634,9 @@ interface Service {
   @ApolloExperimental
   val requiresOptInAnnotation: Property<String>
 
+  @ApolloExperimental
+  val enableCatchAndNullOnlyOnError: Property<Boolean>
+
   /**
    * Whether fields with different shape are disallowed to be merged in disjoint types.
    *

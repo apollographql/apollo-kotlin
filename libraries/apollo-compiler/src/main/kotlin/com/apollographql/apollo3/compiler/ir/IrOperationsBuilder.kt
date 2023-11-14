@@ -64,6 +64,7 @@ internal class IrOperationsBuilder(
     private val alwaysGenerateTypesMatching: Set<String>,
     private val generateDataBuilders: Boolean,
     private val fragmentVariableUsages: Map<String, List<VariableUsage>>,
+    private val enableCatchAndNullOnlyOnError: Boolean,
 ) : FieldMerger {
   private val usedFields = mutableMapOf<String, MutableSet<String>>()
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
@@ -103,7 +104,7 @@ internal class IrOperationsBuilder(
      */
     val visitedTypes = mutableSetOf<String>()
     val typesToVisit = usedFields.keys.toMutableList()
-    while(typesToVisit.isNotEmpty()) {
+    while (typesToVisit.isNotEmpty()) {
       val name = typesToVisit.removeFirst()
       if (visitedTypes.contains(name)) {
         continue
@@ -197,15 +198,16 @@ internal class IrOperationsBuilder(
            *   }
            * }
            */
-            typeDefinition.memberTypes.forEach {
-              if (generateDataBuilders) {
-                usedFields.putAllFields(it.name, usedFields[name].orEmpty())
-              } else {
-                usedFields.putType(it.name)
-              }
-              typesToVisit.add(it.name)
+          typeDefinition.memberTypes.forEach {
+            if (generateDataBuilders) {
+              usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+            } else {
+              usedFields.putType(it.name)
             }
+            typesToVisit.add(it.name)
+          }
         }
+
         is GQLInputObjectTypeDefinition -> {
           /**
            * Loop on the input types.
@@ -219,6 +221,7 @@ internal class IrOperationsBuilder(
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
               }
+
               is GQLEnumTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
@@ -511,14 +514,22 @@ internal class IrOperationsBuilder(
           selections = gqlField.selections,
           type = fieldDefinition.type,
           nullability = gqlField.nullability,
-          nullOnlyOnErrorLevels = fieldDefinition.directives.findNullOnlyOnErrorLevels(schema),
+          nullOnlyOnErrorLevels = fieldDefinition.directives.findNullOnlyOnErrorLevels(schema).also {
+            if (!enableCatchAndNullOnlyOnError) {
+              check(it.isEmpty())
+            }
+          },
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           optInFeature = fieldDefinition.directives.findOptInFeature(schema),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catchLevels = gqlField.directives.findCatchLevels(schema),
+          catchLevels = gqlField.directives.findCatchLevels(schema).also {
+            if (!enableCatchAndNullOnlyOnError) {
+              check(it.isEmpty())
+            }
+          },
       )
     }.groupBy {
       it.responseName
@@ -712,7 +723,7 @@ internal class IrOperationsBuilder(
 }
 
 private fun IrType.nooe2(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
-  return when(this) {
+  return when (this) {
     is IrNamedType -> this
     is IrListType -> IrListType(ofType.nooe(nullOnlyOnErrorLevels, level + 1))
     is IrNonNullType -> error("")
@@ -734,7 +745,7 @@ private fun IrType.nooe(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
 }
 
 private fun IrType.catch2(catchLevels: List<Int?>, level: Int): IrType {
-  return when(this) {
+  return when (this) {
     is IrNamedType -> this
     is IrListType -> IrListType(ofType.catch(catchLevels, level + 1))
     is IrNonNullType -> IrNonNullType(ofType.catch2(catchLevels, level))

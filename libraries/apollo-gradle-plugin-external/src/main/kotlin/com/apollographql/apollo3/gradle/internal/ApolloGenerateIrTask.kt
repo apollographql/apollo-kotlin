@@ -67,6 +67,10 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
   @get:Input
   abstract val alwaysGenerateTypesMatching: SetProperty<String>
 
+  @get:Input
+  @get:Optional
+  abstract val enableCatchAndNullOnlyOnError: Property<Boolean>
+
   @get:OutputFile
   abstract val outputFile: RegularFileProperty
 
@@ -87,6 +91,7 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.get(),
+        enableCatchAndNullOnlyOnError = enableCatchAndNullOnlyOnError.getOrElse(false)
     )
 
     ApolloCompiler.buildIrOperations(options).writeTo(outputFile.asFile.get())

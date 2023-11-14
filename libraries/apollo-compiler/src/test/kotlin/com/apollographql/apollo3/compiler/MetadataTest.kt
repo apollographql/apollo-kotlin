@@ -82,6 +82,7 @@ class MetadataTest {
         addTypename = defaultAddTypename,
         generateOptionalOperationVariables = defaultGenerateOptionalOperationVariables,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        enableCatchAndNullOnlyOnError = false
     )
     val irOperations = ApolloCompiler.buildIrOperations(irOptions)
 

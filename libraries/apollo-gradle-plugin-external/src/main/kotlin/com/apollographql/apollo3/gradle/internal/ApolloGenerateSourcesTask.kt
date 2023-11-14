@@ -82,6 +82,10 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
 
   @get:Input
   @get:Optional
+  abstract val enableCatchAndNullOnlyOnError: Property<Boolean>
+
+  @get:Input
+  @get:Optional
   abstract val decapitalizeFields: Property<Boolean>
 
   @TaskAction
@@ -111,6 +115,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
         logger = logger(),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
+        enableCatchAndNullOnlyOnError = enableCatchAndNullOnlyOnError.getOrElse(false)
     )
 
     val irOperations = ApolloCompiler.buildIrOperations(irOptions)

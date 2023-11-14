@@ -244,7 +244,8 @@ object ApolloCompiler {
         decapitalizeFields = options.decapitalizeFields,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
         generateDataBuilders = options.codegenSchema.generateDataBuilders,
-        fragmentVariableUsages = validationResult.fragmentVariableUsages
+        fragmentVariableUsages = validationResult.fragmentVariableUsages,
+        enableCatchAndNullOnlyOnError = options.enableCatchAndNullOnlyOnError
     ).build()
   }
 
@@ -473,6 +474,7 @@ object ApolloCompiler {
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
         generateOptionalOperationVariables = generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        enableCatchAndNullOnlyOnError = false
     )
 
     val irOperations = buildIrOperations(irOptions)

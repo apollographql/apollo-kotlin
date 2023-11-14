@@ -605,6 +605,7 @@ abstract class DefaultApolloExtension(
       task.failOnWarnings.set(service.failOnWarnings)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching())
+      task.enableCatchAndNullOnlyOnError.set(service.enableCatchAndNullOnlyOnError)
 
       task.outputFile.set(BuildDirLayout.ir(project, service))
     }
@@ -782,6 +783,7 @@ abstract class DefaultApolloExtension(
       task.generateDataBuilders.set(service.generateDataBuilders)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)
+      task.enableCatchAndNullOnlyOnError.set(service.enableCatchAndNullOnlyOnError)
 
       configureBaseCodegenTask(project, task, service)
     }
