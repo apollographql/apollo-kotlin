@@ -612,6 +612,34 @@ public final class com/apollographql/apollo3/compiler/ir/IrOptionalType$Companio
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/ir/IrResultType : com/apollographql/apollo3/compiler/ir/IrType {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrResultType$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrResultType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrResultType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrResultType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrResultType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrResultType$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrResultType;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrResultType;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrResultType$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrScalarType : com/apollographql/apollo3/compiler/ir/IrNamedType, com/apollographql/apollo3/compiler/ir/IrType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrScalarType$Companion;
 	public fun <init> (Ljava/lang/String;)V
