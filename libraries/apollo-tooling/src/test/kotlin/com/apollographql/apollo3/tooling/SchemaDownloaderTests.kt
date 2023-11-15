@@ -9,21 +9,893 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
-class SchemaDownloaderTests {
-  private lateinit var mockServer: MockServer
-  private lateinit var tempFile: File
+private const val metaSchemaJune2018Response = """
+    {
+      "data": {
+        "__schema": {
+          "types": [
+            {
+              "name": "Int",
+              "fields": null
+            },
+            {
+              "name": "String",
+              "fields": null
+            },
+            {
+              "name": "Boolean",
+              "fields": null
+            },
+            {
+              "name": "ID",
+              "fields": null
+            },
+            {
+              "name": "__Schema",
+              "fields": [
+                {
+                  "name": "types",
+                  "args": []
+                },
+                {
+                  "name": "queryType",
+                  "args": []
+                },
+                {
+                  "name": "mutationType",
+                  "args": []
+                },
+                {
+                  "name": "subscriptionType",
+                  "args": []
+                },
+                {
+                  "name": "directives",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Type",
+              "fields": [
+                {
+                  "name": "kind",
+                  "args": []
+                },
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "fields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "interfaces",
+                  "args": []
+                },
+                {
+                  "name": "possibleTypes",
+                  "args": []
+                },
+                {
+                  "name": "enumValues",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "inputFields",
+                  "args": []
+                },
+                {
+                  "name": "ofType",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__TypeKind",
+              "fields": null
+            },
+            {
+              "name": "__Field",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__InputValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "defaultValue",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__EnumValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Directive",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "locations",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__DirectiveLocation",
+              "fields": null
+            }
+          ]
+        }
+      }
+    }
+  """
 
-  private fun setUp() {
-    mockServer = MockServer()
-    tempFile = File.createTempFile("schema", ".json")
-  }
+private const val metaSchemaOctober2021Response = """
+    {
+      "data": {
+        "__schema": {
+          "types": [
+            {
+              "name": "Int",
+              "fields": null
+            },
+            {
+              "name": "String",
+              "fields": null
+            },
+            {
+              "name": "Boolean",
+              "fields": null
+            },
+            {
+              "name": "ID",
+              "fields": null
+            },
+            {
+              "name": "__Schema",
+              "fields": [
+                {
+                  "name": "types",
+                  "args": []
+                },
+                {
+                  "name": "queryType",
+                  "args": []
+                },
+                {
+                  "name": "mutationType",
+                  "args": []
+                },
+                {
+                  "name": "subscriptionType",
+                  "args": []
+                },
+                {
+                  "name": "directives",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Type",
+              "fields": [
+                {
+                  "name": "kind",
+                  "args": []
+                },
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "fields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "interfaces",
+                  "args": []
+                },
+                {
+                  "name": "possibleTypes",
+                  "args": []
+                },
+                {
+                  "name": "enumValues",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "inputFields",
+                  "args": []
+                },
+                {
+                  "name": "ofType",
+                  "args": []
+                },
+                {
+                  "name": "specifiedByURL",
+                  "args": []
+                }
 
-  private fun tearDown() {
-    mockServer.close()
-    tempFile.delete()
-  }
+              ]
+            },
+            {
+              "name": "__TypeKind",
+              "fields": null
+            },
+            {
+              "name": "__Field",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__InputValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "defaultValue",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__EnumValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Directive",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "locations",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": []
+                },
+                {
+                  "name": "isRepeatable",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__DirectiveLocation",
+              "fields": null
+            }
+          ]
+        }
+      }
+    }
+  """
 
-  private val schemaString1 = """
+private const val metaSchemaDraftResponse = """
+    {
+      "data": {
+        "__schema": {
+          "types": [
+            {
+              "name": "Int",
+              "fields": null
+            },
+            {
+              "name": "String",
+              "fields": null
+            },
+            {
+              "name": "Boolean",
+              "fields": null
+            },
+            {
+              "name": "ID",
+              "fields": null
+            },
+            {
+              "name": "__Schema",
+              "fields": [
+                {
+                  "name": "types",
+                  "args": []
+                },
+                {
+                  "name": "queryType",
+                  "args": []
+                },
+                {
+                  "name": "mutationType",
+                  "args": []
+                },
+                {
+                  "name": "subscriptionType",
+                  "args": []
+                },
+                {
+                  "name": "directives",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Type",
+              "fields": [
+                {
+                  "name": "kind",
+                  "args": []
+                },
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "fields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "interfaces",
+                  "args": []
+                },
+                {
+                  "name": "possibleTypes",
+                  "args": []
+                },
+                {
+                  "name": "enumValues",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "inputFields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "ofType",
+                  "args": []
+                },
+                {
+                  "name": "specifiedByURL",
+                  "args": []
+                }
+
+              ]
+            },
+            {
+              "name": "__TypeKind",
+              "fields": null
+            },
+            {
+              "name": "__Field",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__InputValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                },
+                {
+                  "name": "defaultValue",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__EnumValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Directive",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "locations",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "isRepeatable",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__DirectiveLocation",
+              "fields": null
+            }
+          ]
+        }
+      }
+    }
+  """
+
+private const val metaSchemaOneOfResponse = """
+    {
+      "data": {
+        "__schema": {
+          "types": [
+            {
+              "name": "Int",
+              "fields": null
+            },
+            {
+              "name": "String",
+              "fields": null
+            },
+            {
+              "name": "Boolean",
+              "fields": null
+            },
+            {
+              "name": "ID",
+              "fields": null
+            },
+            {
+              "name": "__Schema",
+              "fields": [
+                {
+                  "name": "types",
+                  "args": []
+                },
+                {
+                  "name": "queryType",
+                  "args": []
+                },
+                {
+                  "name": "mutationType",
+                  "args": []
+                },
+                {
+                  "name": "subscriptionType",
+                  "args": []
+                },
+                {
+                  "name": "directives",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Type",
+              "fields": [
+                {
+                  "name": "kind",
+                  "args": []
+                },
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "fields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "interfaces",
+                  "args": []
+                },
+                {
+                  "name": "possibleTypes",
+                  "args": []
+                },
+                {
+                  "name": "enumValues",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "inputFields",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "ofType",
+                  "args": []
+                },
+                {
+                  "name": "specifiedByURL",
+                  "args": []
+                },
+                {
+                  "name": "isOneOf",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__TypeKind",
+              "fields": null
+            },
+            {
+              "name": "__Field",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__InputValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "type",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                },
+                {
+                  "name": "defaultValue",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__EnumValue",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "isDeprecated",
+                  "args": []
+                },
+                {
+                  "name": "deprecationReason",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__Directive",
+              "fields": [
+                {
+                  "name": "name",
+                  "args": []
+                },
+                {
+                  "name": "description",
+                  "args": []
+                },
+                {
+                  "name": "locations",
+                  "args": []
+                },
+                {
+                  "name": "args",
+                  "args": [
+                    {
+                      "name": "includeDeprecated"
+                    }
+                  ]
+                },
+                {
+                  "name": "isRepeatable",
+                  "args": []
+                }
+              ]
+            },
+            {
+              "name": "__DirectiveLocation",
+              "fields": null
+            }
+          ]
+        }
+      }
+    }
+  """
+
+private const val schemaResponse = """
   {
     "__schema": {
       "queryType": {
@@ -122,39 +994,26 @@ class SchemaDownloaderTests {
       ]
     }
   }
-  """.trimIndent()
+  """
 
+class SchemaDownloaderTests {
+  private lateinit var mockServer: MockServer
+  private lateinit var tempFile: File
 
-  @Test
-  fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments`() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueueString(statusCode = 400)
-    mockServer.enqueueString(schemaString1)
+  private fun setUp() {
+    mockServer = MockServer()
+    tempFile = File.createTempFile("schema", ".json")
+  }
 
-    SchemaDownloader.download(
-        endpoint = mockServer.url(),
-        graph = null,
-        key = null,
-        graphVariant = "",
-        schema = tempFile,
-    )
-
-    mockServer.takeRequest().body.utf8().let {
-      assertTrue(it.contains("inputFields(includeDeprecated: true)"))
-      assertTrue(it.contains("args(includeDeprecated: true)"))
-    }
-
-    mockServer.takeRequest().body.utf8().let {
-      assertFalse(it.contains("inputFields(includeDeprecated: true)"))
-      assertFalse(it.contains("args(includeDeprecated: true)"))
-    }
-    assertEquals(schemaString1, tempFile.readText())
+  private fun tearDown() {
+    mockServer.close()
+    tempFile.delete()
   }
 
   @Test
-  fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments nor isRepeatable on directives`() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueueString(statusCode = 400)
-    mockServer.enqueueString(statusCode = 400)
-    mockServer.enqueueString(schemaString1)
+  fun `schema is downloaded correctly when server supports June 2018 spec`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(metaSchemaJune2018Response)
+    mockServer.enqueueString(schemaResponse)
 
     SchemaDownloader.download(
         endpoint = mockServer.url(),
@@ -164,21 +1023,102 @@ class SchemaDownloaderTests {
         schema = tempFile,
     )
 
+    mockServer.takeRequest()
     mockServer.takeRequest().body.utf8().let {
-      assertTrue(it.contains("inputFields(includeDeprecated: true)"))
-      assertTrue(it.contains("args(includeDeprecated: true)"))
-      assertTrue(it.contains("isRepeatable"))
-    }
-    mockServer.takeRequest().body.utf8().let {
-      assertFalse(it.contains("inputFields(includeDeprecated: true)"))
-      assertFalse(it.contains("args(includeDeprecated: true)"))
-      assertTrue(it.contains("isRepeatable"))
-    }
-    mockServer.takeRequest().body.utf8().let {
-      assertFalse(it.contains("inputFields(includeDeprecated: true)"))
-      assertFalse(it.contains("args(includeDeprecated: true)"))
+      assertFalse(it.contains(Regex("}\\s+description\\s+}\\s+}")))
+      assertFalse(it.contains("specifiedByURL"))
       assertFalse(it.contains("isRepeatable"))
+      assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+      assertFalse(it.contains(Regex("directives\\s+\\{\\s+name\\s+description\\s+locations\\s+args\\(includeDeprecated: true\\)")))
+      assertFalse(it.contains(Regex("fields\\(includeDeprecated: true\\)\\s+\\{\\s+name\\s+description\\s+args\\(includeDeprecated: true\\)")))
+      assertFalse(it.substringAfter("fragment InputValue on __InputValue {").contains("isDeprecated"))
+      assertFalse(it.substringAfter("fragment InputValue on __InputValue {").contains("deprecationReason"))
+      assertFalse(it.contains("isOneOf"))
     }
-    assertEquals(schemaString1, tempFile.readText())
+    assertEquals(schemaResponse, tempFile.readText())
+  }
+
+  @Test
+  fun `schema is downloaded correctly when server supports October 2021 spec`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(metaSchemaOctober2021Response)
+    mockServer.enqueueString(schemaResponse)
+
+    SchemaDownloader.download(
+        endpoint = mockServer.url(),
+        graph = null,
+        key = null,
+        graphVariant = "",
+        schema = tempFile,
+    )
+
+    mockServer.takeRequest()
+    mockServer.takeRequest().body.utf8().let {
+      assertTrue(it.contains(Regex("}\\s+description\\s+}\\s+}")))
+      assertTrue(it.contains("specifiedByURL"))
+      assertTrue(it.contains("isRepeatable"))
+      assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+      assertFalse(it.contains(Regex("directives\\s+\\{\\s+name\\s+description\\s+locations\\s+args\\(includeDeprecated: true\\)")))
+      assertFalse(it.contains(Regex("fields\\(includeDeprecated: true\\)\\s+\\{\\s+name\\s+description\\s+args\\(includeDeprecated: true\\)")))
+      assertFalse(it.substringAfter("fragment InputValue on __InputValue {").contains("isDeprecated"))
+      assertFalse(it.substringAfter("fragment InputValue on __InputValue {").contains("deprecationReason"))
+      assertFalse(it.contains("isOneOf"))
+    }
+    assertEquals(schemaResponse, tempFile.readText())
+  }
+
+  @Test
+  fun `schema is downloaded correctly when server supports Draft spec as of 2023-11-15`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(metaSchemaDraftResponse)
+    mockServer.enqueueString(schemaResponse)
+
+    SchemaDownloader.download(
+        endpoint = mockServer.url(),
+        graph = null,
+        key = null,
+        graphVariant = "",
+        schema = tempFile,
+    )
+
+    mockServer.takeRequest()
+    mockServer.takeRequest().body.utf8().let {
+      assertTrue(it.contains(Regex("}\\s+description\\s+}\\s+}")))
+      assertTrue(it.contains("specifiedByURL"))
+      assertTrue(it.contains("isRepeatable"))
+      assertTrue(it.contains("inputFields(includeDeprecated: true)"))
+      assertTrue(it.contains(Regex("directives\\s+\\{\\s+name\\s+description\\s+locations\\s+args\\(includeDeprecated: true\\)")))
+      assertTrue(it.contains(Regex("fields\\(includeDeprecated: true\\)\\s+\\{\\s+name\\s+description\\s+args\\(includeDeprecated: true\\)")))
+      assertTrue(it.substringAfter("fragment InputValue on __InputValue {").contains("isDeprecated"))
+      assertTrue(it.substringAfter("fragment InputValue on __InputValue {").contains("deprecationReason"))
+      assertFalse(it.contains("isOneOf"))
+    }
+    assertEquals(schemaResponse, tempFile.readText())
+  }
+
+  @Test
+  fun `schema is downloaded correctly when server supports oneOf`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(metaSchemaOneOfResponse)
+    mockServer.enqueueString(schemaResponse)
+
+    SchemaDownloader.download(
+        endpoint = mockServer.url(),
+        graph = null,
+        key = null,
+        graphVariant = "",
+        schema = tempFile,
+    )
+
+    mockServer.takeRequest()
+    mockServer.takeRequest().body.utf8().let {
+      assertTrue(it.contains(Regex("}\\s+description\\s+}\\s+}")))
+      assertTrue(it.contains("specifiedByURL"))
+      assertTrue(it.contains("isRepeatable"))
+      assertTrue(it.contains("inputFields(includeDeprecated: true)"))
+      assertTrue(it.contains(Regex("directives\\s+\\{\\s+name\\s+description\\s+locations\\s+args\\(includeDeprecated: true\\)")))
+      assertTrue(it.contains(Regex("fields\\(includeDeprecated: true\\)\\s+\\{\\s+name\\s+description\\s+args\\(includeDeprecated: true\\)")))
+      assertTrue(it.substringAfter("fragment InputValue on __InputValue {").contains("isDeprecated"))
+      assertTrue(it.substringAfter("fragment InputValue on __InputValue {").contains("deprecationReason"))
+      assertTrue(it.contains("isOneOf"))
+    }
+    assertEquals(schemaResponse, tempFile.readText())
   }
 }

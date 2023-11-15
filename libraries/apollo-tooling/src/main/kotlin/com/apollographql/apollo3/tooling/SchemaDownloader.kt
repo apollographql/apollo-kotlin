@@ -5,6 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
+import com.apollographql.apollo3.ast.introspection.toIntrospectionCapabilities
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
@@ -15,19 +16,10 @@ import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
-import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
-import com.apollographql.apollo3.tooling.graphql.october2021.IntrospectionQuery as GraphQLOctober2021IntrospectionQuery
 
 
 @ApolloExperimental
 object SchemaDownloader {
-  enum class SpecVersion {
-    June_2018,
-    October_2021,
-    Draft,
-  }
-
   /**
    * Main entry point for downloading a schema either from introspection or from the Apollo Studio registry
    *
@@ -60,25 +52,15 @@ object SchemaDownloader {
 
     when {
       endpoint != null -> {
-        var exception: Exception? = null
-        // Try the latest spec first
-        for (specVersion in SpecVersion.values().reversed()) {
-          try {
-            introspectionDataJson = downloadIntrospection(
-                endpoint = endpoint,
-                headers = headers,
-                insecure = insecure,
-                specVersion = specVersion,
-            )
-            introspectionSchema = introspectionDataJson.toIntrospectionSchema()
-            exception = null
-            break
-          } catch (e: Exception) {
-            exception = e
-          }
-        }
-        if (introspectionDataJson == null) {
-          throw exception!!
+        introspectionDataJson = downloadIntrospection(
+            endpoint = endpoint,
+            headers = headers,
+            insecure = insecure,
+        )
+        introspectionSchema = try {
+          introspectionDataJson.toIntrospectionSchema()
+        } catch (e: Exception) {
+          throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$introspectionDataJson", e)
         }
       }
 
@@ -134,14 +116,19 @@ object SchemaDownloader {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-      specVersion: SpecVersion,
   ): String {
+    val metaIntrospectionDataJson = SchemaHelper.executeMetaIntrospectionQuery(
+        endpoint = endpoint,
+        headers = headers,
+        insecure = insecure,
+    )
+    val introspectionCapabilities = try {
+      metaIntrospectionDataJson.toIntrospectionCapabilities()
+    } catch (e: Exception) {
+      throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$metaIntrospectionDataJson", e)
+    }
     return SchemaHelper.executeSchemaQuery(
-        query = when (specVersion) {
-          SpecVersion.June_2018 -> GraphQLJune2018IntrospectionQuery()
-          SpecVersion.October_2021 -> GraphQLOctober2021IntrospectionQuery()
-          SpecVersion.Draft -> GraphQLDraftIntrospectionQuery()
-        },
+        introspectionCapabilities = introspectionCapabilities,
         endpoint = endpoint,
         headers = headers,
         insecure = insecure,

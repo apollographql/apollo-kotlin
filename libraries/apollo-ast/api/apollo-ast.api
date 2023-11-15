@@ -1068,3 +1068,6 @@ public final class com/apollographql/apollo3/ast/introspection/Introspection {
 public abstract interface class com/apollographql/apollo3/ast/introspection/IntrospectionSchema {
 }
 
+public final class com/apollographql/apollo3/ast/introspection/Meta_introspection_readerKt {
+}
+

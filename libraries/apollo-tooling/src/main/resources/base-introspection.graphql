@@ -1,5 +1,10 @@
+# Base introspection query that will be augmented according to the server capabilities.
+# The capabilities are retrieved by executing the meta-introspection query next to this file.
+# The fields that can be added or modified are shown as comments.
+
 query IntrospectionQuery {
   __schema {
+    # description
     queryType { name }
     mutationType { name }
     subscriptionType { name }
@@ -10,10 +15,10 @@ query IntrospectionQuery {
       name
       description
       locations
-      args {
+      args { # args(includeDeprecated: true)
         ...InputValue
       }
-      isRepeatable
+      # isRepeatable
     }
   }
 }
@@ -25,7 +30,7 @@ fragment FullType on __Type {
   fields(includeDeprecated: true) {
     name
     description
-    args {
+    args { # args(includeDeprecated: true)
       ...InputValue
     }
     type {
@@ -34,7 +39,7 @@ fragment FullType on __Type {
     isDeprecated
     deprecationReason
   }
-  inputFields {
+  inputFields { # inputFields(includeDeprecated: true)
     ...InputValue
   }
   interfaces {
@@ -49,7 +54,7 @@ fragment FullType on __Type {
   possibleTypes {
     ...TypeRef
   }
-  specifiedByURL
+  # specifiedByURL
 }
 
 fragment InputValue on __InputValue {
@@ -57,6 +62,9 @@ fragment InputValue on __InputValue {
   description
   type { ...TypeRef }
   defaultValue
+  # isDeprecated
+  # deprecationReason
+  # isOneOf
 }
 
 fragment TypeRef on __Type {

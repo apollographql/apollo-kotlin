@@ -1,0 +1,15 @@
+# Meta introspection query allowing to retrieve server capabilities.
+
+query MetaIntrospectionQuery {
+  __schema {
+    types {
+      name
+      fields {
+        name
+        args {
+          name
+        }
+      }
+    }
+  }
+}

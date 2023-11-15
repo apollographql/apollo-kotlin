@@ -8,7 +8,6 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
 
 class IntrospectionQueryTest {
 
@@ -160,6 +159,6 @@ class IntrospectionQueryTest {
 
   @Test
   fun canUseTheSameIntrospectionQueryAsVersion3() {
-    assertEquals(v3IntrospectionQuery.normalized(), GraphQLJune2018IntrospectionQuery.OPERATION_DOCUMENT.normalized())
+    assertEquals(v3IntrospectionQuery.normalized(), SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.bufferedReader().readText().normalized())
   }
 }
