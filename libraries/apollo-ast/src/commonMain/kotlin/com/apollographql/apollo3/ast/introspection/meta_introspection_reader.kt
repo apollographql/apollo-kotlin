@@ -113,8 +113,13 @@ fun String.toIntrospectionCapabilities(): Set<IntrospectionCapability> {
   }
 }
 
+private val json = Json {
+  // be robust to errors: [] keys
+  ignoreUnknownKeys = true
+}
+
 private fun String.toMIntrospection(): MIntrospection{
-  return Json.decodeFromString(this)
+  return json.decodeFromString(this)
 }
 
 @Serializable

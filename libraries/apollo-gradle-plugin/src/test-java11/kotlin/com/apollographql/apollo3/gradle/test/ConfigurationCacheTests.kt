@@ -1,16 +1,26 @@
 package com.apollographql.apollo3.gradle.test
 
-import util.TestUtils
-import util.TestUtils.withTestProject
-import util.replaceInText
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Test
+import util.TestUtils
+import util.TestUtils.withTestProject
+import util.replaceInText
 
 class ConfigurationCacheTests {
   @Test
   fun configurationCacheTest() = withTestProject("configuration-cache") { dir ->
     val server = MockWebServer()
+
+    val minimalValidMetaSchema = """
+      {
+        "data": {
+          "__schema": {
+            "types": []
+          }
+        }
+      }
+    """.trimIndent()
 
     val minimalValidSchema = """
         {
@@ -25,6 +35,7 @@ class ConfigurationCacheTests {
 
     dir.resolve("root/build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
 
+    server.enqueue(MockResponse().setBody(minimalValidMetaSchema))
     server.enqueue(MockResponse().setBody(minimalValidSchema))
     TestUtils.executeGradle(
         dir,
@@ -33,6 +44,7 @@ class ConfigurationCacheTests {
         "downloadServiceApolloSchemaFromIntrospection"
     )
 
+    server.enqueue(MockResponse().setBody(minimalValidMetaSchema))
     server.enqueue(MockResponse().setBody(minimalValidSchema))
     val result = TestUtils.executeGradle(
         dir,

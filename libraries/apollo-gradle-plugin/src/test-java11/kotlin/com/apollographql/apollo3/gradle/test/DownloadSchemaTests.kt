@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.gradle.test
 
 
-import util.TestUtils
-import util.TestUtils.withSimpleProject
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
@@ -10,10 +8,23 @@ import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import util.TestUtils
+import util.TestUtils.withSimpleProject
 import java.io.File
 
 class DownloadSchemaTests {
   private val mockServer = MockWebServer()
+
+  private val metaSchema = """
+  {
+    "data": {
+      "__schema": {
+        "types": []
+      }
+    }
+  }
+  """.trimIndent()
+
   private val schemaString1 = """
   {
     "__schema": {
@@ -131,8 +142,8 @@ class DownloadSchemaTests {
   @Test
   fun `schema is downloaded correctly`() {
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val mockResponse = MockResponse().setBody(schemaString1)
-      mockServer.enqueue(mockResponse)
+      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
 
@@ -145,13 +156,16 @@ class DownloadSchemaTests {
   fun `download schema is never up-to-date`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val mockResponse = MockResponse().setBody(schemaString1)
-      mockServer.enqueue(mockResponse)
+      val metaSchemaMockResponse = MockResponse().setBody(metaSchema)
+      val schemaMockResponse = MockResponse().setBody(schemaString1)
+      mockServer.enqueue(metaSchemaMockResponse)
+      mockServer.enqueue(schemaMockResponse)
 
       var result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
-      mockServer.enqueue(mockResponse)
+      mockServer.enqueue(metaSchemaMockResponse)
+      mockServer.enqueue(schemaMockResponse)
 
       // Since the task does not declare any output, it should never be up-to-date
       result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
@@ -179,11 +193,14 @@ class DownloadSchemaTests {
 
       val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
+      val metaSchemaMockResponse = MockResponse().setBody(metaSchema)
+      mockServer.enqueue(metaSchemaMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
       assertEquals(schemaString1, schemaFile.readText())
 
+      mockServer.enqueue(metaSchemaMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString2))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
@@ -195,8 +212,8 @@ class DownloadSchemaTests {
   fun `manually downloading a schema is working`() {
 
     withSimpleProject(apolloConfiguration = "") { dir ->
-      val mockResponse = MockResponse().setBody(schemaString1)
-      mockServer.enqueue(mockResponse)
+      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       // Tests can run from any working directory.
       // They used to run in `apollo-gradle-plugin` but with Gradle 6.7, they now run in something like
@@ -215,8 +232,8 @@ class DownloadSchemaTests {
   @Test
   fun `manually downloading a schema from self signed endpoint is working`() {
     withSimpleProject(apolloConfiguration = "") { dir ->
-      val mockResponse = MockResponse().setBody(schemaString1)
-      mockServer.enqueue(mockResponse)
+      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       val selfSignedCertificate = HeldCertificate.Builder().build()
       val certs = HandshakeCertificates.Builder().heldCertificate(selfSignedCertificate).build()
