@@ -237,3 +237,8 @@ It is not possible to create a `Schema` from a File or String directly anymore. 
 
 * Publishing is no longer configured automatically.
 * Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"` 
+
+
+## Removed RxJava artifacts
+
+* Use `toFlow().asFlowable()` and `kotlinx-coroutines-rx2`

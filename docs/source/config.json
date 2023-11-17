@@ -73,7 +73,6 @@
       "Enforcing non-nullability": "/advanced/nonnull",
       "Using aliases": "/advanced/using-aliases",
       "Using with Java": "/advanced/java",
-      "RxJava support": "/advanced/rxjava",
       "Kotlin native": "/advanced/kotlin-native",
       "Apollo AST": "/advanced/apollo-ast",
       "JS Interoperability": "/advanced/js-interop",

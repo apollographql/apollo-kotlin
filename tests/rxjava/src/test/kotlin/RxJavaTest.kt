@@ -6,8 +6,8 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.rx2.rxFlowable
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.asFlowable
 import rxjava.GetRandomQuery
 import java.util.concurrent.TimeUnit
 import kotlin.test.BeforeTest
@@ -37,7 +37,8 @@ class RxJavaTest {
     mockServer.enqueueString(response)
 
     apolloClient.query(GetRandomQuery())
-        .rxFlowable()
+        .toFlow()
+        .asFlowable()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertComplete()
@@ -54,7 +55,8 @@ class RxJavaTest {
     mockServer.enqueueString("bad response")
 
     apolloClient.query(GetRandomQuery())
-        .rxFlowable()
+        .toFlow()
+        .asFlowable()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertComplete()

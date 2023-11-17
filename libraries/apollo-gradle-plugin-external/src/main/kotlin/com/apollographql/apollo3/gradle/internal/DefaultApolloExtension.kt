@@ -984,7 +984,7 @@ abstract class DefaultApolloExtension(
       it.isCanBeConsumed = true
     }
 
-    producer.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-ksp"))
+    producer.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-ksp-incubating"))
     val taskProvider = project.tasks.register("generate${service.capitalizeFirstLetter()}ApolloKspProcessor", ApolloGenerateKspProcessorTask::class.java) {
       it.schema.set(schema)
       it.serviceName.set(service)
