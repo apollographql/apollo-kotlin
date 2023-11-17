@@ -1,10 +1,11 @@
 # Base introspection query that will be augmented according to the server capabilities.
-# The capabilities are retrieved by executing the meta-introspection query next to this file.
+# The capabilities are retrieved by executing a pre-introspection query.
 # The fields that can be added or modified are shown as comments.
+# Draft spec is as of 2023-11-17.
 
 query IntrospectionQuery {
   __schema {
-    # description
+    # description - introduced in https://spec.graphql.org/October2021/
     queryType { name }
     mutationType { name }
     subscriptionType { name }
@@ -15,10 +16,10 @@ query IntrospectionQuery {
       name
       description
       locations
-      args { # args(includeDeprecated: true)
+      args { # args(includeDeprecated: true) - introduced in https://spec.graphql.org/draft/
         ...InputValue
       }
-      # isRepeatable
+      # isRepeatable - introduced in https://spec.graphql.org/October2021/
     }
   }
 }
@@ -30,7 +31,7 @@ fragment FullType on __Type {
   fields(includeDeprecated: true) {
     name
     description
-    args { # args(includeDeprecated: true)
+    args { # args(includeDeprecated: true) - introduced in https://spec.graphql.org/draft/
       ...InputValue
     }
     type {
@@ -39,7 +40,7 @@ fragment FullType on __Type {
     isDeprecated
     deprecationReason
   }
-  inputFields { # inputFields(includeDeprecated: true)
+  inputFields { # inputFields(includeDeprecated: true) - introduced in https://spec.graphql.org/draft/
     ...InputValue
   }
   interfaces {
@@ -54,7 +55,7 @@ fragment FullType on __Type {
   possibleTypes {
     ...TypeRef
   }
-  # specifiedByURL
+  # specifiedByURL - introduced in https://spec.graphql.org/October2021/
 }
 
 fragment InputValue on __InputValue {
@@ -62,9 +63,9 @@ fragment InputValue on __InputValue {
   description
   type { ...TypeRef }
   defaultValue
-  # isDeprecated
-  # deprecationReason
-  # isOneOf
+  # isDeprecated - introduced in https://spec.graphql.org/draft/
+  # deprecationReason - introduced in https://spec.graphql.org/draft/
+  # isOneOf - introduced in https://github.com/graphql/graphql-spec/pull/825/
 }
 
 fragment TypeRef on __Type {

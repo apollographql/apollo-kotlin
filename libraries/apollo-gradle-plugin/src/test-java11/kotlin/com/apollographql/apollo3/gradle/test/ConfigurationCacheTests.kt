@@ -12,11 +12,28 @@ class ConfigurationCacheTests {
   fun configurationCacheTest() = withTestProject("configuration-cache") { dir ->
     val server = MockWebServer()
 
-    val minimalValidMetaSchema = """
+    val preIntrospectionResponse = """
       {
         "data": {
-          "__schema": {
-            "types": []
+          "schema": {
+            "__typename": "__Type",
+            "fields": []
+          },
+          "type": {
+            "__typename": "__Type",
+            "fields": []
+          },
+          "directive": {
+            "__typename": "__Type",
+            "fields": []
+          },
+          "field": {
+            "__typename": "__Type",
+            "fields": []
+          },
+          "inputValue": {
+            "__typename": "__Type",
+            "fields": []
           }
         }
       }
@@ -35,7 +52,7 @@ class ConfigurationCacheTests {
 
     dir.resolve("root/build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
 
-    server.enqueue(MockResponse().setBody(minimalValidMetaSchema))
+    server.enqueue(MockResponse().setBody(preIntrospectionResponse))
     server.enqueue(MockResponse().setBody(minimalValidSchema))
     TestUtils.executeGradle(
         dir,
@@ -44,7 +61,7 @@ class ConfigurationCacheTests {
         "downloadServiceApolloSchemaFromIntrospection"
     )
 
-    server.enqueue(MockResponse().setBody(minimalValidMetaSchema))
+    server.enqueue(MockResponse().setBody(preIntrospectionResponse))
     server.enqueue(MockResponse().setBody(minimalValidSchema))
     val result = TestUtils.executeGradle(
         dir,

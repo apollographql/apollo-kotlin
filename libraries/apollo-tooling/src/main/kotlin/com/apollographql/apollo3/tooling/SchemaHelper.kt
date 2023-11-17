@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.ByteStringHttpBody
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -8,28 +9,17 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDefinition
-import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.DirectiveArgsIncludeDeprecated
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.DirectiveIsRepeatable
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.FieldArgsIncludeDeprecated
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.InputValueDeprecatedReason
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.InputValueIsDeprecated
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.SchemaDescription
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.TypeInputFieldsIncludeDeprecated
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.TypeIsOneOf
-import com.apollographql.apollo3.ast.introspection.IntrospectionCapability.TypeSpecifiedByURL
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo3.tooling.IntrospectionCapability.*
+import com.apollographql.apollo3.tooling.graphql.PreIntrospectionQuery
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
-import okio.buffer
-import okio.source
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
@@ -75,47 +65,56 @@ internal object SchemaHelper {
     return bodyStr
   }
 
-  internal fun executeMetaIntrospectionQuery(
+  internal fun executePreIntrospectionQuery(
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+  ): PreIntrospectionQuery.Data {
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(endpoint)
+        .okHttpClient(newOkHttpClient(insecure))
+        .httpExposeErrorBody(true)
+        .build()
+    val response = runBlocking {
+      apolloClient.query(PreIntrospectionQuery())
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .execute()
+    }
+    response.exception?.let { e ->
+      if (e is ApolloHttpException) {
+        val body = e.body?.use { it.readUtf8() } ?: ""
+        throw Exception("Cannot execute pre-introspection query from $endpoint: (code: ${e.statusCode})\n$body", e)
+      }
+      throw e
+    }
+    if (response.errors?.isNotEmpty() == true) {
+      throw Exception("Cannot execute pre-introspection query from $endpoint: ${response.errors!!.joinToString { it.message }}")
+    }
+    return response.data!!
+  }
+
+  internal fun executeIntrospectionQuery(
+      introspectionQuery: String,
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val metaIntrospectionStr = SchemaHelper::class.java.classLoader!!.getResourceAsStream("meta-introspection.graphql")!!.source().buffer().readByteString()
-    val httpBody = ByteStringHttpBody("application/json", metaIntrospectionStr)
-    return fetch(httpBody, endpoint, headers, insecure)
+    return fetch(ByteStringHttpBody("application/json", introspectionQuery), endpoint, headers, insecure)
   }
 
-  internal fun executeSchemaQuery(
-      introspectionCapabilities: Set<IntrospectionCapability>,
-      endpoint: String,
-      headers: Map<String, String>,
-      insecure: Boolean,
-  ): String {
-    val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
-    val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
-    val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
-        definitions = baseIntrospectionGql.definitions
-            .reworkIntrospectionQuery(introspectionCapabilities)
-            .reworkFullTypeFragment(introspectionCapabilities)
-            .reworkInputValueFragment(introspectionCapabilities)
-    )
-    val httpBody = ByteStringHttpBody("application/json", introspectionGql.toUtf8())
-    return fetch(httpBody, endpoint, headers, insecure)
-  }
-
-  private fun List<GQLDefinition>.reworkIntrospectionQuery(introspectionCapabilities: Set<IntrospectionCapability>) =
+  internal fun List<GQLDefinition>.reworkIntrospectionQuery(capabilities: Set<IntrospectionCapability>) =
       mapIf<_, GQLOperationDefinition>({ it.name == "IntrospectionQuery" }) {
         it.copy(
             selections = it.selections
                 // Add __schema { description }
-                .mapIf(SchemaDescription in introspectionCapabilities) { schemaField ->
+                .mapIf(SchemaDescription in capabilities) { schemaField ->
                   schemaField as GQLField
                   schemaField.copy(
                       selections = schemaField.selections + createField("description")
                   )
                 }
                 // Add __schema { directives { isRepeatable } }
-                .mapIf(DirectiveIsRepeatable in introspectionCapabilities) { schemaField ->
+                .mapIf(DirectiveIsRepeatable in capabilities) { schemaField ->
                   schemaField as GQLField
                   schemaField.copy(
                       selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
@@ -124,7 +123,7 @@ internal object SchemaHelper {
                   )
                 }
                 // Replace __schema { directives { args { ... } } }  by  __schema { directives { args(includeDeprecated: true) { ... } } }
-                .mapIf(DirectiveArgsIncludeDeprecated in introspectionCapabilities) { schemaField ->
+                .mapIf(DirectiveArgsIncludeDeprecated in capabilities) { schemaField ->
                   schemaField as GQLField
                   schemaField.copy(
                       selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
@@ -139,20 +138,20 @@ internal object SchemaHelper {
         )
       }
 
-  private fun List<GQLDefinition>.reworkFullTypeFragment(introspectionCapabilities: Set<IntrospectionCapability>) =
+  internal fun List<GQLDefinition>.reworkFullTypeFragment(capabilities: Set<IntrospectionCapability>) =
       mapIf<_, GQLFragmentDefinition>({ it.name == "FullType" }) {
         it.copy(
             selections = it.selections
                 // Add specifiedByUrl
-                .letIf(TypeSpecifiedByURL in introspectionCapabilities) { fields ->
+                .letIf(TypeSpecifiedByURL in capabilities) { fields ->
                   fields + createField("specifiedByURL")
                 }
                 // Replace inputFields { ... }  by  inputFields(includeDeprecated: true) { ... }
-                .mapIf<_, GQLField>({ TypeInputFieldsIncludeDeprecated in introspectionCapabilities && it.name == "inputFields" }) { inputFieldsField ->
+                .mapIf<_, GQLField>({ TypeInputFieldsIncludeDeprecated in capabilities && it.name == "inputFields" }) { inputFieldsField ->
                   inputFieldsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
                 }
                 // Replace fields { args { ... } }  by  fields { args(includeDeprecated: true) { ... } }
-                .mapIf<_, GQLField>({ FieldArgsIncludeDeprecated in introspectionCapabilities && it.name == "fields" }) { fieldsField ->
+                .mapIf<_, GQLField>({ FieldArgsIncludeDeprecated in capabilities && it.name == "fields" }) { fieldsField ->
                   fieldsField.copy(
                       selections = fieldsField.selections.mapIf<_, GQLField>({ it.name == "args" }) { argsField ->
                         argsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
@@ -162,20 +161,20 @@ internal object SchemaHelper {
         )
       }
 
-  private fun List<GQLDefinition>.reworkInputValueFragment(introspectionCapabilities: Set<IntrospectionCapability>) =
+  internal fun List<GQLDefinition>.reworkInputValueFragment(capabilities: Set<IntrospectionCapability>) =
       mapIf<_, GQLFragmentDefinition>({ it.name == "InputValue" }) {
         it.copy(
             selections = it.selections
                 // Add isDeprecated
-                .letIf(InputValueIsDeprecated in introspectionCapabilities) { fields ->
+                .letIf(InputValueIsDeprecated in capabilities) { fields ->
                   fields + createField("isDeprecated")
                 }
                 // Add deprecationReason
-                .letIf(InputValueDeprecatedReason in introspectionCapabilities) { fields ->
+                .letIf(InputValueDeprecatedReason in capabilities) { fields ->
                   fields + createField("deprecationReason")
                 }
                 // Add isOneOf
-                .letIf(TypeIsOneOf in introspectionCapabilities) { fields ->
+                .letIf(TypeIsOneOf in capabilities) { fields ->
                   fields + createField("isOneOf")
                 }
         )

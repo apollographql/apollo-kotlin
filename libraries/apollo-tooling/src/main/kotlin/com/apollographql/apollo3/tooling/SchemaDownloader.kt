@@ -3,18 +3,25 @@ package com.apollographql.apollo3.tooling
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toIntrospectionCapabilities
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
-import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkIntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.PreIntrospectionQuery
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
+import okio.buffer
+import okio.source
 import java.io.File
 
 
@@ -112,23 +119,36 @@ object SchemaDownloader {
     }
   }
 
+  /**
+   * Get an introspection query that is compatible with the given [capabilities], as a JSON string.
+   */
+  @ApolloExperimental
+  fun getIntrospectionQuery(capabilities: Set<IntrospectionCapability>): String {
+    val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
+    val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
+    val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
+        definitions = baseIntrospectionGql.definitions
+            .reworkIntrospectionQuery(capabilities)
+            .reworkFullTypeFragment(capabilities)
+            .reworkInputValueFragment(capabilities)
+    )
+    return introspectionGql.toUtf8()
+  }
+
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val metaIntrospectionDataJson = SchemaHelper.executeMetaIntrospectionQuery(
+    val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
         endpoint = endpoint,
         headers = headers,
         insecure = insecure,
     )
-    val introspectionCapabilities = try {
-      metaIntrospectionDataJson.toIntrospectionCapabilities()
-    } catch (e: Exception) {
-      throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$metaIntrospectionDataJson", e)
-    }
-    return SchemaHelper.executeSchemaQuery(
-        introspectionCapabilities = introspectionCapabilities,
+    val capabilities = preIntrospectionData.getCapabilities()
+    val introspectionQuery = getIntrospectionQuery(capabilities)
+    return SchemaHelper.executeIntrospectionQuery(
+        introspectionQuery = introspectionQuery,
         endpoint = endpoint,
         headers = headers,
         insecure = insecure,
@@ -152,12 +172,9 @@ object SchemaDownloader {
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) } + HttpHeader("x-api-key", key))
           .execute()
     }
-    response.exception?.let {
-      throw if (it is ApolloGraphQLException) {
-        Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant", it)
-      } else {
-        it
-      }
+    if (response.exception != null) throw response.exception!!
+    if (response.errors?.isNotEmpty() == true) {
+      throw Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant")
     }
     val document = response.data?.graph?.variant?.latestPublication?.schema?.document
     check(document != null) {

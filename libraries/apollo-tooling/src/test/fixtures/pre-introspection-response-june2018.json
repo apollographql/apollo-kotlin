@@ -1,0 +1,149 @@
+{
+  "data": {
+    "schema": {
+      "__typename": "__Type",
+      "fields": [
+        {
+          "name": "types",
+          "args": []
+        },
+        {
+          "name": "queryType",
+          "args": []
+        },
+        {
+          "name": "mutationType",
+          "args": []
+        },
+        {
+          "name": "subscriptionType",
+          "args": []
+        },
+        {
+          "name": "directives",
+          "args": []
+        }
+      ]
+    },
+    "type": {
+      "__typename": "__Type",
+      "fields": [
+        {
+          "name": "kind",
+          "args": []
+        },
+        {
+          "name": "name",
+          "args": []
+        },
+        {
+          "name": "description",
+          "args": []
+        },
+        {
+          "name": "fields",
+          "args": [
+            {
+              "name": "includeDeprecated"
+            }
+          ]
+        },
+        {
+          "name": "interfaces",
+          "args": []
+        },
+        {
+          "name": "possibleTypes",
+          "args": []
+        },
+        {
+          "name": "enumValues",
+          "args": [
+            {
+              "name": "includeDeprecated"
+            }
+          ]
+        },
+        {
+          "name": "inputFields",
+          "args": []
+        },
+        {
+          "name": "ofType",
+          "args": []
+        }
+      ]
+    },
+    "directive": {
+      "__typename": "__Type",
+      "fields": [
+        {
+          "name": "name",
+          "args": []
+        },
+        {
+          "name": "description",
+          "args": []
+        },
+        {
+          "name": "locations",
+          "args": []
+        },
+        {
+          "name": "args",
+          "args": []
+        }
+      ]
+    },
+    "field": {
+      "__typename": "__Type",
+      "fields": [
+        {
+          "name": "name",
+          "args": []
+        },
+        {
+          "name": "description",
+          "args": []
+        },
+        {
+          "name": "args",
+          "args": []
+        },
+        {
+          "name": "type",
+          "args": []
+        },
+        {
+          "name": "isDeprecated",
+          "args": []
+        },
+        {
+          "name": "deprecationReason",
+          "args": []
+        }
+      ]
+    },
+    "inputValue": {
+      "__typename": "__Type",
+      "fields": [
+        {
+          "name": "name",
+          "args": []
+        },
+        {
+          "name": "description",
+          "args": []
+        },
+        {
+          "name": "type",
+          "args": []
+        },
+        {
+          "name": "defaultValue",
+          "args": []
+        }
+      ]
+    }
+  }
+}

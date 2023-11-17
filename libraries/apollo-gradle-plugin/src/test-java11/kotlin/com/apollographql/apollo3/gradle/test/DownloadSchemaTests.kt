@@ -15,11 +15,28 @@ import java.io.File
 class DownloadSchemaTests {
   private val mockServer = MockWebServer()
 
-  private val metaSchema = """
+  private val preIntrospectionResponse = """
   {
     "data": {
-      "__schema": {
-        "types": []
+      "schema": {
+        "__typename": "__Type",
+        "fields": []
+      },
+      "type": {
+        "__typename": "__Type",
+        "fields": []
+      },
+      "directive": {
+        "__typename": "__Type",
+        "fields": []
+      },
+      "field": {
+        "__typename": "__Type",
+        "fields": []
+      },
+      "inputValue": {
+        "__typename": "__Type",
+        "fields": []
       }
     }
   }
@@ -142,7 +159,7 @@ class DownloadSchemaTests {
   @Test
   fun `schema is downloaded correctly`() {
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
@@ -156,7 +173,7 @@ class DownloadSchemaTests {
   fun `download schema is never up-to-date`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val metaSchemaMockResponse = MockResponse().setBody(metaSchema)
+      val metaSchemaMockResponse = MockResponse().setBody(preIntrospectionResponse)
       val schemaMockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(metaSchemaMockResponse)
       mockServer.enqueue(schemaMockResponse)
@@ -193,7 +210,7 @@ class DownloadSchemaTests {
 
       val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
-      val metaSchemaMockResponse = MockResponse().setBody(metaSchema)
+      val metaSchemaMockResponse = MockResponse().setBody(preIntrospectionResponse)
       mockServer.enqueue(metaSchemaMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
@@ -212,7 +229,7 @@ class DownloadSchemaTests {
   fun `manually downloading a schema is working`() {
 
     withSimpleProject(apolloConfiguration = "") { dir ->
-      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       // Tests can run from any working directory.
@@ -232,7 +249,7 @@ class DownloadSchemaTests {
   @Test
   fun `manually downloading a schema from self signed endpoint is working`() {
     withSimpleProject(apolloConfiguration = "") { dir ->
-      mockServer.enqueue(MockResponse().setBody(metaSchema))
+      mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       val selfSignedCertificate = HeldCertificate.Builder().build()

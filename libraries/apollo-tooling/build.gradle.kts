@@ -27,6 +27,13 @@ dependencies {
 }
 
 apollo {
+  // https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
+  service("graphql") {
+    packageName.set("com.apollographql.apollo3.tooling.graphql")
+    sourceFolder.set("graphql")
+    generateAsInternal.set(true)
+  }
+
   // https://studio.apollographql.com/public/apollo-platform/variant/main/home
   service("platform-api-public") {
     packageName.set("com.apollographql.apollo3.tooling.platformapi.public")
