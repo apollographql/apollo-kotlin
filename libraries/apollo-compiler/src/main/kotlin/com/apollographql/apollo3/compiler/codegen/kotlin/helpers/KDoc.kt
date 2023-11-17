@@ -114,14 +114,6 @@ internal fun FunSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, opt
   return addAnnotation(AnnotationSpec.builder(annotation).build())
 }
 
-internal val suppressDeprecationAnnotationSpec = AnnotationSpec.builder(KotlinSymbols.Suppress)
-    .addMember("%S", "DEPRECATION")
-    .build()
-
-internal fun <T: Annotatable.Builder<*>> T.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): T = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
-  addAnnotation(suppressDeprecationAnnotationSpec)
-}
-
 internal fun requiresOptInAnnotation(annotation: ClassName): AnnotationSpec {
   return AnnotationSpec.builder(KotlinSymbols.OptIn)
       .addMember(CodeBlock.of("%T::class", annotation))
@@ -134,4 +126,34 @@ internal fun <T: Annotatable.Builder<*>> T.maybeAddOptIn(
 ): T = applyIf(enumValues.any { !it.optInFeature.isNullOrBlank() }) {
   val annotation = resolver.resolveRequiresOptInAnnotation() ?: return@applyIf
   addAnnotation(requiresOptInAnnotation(annotation))
+}
+
+/**
+ * Add suppressions for generated code.
+ * This is code the user has no control over and it should not generate warnings
+ */
+internal fun <T: Annotatable.Builder<*>> T.addSuppressions(
+    deprecation: Boolean = false,
+    optInUsage: Boolean = false,
+    unusedParameter: Boolean = false
+): T = apply {
+  if (!deprecation && !optInUsage && !unusedParameter) {
+    return@apply
+  }
+
+  addAnnotation(
+      AnnotationSpec.builder(KotlinSymbols.Suppress)
+          .apply {
+            if (deprecation) {
+              addMember("%S", "DEPRECATION")
+            }
+            if (optInUsage) {
+              addMember("%S", "OPT_IN_USAGE")
+            }
+            if (unusedParameter) {
+              addMember("%S", "UNUSED_PARAMETER")
+            }
+          }
+          .build()
+  )
 }

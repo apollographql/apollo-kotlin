@@ -7,12 +7,12 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeSuppressDeprecation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -97,7 +97,7 @@ internal class EnumAsEnumBuilder(
   private fun IrEnum.knownEntriesPropertySpec(): PropertySpec {
     return PropertySpec.builder(Identifier.knownEntries, KotlinSymbols.List.parameterizedBy(selfClassName))
         .addKdoc("All [%T] known at compile time", selfClassName)
-        .maybeSuppressDeprecation(enum.values)
+        .addSuppressions(enum.values.any { it.deprecationReason != null })
         .maybeAddOptIn(context.resolver, enum.values)
         .getter(
             FunSpec.getterBuilder()
