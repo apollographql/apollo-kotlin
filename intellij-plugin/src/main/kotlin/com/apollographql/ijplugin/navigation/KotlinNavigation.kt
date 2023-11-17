@@ -1,8 +1,10 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
+import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findChildrenOfType
+import com.apollographql.ijplugin.util.type
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
@@ -16,12 +18,12 @@ import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.parentOfType
 import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
-import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
@@ -47,14 +49,14 @@ fun findKotlinFieldDefinitions(graphQLField: GraphQLField): List<PsiElement> {
   val ktClasses = findKotlinClassOfParent(graphQLField)
   return ktClasses?.mapNotNull { ktClass ->
     // Try Data class first (operations)
-    var c = ktClass.findChildrenOfType<KtClass> { it.name == "Data" }.firstOrNull()
+    var c = ktClass.findChildrenOfType<KtClass> { (it as PsiNamedElement).name == "Data" }.firstOrNull()
     // Fallback to class itself (fragments)
         ?: ktClass
     var ktFieldDefinition: KtNamedDeclaration? = null
     for ((i, pathElement) in path.withIndex()) {
       // Look for the element in the constructor parameters (for data classes) and in the properties (for interfaces)
       val properties = c.primaryConstructor?.valueParameters.orEmpty() + c.getProperties()
-      ktFieldDefinition = properties.firstOrNull { it.name == pathElement } ?: continue
+      ktFieldDefinition = properties.firstOrNull { (it as PsiNamedElement).name == pathElement } ?: continue
       val parameterType = ktFieldDefinition.type()
       val parameterTypeFqName =
           // Try Lists first
