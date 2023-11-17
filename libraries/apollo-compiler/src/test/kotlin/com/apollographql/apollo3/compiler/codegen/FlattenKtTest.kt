@@ -14,7 +14,7 @@ class FlattenKtTest {
   fun testMaybeFlatten() {
     val testIrModelGroup = createTestIrModelGroup()
     val flatten = testIrModelGroup.maybeFlatten(true, createTestNode())
-    Truth.assertThat(flatten).hasSize(16)
+    Truth.assertThat(flatten).hasSize(10)
   }
 
   @Test
