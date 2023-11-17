@@ -1,5 +1,6 @@
 
 import JapiCmp.configureJapiCmp
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
 plugins {
   id("build.logic") apply false
@@ -77,7 +78,7 @@ tasks.register("ciTestsNoGradle") {
     }
     dependsOn(tasks.matching { it.name == "jvmTest" })
     dependsOn(tasks.matching { it.name == "jsIrTest" })
-    dependsOn(tasks.matching { it.name == "macosX64Test" })
+    dependsOn(tasks.withType(KotlinNativeHostTest::class.java))
     dependsOn(tasks.matching { it.name == "apiCheck" })
   }
 
@@ -90,8 +91,20 @@ tasks.register("ciTestsNoGradle") {
   dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlob2DatabaseSchema")
 
   doLast {
-    checkGitStatus()
+    if (isCIBuild()) {
+      checkGitStatus()
+    }
   }
+}
+
+/**
+ * Shorthands for less typing during development
+ */
+tasks.register("ctng") {
+  dependsOn("ciTestsNoGradle")
+}
+tasks.register("ctg") {
+  dependsOn("ciTestsGradle")
 }
 
 val ciBuild = tasks.register("ciBuild") {
