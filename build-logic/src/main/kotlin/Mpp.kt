@@ -185,7 +185,9 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   applyDefaultHierarchyTemplate {
     group("common") {
       group("concurrent") {
-        group("apple")
+        group("native") {
+          group("apple")
+        }
         withJvm()
       }
     }

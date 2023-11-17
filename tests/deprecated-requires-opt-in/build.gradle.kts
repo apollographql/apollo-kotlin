@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -26,12 +28,14 @@ apollo {
   }
   service("none") {
     srcDir("graphql")
+    @OptIn(ApolloExperimental::class)
     requiresOptInAnnotation.set("none")
     packageName.set("none")
     languageVersion.set("1.5")
   }
   service("custom") {
     srcDir("graphql")
+    @OptIn(ApolloExperimental::class)
     requiresOptInAnnotation.set("com.example.MyRequiresOptIn")
     packageName.set("custom")
     languageVersion.set("1.5")
