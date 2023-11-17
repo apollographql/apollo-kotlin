@@ -517,7 +517,6 @@ internal class IrOperationsBuilder(
     }.groupBy {
       it.responseName
     }.values.map { fieldsWithSameResponseName ->
-
       /**
        * Sanity checks, might be removed as this should be done during validation
        */

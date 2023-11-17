@@ -1,3 +1,6 @@
+@file:OptIn(ApolloExperimental::class)
+
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
@@ -327,7 +330,7 @@ class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
                 member.toBuilder()
                     .apply {
                       val capitalizedEnumConstants = enumConstants.mapKeys { (key, _) ->
-                        key.toUpperCase()
+                        key.uppercase()
                       }
                       enumConstants.clear()
                       enumConstants.putAll(capitalizedEnumConstants)

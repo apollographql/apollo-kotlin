@@ -19,7 +19,9 @@
     public static **[] values();
 }
 
-# Keep apollo-api for ApolloExperimental
+# Keep apollo-annotations for ApolloExperimental
+-keep class com.apollographql.apollo3.annotations.** { *; }
+# Do we need to keep apollo-api
 -keep class com.apollographql.apollo3.api.** { *; }
 # Keep the plugin API as it's used from build scripts
 -keep class com.apollographql.apollo3.gradle.api.** { *; }

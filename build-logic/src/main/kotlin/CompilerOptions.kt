@@ -89,9 +89,8 @@ fun Project.configureJavaAndKotlinCompilers() {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
   }
-
-  // https://youtrack.jetbrains.com/issue/KT-62653
-  // allWarningsAsErrors(true)
+  
+  allWarningsAsErrors(true)
 }
 
 @Suppress("UnstableApiUsage")
