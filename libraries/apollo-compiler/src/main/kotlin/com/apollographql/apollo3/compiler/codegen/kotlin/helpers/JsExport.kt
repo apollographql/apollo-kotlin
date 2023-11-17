@@ -3,6 +3,8 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
@@ -29,9 +31,14 @@ internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext): TypeSpec
  * Fragments need to be flattened at depth 1 to avoid having all classes polluting the fragment's package name
  * For JsExports we cannot have nested interfaces, so we fully flatten, and then prefix with the main model name and __
  */
-internal fun IrModelGroup.flattenFragmentModels(flatten: Boolean, context: KotlinContext, mainModelName: String): List<IrModel> {
+internal fun IrModelGroup.flattenFragmentModels(
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
+  context: KotlinContext,
+  mainModelName: String
+): List<IrModel> {
   val flattenOverride = flatten || context.jsExport
-  return maybeFlatten(flattenOverride, if (context.jsExport) 0 else 1).flatMap { it.models }.jsExportNamePrefix(context, mainModelName)
+  return maybeFlatten(flattenOverride, flattenModelsExplicitly, if (context.jsExport) 0 else 1).flatMap { it.models }.jsExportNamePrefix(context, mainModelName)
 }
 
 /**

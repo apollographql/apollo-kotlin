@@ -250,6 +250,7 @@ internal class IrOperationsBuilder(
         fragments = fragments,
         usedFields = usedFields,
         flattenModels = flattenModels,
+        flattenModelsExplicitly = flattenModelsExplicitly,
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
         generateDataBuilders = generateDataBuilders,

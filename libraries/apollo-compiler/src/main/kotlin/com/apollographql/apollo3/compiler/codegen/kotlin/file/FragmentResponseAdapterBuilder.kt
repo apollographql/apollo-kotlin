@@ -4,19 +4,22 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class FragmentResponseAdapterBuilder(
-    val context: KotlinContext,
-    val fragment: IrFragmentDefinition,
-    val flatten: Boolean,
+  val context: KotlinContext,
+  val fragment: IrFragmentDefinition,
+  val flatten: Boolean,
+  val flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentResponseAdapterWrapperName(fragment.name)
 
-  private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten).map {
+  private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten, flattenModelsExplicitly).map {
     ResponseAdapterBuilder.create(
         context = context,
         modelGroup = it,

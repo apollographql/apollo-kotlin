@@ -4,20 +4,23 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.ResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class OperationResponseAdapterBuilder(
-    val context: JavaContext,
-    val operation: IrOperation,
-    val flatten: Boolean,
+  val context: JavaContext,
+  val operation: IrOperation,
+  val flatten: Boolean,
+  val flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
 
-  private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten).map {
+  private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten, flattenModelsExplicitly).map {
     ResponseAdapterBuilder.create(
         context = context,
         modelGroup = it,

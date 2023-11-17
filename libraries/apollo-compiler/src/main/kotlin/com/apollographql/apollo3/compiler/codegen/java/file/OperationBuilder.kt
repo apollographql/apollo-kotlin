@@ -24,6 +24,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescripti
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
@@ -37,12 +38,13 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class OperationBuilder(
-    private val context: JavaContext,
-    private val operationId: String,
-    private val generateQueryDocument: Boolean,
-    private val operation: IrOperation,
-    private val generateDataBuilders: Boolean,
-    flatten: Boolean,
+  private val context: JavaContext,
+  private val operationId: String,
+  private val generateQueryDocument: Boolean,
+  private val operation: IrOperation,
+  private val generateDataBuilders: Boolean,
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -56,6 +58,7 @@ internal class OperationBuilder(
 
   private val modelBuilders = operation.dataModelGroup.maybeFlatten(
       flatten = flatten,
+      node = flattenModelsExplicitly,
       excludeNames = setOf(simpleName)
   ).flatMap {
     it.models
