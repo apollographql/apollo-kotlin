@@ -7,7 +7,7 @@ import org.jetbrains.annotations.PropertyKey
 @NonNls
 private const val BUNDLE = "messages.ApolloBundle"
 
-@Suppress("SpreadOperator", "unused")
+@Suppress("SpreadOperator")
 object ApolloBundle : DynamicBundle(BUNDLE) {
   @JvmStatic
   fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any) =
