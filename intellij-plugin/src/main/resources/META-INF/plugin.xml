@@ -172,6 +172,14 @@
         anchor="bottom"
         canCloseContents="true"
     />
+
+    <!-- Suggest plugin when Apollo Kotlin is a project dependency -->
+    <!-- See https://plugins.jetbrains.com/docs/marketplace/intellij-plugin-recommendations.html#c2909003_6 -->
+    <dependencySupport
+        kind="java"
+        coordinate="com.apollographql.apollo3:apollo-api-jvm"
+        displayName="Apollo Kotlin"
+    />
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
