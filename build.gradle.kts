@@ -1,4 +1,3 @@
-
 import JapiCmp.configureJapiCmp
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
@@ -145,12 +144,12 @@ configure<kotlinx.validation.ApiValidationExtension> {
       )
   )
   ignoredProjects.addAll(
-      listOf(
-          "apollo-normalized-cache-api-incubating",
-          "apollo-normalized-cache-incubating",
-          "apollo-normalized-cache-sqlite-incubating",
-          "intellij-plugin",
-      )
+      rootDir.resolve("libraries")
+          .listFiles()!!
+          .filter { it.resolve("build.gradle.kts").exists() }
+          .map { it.name }
+          .filter { it.endsWith("-incubating") }
+          + "intellij-plugin"
   )
   nonPublicMarkers.addAll(
       listOf(
