@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.apollographql.ijplugin.util.resolveKtName
+import com.apollographql.ijplugin.util.type
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.psi.GraphQLDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
@@ -23,13 +24,13 @@ import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.descendantsOfType
+import org.jetbrains.kotlin.idea.base.psi.kotlinFqName
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
-import org.jetbrains.kotlin.idea.base.utils.fqname.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtEnumEntry
@@ -66,29 +67,29 @@ fun KtElement.isApolloModelField() = topMostContainingClass()
 
 fun KtClass.isApolloOperation(): Boolean {
   return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
     superType in APOLLO_OPERATION_TYPES
   }
 }
 
 fun KtClass.isApolloFragment(): Boolean {
   return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
     superType == APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
-      isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
+      isInterface() && kotlinFqName?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
 }
 
 fun KtClass.isApolloOperationOrFragment(): Boolean {
   return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.getKotlinFqName()
+    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
     superType in APOLLO_OPERATION_TYPES || superType == APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
-      isInterface() && getKotlinFqName()?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
+      isInterface() && kotlinFqName?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
 }
 
 fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
@@ -118,7 +119,7 @@ fun KtClass.isApolloInputClass(): Boolean {
   // Apollo input classes are data classes, generated in a package named "type", and we also look at the header comment.
   // This can lead to false positives, but consequences are not dire.
   return isData() &&
-      getKotlinFqName()?.parent()?.shortName()?.asString() == "type" &&
+      kotlinFqName?.parent()?.shortName()?.asString() == "type" &&
       hasGeneratedByApolloComment()
 }
 
@@ -264,7 +265,7 @@ private fun KtClass.elementPath(element: KtElement): List<String> {
             // For lists
             parameterType?.arguments?.firstOrNull()?.type?.fqName == modelClass.fqName
         ) {
-          parameterPath.add(0, property.name!!)
+          parameterPath.add(0, (property as PsiNamedElement).name!!)
           modelClass = candidateModelClass
           found = true
           break@findClass
