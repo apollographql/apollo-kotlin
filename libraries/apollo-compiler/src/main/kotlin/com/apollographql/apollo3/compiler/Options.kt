@@ -183,6 +183,8 @@ class IrOptions(
 
     val flattenModels: Boolean,
 
+    val flattenModelsExplicitly: String,
+
     val warnOnDeprecatedUsages: Boolean,
     val failOnWarnings: Boolean,
     val logger: ApolloCompiler.Logger,
@@ -431,6 +433,7 @@ const val defaultCodegenModels = MODELS_OPERATION_BASED
 const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
 const val defaultRequiresOptInAnnotation = "none"
 const val defaultFlattenModels = true
+const val defaultFlattenModelsExplicitly = ""
 val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
 const val defaultGenerateSchema = false
 const val defaultGeneratedSchemaName = "__Schema"

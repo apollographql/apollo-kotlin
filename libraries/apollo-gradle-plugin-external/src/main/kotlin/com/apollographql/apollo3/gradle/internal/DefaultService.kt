@@ -356,6 +356,13 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     })
   }
 
+  internal fun flattenModelsExplicitly(): String {
+    return flattenModelsExplicitly.getOrElse(when (codegenModels()) {
+      MODELS_RESPONSE_BASED -> ""
+      else -> ""
+    })
+  }
+
   /**
    * Resolves the operation manifest and formats.
    */

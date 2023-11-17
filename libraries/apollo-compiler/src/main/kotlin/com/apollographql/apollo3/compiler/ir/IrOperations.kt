@@ -41,6 +41,7 @@ internal data class DefaultIrOperations(
     override val usedFields: Map<String, Set<String>>,
 
     val flattenModels: Boolean,
+    val flattenModelsExplicitly: String,
     val decapitalizeFields: Boolean,
     val generateDataBuilders: Boolean,
 

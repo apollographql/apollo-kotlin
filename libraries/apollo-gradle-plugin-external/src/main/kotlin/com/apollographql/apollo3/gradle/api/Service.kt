@@ -503,6 +503,41 @@ interface Service {
   val flattenModels: Property<Boolean>
 
   /**
+   * Property used to hook in and customize a specific class' name when using [codegenModels] set to `responseBased`. What this
+   * allows for it the manual flattening and extraction of nested classes so that when building complex queries we don't run up against the
+   * `Name Too Long` exception when generating classes in systems with a 256-character limit.
+   *
+   * To use: set a string which points to the location of a JSON file containing the manual overrides for the subclass(es) you wish to
+   * extract in their own files to flatten the hierarchy.
+   *
+   * Example usage
+   *
+   * ```json
+   * [
+   *   {
+   *     "className":"MessagesQuery$Data$ConversationMessagesQuery$ConversationMessagesDataConnection$Connection$Edge$Node$UserConnectionContainer$Connection$Edge$Node",
+   *     "extract":"MessagesQuery$Data$ConversationMessagesQuery$ConversationMessagesDataConnection$Connection$Edge$Node$UserConnectionContainer",
+   *     "renameTo": ""
+   *   }
+   * ]
+   * ```
+   *
+   * where the JSON is a list of objects which define the subclasses we want to extract from the main class.
+   * - className: define the generated class causing the Name Too Long exception
+   * - extract: the subclass you want to extract. Note: All nested subclasses of this class will also be part of the new class
+   * - renameTo: optional element which allows us to rename the extracted subclass to help prevent naming collisions.
+   *
+   * In this example, `UserConnectionContainer` and all nested subclasses would be extracted a separate file in the same package as
+   * `MessagesQuery`.
+   *
+   * If the service is not using `responseBased` code generation, this value does nothing.
+   *
+   * Default: "" (turned off)
+   */
+  @ApolloExperimental
+  val flattenModelsExplicitly: Property<String>
+
+  /**
    * The directory where the generated models will be written. It's called [outputDir] but this an "input" parameter for the compiler
    * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
    */

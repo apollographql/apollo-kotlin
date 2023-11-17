@@ -60,6 +60,7 @@ interface ApolloGradleToolingModel {
       val jsExport: Boolean?
       val addTypename: String?
       val flattenModels: Boolean?
+      val flattenModelsExplicitly: String?
       val fieldsOnDisjointTypesMustMerge: Boolean?
       val generateApolloMetadata: Boolean?
       val usedOptions: Set<String>

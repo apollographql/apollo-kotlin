@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.AdapterRegistryBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.parseInformation
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
@@ -170,6 +171,7 @@ internal object KotlinCodeGen {
     val generatedSchemaName = commonCodegenOptions.generatedSchemaName
     val generateDataBuilders = ir.generateDataBuilders
     val flatten = ir.flattenModels
+    val flattenModelsExplicitly = ir.flattenModelsExplicitly.parseInformation(commonCodegenOptions.outputDir)
     val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching
     val targetLanguageVersion = kotlinCodegenOptions.languageVersion
     val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
@@ -233,13 +235,14 @@ internal object KotlinCodeGen {
                   (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
                   fragment.interfaceModelGroup == null,
                   flatten,
+                  flattenModelsExplicitly,
               )
           )
 
           builders.add(FragmentSelectionsBuilder(context, fragment))
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
-            builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten))
+            builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten, flattenModelsExplicitly,))
           }
 
           if (generateFragmentImplementations) {
@@ -249,6 +252,7 @@ internal object KotlinCodeGen {
                     generateFilterNotNull,
                     fragment,
                     flatten,
+                    flattenModelsExplicitly,
                     addJvmOverloads,
                     generateDataBuilders,
                     generateInputBuilders,
@@ -267,7 +271,7 @@ internal object KotlinCodeGen {
           }
 
           builders.add(OperationSelectionsBuilder(context, operation))
-          builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
+          builders.add(OperationResponseAdapterBuilder(context, operation, flatten, flattenModelsExplicitly))
 
           builders.add(
               OperationBuilder(
@@ -277,6 +281,7 @@ internal object KotlinCodeGen {
                   generateQueryDocument,
                   operation,
                   flatten,
+                  flattenModelsExplicitly,
                   addJvmOverloads,
                   generateDataBuilders,
                   generateInputBuilders

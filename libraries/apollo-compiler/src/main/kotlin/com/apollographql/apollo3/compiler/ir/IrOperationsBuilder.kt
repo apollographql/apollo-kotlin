@@ -50,6 +50,7 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+import java.io.File
 
 internal class IrOperationsBuilder(
     private val schema: Schema,
@@ -59,6 +60,7 @@ internal class IrOperationsBuilder(
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
     private val flattenModels: Boolean,
+    private val flattenModelsExplicitly: String,
     private val decapitalizeFields: Boolean,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val generateDataBuilders: Boolean,

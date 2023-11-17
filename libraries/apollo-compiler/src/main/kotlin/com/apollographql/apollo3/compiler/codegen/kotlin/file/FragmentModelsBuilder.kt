@@ -4,17 +4,20 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.flattenFragmentModels
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 
 internal class FragmentModelsBuilder(
-    val context: KotlinContext,
-    val fragment: IrFragmentDefinition,
-    modelGroup: IrModelGroup,
-    private val addSuperInterface: Boolean,
-    flatten: Boolean,
+  val context: KotlinContext,
+  val fragment: IrFragmentDefinition,
+  modelGroup: IrModelGroup,
+  private val addSuperInterface: Boolean,
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : CgFileBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -28,7 +31,7 @@ internal class FragmentModelsBuilder(
 
   private val mainModelName = modelGroup.models.first().modelName
 
-  private val modelBuilders = modelGroup.flattenFragmentModels(flatten, context, mainModelName)
+  private val modelBuilders = modelGroup.flattenFragmentModels(flatten, flattenModelsExplicitly, context, mainModelName)
       .map { model ->
         ModelBuilder(
             context = context,

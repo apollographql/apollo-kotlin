@@ -189,6 +189,11 @@ sealed class TelemetryProperty(
   class ApolloFlattenModels(flattenModels: Boolean) : TelemetryProperty("ak_flatten_models", flattenModels)
 
   /**
+   * Value of the Apollo Kotlin option `flattenModelsExplicitly` if set.
+   */
+  class ApolloFlattenModelsExplicitly(flattenModelsExplicitly: String) : TelemetryProperty("ak_flatten_models_explicitly", flattenModelsExplicitly)
+
+  /**
    * Value of the Apollo Kotlin option `fieldsOnDisjointTypesMustMerge` if set.
    */
   class ApolloFieldsOnDisjointTypesMustMerge(fieldsOnDisjointTypesMustMerge: Boolean) : TelemetryProperty("ak_fields_on_disjoint_types_must_merge", fieldsOnDisjointTypesMustMerge)

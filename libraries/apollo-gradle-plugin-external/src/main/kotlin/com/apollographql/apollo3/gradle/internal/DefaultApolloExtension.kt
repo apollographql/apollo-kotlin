@@ -93,6 +93,7 @@ abstract class DefaultApolloExtension(
         jsExport = service.jsExport.orNull,
         addTypename = service.addTypename.orNull,
         flattenModels = service.flattenModels.orNull,
+        flattenModelsExplicitly = service.flattenModelsExplicitly.orNull,
         fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge.orNull,
         generateApolloMetadata = service.generateApolloMetadata.orNull,
 
