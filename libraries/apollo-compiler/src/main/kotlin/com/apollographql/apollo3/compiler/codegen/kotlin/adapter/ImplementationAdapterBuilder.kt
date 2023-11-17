@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -128,15 +128,17 @@ internal class ImplementationAdapterBuilder(
         .addParameter(
             ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
                 .applyIf(addTypenameArgument) {
-                  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
+                  addSuppressions(unusedParameter = true)
                 }
                 .build()
         )
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
-          if (model.properties.any { it.info.deprecationReason != null }) {
-            addAnnotation(suppressDeprecationAnnotationSpec)
-          }
+          addSuppressions(
+              deprecation = model.properties.any { it.info.deprecationReason != null },
+              optInUsage = model.properties.any { it.info.optInFeature != null }
+          )
+
           if (!addTypenameArgument) {
             addModifiers(KModifier.OVERRIDE)
           }

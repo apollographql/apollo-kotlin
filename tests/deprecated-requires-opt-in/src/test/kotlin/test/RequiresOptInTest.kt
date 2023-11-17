@@ -14,6 +14,7 @@ import default.type.SomeInput as SomeInputDefault
 import none.GetNewFieldQuery as GetNewFieldQueryNone
 import none.type.Direction as DirectionNone
 import none.type.SomeInput as SomeInputNone
+import com.example.MyRequiresOptIn
 
 @Suppress("DEPRECATION")
 class RequiresOptInTest {
@@ -21,7 +22,6 @@ class RequiresOptInTest {
    * Visual test: this allows to see how the annotation is used but doesn't actually test anything
    */
   @Test
-  @OptIn(ApolloRequiresOptIn::class)
   fun visualTest() {
     SomeInputNone(
         newInputField = Optional.Present(9),
@@ -31,6 +31,7 @@ class RequiresOptInTest {
       newInputField
     }
 
+    @OptIn(ApolloRequiresOptIn::class)
     SomeInputDefault(
         newInputField = Optional.Present(9),
         oldInputField = Optional.Present(0),
@@ -39,6 +40,7 @@ class RequiresOptInTest {
       newInputField
     }
 
+    @OptIn(MyRequiresOptIn::class)
     SomeInputCustom(
         newInputField = Optional.Present(9),
         oldInputField = Optional.Present(0),
@@ -54,6 +56,8 @@ class RequiresOptInTest {
       oldField
       newField
     }
+
+    @OptIn(ApolloRequiresOptIn::class)
     GetNewFieldQueryDefault.Data(
         newField = DirectionDefault.NORTH,
         oldField = DirectionDefault.SOUTH
@@ -61,6 +65,8 @@ class RequiresOptInTest {
       oldField
       newField
     }
+
+    @OptIn(MyRequiresOptIn::class)
     GetNewFieldQueryCustom.Data(
         newField = DirectionCustom.NORTH,
         oldField = DirectionCustom.SOUTH
@@ -90,6 +96,7 @@ class RequiresOptInTest {
     assertTrue(customInputAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "MyRequiresOptIn"} == true)
 
     assertFalse(DirectionDefault.NORTH.javaClass.getField("NORTH").declaredAnnotations.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"})
+    @OptIn(MyRequiresOptIn::class)
     assertTrue(DirectionCustom.NORTH.javaClass.getField("NORTH").declaredAnnotations.any { it.annotationClass.simpleName == "MyRequiresOptIn"})
 
     val noneClass = GetNewFieldQueryNone.Data::class.java

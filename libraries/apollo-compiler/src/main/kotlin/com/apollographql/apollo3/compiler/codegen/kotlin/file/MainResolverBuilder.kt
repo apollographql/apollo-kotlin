@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
@@ -52,7 +52,7 @@ internal class MainResolverBuilder(
         .addProperty(resolversPropertySpec())
         .addFunction(typenameFunSpec())
         .addFunction(resolveFunSpec())
-        .addAnnotation(suppressDeprecationAnnotationSpec)
+        .addSuppressions(deprecation = true)
         .build()
   }
 
