@@ -121,7 +121,7 @@ data class ExplicitlyRemovedNode(
 }
 
 @ApolloExperimental
-internal fun String.parseInformation(outputDir: File): ExplicitlyRemovedNode? {
+internal fun String.parseInformation(): ExplicitlyRemovedNode? {
   return if (this.isBlank()) {
     null
   } else {

@@ -171,7 +171,7 @@ internal object KotlinCodeGen {
     val generatedSchemaName = commonCodegenOptions.generatedSchemaName
     val generateDataBuilders = ir.generateDataBuilders
     val flatten = ir.flattenModels
-    val flattenModelsExplicitly = ir.flattenModelsExplicitly.parseInformation(commonCodegenOptions.outputDir)
+    val flattenModelsExplicitly = ir.flattenModelsExplicitly.parseInformation()
     val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching
     val targetLanguageVersion = kotlinCodegenOptions.languageVersion
     val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping

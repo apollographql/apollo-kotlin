@@ -209,7 +209,7 @@ internal fun rebuildIrModelGroups(
 
   // Remove the flattened IrModelGroup from the irModel
   irModel = irModel?.copy(
-    modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId } ?: emptyList()
+    modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId }
   )
 
   // Walk up the rest of the data doing the same replacement of values with the updated model groupings
