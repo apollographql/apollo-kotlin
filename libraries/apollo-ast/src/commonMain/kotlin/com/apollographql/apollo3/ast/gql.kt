@@ -1873,7 +1873,7 @@ class GQLVariableValue(
 
 class GQLIntValue(
     override val sourceLocation: SourceLocation? = null,
-    val value: Int,
+    val value: String,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -1886,7 +1886,7 @@ class GQLIntValue(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      value: Int = this.value,
+      value: String = this.value,
   ) = GQLIntValue(
       sourceLocation = sourceLocation,
       value = value,
@@ -1899,20 +1899,20 @@ class GQLIntValue(
 
 class GQLFloatValue(
     override val sourceLocation: SourceLocation? = null,
-    val value: Double,
+    val value: String,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
-      write(value.toString())
+      write(value)
     }
   }
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      value: Double = this.value,
+      value: String = this.value,
   ) = GQLFloatValue(
       sourceLocation = sourceLocation,
       value = value,

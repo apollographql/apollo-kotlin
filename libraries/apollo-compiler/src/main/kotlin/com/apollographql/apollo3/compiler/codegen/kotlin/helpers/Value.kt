@@ -1,15 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLFloatValue
-import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLListValue
-import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLObjectValue
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLValue
-import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrEnumValue
@@ -17,6 +7,7 @@ import com.apollographql.apollo3.compiler.ir.IrFloatValue
 import com.apollographql.apollo3.compiler.ir.IrIntValue
 import com.apollographql.apollo3.compiler.ir.IrListValue
 import com.apollographql.apollo3.compiler.ir.IrNullValue
+import com.apollographql.apollo3.compiler.ir.IrNumberValue
 import com.apollographql.apollo3.compiler.ir.IrObjectValue
 import com.apollographql.apollo3.compiler.ir.IrStringValue
 import com.apollographql.apollo3.compiler.ir.IrValue
@@ -52,5 +43,6 @@ internal fun IrValue.codeBlock(): CodeBlock {
     is IrObjectValue -> codeBlock()
     is IrStringValue -> CodeBlock.of("%S", value)
     is IrVariableValue -> CodeBlock.of("%T(%S)", KotlinSymbols.CompiledVariable, name)
+    is IrNumberValue -> CodeBlock.of("%L", value)
   }
 }

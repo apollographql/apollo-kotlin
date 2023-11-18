@@ -699,9 +699,9 @@ internal class IrOperationsBuilder(
 
 internal fun GQLValue.toIrValue(): IrValue {
   return when (this) {
-    is GQLIntValue -> IrIntValue(value = value)
+    is GQLIntValue -> IrNumberValue(value = value)
+    is GQLFloatValue -> IrNumberValue(value = value)
     is GQLStringValue -> IrStringValue(value = value)
-    is GQLFloatValue -> IrFloatValue(value = value)
     is GQLBooleanValue -> IrBooleanValue(value = value)
     is GQLEnumValue -> IrEnumValue(value = value)
     is GQLNullValue -> IrNullValue

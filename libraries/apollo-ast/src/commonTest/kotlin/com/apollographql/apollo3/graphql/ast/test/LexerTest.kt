@@ -442,69 +442,77 @@ class LexerTest {
   fun lexesNumbers() {
     lexFirst("4").apply {
       assertIs<Token.Int>(this)
-      assertEquals(4, value)
+      assertEquals("4", value)
     }
     lexFirst("4.123").apply {
       assertIs<Token.Float>(this)
-      assertEquals(4.123, value)
+      assertEquals("4.123", value)
     }
     lexFirst("-4").apply {
       assertIs<Token.Int>(this)
-      assertEquals(-4, value)
+      assertEquals("-4", value)
     }
     lexFirst("9").apply {
       assertIs<Token.Int>(this)
-      assertEquals(9, value)
+      assertEquals("9", value)
     }
     lexFirst("0").apply {
       assertIs<Token.Int>(this)
-      assertEquals(0, value)
+      assertEquals("0", value)
     }
     lexFirst("-4.123").apply {
       assertIs<Token.Float>(this)
-      assertEquals(-4.123, value)
+      assertEquals("-4.123", value)
     }
     lexFirst("0.123").apply {
       assertIs<Token.Float>(this)
-      assertEquals(0.123, value)
+      assertEquals("0.123", value)
     }
     lexFirst("123e4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(123e4, value)
+      assertEquals("123e4", value)
     }
     lexFirst("123E4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(123E4, value)
+      assertEquals("123E4", value)
     }
     lexFirst("123e-4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(123e-4, value)
+      assertEquals("123e-4", value)
     }
     lexFirst("123e+4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(123e+4, value)
+      assertEquals("123e+4", value)
     }
     lexFirst("-1.123e4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(-1.123e4, value)
+      assertEquals("-1.123e4", value)
     }
     lexFirst("-1.123E4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(-1.123E4, value)
+      assertEquals("-1.123E4", value)
     }
 
     lexFirst("-1.123e-4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(-1.123e-4, value)
+      assertEquals("-1.123e-4", value)
     }
 
     lexFirst("-1.123e+4").apply {
       assertIs<Token.Float>(this)
-      assertEquals(-1.123e+4, value)
+      assertEquals("-1.123e+4", value)
     }
     lexFirst("-1.123e4567").apply {
       assertIs<Token.Float>(this)
-      assertEquals(Double.NEGATIVE_INFINITY, value)
+      assertEquals("-1.123e4567", value)
+    }
+    lexFirst("31536000000").apply {
+      assertIs<Token.Int>(this)
+      assertEquals("31536000000", value)
+    }
+    lexFirst("31536000000.0").apply {
+      assertIs<Token.Float>(this)
+      assertEquals("31536000000.0", value)
     }
   }
 

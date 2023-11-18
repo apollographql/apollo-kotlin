@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal sealed class IrValue
 @Serializable
+@SerialName("number")
+internal data class IrNumberValue(val value: String) : IrValue()
+@Serializable
 @SerialName("int")
 internal data class IrIntValue(val value: Int) : IrValue()
 @Serializable

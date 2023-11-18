@@ -197,7 +197,7 @@ private fun ValidationScope.validateAndCoerceScalar(value: GQLValue, expectedTyp
       when (value) {
         is GQLFloatValue -> value
         // Int get coerced to floats
-        is GQLIntValue -> GQLFloatValue(value = value.value.toDouble())
+        is GQLIntValue -> GQLFloatValue(value = value.value)
         else -> {
           registerIssue(value, expectedType)
           value

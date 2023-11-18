@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.ir.IrFloatValue
 import com.apollographql.apollo3.compiler.ir.IrIntValue
 import com.apollographql.apollo3.compiler.ir.IrListValue
 import com.apollographql.apollo3.compiler.ir.IrNullValue
+import com.apollographql.apollo3.compiler.ir.IrNumberValue
 import com.apollographql.apollo3.compiler.ir.IrObjectValue
 import com.apollographql.apollo3.compiler.ir.IrStringValue
 import com.apollographql.apollo3.compiler.ir.IrValue
@@ -41,5 +42,6 @@ internal fun IrValue.codeBlock(): CodeBlock {
     is IrStringValue -> CodeBlock.of(S, value)
     is IrVariableValue -> CodeBlock.of("new $T($S)", JavaClassNames.CompiledVariable, name)
     is IrNullValue -> CodeBlock.of("null")
+    is IrNumberValue -> CodeBlock.of(L, value)
   }
 }

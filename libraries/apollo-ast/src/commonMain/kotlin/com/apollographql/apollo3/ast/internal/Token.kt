@@ -79,11 +79,11 @@ internal sealed class Token(val start: kotlin.Int, val end: kotlin.Int, val line
     override fun toString() = "name: $value"
   }
 
-  class Int(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.Int) : Token(start, end, line, column) {
+  class Int(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.String) : Token(start, end, line, column) {
     override fun toString() = "int: $value"
   }
 
-  class Float(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: Double) : Token(start, end, line, column) {
+  class Float(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.String) : Token(start, end, line, column) {
     override fun toString() = "float: $value"
   }
 
