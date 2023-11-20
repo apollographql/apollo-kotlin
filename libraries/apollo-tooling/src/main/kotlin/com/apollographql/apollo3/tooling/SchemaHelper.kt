@@ -146,6 +146,10 @@ internal object SchemaHelper {
                 .letIf(TypeSpecifiedByURL in capabilities) { fields ->
                   fields + createField("specifiedByURL")
                 }
+                // Add isOneOf
+                .letIf(TypeIsOneOf in capabilities) { fields ->
+                  fields + createField("isOneOf")
+                }
                 // Replace inputFields { ... }  by  inputFields(includeDeprecated: true) { ... }
                 .mapIf<_, GQLField>({ TypeInputFieldsIncludeDeprecated in capabilities && it.name == "inputFields" }) { inputFieldsField ->
                   inputFieldsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
@@ -172,10 +176,6 @@ internal object SchemaHelper {
                 // Add deprecationReason
                 .letIf(InputValueDeprecatedReason in capabilities) { fields ->
                   fields + createField("deprecationReason")
-                }
-                // Add isOneOf
-                .letIf(TypeIsOneOf in capabilities) { fields ->
-                  fields + createField("isOneOf")
                 }
         )
       }
