@@ -221,6 +221,7 @@ dependencies {
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
   implementation(libs.apollo.runtime.published)
+  testImplementation(libs.google.testparameterinjector)
 }
 
 fun isSnapshotBuild() = System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()
