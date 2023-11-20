@@ -190,7 +190,7 @@ private fun Project.configurePublishingInternal() {
             artifact(javadocJarTaskProvider)
             artifact(createAndroidSourcesTask())
 
-            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            artifactId = project.name
           }
         }
 
@@ -204,7 +204,7 @@ private fun Project.configurePublishingInternal() {
             artifact(javadocJarTaskProvider)
             artifact(createJavaSourcesTask())
 
-            artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            artifactId = project.name
           }
         }
       }

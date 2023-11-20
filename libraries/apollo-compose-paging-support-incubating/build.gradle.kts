@@ -11,7 +11,7 @@ apolloLibrary(
 
 
 dependencies {
-  api(project(":apollo-compose-support"))
+  api(project(":apollo-compose-support-incubating"))
   api("androidx.paging:paging-compose:1.0.0-alpha18")
 }
 

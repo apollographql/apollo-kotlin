@@ -54,7 +54,7 @@ val shadowUnzipped = configurations.create("shadowUnzipped") {
 }
 
 dependencies {
-  add("kspCommonMainMetadata", project(":apollo-ksp"))
+  add("kspCommonMainMetadata", project(":apollo-ksp-incubating"))
   add(
       "kspCommonMainMetadata",
       apollo.apolloKspProcessor(
@@ -64,11 +64,21 @@ dependencies {
       )
   )
   // apollo-execution is not published: we bundle it into the aar artifact
-  add(shadow.name, project(":apollo-execution")) {
+  add(shadow.name, project(":apollo-execution-incubating")) {
     isTransitive = false
   }
 }
 
+configurations.all {
+  resolutionStrategy.eachDependency {
+    /**
+     * apollo-ksp is not published yet so we need to get it from the current build
+     */
+    if (requested.module.name == "apollo-ksp") {
+      useTarget("com.apollographql.apollo3:apollo-ksp-incubating:${requested.version}")
+    }
+  }
+}
 configurations.getByName(kotlin.sourceSets.getByName("commonMain").compileOnlyConfigurationName).extendsFrom(shadow)
 
 android {
