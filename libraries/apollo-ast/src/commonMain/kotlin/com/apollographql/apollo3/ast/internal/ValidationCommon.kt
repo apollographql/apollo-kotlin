@@ -255,7 +255,13 @@ private fun ValidationScope.validateArgument(
   // 5.6.2 Input Object Field Names
   // Note that this does not modify the document, it calls coerce because it's easier
   // to validate at the same time but the coerced result is not used here
-  validateAndCoerceValue(argument.value, schemaArgument.type, schemaArgument.defaultValue != null, registerVariableUsage)
+  validateAndCoerceValue(
+      value = argument.value,
+      expectedType = schemaArgument.type,
+      hasLocationDefaultValue = schemaArgument.defaultValue != null,
+      isOneOfInputObject = false,
+      registerVariableUsage = registerVariableUsage
+  )
 }
 
 /**
@@ -315,6 +321,14 @@ internal fun ValidationScope.validateVariable(
     )
     return
   }
+
+  if (variableUsage.isOneOfInputObject && variableDefinition.type !is GQLNonNullType) {
+    registerIssue(
+        message = "Variable `${variable.name}` of type `${variableDefinition.type.pretty()}` used in a OneOf input type must be a non-null type",
+        sourceLocation = variable.sourceLocation
+    )
+  }
+
   if (!isVariableUsageAllowed(variableDefinition = variableDefinition, usage = variableUsage)) {
     registerIssue(
         message = "Variable `${variable.name}` of type `${variableDefinition.type.pretty()}` used in position expecting type `${variableUsage.locationType.pretty()}`",

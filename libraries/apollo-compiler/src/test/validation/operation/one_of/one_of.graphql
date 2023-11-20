@@ -1,0 +1,38 @@
+# Exactly one field must be supplied to the OneOf input object
+query Query1 {
+  field(myInput: { a: "a", b: 2 })
+}
+
+query Query2 {
+  field(myInput: { c: { d: "c", e: 4 } })
+}
+
+# The field supplied to the OneOf input object must not be null
+query Query3 {
+  field(myInput: { a: null })
+}
+
+query Query4 {
+  field(myInput: { c: { d: null } })
+}
+
+query Query5 {
+  field2(myInput: [ { a: "" }, { a: null } ])
+}
+
+# Variable used in a OneOf input type must be a non-null type
+query Query6($var: String) {
+  field(myInput: { a: $var })
+}
+
+query Query7($var: String) {
+  field(myInput: { c: { d: $var } })
+}
+
+query Query8($var: String) {
+  ...MyFragment
+}
+
+fragment MyFragment on Query {
+  field(myInput: { a: $var })
+}

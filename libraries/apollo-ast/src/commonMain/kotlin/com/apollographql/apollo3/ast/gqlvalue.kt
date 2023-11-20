@@ -14,7 +14,12 @@ import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
  */
 fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = DefaultValidationScope(schema)
-  val coercedValue = scope.validateAndCoerceValue(this, expectedType, false) {
+  val coercedValue = scope.validateAndCoerceValue(
+      value = this,
+      expectedType = expectedType,
+      hasLocationDefaultValue = false,
+      isOneOfInputObject = false,
+  ) {
     // ignore variable usages
   }
   scope.issues.checkValidGraphQL()
@@ -31,7 +36,12 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
  */
 fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = DefaultValidationScope(schema)
-  val coercedValue = scope.validateAndCoerceValue(this, expectedType, false) {
+  val coercedValue = scope.validateAndCoerceValue(
+      value = this,
+      expectedType = expectedType,
+      hasLocationDefaultValue = false,
+      isOneOfInputObject = false,
+  ) {
     scope.issues.add(it.constContextError())
   }
   scope.issues.checkValidGraphQL()
