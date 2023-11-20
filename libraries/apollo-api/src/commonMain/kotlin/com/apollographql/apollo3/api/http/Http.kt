@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api.http
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -35,7 +36,7 @@ data class HttpHeader(val name: String, val value: String)
 /**
  * Get the value for header [name] or null if this header doesn't exist or is defined multiple times
  *
- * The header name matching is case insensitive
+ * The header name matching is case-insensitive
  */
 @ApolloExperimental
 fun List<HttpHeader>.get(name: String): String? {
@@ -51,6 +52,7 @@ private constructor(
     val url: String,
     val headers: List<HttpHeader>,
     val body: HttpBody?,
+    val executionContext: ExecutionContext
 ) {
 
   @JvmOverloads
@@ -67,12 +69,13 @@ private constructor(
 
       /**
        * The URL to send the request to.
-       * Must be conform to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#section-2).
+       * Must conform to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#section-2).
        */
       private val url: String,
   ) {
     private var body: HttpBody? = null
     private val headers = mutableListOf<HttpHeader>()
+    private var executionContext = ExecutionContext.Empty
 
     fun body(body: HttpBody) = apply {
       this.body = body
@@ -86,17 +89,21 @@ private constructor(
       this.headers.addAll(headers)
     }
 
+    fun addExecutionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext += executionContext
+    }
+
     fun headers(headers: List<HttpHeader>) = apply {
       this.headers.clear()
       this.headers.addAll(headers)
     }
 
-    @Suppress("DEPRECATION")
     fun build() = HttpRequest(
         method = method,
         url = url,
         headers = headers,
         body = body,
+        executionContext = executionContext
     )
   }
 }
@@ -106,7 +113,7 @@ private constructor(
  *
  * Specifying both [bodySource] and [bodyString] is invalid
  *
- * The [body] of a [HttpResponse] must always be closed if non null
+ * The [body] of a [HttpResponse] must always be closed if non-null
  */
 class HttpResponse
 private constructor(
@@ -177,7 +184,6 @@ private constructor(
     }
 
     fun build(): HttpResponse {
-      @Suppress("DEPRECATION")
       return HttpResponse(
           statusCode = statusCode,
           headers = headers,

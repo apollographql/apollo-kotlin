@@ -979,8 +979,9 @@ public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enu
 }
 
 public final class com/apollographql/apollo3/api/http/HttpRequest {
-	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/api/http/HttpBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/api/http/HttpBody;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lcom/apollographql/apollo3/api/http/HttpBody;
+	public final fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public final fun getUrl ()Ljava/lang/String;
@@ -992,6 +993,7 @@ public final class com/apollographql/apollo3/api/http/HttpRequest {
 
 public final class com/apollographql/apollo3/api/http/HttpRequest$Builder {
 	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;)V
+	public final fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
 	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
 	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
 	public final fun body (Lcom/apollographql/apollo3/api/http/HttpBody;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;

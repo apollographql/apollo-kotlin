@@ -53,13 +53,12 @@ class DefaultHttpRequestComposer(
     val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
     val sendDocument = apolloRequest.sendDocument ?: true
 
-    return when (apolloRequest.httpMethod ?: HttpMethod.Post) {
+    val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
         HttpRequest.Builder(
             method = HttpMethod.Get,
             url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
-        ).addHeaders(requestHeaders)
-            .build()
+        )
       }
 
       HttpMethod.Post -> {
@@ -67,11 +66,14 @@ class DefaultHttpRequestComposer(
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-        ).addHeaders(requestHeaders)
-            .body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
-            .build()
+        ).body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
       }
     }
+
+    return httpRequestBuilder
+        .addHeaders(requestHeaders)
+        .addExecutionContext(apolloRequest.executionContext)
+        .build()
   }
 
   companion object {
@@ -149,7 +151,7 @@ class DefaultHttpRequestComposer(
 
     /**
      * This mostly duplicates [composePostParams] but encode variables and extensions as strings
-     * and not json elements. I tried factoring in that code but it ended up being more clunky that
+     * and not json elements. I tried factoring in that code, but it ended up being more clunky that
      * duplicating it
      */
     private fun <D : Operation.Data> composeGetParams(
