@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -30,7 +31,7 @@ interface HttpEngine {
 }
 
 /**
- * @param timeoutMillis: The timeout interval to use when connecting or waiting for additional data.
+ * @param timeoutMillis The timeout interval to use when connecting or waiting for additional data.
  *
  * - on iOS (NSURLRequest), it is used to set `NSMutableURLRequest.setTimeoutInterval`
  * - on Android (OkHttp), it is used to set both `OkHttpClient.connectTimeout` and `OkHttpClient.readTimeout`
@@ -60,6 +61,9 @@ class HttpCall(private val engine: HttpEngine, method: HttpMethod, url: String) 
     requestBuilder.addHeaders(headers)
   }
 
+  fun addExecutionContext(executionContext: ExecutionContext) = apply {
+    requestBuilder.addExecutionContext(executionContext)
+  }
   fun headers(headers: List<HttpHeader>) = apply {
     requestBuilder.headers(headers)
   }

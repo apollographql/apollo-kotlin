@@ -13,6 +13,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.Response
 import okio.BufferedSink
 import okio.IOException
 import java.util.concurrent.TimeUnit
@@ -35,74 +36,83 @@ actual class DefaultHttpEngine constructor(
           .build()
   )
 
-  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
-    val httpRequest = Request.Builder()
-        .url(request.url)
-        .headers(request.headers.toOkHttpHeaders())
-        .apply {
-          if (request.method == HttpMethod.Get) {
-            get()
-          } else {
-            val body = request.body
-            check(body != null) {
-              "HTTP POST requires a request body"
-            }
-            post(object : RequestBody() {
-              override fun contentType() = body.contentType.toMediaType()
-
-              override fun contentLength() = body.contentLength
-
-              // This prevents OkHttp from reading the body several times (e.g. when using its logging interceptor)
-              // which could consume files when using Uploads
-              override fun isOneShot() = body is UploadsHttpBody
-
-              override fun writeTo(sink: BufferedSink) {
-                body.writeTo(sink)
-              }
-            })
-          }
-        }
-        .build()
-
-    val call = httpCallFactory.newCall(httpRequest)
-    continuation.invokeOnCancellation {
-      call.cancel()
-    }
-
-    var exception: IOException? = null
-    val response = try {
-      call.execute()
-    } catch (e: IOException) {
-      exception = e
-      null
-    }
-
-    if (exception != null) {
-      continuation.resumeWithException(
-          ApolloNetworkException(
-              message = "Failed to execute GraphQL http network request",
-              platformCause = exception
-          )
-      )
-      return@suspendCancellableCoroutine
-    } else {
-      val result = Result.success(
-          HttpResponse.Builder(statusCode = response!!.code)
-              .body(response.body!!.source())
-              .addHeaders(
-                  response.headers.let { headers ->
-                    0.until(headers.size).map { index ->
-                      HttpHeader(headers.name(index), headers.value(index))
-                    }
-                  }
-              )
-              .build()
-      )
-      continuation.resume(result.getOrThrow())
-    }
+  actual override suspend fun execute(request: HttpRequest): HttpResponse {
+    return httpCallFactory.execute(request.toOkHttpRequest()).toApolloHttpResponse()
   }
 
   actual override fun dispose() {
+  }
+
+  companion object {
+    fun HttpRequest.toOkHttpRequest(): Request {
+      return Request.Builder()
+          .url(url)
+          .headers(headers.toOkHttpHeaders())
+          .apply {
+            if (method == HttpMethod.Get) {
+              get()
+            } else {
+              val body = body
+              check(body != null) {
+                "HTTP POST requires a request body"
+              }
+              post(object : RequestBody() {
+                override fun contentType() = body.contentType.toMediaType()
+
+                override fun contentLength() = body.contentLength
+
+                // This prevents OkHttp from reading the body several times (e.g. when using its logging interceptor)
+                // which could consume files when using Uploads
+                override fun isOneShot() = body is UploadsHttpBody
+
+                override fun writeTo(sink: BufferedSink) {
+                  body.writeTo(sink)
+                }
+              })
+            }
+          }
+          .build()
+    }
+
+    suspend fun Call.Factory.execute(request: Request): Response = suspendCancellableCoroutine { continuation ->
+      val call = newCall(request)
+      continuation.invokeOnCancellation {
+        call.cancel()
+      }
+
+      var exception: IOException? = null
+      val response = try {
+        call.execute()
+      } catch (e: IOException) {
+        exception = e
+        null
+      }
+
+      if (exception != null) {
+        continuation.resumeWithException(
+            ApolloNetworkException(
+                message = "Failed to execute GraphQL http network request",
+                platformCause = exception
+            )
+        )
+        return@suspendCancellableCoroutine
+      } else {
+        continuation.resume(response!!)
+      }
+    }
+
+    fun Response.toApolloHttpResponse(): HttpResponse {
+      return HttpResponse.Builder(statusCode = code)
+          .body(body!!.source())
+          .addHeaders(
+              headers.let { headers ->
+                0.until(headers.size).map { index ->
+                  HttpHeader(headers.name(index), headers.value(index))
+                }
+              }
+          )
+          .build()
+    }
   }
 }
 

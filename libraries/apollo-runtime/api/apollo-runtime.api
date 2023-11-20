@@ -203,6 +203,7 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpIntercepto
 }
 
 public final class com/apollographql/apollo3/network/http/DefaultHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
+	public static final field Companion Lcom/apollographql/apollo3/network/http/DefaultHttpEngine$Companion;
 	public fun <init> (J)V
 	public synthetic fun <init> (JILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (JJ)V
@@ -212,6 +213,12 @@ public final class com/apollographql/apollo3/network/http/DefaultHttpEngine : co
 	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo3/network/http/DefaultHttpEngine$Companion {
+	public final fun execute (Lokhttp3/Call$Factory;Lokhttp3/Request;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun toApolloHttpResponse (Lokhttp3/Response;)Lcom/apollographql/apollo3/api/http/HttpResponse;
+	public final fun toOkHttpRequest (Lcom/apollographql/apollo3/api/http/HttpRequest;)Lokhttp3/Request;
+}
+
 public final class com/apollographql/apollo3/network/http/HeadersInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Ljava/util/List;)V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -219,6 +226,7 @@ public final class com/apollographql/apollo3/network/http/HeadersInterceptor : c
 
 public final class com/apollographql/apollo3/network/http/HttpCall {
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;)V
+	public final fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/network/http/HttpCall;
 	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpCall;
 	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpCall;
 	public final fun body (Lcom/apollographql/apollo3/api/http/HttpBody;)Lcom/apollographql/apollo3/network/http/HttpCall;
