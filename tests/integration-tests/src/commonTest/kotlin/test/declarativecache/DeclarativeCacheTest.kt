@@ -99,7 +99,7 @@ class DeclarativeCacheTest {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         if (field.name == "books") {
           @Suppress("UNCHECKED_CAST")
-          val isbns = field.resolveArgument("isbns", variables) as? List<String>
+          val isbns = field.resolveArgument("isbns", variables).getOrThrow() as? List<String>
           if (isbns != null) {
             return isbns.map { CacheKey(field.type.rawType().name, listOf(it)) }
           }

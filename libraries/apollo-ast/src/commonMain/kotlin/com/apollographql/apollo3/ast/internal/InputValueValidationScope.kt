@@ -127,18 +127,49 @@ private fun ValidationScope.validateAndCoerceInputObject(
     return value
   }
 
-  expectedTypeDefinition.inputFields.forEach { inputValueDefinition ->
-    // 3.10 All required input fields must have a value
-    if (inputValueDefinition.type is GQLNonNullType
-        && inputValueDefinition.defaultValue == null
-        && value.fields.firstOrNull { it.name == inputValueDefinition.name } == null
-    ) {
-      registerIssue(message = "No value passed for required inputField `${inputValueDefinition.name}`", sourceLocation = value.sourceLocation)
+  // 3.10 Input values coercion: extra values are errors
+  value.fields.forEach { field ->
+    if (expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name } == null) {
+      registerIssue(message = "Field '${field.name}' is not an input field of type '${expectedType.pretty()}'", sourceLocation = field.sourceLocation)
     }
   }
-  value.fields.forEach { field ->
-    val inputValueDefinition = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
-    if (inputValueDefinition?.directives?.findDeprecationReason() != null) {
+
+  val inputFields = expectedTypeDefinition.inputFields.mapNotNull { inputValueDefinition ->
+    val field = value.fields.firstOrNull { it.name == inputValueDefinition.name }
+
+    if (field == null) {
+      if (inputValueDefinition.defaultValue != null) {
+        /**
+         * 3.10
+         * If no value is provided for a defined input object field and that field definition provides a default value, the default value should be used
+         */
+        return@mapNotNull GQLObjectField(
+            name = inputValueDefinition.name,
+            value = validateAndCoerceValue(
+                value = inputValueDefinition.defaultValue,
+                expectedType = inputValueDefinition.type,
+                hasLocationDefaultValue = false,
+                registerVariableUsage
+            )
+        )
+      } else if (inputValueDefinition.type is GQLNonNullType) {
+        /**
+         * 3.10
+         * All required input fields must have a value
+         */
+        registerIssue(message = "No value passed for required inputField `${inputValueDefinition.name}`", sourceLocation = value.sourceLocation)
+        return@mapNotNull null
+      } else {
+        /**
+         * 3.10
+         * No value provided => the key is absent
+         */
+        return@mapNotNull null
+      }
+    }
+
+    // An input field was provided
+    if (inputValueDefinition.directives.findDeprecationReason() != null) {
       issues.add(
           DeprecatedUsage(
               message = "Use of deprecated input field `${inputValueDefinition.name}`",
@@ -146,20 +177,14 @@ private fun ValidationScope.validateAndCoerceInputObject(
           )
       )
     }
-  }
 
-  return GQLObjectValue(fields = value.fields.mapNotNull { field ->
-    val inputField = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
-    if (inputField == null) {
-      // 3.10 Input values coercion: extra values are errors
-      registerIssue(message = "Field ${field.name} is not defined by ${expectedType.pretty()}", sourceLocation = field.sourceLocation)
-      return@mapNotNull null
-    }
     GQLObjectField(
         name = field.name,
-        value = validateAndCoerceValue(field.value, inputField.type, inputField.defaultValue != null, registerVariableUsage)
+        value = validateAndCoerceValue(field.value, inputValueDefinition.type, inputValueDefinition.defaultValue != null, registerVariableUsage)
     )
-  })
+  }
+
+  return GQLObjectValue(fields = inputFields)
 }
 
 private fun ValidationScope.validateAndCoerceEnum(value: GQLValue, enumTypeDefinition: GQLEnumTypeDefinition): GQLValue {

@@ -56,13 +56,13 @@ fun <D : Executable.Data> Executable<D>.falseVariables(customScalarAdapters: Cus
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.variables(
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
 ): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters, withBooleanDefaultValues)
+    serializeVariables(this, customScalarAdapters, withDefaultValues)
     endObject()
-  }.root() as Map<String, Any?>
+  }.root() as VariablesJson
   return Executable.Variables(valueMap)
 }
 

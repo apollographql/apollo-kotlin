@@ -31,7 +31,6 @@ import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
-import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findDeprecationReason
@@ -408,22 +407,20 @@ internal class IrOperationsBuilder(
     }
     return IrVariable(
         name = name,
-        defaultValue = null,
         type = irType,
+        defaultValue = null
     )
   }
 
   private fun GQLVariableDefinition.toIr(): IrVariable {
-    val coercedDefaultValue = defaultValue?.coerceInSchemaContextOrThrow(type, schema)
-
     var irType = type.toIr()
     when {
-      irType is IrNonNullType && coercedDefaultValue == null -> {
+      irType is IrNonNullType && defaultValue == null -> {
         // The variable is non-nullable and has no defaultValue => it must always be sent
         // Leave irType as-is
       }
 
-      coercedDefaultValue != null -> {
+      defaultValue != null -> {
         // the variable has a defaultValue meaning that there is a use case for not providing it
         irType = irType.makeOptional()
       }
@@ -448,8 +445,8 @@ internal class IrOperationsBuilder(
 
     return IrVariable(
         name = name,
-        defaultValue = coercedDefaultValue?.toIrValue(),
         type = irType,
+        defaultValue = defaultValue?.toIrValue()
     )
   }
 
@@ -699,8 +696,8 @@ internal class IrOperationsBuilder(
 
 internal fun GQLValue.toIrValue(): IrValue {
   return when (this) {
-    is GQLIntValue -> IrNumberValue(value = value)
-    is GQLFloatValue -> IrNumberValue(value = value)
+    is GQLIntValue -> IrIntValue(value = value)
+    is GQLFloatValue -> IrFloatValue(value = value)
     is GQLStringValue -> IrStringValue(value = value)
     is GQLBooleanValue -> IrBooleanValue(value = value)
     is GQLEnumValue -> IrEnumValue(value = value)

@@ -50,7 +50,7 @@ class NothingSubscription : Subscription<Nothing> {
     TODO("Not yet implemented")
   }
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withBooleanDefaultValues: Boolean) {
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withDefaultValues: Boolean) {
     TODO("Not yet implemented")
   }
 

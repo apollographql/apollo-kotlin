@@ -125,12 +125,14 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "%T(%S,·%L)",
+        "%T(%S)",
         KotlinSymbols.CompiledArgument,
         name,
-        value.codeBlock()
     )
 
+    if (this.value != null) {
+      argumentBuilder.add(".value(%L)", value.codeBlock())
+    }
     if (isKey) {
       argumentBuilder.add(".isKey(true)")
     }

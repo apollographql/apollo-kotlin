@@ -5,6 +5,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
 import okio.Buffer
@@ -28,13 +29,48 @@ class CompiledField internal constructor(
     get() = alias ?: name
 
   /**
-   * Resolves field argument value by [name]. If the argument contains variables, replace them with their actual value
+   * Resolves field argument value by [name].
+   *
+   * @return [Optional.Absent] if no runtime value is present for this argument else returns the argument
+   * value with variables substituted for their values.
    */
   fun resolveArgument(
       name: String,
       variables: Executable.Variables,
-  ): Any? {
-    return resolveVariables(arguments.firstOrNull { it.name == name }?.value, variables)
+  ): Optional<ApolloJsonElement> {
+    val argument = arguments.firstOrNull { it.name == name }
+    if (argument == null) {
+      // no such argument
+      return Optional.Absent
+    }
+    if (argument.value is Optional.Absent) {
+      // this argument has no value
+      return Optional.Absent
+    }
+
+    val result = resolveVariables(argument.value.getOrThrow(), variables)
+    if (result is Optional.Absent) {
+      // this argument has a variable value that is absent
+      return Optional.Absent
+    }
+    return Optional.present(result)
+  }
+
+  /**
+   * @return a map where the key is the name of the argument and the value the JSON value of that argument
+   *
+   * Absent arguments are not returned
+   */
+  @ApolloExperimental
+  fun resolveArguments(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean= {true}): Map<String, ApolloJsonElement> {
+    val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
+    if (arguments.isEmpty()) {
+      return emptyMap()
+    }
+    val map = arguments.associate { it.name to it.value.getOrThrow() }
+
+    @Suppress("UNCHECKED_CAST")
+    return resolveVariables(map, variables) as Map<String, ApolloJsonElement>
   }
 
   /**
@@ -43,21 +79,15 @@ class CompiledField internal constructor(
    * This is mostly used internally to compute records
    */
   fun nameWithArguments(variables: Executable.Variables): String {
-    val filterOutPaginationArguments = arguments.any { it.isPagination }
-    val arguments = if (filterOutPaginationArguments) {
-      this.arguments.filterNot { it.isPagination }
-    } else {
-      this.arguments
-    }
+    val arguments = resolveArguments(variables) { !it.isPagination }
     if (arguments.isEmpty()) {
       return name
     }
-    val map = arguments.associateBy { it.name }.mapValues { it.value.value }
-    val resolvedArguments = resolveVariables(map, variables)
+
     return try {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      jsonWriter.writeAny(resolvedArguments)
+      jsonWriter.writeAny(arguments)
       jsonWriter.close()
       "${name}(${buffer.readUtf8()})"
     } catch (e: Exception) {
@@ -281,7 +311,7 @@ class InputObjectType(
 
 class EnumType(
     name: String,
-    val values: List<String>
+    val values: List<String>,
 ) : CompiledNamedType(name)
 
 /**
@@ -304,28 +334,35 @@ fun CompiledType.list() = CompiledListType(this)
 class CompiledVariable(val name: String)
 
 /**
- * The Kotlin representation of a GraphQL argument
+ * The Kotlin representation of a GraphQL value
  *
- * value can be
- * - String, Int, Double, Boolean
- * - null
- * - Map<String, Any?>
- * - List<Any?>
- * - [CompiledVariable]
+ * [CompiledValue] can be any of [ApolloJsonElement] or [CompiledVariable]
  *
- * Note: for now, enums are mapped to Strings
+ * Enum values are mapped to strings
+ * Int and Float values are mapped to [com.apollographql.apollo3.api.json.JsonNumber]
  */
+typealias CompiledValue = Any?
+
 class CompiledArgument private constructor(
     val name: String,
-    val value: Any?,
+    /**
+     * The compile-time value of that argument.
+     *
+     * Can be the defaultValue if no argument is defined in the operation.
+     * Can contain variables.
+     * Can be [Optional.Absent] if:
+     * - no value is passed and no default value is present
+     * - or if a variable value is passed but no variable with that name is present
+     */
+    val value: Optional<CompiledValue>,
     val isKey: Boolean = false,
     @ApolloExperimental
     val isPagination: Boolean = false,
 ) {
   class Builder(
       private val name: String,
-      private val value: Any?,
   ) {
+    private var value: Optional<CompiledValue> = Optional.absent()
     private var isKey: Boolean = false
     private var isPagination: Boolean = false
 
@@ -333,10 +370,15 @@ class CompiledArgument private constructor(
       this.isKey = isKey
     }
 
+    fun value(value: CompiledValue) = apply {
+      this.value = Optional.present(value)
+    }
+
     @ApolloExperimental
     fun isPagination(isPagination: Boolean) = apply {
       this.isPagination = isPagination
     }
+
 
     fun build(): CompiledArgument = CompiledArgument(
         name = name,
@@ -349,27 +391,53 @@ class CompiledArgument private constructor(
 
 /**
  * Resolve all variables that may be contained inside `value`
+ *
+ * If a variable is absent, the key is removed from the containing Map or List.
+ *
+ * @param value an [ApolloJsonElement] or [CompiledVariable] instance
+ *
+ * @return [ApolloJsonElement] or [Optional.Absent] if a variable is absent
  */
 @Suppress("UNCHECKED_CAST")
-fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
+private fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   return when (value) {
     null -> null
     is CompiledVariable -> {
-      variables.valueMap[value.name]
+      if (variables.valueMap.containsKey(value.name)) {
+        variables.valueMap[value.name]
+      } else {
+        Optional.Absent
+      }
     }
+
     is Map<*, *> -> {
       value as Map<String, Any?>
       value.mapValues {
         resolveVariables(it.value, variables)
-      }.toList()
+      }.filter { it.value !is Optional.Absent }
+          .toList()
           .sortedBy { it.first }
           .toMap()
     }
+
     is List<*> -> {
       value.map {
         resolveVariables(it, variables)
+      }.filter {
+        /**
+         * Not sure if this is correct
+         *
+         * ```
+         * {
+         *   # what if c is not present?
+         *   a(b: [$c])
+         * }
+         * ```
+         */
+        it !is Optional.Absent
       }
     }
+
     else -> value
   }
 }
@@ -410,6 +478,7 @@ fun CompiledNamedType.isComposite(): Boolean {
     is InterfaceType,
     is ObjectType,
     -> true
+
     else
     -> false
   }

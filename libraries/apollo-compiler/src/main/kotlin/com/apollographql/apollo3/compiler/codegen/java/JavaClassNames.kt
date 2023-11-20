@@ -44,6 +44,7 @@ internal object JavaClassNames {
   val False = ClassNames.False.toJavaPoetClassName()
   val CompiledArgument = ClassNames.CompiledArgument.toJavaPoetClassName()
   val CompiledVariable = ClassNames.CompiledVariable.toJavaPoetClassName()
+  val JsonNumber = ClassNames.JsonNumber.toJavaPoetClassName()
   val CompiledCondition = ClassNames.CompiledCondition.toJavaPoetClassName()
   val CompiledField = ClassNames.CompiledField.toJavaPoetClassName()
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toJavaPoetClassName()

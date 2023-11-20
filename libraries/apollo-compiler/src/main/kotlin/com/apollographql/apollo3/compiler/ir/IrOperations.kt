@@ -101,9 +101,12 @@ internal data class IrField(
 @Serializable
 internal data class IrArgument(
     val name: String,
-    val value: IrValue,
-    val isKey: Boolean = false,
-    val isPagination: Boolean = false,
+    /**
+     * The value for this argument. May be null if the argument is absent
+     */
+    val value: IrValue?,
+    val isKey: Boolean,
+    val isPagination: Boolean,
 )
 
 @Serializable
@@ -330,8 +333,11 @@ internal data class IrModelGroup(
 @Serializable
 internal data class IrVariable(
     val name: String,
-    val defaultValue: IrValue?,
     val type: IrType,
+    /**
+     * Used in `Operation.serializeVariables`
+     */
+    val defaultValue: IrValue?
 )
 
 private val json = Json { classDiscriminator = "#class" }

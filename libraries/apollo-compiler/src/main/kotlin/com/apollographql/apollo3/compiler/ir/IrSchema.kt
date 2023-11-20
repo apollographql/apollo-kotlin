@@ -15,7 +15,6 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
@@ -145,7 +144,6 @@ internal data class IrInputField(
     val deprecationReason: String?,
     val optInFeature: String?,
     val type: IrType,
-    val defaultValue: IrValue?,
 )
 
 internal fun GQLEnumTypeDefinition.toIr(schema: Schema): IrEnum {
@@ -292,10 +290,8 @@ private fun GQLType.toIrType2(schema: Schema): IrType2 {
  * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments
  */
 private fun GQLInputValueDefinition.toIrInputField(schema: Schema): IrInputField {
-  val coercedDefaultValue = defaultValue?.coerceInExecutableContextOrThrow(type, schema)
-
   var irType = type.toIr(schema)
-  if (type !is GQLNonNullType || coercedDefaultValue != null) {
+  if (type !is GQLNonNullType || defaultValue != null) {
     /**
      * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user, and
      * we don't want to force users to fill all values to define an input object
@@ -308,7 +304,6 @@ private fun GQLInputValueDefinition.toIrInputField(schema: Schema): IrInputField
       deprecationReason = directives.findDeprecationReason(),
       optInFeature = directives.findOptInFeature(schema),
       type = irType,
-      defaultValue = coercedDefaultValue?.toIrValue(),
   )
 }
 

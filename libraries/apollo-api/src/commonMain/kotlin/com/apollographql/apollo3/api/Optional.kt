@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional.Absent
 import com.apollographql.apollo3.api.Optional.Present
 import com.apollographql.apollo3.exception.MissingValueException
@@ -46,3 +47,11 @@ sealed class Optional<out V> {
  * Returns the value if this [Optional] is [Present] or null else.
  */
 fun <V> Optional<V>.getOrElse(fallback: V): V = (this as? Present)?.value ?: fallback
+
+@ApolloExperimental
+fun <V, R> Optional<V>.map(mapper: (V) -> R): Optional<R> {
+  return when(this) {
+    is Optional.Absent -> Optional.Absent
+    is Optional.Present -> Optional.present(mapper(value))
+  }
+}

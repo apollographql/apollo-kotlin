@@ -3,14 +3,12 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.withBooleanDefaultValues
+import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
-import com.apollographql.apollo3.compiler.ir.IrBooleanValue
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
+import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
@@ -18,26 +16,17 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun List<NamedType>.variablesAdapterTypeSpec(
+internal fun List<IrVariable>.variablesAdapterTypeSpec(
     context: KotlinContext,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
       .addFunction(serializeVariablesFunSpec(context, adaptedTypeName))
-      .apply {
-        addSuppressions(this@variablesAdapterTypeSpec.any { it.deprecationReason != null })
-        if (any { it.optInFeature != null }) {
-          val requiresOptInAnnotation = context.resolver.resolveRequiresOptInAnnotation()
-          if (requiresOptInAnnotation != null) {
-            addAnnotation(requiresOptInAnnotation(requiresOptInAnnotation))
-          }
-        }
-      }
       .build()
 }
 
-private fun List<NamedType>.serializeVariablesFunSpec(
+private fun List<IrVariable>.serializeVariablesFunSpec(
     context: KotlinContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
@@ -45,13 +34,13 @@ private fun List<NamedType>.serializeVariablesFunSpec(
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(value, adaptedTypeName)
       .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
-      .addParameter(withBooleanDefaultValues, KotlinSymbols.Boolean)
+      .addParameter(withDefaultValues, KotlinSymbols.Boolean)
       .addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").addMember("%S", "UNUSED_VARIABLE").build())
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
 
-private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
 
   forEach {
@@ -60,25 +49,25 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): Co
   return builder.build()
 }
 
-private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
+  val propertyName = context.layout.propertyName(name)
 
   if (type.isOptional()) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
-  builder.addStatement("$writer.name(%S)", graphQlName)
+  builder.addStatement("$writer.name(%S)", name)
   builder.addSerializeStatement(adapterInitializer, propertyName)
   if (type.isOptional()) {
     builder.endControlFlow()
-    if (defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if ($withBooleanDefaultValues)")
-      builder.addStatement("$writer.name(%S)", graphQlName)
+    if (defaultValue != null) {
+      builder.beginControlFlow("else if ($withDefaultValues)")
+      builder.addStatement("$writer.name(%S)", name)
       builder.addStatement(
           "%M.toJson($writer, $customScalarAdapters, %L)",
-          KotlinSymbols.BooleanAdapter,
-          defaultValue.value,
+          KotlinSymbols.NullableAnyAdapter,
+          defaultValue.codeBlock(),
       )
 
       builder.endControlFlow()

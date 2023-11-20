@@ -120,13 +120,19 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "new $T($S, $L)",
+        "new $T($S)",
         JavaClassNames.CompiledArgument,
         name,
-        value.codeBlock()
     )
-    if (isKey) argumentBuilder.add(".isKey(true)")
-    if (isPagination) argumentBuilder.add(".isPagination(true)")
+    if (this.value != null) {
+      argumentBuilder.add(".value($L)", value.codeBlock())
+    }
+    if (isKey) {
+      argumentBuilder.add(".isKey(true)")
+    }
+    if (isPagination) {
+      argumentBuilder.add(".isPagination(true)")
+    }
     argumentBuilder.add(".build()")
 
     return argumentBuilder.build()

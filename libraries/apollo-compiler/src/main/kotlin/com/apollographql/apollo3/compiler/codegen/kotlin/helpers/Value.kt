@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.ir.IrFloatValue
 import com.apollographql.apollo3.compiler.ir.IrIntValue
 import com.apollographql.apollo3.compiler.ir.IrListValue
 import com.apollographql.apollo3.compiler.ir.IrNullValue
-import com.apollographql.apollo3.compiler.ir.IrNumberValue
 import com.apollographql.apollo3.compiler.ir.IrObjectValue
 import com.apollographql.apollo3.compiler.ir.IrStringValue
 import com.apollographql.apollo3.compiler.ir.IrValue
@@ -32,17 +31,39 @@ private fun IrObjectValue.codeBlock(): CodeBlock {
   return fields.map { it.name to it.value.codeBlock() }.toMapInitializerCodeblock(true)
 }
 
+/**
+ * Converts an [IrValue] to its equivalent Kotlin expression as in `ApolloJsonElement`
+ * One exception is variables which get mapped to `CompiledVariable`
+ */
 internal fun IrValue.codeBlock(): CodeBlock {
   return when (this) {
     is IrBooleanValue -> CodeBlock.of("%L", value)
-    is IrEnumValue -> CodeBlock.of("%S", value) // FIXME
-    is IrFloatValue -> CodeBlock.of("%L", value)
-    is IrIntValue -> CodeBlock.of("%L", value)
+    // Enums are serialized to JSON String
+    is IrEnumValue -> CodeBlock.of("%S", value)
+    is IrIntValue -> {
+      val asInt = value.toIntOrNull()
+      if (asInt != null) {
+        // The value fits in kotlin Int
+        CodeBlock.of("%L", value)
+      } else {
+        CodeBlock.of("%T(%S)", KotlinSymbols.JsonNumber, value)
+      }
+    }
+
+    is IrFloatValue -> {
+      val asDouble = value.toIntOrNull()
+      if (asDouble != null) {
+        // The value fits in a kotlin Double
+        CodeBlock.of("%L", value)
+      } else {
+        CodeBlock.of("%T(%S)", KotlinSymbols.JsonNumber, value)
+      }
+    }
+
     is IrListValue -> codeBlock()
     IrNullValue -> CodeBlock.of("null")
     is IrObjectValue -> codeBlock()
     is IrStringValue -> CodeBlock.of("%S", value)
     is IrVariableValue -> CodeBlock.of("%T(%S)", KotlinSymbols.CompiledVariable, name)
-    is IrNumberValue -> CodeBlock.of("%L", value)
   }
 }
