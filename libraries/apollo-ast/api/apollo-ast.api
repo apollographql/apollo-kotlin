@@ -763,6 +763,7 @@ public final class com/apollographql/apollo3/ast/GqlKt {
 
 public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 	public static final fun findDeprecationReason (Ljava/util/List;)Ljava/lang/String;
+	public static final fun findOneOf (Ljava/util/List;)Z
 	public static final fun findSpecifiedBy (Ljava/util/List;)Ljava/lang/String;
 }
 

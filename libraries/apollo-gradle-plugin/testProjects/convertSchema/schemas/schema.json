@@ -28,7 +28,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "INTERFACE",
@@ -52,7 +53,8 @@
         "possibleTypes": [],
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "INTERFACE",
@@ -119,7 +121,8 @@
         "possibleTypes": [],
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "INPUT_OBJECT",
@@ -155,7 +158,8 @@
             "deprecationReason": "This input field is deprecated"
           }
         ],
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": true
       },
       {
         "kind": "SCALAR",
@@ -166,7 +170,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "SCALAR",
@@ -177,7 +182,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "SCALAR",
@@ -188,7 +194,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "SCALAR",
@@ -199,7 +206,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "SCALAR",
@@ -210,7 +218,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -322,7 +331,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -537,7 +547,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "ENUM",
@@ -597,7 +608,8 @@
           }
         ],
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -718,7 +730,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -814,7 +827,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -882,7 +896,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "OBJECT",
@@ -999,7 +1014,8 @@
         "possibleTypes": null,
         "enumValues": null,
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       },
       {
         "kind": "ENUM",
@@ -1125,7 +1141,8 @@
           }
         ],
         "inputFields": null,
-        "specifiedByURL": null
+        "specifiedByURL": null,
+        "isOneOf": null
       }
     ],
     "directives": [
@@ -1308,6 +1325,15 @@
             "deprecationReason": null
           }
         ],
+        "isRepeatable": false
+      },
+      {
+        "name": "oneOf",
+        "description": null,
+        "locations": [
+          "INPUT_OBJECT"
+        ],
+        "args": [],
         "isRepeatable": false
       }
     ],
