@@ -1,9 +1,6 @@
 OtherValidationIssue (2:24)
 No value passed for required inputField `stars`
 ------------
-DeprecatedUsage (174:35)
-Use of deprecated enum value `new` of type `Episode`
-------------
 OtherValidationIssue (2:24)
 No value passed for required inputField `listOfStringNonOptional`
 ------------

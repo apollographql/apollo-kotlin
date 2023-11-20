@@ -143,13 +143,20 @@ private fun ValidationScope.validateAndCoerceInputObject(
          * 3.10
          * If no value is provided for a defined input object field and that field definition provides a default value, the default value should be used
          */
+        // We don't want to report issues in default values defined in the schema
+        val ignoreIssuesScope = DefaultValidationScope(
+            typeDefinitions = typeDefinitions,
+            directiveDefinitions = directiveDefinitions,
+            issues = null,
+            foreignNames = foreignNames
+        )
         return@mapNotNull GQLObjectField(
             name = inputValueDefinition.name,
-            value = validateAndCoerceValue(
+            value = ignoreIssuesScope.validateAndCoerceValue(
                 value = inputValueDefinition.defaultValue,
                 expectedType = inputValueDefinition.type,
                 hasLocationDefaultValue = false,
-                registerVariableUsage
+                registerVariableUsage = registerVariableUsage
             )
         )
       } else if (inputValueDefinition.type is GQLNonNullType) {
