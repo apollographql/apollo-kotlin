@@ -16,8 +16,7 @@ public enum TestSubscription_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, TestSubscription value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("repo");
     Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.repo);

@@ -7,6 +7,7 @@ package com.example.java_android_annotations.adapter
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,7 +28,7 @@ public object MyQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: MyQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
@@ -38,6 +39,10 @@ public object MyQuery_VariablesAdapter {
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
       IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+    }
+    else if (withDefaultValues) {
+      writer.name("nonNullableIntWithDefault")
+      NullableAnyAdapter.toJson(writer, customScalarAdapters, 4)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
@@ -50,6 +55,12 @@ public object MyQuery_VariablesAdapter {
       writer.name("nonNullableInputWithDefault")
       MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters,
           value.nonNullableInputWithDefault)
+    }
+    else if (withDefaultValues) {
+      writer.name("nonNullableInputWithDefault")
+      NullableAnyAdapter.toJson(writer, customScalarAdapters, mapOf(
+            "nonNullableInt" to 4
+          ))
     }
   }
 }

@@ -18,8 +18,7 @@ public enum LoginBarber_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, LoginBarber value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("input");
     new ObjectCompositeAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, value.input, adapterContext);

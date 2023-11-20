@@ -21,7 +21,7 @@ public object TestSubscription_VariablesAdapter {
     writer: JsonWriter,
     `value`: TestSubscription,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("repo")
     StringAdapter.toJson(writer, customScalarAdapters, value.repo)

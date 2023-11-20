@@ -68,7 +68,7 @@ public object TestQuerySelections {
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder("text", "bla-bla").build()
+          CompiledArgument.Builder("text").value("bla-bla").build()
         ))
         .selections(__search)
         .build()

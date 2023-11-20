@@ -6,6 +6,7 @@
 package com.example.variable_default_value.adapter
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -23,11 +24,15 @@ public object TestQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     if (value.episode is Optional.Present) {
       writer.name("episode")
       Episode_ResponseAdapter.present().toJson(writer, customScalarAdapters, value.episode)
+    }
+    else if (withDefaultValues) {
+      writer.name("episode")
+      NullableAnyAdapter.toJson(writer, customScalarAdapters, "JEDI")
     }
   }
 }

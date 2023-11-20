@@ -8,6 +8,7 @@ package com.example.arguments_hardcoded.selections
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.arguments_hardcoded.type.GraphQLInt
@@ -32,9 +33,9 @@ public object TestQuerySelections {
           name = "reviews",
           type = Review.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", "JEDI").build(),
-          CompiledArgument.Builder("starsFloat", 9.9).build(),
-          CompiledArgument.Builder("starsInt", 10).build()
+          CompiledArgument.Builder("episode").value("JEDI").build(),
+          CompiledArgument.Builder("starsFloat").value(JsonNumber("9.9")).build(),
+          CompiledArgument.Builder("starsInt").value(10).build()
         ))
         .selections(__reviews)
         .build(),
@@ -42,13 +43,13 @@ public object TestQuerySelections {
           name = "testNullableArguments",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("boolean", null).build(),
-          CompiledArgument.Builder("episode", null).build(),
-          CompiledArgument.Builder("float", null).build(),
-          CompiledArgument.Builder("int", null).build(),
-          CompiledArgument.Builder("list", null).build(),
-          CompiledArgument.Builder("review", null).build(),
-          CompiledArgument.Builder("string", null).build()
+          CompiledArgument.Builder("boolean").value(null).build(),
+          CompiledArgument.Builder("episode").value(null).build(),
+          CompiledArgument.Builder("float").value(null).build(),
+          CompiledArgument.Builder("int").value(null).build(),
+          CompiledArgument.Builder("list").value(null).build(),
+          CompiledArgument.Builder("review").value(null).build(),
+          CompiledArgument.Builder("string").value(null).build()
         ))
         .build()
       )

@@ -23,7 +23,7 @@ public object TestQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)

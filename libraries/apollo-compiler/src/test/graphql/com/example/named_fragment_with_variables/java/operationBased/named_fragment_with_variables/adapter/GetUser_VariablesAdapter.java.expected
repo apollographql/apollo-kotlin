@@ -19,8 +19,7 @@ public enum GetUser_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, GetUser value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("organizationId");
     Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.organizationId);

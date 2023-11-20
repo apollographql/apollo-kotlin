@@ -55,6 +55,10 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("yield")
+        .arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
         .selections(__hero)
         .build(),
         CompiledField.Builder(
@@ -62,7 +66,7 @@ public object TestQuerySelections {
           type = SearchResult.type.list()
         ).alias("objects")
         .arguments(listOf(
-          CompiledArgument.Builder("text", "abc").build()
+          CompiledArgument.Builder("text").value("abc").build()
         ))
         .selections(__search)
         .build()

@@ -26,7 +26,7 @@ public class HorseFragmentImpl() : Fragment<HorseFragmentImpl.Data> {
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     // This fragment doesn't have any variable
   }

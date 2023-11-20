@@ -32,8 +32,8 @@ public object CreateReviewForEpisodeMutationSelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review", CompiledVariable("review")).build()
+          CompiledArgument.Builder("episode").value(CompiledVariable("ep")).build(),
+          CompiledArgument.Builder("review").value(CompiledVariable("review")).build()
         ))
         .selections(__createReview)
         .build()

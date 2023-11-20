@@ -16,8 +16,7 @@ public enum InlineMultipleWithDeferWithIf_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, InlineMultipleWithDeferWithIf value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("cond");
     Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond);

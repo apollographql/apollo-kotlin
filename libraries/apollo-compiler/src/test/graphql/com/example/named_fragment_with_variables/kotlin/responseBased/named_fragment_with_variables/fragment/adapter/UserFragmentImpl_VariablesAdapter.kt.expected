@@ -21,7 +21,7 @@ public object UserFragmentImpl_VariablesAdapter {
     writer: JsonWriter,
     `value`: UserFragmentImpl,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("size")
     IntAdapter.toJson(writer, customScalarAdapters, value.size)

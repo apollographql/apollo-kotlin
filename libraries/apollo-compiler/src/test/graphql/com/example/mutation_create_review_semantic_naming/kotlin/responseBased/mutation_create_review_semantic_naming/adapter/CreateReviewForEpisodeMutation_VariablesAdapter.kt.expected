@@ -23,7 +23,7 @@ public object CreateReviewForEpisodeMutation_VariablesAdapter {
     writer: JsonWriter,
     `value`: CreateReviewForEpisodeMutation,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)

@@ -21,7 +21,7 @@ public object TestQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("withDetails")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.withDetails)

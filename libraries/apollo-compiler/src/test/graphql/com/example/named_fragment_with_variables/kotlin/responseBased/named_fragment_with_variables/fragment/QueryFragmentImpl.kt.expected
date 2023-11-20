@@ -29,10 +29,10 @@ public data class QueryFragmentImpl(
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withBooleanDefaultValues)
+        withDefaultValues)
   }
 
   override fun adapter(): CompositeAdapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()

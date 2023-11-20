@@ -63,13 +63,17 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(__hero)
+        ).arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
+        .selections(__hero)
         .build(),
         CompiledField.Builder(
           name = "getBoolean",
           type = GraphQLBoolean.type
         ).arguments(listOf(
-          CompiledArgument.Builder("booleanArg", CompiledVariable("optionalWithNoDefault")).build()
+          CompiledArgument.Builder("booleanArg").value(CompiledVariable("optionalWithNoDefault")).build()
         ))
         .build()
       )

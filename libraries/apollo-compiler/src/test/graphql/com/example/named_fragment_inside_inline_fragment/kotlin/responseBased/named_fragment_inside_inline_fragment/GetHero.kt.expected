@@ -39,7 +39,7 @@ public class GetHero() : Query<GetHero.Data> {
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     // This operation doesn't have any variable
   }

@@ -35,10 +35,10 @@ public data class CatQuery(
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     CatQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withBooleanDefaultValues)
+        withDefaultValues)
   }
 
   override fun adapter(): CompositeAdapter<Data> = CatQuery_ResponseAdapter.Data.obj()

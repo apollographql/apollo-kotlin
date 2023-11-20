@@ -23,6 +23,6 @@ public class CreateReviewForEpisodeMutationSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder("episode", new CompiledVariable("ep")).build(), new CompiledArgument.Builder("review", new CompiledVariable("review")).build())).selections(__createReview).build()
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value(new CompiledVariable("ep")).build(), new CompiledArgument.Builder("review").value(new CompiledVariable("review")).build())).selections(__createReview).build()
   );
 }

@@ -60,7 +60,7 @@ public class StarshipImpl implements Fragment<Starship> {
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
+      boolean withDefaultValues) throws IOException {
     // This fragment doesn't have any variable
   }
 

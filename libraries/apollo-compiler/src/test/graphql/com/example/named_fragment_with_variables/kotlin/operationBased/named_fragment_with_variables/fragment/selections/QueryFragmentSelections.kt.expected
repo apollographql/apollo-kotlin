@@ -39,7 +39,7 @@ public object QueryFragmentSelections {
           name = "user",
           type = User.type.notNull().list().notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("query", CompiledVariable("query")).build()
+          CompiledArgument.Builder("query").value(CompiledVariable("query")).build()
         ))
         .selections(__user)
         .build()
@@ -50,7 +50,7 @@ public object QueryFragmentSelections {
           name = "organization",
           type = Organization.type
         ).arguments(listOf(
-          CompiledArgument.Builder("id", CompiledVariable("organizationId")).build()
+          CompiledArgument.Builder("id").value(CompiledVariable("organizationId")).build()
         ))
         .selections(__organization)
         .build()

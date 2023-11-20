@@ -5,6 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -79,7 +80,11 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(__friendsConnection)
+        ).arguments(listOf(
+          CompiledArgument.Builder("after").build(),
+          CompiledArgument.Builder("first").build()
+        ))
+        .selections(__friendsConnection)
         .build()
       )
 }

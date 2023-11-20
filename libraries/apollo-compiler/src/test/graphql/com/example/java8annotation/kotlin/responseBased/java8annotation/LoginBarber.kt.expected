@@ -32,10 +32,10 @@ public data class LoginBarber(
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     LoginBarber_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withBooleanDefaultValues)
+        withDefaultValues)
   }
 
   override fun adapter(): CompositeAdapter<Data> = LoginBarber_ResponseAdapter.Data.obj()

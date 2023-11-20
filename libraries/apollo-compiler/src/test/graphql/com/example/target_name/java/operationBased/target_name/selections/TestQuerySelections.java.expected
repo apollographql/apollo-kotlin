@@ -39,10 +39,10 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("object", renamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder("input", new CompiledVariable("input")).build())).selections(__object).build(),
+    new CompiledField.Builder("object", renamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder("input").value(new CompiledVariable("input")).build())).selections(__object).build(),
     new CompiledField.Builder("interface", renamedInterface.type).selections(__interface).build(),
     new CompiledField.Builder("union", renamedUnion.type).selections(__union).build(),
-    new CompiledField.Builder("scalar", renamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder("scalar", new CompiledVariable("scalar")).build())).build(),
-    new CompiledField.Builder("enum", renamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum", new CompiledVariable("enum")).build())).build()
+    new CompiledField.Builder("scalar", renamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder("scalar").value(new CompiledVariable("scalar")).build())).build(),
+    new CompiledField.Builder("enum", renamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum").value(new CompiledVariable("enum")).build())).build()
   );
 }

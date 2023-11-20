@@ -38,7 +38,7 @@ internal class HeroDetailsImpl() : Fragment<HeroDetails> {
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     // This fragment doesn't have any variable
   }

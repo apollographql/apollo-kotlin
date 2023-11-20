@@ -27,7 +27,7 @@ public object TestQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: TestQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     if (value.input is Optional.Present) {
       writer.name("input")

@@ -54,7 +54,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(__friendsConnection)
+        ).arguments(listOf(
+          CompiledArgument.Builder("after").build(),
+          CompiledArgument.Builder("first").build()
+        ))
+        .selections(__friendsConnection)
         .build()
       )
 
@@ -97,7 +101,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(__friendsConnection1)
+        ).arguments(listOf(
+          CompiledArgument.Builder("after").build(),
+          CompiledArgument.Builder("first").build()
+        ))
+        .selections(__friendsConnection1)
         .build()
       )
 
@@ -106,6 +114,10 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("r2")
+        .arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
         .selections(__hero)
         .build(),
         CompiledField.Builder(
@@ -113,7 +125,8 @@ public object TestQuerySelections {
           type = Character.type
         ).alias("luke")
         .arguments(listOf(
-          CompiledArgument.Builder("episode", "EMPIRE").build()
+          CompiledArgument.Builder("episode").value("EMPIRE").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
         ))
         .selections(__hero1)
         .build()

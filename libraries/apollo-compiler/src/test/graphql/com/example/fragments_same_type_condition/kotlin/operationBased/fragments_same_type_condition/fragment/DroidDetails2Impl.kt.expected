@@ -25,7 +25,7 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2> {
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     // This fragment doesn't have any variable
   }

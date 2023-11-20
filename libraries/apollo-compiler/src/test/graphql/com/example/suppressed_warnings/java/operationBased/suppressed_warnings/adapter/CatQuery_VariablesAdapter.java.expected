@@ -21,8 +21,7 @@ public enum CatQuery_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, CatQuery value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.filter instanceof Optional.Present) {
       writer.name("filter");
