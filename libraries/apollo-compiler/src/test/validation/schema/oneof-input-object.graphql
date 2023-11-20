@@ -1,0 +1,17 @@
+directive @oneOf on INPUT_OBJECT
+
+type Query {
+    x: Int
+}
+
+input A @oneOf {
+    a: String!
+}
+
+input B @oneOf {
+    b: String = ""
+}
+
+input C @oneOf {
+    c: String
+}
