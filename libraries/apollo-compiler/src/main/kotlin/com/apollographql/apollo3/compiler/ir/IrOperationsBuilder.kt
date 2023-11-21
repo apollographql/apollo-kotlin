@@ -15,7 +15,6 @@ import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLNullability
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationDefinition
@@ -44,7 +43,6 @@ import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.ast.withNullability
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -470,7 +468,6 @@ internal class IrOperationsBuilder(
 
       val description: String?,
       val type: GQLType,
-      val nullability: GQLNullability?,
       val deprecationReason: String?,
       val optInFeature: String?,
       val forceNonNull: Boolean,
@@ -503,7 +500,6 @@ internal class IrOperationsBuilder(
           condition = gqlField.directives.toIncludeBooleanExpression(),
           selections = gqlField.selections,
           type = fieldDefinition.type,
-          nullability = gqlField.nullability,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           optInFeature = fieldDefinition.directives.findOptInFeature(schema),
@@ -578,7 +574,7 @@ internal class IrOperationsBuilder(
        */
       usedFields.putType(first.type.rawType().name)
 
-      var irType = first.type.withNullability(first.nullability).toIr()
+      var irType = first.type.toIr()
       if (forceNonNull) {
         irType = irType.makeNonNull()
       } else if (forceOptional) {

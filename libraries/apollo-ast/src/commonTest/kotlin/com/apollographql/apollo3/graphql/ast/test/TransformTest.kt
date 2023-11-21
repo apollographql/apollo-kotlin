@@ -85,7 +85,6 @@ class TransformTest {
             arguments = emptyList(),
             directives = emptyList(),
             selections = emptyList(),
-            nullability = null
         )
         TransformResult.Replace(
             it.copy(

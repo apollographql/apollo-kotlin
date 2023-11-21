@@ -26,8 +26,6 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun toGQLDocument$default (Ljava/io/File;Lcom/apollographql/apollo3/ast/ParserOptions;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static synthetic fun toGQLDocument$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static synthetic fun toGQLDocument$default (Lokio/Path;Lcom/apollographql/apollo3/ast/ParserOptions;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
-	public static final fun toGQLNullability (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLNullability;
-	public static synthetic fun toGQLNullability$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLNullability;
 	public static final fun toGQLSelections (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Ljava/util/List;
 	public static synthetic fun toGQLSelections$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Ljava/util/List;
 	public static final fun toGQLType (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;)Lcom/apollographql/apollo3/ast/GQLType;
@@ -256,8 +254,6 @@ public abstract interface class com/apollographql/apollo3/ast/GQLExecutableDefin
 }
 
 public final class com/apollographql/apollo3/ast/GQLField : com/apollographql/apollo3/ast/GQLSelection, com/apollographql/apollo3/ast/GQLHasDirectives, com/apollographql/apollo3/ast/GQLNamed {
-	public fun <init> (Lcom/apollographql/apollo3/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun copy (Lcom/apollographql/apollo3/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/ast/GQLField;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/GQLField;Lcom/apollographql/apollo3/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLField;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo3/ast/NodeContainer;)Lcom/apollographql/apollo3/ast/GQLNode;
@@ -889,21 +885,17 @@ public final class com/apollographql/apollo3/ast/OtherValidationIssue : com/apol
 
 public final class com/apollographql/apollo3/ast/ParserOptions {
 	public static final field Companion Lcom/apollographql/apollo3/ast/ParserOptions$Companion;
-	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getAllowClientControlledNullability ()Z
+	public synthetic fun <init> (ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAllowEmptyDocuments ()Z
 	public final fun getWithSourceLocation ()Z
 }
 
 public final class com/apollographql/apollo3/ast/ParserOptions$Builder {
 	public fun <init> ()V
-	public final fun allowClientControlledNullability (Z)Lcom/apollographql/apollo3/ast/ParserOptions$Builder;
 	public final fun allowEmptyDocuments (Z)Lcom/apollographql/apollo3/ast/ParserOptions$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ast/ParserOptions;
-	public final fun getAllowClientControlledNullability ()Z
 	public final fun getAllowEmptyDocuments ()Z
 	public final fun getWithSourceLocation ()Z
-	public final fun setAllowClientControlledNullability (Z)V
 	public final fun setAllowEmptyDocuments (Z)V
 	public final fun setWithSourceLocation (Z)V
 	public final fun withSourceLocation (Z)Lcom/apollographql/apollo3/ast/ParserOptions$Builder;

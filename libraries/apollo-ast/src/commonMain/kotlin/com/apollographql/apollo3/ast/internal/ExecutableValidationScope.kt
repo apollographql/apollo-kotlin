@@ -34,8 +34,6 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.NullabilityValidationIgnore
-import com.apollographql.apollo3.ast.NullabilityValidationRegister
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.UnusedFragment
@@ -49,7 +47,6 @@ import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
-import com.apollographql.apollo3.ast.withNullability
 
 
 @OptIn(ApolloInternal::class)
@@ -215,10 +212,6 @@ internal class ExecutableValidationScope(
         )
         return
       }
-    }
-
-    if (nullability != null) {
-      fieldDefinition.type.withNullability(nullability, NullabilityValidationRegister(issues, name))
     }
 
     directives.forEach {
@@ -434,8 +427,8 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type?.withNullability(fieldA.nullability, NullabilityValidationIgnore)
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type?.withNullability(fieldB.nullability, NullabilityValidationIgnore)
+    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type
+    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return

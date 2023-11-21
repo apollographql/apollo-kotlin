@@ -166,6 +166,5 @@ private fun buildField(name: String): GQLField {
       sourceLocation = null,
       directives = emptyList(),
       alias = null,
-      nullability = null
   )
 }
