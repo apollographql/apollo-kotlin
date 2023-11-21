@@ -1,6 +1,54 @@
 package com.apollographql.apollo3.ast.internal
 
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumTypeExtension
+import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputObjectTypeExtension
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLInterfaceTypeExtension
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectField
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectTypeExtension
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeExtension
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.GQLUnionTypeExtension
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.GQLVariableDefinition
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.ParserOptions
+import com.apollographql.apollo3.ast.SourceLocation
 
 internal class Parser(
     src: String,
@@ -12,7 +60,6 @@ internal class Parser(
   private var lastToken = token
   private var lookaheadToken: Token? = null
   private val withSourceLocation = options.withSourceLocation
-  private val allowClientControlledNullability = options.allowClientControlledNullability
   private val allowEmptyDocuments = options.allowEmptyDocuments
 
   fun parseDocument(): GQLDocument {
@@ -40,10 +87,6 @@ internal class Parser(
 
   fun parseType(): GQLType {
     return parseTopLevel(::parseTypeInternal)
-  }
-
-  fun parseNullability(): GQLNullability? {
-    return parseTopLevel(::parseNullabilityInternal)
   }
 
   private fun advance() {
@@ -219,10 +262,6 @@ internal class Parser(
     }
 
     val arguments = parseArguments(const = false)
-    var nullability: GQLNullability? = null
-    if (allowClientControlledNullability) {
-      nullability = parseNullabilityInternal()
-    }
     val directives = parseDirectives(const = false)
 
     val selections = parseOptionalSelectionSet()
@@ -233,52 +272,6 @@ internal class Parser(
         arguments = arguments,
         directives = directives,
         selections = selections,
-        nullability = nullability,
-    )
-  }
-
-  private fun parseNullabilityDesignator(): GQLNullability? {
-    return when(token) {
-      is Token.ExclamationPoint -> {
-        val sourceLocation = sourceLocation()
-        advance()
-        GQLNonNullDesignator(sourceLocation)
-      }
-
-      is Token.QuestionMark -> {
-        val sourceLocation = sourceLocation()
-        advance()
-        GQLNullDesignator(sourceLocation)
-      }
-
-      else -> {
-        null
-      }
-    }
-  }
-
-  private fun parseNullabilityInternal(): GQLNullability? {
-    return when (token) {
-      is Token.LeftBracket -> {
-        parseListNullability()
-      }
-      else -> {
-        parseNullabilityDesignator()
-      }
-    }
-  }
-
-  private fun parseListNullability(): GQLListNullability {
-    val sourceLocation = sourceLocation()
-
-    expectToken<Token.LeftBracket>()
-    val ofNullability = parseNullabilityInternal()
-    expectToken<Token.RightBracket>()
-
-    return GQLListNullability(
-        sourceLocation = sourceLocation,
-        itemNullability = ofNullability,
-        selfNullability = parseNullabilityDesignator()
     )
   }
 

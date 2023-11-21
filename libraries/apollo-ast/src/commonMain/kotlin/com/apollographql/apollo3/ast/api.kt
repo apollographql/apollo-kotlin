@@ -78,20 +78,14 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
 
 class ParserOptions private constructor(
     val allowEmptyDocuments: Boolean,
-    val allowClientControlledNullability: Boolean,
     val withSourceLocation: Boolean,
 ) {
   class Builder {
     var allowEmptyDocuments = true
-    var allowClientControlledNullability = true
     var withSourceLocation = true
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
-    }
-
-    fun allowClientControlledNullability(allowClientControlledNullability: Boolean) = apply {
-      this.allowClientControlledNullability = allowClientControlledNullability
     }
 
     fun withSourceLocation(withSourceLocation: Boolean) = apply {
@@ -101,7 +95,6 @@ class ParserOptions private constructor(
     fun build(): ParserOptions {
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
-          allowClientControlledNullability = allowClientControlledNullability,
           withSourceLocation = withSourceLocation
       )
     }
@@ -134,14 +127,6 @@ fun String.parseAsGQLType(options: ParserOptions = ParserOptions.Default): GQLRe
 
 fun String.toGQLType(options: ParserOptions = ParserOptions.Default): GQLType {
   return parseAsGQLType(options).getOrThrow()
-}
-
-internal fun String.parseAsGQLNullability(options: ParserOptions = ParserOptions.Default): GQLResult<GQLNullability> {
-  return parseInternal(null, options) { parseNullability() ?: error("No nullability") }
-}
-
-fun String.toGQLNullability(options: ParserOptions = ParserOptions.Default): GQLNullability {
-  return parseAsGQLNullability(options).getOrThrow()
 }
 
 fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default): GQLResult<List<GQLSelection>> {

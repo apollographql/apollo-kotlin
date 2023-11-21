@@ -1,5 +1,0 @@
-OtherValidationIssue (5:14)
-Cannot apply nullability on 'nullable', the nullability list dimension exceeds the one of the field type.
-------------
-OtherValidationIssue (7:21)
-Cannot apply nullability on 'deepList', the nullability list dimension exceeds the one of the field type.
