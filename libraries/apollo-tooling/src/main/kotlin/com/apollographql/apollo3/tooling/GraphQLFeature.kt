@@ -57,20 +57,35 @@ internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
       add(SchemaDescription)
     }
 
-    if (type?.typeFields?.fields.orEmpty().any { it.name == "specifiedByURL" }) {
+    val typeFields = type?.typeFields?.fields.orEmpty()
+    if (typeFields.any { it.name == "specifiedByURL" }) {
       add(SpecifiedBy)
     }
-    if (type?.typeFields?.fields.orEmpty().any { it.name == "isOneOf" }) {
+    if (typeFields.any { it.name == "isOneOf" }) {
       add(OneOf)
     }
-    type?.typeFields?.fields.orEmpty().firstOrNull { it.name == "inputFields" }?.let { inputFields ->
-      if (inputFields.args.any { it.name == "includeDeprecated" }) {
-        add(DeprecatedInputValues)
-      }
-    }
+    val typeInputFieldsArgsIncludeDeprecated: Boolean = typeFields.firstOrNull { it.name == "inputFields" }?.let { inputFields ->
+      inputFields.args.any { it.name == "includeDeprecated" }
+    } == true
 
-    if (directive?.typeFields?.fields.orEmpty().any { it.name == "isRepeatable" }) {
+    val directiveFields = directive?.typeFields?.fields.orEmpty()
+    if (directiveFields.any { it.name == "isRepeatable" }) {
       add(RepeatableDirectives)
+    }
+    val directiveArgsIncludeDeprecated = directiveFields.firstOrNull { it.name == "args" }?.let { args ->
+      args.args.any { it.name == "includeDeprecated" }
+    } == true
+
+    val fieldArgsIncludeDeprecated = field?.typeFields?.fields.orEmpty().firstOrNull { it.name == "args" }?.let { args ->
+      args.args.any { it.name == "includeDeprecated" }
+    } == true
+
+    val inputValueFields = inputValue?.typeFields?.fields.orEmpty()
+    val inputValueIsDeprecated = inputValueFields.any { it.name == "isDeprecated" }
+    val inputValueDeprecatedReason = inputValueFields.any { it.name == "deprecationReason" }
+
+    if (typeInputFieldsArgsIncludeDeprecated && directiveArgsIncludeDeprecated && fieldArgsIncludeDeprecated && inputValueIsDeprecated && inputValueDeprecatedReason) {
+      add(DeprecatedInputValues)
     }
   }
 }
