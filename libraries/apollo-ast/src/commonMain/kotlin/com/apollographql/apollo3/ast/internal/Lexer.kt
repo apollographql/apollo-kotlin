@@ -562,7 +562,7 @@ internal class Lexer(val src: String) {
           end = pos,
           line = line,
           column = column(start),
-          value = asString.toDouble()
+          value = asString
       )
     } else {
       Token.Int(
@@ -570,7 +570,7 @@ internal class Lexer(val src: String) {
           end = pos,
           line = line,
           column = column(start),
-          value = asString.toInt()
+          value = asString
       )
     }
   }

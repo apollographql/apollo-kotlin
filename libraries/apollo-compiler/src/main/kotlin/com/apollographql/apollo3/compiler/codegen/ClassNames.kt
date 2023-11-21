@@ -45,6 +45,7 @@ internal object ClassNames {
   val False = ResolverClassName(apolloApiPackageName, "BooleanExpression", "False")
   val CompiledArgument = ResolverClassName(apolloApiPackageName, "CompiledArgument", "Builder")
   val CompiledVariable = ResolverClassName(apolloApiPackageName, "CompiledVariable")
+  val JsonNumber = ResolverClassName(apolloApiJsonPackageName, "JsonNumber")
   val CompiledCondition = ResolverClassName(apolloApiPackageName, "CompiledCondition")
   val CompiledField = ResolverClassName(apolloApiPackageName, "CompiledField")
   val CompiledFieldBuilder = ResolverClassName(apolloApiPackageName, "CompiledField", "Builder")

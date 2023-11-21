@@ -17,8 +17,6 @@ internal class NamedType(
     val description: String?,
     val deprecationReason: String?,
     val type: IrType,
-    // Relevant only for variables
-    val defaultValue: IrValue?,
 )
 
 
@@ -39,7 +37,6 @@ internal fun IrInputField.toNamedType() = NamedType(
     type = type,
     description = description,
     deprecationReason = deprecationReason,
-    defaultValue = null,
 )
 
 internal fun IrVariable.toNamedType() = NamedType(
@@ -47,7 +44,6 @@ internal fun IrVariable.toNamedType() = NamedType(
     type = type,
     description = null,
     deprecationReason = null,
-    defaultValue = defaultValue,
 )
 
 internal fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String, nullableFieldStyle: JavaNullable) {

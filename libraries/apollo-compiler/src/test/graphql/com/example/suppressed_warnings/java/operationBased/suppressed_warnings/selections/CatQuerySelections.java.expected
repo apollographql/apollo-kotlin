@@ -22,7 +22,7 @@ public class CatQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", Cat.type).arguments(Arrays.asList(new CompiledArgument.Builder("filter", new CompiledVariable("filter")).build())).selections(__search).build(),
+    new CompiledField.Builder("search", Cat.type).arguments(Arrays.asList(new CompiledArgument.Builder("filter").value(new CompiledVariable("filter")).build())).selections(__search).build(),
     new CompiledField.Builder("direction", Direction.type).build()
   );
 }

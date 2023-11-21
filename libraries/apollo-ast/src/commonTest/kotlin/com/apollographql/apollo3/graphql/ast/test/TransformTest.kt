@@ -64,7 +64,7 @@ class TransformTest {
       "@since requires an Int argument (is ${argument.value})"
     }
 
-    return value.value
+    return value.value.toInt()
   }
 
   @Test

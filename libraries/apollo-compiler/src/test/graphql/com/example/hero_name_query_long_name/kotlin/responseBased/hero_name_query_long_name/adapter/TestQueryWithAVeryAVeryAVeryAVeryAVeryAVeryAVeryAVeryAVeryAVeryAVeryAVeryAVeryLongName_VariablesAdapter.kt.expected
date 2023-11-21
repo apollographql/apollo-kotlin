@@ -26,7 +26,7 @@ public object
     writer: JsonWriter,
     `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     if
         (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName

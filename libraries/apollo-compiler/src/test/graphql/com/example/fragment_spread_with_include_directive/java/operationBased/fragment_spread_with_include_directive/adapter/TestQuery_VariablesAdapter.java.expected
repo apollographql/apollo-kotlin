@@ -18,8 +18,7 @@ public enum TestQuery_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("withDetails");
     Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.withDetails);
@@ -29,17 +28,17 @@ public enum TestQuery_VariablesAdapter {
       writer.name("optionalWithDefaultFalse");
       new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, CustomScalarAdapters.Empty, value.optionalWithDefaultFalse);
     }
-    else if (withBooleanDefaultValues) {
+    else if (withDefaultValues) {
       writer.name("optionalWithDefaultFalse");
-      Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, false);
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, false);
     }
     if (value.optionalWithDefaultTrue instanceof Optional.Present) {
       writer.name("optionalWithDefaultTrue");
       new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, CustomScalarAdapters.Empty, value.optionalWithDefaultTrue);
     }
-    else if (withBooleanDefaultValues) {
+    else if (withDefaultValues) {
       writer.name("optionalWithDefaultTrue");
-      Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, true);
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, true);
     }
     if (value.optionalWithNoDefault instanceof Optional.Present) {
       writer.name("optionalWithNoDefault");

@@ -20,7 +20,7 @@ internal object Identifier {
   const val fromJson = "fromJson"
   const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
-  const val withBooleanDefaultValues = "withBooleanDefaultValues"
+  const val withDefaultValues = "withDefaultValues"
   const val toJson = "toJson"
   const val fields = "fields"
   const val rootField = "rootField"

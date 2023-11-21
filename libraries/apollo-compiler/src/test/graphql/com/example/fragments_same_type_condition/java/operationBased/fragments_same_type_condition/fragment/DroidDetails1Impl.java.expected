@@ -61,7 +61,7 @@ public class DroidDetails1Impl implements Fragment<DroidDetails1> {
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
+      boolean withDefaultValues) throws IOException {
     // This fragment doesn't have any variable
   }
 

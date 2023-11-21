@@ -44,24 +44,24 @@ public object MyQuerySelections {
           name = "nullableInt",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder("nonNullableInput", CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder("nonNullableInputWithDefault", CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder("nonNullableInt", CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder("nonNullableIntWithDefault", CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder("nullableInput", CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder("nullableInt", CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder("nonNullableInput").value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder("nonNullableInputWithDefault").value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder("nonNullableInt").value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder("nonNullableIntWithDefault").value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder("nullableInput").value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder("nullableInt").value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(
           name = "nonNullableInt",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("nonNullableInput", CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder("nonNullableInputWithDefault", CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder("nonNullableInt", CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder("nonNullableIntWithDefault", CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder("nullableInput", CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder("nullableInt", CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder("nonNullableInput").value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder("nonNullableInputWithDefault").value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder("nonNullableInt").value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder("nonNullableIntWithDefault").value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder("nullableInput").value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder("nullableInt").value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(

@@ -5,6 +5,7 @@
 //
 package com.example.inline_fragments_with_friends.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -29,7 +30,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
-        ).build(),
+        ).arguments(listOf(
+          CompiledArgument.Builder("unit").value("METER").build()
+        ))
+        .build(),
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
@@ -81,7 +85,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(__hero)
+        ).arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
+        .selections(__hero)
         .build()
       )
 }

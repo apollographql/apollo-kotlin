@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> __onHuman = Arrays.asList(
-    new CompiledField.Builder("height", GraphQLFloat.type).build()
+    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder("unit").value("METER").build())).build()
   );
 
   private static List<CompiledSelection> __nonOptionalHero = Arrays.asList(
@@ -28,6 +28,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder("episode", "EMPIRE").build())).selections(__nonOptionalHero).build()
+    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value("EMPIRE").build())).selections(__nonOptionalHero).build()
   );
 }

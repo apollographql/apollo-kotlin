@@ -1,0 +1,17 @@
+type Query {
+  user: User!
+  a0(b: B): Int
+  a1(b: B = {}): Int
+  a2(b: B = {c: 2}): Int
+}
+
+input B {
+  c: Int = 3
+  d: Int
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}

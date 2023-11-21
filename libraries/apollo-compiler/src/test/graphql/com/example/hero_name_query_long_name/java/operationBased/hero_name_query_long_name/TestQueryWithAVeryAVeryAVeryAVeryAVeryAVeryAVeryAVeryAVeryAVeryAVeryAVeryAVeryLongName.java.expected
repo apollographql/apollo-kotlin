@@ -106,8 +106,8 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
+      boolean withDefaultValues) throws IOException {
+    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withDefaultValues);
   }
 
   @Override

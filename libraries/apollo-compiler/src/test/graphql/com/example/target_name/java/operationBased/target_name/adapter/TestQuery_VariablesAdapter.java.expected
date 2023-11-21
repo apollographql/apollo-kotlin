@@ -25,8 +25,7 @@ public enum TestQuery_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.input instanceof Optional.Present) {
       writer.name("input");

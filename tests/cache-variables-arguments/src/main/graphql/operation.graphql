@@ -1,0 +1,35 @@
+query GetUser($withDetails: Boolean!) {
+  user {
+    id
+    ...userDetails @include(if: $withDetails)
+  }
+}
+
+fragment userDetails on User {
+  name
+  email
+}
+
+query VariableDefaultValueEmpty($b: B = {}) {
+  a0(b: $b)
+}
+
+query VariableDefaultValueWithC($b: B = {c: 4}) {
+  a0(b: $b)
+}
+
+query VariableAbsent($b: B) {
+  a0(b: $b)
+}
+
+query VariableDefaultValueNull($b: B = null) {
+  a0(b: $b)
+}
+
+query AbsentArgumentWithArgumentDefaultValue {
+  a1
+}
+
+query PresentArgumentEmpty {
+  a1(b: {})
+}

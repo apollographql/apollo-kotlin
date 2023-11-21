@@ -127,8 +127,8 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
-    CreateReviewForEpisode_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
+      boolean withDefaultValues) throws IOException {
+    CreateReviewForEpisode_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withDefaultValues);
   }
 
   @Override

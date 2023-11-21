@@ -25,7 +25,7 @@ public object CatQuery_VariablesAdapter {
     writer: JsonWriter,
     `value`: CatQuery,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     if (value.filter is Optional.Present) {
       writer.name("filter")

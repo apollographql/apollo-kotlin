@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
-import com.apollographql.apollo3.compiler.codegen.Identifier.withBooleanDefaultValues
+import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
@@ -31,7 +31,7 @@ internal fun serializeVariablesFunSpec(
     """.trimIndent())
   } else {
     CodeBlock.of(
-        "%L.$serializeVariables($writer, this, $customScalarAdapters, $withBooleanDefaultValues)",
+        "%L.$serializeVariables($writer, this, $customScalarAdapters, $withDefaultValues)",
         CodeBlock.of("%T", adapterClassName)
     )
   }
@@ -39,7 +39,7 @@ internal fun serializeVariablesFunSpec(
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
-      .addParameter(withBooleanDefaultValues, KotlinSymbols.Boolean)
+      .addParameter(withDefaultValues, KotlinSymbols.Boolean)
       .addCode(body)
       .build()
 }

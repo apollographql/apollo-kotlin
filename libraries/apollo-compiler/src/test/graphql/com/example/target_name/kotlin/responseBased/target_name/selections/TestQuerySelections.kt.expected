@@ -58,7 +58,7 @@ public object TestQuerySelections {
           name = "object",
           type = renamedObject.type
         ).arguments(listOf(
-          CompiledArgument.Builder("input", CompiledVariable("input")).build()
+          CompiledArgument.Builder("input").value(CompiledVariable("input")).build()
         ))
         .selections(__object)
         .build(),
@@ -76,14 +76,14 @@ public object TestQuerySelections {
           name = "scalar",
           type = renamedScalar.type
         ).arguments(listOf(
-          CompiledArgument.Builder("scalar", CompiledVariable("scalar")).build()
+          CompiledArgument.Builder("scalar").value(CompiledVariable("scalar")).build()
         ))
         .build(),
         CompiledField.Builder(
           name = "enum",
           type = renamedEnum.type
         ).arguments(listOf(
-          CompiledArgument.Builder("enum", CompiledVariable("enum")).build()
+          CompiledArgument.Builder("enum").value(CompiledVariable("enum")).build()
         ))
         .build()
       )

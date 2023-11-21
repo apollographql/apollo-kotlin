@@ -11,6 +11,7 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
@@ -79,19 +80,35 @@ internal class SelectionSetsBuilder(
     val fieldDefinition = definitionFromScope(schema, parentType)!!
 
     val selectionSetName = resolveNameClashes(usedNames, name)
+
+    /**
+     * Pull all arguments from the schema as we need them to compute the cache key
+     */
+    val typeDefinition = schema.typeDefinition(parentType)
+    val actualArguments = fieldDefinition.arguments.map { schemaArgument ->
+      val operationArgument = arguments.firstOrNull { it.name == schemaArgument.name }
+
+      val keyArgs = typeDefinition.keyArgs(name, schema)
+      val paginationArgs = typeDefinition.paginationArgs(name, schema)
+
+      /**
+       * When passed explicitly, the argument values are coerced (but not their default value)
+       */
+      val userValue = operationArgument?.value?.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
+      IrArgument(
+          name = schemaArgument.name,
+          value = (userValue ?: schemaArgument.defaultValue)?.toIrValue(),
+          isKey =  keyArgs.contains(schemaArgument.name),
+          isPagination = paginationArgs.contains(schemaArgument.name)
+      )
+    }
+
     return WalkResult(
         self = IrField(
             name = name,
             alias = alias,
             type = fieldDefinition.type.toIrTypeRef(),
-            arguments = arguments.let { gqlArguments ->
-              val typeDefinition = schema.typeDefinition(parentType)
-              val keyArgs = typeDefinition.keyArgs(name, schema)
-              val paginationArgs = typeDefinition.paginationArgs(name, schema)
-              gqlArguments.map { gqlArgument ->
-                gqlArgument.toIr(keyArgs, paginationArgs)
-              }
-            },
+            arguments = actualArguments,
             condition = expression,
             selectionSetName = if (selections.isNotEmpty()) selectionSetName else null
         ),

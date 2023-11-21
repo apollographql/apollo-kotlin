@@ -28,7 +28,7 @@ public object CatQuerySelections {
           name = "search",
           type = Cat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("filter", CompiledVariable("filter")).build()
+          CompiledArgument.Builder("filter").value(CompiledVariable("filter")).build()
         ))
         .selections(__search)
         .build(),

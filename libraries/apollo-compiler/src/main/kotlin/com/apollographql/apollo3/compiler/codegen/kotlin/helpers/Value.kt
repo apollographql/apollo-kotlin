@@ -1,15 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLFloatValue
-import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLListValue
-import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLObjectValue
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLValue
-import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrEnumValue
@@ -41,12 +31,35 @@ private fun IrObjectValue.codeBlock(): CodeBlock {
   return fields.map { it.name to it.value.codeBlock() }.toMapInitializerCodeblock(true)
 }
 
+/**
+ * Converts an [IrValue] to its equivalent Kotlin expression as in `ApolloJsonElement`
+ * One exception is variables which get mapped to `CompiledVariable`
+ */
 internal fun IrValue.codeBlock(): CodeBlock {
   return when (this) {
     is IrBooleanValue -> CodeBlock.of("%L", value)
-    is IrEnumValue -> CodeBlock.of("%S", value) // FIXME
-    is IrFloatValue -> CodeBlock.of("%L", value)
-    is IrIntValue -> CodeBlock.of("%L", value)
+    // Enums are serialized to JSON String
+    is IrEnumValue -> CodeBlock.of("%S", value)
+    is IrIntValue -> {
+      val asInt = value.toIntOrNull()
+      if (asInt != null) {
+        // The value fits in kotlin Int
+        CodeBlock.of("%L", value)
+      } else {
+        CodeBlock.of("%T(%S)", KotlinSymbols.JsonNumber, value)
+      }
+    }
+
+    is IrFloatValue -> {
+      val asDouble = value.toIntOrNull()
+      if (asDouble != null) {
+        // The value fits in a kotlin Double
+        CodeBlock.of("%L", value)
+      } else {
+        CodeBlock.of("%T(%S)", KotlinSymbols.JsonNumber, value)
+      }
+    }
+
     is IrListValue -> codeBlock()
     IrNullValue -> CodeBlock.of("null")
     is IrObjectValue -> codeBlock()

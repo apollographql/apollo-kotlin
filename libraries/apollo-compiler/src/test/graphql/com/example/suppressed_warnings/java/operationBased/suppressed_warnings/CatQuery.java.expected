@@ -108,8 +108,8 @@ public class CatQuery implements Query<CatQuery.Data> {
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
-    CatQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
+      boolean withDefaultValues) throws IOException {
+    CatQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withDefaultValues);
   }
 
   @Override

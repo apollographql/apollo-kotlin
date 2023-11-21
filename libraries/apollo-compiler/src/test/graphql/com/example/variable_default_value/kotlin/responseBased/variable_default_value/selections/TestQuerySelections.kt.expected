@@ -27,7 +27,8 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("episode")).build()
+          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
         ))
         .selections(__hero)
         .build()

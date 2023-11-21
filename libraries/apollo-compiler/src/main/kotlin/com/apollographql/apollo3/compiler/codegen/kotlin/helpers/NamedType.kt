@@ -22,10 +22,13 @@ internal class NamedType(
     val deprecationReason: String?,
     val optInFeature: String?,
     val type: IrType,
-    // Relevant only for variables
-    val defaultValue: IrValue?,
 )
 
+/**
+ * @param withDefaultArguments whether or not to codegen Absent for missing arguments.
+ * - true for clients
+ * - false for servers
+ */
 internal fun NamedType.toParameterSpec(context: KotlinContext, withDefaultArguments: Boolean): ParameterSpec {
   return ParameterSpec
       .builder(
@@ -92,7 +95,6 @@ internal fun IrInputField.toNamedType() = NamedType(
     description = description,
     deprecationReason = deprecationReason,
     optInFeature = optInFeature,
-    defaultValue = null,
 )
 
 internal fun IrVariable.toNamedType() = NamedType(
@@ -101,5 +103,4 @@ internal fun IrVariable.toNamedType() = NamedType(
     description = null,
     deprecationReason = null,
     optInFeature = null,
-    defaultValue = defaultValue,
 )

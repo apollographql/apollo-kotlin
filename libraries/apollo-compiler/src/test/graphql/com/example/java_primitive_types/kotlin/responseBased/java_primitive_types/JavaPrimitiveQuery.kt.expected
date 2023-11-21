@@ -39,10 +39,10 @@ public data class JavaPrimitiveQuery(
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     JavaPrimitiveQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withBooleanDefaultValues)
+        withDefaultValues)
   }
 
   override fun adapter(): CompositeAdapter<Data> = JavaPrimitiveQuery_ResponseAdapter.Data.obj()

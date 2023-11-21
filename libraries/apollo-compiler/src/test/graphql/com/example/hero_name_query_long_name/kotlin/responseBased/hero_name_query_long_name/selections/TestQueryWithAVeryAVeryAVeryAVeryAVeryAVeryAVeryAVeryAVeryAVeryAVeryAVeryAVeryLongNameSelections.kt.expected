@@ -31,7 +31,8 @@ public object
           type = Character.type
         ).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
         .arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build()
+          CompiledArgument.Builder("episode").value(CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
         ))
         .selections(__hero)
         .build()

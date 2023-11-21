@@ -107,8 +107,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
-    TestQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
+      boolean withDefaultValues) throws IOException {
+    TestQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withDefaultValues);
   }
 
   @Override

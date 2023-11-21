@@ -21,7 +21,7 @@ public object SpreadMultipleWithDeferAndInclude_VariablesAdapter {
     writer: JsonWriter,
     `value`: SpreadMultipleWithDeferAndInclude,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("cond1")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.cond1)

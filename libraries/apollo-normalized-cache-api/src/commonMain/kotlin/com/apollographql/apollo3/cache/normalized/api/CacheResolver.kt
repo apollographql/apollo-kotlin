@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.normalized.api
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.resolveVariables
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlin.jvm.JvmSuppressWildcards
@@ -177,9 +176,7 @@ object FieldPolicyCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val keyArgsValues = field.arguments.filter { it.isKey }.map {
-      resolveVariables(it.value, variables).toString()
-    }
+    val keyArgsValues = field.resolveArguments(variables) {it.isKey }.values.map { it.toString() }
 
     if (keyArgsValues.isNotEmpty()) {
       return CacheKey(field.type.rawType().name, keyArgsValues)

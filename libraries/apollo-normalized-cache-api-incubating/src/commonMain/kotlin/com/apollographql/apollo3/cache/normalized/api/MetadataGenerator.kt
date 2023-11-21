@@ -15,11 +15,11 @@ class MetadataGeneratorContext(
     val variables: Executable.Variables,
 ) {
   fun argumentValue(argumentName: String): Any? {
-    return field.resolveArgument(argumentName, variables)
+    return field.resolveArgument(argumentName, variables).getOrNull()
   }
 
   fun allArgumentValues(): Map<String, Any?> {
-    return field.arguments.associate { it.name to argumentValue(it.name) }
+    return field.resolveArguments(variables) { !it.isPagination }
   }
 }
 

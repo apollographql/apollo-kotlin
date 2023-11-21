@@ -129,7 +129,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
+      boolean withDefaultValues) throws IOException {
     // This operation doesn't have any variable
   }
 

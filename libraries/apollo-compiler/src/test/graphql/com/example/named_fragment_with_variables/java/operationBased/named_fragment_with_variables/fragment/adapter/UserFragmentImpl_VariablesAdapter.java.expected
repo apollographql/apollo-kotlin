@@ -16,8 +16,7 @@ public enum UserFragmentImpl_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, UserFragmentImpl value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("size");
     Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size);

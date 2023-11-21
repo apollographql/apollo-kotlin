@@ -22,7 +22,7 @@ public object LoginBarber_VariablesAdapter {
     writer: JsonWriter,
     `value`: LoginBarber,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("input")
     Login_InputAdapter.obj().toJson(writer, customScalarAdapters, value.input)

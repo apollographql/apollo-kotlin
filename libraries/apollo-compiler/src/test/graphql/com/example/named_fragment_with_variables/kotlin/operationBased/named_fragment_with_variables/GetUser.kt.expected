@@ -36,10 +36,10 @@ public data class GetUser(
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withBooleanDefaultValues)
+        withDefaultValues)
   }
 
   override fun adapter(): CompositeAdapter<Data> = GetUser_ResponseAdapter.Data.obj(true)

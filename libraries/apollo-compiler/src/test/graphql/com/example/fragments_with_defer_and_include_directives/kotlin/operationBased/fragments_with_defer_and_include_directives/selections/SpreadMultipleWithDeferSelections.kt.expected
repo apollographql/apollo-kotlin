@@ -5,6 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -36,7 +37,11 @@ public object SpreadMultipleWithDeferSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(__hero)
+        ).arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
+        .selections(__hero)
         .build()
       )
 }

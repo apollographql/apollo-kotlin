@@ -9,19 +9,7 @@ import com.apollographql.apollo3.exception.JsonDataException
 import kotlin.jvm.JvmOverloads
 
 /**
- * A [JsonReader] that can consumes Kotlin values as Json
- *
- * values should be any of:
- * - String
- * - Int
- * - Double
- * - Long
- * - JsonNumber
- * - null
- * - Map<String, Any?> where values are any of these values recursively
- * - List<Any?> where values are any of these values recursively
- *
- * Anything else is undefined
+ * A [JsonReader] that can consumes [ApolloJsonElement] values as Json
  *
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  *
@@ -423,3 +411,22 @@ constructor(
     }
   }
 }
+
+/**
+ * A typealias for a type-unsafe Kotlin representation of JSON. This typealias is
+ * mainly for internal documentation purposes and low-level manipulations and should
+ * generally be avoided in application code.
+ *
+ * [ApolloJsonElement] can be any of:
+ * - String
+ * - Int
+ * - Double
+ * - Long
+ * - JsonNumber
+ * - null
+ * - Map<String, ApolloJsonElement> where values are any of these values recursively
+ * - List<ApolloJsonElement> where values are any of these values recursively
+ *
+ * Anything else is undefined
+ */
+typealias ApolloJsonElement = Any?

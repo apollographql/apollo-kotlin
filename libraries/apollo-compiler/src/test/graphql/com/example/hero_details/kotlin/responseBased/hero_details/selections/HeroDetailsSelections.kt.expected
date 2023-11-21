@@ -5,6 +5,7 @@
 //
 package com.example.hero_details.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
@@ -57,7 +58,11 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(__friendsConnection)
+        ).arguments(listOf(
+          CompiledArgument.Builder("after").build(),
+          CompiledArgument.Builder("first").build()
+        ))
+        .selections(__friendsConnection)
         .build()
       )
 
@@ -65,7 +70,11 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(__hero)
+        ).arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
+        .selections(__hero)
         .build()
       )
 }

@@ -32,23 +32,45 @@ public object TestQuerySelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review", mapOf(
+          CompiledArgument.Builder("episode").value(CompiledVariable("ep")).build(),
+          CompiledArgument.Builder("review").value(mapOf(
             "stars" to 5,
+            "nullableIntFieldWithDefaultValue" to 10,
+            "favoriteColor" to mapOf(
+              "red" to 1,
+              "green" to 0,
+              "blue" to 1,
+              "enumWithDefaultValue" to "new"
+            ),
+            "enumWithDefaultValue" to "JEDI",
+            "nonNullableEnumWithDefaultValue" to "JEDI",
+            "listOfCustomScalar" to listOf(
+              "1984-06-21",
+              "1984-11-21"
+            ),
+            "customScalar" to "1984-06-21",
             "listOfEnums" to listOf(
               "JEDI",
               "EMPIRE",
               "NEWHOPE"
+            ),
+            "listOfInt" to listOf(
+              1,
+              2,
+              3
+            ),
+            "listOfString" to listOf(
+              "test1",
+              "test2",
+              "test3"
             ),
             "listOfStringNonOptional" to listOf(
               "1",
               "2",
               "3"
             ),
-            "favoriteColor" to mapOf(
-              "red" to 1,
-              "blue" to 1
-            )
+            "listOfInputTypes" to emptyList<Nothing>(),
+            "booleanWithDefaultValue" to true
           )).build()
         ))
         .selections(__createReview)

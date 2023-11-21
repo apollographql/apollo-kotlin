@@ -5,6 +5,7 @@
 //
 package com.example.variable_default_value.adapter;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
@@ -18,12 +19,15 @@ public enum TestQuery_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.episode instanceof Optional.Present) {
       writer.name("episode");
       new ApolloOptionalAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, CustomScalarAdapters.Empty, value.episode);
+    }
+    else if (withDefaultValues) {
+      writer.name("episode");
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, "JEDI");
     }
   }
 }

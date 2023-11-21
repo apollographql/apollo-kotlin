@@ -20,7 +20,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
-        ).build()
+        ).arguments(listOf(
+          CompiledArgument.Builder("unit").value("METER").build()
+        ))
+        .build()
       )
 
   private val __nonOptionalHero: List<CompiledSelection> = listOf(
@@ -44,7 +47,7 @@ public object TestQuerySelections {
           name = "nonOptionalHero",
           type = Character.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", "EMPIRE").build()
+          CompiledArgument.Builder("episode").value("EMPIRE").build()
         ))
         .selections(__nonOptionalHero)
         .build()

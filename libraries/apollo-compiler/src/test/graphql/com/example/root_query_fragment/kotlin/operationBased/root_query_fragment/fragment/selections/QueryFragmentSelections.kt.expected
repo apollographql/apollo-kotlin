@@ -5,6 +5,7 @@
 //
 package com.example.root_query_fragment.fragment.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
@@ -28,7 +29,11 @@ public object QueryFragmentSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(__hero)
+        ).arguments(listOf(
+          CompiledArgument.Builder("episode").build(),
+          CompiledArgument.Builder("listOfListOfStringArgs").build()
+        ))
+        .selections(__hero)
         .build()
       )
 }

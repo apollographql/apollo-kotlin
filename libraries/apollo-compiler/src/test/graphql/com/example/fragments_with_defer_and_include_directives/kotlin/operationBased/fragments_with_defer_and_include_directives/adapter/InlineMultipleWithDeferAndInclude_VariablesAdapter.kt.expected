@@ -21,7 +21,7 @@ public object InlineMultipleWithDeferAndInclude_VariablesAdapter {
     writer: JsonWriter,
     `value`: InlineMultipleWithDeferAndInclude,
     customScalarAdapters: CustomScalarAdapters,
-    withBooleanDefaultValues: Boolean,
+    withDefaultValues: Boolean,
   ) {
     writer.name("cond1")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.cond1)

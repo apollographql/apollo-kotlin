@@ -25,7 +25,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("unit", "FOOT").build()
+          CompiledArgument.Builder("unit").value("FOOT").build()
         ))
         .build()
       )
@@ -35,20 +35,45 @@ public object TestQuerySelections {
           name = "heroWithReview",
           type = Human.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("episode")).build(),
-          CompiledArgument.Builder("listOfInts", listOf(
+          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build(),
+          CompiledArgument.Builder("listOfInts").value(listOf(
             CompiledVariable("stars"),
             CompiledVariable("stars")
           )).build(),
-          CompiledArgument.Builder("review", mapOf(
+          CompiledArgument.Builder("review").value(mapOf(
             "stars" to CompiledVariable("stars"),
+            "nullableIntFieldWithDefaultValue" to 10,
             "favoriteColor" to mapOf(
               "red" to 0,
               "green" to CompiledVariable("greenValue"),
-              "blue" to 0
+              "blue" to 0,
+              "enumWithDefaultValue" to "new"
             ),
-            "booleanNonOptional" to false,
-            "listOfStringNonOptional" to emptyList<Nothing>()
+            "enumWithDefaultValue" to "JEDI",
+            "nonNullableEnumWithDefaultValue" to "JEDI",
+            "listOfCustomScalar" to listOf(
+              "1984-06-21",
+              "1984-11-21"
+            ),
+            "customScalar" to "1984-06-21",
+            "listOfEnums" to listOf(
+              "NEWHOPE",
+              "EMPIRE"
+            ),
+            "listOfInt" to listOf(
+              1,
+              2,
+              3
+            ),
+            "listOfString" to listOf(
+              "test1",
+              "test2",
+              "test3"
+            ),
+            "listOfStringNonOptional" to emptyList<Nothing>(),
+            "listOfInputTypes" to emptyList<Nothing>(),
+            "booleanWithDefaultValue" to true,
+            "booleanNonOptional" to false
           )).build()
         ))
         .selections(__heroWithReview)

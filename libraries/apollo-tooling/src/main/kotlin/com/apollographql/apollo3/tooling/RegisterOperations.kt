@@ -180,7 +180,7 @@ object RegisterOperations {
     val hiddenLiterals = gqlDocument.transform {
       when (it) {
         is GQLIntValue -> {
-          TransformResult.Replace(it.copy(value = 0))
+          TransformResult.Replace(it.copy(value = "0"))
         }
 
         is GQLFloatValue -> {
@@ -192,7 +192,7 @@ object RegisterOperations {
           TransformResult.Replace(
               GQLIntValue(
                   sourceLocation = it.sourceLocation,
-                  value = 0
+                  value = "0"
               )
           )
         }

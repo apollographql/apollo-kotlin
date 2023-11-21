@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
 import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.api.ObjectCompositeAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -22,8 +23,7 @@ public enum MyQuery_VariablesAdapter {
   INSTANCE;
 
   public void serializeVariables(JsonWriter writer, MyQuery value,
-      CustomScalarAdapters customScalarAdapters, boolean withBooleanDefaultValues) throws
-      IOException {
+      CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
@@ -35,6 +35,10 @@ public enum MyQuery_VariablesAdapter {
       writer.name("nonNullableIntWithDefault");
       new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
     }
+    else if (withDefaultValues) {
+      writer.name("nonNullableIntWithDefault");
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, 4);
+    }
     if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");
       new ApolloOptionalCompositeAdapter<>(new ApolloOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, value.nullableInput, adapterContext);
@@ -44,6 +48,10 @@ public enum MyQuery_VariablesAdapter {
     if (value.nonNullableInputWithDefault instanceof Optional.Present) {
       writer.name("nonNullableInputWithDefault");
       new ApolloOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, value.nonNullableInputWithDefault, adapterContext);
+    }
+    else if (withDefaultValues) {
+      writer.name("nonNullableInputWithDefault");
+      Adapters.NullableAnyAdapter.toJson(writer, CustomScalarAdapters.Empty, new ImmutableMapBuilder().put("nonNullableInt", 4).build());
     }
   }
 }

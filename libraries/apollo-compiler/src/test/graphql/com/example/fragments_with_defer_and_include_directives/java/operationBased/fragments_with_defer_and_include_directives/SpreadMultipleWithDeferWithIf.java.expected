@@ -122,8 +122,8 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
   @Override
   public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      boolean withBooleanDefaultValues) throws IOException {
-    SpreadMultipleWithDeferWithIf_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withBooleanDefaultValues);
+      boolean withDefaultValues) throws IOException {
+    SpreadMultipleWithDeferWithIf_VariablesAdapter.INSTANCE.serializeVariables(writer, this, customScalarAdapters, withDefaultValues);
   }
 
   @Override
