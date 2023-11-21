@@ -120,17 +120,17 @@ object SchemaDownloader {
   }
 
   /**
-   * Get an introspection query that is compatible with the given [capabilities], as a JSON string.
+   * Get an introspection query that is compatible with the given [features], as a JSON string.
    */
   @ApolloExperimental
-  fun getIntrospectionQuery(capabilities: Set<IntrospectionCapability>): String {
+  fun getIntrospectionQuery(features: Set<GraphQLFeature>): String {
     val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
     val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
     val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
         definitions = baseIntrospectionGql.definitions
-            .reworkIntrospectionQuery(capabilities)
-            .reworkFullTypeFragment(capabilities)
-            .reworkInputValueFragment(capabilities)
+            .reworkIntrospectionQuery(features)
+            .reworkFullTypeFragment(features)
+            .reworkInputValueFragment(features)
     )
     return introspectionGql.toUtf8()
   }
@@ -145,8 +145,8 @@ object SchemaDownloader {
         headers = headers,
         insecure = insecure,
     )
-    val capabilities = preIntrospectionData.getCapabilities()
-    val introspectionQuery = getIntrospectionQuery(capabilities)
+    val features = preIntrospectionData.getFeatures()
+    val introspectionQuery = getIntrospectionQuery(features)
     return SchemaHelper.executeIntrospectionQuery(
         introspectionQuery = introspectionQuery,
         endpoint = endpoint,

@@ -173,15 +173,15 @@ class DownloadSchemaTests {
   fun `download schema is never up-to-date`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val metaSchemaMockResponse = MockResponse().setBody(preIntrospectionResponse)
+      val preIntrospectionMockResponse = MockResponse().setBody(preIntrospectionResponse)
       val schemaMockResponse = MockResponse().setBody(schemaString1)
-      mockServer.enqueue(metaSchemaMockResponse)
+      mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(schemaMockResponse)
 
       var result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
-      mockServer.enqueue(metaSchemaMockResponse)
+      mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(schemaMockResponse)
 
       // Since the task does not declare any output, it should never be up-to-date
@@ -210,14 +210,14 @@ class DownloadSchemaTests {
 
       val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
-      val metaSchemaMockResponse = MockResponse().setBody(preIntrospectionResponse)
-      mockServer.enqueue(metaSchemaMockResponse)
+      val preIntrospectionMockResponse = MockResponse().setBody(preIntrospectionResponse)
+      mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
       assertEquals(schemaString1, schemaFile.readText())
 
-      mockServer.enqueue(metaSchemaMockResponse)
+      mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString2))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
