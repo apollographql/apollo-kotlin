@@ -18,7 +18,7 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
       value = this,
       expectedType = expectedType,
       hasLocationDefaultValue = false,
-      isOneOfInputObject = false,
+      isOneOfInputField = false,
   ) {
     // ignore variable usages
   }
@@ -40,7 +40,7 @@ fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema)
       value = this,
       expectedType = expectedType,
       hasLocationDefaultValue = false,
-      isOneOfInputObject = false,
+      isOneOfInputField = false,
   ) {
     scope.issues.add(it.constContextError())
   }

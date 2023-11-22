@@ -268,7 +268,7 @@ private fun ValidationScope.validateArgument(
       value = argument.value,
       expectedType = schemaArgument.type,
       hasLocationDefaultValue = schemaArgument.defaultValue != null,
-      isOneOfInputObject = false,
+      isOneOfInputField = false,
       registerVariableUsage = registerVariableUsage
   )
 }
@@ -331,7 +331,7 @@ internal fun ValidationScope.validateVariable(
     return
   }
 
-  if (variableUsage.isOneOfInputObject && variableDefinition.type !is GQLNonNullType) {
+  if (variableUsage.isOneOfInputField && variableDefinition.type !is GQLNonNullType) {
     registerIssue(
         message = "Variable `${variable.name}` of type `${variableDefinition.type.pretty()}` used in a OneOf input type must be a non-null type",
         sourceLocation = variable.sourceLocation

@@ -1007,8 +1007,9 @@ public final class com/apollographql/apollo3/ast/TransformResult$Replace : com/a
 }
 
 public final class com/apollographql/apollo3/ast/UnknownDirective : com/apollographql/apollo3/ast/GraphQLValidationIssue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Z)V
 	public fun getMessage ()Ljava/lang/String;
+	public final fun getRequireDefinition ()Z
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
@@ -1037,12 +1038,11 @@ public final class com/apollographql/apollo3/ast/VariableDeferLabel : com/apollo
 }
 
 public final class com/apollographql/apollo3/ast/VariableUsage {
-	public fun <init> (Lcom/apollographql/apollo3/ast/GQLVariableValue;Lcom/apollographql/apollo3/ast/GQLType;Z)V
 	public fun <init> (Lcom/apollographql/apollo3/ast/GQLVariableValue;Lcom/apollographql/apollo3/ast/GQLType;ZZ)V
 	public final fun getHasLocationDefaultValue ()Z
 	public final fun getLocationType ()Lcom/apollographql/apollo3/ast/GQLType;
 	public final fun getVariable ()Lcom/apollographql/apollo3/ast/GQLVariableValue;
-	public final fun isOneOfInputObject ()Z
+	public final fun isOneOfInputField ()Z
 }
 
 public final class com/apollographql/apollo3/ast/internal/SchemaValidationScopeKt {

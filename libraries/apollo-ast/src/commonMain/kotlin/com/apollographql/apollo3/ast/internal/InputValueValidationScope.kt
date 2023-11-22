@@ -38,7 +38,7 @@ internal fun ValidationScope.validateAndCoerceValue(
     value: GQLValue,
     expectedType: GQLType,
     hasLocationDefaultValue: Boolean,
-    isOneOfInputObject: Boolean,
+    isOneOfInputField: Boolean,
     registerVariableUsage: (VariableUsage) -> Unit,
 ): GQLValue {
   if (value is GQLVariableValue) {
@@ -47,7 +47,7 @@ internal fun ValidationScope.validateAndCoerceValue(
             variable = value,
             locationType = expectedType,
             hasLocationDefaultValue = hasLocationDefaultValue,
-            isOneOfInputObject = isOneOfInputObject,
+            isOneOfInputField = isOneOfInputField,
         )
     )
 
@@ -69,7 +69,7 @@ internal fun ValidationScope.validateAndCoerceValue(
           expectedType = expectedType.type,
           hasLocationDefaultValue = hasLocationDefaultValue,
           registerVariableUsage = registerVariableUsage,
-          isOneOfInputObject = isOneOfInputObject,
+          isOneOfInputField = isOneOfInputField,
       )
     }
 
@@ -93,7 +93,7 @@ internal fun ValidationScope.validateAndCoerceValue(
                 value = it,
                 expectedType = expectedType.type,
                 hasLocationDefaultValue = false,
-                isOneOfInputObject = isOneOfInputObject,
+                isOneOfInputField = isOneOfInputField,
                 registerVariableUsage = registerVariableUsage,
             )
           }
@@ -189,7 +189,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
                 value = inputValueDefinition.defaultValue,
                 expectedType = inputValueDefinition.type,
                 hasLocationDefaultValue = false,
-                isOneOfInputObject = false,
+                isOneOfInputField = false,
                 registerVariableUsage = registerVariableUsage
             )
         )
@@ -225,7 +225,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
             value = field.value,
             expectedType = inputValueDefinition.type,
             hasLocationDefaultValue = inputValueDefinition.defaultValue != null,
-            isOneOfInputObject = isOneOfInputObject,
+            isOneOfInputField = isOneOfInputObject,
             registerVariableUsage = registerVariableUsage,
         )
     )
