@@ -82,7 +82,7 @@ interface MockServer : Closeable {
     private var handlePings: Boolean? = null
     private var tcpServer: TcpServer? = null
     private var listener: Listener? = null
-    private var customPort: Int = 0
+    private var port: Int? = null
 
     fun handler(handler: MockServerHandler) = apply {
       this.handler = handler
@@ -92,19 +92,23 @@ interface MockServer : Closeable {
       this.handlePings = handlePings
     }
 
-    fun tcpServer(tcpServer: TcpServer, port: Int = 0) = apply {
+    fun tcpServer(tcpServer: TcpServer) = apply {
       this.tcpServer = tcpServer
-      this.customPort = port
     }
 
+    fun port(port: Int) = apply {
+      this.port = port
+    }
 
     fun listener(listener: Listener) = apply {
       this.listener = listener
     }
-
-
+    
     fun build(): MockServer {
-      val server = tcpServer ?: TcpServer(customPort)
+      check (tcpServer == null || port == null) {
+        "It is an error to set both tcpServer and port"
+      }
+      val server = tcpServer ?: TcpServer(port ?: 0)
       return MockServerImpl(
           handler ?: QueueMockServerHandler(),
           handlePings ?: true,
@@ -254,11 +258,11 @@ fun MockServer(port: Int = 0): MockServer = MockServerImpl(
 
 @Deprecated("Use MockServer.Builder() instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-fun MockServer(handler: MockServerHandler, port: Int = 0): MockServer =
+fun MockServer(handler: MockServerHandler): MockServer =
     MockServerImpl(
         handler,
         true,
-        TcpServer(port),
+        TcpServer(0),
         null)
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
