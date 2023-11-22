@@ -1,0 +1,183 @@
+---
+title: Handling nullability and errors
+description: Make your queries even more typesafe
+---
+
+# Nullability in GraphQL
+
+GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response:
+
+```graphql
+type User {
+  id: ID!
+  # name is nullable to account for possible errors but in practice this happens only in error cases
+  name: String
+  avatarUrl: String
+}
+
+query GetUser {
+  user {
+    id
+    name
+    avatarUrl
+  }
+}
+```
+
+In the exceptional case that an error happens, the server returns the following response:
+
+```json
+{
+  "data": {
+    "user": {
+      "id": "1001",
+      "name": null,
+      "avatarUrl": "https://example.com/pic.png"
+    }
+  },
+  "errors": [
+    {
+      "message": "Cannot resolve user.name",
+      "path": ["user", "name"]
+    }
+  ]
+}
+```
+
+GraphQL best practices [recommend using nullable types](https://graphql.org/learn/best-practices/#nullability) by default for fields. This makes sense in distributed environments where microservices might fail and some data fail to resolve. This behaviour is robust by default: if part of your query fails, you still get the rest of the data.
+
+This default has one major drawback that it requires to carefully check every field when used in your UI. Sometimes it's not clear how to handle the different cases:
+
+```kotlin
+@Composable
+fun User(user: GetUserQuery.User) {
+  if (user.name != null) {
+    Text(text = user.name)
+  } else {
+    // What to do here? Is it an error, is it a true null
+  }
+}
+```
+
+To help deal with those issues, Apollo Kotlin offers error aware parsing, `@catch` and `@nullOnlyOnError` 
+
+# Error aware parsing
+
+With error aware parsing, the errors are detected at parsing time so you don't have to look them up in the `errors` array. In order to opt-in error aware parsing, create a `extra.graphqls` file next to your schema and link the nullability directives:
+
+```graphql
+# opt-in error aware parsing
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@nullOnlyOnError", "@catch"])
+```
+
+Once error aware parsing is enabled, the parsing stops at the first GraphQL error and the whole query is failed. In the example above:
+
+```json
+{
+  "data": {
+    "user": {
+      "id": "1001",
+      "name": null,
+      "avatarUrl": "https://example.com/pic.png"
+    }
+  },
+  "errors": [
+    {
+      "message": "Cannot resolve user.name",
+      "path": ["user", "name"]
+    }
+  ]
+}
+```
+
+`response.data` is null and `response.exception` is an instance of `ApolloGraphQLException`:
+
+```kotlin
+println(response.data) // null
+println(response.exception) // ApolloGraphQLException 
+```
+
+This default makes it easy to handle errors as they are all handled at parsing time. You are guaranteed that any `null` in `response.data` is a semantic null and not an error.
+
+# Handling partial data with `@catch`
+
+In some cases, you might want to display the data returned from the server, even if it is partial. 
+
+To do so, catch GraphQL errors using the `@catch` directive:
+
+```graphql
+query GetUser {
+  user {
+    id
+    name @catch
+    avatarUrl
+  }
+}
+```
+
+Instead of failing the whole query, the `name` field is now generated as a `FieldResult<String?>` class that can contain either a nullable value or an error:
+
+```kotlin
+println(response.data?.user?.name?.valueOrNull) // null
+println(response.data?.user?.name?.errorOrNull?.message) // "Cannot resolve user.name"
+// partial data is available
+println(response.data?.user?.id) // "42"
+// exception is now null
+println(response.exception) // null
+```
+
+By default `@catch` applies to all list levels. If you need to apply it to a given level, use the `level` argument:
+
+```graphql
+query GetUser {
+  user {
+    # socialLinks fails the operation on error 
+    # socialLinks[0], socialLinks[1], socialLinks[2], etc... are mapped to FieldResult classes
+    socialLinks @catch(level: 1)
+  }
+}
+```
+
+# `@nullOnlyOnError`
+
+Even with automatic detection of errors and handling of partial data like described above, you might still have to check for  `null` in your UI code. This is because GraphQL by default uses nullable fields. From the [GraphQL best practices](https://graphql.org/learn/best-practices/#nullability):
+
+```
+However, in a GraphQL type system, every field is nullable by default. This is because there are many things that can go awry in a networked service backed by databases and other services. 
+```
+
+This makes sense because JSON cannot encode errors and it's easier to have a `data` field that matches the schema. But Kotlin can encode errors. For a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
+
+In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@nullOnlyOnError` to `extra.graphqls` file:
+
+```graphql
+# extra.graphqls
+# make User.name nullable only on error
+extend type User @nullOnlyOnError(field: "name")
+```
+
+`name` is now a non-null Kotlin types:
+
+```kotlin
+class User(
+    val id: String,
+    // name is non-null here
+    val name: String,
+    val avatarUrl: String?,
+)
+```
+
+If, by any chance, an error happens that you still want to handle on that field, you can use `@catch` to map name to a `FieldResult<String>` property containing a non-null value or an error.
+
+```kotlin
+user.name.valueOrNull // "Luke Skywalker"
+user.name.errorOrNull // null
+```
+
+Similarly to `@catch`, `@nullOnlyOnError` supports a `level` argument:
+
+```graphql
+# User.friends is generated a nullable
+# User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
+extend type User @nullOnlyOnError(field: "friends", level: 1)
+```
