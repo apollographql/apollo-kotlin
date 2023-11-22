@@ -1013,9 +1013,8 @@ public final class com/apollographql/apollo3/ast/TransformResult$Replace : com/a
 }
 
 public final class com/apollographql/apollo3/ast/UnknownDirective : com/apollographql/apollo3/ast/GraphQLValidationIssue {
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Z)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
-	public final fun getRequireDefinition ()Z
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 
 /**
  * All the issues that can be collected while analyzing a graphql document
@@ -38,11 +39,14 @@ class ParsingError(override val message: String, override val sourceLocation: So
  * In some cases (e.g. `@oneOf`) we want to enforce that the directive is defined. In that case [requireDefinition] is true and the issue
  * will be raised as an error rather than warning.
  */
-class UnknownDirective(
+class UnknownDirective @ApolloInternal constructor(
     override val message: String,
     override val sourceLocation: SourceLocation?,
+    @ApolloInternal
     val requireDefinition: Boolean,
-) : GraphQLValidationIssue
+) : GraphQLValidationIssue {
+  constructor(message: String, sourceLocation: SourceLocation?) : this(message, sourceLocation, false)
+}
 
 /**
  * The directive definition is inconsistent with the expected one.
