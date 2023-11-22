@@ -12,6 +12,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.UnexpectedDirectiveDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
@@ -440,7 +441,7 @@ object ApolloCompiler {
       addJvmOverloads: Boolean = defaultAddJvmOverloads,
       requiresOptInAnnotation: String = defaultRequiresOptInAnnotation,
       compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
-      generateInputBuilders: Boolean = false
+      generateInputBuilders: Boolean = false,
   ): CodegenMetadata {
     /**
      * Inject all built-in scalars
@@ -552,15 +553,16 @@ private enum class Severity {
 internal class IssueGroup(
     val ignored: List<Issue>,
     val warnings: List<Issue>,
-    val errors: List<Issue>
+    val errors: List<Issue>,
 )
 
-internal fun List<Issue>.group(warnOnDeprecatedUsages: Boolean,
-                              fieldsOnDisjointTypesMustMerge: Boolean,
+internal fun List<Issue>.group(
+    warnOnDeprecatedUsages: Boolean,
+    fieldsOnDisjointTypesMustMerge: Boolean,
 ): IssueGroup {
-  val ignored= mutableListOf<Issue>()
-  val warnings= mutableListOf<Issue>()
-  val errors= mutableListOf<Issue>()
+  val ignored = mutableListOf<Issue>()
+  val warnings = mutableListOf<Issue>()
+  val errors = mutableListOf<Issue>()
   val apolloDirectives = apolloDefinitions("v0.1").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
 
   forEach {
@@ -574,10 +576,11 @@ internal fun List<Issue>.group(warnOnDeprecatedUsages: Boolean,
        * Because some users might have added the apollo directive to their schema, we just let that through for now
        */
       is DirectiveRedefinition -> if (it.name in apolloDirectives) Severity.None else Severity.Warning
+      is UnexpectedDirectiveDefinition -> Severity.Warning
       else -> Severity.Error
     }
 
-    when(severity) {
+    when (severity) {
       Severity.None -> ignored.add(it)
       Severity.Warning -> warnings.add(it)
       Severity.Error -> errors.add(it)

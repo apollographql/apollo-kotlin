@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.DirectiveRedefinition
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLField
@@ -33,6 +34,7 @@ import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
+import com.apollographql.apollo3.ast.UnexpectedDirectiveDefinition
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
@@ -125,6 +127,12 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
          */
         issues.add(OtherValidationIssue("Found an executable definition. Schemas should only contain type system definitions.", gqlDefinition.sourceLocation))
       }
+    }
+  }
+
+  directiveDefinitions["oneOf"]?.let {
+    if (it.locations != listOf(GQLDirectiveLocation.INPUT_OBJECT) || it.arguments.isNotEmpty() || it.repeatable) {
+      issues.add(UnexpectedDirectiveDefinition("oneOf", "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
     }
   }
 

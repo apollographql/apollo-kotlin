@@ -1006,6 +1006,12 @@ public final class com/apollographql/apollo3/ast/TransformResult$Replace : com/a
 	public final fun getNewNode ()Lcom/apollographql/apollo3/ast/GQLNode;
 }
 
+public final class com/apollographql/apollo3/ast/UnexpectedDirectiveDefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/UnknownDirective : com/apollographql/apollo3/ast/GraphQLValidationIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Z)V
 	public fun getMessage ()Ljava/lang/String;
