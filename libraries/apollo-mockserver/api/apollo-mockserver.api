@@ -53,7 +53,8 @@ public final class com/apollographql/apollo3/mockserver/MockServer$Builder {
 	public final fun handlePings (Z)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
 	public final fun handler (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
 	public final fun listener (Lcom/apollographql/apollo3/mockserver/MockServer$Listener;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
-	public final fun tcpServer (Lcom/apollographql/apollo3/mockserver/TcpServer;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
+	public final fun tcpServer (Lcom/apollographql/apollo3/mockserver/TcpServer;I)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
+	public static synthetic fun tcpServer$default (Lcom/apollographql/apollo3/mockserver/MockServer$Builder;Lcom/apollographql/apollo3/mockserver/TcpServer;IILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockServer$Builder;
 }
 
 public abstract interface class com/apollographql/apollo3/mockserver/MockServer$Listener {
@@ -67,7 +68,10 @@ public abstract interface class com/apollographql/apollo3/mockserver/MockServerH
 
 public final class com/apollographql/apollo3/mockserver/MockServerKt {
 	public static final fun MockServer ()Lcom/apollographql/apollo3/mockserver/MockServer;
-	public static final fun MockServer (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static final fun MockServer (I)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static final fun MockServer (Lcom/apollographql/apollo3/mockserver/MockServerHandler;I)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static synthetic fun MockServer$default (IILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static synthetic fun MockServer$default (Lcom/apollographql/apollo3/mockserver/MockServerHandler;IILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockServer;
 	public static final fun awaitRequest-8Mi8wO0 (Lcom/apollographql/apollo3/mockserver/MockServer;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun awaitRequest-8Mi8wO0$default (Lcom/apollographql/apollo3/mockserver/MockServer;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JI)V
@@ -77,6 +81,6 @@ public final class com/apollographql/apollo3/mockserver/MockServerKt {
 }
 
 public final class com/apollographql/apollo3/mockserver/TcpServer_concurrentKt {
-	public static final fun TcpServer ()Lcom/apollographql/apollo3/mockserver/TcpServer;
+	public static final fun TcpServer (I)Lcom/apollographql/apollo3/mockserver/TcpServer;
 }
 
