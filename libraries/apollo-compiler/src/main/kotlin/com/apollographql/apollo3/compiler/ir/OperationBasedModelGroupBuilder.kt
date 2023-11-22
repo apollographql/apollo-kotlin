@@ -24,7 +24,7 @@ internal class OperationBasedModelGroupBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
@@ -57,7 +57,7 @@ internal class OperationBasedModelGroupBuilder(
     val info = IrFieldInfo(
         responseName = fragmentName,
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = fragmentDefinition.typeCondition),
@@ -218,9 +218,9 @@ internal class OperationBasedModelGroupBuilder(
                 }
                 childCondition = entry.key.and(childCondition).simplify()
 
-                var type: IrType = IrModelType(MODEL_UNKNOWN)
+                var type: IrType = IrModelType(MODEL_UNKNOWN, nullable = true)
                 if (childCondition == BooleanExpression.True) {
-                  type = IrNonNullType(type)
+                  type = type.nullable(false)
                 }
 
                 val childInfo = IrFieldInfo(
@@ -281,9 +281,9 @@ internal class OperationBasedModelGroupBuilder(
 
           val fragmentModelPath = "${MODEL_FRAGMENT_DATA}.${first.name}.${first.name}"
 
-          var type: IrType = IrModelType(fragmentModelPath)
+          var type: IrType = IrModelType(fragmentModelPath, nullable = true)
           if (childCondition == BooleanExpression.True) {
-            type = IrNonNullType(type)
+            type = type.nullable(false)
           }
 
           val childInfo = IrFieldInfo(

@@ -411,14 +411,20 @@ public final class com/apollographql/apollo3/compiler/ir/IrClassName {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/compiler/ir/IrEnumType : com/apollographql/apollo3/compiler/ir/IrNamedType, com/apollographql/apollo3/compiler/ir/IrType {
+public final class com/apollographql/apollo3/compiler/ir/IrEnumType : com/apollographql/apollo3/compiler/ir/IrNamedType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrEnumType$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnumType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/String;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnumType;Ljava/lang/String;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getOptional ()Z
 	public fun hashCode ()I
 	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
 	public synthetic fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
@@ -451,14 +457,20 @@ public final class com/apollographql/apollo3/compiler/ir/IrGraphqlTargetArgument
 	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
 }
 
-public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType : com/apollographql/apollo3/compiler/ir/IrNamedType, com/apollographql/apollo3/compiler/ir/IrType {
+public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType : com/apollographql/apollo3/compiler/ir/IrNamedType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/String;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;Ljava/lang/String;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
+	public fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getOptional ()Z
 	public fun hashCode ()I
 	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
 	public synthetic fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
@@ -482,12 +494,18 @@ public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType$Compa
 
 public final class com/apollographql/apollo3/compiler/ir/IrListType : com/apollographql/apollo3/compiler/ir/IrType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrListType$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;ZZ)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
-	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrListType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrListType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrListType;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrListType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrListType;Lcom/apollographql/apollo3/compiler/ir/IrType;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrListType;
+	public fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getNullable ()Z
 	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun getOptional ()Z
 	public fun hashCode ()I
 	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
 	public fun toString ()Ljava/lang/String;
@@ -511,48 +529,27 @@ public final class com/apollographql/apollo3/compiler/ir/IrListType$Companion {
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrNamedType : com/apollographql/apollo3/compiler/ir/IrType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrNamedType$Companion;
 	public abstract fun getName ()Ljava/lang/String;
+	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrNamedType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/apollographql/apollo3/compiler/ir/IrNonNullType : com/apollographql/apollo3/compiler/ir/IrType {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrNonNullType$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
-	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
-	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
-	public fun hashCode ()I
-	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrNonNullType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrNonNullType$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;)V
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrNonNullType$Companion {
-	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrObjectType : com/apollographql/apollo3/compiler/ir/IrNamedType, com/apollographql/apollo3/compiler/ir/IrType {
+public final class com/apollographql/apollo3/compiler/ir/IrObjectType : com/apollographql/apollo3/compiler/ir/IrNamedType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrObjectType$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrObjectType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObjectType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObjectType;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/String;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrObjectType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObjectType;Ljava/lang/String;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObjectType;
+	public fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getOptional ()Z
 	public fun hashCode ()I
 	public synthetic fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
 	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrObjectType;
@@ -584,42 +581,20 @@ public final class com/apollographql/apollo3/compiler/ir/IrOperationsKt {
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/io/File;)V
 }
 
-public final class com/apollographql/apollo3/compiler/ir/IrOptionalType : com/apollographql/apollo3/compiler/ir/IrType {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrOptionalType$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
-	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
-	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
-	public fun hashCode ()I
-	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrOptionalType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOptionalType$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;)V
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrOptionalType$Companion {
-	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrScalarType : com/apollographql/apollo3/compiler/ir/IrNamedType, com/apollographql/apollo3/compiler/ir/IrType {
+public final class com/apollographql/apollo3/compiler/ir/IrScalarType : com/apollographql/apollo3/compiler/ir/IrNamedType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrScalarType$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrScalarType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/String;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrScalarType;Ljava/lang/String;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getOptional ()Z
 	public fun hashCode ()I
 	public synthetic fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
 	public fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
@@ -677,11 +652,29 @@ public final class com/apollographql/apollo3/compiler/ir/IrTargetObject {
 
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrType {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrType$Companion;
+	public abstract fun copyWith (ZZ)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public static synthetic fun copyWith$default (Lcom/apollographql/apollo3/compiler/ir/IrType;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public abstract fun getNullable ()Z
+	public abstract fun getOptional ()Z
 	public abstract fun rawType ()Lcom/apollographql/apollo3/compiler/ir/IrNamedType;
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrTypeKt {
+	public static final fun getWrapper (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
+	public static final fun nullable (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public static final fun optional (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/apollographql/apollo3/compiler/ir/IrType;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrTypeWrapper : java/lang/Enum {
+	public static final field None Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
+	public static final field Optional Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {

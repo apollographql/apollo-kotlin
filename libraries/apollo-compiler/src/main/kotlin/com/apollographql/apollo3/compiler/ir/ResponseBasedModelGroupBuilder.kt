@@ -122,7 +122,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
@@ -146,7 +146,7 @@ private class FieldNodeBuilder(
       val info = IrFieldInfo(
           responseName = name,
           description = null,
-          type = IrModelType(MODEL_UNKNOWN),
+          type = IrModelType(MODEL_UNKNOWN, nullable = true),
           deprecationReason = null,
           optInFeature = null,
           gqlType = GQLNonNullType(type = fragment.typeCondition),
@@ -171,7 +171,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = fragment.typeCondition),
@@ -514,12 +514,7 @@ private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrMo
 private fun ResponseField.toIrProperty(): IrProperty {
   var type = info.type
   if (condition != BooleanExpression.True) {
-    // Convert to a nullable type if needed
-    // Consecutive IrNonNullType are most likely an error at this point but do not fail if
-    // that happens
-    while (type is IrNonNullType) {
-      type = type.ofType
-    }
+    type = type.nullable(true)
   }
   return IrProperty(
       info = info.copy(type = type),

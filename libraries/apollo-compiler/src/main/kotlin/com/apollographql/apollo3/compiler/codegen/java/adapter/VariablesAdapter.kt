@@ -20,7 +20,6 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalCont
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isComposite
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
@@ -68,7 +67,7 @@ private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(name)
 
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
 
@@ -78,7 +77,7 @@ private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   } else {
     builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
   }
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.endControlFlow()
     if (defaultValue != null) {
       builder.beginControlFlow("else if ($withDefaultValues)")

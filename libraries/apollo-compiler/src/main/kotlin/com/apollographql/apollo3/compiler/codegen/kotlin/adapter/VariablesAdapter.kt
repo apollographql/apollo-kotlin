@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrVariable
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -54,12 +53,12 @@ private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(name)
 
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("$writer.name(%S)", name)
   builder.addSerializeStatement(adapterInitializer, propertyName)
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.endControlFlow()
     if (defaultValue != null) {
       builder.beginControlFlow("else if ($withDefaultValues)")

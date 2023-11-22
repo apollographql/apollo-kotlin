@@ -401,7 +401,7 @@ internal class IrOperationsBuilder(
     var irType = type.toIr()
     if (type !is GQLNonNullType) {
       // If the type is nullable, the variable might be omitted, make it optional
-      irType = irType.makeOptional()
+      irType = irType.optional(true)
     }
     return IrVariable(
         name = name,
@@ -413,14 +413,14 @@ internal class IrOperationsBuilder(
   private fun GQLVariableDefinition.toIr(): IrVariable {
     var irType = type.toIr()
     when {
-      irType is IrNonNullType && defaultValue == null -> {
+      !irType.nullable && defaultValue == null -> {
         // The variable is non-nullable and has no defaultValue => it must always be sent
         // Leave irType as-is
       }
 
       defaultValue != null -> {
         // the variable has a defaultValue meaning that there is a use case for not providing it
-        irType = irType.makeOptional()
+        irType = irType.optional(true)
       }
 
       else -> {
@@ -436,7 +436,7 @@ internal class IrOperationsBuilder(
 
         val makeOptional = directives.optionalValue(schema) ?: generateOptionalOperationVariables
         if (makeOptional) {
-          irType = irType.makeOptional()
+          irType = irType.optional(true)
         }
       }
     }
@@ -576,9 +576,9 @@ internal class IrOperationsBuilder(
 
       var irType = first.type.toIr()
       if (forceNonNull) {
-        irType = irType.makeNonNull()
+        irType = irType.nullable(false)
       } else if (forceOptional) {
-        irType = irType.makeNullable()
+        irType = irType.nullable(true)
       }
 
       /**
@@ -806,6 +806,6 @@ internal fun IrFieldInfo.maybeNullable(makeNullable: Boolean): IrFieldInfo {
   }
 
   return copy(
-      type = type.makeNullable()
+      type = type.nullable(true)
   )
 }

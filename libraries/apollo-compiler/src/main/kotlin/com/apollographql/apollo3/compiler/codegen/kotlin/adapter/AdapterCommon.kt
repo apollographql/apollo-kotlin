@@ -22,13 +22,10 @@ import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isComposite
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -49,14 +46,14 @@ internal fun readFromResponseCodeBlock(
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       useTypenameFromArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinSymbols.Absent)
+      property.info.type.optional -> CodeBlock.of("%T", KotlinSymbols.Absent)
       else -> CodeBlock.of("null")
     }
 
     CodeBlock.of(
         "var·%N:·%T·=·%L",
         context.layout.variableName(property.info.responseName),
-        context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.isOptional()),
+        context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -137,7 +134,7 @@ internal fun readFromResponseCodeBlock(
             add(
                 "var·%N:·%T·=·null\n",
                 context.layout.variableName(property.info.responseName),
-                context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.isOptional()),
+                context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
             )
             val typenameLiteral = if (property.requiresTypename) {
               __typename
@@ -175,8 +172,8 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(model.properties.map { property ->
         val maybeAssertNotNull = if (
-            property.info.type is IrNonNullType
-            && !property.info.type.isOptional()
+            !property.info.type.nullable
+            && !property.info.type.optional
             && !checkedProperties.contains(property.info.responseName)
         ) {
           "!!"
@@ -217,7 +214,6 @@ internal fun typenameFromReaderCodeBlock(): CodeBlock {
 
 private fun IrType.modelPath(): String {
   return when (this) {
-    is IrNonNullType -> ofType.modelPath()
     is IrModelType -> path
     else -> error("Synthetic field has an invalid type: $this")
   }
@@ -241,7 +237,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     /**
      * Output types do not distinguish between null and absent
      */
-    if (this.info.type !is IrNonNullType) {
+    if (this.info.type.nullable) {
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
@@ -249,7 +245,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
         adapterInitializer,
         propertyName,
     )
-    if (this.info.type !is IrNonNullType) {
+    if (this.info.type.nullable) {
       builder.endControlFlow()
     }
   }

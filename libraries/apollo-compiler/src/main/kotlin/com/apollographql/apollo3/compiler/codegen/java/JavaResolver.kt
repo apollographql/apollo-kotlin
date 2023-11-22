@@ -21,16 +21,16 @@ import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrListType2
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrObjectType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
 import com.apollographql.apollo3.compiler.ir.isComposite
 import com.apollographql.apollo3.compiler.ir.isCompositeOrWrappedComposite
+import com.apollographql.apollo3.compiler.ir.nullable
+import com.apollographql.apollo3.compiler.ir.optional
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -122,17 +122,17 @@ internal class JavaResolver(
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   fun resolveIrType(type: IrType): TypeName {
-    if (type is IrNonNullType) {
-      return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
-        resolveIrScalarType(type.ofType, asPrimitiveType = true)
+    if (type.optional) {
+      return resolveIrType(type.optional(false)).boxIfPrimitiveType().wrapInOptional()
+    } else if (!type.nullable) {
+      return if (generatePrimitiveTypes && type is IrScalarType) {
+        resolveIrScalarType(type.copy(nullable = true), asPrimitiveType = true)
       } else {
-        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) unwrapFromOptional(it) else it.withoutAnnotations() }
+        resolveIrType(type.nullable(true)).let { if (wrapNullableFieldsInOptional) unwrapFromOptional(it) else it.withoutAnnotations() }
       }.addNonNullableAnnotation()
     }
 
     return when (type) {
-      is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      is IrOptionalType -> resolveIrType(type.ofType).boxIfPrimitiveType().wrapInOptional()
       is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).filterTypeUseAnnotations().boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
@@ -194,7 +194,7 @@ internal class JavaResolver(
   }
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
-    if (type !is IrNonNullType) {
+    if (type.nullable) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
@@ -209,11 +209,11 @@ internal class JavaResolver(
 
         else -> {
           val adapterClassName = if (!type.rawType().isComposite()) optionalOrNullableAdapterClassName else optionalOrNullableCompositeAdapterClassName
-          CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
+          CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.nullable(false), requiresBuffering))
         }
       }
     }
-    return nonNullableAdapterInitializer(type.ofType, requiresBuffering)
+    return nonNullableAdapterInitializer(type, requiresBuffering)
   }
 
   private fun resolveScalarTarget(name: String): ClassName? {
@@ -227,8 +227,12 @@ internal class JavaResolver(
   }
 
   private fun nonNullableAdapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
+    if (type.optional) {
+      val adapterClassName = if (!type.rawType().isComposite()) optionalAdapterClassName else optionalCompositeAdapterClassName
+      return CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.optional(false), requiresBuffering))
+    }
+
     return when (type) {
-      is IrNonNullType -> error("")
       is IrListType -> {
         adapterInitializer(type.ofType, requiresBuffering).listAdapter(isComposite = type.ofType.rawType().isComposite())
       }
@@ -255,11 +259,6 @@ internal class JavaResolver(
             resolveAndAssert(ResolverKeyKind.Model, type.path),
             requiresBuffering
         )
-      }
-
-      is IrOptionalType -> {
-        val adapterClassName = if (!type.ofType.rawType().isComposite()) optionalAdapterClassName else optionalCompositeAdapterClassName
-        CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
 
       is IrObjectType -> error("IrObjectType cannot be adapted")
@@ -389,8 +388,8 @@ internal class JavaResolver(
       is IrNonNullType2 -> resolveIrType2(type.ofType)
       is IrListType2 -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType2(type.ofType))
       is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name)
-      is IrEnumType2 -> resolveIrType(IrEnumType(type.name))
-      is IrScalarType2 -> resolveIrType(IrScalarType(type.name))
+      is IrEnumType2 -> resolveIrType(IrEnumType(type.name, nullable = true))
+      is IrScalarType2 -> resolveIrType(IrScalarType(type.name, nullable = true))
     }
   }
 
@@ -409,14 +408,14 @@ internal class JavaResolver(
       is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isComposite = type.ofType.isCompositeOrWrappedComposite())
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          nonNullableScalarAdapterInitializer(IrScalarType(type.name), customScalarAdapters)
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name, nullable = true), customScalarAdapters)
         } else {
           null
         }
       }
 
       is IrEnumType2 -> {
-        nonNullableAdapterInitializer(IrEnumType(type.name), false)
+        nonNullableAdapterInitializer(IrEnumType(type.name, nullable = true), false)
       }
 
       is IrCompositeType2 -> null
