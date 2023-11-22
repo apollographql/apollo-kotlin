@@ -1,0 +1,18 @@
+# Pre-introspection query allowing to retrieve the server's supported features.
+
+query PreIntrospectionQuery {
+  schema: __type(name: "__Schema") { ...TypeFields }
+  type: __type(name: "__Type") { ...TypeFields }
+  directive: __type(name: "__Directive") { ...TypeFields }
+  field: __type(name: "__Field") { ...TypeFields }
+  inputValue: __type(name: "__InputValue") { ...TypeFields }
+}
+
+fragment TypeFields on __Type {
+  fields {
+    name
+    args {
+      name
+    }
+  }
+}

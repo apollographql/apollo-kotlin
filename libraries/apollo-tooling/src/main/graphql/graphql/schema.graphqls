@@ -1,4 +1,4 @@
-# Draft spec as of 2023-03-20
+# Draft spec as of 2023-11-17
 
 type Query {
   __schema: __Schema!

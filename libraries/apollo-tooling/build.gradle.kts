@@ -27,24 +27,10 @@ dependencies {
 }
 
 apollo {
-  // https://spec.graphql.org/June2018/#sec-Schema-Introspection
-  service("graphql-june2018") {
-    packageName.set("com.apollographql.apollo3.tooling.graphql.june2018")
-    sourceFolder.set("graphql/june2018")
-    generateAsInternal.set(true)
-  }
-
-  // https://spec.graphql.org/October2021/#sec-Schema-Introspection.Schema-Introspection-Schema
-  service("graphql-october2021") {
-    packageName.set("com.apollographql.apollo3.tooling.graphql.october2021")
-    sourceFolder.set("graphql/october2021")
-    generateAsInternal.set(true)
-  }
-
   // https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
-  service("graphql-draft") {
-    packageName.set("com.apollographql.apollo3.tooling.graphql.draft")
-    sourceFolder.set("graphql/draft")
+  service("graphql") {
+    packageName.set("com.apollographql.apollo3.tooling.graphql")
+    sourceFolder.set("graphql")
     generateAsInternal.set(true)
   }
 
@@ -73,7 +59,6 @@ apollo {
     }
     mapScalar("Timestamp", "java.time.Instant", "com.apollographql.apollo3.tooling.TimestampAdapter")
   }
-
 }
 
 // We're using project(":apollo-compiler") and the published "apollo-runtime" which do not have the same version

@@ -1,5 +1,11 @@
+# Base introspection query that will be augmented according to the server's supported GraphQL features.
+# The supported features are retrieved by executing a pre-introspection query.
+# The fields that can be added or modified are shown as comments.
+# Draft spec is as of 2023-11-21.
+
 query IntrospectionQuery {
   __schema {
+    # description - introduced in https://spec.graphql.org/October2021/
     queryType { name }
     mutationType { name }
     subscriptionType { name }
@@ -10,10 +16,10 @@ query IntrospectionQuery {
       name
       description
       locations
-      args {
+      args { # args(includeDeprecated: true) - introduced in https://github.com/graphql/graphql-spec/pull/805/
         ...InputValue
       }
-      isRepeatable
+      # isRepeatable - introduced in https://spec.graphql.org/October2021/
     }
   }
 }
@@ -25,7 +31,7 @@ fragment FullType on __Type {
   fields(includeDeprecated: true) {
     name
     description
-    args {
+    args { # args(includeDeprecated: true) - introduced in https://github.com/graphql/graphql-spec/pull/805/
       ...InputValue
     }
     type {
@@ -34,7 +40,7 @@ fragment FullType on __Type {
     isDeprecated
     deprecationReason
   }
-  inputFields {
+  inputFields { # inputFields(includeDeprecated: true) - introduced in https://github.com/graphql/graphql-spec/pull/805/
     ...InputValue
   }
   interfaces {
@@ -49,7 +55,8 @@ fragment FullType on __Type {
   possibleTypes {
     ...TypeRef
   }
-  specifiedByURL
+  # specifiedByURL - introduced in https://spec.graphql.org/October2021/
+  # isOneOf - introduced in https://github.com/graphql/graphql-spec/pull/825/
 }
 
 fragment InputValue on __InputValue {
@@ -57,6 +64,8 @@ fragment InputValue on __InputValue {
   description
   type { ...TypeRef }
   defaultValue
+  # isDeprecated - introduced in https://github.com/graphql/graphql-spec/pull/805/
+  # deprecationReason - introduced in https://github.com/graphql/graphql-spec/pull/805/
 }
 
 fragment TypeRef on __Type {

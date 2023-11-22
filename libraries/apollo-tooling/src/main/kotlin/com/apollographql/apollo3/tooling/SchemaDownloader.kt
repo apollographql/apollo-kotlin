@@ -3,31 +3,30 @@ package com.apollographql.apollo3.tooling
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
-import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment
+import com.apollographql.apollo3.tooling.SchemaHelper.reworkIntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.PreIntrospectionQuery
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
+import okio.buffer
+import okio.source
 import java.io.File
-import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
-import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
-import com.apollographql.apollo3.tooling.graphql.october2021.IntrospectionQuery as GraphQLOctober2021IntrospectionQuery
 
 
 @ApolloExperimental
 object SchemaDownloader {
-  enum class SpecVersion {
-    June_2018,
-    October_2021,
-    Draft,
-  }
-
   /**
    * Main entry point for downloading a schema either from introspection or from the Apollo Studio registry
    *
@@ -60,25 +59,15 @@ object SchemaDownloader {
 
     when {
       endpoint != null -> {
-        var exception: Exception? = null
-        // Try the latest spec first
-        for (specVersion in SpecVersion.values().reversed()) {
-          try {
-            introspectionDataJson = downloadIntrospection(
-                endpoint = endpoint,
-                headers = headers,
-                insecure = insecure,
-                specVersion = specVersion,
-            )
-            introspectionSchema = introspectionDataJson.toIntrospectionSchema()
-            exception = null
-            break
-          } catch (e: Exception) {
-            exception = e
-          }
-        }
-        if (introspectionDataJson == null) {
-          throw exception!!
+        introspectionDataJson = downloadIntrospection(
+            endpoint = endpoint,
+            headers = headers,
+            insecure = insecure,
+        )
+        introspectionSchema = try {
+          introspectionDataJson.toIntrospectionSchema()
+        } catch (e: Exception) {
+          throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$introspectionDataJson", e)
         }
       }
 
@@ -130,18 +119,36 @@ object SchemaDownloader {
     }
   }
 
+  /**
+   * Get an introspection query that is compatible with the given [features], as a JSON string.
+   */
+  @ApolloExperimental
+  fun getIntrospectionQuery(features: Set<GraphQLFeature>): String {
+    val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
+    val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
+    val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
+        definitions = baseIntrospectionGql.definitions
+            .reworkIntrospectionQuery(features)
+            .reworkFullTypeFragment(features)
+            .reworkInputValueFragment(features)
+    )
+    return introspectionGql.toUtf8()
+  }
+
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-      specVersion: SpecVersion,
   ): String {
-    return SchemaHelper.executeSchemaQuery(
-        query = when (specVersion) {
-          SpecVersion.June_2018 -> GraphQLJune2018IntrospectionQuery()
-          SpecVersion.October_2021 -> GraphQLOctober2021IntrospectionQuery()
-          SpecVersion.Draft -> GraphQLDraftIntrospectionQuery()
-        },
+    val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
+        endpoint = endpoint,
+        headers = headers,
+        insecure = insecure,
+    )
+    val features = preIntrospectionData.getFeatures()
+    val introspectionQuery = getIntrospectionQuery(features)
+    return SchemaHelper.executeIntrospectionQuery(
+        introspectionQuery = introspectionQuery,
         endpoint = endpoint,
         headers = headers,
         insecure = insecure,
@@ -165,12 +172,9 @@ object SchemaDownloader {
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) } + HttpHeader("x-api-key", key))
           .execute()
     }
-    response.exception?.let {
-      throw if (it is ApolloGraphQLException) {
-        Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant", it)
-      } else {
-        it
-      }
+    if (response.exception != null) throw response.exception!!
+    if (response.errors?.isNotEmpty() == true) {
+      throw Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant")
     }
     val document = response.data?.graph?.variant?.latestPublication?.schema?.document
     check(document != null) {
