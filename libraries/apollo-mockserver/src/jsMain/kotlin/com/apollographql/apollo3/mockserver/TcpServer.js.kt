@@ -82,4 +82,4 @@ internal class NodeTcpServer : TcpServer {
   }
 }
 
-actual fun TcpServer(): TcpServer = NodeTcpServer()
+actual fun TcpServer(port: Int): TcpServer = NodeTcpServer()
