@@ -47,7 +47,7 @@ class UnknownDirective(
 /**
  * The directive definition is inconsistent with the expected one.
  */
-class UnexpectedDirectiveDefinition(
+class IncompatibleDirectiveDefinition(
     directiveName: String,
     expectedDefinition: String,
     override val sourceLocation: SourceLocation?,

@@ -827,6 +827,12 @@ public abstract interface class com/apollographql/apollo3/ast/GraphQLIssue : com
 public abstract interface class com/apollographql/apollo3/ast/GraphQLValidationIssue : com/apollographql/apollo3/ast/GraphQLIssue {
 }
 
+public final class com/apollographql/apollo3/ast/IncompatibleDirectiveDefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo3/ast/InferredVariable {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/GQLType;)V
 	public final fun getName ()Ljava/lang/String;
@@ -1004,12 +1010,6 @@ public final class com/apollographql/apollo3/ast/TransformResult$Delete : com/ap
 public final class com/apollographql/apollo3/ast/TransformResult$Replace : com/apollographql/apollo3/ast/TransformResult {
 	public fun <init> (Lcom/apollographql/apollo3/ast/GQLNode;)V
 	public final fun getNewNode ()Lcom/apollographql/apollo3/ast/GQLNode;
-}
-
-public final class com/apollographql/apollo3/ast/UnexpectedDirectiveDefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
-	public fun getMessage ()Ljava/lang/String;
-	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo3/ast/UnknownDirective : com/apollographql/apollo3/ast/GraphQLValidationIssue {

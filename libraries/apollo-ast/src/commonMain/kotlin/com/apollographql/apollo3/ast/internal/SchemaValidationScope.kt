@@ -34,7 +34,7 @@ import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.UnexpectedDirectiveDefinition
+import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
@@ -132,7 +132,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   directiveDefinitions["oneOf"]?.let {
     if (it.locations != listOf(GQLDirectiveLocation.INPUT_OBJECT) || it.arguments.isNotEmpty() || it.repeatable) {
-      issues.add(UnexpectedDirectiveDefinition("oneOf", "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
+      issues.add(IncompatibleDirectiveDefinition("oneOf", "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
     }
   }
 
