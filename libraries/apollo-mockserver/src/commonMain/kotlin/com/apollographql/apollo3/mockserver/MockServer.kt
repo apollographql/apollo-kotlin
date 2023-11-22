@@ -16,6 +16,7 @@ import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
 import kotlin.js.JsName
+import kotlin.jvm.JvmOverloads
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -244,6 +245,7 @@ internal class MockServerImpl(
 }
 
 @JsName("createMockServer")
+@JvmOverloads
 fun MockServer(port: Int = 0): MockServer = MockServerImpl(
     QueueMockServerHandler(),
     true,
