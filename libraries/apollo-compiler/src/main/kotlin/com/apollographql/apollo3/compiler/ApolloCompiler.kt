@@ -569,7 +569,7 @@ internal fun List<Issue>.group(warnOnDeprecatedUsages: Boolean,
       is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
       is UnusedVariable -> Severity.Warning
       is UnusedFragment -> Severity.None
-      is UnknownDirective -> Severity.Warning
+      is UnknownDirective -> if (it.requireDefinition) Severity.Error else Severity.Warning
       /**
        * Because some users might have added the apollo directive to their schema, we just let that through for now
        */

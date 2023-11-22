@@ -61,7 +61,7 @@ internal interface ValidationScope : IssuesScope {
   }
 
   fun originalTypeName(name: String): String {
-    return foreignNames[name]?: name
+    return foreignNames[name] ?: name
   }
 
   fun registerIssue(
@@ -81,7 +81,7 @@ internal class DefaultValidationScope(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     issues: MutableList<Issue>? = null,
-    override val foreignNames: Map<String, String> = emptyMap()
+    override val foreignNames: Map<String, String> = emptyMap(),
 ) : ValidationScope {
   constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
@@ -109,6 +109,7 @@ internal fun ValidationScope.validateDirective(
         else -> error("unknown operation: $directiveContext")
       }
     }
+
     is GQLFragmentDefinition -> GQLDirectiveLocation.FRAGMENT_DEFINITION
     is GQLVariableDefinition -> GQLDirectiveLocation.VARIABLE_DEFINITION
     is GQLSchemaDefinition, is GQLSchemaExtension -> GQLDirectiveLocation.SCHEMA
@@ -126,7 +127,12 @@ internal fun ValidationScope.validateDirective(
   val directiveDefinition = directiveDefinitions[directive.name]
 
   if (directiveDefinition == null) {
-    issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation))
+    if (directive.name == "oneOf") {
+      // We require full schemas to allow the usage of @oneOf
+      issues.add(UnknownDirective("'@${directive.name}' directive must be defined in the schema to be used", directive.sourceLocation, requireDefinition = true))
+    } else {
+      issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
+    }
 
     return
   }
@@ -204,19 +210,22 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
 
   val fieldDefinitions: List<GQLFieldDefinition>
   val type: String
-  when(directiveContext) {
+  when (directiveContext) {
     is GQLInterfaceTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
       type = directiveContext.name
     }
+
     is GQLObjectTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
       type = directiveContext.name
     }
+
     is GQLUnionTypeDefinition -> {
       fieldDefinitions = emptyList()
       type = directiveContext.name
     }
+
     else -> {
       // Should be caught by previous validation steps
       error("")
@@ -229,7 +238,7 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
     } else if (selection.selections.isNotEmpty()) {
       registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
     } else {
-      val definition = fieldDefinitions.firstOrNull { it.name ==  selection.name}
+      val definition = fieldDefinitions.firstOrNull { it.name == selection.name }
       if (definition == null) {
         registerIssue("Field '${selection.name}' is not a valid key field for type '$type'", keyFieldsArg.sourceLocation)
       }

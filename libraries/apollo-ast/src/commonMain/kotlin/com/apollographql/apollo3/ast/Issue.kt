@@ -34,8 +34,11 @@ class ParsingError(override val message: String, override val  sourceLocation: S
  *
  * In a perfect world everyone uses SDL schemas, and we can validate directives but in this world, a lot of users rely
  * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+ *
+ * In some cases (e.g. `@oneOf`) we want to enforce that the directive is defined. In that case [requireDefinition] is true and the issue
+ * will be raised as an error rather than warning.
  */
-class UnknownDirective(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class UnknownDirective(override val message: String, override val sourceLocation: SourceLocation?, val requireDefinition: Boolean): GraphQLValidationIssue
 
 /**
  * Fields have different shapes and cannot be merged
