@@ -5,6 +5,7 @@
 //
 package com.example.input_object_oneof.type;
 
+import com.apollographql.apollo3.api.JavaAssertOneOf;
 import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
@@ -31,6 +32,7 @@ public class FindUserInput {
     this.name = name;
     this.identity = identity;
     this.friends = friends;
+    JavaAssertOneOf.assertOneOf(email, name, identity, friends);
   }
 
   @Override

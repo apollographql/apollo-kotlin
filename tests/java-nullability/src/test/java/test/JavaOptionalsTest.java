@@ -7,11 +7,11 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
 import okio.Buffer;
 import optionals.java.MyQuery;
+import optionals.java.type.FindUserInput;
 import optionals.java.type.MyInput;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public class JavaOptionalsTest {
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter,CustomScalarAdapters.Empty, false);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -238,6 +238,108 @@ public class JavaOptionalsTest {
         ),
         actualData
     );
+  }
+
+  @Test
+  public void oneOfWithConstructor() {
+    FindUserInput findUserInput = new FindUserInput(
+        /* email = */ Optional.of(Optional.of("test@example.com")),
+        /* name = */ Optional.empty(),
+        /* identity = */ Optional.empty(),
+        /* friends = */ Optional.empty()
+    );
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.of("test@example.com")),
+          /* name = */ Optional.of(Optional.of("Test User")),
+          /* identity = */ Optional.empty(),
+          /* friends = */ Optional.empty()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.empty(),
+          /* name = */ Optional.empty(),
+          /* identity = */ Optional.empty(),
+          /* friends = */ Optional.empty()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 0)", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.empty()),
+          /* name = */ Optional.empty(),
+          /* identity = */ Optional.empty(),
+          /* friends = */ Optional.empty()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("The value set on @oneOf input field must be non-null", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.empty()),
+          /* name = */ Optional.of(Optional.of("Test User")),
+          /* identity = */ Optional.empty(),
+          /* friends = */ Optional.empty()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+  }
+
+  @Test
+  public void oneOfWithBuilder() {
+    FindUserInput.builder()
+        .email(Optional.of("test@example.com"))
+        .build();
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.of("test@example.com"))
+          .name(Optional.of("Test User"))
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 0)", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.empty())
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("The value set on @oneOf input field must be non-null", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.empty())
+          .name(Optional.of("Test User"))
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
   }
 
   private static MyInput myInputPresent() {

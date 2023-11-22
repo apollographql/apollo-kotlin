@@ -33,3 +33,8 @@ query MyQuery(
   }
 }
 
+query FindUser($input: FindUserInput) {
+  findUser(input: $input) {
+    id
+  }
+}

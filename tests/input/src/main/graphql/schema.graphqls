@@ -3,16 +3,16 @@ type Query {
   findUser(input: FindUserInput): User
 }
 
-type User {
-  id: ID!
-}
-
 input UserInput {
   name: String!
   email: String
 }
 
 directive @oneOf on INPUT_OBJECT
+
+type User {
+  id: ID!
+}
 
 input FindUserInput @oneOf {
   email: String

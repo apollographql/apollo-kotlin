@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  196989
+aggregate-all                                                                                  196993
 aggregate-kotlin-responseBased                                                                  62908
 aggregate-kotlin-operationBased                                                                 40827
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   93254
+aggregate-java-operationBased                                                                   93258
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5556
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3499
@@ -78,8 +78,8 @@ java-operationBased-simple_union                                                
 kotlin-responseBased-operationbased2_ex8                                                          943
 java-operationBased-deprecated_merged_field                                                       929
 java-operationBased-hero_details                                                                  920
+java-operationBased-input_object_oneof                                                            920
 java-operationBased-not_all_combinations_are_needed                                               919
-java-operationBased-input_object_oneof                                                            916
 java-operationBased-simple_inline_fragment                                                        902
 java-operationBased-fieldset_with_multiple_super                                                  901
 java-operationBased-inline_fragment_with_include_directive                                        898

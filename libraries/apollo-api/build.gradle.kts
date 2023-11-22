@@ -16,6 +16,12 @@ kotlin {
       }
     }
 
+    findByName("jvmMain")?.apply {
+      dependencies {
+        compileOnly(libs.guava.jre)
+      }
+    }
+
     findByName("commonTest")?.apply {
       dependencies {
         implementation(libs.kotlin.test.asProvider().get().toString())

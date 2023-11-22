@@ -2,14 +2,18 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -35,18 +39,31 @@ internal class InputObjectBuilder(
     )
   }
 
-  private fun IrInputObject.typeSpec() =
-      TypeSpec
-          .classBuilder(simpleName)
-          .addModifiers(Modifier.PUBLIC)
-          .maybeAddDescription(description)
-          .makeClassFromParameters(
-              context.generateMethods,
-              fields.map { it.toNamedType().toParameterSpec(context) },
-              className = context.resolver.resolveSchemaType(inputObject.name)
-          )
-          .addBuilder()
-          .build()
+  private fun IrInputObject.typeSpec(): TypeSpec {
+    val namedTypes = fields.map { it.toNamedType() }
+    return TypeSpec
+        .classBuilder(simpleName)
+        .addModifiers(Modifier.PUBLIC)
+        .maybeAddDescription(description)
+        .makeClassFromParameters(
+            context.generateMethods,
+            namedTypes.map { it.toParameterSpec(context) },
+            className = context.resolver.resolveSchemaType(inputObject.name)
+        )
+        .apply {
+          if (isOneOf) {
+            methodSpecs.replaceAll {
+              if (it.isConstructor) {
+                it.toBuilder().addCode(namedTypes.assertOneOfBlock(context)).build()
+              } else {
+                it
+              }
+            }
+          }
+        }
+        .addBuilder()
+        .build()
+  }
 
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
     if (inputObject.fields.isEmpty()) {
@@ -68,4 +85,8 @@ internal class InputObjectBuilder(
           )
     }
   }
+}
+
+private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", JavaClassNames.JavaAssertOneOf)
 }
