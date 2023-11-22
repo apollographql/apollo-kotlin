@@ -122,4 +122,5 @@ internal object KotlinMemberNames {
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
+  val assertOneOf = MemberName(apolloApiPackageName, "assertOneOf")
 }

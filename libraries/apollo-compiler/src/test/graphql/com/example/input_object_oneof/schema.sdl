@@ -1,17 +1,3 @@
-type Query {
-  createUser(input: UserInput): Int
-  findUser(input: FindUserInput): User
-}
-
-type User {
-  id: ID!
-}
-
-input UserInput {
-  name: String!
-  email: String
-}
-
 directive @oneOf on INPUT_OBJECT
 
 input FindUserInput @oneOf {
@@ -29,4 +15,12 @@ input FindUserBySocialNetworkInput @oneOf {
 input FindUserByFriendInput {
   socialNetworkId: ID!
   friendId: ID!
+}
+
+type User {
+  id: ID!
+}
+
+type Query {
+  findUser(findUserInput: FindUserInput!): User
 }

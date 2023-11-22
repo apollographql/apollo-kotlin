@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  195562
-aggregate-kotlin-responseBased                                                                  62397
+aggregate-all                                                                                  196989
+aggregate-kotlin-responseBased                                                                  62908
 aggregate-kotlin-operationBased                                                                 40827
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   92338
+aggregate-java-operationBased                                                                   93254
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5556
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3499
@@ -79,6 +79,7 @@ kotlin-responseBased-operationbased2_ex8                                        
 java-operationBased-deprecated_merged_field                                                       929
 java-operationBased-hero_details                                                                  920
 java-operationBased-not_all_combinations_are_needed                                               919
+java-operationBased-input_object_oneof                                                            916
 java-operationBased-simple_inline_fragment                                                        902
 java-operationBased-fieldset_with_multiple_super                                                  901
 java-operationBased-inline_fragment_with_include_directive                                        898
@@ -190,6 +191,7 @@ kotlin-responseBased-interface_on_interface                                     
 java-operationBased-starships                                                                     521
 kotlin-responseBased-suppressed_warnings                                                          517
 kotlin-operationBased-path_vs_flat_accessors                                                      516
+kotlin-responseBased-input_object_oneof                                                           511
 java-operationBased-antlr_tokens                                                                  508
 java-operationBased-subscriptions                                                                 504
 kotlin-responseBased-hero_name                                                                    503

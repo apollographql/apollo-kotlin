@@ -16,6 +16,7 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.internal.toConnectionFields
@@ -51,6 +52,7 @@ internal data class IrInputObject(
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
+    val isOneOf: Boolean,
 ) : IrSchemaType
 
 internal data class IrObject(
@@ -193,7 +195,8 @@ internal fun GQLInputObjectTypeDefinition.toIr(schema: Schema): IrInputObject {
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on input objects definitions
       deprecationReason = directives.findDeprecationReason(),
-      fields = inputFields.map { it.toIrInputField(schema) }
+      fields = inputFields.map { it.toIrInputField(schema) },
+      isOneOf = directives.findOneOf(),
   )
 }
 
