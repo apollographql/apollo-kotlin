@@ -79,48 +79,46 @@ internal class KotlinResolver(
   internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false): TypeName {
     if (type.optional) {
       return KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
-    } else if (!type.nullable) {
-      return resolveIrType(type.nullable(true), jsExport, isInterface).copy(nullable = false)
-    }
-    
-    return when (type) {
-      is IrListType -> toListType(resolveIrType(type.ofType, jsExport, isInterface), jsExport, isInterface)
-      is IrScalarType -> resolveIrScalarType(type)
-      is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
-      is IrEnumType -> if (jsExport) {
-        KotlinSymbols.String
-      } else {
-        resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-      }
+    } else if (type.nullable) {
+      return resolveIrType(type.nullable(false), jsExport, isInterface).copy(nullable = true)
+    } else {
+      return when (type) {
+        is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
+        is IrScalarType -> {
+          // Try mapping first, then built-ins, then fallback to Any
+          resolveScalarTarget(type.name) ?: when (type.name) {
+            "String" -> KotlinSymbols.String
+            "Float" -> KotlinSymbols.Double
+            "Int" -> KotlinSymbols.Int
+            "Boolean" -> KotlinSymbols.Boolean
+            "ID" -> KotlinSymbols.String
+            else -> KotlinSymbols.Any
+          }
+        }
+        is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
+        is IrEnumType -> if (jsExport) {
+          KotlinSymbols.String
+        } else {
+          resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+        }
 
-      is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-    }.copy(nullable = true)
+        is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+      }
+    }
   }
 
-  private fun toListType(ofType: TypeName, jsExport: Boolean, isInterface: Boolean): TypeName {
+  private fun TypeName.wrapInList(jsExport: Boolean, isInterface: Boolean): TypeName {
     val listType = if (jsExport) {
       KotlinSymbols.Array
     } else {
       KotlinSymbols.List
     }
     val param = if (jsExport && isInterface) {
-      WildcardTypeName.producerOf(ofType)
+      WildcardTypeName.producerOf(this)
     } else {
-      ofType
+      this
     }
     return listType.parameterizedBy(param)
-  }
-
-  private fun resolveIrScalarType(type: IrScalarType): ClassName {
-    // Try mapping first, then built-ins, then fallback to Any
-    return resolveScalarTarget(type.name) ?: when (type.name) {
-      "String" -> KotlinSymbols.String
-      "Float" -> KotlinSymbols.Double
-      "Int" -> KotlinSymbols.Int
-      "Boolean" -> KotlinSymbols.Boolean
-      "ID" -> KotlinSymbols.String
-      else -> KotlinSymbols.Any
-    }
   }
 
   private fun resolveScalarTarget(name: String): ClassName? {
@@ -167,14 +165,14 @@ internal class KotlinResolver(
       is IrListType2 -> adapterInitializer2(type.ofType, jsExport)?.list(jsExport)
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          nonNullableScalarAdapterInitializer(IrScalarType(type.name, nullable = true), customScalarAdapters)
+          scalarAdapterInitializer(type.name, customScalarAdapters)
         } else {
           null
         }
       }
 
       is IrEnumType2 -> {
-        nonNullableAdapterInitializer(IrEnumType(type.name, nullable = true), false, jsExport, "")
+        adapterInitializer(IrEnumType(type.name), false, jsExport, "")
       }
 
       is IrCompositeType2 -> null
@@ -182,10 +180,13 @@ internal class KotlinResolver(
   }
 
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
-    if (type.nullable) {
+    return if (type.optional) {
+       val presentFun = MemberName("com.apollographql.apollo3.api", "present")
+       CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
+    } else if (type.nullable) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
-      return when {
+      when {
         type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
         type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
         type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
@@ -200,80 +201,72 @@ internal class KotlinResolver(
           CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
         }
       }
+    } else {
+      when (type) {
+        is IrListType -> {
+          adapterInitializer(type.ofType, requiresBuffering, jsExport, runtimeAdapterPrefix).list(jsExport)
+        }
+
+        is IrScalarType -> {
+          scalarAdapterInitializer(type.name, runtimeAdapterPrefix)
+        }
+
+        is IrEnumType -> {
+          if (jsExport) {
+            scalarAdapterInitializer("String", runtimeAdapterPrefix)
+          } else {
+            CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
+          }
+        }
+
+        is IrInputObjectType -> {
+          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name)).obj(requiresBuffering)
+        }
+
+        is IrModelType -> {
+          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path)).obj(requiresBuffering)
+        }
+
+        is IrObjectType -> error("IrObjectType cannot be adapted")
+      }
     }
-    return nonNullableAdapterInitializer(type.nullable(true), requiresBuffering, jsExport, runtimeAdapterPrefix)
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
     return CodeBlock.of("%T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 
-  private fun nonNullableAdapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
-    if (type.optional) {
-      val presentFun = MemberName("com.apollographql.apollo3.api", "present")
-      return CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
-
-    }
-    return when (type) {
-      is IrListType -> {
-        adapterInitializer(type.ofType, requiresBuffering, jsExport, runtimeAdapterPrefix).list(jsExport)
-      }
-
-      is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type, runtimeAdapterPrefix)
-      }
-
-      is IrEnumType -> {
-        if (jsExport) {
-          nonNullableScalarAdapterInitializer(IrScalarType("String", nullable = true), runtimeAdapterPrefix)
-        } else {
-          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
-        }
-      }
-
-      is IrInputObjectType -> {
-        CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name)).obj(requiresBuffering)
-      }
-
-      is IrModelType -> {
-        CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path)).obj(requiresBuffering)
-      }
-
-      is IrObjectType -> error("IrObjectType cannot be adapted")
-    }
-  }
-
-  private fun nonNullableScalarAdapterInitializer(type: IrScalarType, runtimeAdaptersPrefix: String): CodeBlock {
-    return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
+  private fun scalarAdapterInitializer(name: String, runtimeAdaptersPrefix: String): CodeBlock {
+    return when (val adapterInitializer = scalarMapping[name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.expression)
       }
 
       is RuntimeAdapterInitializer -> {
-        val target = resolveScalarTarget(type.name)
+        val target = resolveScalarTarget(name)
         CodeBlock.of(
             "$runtimeAdaptersPrefix.responseAdapterFor<%T>(%L)",
             target,
-            resolveCompiledType(type.name)
+            resolveCompiledType(name)
         )
       }
 
       else -> {
-        when (type.name) {
+        when (name) {
           "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanAdapter)
           "ID" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
           "String" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
           "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
           "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
           else -> {
-            val target = resolveScalarTarget(type.name)
+            val target = resolveScalarTarget(name)
             if (target == null) {
               CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
             } else {
               CodeBlock.of(
                   "$runtimeAdaptersPrefix.responseAdapterFor<%T>(%L)",
                   target,
-                  resolveCompiledType(type.name)
+                  resolveCompiledType(name)
               )
             }
           }
