@@ -88,5 +88,5 @@ internal class InputObjectBuilder(
 }
 
 private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
-  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", JavaClassNames.JavaAssertOneOf)
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", JavaClassNames.Assertions)
 }

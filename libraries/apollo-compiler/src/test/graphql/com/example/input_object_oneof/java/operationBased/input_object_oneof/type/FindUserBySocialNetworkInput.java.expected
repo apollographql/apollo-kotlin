@@ -5,7 +5,7 @@
 //
 package com.example.input_object_oneof.type;
 
-import com.apollographql.apollo3.api.JavaAssertOneOf;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
@@ -25,7 +25,7 @@ public class FindUserBySocialNetworkInput {
   public FindUserBySocialNetworkInput(Optional<String> facebookId, Optional<String> googleId) {
     this.facebookId = facebookId;
     this.googleId = googleId;
-    JavaAssertOneOf.assertOneOf(facebookId, googleId);
+    Assertions.assertOneOf(facebookId, googleId);
   }
 
   @Override

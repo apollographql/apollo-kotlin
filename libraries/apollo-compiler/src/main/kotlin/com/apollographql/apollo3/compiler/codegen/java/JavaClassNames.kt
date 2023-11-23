@@ -94,7 +94,6 @@ internal object JavaClassNames {
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")
   val JsonReaders = ClassName.get(apolloApiJsonPackageName, "JsonReaders")
   val PossibleTypes = ClassName.get(apolloApiPackageName, "PossibleTypes")
-  val JavaAssertOneOf = ClassName.get(apolloApiPackageName, "JavaAssertOneOf")
 
   /**
    * ClassNames for builtin Java types
