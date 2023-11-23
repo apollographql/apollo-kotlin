@@ -24,7 +24,7 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ./gradlew -p tests ciBuild
+          ./gradlew -p tests ciBuild -i
           ./gradlew dokkaHtmlMultiModule
           ./gradlew ciPublishSnapshot
         env:
