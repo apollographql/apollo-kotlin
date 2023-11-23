@@ -13,8 +13,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toPropertySpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toSetterFunSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -90,7 +88,7 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
                 forEach {
                   val propertyName = context.layout.propertyName(it.graphQlName)
                   add("%L·=·%L", propertyName, propertyName)
-                  if (it.type is IrNonNullType && it.type.ofType !is IrOptionalType) {
+                  if (!it.type.nullable && !it.type.optional) {
                     add("·?:·error(\"missing·value·for·$propertyName\")")
                   }
                   add(",\n")

@@ -37,7 +37,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName))
@@ -69,7 +69,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
     val info = IrFieldInfo(
         responseName = fragmentName,
         description = null,
-        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
         optInFeature = null,
         gqlType = GQLNonNullType(type = fragmentDefinition.typeCondition),
@@ -153,9 +153,9 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
             BooleanExpression.Element(BPossibleTypes(possibleTypes))
           }
 
-          var type: IrType = IrModelType(MODEL_UNKNOWN)
+          var type: IrType = IrModelType(MODEL_UNKNOWN, nullable = true)
           if (childCondition == BooleanExpression.True) {
-            type = IrNonNullType(type)
+            type = type.nullable(false)
           }
 
           val childInfo = IrFieldInfo(
@@ -211,9 +211,9 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
            */
           val fragmentModelPath = "${MODEL_FRAGMENT_DATA}.${first.name}.${first.name}"
 
-          var type: IrType = IrModelType(fragmentModelPath)
+          var type: IrType = IrModelType(fragmentModelPath, nullable = true)
           if (childCondition == BooleanExpression.True) {
-            type = IrNonNullType(type)
+            type = type.nullable(false)
           }
 
           val childInfo = IrFieldInfo(
@@ -396,8 +396,8 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
 
     if (isSynthetic) {
       condition = this.condition.simplify(possibleTypes)
-      info = if (condition is BooleanExpression.True && this.info.type !is IrNonNullType) {
-        this.info.copy(type = IrNonNullType(this.info.type))
+      info = if (condition is BooleanExpression.True && this.info.type.nullable) {
+        this.info.copy(type = this.info.type.nullable(false))
       } else {
         this.info
       }

@@ -18,11 +18,11 @@ import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrObjectType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.nullable
+import com.apollographql.apollo3.compiler.ir.optional
 import com.apollographql.apollo3.compiler.resolveSchemaType
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSTypeReference
@@ -68,11 +68,12 @@ internal class ValidationScope(
           throw IncompatibleType("Expected list type at ${ksTypeReference.location}")
         }
         IrListType(
-            validateAndCoerce(
+            ofType = validateAndCoerce(
                 ksTypeReference.element!!.typeArguments.single().type!!,
                 expectedNullableType.type,
                 allowCovariant,
-            )
+            ),
+            nullable = true
         )
       }
 
@@ -86,7 +87,7 @@ internal class ValidationScope(
             if (scalarInfo.targetName != className.asString()) {
               throw IncompatibleType("Scalar type '${typeDefinition.name}' is mapped to '${scalarInfo.targetName} but '${className.asString()} was found at ${ksTypeReference.location}")
             }
-            IrScalarType(typeDefinition.name)
+            IrScalarType(typeDefinition.name, nullable = true)
           }
 
           is GQLInputObjectTypeDefinition -> {
@@ -96,7 +97,7 @@ internal class ValidationScope(
               throw IncompatibleType("Input object type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
             }
 
-            IrInputObjectType(typeDefinition.name)
+            IrInputObjectType(typeDefinition.name, nullable = true)
           }
 
           is GQLEnumTypeDefinition -> {
@@ -106,7 +107,7 @@ internal class ValidationScope(
               throw IncompatibleType("Enum type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
             }
 
-            IrInputObjectType(typeDefinition.name)
+            IrInputObjectType(typeDefinition.name, nullable = true)
           }
 
           is GQLObjectTypeDefinition, is GQLUnionTypeDefinition, is GQLInterfaceTypeDefinition -> {
@@ -132,7 +133,7 @@ internal class ValidationScope(
               }
             }
 
-            IrObjectType(typeDefinition.name)
+            IrObjectType(typeDefinition.name, nullable = true)
           }
         }
       }
@@ -153,7 +154,7 @@ internal class ValidationScope(
     }
 
     return if (ksType.nullability == Nullability.NOT_NULL) {
-      IrNonNullType(irType)
+      irType.nullable(false)
     } else {
       irType
     }
@@ -183,7 +184,7 @@ internal fun ValidationScope.validateAndCoerceArgumentType(
   }
 
   return if (className == optionalClassName) {
-    IrOptionalType(validateAndCoerce(typeReference.element!!.typeArguments.first().type!!, gqlType, false))
+    validateAndCoerce(typeReference.element!!.typeArguments.first().type!!, gqlType, false).optional(true)
   } else {
     validateAndCoerce(typeReference, gqlType, false)
   }

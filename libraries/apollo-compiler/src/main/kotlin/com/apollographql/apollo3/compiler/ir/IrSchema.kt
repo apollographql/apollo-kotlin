@@ -94,7 +94,7 @@ internal data class IrScalar(
     val description: String?,
     val deprecationReason: String?,
 ) : IrSchemaType {
-  val type = IrScalarType(name)
+  val type = IrScalarType(name, nullable = true)
 }
 
 /**
@@ -119,7 +119,7 @@ internal data class IrEnum(
     val description: String?,
     val values: List<Value>,
 ) : IrSchemaType {
-  val type = IrEnumType(name)
+  val type = IrEnumType(name, nullable = true)
 
   data class Value(
       val name: String,
@@ -296,7 +296,7 @@ private fun GQLInputValueDefinition.toIrInputField(schema: Schema): IrInputField
      * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user, and
      * we don't want to force users to fill all values to define an input object
      */
-    irType = irType.makeOptional()
+    irType = irType.optional(true)
   }
   return IrInputField(
       name = name,

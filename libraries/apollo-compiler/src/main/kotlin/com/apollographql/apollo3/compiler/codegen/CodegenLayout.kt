@@ -6,7 +6,6 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
@@ -176,7 +175,6 @@ internal abstract class CodegenLayout(
     private fun IrType.isList(): Boolean {
       return when (this) {
         is IrListType -> true
-        is IrNonNullType -> ofType.isList()
         else -> false
       }
     }

@@ -3,7 +3,6 @@
  */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
@@ -20,7 +19,6 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.isComposite
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -87,7 +85,7 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
@@ -96,7 +94,7 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
   } else {
     builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
   }
-  if (type.isOptional()) {
+  if (type.optional) {
     builder.endControlFlow()
   }
   return builder.build()

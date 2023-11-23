@@ -11,64 +11,107 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * The IR representation of an input or output field
+ *
+ * **Allowed**
+ *
+ * * `T`
+ * * `Nullable<T>`
+ * * `Option<T>`
+ * * `Option<Nullable<T>>`
+ * * `Result<T>`
+ * * `Result<Nullable<T>>`
+ * * All `List` variations of the above
+ *
+ * **Disallowed**
+ *
+ * * `Nullable<Option<T>>`
+ * * `Nullable<Result<T>>`
+ * * `Nullable<Nullable<T>>`
+ * * `Option<Option<T>>`
+ * * `Option<Result<T>>`
+ * * `Result<Option<T>>`
+ * * `Result<Result<T>>`
+ * * etc...
+ *
+ * We need both `Option` and `Nullable` to distinguish `?` vs `Option` in Kotlin (see this [Arrow article](https://arrow-kt.io/learn/typed-errors/nullable-and-option/)).
+ * In java `Option` and `Nullable` might be represented using the same `Optional` depending on the settings.
+ */
 @Serializable
 sealed interface IrType {
+  val nullable: Boolean
+  val optional: Boolean
+
+  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional): IrType
   fun rawType(): IrNamedType
 }
 
-@Serializable
-@SerialName("nonnull")
-data class IrNonNullType(val ofType: IrType) : IrType {
-  init {
-    check(ofType !is IrNonNullType)
-  }
-
-  override fun rawType() = ofType.rawType()
-}
-
-@Serializable
-@SerialName("optional")
-data class IrOptionalType(val ofType: IrType) : IrType {
-  override fun rawType() = ofType.rawType()
-}
+fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
+fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
 
 @Serializable
 @SerialName("list")
-data class IrListType(val ofType: IrType) : IrType {
-  init {
-    check(ofType !is IrOptionalType)
-  }
+data class IrListType(
+    val ofType: IrType,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrType {
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
 
   override fun rawType() = ofType.rawType()
 }
 
 @Serializable
-sealed interface IrNamedType: IrType {
+sealed interface IrNamedType : IrType {
+  override fun rawType() = this
   val name: String
 }
 
 @Serializable
 @SerialName("scalar")
-data class IrScalarType(override val name: String) : IrType, IrNamedType {
+data class IrScalarType(
+    override val name: String,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrNamedType {
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
   override fun rawType() = this
 }
+
 @Serializable
 @SerialName("input")
-data class IrInputObjectType(override val name: String) : IrType, IrNamedType {
+data class IrInputObjectType(
+    override val name: String,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrNamedType {
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
   override fun rawType() = this
 }
+
 @Serializable
 @SerialName("enum")
-data class IrEnumType(override val name: String) : IrType, IrNamedType {
+data class IrEnumType(
+    override val name: String,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrNamedType {
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
   override fun rawType() = this
 }
+
 @Serializable
 @SerialName("object")
-data class IrObjectType(override val name: String) : IrType, IrNamedType {
+data class IrObjectType(
+    override val name: String,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrNamedType {
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
   override fun rawType() = this
 }
 
@@ -93,9 +136,15 @@ data class IrObjectType(override val name: String) : IrType, IrNamedType {
  */
 @Serializable
 @SerialName("model")
-internal data class IrModelType(val path: String) : IrType, IrNamedType {
+internal data class IrModelType(
+    val path: String,
+    override val nullable: Boolean = false,
+    override val optional: Boolean = false,
+) : IrNamedType {
   override val name: String
-    get() =  path
+    get() = path
+
+  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
   override fun rawType() = this
 }
 
@@ -104,30 +153,9 @@ internal const val MODEL_FRAGMENT_DATA = "fragmentData"
 internal const val MODEL_FRAGMENT_INTERFACE = "fragmentInterface"
 internal const val MODEL_UNKNOWN = "?"
 
-internal fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
-internal fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
-  this.ofType.makeNullable()
-} else {
-  this
-}
-
-internal fun IrType.makeNonNull(): IrType = if (this is IrNonNullType) {
-  this
-} else {
-  IrNonNullType(this)
-}
-
-internal fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
-
-internal fun IrType.makeNonOptional(): IrType {
-  return ((this as? IrNonNullType)?.ofType as? IrOptionalType)?.ofType ?: error("${Identifier.type} is not an optional type")
-}
-
-
 internal fun IrType.replacePlaceholder(newPath: String): IrType {
   return when (this) {
-    is IrNonNullType -> IrNonNullType(ofType = ofType.replacePlaceholder(newPath))
-    is IrListType -> IrListType(ofType = ofType.replacePlaceholder(newPath))
+    is IrListType -> copy(ofType = ofType.replacePlaceholder(newPath))
     is IrModelType -> copy(path = newPath)
     else -> error("Not a compound type?")
   }
@@ -135,42 +163,44 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
 
 internal fun GQLType.toIr(schema: Schema): IrType {
   return when (this) {
-    is GQLNonNullType -> IrNonNullType(ofType = type.toIr(schema))
-    is GQLListType -> IrListType(ofType = type.toIr(schema))
+    is GQLNonNullType -> type.toIr(schema).copyWith(nullable = false)
+    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true)
     is GQLNamedType -> {
       when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
-          IrScalarType(name)
+          IrScalarType(name, nullable = true)
         }
 
         is GQLEnumTypeDefinition -> {
-          IrEnumType(name = name)
+          IrEnumType(name, nullable = true)
         }
 
         is GQLInputObjectTypeDefinition -> {
-          IrInputObjectType(name)
+          IrInputObjectType(name, nullable = true)
         }
 
         is GQLObjectTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN)
+          IrModelType(MODEL_UNKNOWN, nullable = true)
         }
 
         is GQLInterfaceTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN)
+          IrModelType(MODEL_UNKNOWN, nullable = true)
         }
 
         is GQLUnionTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN)
+          IrModelType(MODEL_UNKNOWN, nullable = true)
         }
       }
     }
   }
 }
 
-internal fun IrType.isComposite(): Boolean {
-  return when(this) {
+internal fun IrNamedType.isComposite(): Boolean {
+  return when (this) {
     is IrScalarType -> false
     is IrEnumType -> false
-    else -> true
+    is IrInputObjectType -> true
+    is IrModelType -> true
+    is IrObjectType -> true
   }
 }

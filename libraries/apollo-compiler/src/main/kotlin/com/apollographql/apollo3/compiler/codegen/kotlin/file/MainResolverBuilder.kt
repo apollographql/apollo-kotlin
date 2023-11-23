@@ -8,11 +8,11 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrTargetField
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.ir.asKotlinPoet
+import com.apollographql.apollo3.compiler.ir.optional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -191,8 +191,8 @@ internal class MainResolverBuilder(
         /**
          * Unwrap the optional because getArgument always return an optional value
          */
-        val type = if (irTargetArgument.type is IrOptionalType) {
-          irTargetArgument.type.ofType
+        val type = if (irTargetArgument.type.optional) {
+          irTargetArgument.type.optional(false)
         } else {
           irTargetArgument.type
         }
@@ -202,7 +202,7 @@ internal class MainResolverBuilder(
             context.resolver.resolveIrType(type = type, jsExport = false, isInterface = false),
             irTargetArgument.name,
         )
-        if (irTargetArgument.type !is IrOptionalType) {
+        if (!irTargetArgument.type.optional) {
           builder.add(".getOrThrow()")
         }
       }

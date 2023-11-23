@@ -13,8 +13,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
+import com.apollographql.apollo3.compiler.ir.nullable
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
@@ -64,12 +64,12 @@ internal class AdapterRegistryBuilder(
               }
               else -> {
                 val type = when (it) {
-                  is GQLEnumTypeDefinition -> IrEnumType(it.name)
-                  is GQLInputObjectTypeDefinition -> IrInputObjectType(it.name)
-                  is GQLScalarTypeDefinition -> IrScalarType(it.name)
+                  is GQLEnumTypeDefinition -> IrEnumType(it.name, nullable = true)
+                  is GQLInputObjectTypeDefinition -> IrInputObjectType(it.name, nullable = true)
+                  is GQLScalarTypeDefinition -> IrScalarType(it.name, nullable = true)
                   else -> error("")
                 }
-                add(".add(%S,·%L)\n", it.name, context.resolver.adapterInitializer(IrNonNullType(type), false, false, ""))
+                add(".add(%S,·%L)\n", it.name, context.resolver.adapterInitializer(type.nullable(false), false, false, ""))
               } }
           }
         }

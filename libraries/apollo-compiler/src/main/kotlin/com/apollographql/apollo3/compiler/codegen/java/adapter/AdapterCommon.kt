@@ -31,13 +31,10 @@ import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isComposite
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -77,7 +74,7 @@ internal fun readFromResponseCodeBlock(
     val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of(T, JavaClassNames.Absent)
+      property.info.type.optional -> CodeBlock.of(T, JavaClassNames.Absent)
       resolvedType == TypeName.INT -> CodeBlock.of("0")
       resolvedType == TypeName.DOUBLE -> CodeBlock.of("0.0")
       resolvedType == TypeName.BOOLEAN -> CodeBlock.of("false")
@@ -208,8 +205,8 @@ internal fun readFromResponseCodeBlock(
   val checks = CodeBlock.builder()
       .add(
           visibleProperties.filter { property ->
-            property.info.type is IrNonNullType
-                && !property.info.type.isOptional()
+            !property.info.type.nullable
+                && !property.info.type.optional
                 && !checkedProperties.contains(property.info.responseName)
           }.map { property ->
             CodeBlock.of(
@@ -252,7 +249,6 @@ internal fun readFromResponseCodeBlock(
 
 private fun IrType.modelPath(): String {
   return when (this) {
-    is IrNonNullType -> ofType.modelPath()
     is IrModelType -> path
     else -> error("Synthetic field has an invalid type: $this")
   }
@@ -288,7 +284,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
      * Output types do not distinguish between null and absent
      */
     val resolvedType = context.resolver.resolveIrType(info.type).withoutAnnotations()
-    if (this.info.type !is IrNonNullType) {
+    if (this.info.type.nullable) {
       val property = CodeBlock.of("$value.$propertyName")
       val propertyTest = context.testOptionalValuePresence(property, resolvedType)
       builder.beginControlFlow("if ($L)", propertyTest)
@@ -299,7 +295,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
         adapterInitializer,
         context.unwrapOptionalValue(fieldValue, resolvedType)
     )
-    if (this.info.type !is IrNonNullType) {
+    if (this.info.type.nullable) {
       builder.endControlFlow()
     }
   }

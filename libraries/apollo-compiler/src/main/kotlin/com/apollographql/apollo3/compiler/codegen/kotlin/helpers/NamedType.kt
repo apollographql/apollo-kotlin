@@ -4,12 +4,10 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrInputField
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
-import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.makeNonOptional
+import com.apollographql.apollo3.compiler.ir.nullable
+import com.apollographql.apollo3.compiler.ir.optional
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -39,19 +37,19 @@ internal fun NamedType.toParameterSpec(context: KotlinContext, withDefaultArgume
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
       .maybeAddRequiresOptIn(context.resolver, optInFeature)
-      .applyIf(type.isOptional() && withDefaultArguments) { defaultValue("%T", KotlinSymbols.Absent) }
+      .applyIf(type.optional && withDefaultArguments) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }
 
 internal fun NamedType.toPropertySpec(context: KotlinContext): PropertySpec {
   val initializer = CodeBlock.builder()
   val actualType: IrType
-  if (type.isOptional()) {
+  if (type.optional) {
     initializer.add("%T", KotlinSymbols.Absent)
     actualType = type
   } else {
     initializer.add("null")
-    actualType = (type as? IrNonNullType)?.ofType ?: type
+    actualType = type.nullable(true)
   }
   return PropertySpec
       .builder(
@@ -69,9 +67,9 @@ internal fun NamedType.toSetterFunSpec(context: KotlinContext): FunSpec {
   val propertyName = context.layout.propertyName(graphQlName)
   val body = CodeBlock.builder()
   val parameterType: IrType
-  if (type.isOptional()) {
+  if (type.optional) {
     body.add("this.%L·=·%T(%L)\n", propertyName, KotlinSymbols.Present, propertyName)
-    parameterType = type.makeNonOptional()
+    parameterType = type.optional(false)
   } else {
     body.add("this.%L·=·%L\n", propertyName,propertyName)
     parameterType = type
