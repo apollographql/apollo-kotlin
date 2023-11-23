@@ -33,10 +33,10 @@ sealed class Optional<out V> {
 
   companion object {
     @JvmStatic
-    fun <V> absent(): Optional<V> = Absent
+    fun absent(): Absent = Absent
 
     @JvmStatic
-    fun <V> present(value: V): Optional<V> = Present(value)
+    fun <V> present(value: V): Present<V> = Present(value)
 
     @JvmStatic
     fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
@@ -51,7 +51,7 @@ fun <V> Optional<V>.getOrElse(fallback: V): V = (this as? Present)?.value ?: fal
 @ApolloExperimental
 fun <V, R> Optional<V>.map(mapper: (V) -> R): Optional<R> {
   return when(this) {
-    is Optional.Absent -> Optional.Absent
-    is Optional.Present -> Optional.present(mapper(value))
+    is Absent -> Absent
+    is Present -> Optional.present(mapper(value))
   }
 }
