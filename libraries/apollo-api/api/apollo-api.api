@@ -820,10 +820,10 @@ public final class com/apollographql/apollo3/api/Operations {
 
 public abstract class com/apollographql/apollo3/api/Optional {
 	public static final field Companion Lcom/apollographql/apollo3/api/Optional$Companion;
-	public static final fun absent ()Lcom/apollographql/apollo3/api/Optional;
+	public static final fun absent ()Lcom/apollographql/apollo3/api/Optional$Absent;
 	public final fun getOrNull ()Ljava/lang/Object;
 	public final fun getOrThrow ()Ljava/lang/Object;
-	public static final fun present (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public static final fun present (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional$Present;
 	public static final fun presentIfNotNull (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
 }
 
@@ -832,8 +832,8 @@ public final class com/apollographql/apollo3/api/Optional$Absent : com/apollogra
 }
 
 public final class com/apollographql/apollo3/api/Optional$Companion {
-	public final fun absent ()Lcom/apollographql/apollo3/api/Optional;
-	public final fun present (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public final fun absent ()Lcom/apollographql/apollo3/api/Optional$Absent;
+	public final fun present (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional$Present;
 	public final fun presentIfNotNull (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
 }
 
