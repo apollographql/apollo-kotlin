@@ -58,6 +58,8 @@ In this case, the cache ID for an `Author` object includes the values of both it
 
 > All of an object type's key fields must return a [scalar type](https://www.apollographql.com/docs/apollo-server/schema/schema/#scalar-types).
 
+> Note that the **key fields** specified this way will automatically be added during code generation to selections on the object type, since they are always needed to identify the object in the cache.
+> This means you don't need to include them in your queries.
 
 ## `@fieldPolicy`
 
