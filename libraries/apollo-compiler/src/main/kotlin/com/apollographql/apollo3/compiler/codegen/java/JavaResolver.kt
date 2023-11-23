@@ -117,8 +117,6 @@ internal class JavaResolver(
     return result
   }
 
-  fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
-
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   fun resolveIrType(type: IrType): TypeName {
