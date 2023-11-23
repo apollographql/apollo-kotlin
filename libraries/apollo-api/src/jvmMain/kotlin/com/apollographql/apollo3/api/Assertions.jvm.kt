@@ -10,7 +10,7 @@ fun assertOneOf(vararg args: java.util.Optional<out java.util.Optional<*>>) {
   if (presentArgs.size != 1) {
     throw IllegalArgumentException("@oneOf input must have one field set (got ${presentArgs.size})")
   }
-  if (presentArgs.first().get().isEmpty) {
+  if (!presentArgs.first().get().isPresent) {
     throw IllegalArgumentException("The value set on @oneOf input field must be non-null")
   }
 }
