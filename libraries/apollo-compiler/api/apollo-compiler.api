@@ -664,17 +664,8 @@ public final class com/apollographql/apollo3/compiler/ir/IrType$Companion {
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrTypeKt {
-	public static final fun getWrapper (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
 	public static final fun nullable (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public static final fun optional (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/apollographql/apollo3/compiler/ir/IrType;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrTypeWrapper : java/lang/Enum {
-	public static final field None Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
-	public static final field Optional Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
-	public static fun values ()[Lcom/apollographql/apollo3/compiler/ir/IrTypeWrapper;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {
