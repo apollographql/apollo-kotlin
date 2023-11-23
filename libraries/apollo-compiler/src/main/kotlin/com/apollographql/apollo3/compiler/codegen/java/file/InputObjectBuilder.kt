@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -88,5 +89,11 @@ internal class InputObjectBuilder(
 }
 
 private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
-  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", JavaClassNames.Assertions)
+  val assertionsClassName: ClassName = if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL) {
+    // When using the Guava optionals, use the method generated in the project, as apollo-api doesn't depend on Guava
+    ClassName.get(context.layout.utilPackageName(), "Assertions")
+  } else {
+    JavaClassNames.Assertions
+  }
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", assertionsClassName)
 }
