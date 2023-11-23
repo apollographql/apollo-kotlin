@@ -14,7 +14,7 @@ interface Bar implements Foo {
   z: String @deprecated(reason: "This field is deprecated")
 }
 
-input MyInput {
+input MyInput @oneOf {
   a: Int
 
   b: String @deprecated(reason: "This input field is deprecated")
@@ -200,6 +200,8 @@ directive @deprecated (reason: String = "No longer supported") on FIELD_DEFINITI
 directive @defer (label: String, if: Boolean! = true) on FRAGMENT_SPREAD|INLINE_FRAGMENT
 
 directive @specifiedBy (url: String!) on SCALAR
+
+directive @oneOf on INPUT_OBJECT
 
 schema {
   query: Query

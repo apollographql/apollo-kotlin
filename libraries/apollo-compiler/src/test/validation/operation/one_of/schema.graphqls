@@ -1,0 +1,17 @@
+type Query {
+  field(myInput: MyInput): String
+  field2(myInput: [MyInput]): String
+}
+
+directive @oneOf on INPUT_OBJECT
+
+input MyInput @oneOf {
+  a: String
+  b: Int
+  c: MyInput2
+}
+
+input MyInput2 @oneOf {
+  d: String
+  e: Int
+}

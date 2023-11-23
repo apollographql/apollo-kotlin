@@ -29,6 +29,8 @@ fun List<GQLDirective>.findSpecifiedBy() = firstOrNull { it.name == "specifiedBy
           }
     }
 
+fun List<GQLDirective>.findOneOf() = any { it.name == "oneOf" }
+
 @ApolloInternal
 fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { schema.originalDirectiveName(it.name) == Schema.REQUIRES_OPT_IN }
     .map {

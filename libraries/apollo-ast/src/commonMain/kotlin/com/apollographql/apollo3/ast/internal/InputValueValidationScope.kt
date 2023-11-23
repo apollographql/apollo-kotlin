@@ -23,6 +23,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
@@ -37,14 +38,16 @@ internal fun ValidationScope.validateAndCoerceValue(
     value: GQLValue,
     expectedType: GQLType,
     hasLocationDefaultValue: Boolean,
+    isOneOfInputField: Boolean,
     registerVariableUsage: (VariableUsage) -> Unit,
 ): GQLValue {
   if (value is GQLVariableValue) {
     registerVariableUsage(
         VariableUsage(
-            value,
-            expectedType,
-            hasLocationDefaultValue
+            variable = value,
+            locationType = expectedType,
+            hasLocationDefaultValue = hasLocationDefaultValue,
+            isOneOfInputField = isOneOfInputField,
         )
     )
 
@@ -61,7 +64,13 @@ internal fun ValidationScope.validateAndCoerceValue(
 
   when (expectedType) {
     is GQLNonNullType -> {
-      return validateAndCoerceValue(value, expectedType.type, hasLocationDefaultValue, registerVariableUsage)
+      return validateAndCoerceValue(
+          value = value,
+          expectedType = expectedType.type,
+          hasLocationDefaultValue = hasLocationDefaultValue,
+          registerVariableUsage = registerVariableUsage,
+          isOneOfInputField = isOneOfInputField,
+      )
     }
 
     is GQLListType -> {
@@ -80,7 +89,13 @@ internal fun ValidationScope.validateAndCoerceValue(
             /**
              * When using a GQLListValue like `[$variable, 1, 3]`, it's not possible to have a default location value
              */
-            validateAndCoerceValue(it, expectedType.type, false, registerVariableUsage)
+            validateAndCoerceValue(
+                value = it,
+                expectedType = expectedType.type,
+                hasLocationDefaultValue = false,
+                isOneOfInputField = isOneOfInputField,
+                registerVariableUsage = registerVariableUsage,
+            )
           }
       )
     }
@@ -134,6 +149,24 @@ private fun ValidationScope.validateAndCoerceInputObject(
     }
   }
 
+  val isOneOfInputObject = expectedTypeDefinition.directives.findOneOf()
+  if (isOneOfInputObject) {
+    if (value.fields.size != 1) {
+      registerIssue(
+          message = "Exactly one field must be supplied to the OneOf input object `${expectedType.pretty()}`",
+          sourceLocation = value.sourceLocation
+      )
+    } else {
+      val valueField = value.fields.first()
+      if (valueField.value is GQLNullValue) {
+        registerIssue(
+            message = "The field `${valueField.name}` supplied to the OneOf input object `${expectedType.pretty()}` must not be null",
+            sourceLocation = value.sourceLocation
+        )
+      }
+    }
+  }
+
   val inputFields = expectedTypeDefinition.inputFields.mapNotNull { inputValueDefinition ->
     val field = value.fields.firstOrNull { it.name == inputValueDefinition.name }
 
@@ -156,6 +189,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
                 value = inputValueDefinition.defaultValue,
                 expectedType = inputValueDefinition.type,
                 hasLocationDefaultValue = false,
+                isOneOfInputField = false,
                 registerVariableUsage = registerVariableUsage
             )
         )
@@ -187,7 +221,13 @@ private fun ValidationScope.validateAndCoerceInputObject(
 
     GQLObjectField(
         name = field.name,
-        value = validateAndCoerceValue(field.value, inputValueDefinition.type, inputValueDefinition.defaultValue != null, registerVariableUsage)
+        value = validateAndCoerceValue(
+            value = field.value,
+            expectedType = inputValueDefinition.type,
+            hasLocationDefaultValue = inputValueDefinition.defaultValue != null,
+            isOneOfInputField = isOneOfInputObject,
+            registerVariableUsage = registerVariableUsage,
+        )
     )
   }
 

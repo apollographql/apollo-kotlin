@@ -6,7 +6,8 @@ package com.apollographql.apollo3.ast
 class VariableUsage(
     val variable: GQLVariableValue,
     val locationType: GQLType,
-    val hasLocationDefaultValue: Boolean
+    val hasLocationDefaultValue: Boolean,
+    val isOneOfInputField: Boolean,
 )
 
 /**

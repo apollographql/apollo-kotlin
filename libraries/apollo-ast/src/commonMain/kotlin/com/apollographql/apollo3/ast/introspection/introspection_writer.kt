@@ -24,6 +24,7 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.findSpecifiedBy
 import com.apollographql.apollo3.ast.toUtf8
 import kotlinx.serialization.Serializable
@@ -66,6 +67,7 @@ internal class WTypeFull(
     val enumValues: List<WEnumValue>?,
     val inputFields: List<WInputValue>?,
     val specifiedByURL: String?,
+    val isOneOf: Boolean?,
 )
 
 @Serializable
@@ -193,7 +195,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         possibleTypes = null,
         enumValues = null,
         inputFields = null,
-        specifiedByURL = null
+        specifiedByURL = null,
+        isOneOf = null,
     )
   }
 
@@ -232,7 +235,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         interfaces = null,
         possibleTypes = null,
         enumValues = null,
-        specifiedByURL = null
+        specifiedByURL = null,
+        isOneOf = directives.findOneOf(),
     )
   }
 
@@ -263,7 +267,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         },
         enumValues = null,
         inputFields = null,
-        specifiedByURL = null
+        specifiedByURL = null,
+        isOneOf = null,
     )
   }
 
@@ -277,7 +282,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         interfaces = null,
         inputFields = null,
         possibleTypes = null,
-        specifiedByURL = null
+        specifiedByURL = null,
+        isOneOf = null,
     )
   }
 
@@ -301,7 +307,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         possibleTypes = null,
         enumValues = null,
         inputFields = null,
-        specifiedByURL = this.directives.findSpecifiedBy()
+        specifiedByURL = this.directives.findSpecifiedBy(),
+        isOneOf = null,
     )
   }
 
@@ -315,7 +322,8 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         interfaces = null,
         enumValues = null,
         inputFields = null,
-        specifiedByURL = null
+        specifiedByURL = null,
+        isOneOf = null,
     )
   }
 

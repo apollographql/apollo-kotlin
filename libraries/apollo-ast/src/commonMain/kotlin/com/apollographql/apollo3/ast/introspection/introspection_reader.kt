@@ -150,6 +150,7 @@ private class RTypeFull(
     val enumValues: List<REnumValue>? = null,
     val inputFields: List<RInputValue>? = null,
     val specifiedByURL: String? = null,
+    val isOneOf: Boolean? = null,
 ) {
   override fun toString(): String {
     return "$kind - $name"
@@ -484,7 +485,16 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         name = name,
         inputFields = inputFields?.map { it.toGQLInputValueDefinition() }
             ?: throw ConversionException("Input Object '$name' does not define any input field"),
-        directives = emptyList()
+        directives = if (isOneOf == true) {
+          listOf(
+              GQLDirective(
+                  name = "oneOf",
+                  arguments = emptyList()
+              )
+          )
+        } else {
+          emptyList()
+        }
     )
   }
 

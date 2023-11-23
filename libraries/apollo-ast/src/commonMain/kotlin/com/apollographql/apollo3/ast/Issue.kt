@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 
 /**
  * All the issues that can be collected while analyzing a graphql document
@@ -12,56 +13,81 @@ sealed interface Issue {
 /**
  * An issue from the GraphQL spec
  */
-sealed interface GraphQLIssue: Issue
+sealed interface GraphQLIssue : Issue
 
 /**
  * A validation issue from the GraphQL spec
  */
-sealed interface GraphQLValidationIssue: GraphQLIssue
+sealed interface GraphQLValidationIssue : GraphQLIssue
 
 /**
  * A custom issue specific to the Apollo compiler
  */
-sealed interface ApolloIssue: Issue
+sealed interface ApolloIssue : Issue
 
 /**
  * A grammar error
  */
-class ParsingError(override val message: String, override val  sourceLocation: SourceLocation?) : GraphQLIssue
+class ParsingError(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLIssue
 
 /**
  * An unknown directive was found.
  *
  * In a perfect world everyone uses SDL schemas, and we can validate directives but in this world, a lot of users rely
  * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+ *
+ * In some cases (e.g. `@oneOf`) we want to enforce that the directive is defined. In that case [requireDefinition] is true and the issue
+ * will be raised as an error rather than warning.
  */
-class UnknownDirective(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class UnknownDirective @ApolloInternal constructor(
+    override val message: String,
+    override val sourceLocation: SourceLocation?,
+    @ApolloInternal
+    val requireDefinition: Boolean,
+) : GraphQLValidationIssue {
+  constructor(message: String, sourceLocation: SourceLocation?) : this(message, sourceLocation, false)
+}
+
+/**
+ * The directive definition is inconsistent with the expected one.
+ */
+class IncompatibleDirectiveDefinition(
+    directiveName: String,
+    expectedDefinition: String,
+    override val sourceLocation: SourceLocation?,
+) : GraphQLValidationIssue {
+  override val message = "Unexpected '@$directiveName' directive definition. Expecting '$expectedDefinition'."
+}
 
 /**
  * Fields have different shapes and cannot be merged
  *
  */
-class DifferentShape(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class DifferentShape(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
-class UnusedFragment(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class UnusedFragment(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
 /**
  * Two type definitions have the same name
  */
-class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
-class DirectiveRedefinition(val name: String, existingSourceLocation: SourceLocation?, override val sourceLocation: SourceLocation?): GraphQLValidationIssue {
+class DirectiveRedefinition(
+    val name: String,
+    existingSourceLocation: SourceLocation?,
+    override val sourceLocation: SourceLocation?,
+) : GraphQLValidationIssue {
   override val message = "Directive '${name}' is defined multiple times. First definition is: ${existingSourceLocation.pretty()}"
 }
 
-class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
-class AnonymousOperation(override val message: String, override val sourceLocation: SourceLocation?): ApolloIssue
+class AnonymousOperation(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
 
 /**
  * Another GraphQL validation error as per the spec
  */
-class OtherValidationIssue(override val message: String, override val sourceLocation: SourceLocation?): GraphQLValidationIssue
+class OtherValidationIssue(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
 /**
  * A deprecated field/enum is used

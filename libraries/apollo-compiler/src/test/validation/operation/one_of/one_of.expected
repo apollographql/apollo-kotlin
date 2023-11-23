@@ -1,0 +1,23 @@
+OtherValidationIssue (3:18)
+Exactly one field must be supplied to the OneOf input object `MyInput`
+------------
+OtherValidationIssue (7:23)
+Exactly one field must be supplied to the OneOf input object `MyInput2`
+------------
+OtherValidationIssue (12:18)
+The field `a` supplied to the OneOf input object `MyInput` must not be null
+------------
+OtherValidationIssue (16:23)
+The field `d` supplied to the OneOf input object `MyInput2` must not be null
+------------
+OtherValidationIssue (20:32)
+The field `a` supplied to the OneOf input object `MyInput` must not be null
+------------
+OtherValidationIssue (25:23)
+Variable `var` of type `String` used in a OneOf input type must be a non-null type
+------------
+OtherValidationIssue (29:28)
+Variable `var` of type `String` used in a OneOf input type must be a non-null type
+------------
+OtherValidationIssue (37:23)
+Variable `var` of type `String` used in a OneOf input type must be a non-null type

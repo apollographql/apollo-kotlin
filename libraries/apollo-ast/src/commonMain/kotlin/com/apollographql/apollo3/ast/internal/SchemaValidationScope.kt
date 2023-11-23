@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.DirectiveRedefinition
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLField
@@ -14,6 +15,7 @@ import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
@@ -32,10 +34,12 @@ import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
+import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
+import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.introspection.defaultSchemaDefinition
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
@@ -57,7 +61,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = apolloDefinitions("v0.1")
+  val apolloDefinitions = apolloDefinitions("v0.2")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
@@ -126,6 +130,12 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
     }
   }
 
+  directiveDefinitions["oneOf"]?.let {
+    if (it.locations != listOf(GQLDirectiveLocation.INPUT_OBJECT) || it.arguments.isNotEmpty() || it.repeatable) {
+      issues.add(IncompatibleDirectiveDefinition("oneOf", "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
+    }
+  }
+
   if (schemaDefinition == null) {
     /**
      * This is not in the specification per-se but is required for `extend schema @link` usages that are not 100% spec compliant
@@ -171,6 +181,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
+  mergedScope.validateInputObjects()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -417,6 +428,32 @@ private fun ValidationScope.validateObjects() {
       gqlFieldDefinition.directives.forEach { gqlDirective ->
         validateDirective(gqlDirective, gqlFieldDefinition) {
           issues.add(it.constContextError())
+        }
+      }
+    }
+  }
+}
+
+private fun ValidationScope.validateInputObjects() {
+  typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>().forEach { o ->
+    if (o.inputFields.isEmpty()) {
+      registerIssue("Input object must specify one or more input fields", o.sourceLocation)
+    }
+
+    o.directives.forEach { directive ->
+      validateDirective(directive, o) {
+        issues.add(it.constContextError())
+      }
+    }
+
+    val isOneOfInputObject = o.directives.findOneOf()
+    o.inputFields.forEach { gqlInputValueDefinition ->
+      if (isOneOfInputObject) {
+        if (gqlInputValueDefinition.type is GQLNonNullType) {
+          registerIssue("Input field '${gqlInputValueDefinition.name}' of OneOf input object '${o.name}' must be nullable", gqlInputValueDefinition.sourceLocation)
+        }
+        if (gqlInputValueDefinition.defaultValue != null) {
+          registerIssue("Input field '${gqlInputValueDefinition.name}' of OneOf input object '${o.name}' must not have a default value", gqlInputValueDefinition.sourceLocation)
         }
       }
     }
