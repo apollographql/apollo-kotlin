@@ -76,19 +76,15 @@ internal class KotlinResolver(
     classNames.put(ResolverKey(kind, id), ClassName(memberName.packageName, memberName.simpleName))
   }
 
-  internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false, override: (IrType) -> TypeName? = { null }): TypeName {
+  internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false): TypeName {
     if (type.optional) {
-      return KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface, override = override))
+      return KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
     } else if (!type.nullable) {
-      return resolveIrType(type.nullable(true), jsExport, isInterface, override = override).copy(nullable = false)
+      return resolveIrType(type.nullable(true), jsExport, isInterface).copy(nullable = false)
     }
-
-    override(type)?.let {
-      return it
-    }
-
+    
     return when (type) {
-      is IrListType -> toListType(resolveIrType(type.ofType, jsExport, isInterface, override), jsExport, isInterface)
+      is IrListType -> toListType(resolveIrType(type.ofType, jsExport, isInterface), jsExport, isInterface)
       is IrScalarType -> resolveIrScalarType(type)
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrEnumType -> if (jsExport) {
