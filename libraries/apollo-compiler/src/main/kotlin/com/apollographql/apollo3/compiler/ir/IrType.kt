@@ -14,11 +14,33 @@ import com.apollographql.apollo3.ast.Schema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-enum class IrTypeWrapper {
-  None,
-  Optional,
-}
-
+/**
+ * The IR representation of an input or output field
+ *
+ * **Allowed**
+ *
+ * * `T`
+ * * `Nullable<T>`
+ * * `Option<T>`
+ * * `Option<Nullable<T>>`
+ * * `Result<T>`
+ * * `Result<Nullable<T>>`
+ * * All `List` variations of the above
+ *
+ * **Disallowed**
+ *
+ * * `Nullable<Option<T>>`
+ * * `Nullable<Result<T>>`
+ * * `Nullable<Nullable<T>>`
+ * * `Option<Option<T>>`
+ * * `Option<Result<T>>`
+ * * `Result<Option<T>>`
+ * * `Result<Result<T>>`
+ * * etc...
+ *
+ * We need both `Option` and `Nullable` to distinguish `?` vs `Option` in Kotlin (see this [Arrow article](https://arrow-kt.io/learn/typed-errors/nullable-and-option/)).
+ * In java `Option` and `Nullable` might be represented using the same `Optional` depending on the settings.
+ */
 @Serializable
 sealed interface IrType {
   val nullable: Boolean
@@ -26,11 +48,6 @@ sealed interface IrType {
 
   fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional): IrType
   fun rawType(): IrNamedType
-}
-
-val IrType.wrapper: IrTypeWrapper get() = when {
-  this.optional -> IrTypeWrapper.Optional
-  else -> IrTypeWrapper.None
 }
 
 fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
