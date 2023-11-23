@@ -129,6 +129,10 @@ public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 }
 
+public final class com/apollographql/apollo3/api/AssertOneOfKt {
+	public static final fun assertOneOf ([Lcom/apollographql/apollo3/api/Optional;)V
+}
+
 public final class com/apollographql/apollo3/api/Assertions {
 	public static final fun checkFieldNotMissing (Ljava/lang/Object;Ljava/lang/String;)V
 }
@@ -655,6 +659,13 @@ public final class com/apollographql/apollo3/api/InterfaceType$Builder {
 	public final fun embeddedFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
 	public final fun interfaces (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
 	public final fun keyFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
+}
+
+public final class com/apollographql/apollo3/api/JavaAssertOneOf {
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/JavaAssertOneOf;
+	public static final fun assertOneOf ([Lcom/apollographql/apollo3/api/Optional;)V
+	public static final fun assertOneOf ([Lcom/google/common/base/Optional;)V
+	public static final fun assertOneOf ([Ljava/util/Optional;)V
 }
 
 public final class com/apollographql/apollo3/api/ListAdapter : com/apollographql/apollo3/api/Adapter {
