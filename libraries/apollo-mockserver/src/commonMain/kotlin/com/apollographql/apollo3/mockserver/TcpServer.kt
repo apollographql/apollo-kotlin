@@ -56,4 +56,4 @@ class Address(
 )
 
 @ApolloExperimental
-expect fun TcpServer(): TcpServer
+expect fun TcpServer(port: Int): TcpServer

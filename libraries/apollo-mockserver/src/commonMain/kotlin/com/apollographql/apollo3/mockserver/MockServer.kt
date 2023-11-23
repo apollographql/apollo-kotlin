@@ -16,6 +16,7 @@ import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.Closeable
 import kotlin.js.JsName
+import kotlin.jvm.JvmOverloads
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -81,6 +82,7 @@ interface MockServer : Closeable {
     private var handlePings: Boolean? = null
     private var tcpServer: TcpServer? = null
     private var listener: Listener? = null
+    private var port: Int? = null
 
     fun handler(handler: MockServerHandler) = apply {
       this.handler = handler
@@ -94,16 +96,23 @@ interface MockServer : Closeable {
       this.tcpServer = tcpServer
     }
 
+    fun port(port: Int) = apply {
+      this.port = port
+    }
+
     fun listener(listener: Listener) = apply {
       this.listener = listener
     }
-
-
+    
     fun build(): MockServer {
+      check (tcpServer == null || port == null) {
+        "It is an error to set both tcpServer and port"
+      }
+      val server = tcpServer ?: TcpServer(port ?: 0)
       return MockServerImpl(
           handler ?: QueueMockServerHandler(),
           handlePings ?: true,
-          tcpServer ?: TcpServer(),
+          server,
           listener
       )
     }
@@ -154,7 +163,12 @@ internal class MockServerImpl(
     }
   }
 
-  private suspend fun handleRequests(handler: MockServerHandler, socket: TcpSocket, listener: MockServer.Listener?, onRequest: (MockRequestBase) -> Unit) {
+  private suspend fun handleRequests(
+      handler: MockServerHandler,
+      socket: TcpSocket,
+      listener: MockServer.Listener?,
+      onRequest: (MockRequestBase) -> Unit
+  ) {
     val buffer = Buffer()
     val reader = object : Reader {
       override val buffer: Buffer
@@ -235,11 +249,21 @@ internal class MockServerImpl(
 }
 
 @JsName("createMockServer")
-fun MockServer(): MockServer = MockServerImpl(QueueMockServerHandler(), true, TcpServer(), null)
+@JvmOverloads
+fun MockServer(port: Int = 0): MockServer = MockServerImpl(
+    QueueMockServerHandler(),
+    true,
+    TcpServer(port),
+    null)
 
 @Deprecated("Use MockServer.Builder() instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-fun MockServer(handler: MockServerHandler): MockServer = MockServerImpl(handler, true, TcpServer(), null)
+fun MockServer(handler: MockServerHandler): MockServer =
+    MockServerImpl(
+        handler,
+        true,
+        TcpServer(0),
+        null)
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)

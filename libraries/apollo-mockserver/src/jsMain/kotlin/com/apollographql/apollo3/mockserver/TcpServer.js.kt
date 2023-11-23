@@ -46,7 +46,7 @@ internal class NodeTcpSocket(private val netSocket: WrappedSocket) : TcpSocket {
   }
 }
 
-internal class NodeTcpServer : TcpServer {
+internal class NodeTcpServer(private val port: Int) : TcpServer {
   private var server: WrappedServer? = null
   private var address: Address? = null
 
@@ -56,7 +56,7 @@ internal class NodeTcpServer : TcpServer {
       block(NodeTcpSocket(netSocket))
     }
 
-    server!!.listen()
+    server!!.listen(port)
   }
 
   override suspend fun address(): Address {
@@ -82,4 +82,4 @@ internal class NodeTcpServer : TcpServer {
   }
 }
 
-actual fun TcpServer(): TcpServer = NodeTcpServer()
+actual fun TcpServer(port: Int): TcpServer = NodeTcpServer(port)

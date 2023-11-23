@@ -20,13 +20,14 @@ import kotlinx.coroutines.withTimeout
 import okio.IOException
 import io.ktor.network.sockets.Socket as WrappedSocket
 
-actual fun TcpServer(): TcpServer = KtorTcpServer(0)
+actual fun TcpServer(port: Int): TcpServer = KtorTcpServer(port)
 
 @ApolloExperimental
-class KtorTcpServer(private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
+class KtorTcpServer(port: Int = 0, private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
   private val selectorManager = SelectorManager(dispatcher)
   private val scope = CoroutineScope(SupervisorJob() + dispatcher)
-  private val serverSocket = aSocket(selectorManager).tcp().bind("127.0.0.1")
+  private val serverSocket = aSocket(selectorManager).tcp().bind("127.0.0.1", port)
+
 
   override fun close() {
     scope.cancel()
