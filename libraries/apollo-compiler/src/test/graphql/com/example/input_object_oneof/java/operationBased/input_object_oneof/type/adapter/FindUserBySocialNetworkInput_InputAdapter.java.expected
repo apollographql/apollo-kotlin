@@ -5,10 +5,9 @@
 //
 package com.example.input_object_oneof.type.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,25 +17,25 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum FindUserBySocialNetworkInput_InputAdapter implements CompositeAdapter<FindUserBySocialNetworkInput> {
+public enum FindUserBySocialNetworkInput_InputAdapter implements Adapter<FindUserBySocialNetworkInput> {
   INSTANCE;
 
   @Override
   public FindUserBySocialNetworkInput fromJson(JsonReader reader,
-      CompositeAdapterContext adapterContext) throws IOException {
+      CustomScalarAdapters customScalarAdapters) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, FindUserBySocialNetworkInput value,
-      CompositeAdapterContext adapterContext) throws IOException {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      FindUserBySocialNetworkInput value) throws IOException {
     if (value.facebookId instanceof Optional.Present) {
       writer.name("facebookId");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.facebookId);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.facebookId);
     }
     if (value.googleId instanceof Optional.Present) {
       writer.name("googleId");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.googleId);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.googleId);
     }
   }
 }

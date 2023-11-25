@@ -6,7 +6,6 @@
 package com.example.named_fragment_with_variables.fragment.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl;
@@ -17,8 +16,7 @@ public enum UserFragmentImpl_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, UserFragmentImpl value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("size");
-    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.size);
+    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.size);
   }
 }

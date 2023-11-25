@@ -6,8 +6,8 @@
 package com.example.mutation_create_review
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -50,7 +50,7 @@ internal data class CreateReviewForEpisode(
         withDefaultValues)
   }
 
-  override fun adapter(): CompositeAdapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

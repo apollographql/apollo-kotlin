@@ -5,9 +5,8 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,10 +17,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<HeroDetailsImpl.Data> {
+  public object Data : Adapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "birthDate")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
       var __typename: String? = null
       var _name: String? = null
@@ -29,9 +28,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _birthDate = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,17 +44,17 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.birthDate)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
     }
   }
 }

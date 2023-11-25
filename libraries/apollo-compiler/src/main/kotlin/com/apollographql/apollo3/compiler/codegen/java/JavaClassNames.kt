@@ -24,9 +24,7 @@ internal object JavaClassNames {
   val Optional = ClassNames.Optional.toJavaPoetClassName()
   val Absent = ClassNames.Absent.toJavaPoetClassName()
   val Present = ClassNames.Present.toJavaPoetClassName()
-  val CompositeAdapter = ClassNames.CompositeAdapter.toJavaPoetClassName()
   val Adapter = ClassNames.Adapter.toJavaPoetClassName()
-  val CompositeAdapterContext = ClassNames.CompositeAdapterContext.toJavaPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toJavaPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toJavaPoetClassName()
   val UnionType = ClassNames.UnionType.toJavaPoetClassName()
@@ -61,7 +59,7 @@ internal object JavaClassNames {
    */
   val CompiledNotNullType = ClassName.get(apolloApiPackageName, "CompiledNotNullType")
   val CompiledListType = ClassName.get(apolloApiPackageName, "CompiledListType")
-  val ObjectCompositeAdapter = ClassName.get(apolloApiPackageName, "ObjectCompositeAdapter")
+  val ObjectAdapter = ClassName.get(apolloApiPackageName, "ObjectAdapter")
   val And = ClassName.get(apolloApiPackageName, "BooleanExpression", "And")
   val Or = ClassName.get(apolloApiPackageName, "BooleanExpression", "Or")
   val Not = ClassName.get(apolloApiPackageName, "BooleanExpression", "Not")
@@ -72,11 +70,8 @@ internal object JavaClassNames {
   val BLabel = ClassName.get(apolloApiPackageName, "BLabel")
   val ImmutableMapBuilder = ClassName.get(apolloApiPackageName, "ImmutableMapBuilder")
   val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
-  val NullableCompositeAdapter = ClassName.get(apolloApiPackageName, "NullableCompositeAdapter")
   val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
-  val ListCompositeAdapter = ClassName.get(apolloApiPackageName, "ListCompositeAdapter")
   val ApolloOptionalAdapter = ClassName.get(apolloApiPackageName, "ApolloOptionalAdapter")
-  val ApolloOptionalCompositeAdapter = ClassName.get(apolloApiPackageName, "ApolloOptionalCompositeAdapter")
 
   val IOException = ClassName.get("java.io", "IOException")
 
@@ -85,10 +80,8 @@ internal object JavaClassNames {
    */
   val Adapters = ClassName.get(apolloApiPackageName, "Adapters")
   val JavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapter")
-  val JavaOptionalCompositeAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalCompositeAdapter")
   val JavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapters")
   val GuavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapter")
-  val GuavaOptionalCompositeAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalCompositeAdapter")
   val GuavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapters")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")

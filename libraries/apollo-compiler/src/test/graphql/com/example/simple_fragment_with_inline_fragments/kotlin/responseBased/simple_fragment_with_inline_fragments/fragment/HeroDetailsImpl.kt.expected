@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -34,7 +34,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -5,10 +5,10 @@
 //
 package com.example.inline_fragment_intersection;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter;
@@ -140,8 +140,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(TestOperation_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(TestOperation_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

@@ -6,11 +6,11 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader
+import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
-import com.apollographql.apollo3.api.json.writeObject
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -119,20 +119,7 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
 }
 
 @JvmName("-obj")
-fun <T> Adapter<T>.obj() = ObjectAdapter(this)
-
-class ObjectAdapter<T>(private val wrappedAdapter: Adapter<T>): Adapter<T> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    throw IllegalStateException("Input type used in output position")
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    writer.writeObject {
-      wrappedAdapter.toJson(this, customScalarAdapters, value)
-    }
-  }
-
-}
+fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmField
 val StringAdapter = object : Adapter<String> {
@@ -358,4 +345,42 @@ fun <T> Adapter<T>.toJsonString(
     indent: String? = null,
 ): String = buildJsonString(indent) {
   this@toJsonString.toJson(this, customScalarAdapters, value)
+}
+
+class ObjectAdapter<T>(
+    private val wrappedAdapter: Adapter<T>,
+    private val buffered: Boolean,
+) : Adapter<@JvmSuppressWildcards T> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+    val actualReader = if (buffered) {
+      reader.buffer()
+    } else {
+      reader
+    }
+    actualReader.beginObject()
+    return wrappedAdapter.fromJson(actualReader, customScalarAdapters).also {
+      actualReader.endObject()
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T, ) {
+    if (buffered && writer !is MapJsonWriter) {
+      /**
+       * Convert to a Map first
+       */
+      val mapWriter = MapJsonWriter()
+      mapWriter.beginObject()
+      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value, )
+      mapWriter.endObject()
+
+      /**
+       * And write to the original writer
+       */
+      writer.writeAny(mapWriter.root()!!)
+    } else {
+      writer.beginObject()
+      wrappedAdapter.toJson(writer, customScalarAdapters, value,)
+      writer.endObject()
+    }
+  }
 }

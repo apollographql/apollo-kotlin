@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize

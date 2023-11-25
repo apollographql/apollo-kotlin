@@ -6,8 +6,8 @@
 package com.example.java_primitive_types
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -45,7 +45,7 @@ public data class JavaPrimitiveQuery(
         withDefaultValues)
   }
 
-  override fun adapter(): CompositeAdapter<Data> = JavaPrimitiveQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = JavaPrimitiveQuery_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

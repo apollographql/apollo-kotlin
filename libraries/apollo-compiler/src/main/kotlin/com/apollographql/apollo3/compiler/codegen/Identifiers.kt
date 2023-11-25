@@ -11,7 +11,6 @@ internal object Identifier {
   const val nullable = "nullable"
 
   const val type = "type"
-  const val adapterContext = "adapterContext"
   const val customScalarAdapters = "customScalarAdapters"
   const val value = "value"
   const val reader = "reader"

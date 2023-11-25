@@ -5,8 +5,7 @@
 //
 package com.example.input_object_oneof.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,16 +18,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object FindUserQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<FindUserQuery.Data> {
+  public object Data : Adapter<FindUserQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("findUser")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         FindUserQuery.Data {
       var _findUser: FindUserQuery.Data.FindUser? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _findUser = FindUser.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _findUser = FindUser.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,23 +39,23 @@ public object FindUserQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: FindUserQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("findUser")
-      FindUser.obj().nullable().toJson(writer, value.findUser, adapterContext)
+      FindUser.obj().nullable().toJson(writer, customScalarAdapters, value.findUser)
     }
 
-    private object FindUser : CompositeAdapter<FindUserQuery.Data.FindUser> {
+    private object FindUser : Adapter<FindUserQuery.Data.FindUser> {
       public val RESPONSE_NAMES: List<String> = listOf("id")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           FindUserQuery.Data.FindUser {
         var _id: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,11 +67,11 @@ public object FindUserQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: FindUserQuery.Data.FindUser,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
       }
     }
   }

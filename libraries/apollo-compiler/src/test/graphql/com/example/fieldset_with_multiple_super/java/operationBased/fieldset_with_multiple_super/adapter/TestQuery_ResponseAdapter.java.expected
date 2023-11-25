@@ -5,17 +5,16 @@
 //
 package com.example.fieldset_with_multiple_super.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fieldset_with_multiple_super.TestQuery;
@@ -26,20 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("c");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.C _c = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _c = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _c = new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,42 +49,42 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("c");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.C>(C.INSTANCE, true)).toJson(writer, value.c, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).toJson(writer, customScalarAdapters, value.c);
     }
   }
 
-  public enum C implements CompositeAdapter<TestQuery.C> {
+  public enum C implements Adapter<TestQuery.C> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.C fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
+    public TestQuery.C fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
         IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnA _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, adapterContext);
+        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnB1 _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, adapterContext);
+        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.C(
@@ -96,46 +95,46 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.C value, CompositeAdapterContext adapterContext)
-        throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.C value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onA != null) {
-        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.toJson(writer, value.onA, adapterContext);
+        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.toJson(writer, customScalarAdapters, value.onA);
       }
 
       if (value.onB != null) {
-        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.toJson(writer, value.onB, adapterContext);
+        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.toJson(writer, customScalarAdapters, value.onB);
       }
     }
   }
 
-  public enum OnA implements CompositeAdapter<TestQuery.OnA> {
+  public enum OnA implements Adapter<TestQuery.OnA> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldA1");
 
     @Override
-    public TestQuery.OnA fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
       String _fieldA1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnB _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, adapterContext);
+        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.OnA(
@@ -146,34 +145,34 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnA value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnA value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("fieldA1");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA1);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1);
 
       if (value.onB != null) {
-        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.toJson(writer, value.onB, adapterContext);
+        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.toJson(writer, customScalarAdapters, value.onB);
       }
     }
   }
 
-  public enum OnB implements CompositeAdapter<TestQuery.OnB> {
+  public enum OnB implements Adapter<TestQuery.OnB> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB1");
 
     @Override
-    public TestQuery.OnB fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.OnB fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _fieldB1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -184,38 +183,38 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnB value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnB value) throws IOException {
       writer.name("fieldB1");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldB1);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1);
     }
   }
 
-  public enum OnB1 implements CompositeAdapter<TestQuery.OnB1> {
+  public enum OnB1 implements Adapter<TestQuery.OnB1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldB2");
 
     @Override
-    public TestQuery.OnB1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.OnB1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
       String _fieldB2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnA1 _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, adapterContext);
+        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.OnB1(
@@ -226,34 +225,34 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnB1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnB1 value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("fieldB2");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldB2);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2);
 
       if (value.onA != null) {
-        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.toJson(writer, value.onA, adapterContext);
+        com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.toJson(writer, customScalarAdapters, value.onA);
       }
     }
   }
 
-  public enum OnA1 implements CompositeAdapter<TestQuery.OnA1> {
+  public enum OnA1 implements Adapter<TestQuery.OnA1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldA2");
 
     @Override
-    public TestQuery.OnA1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.OnA1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _fieldA2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldA2 = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _fieldA2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -264,10 +263,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnA1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.OnA1 value) throws IOException {
       writer.name("fieldA2");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA2);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA2);
     }
   }
 }

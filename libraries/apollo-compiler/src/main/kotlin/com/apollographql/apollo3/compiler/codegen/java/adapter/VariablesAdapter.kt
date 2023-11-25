@@ -4,7 +4,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -19,7 +18,6 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrVariable
-import com.apollographql.apollo3.compiler.ir.isComposite
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
@@ -55,7 +53,6 @@ private fun List<IrVariable>.writeToResponseMethodSpec(
 
 private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("$T $adapterContext = new $T.Builder().$customScalarAdapters($customScalarAdapters).build()", JavaClassNames.CompositeAdapterContext, JavaClassNames.CompositeAdapterContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }
@@ -72,11 +69,7 @@ private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   }
 
   builder.add("$writer.name($S);\n", name)
-  if (!type.rawType().isComposite()) {
-    builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
-  } else {
-    builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
-  }
+  builder.addStatement("$L.$toJson($writer, $customScalarAdapters, $value.$propertyName)", adapterInitializer)
   if (type.optional) {
     builder.endControlFlow()
     if (defaultValue != null) {

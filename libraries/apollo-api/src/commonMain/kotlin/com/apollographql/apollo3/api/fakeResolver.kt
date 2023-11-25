@@ -327,7 +327,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
 }
 
 fun <T> buildData(
-    adapter: CompositeAdapter<T>,
+    adapter: Adapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     map: Map<String, Any?>,
@@ -336,14 +336,14 @@ fun <T> buildData(
 ): T {
   return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, customScalarAdapters)),
-      CompositeAdapterContext.Builder().customScalarAdapters(CustomScalarAdapters.PassThrough).build()
+      CustomScalarAdapters.PassThrough
   )
 }
 
 fun <T, Builder : ObjectBuilder<*>> buildData(
     builderFactory: BuilderFactory<Builder>,
     block: (Builder.() -> Unit),
-    adapter: CompositeAdapter<T>,
+    adapter: Adapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     resolver: FakeResolver,

@@ -137,7 +137,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 
 @Suppress("DEPRECATION_ERROR")
 fun BooleanExpression<BTerm>.evaluate(
-    variables: Set<String>,
+    variables: Set<String>?,
     typename: String?,
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     path: List<Any>?,
@@ -146,7 +146,7 @@ fun BooleanExpression<BTerm>.evaluate(
   val croppedPath = path?.drop(1)
   return evaluate {
     when (it) {
-      is BVariable -> !variables.contains(it.name)
+      is BVariable -> !(variables?.contains(it.name) ?: false)
       is BLabel -> hasDeferredFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }

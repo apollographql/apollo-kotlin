@@ -73,12 +73,11 @@ fun <D : Executable.Data> Executable<D>.parseData(
     falseVariables: Set<String>? = null,
     deferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
 ): D? {
-  val adapterContext = CompositeAdapterContext.Builder()
-      .customScalarAdapters(customScalarAdapters)
+  val customScalarAdapters1 = customScalarAdapters.newBuilder()
       .falseVariables(falseVariables)
       .deferredFragmentIdentifiers(deferredFragmentIds)
       .build()
-  return adapter().nullable().fromJson(jsonReader, adapterContext)
+  return adapter().nullable().fromJson(jsonReader, customScalarAdapters1)
 }
 
 
@@ -87,8 +86,5 @@ fun <D : Executable.Data> Executable<D>.composeData(
     customScalarAdapters: CustomScalarAdapters,
     value: D
 ) {
-  val adapterContext = CompositeAdapterContext.Builder()
-      .customScalarAdapters(customScalarAdapters)
-      .build()
-  adapter().toJson(jsonWriter, value, adapterContext)
+  adapter().toJson(jsonWriter, customScalarAdapters, value)
 }

@@ -5,8 +5,7 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -17,16 +16,16 @@ import kotlin.String
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails : CompositeAdapter<com.example.simple_fragment.fragment.HeroDetails> {
+  public object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -36,10 +35,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
         _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-            adapterContext)
+            customScalarAdapters)
       }
 
       return com.example.simple_fragment.fragment.HeroDetails(
@@ -50,15 +49,15 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.simple_fragment.fragment.HeroDetails,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.humanDetails != null) {
         com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-            value.humanDetails, adapterContext)
+            customScalarAdapters, value.humanDetails)
       }
     }
   }

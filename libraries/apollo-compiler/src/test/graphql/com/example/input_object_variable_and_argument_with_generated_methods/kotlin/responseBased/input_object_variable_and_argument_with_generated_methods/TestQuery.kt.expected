@@ -6,8 +6,8 @@
 package com.example.input_object_variable_and_argument_with_generated_methods
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -79,7 +79,7 @@ public class TestQuery(
         withDefaultValues)
   }
 
-  override fun adapter(): CompositeAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

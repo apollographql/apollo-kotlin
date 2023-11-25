@@ -5,17 +5,16 @@
 //
 package com.example.test_inline.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.GetPage;
@@ -26,20 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetPage_ResponseAdapter {
-  public enum Data implements CompositeAdapter<GetPage.Data> {
+  public enum Data implements Adapter<GetPage.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
 
     @Override
-    public GetPage.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public GetPage.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       GetPage.Collection _collection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _collection = new ObjectCompositeAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, adapterContext); break;
+          case 0: _collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -52,20 +51,20 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.Data value) throws IOException {
       writer.name("collection");
-      new ObjectCompositeAdapter<GetPage.Collection>(Collection.INSTANCE, true).toJson(writer, value.collection, adapterContext);
+      new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).toJson(writer, customScalarAdapters, value.collection);
     }
   }
 
-  public enum Collection implements CompositeAdapter<GetPage.Collection> {
+  public enum Collection implements Adapter<GetPage.Collection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
 
     @Override
-    public GetPage.Collection fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public GetPage.Collection fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
       List<GetPage.Item> _items = null;
@@ -73,17 +72,17 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _items = new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularCollection _onParticularCollection = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, adapterContext);
+        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_items, "items");
@@ -96,34 +95,34 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.Collection value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.Collection value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("items");
-      new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, value.items, adapterContext);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, customScalarAdapters, value.items);
 
       if (value.onParticularCollection != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.toJson(writer, value.onParticularCollection, adapterContext);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.toJson(writer, customScalarAdapters, value.onParticularCollection);
       }
     }
   }
 
-  public enum Item implements CompositeAdapter<GetPage.Item> {
+  public enum Item implements Adapter<GetPage.Item> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
 
     @Override
-    public GetPage.Item fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _title = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _title = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -136,27 +135,27 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.Item value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.Item value) throws IOException {
       writer.name("title");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.title);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.title);
     }
   }
 
-  public enum OnParticularCollection implements CompositeAdapter<GetPage.OnParticularCollection> {
+  public enum OnParticularCollection implements Adapter<GetPage.OnParticularCollection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("items");
 
     @Override
     public GetPage.OnParticularCollection fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       List<GetPage.Item1> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _items = new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -169,36 +168,36 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.OnParticularCollection value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.OnParticularCollection value) throws IOException {
       writer.name("items");
-      new ListCompositeAdapter<>(new ObjectCompositeAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, value.items, adapterContext);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.items);
     }
   }
 
-  public enum Item1 implements CompositeAdapter<GetPage.Item1> {
+  public enum Item1 implements Adapter<GetPage.Item1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetPage.Item1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public GetPage.Item1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularItem _onParticularItem = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, adapterContext);
+        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new GetPage.Item1(
@@ -208,31 +207,31 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.Item1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.Item1 value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onParticularItem != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, value.onParticularItem, adapterContext);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, customScalarAdapters, value.onParticularItem);
       }
     }
   }
 
-  public enum OnParticularItem implements CompositeAdapter<GetPage.OnParticularItem> {
+  public enum OnParticularItem implements Adapter<GetPage.OnParticularItem> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("image");
 
     @Override
     public GetPage.OnParticularItem fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _image = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _image = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _image = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -245,10 +244,10 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetPage.OnParticularItem value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetPage.OnParticularItem value) throws IOException {
       writer.name("image");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.image);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.image);
     }
   }
 }

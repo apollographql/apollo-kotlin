@@ -5,7 +5,6 @@
 //
 package com.example.hero_with_review.adapter;
 
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_with_review.TestQuery;
@@ -17,8 +16,7 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("ep");
-    Episode_ResponseAdapter.INSTANCE.toJson(writer, CustomScalarAdapters.Empty, value.ep);
+    Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
   }
 }

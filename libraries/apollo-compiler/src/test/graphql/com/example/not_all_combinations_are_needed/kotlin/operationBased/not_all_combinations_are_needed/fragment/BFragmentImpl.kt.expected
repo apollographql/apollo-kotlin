@@ -5,8 +5,8 @@
 //
 package com.example.not_all_combinations_are_needed.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -30,8 +30,7 @@ public class BFragmentImpl() : Fragment<BFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<BFragment> =
-      BFragmentImpl_ResponseAdapter.BFragment.obj()
+  override fun adapter(): Adapter<BFragment> = BFragmentImpl_ResponseAdapter.BFragment.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -5,8 +5,8 @@
 //
 package com.example.simple_union.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -31,7 +31,7 @@ public class DogFragmentImpl() : Fragment<DogFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = DogFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = DogFragmentImpl_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

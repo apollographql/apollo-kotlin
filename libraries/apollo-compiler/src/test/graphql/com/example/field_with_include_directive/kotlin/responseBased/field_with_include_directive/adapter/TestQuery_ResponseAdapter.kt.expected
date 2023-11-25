@@ -5,8 +5,7 @@
 //
 package com.example.field_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
@@ -20,16 +19,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,25 +40,25 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, value.hero, adapterContext)
+      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _friendsConnection = FriendsConnection.obj().nullable().fromJson(reader, adapterContext)
+            0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _friendsConnection = FriendsConnection.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -72,26 +71,27 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("name")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().nullable().toJson(writer, value.friendsConnection, adapterContext)
+        FriendsConnection.obj().nullable().toJson(writer, customScalarAdapters,
+            value.friendsConnection)
       }
 
-      private object FriendsConnection : CompositeAdapter<TestQuery.Data.Hero.FriendsConnection> {
+      private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.FriendsConnection {
           var _totalCount: Int? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -103,11 +103,11 @@ public object TestQuery_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Hero.FriendsConnection,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("totalCount")
-          NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount)
+          NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         }
       }
     }

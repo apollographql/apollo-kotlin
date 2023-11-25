@@ -5,9 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,17 +17,16 @@ import kotlin.collections.List
 
 public object CharacterDetails3Impl_ResponseAdapter {
   public object CharacterDetails3 :
-      CompositeAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3>
-      {
+      Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3> {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
       var _birthDate: Any? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _birthDate = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,11 +38,11 @@ public object CharacterDetails3Impl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.birthDate)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
     }
   }
 }

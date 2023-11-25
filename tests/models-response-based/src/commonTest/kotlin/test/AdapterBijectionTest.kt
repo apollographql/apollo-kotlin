@@ -3,7 +3,6 @@ package test
 import codegen.models.HeroAndFriendsWithFragmentsQuery
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toJsonString
 import okio.Buffer

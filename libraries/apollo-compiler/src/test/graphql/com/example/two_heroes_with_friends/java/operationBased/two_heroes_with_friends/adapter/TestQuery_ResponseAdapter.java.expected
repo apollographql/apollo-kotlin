@@ -5,14 +5,13 @@
 //
 package com.example.two_heroes_with_friends.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.two_heroes_with_friends.TestQuery;
@@ -24,22 +23,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("r2", "luke");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.R2 _r2 = null;
       TestQuery.Luke _luke = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _r2 = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, adapterContext); break;
-          case 1: _luke = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -51,32 +50,32 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("r2");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, value.r2, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
 
       writer.name("luke");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, value.luke, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, customScalarAdapters, value.luke);
     }
   }
 
-  public enum R2 implements CompositeAdapter<TestQuery.R2> {
+  public enum R2 implements Adapter<TestQuery.R2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
-    public TestQuery.R2 fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _name = null;
       TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _friendsConnection = new ObjectCompositeAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, adapterContext); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -91,32 +90,32 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.R2 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.R2 value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friendsConnection");
-      new ObjectCompositeAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, value.friendsConnection, adapterContext);
+      new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, customScalarAdapters, value.friendsConnection);
     }
   }
 
-  public enum FriendsConnection implements CompositeAdapter<TestQuery.FriendsConnection> {
+  public enum FriendsConnection implements Adapter<TestQuery.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
     @Override
     public TestQuery.FriendsConnection fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _totalCount = null;
       List<TestQuery.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, adapterContext); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -128,30 +127,30 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.FriendsConnection value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.FriendsConnection value) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
+      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, value.edges, adapterContext);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
-  public enum Edge implements CompositeAdapter<TestQuery.Edge> {
+  public enum Edge implements Adapter<TestQuery.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public TestQuery.Edge fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -162,27 +161,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Edge value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Edge value) throws IOException {
       writer.name("node");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Node>(Node.INSTANCE, false)).toJson(writer, value.node, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 
-  public enum Node implements CompositeAdapter<TestQuery.Node> {
+  public enum Node implements Adapter<TestQuery.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Node fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -195,21 +194,21 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Node value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Node value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum Luke implements CompositeAdapter<TestQuery.Luke> {
+  public enum Luke implements Adapter<TestQuery.Luke> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "friendsConnection");
 
     @Override
-    public TestQuery.Luke fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _id = null;
       String _name = null;
       TestQuery.FriendsConnection1 _friendsConnection = null;
@@ -217,9 +216,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 2: _friendsConnection = new ObjectCompositeAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, adapterContext); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -236,35 +235,35 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Luke value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Luke value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friendsConnection");
-      new ObjectCompositeAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).toJson(writer, value.friendsConnection, adapterContext);
+      new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).toJson(writer, customScalarAdapters, value.friendsConnection);
     }
   }
 
-  public enum FriendsConnection1 implements CompositeAdapter<TestQuery.FriendsConnection1> {
+  public enum FriendsConnection1 implements Adapter<TestQuery.FriendsConnection1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
     @Override
     public TestQuery.FriendsConnection1 fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _totalCount = null;
       List<TestQuery.Edge1> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _edges = new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, adapterContext); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -276,30 +275,30 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.FriendsConnection1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.FriendsConnection1 value) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.totalCount);
+      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      new NullableCompositeAdapter<>(new ListCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).toJson(writer, value.edges, adapterContext);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
-  public enum Edge1 implements CompositeAdapter<TestQuery.Edge1> {
+  public enum Edge1 implements Adapter<TestQuery.Edge1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public TestQuery.Edge1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public TestQuery.Edge1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       TestQuery.Node1 _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -310,27 +309,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Edge1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Edge1 value) throws IOException {
       writer.name("node");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).toJson(writer, value.node, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 
-  public enum Node1 implements CompositeAdapter<TestQuery.Node1> {
+  public enum Node1 implements Adapter<TestQuery.Node1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Node1 fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -343,10 +342,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Node1 value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Node1 value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 }

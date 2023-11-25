@@ -3,7 +3,6 @@ package test
 import assertEquals2
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toApolloResponse

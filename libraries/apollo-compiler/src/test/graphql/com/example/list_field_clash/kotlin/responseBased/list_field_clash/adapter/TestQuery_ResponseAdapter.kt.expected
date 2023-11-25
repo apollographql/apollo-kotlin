@@ -5,8 +5,7 @@
 //
 package com.example.list_field_clash.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,18 +19,18 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("amenityCategories", "category")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _amenityCategories: List<TestQuery.Data.AmenityCategory?>? = null
       var _category: com.example.list_field_clash.type.AmenityCategory? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _amenityCategories = AmenityCategory.obj().nullable().list().nullable().fromJson(reader, adapterContext)
-          1 -> _category = AmenityCategory_ResponseAdapter.nullable().fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _amenityCategories = AmenityCategory.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _category = AmenityCategory_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,28 +43,28 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("amenityCategories")
-      AmenityCategory.obj().nullable().list().nullable().toJson(writer, value.amenityCategories,
-          adapterContext)
+      AmenityCategory.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
+          value.amenityCategories)
 
       writer.name("category")
-      AmenityCategory_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty,
+      AmenityCategory_ResponseAdapter.nullable().toJson(writer, customScalarAdapters,
           value.category)
     }
 
-    private object AmenityCategory : CompositeAdapter<TestQuery.Data.AmenityCategory> {
+    private object AmenityCategory : Adapter<TestQuery.Data.AmenityCategory> {
       public val RESPONSE_NAMES: List<String> = listOf("text")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.AmenityCategory {
         var _text: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _text = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _text = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -77,11 +76,11 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.AmenityCategory,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("text")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.text)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.text)
       }
     }
   }

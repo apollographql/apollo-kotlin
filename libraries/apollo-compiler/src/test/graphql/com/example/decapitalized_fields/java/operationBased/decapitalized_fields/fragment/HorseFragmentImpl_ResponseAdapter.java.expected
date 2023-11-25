@@ -5,12 +5,11 @@
 //
 package com.example.decapitalized_fields.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -20,20 +19,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HorseFragmentImpl_ResponseAdapter {
-  public enum HorseFragment implements CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
+  public enum HorseFragment implements Adapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
     @Override
     public com.example.decapitalized_fields.fragment.HorseFragment fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.decapitalized_fields.fragment.HorseFragment.Cow _Cow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Cow = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,28 +43,27 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.decapitalized_fields.fragment.HorseFragment value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.decapitalized_fields.fragment.HorseFragment value) throws IOException {
       writer.name("Cow");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).toJson(writer, value.cow, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).toJson(writer, customScalarAdapters, value.cow);
     }
   }
 
-  public enum Cow implements CompositeAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
+  public enum Cow implements Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
     @Override
     public com.example.decapitalized_fields.fragment.HorseFragment.Cow fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _Moo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -76,11 +74,10 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.decapitalized_fields.fragment.HorseFragment.Cow value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.decapitalized_fields.fragment.HorseFragment.Cow value) throws IOException {
       writer.name("Moo");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.moo);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo);
     }
   }
 }

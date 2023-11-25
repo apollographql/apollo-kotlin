@@ -5,8 +5,8 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -32,7 +32,7 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = IFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = IFragmentImpl_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

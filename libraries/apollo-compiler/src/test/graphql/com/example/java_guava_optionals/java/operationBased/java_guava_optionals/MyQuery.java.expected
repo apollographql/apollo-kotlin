@@ -5,10 +5,10 @@
 //
 package com.example.java_guava_optionals;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_guava_optionals.adapter.MyQuery_ResponseAdapter;
@@ -162,8 +162,8 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(MyQuery_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(MyQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

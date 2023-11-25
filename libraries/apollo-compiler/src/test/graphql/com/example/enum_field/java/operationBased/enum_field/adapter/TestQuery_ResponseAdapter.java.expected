@@ -5,8 +5,7 @@
 //
 package com.example.enum_field.adapter;
 
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -23,22 +22,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("gravity", "gravityAsEnum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Gravity _gravity = null;
       GravityAsEnum _gravityAsEnum = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,13 +49,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("gravity");
-      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, CustomScalarAdapters.Empty, value.gravity);
+      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
 
       writer.name("gravityAsEnum");
-      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, CustomScalarAdapters.Empty, value.gravityAsEnum);
+      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravityAsEnum);
     }
   }
 }

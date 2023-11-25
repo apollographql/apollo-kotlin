@@ -5,13 +5,12 @@
 //
 package com.example.introspection_query.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.TestQuery;
@@ -24,22 +23,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__schema", "__type");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.__Schema ___schema = null;
       TestQuery.__Type ___type = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___schema = new ObjectCompositeAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).fromJson(reader, adapterContext); break;
-          case 1: ___type = new ObjectCompositeAdapter<TestQuery.__Type>(__Type.INSTANCE, false).fromJson(reader, adapterContext); break;
+          case 0: ___schema = new ObjectAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 1: ___type = new ObjectAdapter<TestQuery.__Type>(__Type.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -54,23 +53,23 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("__schema");
-      new ObjectCompositeAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).toJson(writer, value.__schema, adapterContext);
+      new ObjectAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).toJson(writer, customScalarAdapters, value.__schema);
 
       writer.name("__type");
-      new ObjectCompositeAdapter<TestQuery.__Type>(__Type.INSTANCE, false).toJson(writer, value.__type, adapterContext);
+      new ObjectAdapter<TestQuery.__Type>(__Type.INSTANCE, false).toJson(writer, customScalarAdapters, value.__type);
     }
   }
 
-  public enum __Schema implements CompositeAdapter<TestQuery.__Schema> {
+  public enum __Schema implements Adapter<TestQuery.__Schema> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("queryType", "types");
 
     @Override
-    public TestQuery.__Schema fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public TestQuery.__Schema fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       TestQuery.QueryType _queryType = null;
       List<TestQuery.Type> _types = null;
@@ -78,8 +77,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _queryType = new ObjectCompositeAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).fromJson(reader, adapterContext); break;
-          case 1: _types = new ListCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Type>(Type.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _queryType = new ObjectAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 1: _types = new ListAdapter<>(new ObjectAdapter<TestQuery.Type>(Type.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -94,30 +93,30 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.__Schema value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.__Schema value) throws IOException {
       writer.name("queryType");
-      new ObjectCompositeAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).toJson(writer, value.queryType, adapterContext);
+      new ObjectAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).toJson(writer, customScalarAdapters, value.queryType);
 
       writer.name("types");
-      new ListCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Type>(Type.INSTANCE, false)).toJson(writer, value.types, adapterContext);
+      new ListAdapter<>(new ObjectAdapter<TestQuery.Type>(Type.INSTANCE, false)).toJson(writer, customScalarAdapters, value.types);
     }
   }
 
-  public enum QueryType implements CompositeAdapter<TestQuery.QueryType> {
+  public enum QueryType implements Adapter<TestQuery.QueryType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.QueryType fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
-        throws IOException {
+    public TestQuery.QueryType fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -128,27 +127,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.QueryType value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.QueryType value) throws IOException {
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum Type implements CompositeAdapter<TestQuery.Type> {
+  public enum Type implements Adapter<TestQuery.Type> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Type fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -159,20 +158,20 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Type value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Type value) throws IOException {
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum __Type implements CompositeAdapter<TestQuery.__Type> {
+  public enum __Type implements Adapter<TestQuery.__Type> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "kind");
 
     @Override
-    public TestQuery.__Type fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public TestQuery.__Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String _name = null;
       __TypeKind _kind = null;
@@ -180,8 +179,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _kind = __TypeKind_ResponseAdapter.INSTANCE.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _kind = __TypeKind_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -195,13 +194,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.__Type value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.__Type value) throws IOException {
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("kind");
-      __TypeKind_ResponseAdapter.INSTANCE.toJson(writer, CustomScalarAdapters.Empty, value.kind);
+      __TypeKind_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.kind);
     }
   }
 }

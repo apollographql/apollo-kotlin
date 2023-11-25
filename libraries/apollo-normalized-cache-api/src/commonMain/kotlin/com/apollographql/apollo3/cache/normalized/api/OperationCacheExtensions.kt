@@ -1,15 +1,13 @@
 package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
-import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
@@ -122,7 +120,7 @@ fun Collection<Record>?.dependentKeys(): Set<String> {
 
 @ApolloInternal
 fun <D: Executable.Data> CacheData.toData(
-    adapter: CompositeAdapter<D>,
+    adapter: Adapter<D>,
     customScalarAdapters: CustomScalarAdapters,
     variables: Executable.Variables,
 ): D {
@@ -130,5 +128,5 @@ fun <D: Executable.Data> CacheData.toData(
       root = toMap(),
   )
 
-  return adapter.fromJson(reader, CompositeAdapterContext.Builder().falseVariables(variables.valueMap.filter { it.value == false }.keys).customScalarAdapters(customScalarAdapters).build())
+  return adapter.fromJson(reader, customScalarAdapters.newBuilder().falseVariables(variables.valueMap.filter { it.value == false }.keys).build())
 }

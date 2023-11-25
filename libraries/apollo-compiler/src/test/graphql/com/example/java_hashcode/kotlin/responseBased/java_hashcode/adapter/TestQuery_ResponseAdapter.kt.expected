@@ -5,8 +5,7 @@
 //
 package com.example.java_hashcode.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,16 +16,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("h")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _h: Int? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _h = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _h = NullableIntAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,11 +37,11 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("h")
-      NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.h)
+      NullableIntAdapter.toJson(writer, customScalarAdapters, value.h)
     }
   }
 }

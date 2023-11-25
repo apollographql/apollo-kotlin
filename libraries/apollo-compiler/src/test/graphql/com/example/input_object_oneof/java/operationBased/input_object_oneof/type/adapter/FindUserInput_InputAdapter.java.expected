@@ -5,14 +5,12 @@
 //
 package com.example.input_object_oneof.type.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -23,33 +21,33 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum FindUserInput_InputAdapter implements CompositeAdapter<FindUserInput> {
+public enum FindUserInput_InputAdapter implements Adapter<FindUserInput> {
   INSTANCE;
 
   @Override
-  public FindUserInput fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
+  public FindUserInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
       IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, FindUserInput value, CompositeAdapterContext adapterContext)
-      throws IOException {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+      FindUserInput value) throws IOException {
     if (value.email instanceof Optional.Present) {
       writer.name("email");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.email);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.email);
     }
     if (value.name instanceof Optional.Present) {
       writer.name("name");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.name);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.name);
     }
     if (value.identity instanceof Optional.Present) {
       writer.name("identity");
-      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<FindUserBySocialNetworkInput>(FindUserBySocialNetworkInput_InputAdapter.INSTANCE, false))).toJson(writer, value.identity, adapterContext);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<FindUserBySocialNetworkInput>(FindUserBySocialNetworkInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.identity);
     }
     if (value.friends instanceof Optional.Present) {
       writer.name("friends");
-      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<FindUserByFriendInput>(FindUserByFriendInput_InputAdapter.INSTANCE, false))).toJson(writer, value.friends, adapterContext);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<FindUserByFriendInput>(FindUserByFriendInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 }

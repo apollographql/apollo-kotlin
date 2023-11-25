@@ -5,13 +5,12 @@
 //
 package com.example.named_fragment_inside_inline_fragment.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.GetHero;
@@ -24,20 +23,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetHero_ResponseAdapter {
-  public enum Data implements CompositeAdapter<GetHero.Data> {
+  public enum Data implements Adapter<GetHero.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public GetHero.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public GetHero.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       GetHero.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,33 +47,33 @@ public class GetHero_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHero.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetHero.Data value) throws IOException {
       writer.name("hero");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<GetHero.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
-  public enum Hero implements CompositeAdapter<GetHero.Hero> {
+  public enum Hero implements Adapter<GetHero.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHero.Hero fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public GetHero.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      GetHero.OnCharacter _onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, adapterContext);
+      GetHero.OnCharacter _onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -85,38 +84,38 @@ public class GetHero_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHero.Hero value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetHero.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, value.onCharacter, adapterContext);
+      com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
     }
   }
 
-  public enum OnCharacter implements CompositeAdapter<GetHero.OnCharacter> {
+  public enum OnCharacter implements Adapter<GetHero.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHero.OnCharacter fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
-        throws IOException {
+    public GetHero.OnCharacter fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      CharacterName _characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.fromJson(reader, adapterContext);
+      CharacterName _characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.fromJson(reader, customScalarAdapters);
 
       reader.rewind();
-      CharacterAppearsIn _characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.fromJson(reader, adapterContext);
+      CharacterAppearsIn _characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -128,14 +127,14 @@ public class GetHero_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHero.OnCharacter value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        GetHero.OnCharacter value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.toJson(writer, value.characterName, adapterContext);
+      com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.toJson(writer, customScalarAdapters, value.characterName);
 
-      com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.toJson(writer, value.characterAppearsIn, adapterContext);
+      com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.toJson(writer, customScalarAdapters, value.characterAppearsIn);
     }
   }
 }

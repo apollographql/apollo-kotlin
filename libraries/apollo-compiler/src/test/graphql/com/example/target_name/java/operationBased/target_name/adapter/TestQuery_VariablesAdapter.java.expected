@@ -7,12 +7,9 @@ package com.example.target_name.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalCompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
@@ -26,18 +23,17 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.input instanceof Optional.Present) {
       writer.name("input");
-      new ApolloOptionalCompositeAdapter<>(new NullableCompositeAdapter<>(new ObjectCompositeAdapter<renamedInput>(renamedInput_InputAdapter.INSTANCE, false))).toJson(writer, value.input, adapterContext);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<renamedInput>(renamedInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.input);
     }
     if (value.scalar instanceof Optional.Present) {
       writer.name("scalar");
-      new ApolloOptionalAdapter<>(Adapters.NullableAnyAdapter).toJson(writer, CustomScalarAdapters.Empty, value.scalar);
+      new ApolloOptionalAdapter<>(Adapters.NullableAnyAdapter).toJson(writer, customScalarAdapters, value.scalar);
     }
     if (value.enum_ instanceof Optional.Present) {
       writer.name("enum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, CustomScalarAdapters.Empty, value.enum_);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.enum_);
     }
   }
 }

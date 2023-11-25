@@ -5,8 +5,7 @@
 //
 package com.example.nested_named_fragments.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,16 +19,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object AllStarships_ResponseAdapter {
-  public object Data : CompositeAdapter<AllStarships.Data> {
+  public object Data : Adapter<AllStarships.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("allStarships")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.AllStarships.Data {
       var _allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _allStarships = AllStarships.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,24 +40,24 @@ public object AllStarships_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.nested_named_fragments.AllStarships.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("allStarships")
-      AllStarships.obj().nullable().toJson(writer, value.allStarships, adapterContext)
+      AllStarships.obj().nullable().toJson(writer, customScalarAdapters, value.allStarships)
     }
 
     private object AllStarships :
-        CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships> {
+        Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
         var _edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, adapterContext)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -70,24 +69,24 @@ public object AllStarships_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge :
-          CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge> {
+          Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
           var _node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj(true).nullable().fromJson(reader, adapterContext)
+              0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -99,32 +98,31 @@ public object AllStarships_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("node")
-          Node.obj(true).nullable().toJson(writer, value.node, adapterContext)
+          Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node :
-            CompositeAdapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node>
-            {
+            Adapter<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node {
             var __typename: String? = null
 
             while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             reader.rewind()
             val _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
-                adapterContext)
+                customScalarAdapters)
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
               __typename = __typename ?: missingField(reader, "__typename"),
@@ -134,14 +132,14 @@ public object AllStarships_ResponseAdapter {
 
           override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node,
-            adapterContext: CompositeAdapterContext,
           ) {
             writer.name("__typename")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.toJson(writer,
-                value.starshipFragment, adapterContext)
+                customScalarAdapters, value.starshipFragment)
           }
         }
       }

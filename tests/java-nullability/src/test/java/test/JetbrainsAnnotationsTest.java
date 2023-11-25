@@ -2,7 +2,6 @@ package test;
 
 import annotations.jetbrains.MyQuery;
 import annotations.jetbrains.type.MyInput;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
@@ -137,7 +136,7 @@ public class JetbrainsAnnotationsTest {
         "          }\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ null,
@@ -170,7 +169,7 @@ public class JetbrainsAnnotationsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ 0,

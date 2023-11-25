@@ -4,7 +4,6 @@ import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -59,24 +58,11 @@ internal class JavaResolver(
     else -> JavaClassNames.ApolloOptionalAdapter
   }
 
-  private val optionalCompositeAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalCompositeAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalCompositeAdapter
-    else -> JavaClassNames.ApolloOptionalCompositeAdapter
-  }
-
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
     JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalAdapter
     JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
     JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
     else -> JavaClassNames.NullableAdapter
-  }
-
-  private val optionalOrNullableCompositeAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalCompositeAdapter
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalCompositeAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalCompositeAdapter
-    else -> JavaClassNames.NullableCompositeAdapter
   }
 
   private val wrapNullableFieldsInOptional = nullableFieldStyle in setOf(
@@ -197,7 +183,7 @@ internal class JavaResolver(
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     return if (type.optional) {
-      val adapterClassName = if (!type.rawType().isComposite()) optionalAdapterClassName else optionalCompositeAdapterClassName
+      val adapterClassName = if (!type.rawType().isComposite()) optionalAdapterClassName else optionalAdapterClassName
       return CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.optional(false), requiresBuffering))
     } else if (type.nullable) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
@@ -213,7 +199,7 @@ internal class JavaResolver(
         }
 
         else -> {
-          val adapterClassName = if (!type.rawType().isComposite()) optionalOrNullableAdapterClassName else optionalOrNullableCompositeAdapterClassName
+          val adapterClassName = if (!type.rawType().isComposite()) optionalOrNullableAdapterClassName else optionalOrNullableAdapterClassName
           CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.nullable(false), requiresBuffering))
         }
       }
@@ -224,7 +210,7 @@ internal class JavaResolver(
         }
 
         is IrScalarType -> {
-          scalarAdapterInitializer(type.name, "${Identifier.adapterContext}.$customScalarAdapters")
+          scalarAdapterInitializer(type.name, customScalarAdapters)
         }
 
         is IrEnumType -> {
@@ -425,7 +411,7 @@ internal class JavaResolver(
         if (!isComposite) {
           JavaClassNames.ListAdapter
         } else {
-          JavaClassNames.ListCompositeAdapter
+          JavaClassNames.ListAdapter
         },
         this
     )

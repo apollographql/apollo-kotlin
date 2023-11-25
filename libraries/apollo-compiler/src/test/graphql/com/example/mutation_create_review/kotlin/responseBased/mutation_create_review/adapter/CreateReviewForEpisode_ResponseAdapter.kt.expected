@@ -5,8 +5,7 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -25,16 +24,16 @@ import com.example.mutation_create_review.type.Date as TypeDate
 import java.util.Date as UtilDate
 
 internal object CreateReviewForEpisode_ResponseAdapter {
-  public object Data : CompositeAdapter<CreateReviewForEpisode.Data> {
+  public object Data : Adapter<CreateReviewForEpisode.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisode.Data {
       var _createReview: CreateReviewForEpisode.Data.CreateReview? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,18 +45,18 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: CreateReviewForEpisode.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("createReview")
-      CreateReview.obj().nullable().toJson(writer, value.createReview, adapterContext)
+      CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
-    private object CreateReview : CompositeAdapter<CreateReviewForEpisode.Data.CreateReview> {
+    private object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
@@ -68,12 +67,12 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _listOfListOfString = com.example.MyStringAdapter().list().list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
-            3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
-            4 -> _listOfListOfCustom = adapterContext.customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
-            5 -> _listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromJson(reader, adapterContext)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader, customScalarAdapters)
+            2 -> _listOfListOfString = com.example.MyStringAdapter().list().list().nullable().fromJson(reader, customScalarAdapters)
+            3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader, customScalarAdapters)
+            4 -> _listOfListOfCustom = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().fromJson(reader, customScalarAdapters)
+            5 -> _listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -90,44 +89,44 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: CreateReviewForEpisode.Data.CreateReview,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("stars")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
+        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        com.example.MyStringAdapter().nullable().toJson(writer, CustomScalarAdapters.Empty,
+        com.example.MyStringAdapter().nullable().toJson(writer, customScalarAdapters,
             value.commentary)
 
         writer.name("listOfListOfString")
-        com.example.MyStringAdapter().list().list().nullable().toJson(writer,
-            CustomScalarAdapters.Empty, value.listOfListOfString)
+        com.example.MyStringAdapter().list().list().nullable().toJson(writer, customScalarAdapters,
+            value.listOfListOfString)
 
         writer.name("listOfListOfEnum")
-        Episode_ResponseAdapter.list().list().nullable().toJson(writer, CustomScalarAdapters.Empty,
+        Episode_ResponseAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfEnum)
 
         writer.name("listOfListOfCustom")
-        adapterContext.customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().toJson(writer,
-            CustomScalarAdapters.Empty, value.listOfListOfCustom)
+        customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().toJson(writer,
+            customScalarAdapters, value.listOfListOfCustom)
 
         writer.name("listOfListOfObject")
-        ListOfListOfObject.obj().list().list().nullable().toJson(writer, value.listOfListOfObject,
-            adapterContext)
+        ListOfListOfObject.obj().list().list().nullable().toJson(writer, customScalarAdapters,
+            value.listOfListOfObject)
       }
 
       private object ListOfListOfObject :
-          CompositeAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
+          Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
           var _name: String? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = com.example.MyStringAdapter().fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> _name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -139,11 +138,11 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("name")
-          com.example.MyStringAdapter().toJson(writer, CustomScalarAdapters.Empty, value.name)
+          com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)
         }
       }
     }

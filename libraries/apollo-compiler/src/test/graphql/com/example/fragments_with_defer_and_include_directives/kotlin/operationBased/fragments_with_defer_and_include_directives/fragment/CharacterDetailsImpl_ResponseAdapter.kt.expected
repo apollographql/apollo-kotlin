@@ -5,8 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,17 +16,16 @@ import kotlin.collections.List
 
 public object CharacterDetailsImpl_ResponseAdapter {
   public object CharacterDetails :
-      CompositeAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails>
-      {
+      Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails {
       var _name: String? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,11 +37,11 @@ public object CharacterDetailsImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

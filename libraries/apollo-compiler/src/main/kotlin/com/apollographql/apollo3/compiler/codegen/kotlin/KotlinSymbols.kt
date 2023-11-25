@@ -35,8 +35,6 @@ internal object KotlinSymbols {
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
   val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
-  val CompositeAdapter = ClassNames.CompositeAdapter.toKotlinPoetClassName()
-  val CompositeAdapterContext = ClassNames.CompositeAdapterContext.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toKotlinPoetClassName()
   val UnionType = ClassNames.UnionType.toKotlinPoetClassName()

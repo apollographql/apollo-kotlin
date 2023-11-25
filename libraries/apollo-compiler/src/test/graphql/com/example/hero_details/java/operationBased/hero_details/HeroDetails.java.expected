@@ -5,10 +5,10 @@
 //
 package com.example.hero_details;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details.adapter.HeroDetails_ResponseAdapter;
@@ -113,8 +113,8 @@ public class HeroDetails implements Query<HeroDetails.Data> {
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(HeroDetails_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(HeroDetails_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

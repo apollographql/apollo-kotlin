@@ -6,8 +6,8 @@
 package com.example.java_java_optionals
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -46,7 +46,7 @@ public data class MyQuery(
         withDefaultValues)
   }
 
-  override fun adapter(): CompositeAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = MyQuery_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

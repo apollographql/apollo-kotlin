@@ -5,8 +5,7 @@
 //
 package com.example.input_object_variable_and_argument.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -21,16 +20,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroWithReview")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _heroWithReview: TestQuery.Data.HeroWithReview? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _heroWithReview = HeroWithReview.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _heroWithReview = HeroWithReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,25 +41,25 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("heroWithReview")
-      HeroWithReview.obj().nullable().toJson(writer, value.heroWithReview, adapterContext)
+      HeroWithReview.obj().nullable().toJson(writer, customScalarAdapters, value.heroWithReview)
     }
 
-    private object HeroWithReview : CompositeAdapter<TestQuery.Data.HeroWithReview> {
+    private object HeroWithReview : Adapter<TestQuery.Data.HeroWithReview> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.HeroWithReview {
         var _name: String? = null
         var _height: Double? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _height = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -73,14 +72,14 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.HeroWithReview,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("height")
-        NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
+        NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
   }

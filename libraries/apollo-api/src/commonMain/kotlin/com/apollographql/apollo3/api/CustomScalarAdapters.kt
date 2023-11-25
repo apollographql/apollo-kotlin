@@ -4,16 +4,30 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
 /**
- * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
+ * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime.
+ *
+ * For historical reasons, it also contains other context used when parsing response.
+ * See https://github.com/apollographql/apollo-kotlin/pull/3813
  */
 class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
+    /**
+     * Operation variables used to determine whether the parser must parse @skip/@include fragments
+     *
+     */
+    @JvmField
+    val falseVariables: Set<String>?,
+    /**
+     * Defer identifiers used to determine whether the parser must parse @defer fragments
+     */
+    @JvmField
+    val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
-  fun <T: Any> adapterFor(name: String): Adapter<T>? {
+  fun <T : Any> adapterFor(name: String): Adapter<T>? {
     @Suppress("UNCHECKED_CAST")
     return adaptersMap[name] as Adapter<T>?
   }
@@ -83,11 +97,25 @@ class CustomScalarAdapters private constructor(
     val PassThrough = Builder().unsafe(true).build()
   }
 
-  fun newBuilder() = Builder().addAll(this)
+  fun newBuilder(): Builder {
+    return Builder().addAll(this)
+        .falseVariables(falseVariables)
+        .deferredFragmentIdentifiers(deferredFragmentIdentifiers)
+  }
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
     private var unsafe = false
+    private var falseVariables: Set<String>? = null
+    private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
+
+    fun falseVariables(falseVariables: Set<String>?) = apply {
+      this.falseVariables = falseVariables
+    }
+
+    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?) = apply {
+      this.deferredFragmentIdentifiers = deferredFragmentIdentifiers
+    }
 
     fun <T> add(
         name: String,
@@ -117,6 +145,13 @@ class CustomScalarAdapters private constructor(
       adaptersMap.clear()
     }
 
-    fun build() = CustomScalarAdapters(adaptersMap, unsafe)
+    fun build(): CustomScalarAdapters {
+      return CustomScalarAdapters(
+          adaptersMap,
+          falseVariables ,
+          deferredFragmentIdentifiers,
+          unsafe,
+      )
+    }
   }
 }

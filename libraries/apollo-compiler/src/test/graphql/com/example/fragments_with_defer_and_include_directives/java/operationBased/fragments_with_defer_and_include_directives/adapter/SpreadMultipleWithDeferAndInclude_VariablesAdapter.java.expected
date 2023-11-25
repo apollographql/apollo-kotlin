@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude;
@@ -17,14 +16,13 @@ public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, SpreadMultipleWithDeferAndInclude value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("cond1");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond1);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond1);
     writer.name("cond2");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond2);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond2);
     writer.name("cond3");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond3);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond3);
     writer.name("cond4");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.cond4);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond4);
   }
 }

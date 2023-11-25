@@ -5,8 +5,7 @@
 //
 package com.example.deprecated_merged_field.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,29 +17,29 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<AnimalFragmentImpl.Data> {
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+  public object Data : Adapter<AnimalFragmentImpl.Data> {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Cat",
-        -> CatData.fromJson(reader, adapterContext, __typename)
+        -> CatData.fromJson(reader, customScalarAdapters, __typename)
         "Dog",
-        -> DogData.fromJson(reader, adapterContext, __typename)
+        -> DogData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromJson(reader, adapterContext, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       when(value) {
-        is AnimalFragmentImpl.CatData -> CatData.toJson(writer, value, adapterContext)
-        is AnimalFragmentImpl.DogData -> DogData.toJson(writer, value, adapterContext)
-        is AnimalFragmentImpl.OtherData -> OtherData.toJson(writer, value, adapterContext)
+        is AnimalFragmentImpl.CatData -> CatData.toJson(writer, customScalarAdapters, value)
+        is AnimalFragmentImpl.DogData -> DogData.toJson(writer, customScalarAdapters, value)
+        is AnimalFragmentImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }
   }
@@ -50,7 +49,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.CatData {
       var __typename: String? = typename
@@ -58,8 +57,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -72,14 +71,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.CatData,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 
@@ -88,7 +87,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.DogData {
       var __typename: String? = typename
@@ -96,8 +95,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -111,14 +110,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
     @Suppress("DEPRECATION")
     public fun toJson(
       writer: JsonWriter,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.DogData,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 
@@ -127,14 +126,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.OtherData {
       var __typename: String? = typename
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -146,11 +145,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
+      @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalFragmentImpl.OtherData,
-      @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 }

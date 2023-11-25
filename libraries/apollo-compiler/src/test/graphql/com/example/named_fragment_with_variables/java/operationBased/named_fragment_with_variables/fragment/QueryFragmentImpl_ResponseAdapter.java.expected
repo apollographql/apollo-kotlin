@@ -5,14 +5,13 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListCompositeAdapter;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -22,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentImpl_ResponseAdapter {
-  public enum QueryFragment implements CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+  public enum QueryFragment implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("organization");
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
-        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.named_fragment_with_variables.fragment.QueryFragment.Organization _organization = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _organization = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,30 +45,29 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.named_fragment_with_variables.fragment.QueryFragment value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.named_fragment_with_variables.fragment.QueryFragment value) throws IOException {
       writer.name("organization");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, value.organization, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, customScalarAdapters, value.organization);
     }
   }
 
-  public enum Organization implements CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+  public enum Organization implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "user");
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
-        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _id = null;
       List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> _user = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _user = new ListCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -84,37 +82,37 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) throws
+        IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("user");
-      new ListCompositeAdapter<>(new ObjectCompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, value.user, adapterContext);
+      new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, customScalarAdapters, value.user);
     }
   }
 
-  public enum User implements CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
+  public enum User implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
-        JsonReader reader, CompositeAdapterContext adapterContext) throws IOException {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, adapterContext);
+      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -125,13 +123,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.User value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.User value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, value.userFragment, adapterContext);
+      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, customScalarAdapters, value.userFragment);
     }
   }
 }

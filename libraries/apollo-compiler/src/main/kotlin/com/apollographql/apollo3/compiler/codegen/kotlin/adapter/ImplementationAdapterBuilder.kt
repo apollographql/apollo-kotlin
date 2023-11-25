@@ -80,7 +80,7 @@ internal class ImplementationAdapterBuilder(
         .apply {
           if (!addTypenameArgument) {
             addSuperinterface(
-                KotlinSymbols.CompositeAdapter.parameterizedBy(
+                KotlinSymbols.Adapter.parameterizedBy(
                     context.resolver.resolveModel(model.id)
                 )
             )
@@ -99,7 +99,7 @@ internal class ImplementationAdapterBuilder(
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
         .addParameter(
-            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
+            ParameterSpec.builder(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
                 .applyIf(addTypenameArgument) {
                   addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress).addMember("%S", "UNUSED_PARAMETER").build())
                 }
@@ -124,14 +124,14 @@ internal class ImplementationAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
-        .addParameter(Identifier.value, adaptedClassName)
         .addParameter(
-            ParameterSpec.builder(Identifier.adapterContext, KotlinSymbols.CompositeAdapterContext)
+            ParameterSpec.builder(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
                 .applyIf(addTypenameArgument) {
                   addSuppressions(unusedParameter = true)
                 }
                 .build()
         )
+        .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
           addSuppressions(

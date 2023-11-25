@@ -5,11 +5,11 @@
 //
 package com.example.deprecated_merged_field.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.fragment.selections.AnimalFragmentSelections;
 import com.example.deprecated_merged_field.type.Animal;
@@ -66,8 +66,8 @@ public class AnimalFragmentImpl implements Fragment<AnimalFragment> {
   }
 
   @Override
-  public CompositeAdapter<AnimalFragment> adapter() {
-    return new ObjectCompositeAdapter<AnimalFragment>(AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE, true);
+  public Adapter<AnimalFragment> adapter() {
+    return new ObjectAdapter<AnimalFragment>(AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE, true);
   }
 
   @Override

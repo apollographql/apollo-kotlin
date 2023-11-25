@@ -5,7 +5,6 @@ import codegen.models.fragment.HeroWithFriendsFragment
 import codegen.models.fragment.HumanWithIdFragment
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toJsonString
 import okio.Buffer

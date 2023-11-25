@@ -5,10 +5,10 @@
 //
 package com.example.deprecated_merged_field;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.adapter.CatQuery_ResponseAdapter;
@@ -113,8 +113,8 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(CatQuery_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(CatQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

@@ -5,12 +5,11 @@
 //
 package com.example.object.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.object.TestQuery;
@@ -22,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("object");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Object _object = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _object = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _object = new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,27 +45,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("object");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestQuery.Object>(Object.INSTANCE, false)).toJson(writer, value.object, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).toJson(writer, customScalarAdapters, value.object);
     }
   }
 
-  public enum Object implements CompositeAdapter<TestQuery.Object> {
+  public enum Object implements Adapter<TestQuery.Object> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
     @Override
-    public TestQuery.Object fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public TestQuery.Object fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       Integer _random = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _random = Adapters.NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _random = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -77,10 +76,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Object value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Object value) throws IOException {
       writer.name("random");
-      Adapters.NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.random);
+      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.random);
     }
   }
 }

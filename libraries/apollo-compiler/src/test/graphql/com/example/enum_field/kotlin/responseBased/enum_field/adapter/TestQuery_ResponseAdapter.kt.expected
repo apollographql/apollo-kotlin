@@ -5,8 +5,7 @@
 //
 package com.example.enum_field.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,18 +19,18 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("gravity", "gravityAsEnum")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _gravity: Gravity? = null
       var _gravityAsEnum: GravityAsEnum? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _gravityAsEnum = GravityAsEnum_ResponseAdapter.nullable().fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          1 -> _gravityAsEnum = GravityAsEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,14 +43,14 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("gravity")
-      Gravity_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty, value.gravity)
+      Gravity_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.gravity)
 
       writer.name("gravityAsEnum")
-      GravityAsEnum_ResponseAdapter.nullable().toJson(writer, CustomScalarAdapters.Empty,
+      GravityAsEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters,
           value.gravityAsEnum)
     }
   }

@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections;
 import com.example.named_fragment_inside_inline_fragment.type.Character;
@@ -66,8 +66,8 @@ public class CharacterAppearsInImpl implements Fragment<CharacterAppearsIn> {
   }
 
   @Override
-  public CompositeAdapter<CharacterAppearsIn> adapter() {
-    return new ObjectCompositeAdapter<CharacterAppearsIn>(CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE, false);
+  public Adapter<CharacterAppearsIn> adapter() {
+    return new ObjectAdapter<CharacterAppearsIn>(CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE, false);
   }
 
   @Override

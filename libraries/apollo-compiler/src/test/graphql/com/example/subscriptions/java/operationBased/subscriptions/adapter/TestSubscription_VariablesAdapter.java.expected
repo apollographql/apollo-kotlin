@@ -6,7 +6,6 @@
 package com.example.subscriptions.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -17,8 +16,7 @@ public enum TestSubscription_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestSubscription value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("repo");
-    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.repo);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.repo);
   }
 }
