@@ -35,7 +35,7 @@ import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
-import com.apollographql.apollo3.ast.apolloDefinitions
+import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
@@ -61,7 +61,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = apolloDefinitions("v0.2")
+  val apolloDefinitions = kotlinLabsDefinitions("v0.2")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
@@ -246,7 +246,7 @@ private class ForeignSchema(
 /**
  * Parses the schema extensions
  *
- * Example: extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@nonnull"])
+ * Example: extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.2", import: ["@nonnull"])
  */
 private fun List<GQLSchemaExtension>.getForeignSchemas(
     issues: MutableList<Issue>,
@@ -330,7 +330,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
 
         if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = apolloDefinitions(version).rename(mappings, prefix)
+          val (definitions, renames) = kotlinLabsDefinitions(version).rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
