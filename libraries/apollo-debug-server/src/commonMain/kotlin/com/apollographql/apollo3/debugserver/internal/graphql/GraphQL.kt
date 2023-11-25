@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.debugserver.internal.graphql
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloAdapter
-import com.apollographql.apollo3.annotations.ApolloObject
+import com.apollographql.apollo3.annotations.GraphQLAdapter
+import com.apollographql.apollo3.annotations.GraphQLObject
 import com.apollographql.apollo3.annotations.GraphQLName
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -55,7 +55,7 @@ internal class GraphQL(
   }
 }
 
-@ApolloObject
+@GraphQLObject
 internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
       apolloClients.get().map { (apolloClient, apolloClientId) ->
@@ -74,7 +74,7 @@ internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient
   }
 }
 
-@ApolloObject
+@GraphQLObject
 @GraphQLName("ApolloClient")
 internal class GraphQLApolloClient(
     private val id: String,
@@ -93,7 +93,7 @@ internal class GraphQLApolloClient(
   }
 }
 
-@ApolloObject
+@GraphQLObject
 internal class NormalizedCache(
     apolloClientId: String,
     private val clazz: KClass<*>,
@@ -109,7 +109,7 @@ internal class NormalizedCache(
   fun records(): List<GraphQLRecord> = records.map { GraphQLRecord(it.value) }
 }
 
-@ApolloObject
+@GraphQLObject
 @GraphQLName("Record")
 internal class GraphQLRecord(
     private val record: Record,
@@ -121,8 +121,7 @@ internal class GraphQLRecord(
   fun sizeInBytes() = record.sizeInBytes
 }
 
-@ApolloAdapter
-@GraphQLName(name = "Fields")
+@GraphQLAdapter(forScalar = "Fields")
 internal class FieldsAdapter : Adapter<Map<String, Any?>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Map<String, Any?> {
     throw UnsupportedOperationException()
