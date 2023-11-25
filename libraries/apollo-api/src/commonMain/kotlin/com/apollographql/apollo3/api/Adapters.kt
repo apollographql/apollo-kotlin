@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.exception.ApolloGraphQLException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -80,7 +81,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
 }
 
 /**
- * PresentAdapter can only express something that's present. Absent values are handled outside of the adapter.
+ * PresentAdapter can only express something that's present. Absent values are handled outside the adapter.
  *
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
@@ -117,9 +118,6 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
     }
   }
 }
-
-@JvmName("-obj")
-fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmField
 val StringAdapter = object : Adapter<String> {
@@ -283,12 +281,6 @@ val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
 @JvmField
 val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
 
-@JvmName("-nullable")
-fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
-
-@JvmName("-list")
-fun <T> Adapter<T>.list() = ListAdapter(this)
-
 /**
  * Note that Arrays require their type to be known at compile time, so we construct an anonymous object with reference to
  * function with reified type parameters as a workaround.
@@ -297,7 +289,11 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 @JvmName("-array")
 inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
 
-  private inline fun <reified T> arrayFromJson(wrappedAdapter: Adapter<T>, reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+  private inline fun <reified T> arrayFromJson(
+      wrappedAdapter: Adapter<T>,
+      reader: JsonReader,
+      customScalarAdapters: CustomScalarAdapters,
+  ): Array<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
@@ -311,7 +307,7 @@ inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
       wrappedAdapter: Adapter<T>,
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: Array<T>
+      value: Array<T>,
   ) {
     writer.beginArray()
     value.forEach {
@@ -363,14 +359,14 @@ class ObjectAdapter<T>(
     }
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T, ) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
     if (buffered && writer !is MapJsonWriter) {
       /**
        * Convert to a Map first
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
-      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value, )
+      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value)
       mapWriter.endObject()
 
       /**
@@ -379,8 +375,96 @@ class ObjectAdapter<T>(
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
-      wrappedAdapter.toJson(writer, customScalarAdapters, value,)
+      wrappedAdapter.toJson(writer, customScalarAdapters, value)
       writer.endObject()
     }
   }
 }
+
+class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
+    if (reader.peek() == JsonReader.Token.NULL) {
+      val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
+      if (error != null) {
+        reader.skipValue()
+        return FieldResult.Error(error)
+      }
+    }
+
+    return try {
+      FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    } catch (e: ApolloGraphQLException) {
+      FieldResult.Error(e.error)
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: FieldResult<T>) {
+    when (value) {
+      is FieldResult.Success -> wrappedAdapter.toJson(writer, customScalarAdapters, value.valueOrThrow())
+      else -> Unit // ignore errors
+    }
+  }
+}
+
+class CatchToThrowAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+    if (reader.peek() == JsonReader.Token.NULL) {
+      val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
+      if (error != null) {
+        reader.skipValue()
+        throw ApolloGraphQLException(error)
+      }
+    }
+
+    return try {
+      wrappedAdapter.fromJson(reader, customScalarAdapters)
+    } catch (e: ApolloGraphQLException) {
+      throw e
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+    wrappedAdapter.toJson(writer, customScalarAdapters, value)
+  }
+}
+
+class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
+    val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
+    if (error != null) {
+      return null
+    }
+
+    return try {
+      wrappedAdapter.fromJson(reader, customScalarAdapters)
+    } catch (e: ApolloGraphQLException) {
+      null
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T?) {
+    if (value == null) {
+      writer.nullValue()
+    } else {
+      wrappedAdapter.toJson(writer, customScalarAdapters, value)
+    }
+  }
+}
+
+@JvmName("-nullable")
+fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+
+@JvmName("-list")
+fun <T> Adapter<T>.list() = ListAdapter(this)
+
+@JvmName("-obj")
+fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+
+@JvmName("-result")
+fun <T> Adapter<T>.result() = CatchToResultAdapter(this,)
+
+@JvmName("-orThrow")
+fun <T> Adapter<T>.orThrow() = CatchToThrowAdapter(this,)
+
+@JvmName("-orNull")
+fun <T> Adapter<T>.orNull() = CatchToNullAdapter(this,)
