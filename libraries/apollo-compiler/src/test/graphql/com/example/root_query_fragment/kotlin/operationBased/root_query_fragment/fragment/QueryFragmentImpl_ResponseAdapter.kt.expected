@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
@@ -35,7 +36,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       }
 
       return com.example.root_query_fragment.fragment.QueryFragment(
-        __typename = __typename!!,
+        __typename = __typename ?: missingField(reader, "__typename"),
         hero = _hero
       )
     }
@@ -68,7 +69,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         }
 
         return com.example.root_query_fragment.fragment.QueryFragment.Hero(
-          name = _name!!
+          name = _name ?: missingField(reader, "name")
         )
       }
 

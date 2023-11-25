@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.java_primitive_types.JavaPrimitiveQuery
@@ -43,9 +44,9 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
       return JavaPrimitiveQuery.Data(
         nullableInt = _nullableInt,
-        nonNullableInt = _nonNullableInt!!,
+        nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt"),
         nullableMyType = _nullableMyType,
-        nonNullableMyType = _nonNullableMyType!!
+        nonNullableMyType = _nonNullableMyType ?: missingField(reader, "nonNullableMyType")
       )
     }
 
@@ -85,7 +86,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
         return JavaPrimitiveQuery.Data.NullableMyType(
           nullableInt = _nullableInt,
-          nonNullableInt = _nonNullableInt!!
+          nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt")
         )
       }
 
@@ -120,7 +121,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
         return JavaPrimitiveQuery.Data.NonNullableMyType(
           nullableInt = _nullableInt,
-          nonNullableInt = _nonNullableInt!!
+          nonNullableInt = _nonNullableInt ?: missingField(reader, "nonNullableInt")
         )
       }
 

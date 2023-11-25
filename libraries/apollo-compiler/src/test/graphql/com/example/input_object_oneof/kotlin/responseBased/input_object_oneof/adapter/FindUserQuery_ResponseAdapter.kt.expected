@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.input_object_oneof.FindUserQuery
@@ -61,7 +62,7 @@ public object FindUserQuery_ResponseAdapter {
         }
 
         return FindUserQuery.Data.FindUser(
-          id = _id!!
+          id = _id ?: missingField(reader, "id")
         )
       }
 

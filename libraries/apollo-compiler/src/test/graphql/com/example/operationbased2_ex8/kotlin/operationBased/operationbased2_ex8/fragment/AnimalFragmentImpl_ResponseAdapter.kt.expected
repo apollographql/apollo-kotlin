@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.Int
@@ -38,8 +39,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       return com.example.operationbased2_ex8.fragment.AnimalFragment(
-        species = _species!!,
-        parent = _parent!!
+        species = _species ?: missingField(reader, "species"),
+        parent = _parent ?: missingField(reader, "parent")
       )
     }
 
@@ -92,7 +93,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent(
           __typename = __typename,
-          species = _species!!,
+          species = _species ?: missingField(reader, "species"),
           onLion = _onLion,
           onCat = _onCat
         )
@@ -136,7 +137,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
           }
 
           return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion(
-            temperature = _temperature!!
+            temperature = _temperature ?: missingField(reader, "temperature")
           )
         }
 
@@ -166,7 +167,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
           }
 
           return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 

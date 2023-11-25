@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.deprecated_merged_field.CatQuery
@@ -90,7 +91,7 @@ public object CatQuery_ResponseAdapter {
         }
 
         return CatQuery.Data.OtherCat(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 
@@ -124,8 +125,8 @@ public object CatQuery_ResponseAdapter {
         }
 
         return CatQuery.Data.OtherAnimalCat(
-          __typename = __typename!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

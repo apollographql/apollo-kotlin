@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.data_builders.NodeQuery
@@ -36,7 +37,7 @@ public object NodeQuery_ResponseAdapter {
       }
 
       return NodeQuery.Data(
-        node = _node!!
+        node = _node ?: missingField(reader, "node")
       )
     }
 
@@ -85,7 +86,7 @@ public object NodeQuery_ResponseAdapter {
 
         return NodeQuery.Data.Node(
           __typename = __typename,
-          id = _id!!,
+          id = _id ?: missingField(reader, "id"),
           humanFragment = _humanFragment,
           droidFragment = _droidFragment
         )

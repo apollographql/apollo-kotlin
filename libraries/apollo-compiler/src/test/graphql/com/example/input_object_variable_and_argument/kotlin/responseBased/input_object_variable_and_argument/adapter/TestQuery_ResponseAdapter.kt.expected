@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.input_object_variable_and_argument.TestQuery
@@ -65,7 +66,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HeroWithReview(
-          name = _name!!,
+          name = _name ?: missingField(reader, "name"),
           height = _height
         )
       }

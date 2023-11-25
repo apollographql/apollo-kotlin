@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.label
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -85,7 +86,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         return InlineMultipleWithDeferWithIf.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           onCharacter = _onCharacter,
           onCharacterDeferF_second = _onCharacterDeferF_second,
           onCharacterDeferF_third = _onCharacterDeferF_third
@@ -130,7 +131,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           }
 
           return InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter(
-            id = _id!!
+            id = _id ?: missingField(reader, "id")
           )
         }
 
@@ -160,7 +161,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           }
 
           return InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 
@@ -190,7 +191,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           }
 
           return InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 

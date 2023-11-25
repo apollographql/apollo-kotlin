@@ -15,7 +15,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.BLabel
@@ -176,9 +175,9 @@ internal fun readFromResponseCodeBlock(
             && !property.info.type.optional
             && !checkedProperties.contains(property.info.responseName)
         ) {
-          "!!"
+          CodeBlock.of("·?:·%M(reader,·%S)", KotlinSymbols.missingField, property.info.responseName)
         } else {
-          ""
+          CodeBlock.of("")
         }
         CodeBlock.of(
             "%N·=·%N%L",
@@ -208,7 +207,7 @@ internal fun readFromResponseCodeBlock(
 
 internal fun typenameFromReaderCodeBlock(): CodeBlock {
   return CodeBlock.builder().apply {
-    add("val $__typename = ${reader}.%M()\n", KotlinMemberNames.readTypename)
+    add("val $__typename = ${reader}.%M()\n", KotlinSymbols.readTypename)
   }.build()
 }
 
@@ -299,7 +298,7 @@ internal fun CodeBlock.obj(buffered: Boolean): CodeBlock {
       .add("%L", this)
       .add(
           ".%M(%L)",
-          KotlinMemberNames.obj,
+          KotlinSymbols.obj,
           params
       ).build()
 }

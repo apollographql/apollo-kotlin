@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.NodeQuery
 import kotlin.String
@@ -34,7 +35,7 @@ public object NodeQuery_ResponseAdapter {
       }
 
       return NodeQuery.Data(
-        node = _node!!
+        node = _node ?: missingField(reader, "node")
       )
     }
 
@@ -96,9 +97,9 @@ public object NodeQuery_ResponseAdapter {
         }
 
         return NodeQuery.Data.HumanNode(
-          __typename = __typename!!,
-          id = _id!!,
-          homePlanet = _homePlanet!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          homePlanet = _homePlanet ?: missingField(reader, "homePlanet")
         )
       }
 
@@ -140,9 +141,9 @@ public object NodeQuery_ResponseAdapter {
         }
 
         return NodeQuery.Data.DroidNode(
-          __typename = __typename!!,
-          id = _id!!,
-          primaryFunction = _primaryFunction!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          primaryFunction = _primaryFunction ?: missingField(reader, "primaryFunction")
         )
       }
 
@@ -182,8 +183,8 @@ public object NodeQuery_ResponseAdapter {
         }
 
         return NodeQuery.Data.OtherNode(
-          __typename = __typename!!,
-          id = _id!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id")
         )
       }
 

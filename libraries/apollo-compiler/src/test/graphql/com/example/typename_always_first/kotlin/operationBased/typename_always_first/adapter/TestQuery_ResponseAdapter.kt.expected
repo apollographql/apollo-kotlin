@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -41,7 +42,7 @@ public object TestQuery_ResponseAdapter {
 
       return TestQuery.Data(
         hero = _hero,
-        __typename = __typename!!
+        __typename = __typename ?: missingField(reader, "__typename")
       )
     }
 
@@ -133,7 +134,7 @@ public object TestQuery_ResponseAdapter {
 
           return TestQuery.Data.Hero.OnHuman(
             height = _height,
-            __typename = __typename!!
+            __typename = __typename ?: missingField(reader, "__typename")
           )
         }
 
@@ -169,8 +170,8 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Hero.OnDroid(
-            name = _name!!,
-            __typename = __typename!!,
+            name = _name ?: missingField(reader, "name"),
+            __typename = __typename ?: missingField(reader, "__typename"),
             primaryFunction = _primaryFunction
           )
         }

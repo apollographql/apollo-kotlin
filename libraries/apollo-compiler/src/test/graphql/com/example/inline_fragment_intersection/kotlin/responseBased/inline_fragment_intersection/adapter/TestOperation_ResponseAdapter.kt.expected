@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_intersection.TestOperation
 import com.example.inline_fragment_intersection.type.Race
@@ -42,7 +43,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       return TestOperation.Data(
-        random = _random!!
+        random = _random ?: missingField(reader, "random")
       )
     }
 
@@ -109,9 +110,9 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.BeingHumanRandom(
-          __typename = __typename!!,
-          name = _name!!,
-          friends = _friends!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
+          friends = _friends ?: missingField(reader, "friends"),
           profilePictureUrl = _profilePictureUrl
         )
       }
@@ -187,11 +188,11 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.BeingHumanRandom.WookieFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             lifeExpectancy = _lifeExpectancy,
             isFamous = _isFamous,
-            race = _race!!
+            race = _race ?: missingField(reader, "race")
           )
         }
 
@@ -239,8 +240,8 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.BeingHumanRandom.OtherFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             isFamous = _isFamous
           )
         }
@@ -286,10 +287,10 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.BeingWookieRandom(
-          __typename = __typename!!,
-          name = _name!!,
-          friends = _friends!!,
-          race = _race!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
+          friends = _friends ?: missingField(reader, "friends"),
+          race = _race ?: missingField(reader, "race")
         )
       }
 
@@ -359,8 +360,8 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.BeingWookieRandom.WookieFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             lifeExpectancy = _lifeExpectancy
           )
         }
@@ -403,8 +404,8 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.BeingWookieRandom.OtherFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             lifeExpectancy = _lifeExpectancy
           )
         }
@@ -444,7 +445,7 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.OtherRandom(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 

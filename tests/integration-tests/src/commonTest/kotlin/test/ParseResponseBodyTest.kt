@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.api.toJsonString
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -24,7 +23,6 @@ import testFixtureToJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -166,12 +164,7 @@ class ParseResponseBodyTest {
   fun fieldMissing() {
     val exception = testFixtureToJsonReader("ResponseDataMissing.json").toApolloResponse(operation = HeroNameQuery()).exception
     if (exception is DefaultApolloException) {
-      // This is the (better) Java codegen case
       assertTrue(exception.message?.contains("Field 'name' is missing") == true)
-    } else {
-      // Kotlin codegen case
-      assertIs<ApolloException>(exception)
-      assertIs<NullPointerException>(exception.cause)
     }
   }
 

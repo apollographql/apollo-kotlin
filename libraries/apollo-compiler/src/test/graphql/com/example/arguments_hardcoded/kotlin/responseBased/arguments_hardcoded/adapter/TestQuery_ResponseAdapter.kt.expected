@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.arguments_hardcoded.TestQuery
@@ -39,7 +40,7 @@ public object TestQuery_ResponseAdapter {
 
       return TestQuery.Data(
         reviews = _reviews,
-        testNullableArguments = _testNullableArguments!!
+        testNullableArguments = _testNullableArguments ?: missingField(reader, "testNullableArguments")
       )
     }
 
@@ -72,7 +73,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Review(
-          stars = _stars!!,
+          stars = _stars ?: missingField(reader, "stars"),
           commentary = _commentary
         )
       }

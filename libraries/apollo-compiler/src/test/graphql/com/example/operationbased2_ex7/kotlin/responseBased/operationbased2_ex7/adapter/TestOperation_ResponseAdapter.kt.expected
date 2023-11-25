@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.operationbased2_ex7.TestOperation
@@ -109,10 +110,10 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.PetWarmBloodedAnimal(
-          __typename = __typename!!,
-          species = _species!!,
-          temperature = _temperature!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          species = _species ?: missingField(reader, "species"),
+          temperature = _temperature ?: missingField(reader, "temperature"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 
@@ -155,8 +156,8 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.OtherAnimal(
-          __typename = __typename!!,
-          species = _species!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          species = _species ?: missingField(reader, "species")
         )
       }
 
@@ -195,9 +196,9 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.OtherWarmBloodedAnimal(
-          __typename = __typename!!,
-          species = _species!!,
-          temperature = _temperature!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          species = _species ?: missingField(reader, "species"),
+          temperature = _temperature ?: missingField(reader, "temperature")
         )
       }
 
@@ -239,9 +240,9 @@ public object TestOperation_ResponseAdapter {
         }
 
         return TestOperation.Data.OtherPetAnimal(
-          __typename = __typename!!,
-          species = _species!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          species = _species ?: missingField(reader, "species"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

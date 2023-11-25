@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Any
@@ -40,9 +41,9 @@ public object HumanDetailsImpl_ResponseAdapter {
       }
 
       return com.example.named_fragment_delegate.fragment.HumanDetails(
-        name = _name!!,
-        profileLink = _profileLink!!,
-        friendsConnection = _friendsConnection!!
+        name = _name ?: missingField(reader, "name"),
+        profileLink = _profileLink ?: missingField(reader, "profileLink"),
+        friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
       )
     }
 
@@ -138,7 +139,7 @@ public object HumanDetailsImpl_ResponseAdapter {
             }
 
             return com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node(
-              name = _name!!
+              name = _name ?: missingField(reader, "name")
             )
           }
 

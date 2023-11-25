@@ -133,6 +133,7 @@ public final class com/apollographql/apollo3/api/Assertions {
 	public static final fun assertOneOf ([Lcom/apollographql/apollo3/api/Optional;)V
 	public static final fun assertOneOf ([Ljava/util/Optional;)V
 	public static final fun checkFieldNotMissing (Ljava/lang/Object;Ljava/lang/String;)V
+	public static final fun missingField (Lcom/apollographql/apollo3/api/json/JsonReader;Ljava/lang/String;)Ljava/lang/Void;
 }
 
 public final class com/apollographql/apollo3/api/BLabel : com/apollographql/apollo3/api/BTerm {

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.String
 import kotlin.collections.List
 
@@ -32,8 +33,8 @@ internal object HumanDetailsImpl_ResponseAdapter {
       }
 
       return com.example.simple_fragment.fragment.HumanDetails(
-        __typename = __typename!!,
-        name = _name!!
+        __typename = __typename ?: missingField(reader, "__typename"),
+        name = _name ?: missingField(reader, "name")
       )
     }
 

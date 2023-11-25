@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.operation_id_generator.TestQuery
@@ -63,8 +64,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Hero(
-          id = _id!!,
-          name = _name!!
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

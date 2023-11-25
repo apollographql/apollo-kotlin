@@ -8,9 +8,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapter
 import com.apollographql.apollo3.compiler.codegen.Identifier.factory
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
@@ -84,7 +83,7 @@ internal fun dataBuilderCtor(
       )
       .addCode(
           CodeBlock.builder()
-              .add("return·%M(\n", KotlinMemberNames.buildData)
+              .add("return·%M(\n", KotlinSymbols.buildData)
               .indent()
               .apply {
                 if (builderFactoryParameterRequired) {

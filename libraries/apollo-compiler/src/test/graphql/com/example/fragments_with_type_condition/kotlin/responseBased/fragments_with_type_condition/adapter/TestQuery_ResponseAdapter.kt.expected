@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.TestQuery
@@ -106,8 +107,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanR2(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           height = _height
         )
       }
@@ -150,8 +151,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidR2(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           primaryFunction = _primaryFunction
         )
       }
@@ -190,7 +191,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherR2(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 
@@ -253,8 +254,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanLuke(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           height = _height
         )
       }
@@ -297,8 +298,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidLuke(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           primaryFunction = _primaryFunction
         )
       }
@@ -337,7 +338,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherLuke(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 
