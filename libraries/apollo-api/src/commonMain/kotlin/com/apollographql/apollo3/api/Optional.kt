@@ -44,14 +44,14 @@ sealed class Optional<out V> {
 }
 
 /**
- * Returns the value if this [Optional] is [Present] or null else.
+ * Returns the value if this [Optional] is [Present] or fallback else.
  */
-fun <V> Optional<V>.getOrElse(fallback: V): V = (this as? Present)?.value ?: fallback
+fun <V> Optional<V>.getOrElse(fallback: V): V = if (this is Present) this.value else fallback
 
 @ApolloExperimental
 fun <V, R> Optional<V>.map(mapper: (V) -> R): Optional<R> {
   return when(this) {
-    is Optional.Absent -> Optional.Absent
-    is Optional.Present -> Optional.present(mapper(value))
+    is Absent -> Absent
+    is Present -> Optional.present(mapper(value))
   }
 }
