@@ -3,10 +3,11 @@ package com.apollographql.apollo3.ast
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.ExtensionsMerger
-import com.apollographql.apollo3.ast.internal.apolloDefinitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo3.ast.internal.ensureSchemaDefinition
+import com.apollographql.apollo3.ast.internal.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
+import com.apollographql.apollo3.ast.internal.nullabilityDefinitionsStr
 import okio.Buffer
 
 /**
@@ -79,12 +80,22 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
 /**
- * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
+ * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
 fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    "v0.2" -> apolloDefinitionsStr
+    "v0.2" -> kotlinLabsDefinitions
     else -> error("kotlin_labs/$version definitions are not supported, please use v0.2")
+  })
+}
+
+/**
+ * Extra nullability definitions from https://specs.apollo.dev/nullability/<[version]>
+ */
+fun nullabilityDefinitions(version: String): List<GQLDefinition> {
+  return definitionsFromString(when (version) {
+    "v0.1" -> nullabilityDefinitionsStr
+    else -> error("nullability/$version definitions are not supported, please use v0.1")
   })
 }
 

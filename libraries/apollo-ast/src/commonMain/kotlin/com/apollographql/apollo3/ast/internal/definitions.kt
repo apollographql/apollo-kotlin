@@ -7,7 +7,7 @@ package com.apollographql.apollo3.ast.internal
  * - link.graphqls: the [core schemas](https://specs.apollo.dev/link/v1.0/) definitions.
  * - apollo-${version}.graphqls: the client directives supported by Apollo Kotlin. Changes are versioned at https://github.com/apollographql/specs. Changing them requires a new version and a PR.
  */
-internal val apolloDefinitionsStr = """
+internal val kotlinLabsDefinitions = """
   ""${'"'}
   Marks a field or variable definition as optional or required
   By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
@@ -254,4 +254,62 @@ internal val linkDefinitionsStr = """
     import: [Import],
     for: Purpose
   ) repeatable on SCHEMA
+""".trimIndent()
+
+val nullabilityDefinitionsStr = """
+  ""${'"'}
+  Indicates that a field is only null if there is a matching error in the `errors` array.
+  In all other cases, the field is non-null.
+
+  Tools doing code generation may use this information to generate the field as non-null.
+
+  This directive can be applied on field definitions:
+
+  ```graphql
+  type User {
+      email @nullOnlyOnError
+  }
+  ```
+
+  It can also be applied on object type extensions for use in client applications that do
+  not own the base schema:
+
+  ```graphql
+  extend type User @nullOnlyOnError(field: "email")
+  ```
+
+  Control over list items is done using the `level` argument:
+
+  ```graphql
+  type User {
+      # friends is nullable but friends[1] is null only on errors
+      friends @nullOnlyOnError(level: 1)
+  }
+  ```
+
+  @param field the name of the field if applied to an object definition or null if applied
+  to a field definition
+
+  @param level in case of a list type, level is the dimension where to apply the modifier,
+  starting at 0 if there is no list.
+  If level is null, the modifier is applied to all levels
+  ""${'"'}
+  directive @nullOnlyOnError(field: String = null, level: Int = null) on FIELD_DEFINITION | OBJECT
+
+  ""${'"'}
+  Indicates that a field acts as an error boundary in case of a GraphQL error.
+
+  By default, the first GraphQL error throw and fail the whole response.
+
+  @param level in case of a list type, level is the dimension where to apply the modifier,
+  starting at 0 if there is no list.
+  If level is null, the modifier is applied to all levels
+  ""${'"'}
+  directive @catch(level: Int = null) on FIELD
+
+  enum CatchTo {
+      NULL,
+      THROW,
+      RESULT
+  }
 """.trimIndent()

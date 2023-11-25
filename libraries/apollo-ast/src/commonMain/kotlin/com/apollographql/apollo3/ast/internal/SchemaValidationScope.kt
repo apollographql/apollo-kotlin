@@ -28,20 +28,21 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
 import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
-import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.introspection.defaultSchemaDefinition
+import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.linkDefinitions
+import com.apollographql.apollo3.ast.nullabilityDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.rawType
@@ -329,8 +330,14 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         }.toMap()
 
 
-        if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = kotlinLabsDefinitions(version).rename(mappings, prefix)
+        val foreignDefinitions = when (foreignName) {
+          "kotlin_labs" -> kotlinLabsDefinitions(version)
+          "nullability" -> nullabilityDefinitions(version)
+          else -> null
+        }
+
+        if (foreignDefinitions != null) {
+          val (definitions, renames) = foreignDefinitions.rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
