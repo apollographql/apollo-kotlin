@@ -45,13 +45,15 @@ import kotlinx.serialization.Serializable
 sealed interface IrType {
   val nullable: Boolean
   val optional: Boolean
+  val result: Boolean
 
-  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional): IrType
+  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional, result: Boolean = this.result): IrType
   fun rawType(): IrNamedType
 }
 
 fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
 fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
+fun IrType.result(result: Boolean): IrType = copyWith(result = result)
 
 @Serializable
 @SerialName("list")
@@ -59,8 +61,9 @@ data class IrListType(
     val ofType: IrType,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrType {
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
 
   override fun rawType() = ofType.rawType()
 }
@@ -77,8 +80,9 @@ data class IrScalarType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
   override fun rawType() = this
 }
 
@@ -88,8 +92,9 @@ data class IrInputObjectType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
   override fun rawType() = this
 }
 
@@ -99,8 +104,9 @@ data class IrEnumType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
   override fun rawType() = this
 }
 
@@ -110,8 +116,9 @@ data class IrObjectType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
   override fun rawType() = this
 }
 
@@ -140,11 +147,12 @@ internal data class IrModelType(
     val path: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
+    override val result: Boolean = false,
 ) : IrNamedType {
   override val name: String
     get() = path
 
-  override fun copyWith(nullable: Boolean, optional: Boolean): IrType = copy(nullable = nullable, optional = optional)
+  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
   override fun rawType() = this
 }
 
