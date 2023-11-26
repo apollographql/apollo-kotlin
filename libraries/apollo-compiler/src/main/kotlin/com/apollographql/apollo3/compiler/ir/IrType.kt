@@ -45,15 +45,23 @@ import kotlinx.serialization.Serializable
 sealed interface IrType {
   val nullable: Boolean
   val optional: Boolean
-  val result: Boolean
+  val catchTo: IrCatchTo
 
-  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional, result: Boolean = this.result): IrType
+  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional, catchTo: IrCatchTo = this.catchTo): IrType
   fun rawType(): IrNamedType
+}
+
+@Serializable
+enum class IrCatchTo {
+  Throw,
+  Null,
+  Result,
+  NoCatch
 }
 
 fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
 fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
-fun IrType.result(result: Boolean): IrType = copyWith(result = result)
+fun IrType.catchTo(catchTo: IrCatchTo): IrType = copyWith(catchTo = catchTo)
 
 @Serializable
 @SerialName("list")
@@ -61,9 +69,9 @@ data class IrListType(
     val ofType: IrType,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
 
   override fun rawType() = ofType.rawType()
 }
@@ -80,9 +88,9 @@ data class IrScalarType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
   override fun rawType() = this
 }
 
@@ -92,9 +100,9 @@ data class IrInputObjectType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
   override fun rawType() = this
 }
 
@@ -104,9 +112,9 @@ data class IrEnumType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
   override fun rawType() = this
 }
 
@@ -116,9 +124,9 @@ data class IrObjectType(
     override val name: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
   override fun rawType() = this
 }
 
@@ -147,12 +155,12 @@ internal data class IrModelType(
     val path: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
-    override val result: Boolean = false,
+    override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
 ) : IrNamedType {
   override val name: String
     get() = path
 
-  override fun copyWith(nullable: Boolean, optional: Boolean, result: Boolean): IrType = copy(nullable = nullable, optional = optional, result = result)
+  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
   override fun rawType() = this
 }
 

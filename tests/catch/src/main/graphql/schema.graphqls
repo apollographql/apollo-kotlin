@@ -1,5 +1,15 @@
-directive @nullOnlyOnError(level: Int = null) on FIELD_DEFINITION
-directive @catch(level: Int = null) on FIELD
+#extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1")
+
+extend schema @catch(to: THROW)
+
+directive @nullOnlyOnError(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) on FIELD | SCHEMA | QUERY | MUTATION | SUBSCRIPTION
+
+enum CatchTo {
+  NULL,
+  THROW,
+  RESULT,
+}
 
 type Query {
   nullable: Int

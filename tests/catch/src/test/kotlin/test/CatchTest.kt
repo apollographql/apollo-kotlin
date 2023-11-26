@@ -1,16 +1,18 @@
 package test
 
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.errors
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.errorOrNull
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
-import com.apollographql.apollo3.api.value
-import com.apollographql.apollo3.exception.ApolloException
-import com.example.GetNooeOrThrowQuery
-import com.example.GetNooePartialQuery
-import com.example.GetUserOrThrowQuery
-import com.example.GetUserPartialQuery
+import com.apollographql.apollo3.api.valueOrThrow
+import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.example.UserNullQuery
+import com.example.UserResultQuery
+import com.example.UserThrowQuery
 import okio.Buffer
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
@@ -18,9 +20,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 
-class CatchTest {
-  @Language("json")
-  val userError = """
+@Language("json")
+val userNameError = """
     {
       "errors": [
         {
@@ -36,8 +37,8 @@ class CatchTest {
     }
   """.trimIndent()
 
-  @Language("json")
-  val userSuccess = """
+@Language("json")
+val userSuccess = """
     {
       "data": {
         "user": {
@@ -47,8 +48,8 @@ class CatchTest {
     }
   """.trimIndent()
 
-  @Language("json")
-  val nooeError = """
+@Language("json")
+val nooeError = """
     {
       "errors": [
         {
@@ -62,53 +63,50 @@ class CatchTest {
     }
   """.trimIndent()
 
-  private fun String.jsonReader(): JsonReader = Buffer().writeUtf8(this).jsonReader()
-
+class CatchTest {
   @Test
-  fun simplePartial() {
-    val response = GetNooePartialQuery().parseResponse(nooeError.jsonReader(), null, CustomScalarAdapters.Empty, null)
-
-    assertEquals("cannot resolve nullOnlyOnError", response.data?.nullOnlyOnError?.errors?.single()?.message)
-    assertNull(response.exception)
+  fun userThrowOnUserNameError() {
+    val response = UserThrowQuery().parseResponse(userNameError)
+    val exception = response.exception
+    assertIs<ApolloGraphQLException>(exception)
+    assertEquals("cannot resolve name", exception.error.message)
   }
 
   @Test
-  fun simpleThrow() {
-    val response = GetNooeOrThrowQuery().parseResponse(nooeError.jsonReader(), null, CustomScalarAdapters.Empty, null)
+  fun userResultOnUserNameError() {
+    val response = UserResultQuery().parseResponse(userNameError)
 
-    assertNull(response.data)
-    assertIs<ApolloException>(response.exception)
+    assertEquals("cannot resolve name", response.data?.user?.errorOrNull?.message)
+  }
+  @Test
+  fun userNullOnUserNameError() {
+    val response = UserNullQuery().parseResponse(userNameError)
+
+    assertNull(response.data!!.user)
   }
 
   @Test
-  fun userPartial() {
-    val response = GetUserPartialQuery().parseResponse(userError.jsonReader(), null, CustomScalarAdapters.Empty, null)
+  fun userThrowOnUserSuccess() {
+    val response = UserThrowQuery().parseResponse(userSuccess)
 
-    assertEquals("cannot resolve name", response.data?.user?.errors?.single()?.message)
-    assertNull(response.exception)
+    assertEquals("Pancakes", response.data!!.user.name)
   }
 
   @Test
-  fun userThrow()  {
-    val response = GetUserOrThrowQuery().parseResponse(userError.jsonReader(), null, CustomScalarAdapters.Empty, null)
+  fun userResultOnUserSuccess() {
+    val response = UserResultQuery().parseResponse(userSuccess)
 
-    assertNull(response.data)
-    assertIs<ApolloException>(response.exception)
+    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name)
   }
 
   @Test
-  fun userSuccess()  {
-    val response = GetUserOrThrowQuery().parseResponse(userSuccess.jsonReader(), null, CustomScalarAdapters.Empty, null)
+  fun userNullOnUserSuccess() {
+    val response = UserNullQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data?.user?.name)
-    assertNull(response.exception)
-  }
-
-  @Test
-  fun userSuccessWithCatch()  {
-    val response = GetUserPartialQuery().parseResponse(userSuccess.jsonReader(), null, CustomScalarAdapters.Empty, null)
-
-    assertEquals("Pancakes", response.data?.user?.value?.name)
-    assertNull(response.exception)
+    assertEquals("Pancakes", response.data!!.user!!.name)
   }
 }
+
+private fun String.jsonReader(): JsonReader = Buffer().writeUtf8(this).jsonReader()
+
+fun <D: Query.Data> Query<D>.parseResponse(json: String): ApolloResponse<D> = parseResponse(json.jsonReader(), null, CustomScalarAdapters.Empty, null)

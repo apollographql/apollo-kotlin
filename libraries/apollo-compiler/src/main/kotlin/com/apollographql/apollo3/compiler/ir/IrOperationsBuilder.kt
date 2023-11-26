@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.ast.Catch
+import com.apollographql.apollo3.ast.CatchTo
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
@@ -32,8 +34,10 @@ import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
+import com.apollographql.apollo3.ast.findCatchs
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
+import com.apollographql.apollo3.ast.findNooeLevels
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.optionalValue
@@ -98,7 +102,7 @@ internal class IrOperationsBuilder(
      */
     val visitedTypes = mutableSetOf<String>()
     val typesToVisit = usedFields.keys.toMutableList()
-    while(typesToVisit.isNotEmpty()) {
+    while (typesToVisit.isNotEmpty()) {
       val name = typesToVisit.removeFirst()
       if (visitedTypes.contains(name)) {
         continue
@@ -186,21 +190,24 @@ internal class IrOperationsBuilder(
           /**
            * Unions reference their members, generate them:
            *
+           * ```
            * public class SearchResult {
            *   public companion object {
            *     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
            *   }
            * }
+           * ```
            */
-            typeDefinition.memberTypes.forEach {
-              if (generateDataBuilders) {
-                usedFields.putAllFields(it.name, usedFields[name].orEmpty())
-              } else {
-                usedFields.putType(it.name)
-              }
-              typesToVisit.add(it.name)
+          typeDefinition.memberTypes.forEach {
+            if (generateDataBuilders) {
+              usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+            } else {
+              usedFields.putType(it.name)
             }
+            typesToVisit.add(it.name)
+          }
         }
+
         is GQLInputObjectTypeDefinition -> {
           /**
            * Loop on the input types.
@@ -214,6 +221,7 @@ internal class IrOperationsBuilder(
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
               }
+
               is GQLEnumTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
                 usedFields.putType(fieldType.name)
@@ -383,7 +391,7 @@ internal class IrOperationsBuilder(
    * @throws IllegalStateException if some incompatibles types are found. This should never happen
    * because this should be caught during previous operation-wide validation.
    */
-  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
+  private fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
     return fragmentVariableUsages.get(fragment.name).orEmpty().groupBy {
       it.variable.name
     }.entries.map {
@@ -470,7 +478,8 @@ internal class IrOperationsBuilder(
       val type: GQLType,
       val deprecationReason: String?,
       val optInFeature: String?,
-      val forceNonNull: Boolean,
+      val nooes: List<Int?>,
+      val catchs: List<Catch>,
       val forceOptional: Boolean,
 
       /**
@@ -484,6 +493,8 @@ internal class IrOperationsBuilder(
   }
 
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
+    val defaultCatch = schema.schemaDefinition?.directives?.findCatchs(schema)?.singleOrNull()
+
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
       val parentTypeDefinition = schema.typeDefinition(fieldWithParent.parentType)
@@ -492,7 +503,31 @@ internal class IrOperationsBuilder(
       check(fieldDefinition != null) {
         "cannot find field definition for field '${gqlField.responseName()}' of type '${parentTypeDefinition.name}'"
       }
-      val forceNonNull = gqlField.directives.findNonnull(schema) || parentTypeDefinition.isFieldNonNull(gqlField.name, schema)
+
+      var nooeLevels = fieldDefinition.findNooeLevels(schema)
+
+      parentTypeDefinition.findNooeLevels(gqlField.name, schema).let {
+        if (it.isNotEmpty()) {
+          check(nooeLevels.isEmpty()) {
+            "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+          }
+          nooeLevels = it
+        }
+      }
+
+      if (parentTypeDefinition.isFieldNonNull(gqlField.name, schema)) {
+        check(nooeLevels.isEmpty()) {
+          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+        }
+        nooeLevels = listOf(0)
+      }
+
+      if (gqlField.directives.findNonnull(schema)) {
+        check(nooeLevels.isEmpty()) {
+          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+        }
+        nooeLevels = listOf(0)
+      }
 
       CollectedField(
           name = gqlField.name,
@@ -503,9 +538,10 @@ internal class IrOperationsBuilder(
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           optInFeature = fieldDefinition.directives.findOptInFeature(schema),
-          forceNonNull = forceNonNull,
+          nooes = nooeLevels,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
+          catchs = gqlField.directives.findCatchs(schema)
       )
     }.groupBy {
       it.responseName
@@ -522,9 +558,6 @@ internal class IrOperationsBuilder(
       val first = fieldsWithSameResponseName.first()
       val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
 
-      val forceNonNull = fieldsWithSameResponseName.any {
-        it.forceNonNull
-      }
       val forceOptional = fieldsWithSameResponseName.any {
         it.forceOptional
       }
@@ -574,12 +607,23 @@ internal class IrOperationsBuilder(
        */
       usedFields.putType(first.type.rawType().name)
 
-      var irType = first.type.toIr()
-      if (forceNonNull) {
-        irType = irType.nullable(false)
-      } else if (forceOptional) {
-        irType = irType.nullable(true)
-      }
+      val irType = first
+          .type
+          .toIr()
+          // Apply the schema transformations
+          .nooe(first.nooes, 0)
+          .let {
+            /**
+             * We map @optional fields to nullable fields. This probably needs to be revisited in light of @catch
+             */
+            if (forceOptional) {
+              it.nullable(true)
+            } else {
+              it
+            }
+          }
+          // Finally, transform into Result or Nullable depending on catch
+          .catch(first.catchs, defaultCatch ?: Catch(CatchTo.NO_CATCH, null), 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -629,6 +673,49 @@ internal class IrOperationsBuilder(
   }
 
   companion object {
+    private fun IrType.nooe(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
+      val isNonNull = nullOnlyOnErrorLevels.any { it == null || it == level }
+
+      return when (this) {
+        is IrNamedType -> this
+        is IrListType -> copy(ofType = ofType.nooe(nullOnlyOnErrorLevels, level + 1))
+      }.let {
+        if (isNonNull) {
+          it.nullable(false)
+        } else {
+          it
+        }
+      }
+    }
+
+    private fun IrType.catch(catchLevels: List<Catch>, defaultCatch: Catch, level: Int): IrType {
+      val catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level } ?: defaultCatch
+      return when (this) {
+        is IrNamedType -> this
+        is IrListType -> copy(ofType = ofType.catch(catchLevels, defaultCatch, level + 1))
+      }.catchTo(catchLevel.to.toIr()).let {
+        if (catchLevel.to == CatchTo.NULL) {
+          /**
+           * Mark the field as nullable which duplicates some information with CatchTo but is needed for
+           * other codepaths to generate correct code and not consider this a required field
+           * See also `IrType.removeCatchTo`
+           */
+          it.nullable(true)
+        } else {
+          it
+        }
+      }
+    }
+
+    private fun CatchTo.toIr(): IrCatchTo {
+      return when (this) {
+        CatchTo.NO_CATCH -> IrCatchTo.NoCatch
+        CatchTo.THROW -> IrCatchTo.Throw
+        CatchTo.RESULT -> IrCatchTo.Result
+        CatchTo.NULL -> IrCatchTo.Null
+      }
+    }
+
     private fun MutableMap<String, MutableSet<String>>.putField(typeName: String, fieldName: String) {
       compute(typeName) { _, v ->
         if (v == null) {

@@ -113,11 +113,15 @@ internal object KotlinSymbols {
   val JsExport = ClassName("kotlin.js", "JsExport")
 
   val obj = MemberName(apolloApiPackageName, "obj")
+  val catchToResult = MemberName(apolloApiPackageName, "catchToResult")
+  val catchToNull = MemberName(apolloApiPackageName, "catchToNull")
+  val catchToThrow = MemberName(apolloApiPackageName, "catchToThrow")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
   val assertOneOf = MemberName(apolloApiPackageName, "assertOneOf")
   val missingField = MemberName(apolloApiPackageName, "missingField")
+  val FieldResult = ClassNames.FieldResult.toKotlinPoetClassName()
 }
 
 internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

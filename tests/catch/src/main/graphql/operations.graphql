@@ -1,19 +1,25 @@
-query GetUserOrThrow {
-  user {
+query UserThrow {
+  #
+  user @catch(to: THROW){
     name
   }
 }
 
-query GetUserPartial {
-  user @catch {
+query UserResult {
+  user @catch(to: RESULT) {
     name
   }
 }
 
-query GetNooePartial {
-  nullOnlyOnError @catch
+query UserNull {
+  user @catch(to: NULL) {
+    name
+  }
 }
 
-query GetNooeOrThrow {
-  nullOnlyOnError
+query UserIgnore {
+  user @catch(if: false) {
+    name
+  }
 }
+

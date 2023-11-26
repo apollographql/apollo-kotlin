@@ -10,7 +10,7 @@ sealed interface FieldResult<out V> {
 fun <V> FieldResult<V>.getOrElse(fallback: V): V = if (this is FieldResult.Success) value else fallback
 val <V> FieldResult<V>.isSuccess: Boolean get() = this is FieldResult.Success
 val <V> FieldResult<V>.valueOrNull: V? get() = if (this is FieldResult.Success) value else null
-val <V> FieldResult<V>.errorsOrNull: Error? get() = if (this is FieldResult.Error) error else null
+val <V> FieldResult<V>.errorOrNull: Error? get() = if (this is FieldResult.Error) error else null
 
 fun <V> FieldResult<V>.valueOrThrow(): V {
   return when (this) {
