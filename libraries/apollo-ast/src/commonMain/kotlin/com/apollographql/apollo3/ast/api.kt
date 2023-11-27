@@ -232,5 +232,5 @@ fun GQLDocument.validateAsExecutable(schema: Schema): ExecutableValidationResult
   return ExecutableValidationScope(schema).validate(this)
 }
 
-@ApolloInternal
+@ApolloExperimental
 class ExecutableValidationResult(val fragmentVariableUsages: Map<String, List<VariableUsage>>, val issues: List<Issue>)
