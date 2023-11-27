@@ -17,8 +17,8 @@ class ApolloOneOfInputCreationInspectionTest : ApolloTestCase() {
   fun testOneOfConstructorInvocations() {
     myFixture.configureFromTempProjectFile("src/main/kotlin/com/example/OneOf.kt")
     val highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.any { it.description == "@oneOf input must have exactly one field set" && it.text == "FindUserInput" && it.line == 8})
-    assertTrue(highlightInfos.any { it.description == "@oneOf input must have exactly one field set" && it.text == "FindUserInput" && it.line == 10})
-    assertTrue(highlightInfos.any { it.description == "@oneOf input argument must be Present" && it.text == "FindUserInput" && it.line == 20})
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class constructor must have exactly one argument" && it.text == "FindUserInput" && it.line == 8 })
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class constructor must have exactly one argument" && it.text == "FindUserInput" && it.line == 10 })
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class argument must be Present" && it.text == "FindUserInput" && it.line == 20 })
   }
 }
