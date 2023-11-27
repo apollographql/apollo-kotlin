@@ -283,7 +283,7 @@ Control over list items is done using the `level` argument:
 ```graphql
 type User {
     # friends is nullable but friends[0] is null only on errors
-    friends @nullOnlyOnError(level: 1)
+    friends: [ID]! @nullOnlyOnError(level: 1)
 }
 ```
 
