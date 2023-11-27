@@ -1,14 +1,18 @@
 package com.apollographql.ijplugin.normalizedcache
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient
 import com.apollographql.ijplugin.apollodebugserver.normalizedCacheSimpleName
+import com.apollographql.ijplugin.normalizedcache.NormalizedCacheSource.ApolloDebugServer
+import com.apollographql.ijplugin.normalizedcache.NormalizedCacheSource.DeviceFile
+import com.apollographql.ijplugin.normalizedcache.NormalizedCacheSource.LocalFile
 import com.apollographql.ijplugin.normalizedcache.provider.ApolloDebugNormalizedCacheProvider
 import com.apollographql.ijplugin.normalizedcache.provider.DatabaseNormalizedCacheProvider
 import com.apollographql.ijplugin.normalizedcache.ui.FieldTreeTable
 import com.apollographql.ijplugin.normalizedcache.ui.RecordSearchTextField
 import com.apollographql.ijplugin.normalizedcache.ui.RecordTable
-import com.apollographql.ijplugin.telemetry.TelemetryEvent
+import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCacheOpenApolloDebugCache
+import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCacheOpenDeviceFile
+import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCacheOpenLocalFile
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
@@ -113,9 +117,7 @@ class NormalizedCacheWindowPanel(
   private val history = History<NormalizedCache.Record>()
   private var updateHistory = true
 
-  private var apolloDebugClient: ApolloDebugClient? = null
-  private var apolloDebugApolloClientId: String? = null
-  private var apolloDebugNormalizedCacheId: String? = null
+  private var cacheSource: NormalizedCacheSource? = null
   private var isRefreshing = false
 
   init {
@@ -131,13 +133,8 @@ class NormalizedCacheWindowPanel(
       if (isAndroidPluginPresent) {
         emptyText.appendLine(ApolloBundle.message("normalizedCacheViewer.empty.pullFromDevice"), SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES) {
           PullFromDeviceDialog(
-              project,
-              onPullError = { throwable ->
-                showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.error"), content = throwable.message
-                    ?: "", type = NotificationType.ERROR)
-              },
-              onFilePullSuccess = ::openFile,
-              onApolloDebugCacheSelected = ::openApolloDebugNormalizedCache,
+              project = project,
+              onSourceSelected = ::openNormalizedCache,
           ).show()
         }
       }
@@ -169,7 +166,8 @@ class NormalizedCacheWindowPanel(
           e.acceptDrop(DnDConstants.ACTION_COPY)
           val paths = FileCopyPasteUtil.getFileList(e.transferable)
           if (!paths.isNullOrEmpty()) {
-            openFile(paths.first())
+            val file = paths.first()
+            openNormalizedCache(LocalFile(file))
             e.dropComplete(true)
           } else {
             e.dropComplete(false)
@@ -239,11 +237,11 @@ class NormalizedCacheWindowPanel(
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-          refreshApolloDebugNormalizedCache()
+          cacheSource?.let { openNormalizedCache(it) }
         }
 
         override fun update(e: AnActionEvent) {
-          e.presentation.isVisible = apolloDebugNormalizedCacheId != null && apolloDebugClient != null
+          e.presentation.isVisible = cacheSource != null
           e.presentation.isEnabled = !isRefreshing
         }
 
@@ -315,11 +313,15 @@ class NormalizedCacheWindowPanel(
         project,
         null
     ).firstOrNull() ?: return
-    openFile(File(virtualFile.path))
+    openNormalizedCache(LocalFile(File(virtualFile.path)))
   }
 
-  private fun openFile(file: File) {
-    project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenFile())
+  private fun openNormalizedCache(cacheSource: NormalizedCacheSource) {
+    project.telemetryService.logEvent(when (cacheSource) {
+      is ApolloDebugServer -> ApolloIjNormalizedCacheOpenApolloDebugCache()
+      is DeviceFile -> ApolloIjNormalizedCacheOpenDeviceFile()
+      is LocalFile -> ApolloIjNormalizedCacheOpenLocalFile()
+    })
     setContent(createLoadingContent())
     object : Task.Backgroundable(
         project,
@@ -327,17 +329,56 @@ class NormalizedCacheWindowPanel(
         false,
     ) {
       override fun run(indicator: ProgressIndicator) {
-        val normalizedCacheResult = DatabaseNormalizedCacheProvider().provide(file)
+        isRefreshing = true
+        var tabName = ""
+        val normalizedCacheResult = when (cacheSource) {
+          is LocalFile -> {
+            runBlocking {
+              DatabaseNormalizedCacheProvider().provide(cacheSource.file).also {
+                tabName = cacheSource.file.name
+              }
+            }
+          }
+
+          is DeviceFile -> {
+            runBlocking {
+              pullFile(
+                  device = cacheSource.device,
+                  appPackageName = cacheSource.packageName,
+                  remoteDirName = cacheSource.remoteDirName,
+                  remoteFileName = cacheSource.remoteFileName,
+              ).mapCatching { file ->
+                tabName = cacheSource.remoteFileName
+                DatabaseNormalizedCacheProvider().provide(file).getOrThrow()
+              }
+            }
+          }
+
+          is ApolloDebugServer -> {
+            runBlocking {
+              cacheSource.apolloDebugClient.getNormalizedCache(apolloClientId = cacheSource.apolloClientId, normalizedCacheId = cacheSource.normalizedCacheId)
+            }.mapCatching { apolloDebugNormalizedCache ->
+              val tabNamePrefix = cacheSource.apolloClientId.takeIf { it != "client" }?.let { "$it - " } ?: ""
+              tabName = tabNamePrefix + apolloDebugNormalizedCache.displayName.normalizedCacheSimpleName
+              ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
+            }
+          }
+        }
+        isRefreshing = false
         invokeLater {
           if (normalizedCacheResult.isFailure) {
             showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
-            setContent(createEmptyContent())
+            if (this@NormalizedCacheWindowPanel.cacheSource == null) {
+              setContent(createEmptyContent())
+            }
             return@invokeLater
           }
+          this@NormalizedCacheWindowPanel.cacheSource = cacheSource
           normalizedCache = normalizedCacheResult.getOrThrow().sorted()
           setContent(createNormalizedCacheContent())
+          if (toolbar != null) toolbar = null
           toolbar = createToolbar()
-          setTabName(file.name)
+          setTabName(tabName)
         }
       }
     }.queue()
@@ -352,70 +393,7 @@ class NormalizedCacheWindowPanel(
     showNotification(project, title = ApolloBundle.message("normalizedCacheViewer.openFileError.title"), content = details, type = NotificationType.ERROR)
   }
 
-  private fun openApolloDebugNormalizedCache(apolloDebugClient: ApolloDebugClient, apolloClientId: String, normalizedCacheId: String) {
-    project.telemetryService.logEvent(TelemetryEvent.ApolloIjNormalizedCacheOpenApolloDebugCache())
-    setContent(createLoadingContent())
-    object : Task.Backgroundable(
-        project,
-        ApolloBundle.message("normalizedCacheViewer.loading.message"),
-        false,
-    ) {
-      override fun run(indicator: ProgressIndicator) {
-        var tabName = ""
-        val normalizedCacheResult = runBlocking {
-          apolloDebugClient.getNormalizedCache(apolloClientId = apolloClientId, normalizedCacheId = normalizedCacheId)
-        }.mapCatching { apolloDebugNormalizedCache ->
-          val tabNamePrefix = apolloClientId.takeIf { it != "client" }?.let { "$it - " } ?: ""
-          tabName = tabNamePrefix + apolloDebugNormalizedCache.displayName.normalizedCacheSimpleName
-          ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
-        }
-        invokeLater {
-          if (normalizedCacheResult.isFailure) {
-            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
-            setContent(createEmptyContent())
-            return@invokeLater
-          }
-          this@NormalizedCacheWindowPanel.apolloDebugClient = apolloDebugClient
-          this@NormalizedCacheWindowPanel.apolloDebugApolloClientId = apolloClientId
-          this@NormalizedCacheWindowPanel.apolloDebugNormalizedCacheId = normalizedCacheId
-          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
-          setContent(createNormalizedCacheContent())
-          toolbar = createToolbar()
-          setTabName(tabName)
-        }
-      }
-    }.queue()
-  }
-
-  private fun refreshApolloDebugNormalizedCache() {
-    object : Task.Backgroundable(
-        project,
-        ApolloBundle.message("normalizedCacheViewer.loading.message"),
-        false,
-    ) {
-      override fun run(indicator: ProgressIndicator) {
-        isRefreshing = true
-        val normalizedCacheResult = runBlocking {
-          apolloDebugClient!!.getNormalizedCache(apolloClientId = apolloDebugApolloClientId!!, normalizedCacheId = apolloDebugNormalizedCacheId!!)
-        }.mapCatching { apolloDebugNormalizedCache ->
-          ApolloDebugNormalizedCacheProvider().provide(apolloDebugNormalizedCache).getOrThrow()
-        }
-        isRefreshing = false
-        invokeLater {
-          if (normalizedCacheResult.isFailure) {
-            showOpenFileError(normalizedCacheResult.exceptionOrNull()!!)
-            return@invokeLater
-          }
-          normalizedCache = normalizedCacheResult.getOrThrow().sorted()
-          setContent(createNormalizedCacheContent())
-          toolbar = null
-          toolbar = createToolbar()
-        }
-      }
-    }.queue()
-  }
-
   override fun dispose() {
-    apolloDebugClient?.close()
+    (cacheSource as? ApolloDebugServer)?.apolloDebugClient?.close()
   }
 }

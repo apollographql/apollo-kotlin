@@ -4,14 +4,8 @@ import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.android.ddmlib.SyncService
 import com.android.tools.idea.adb.AdbShellCommandsUtil
-import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.project.Project
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -68,36 +62,7 @@ fun IDevice.getDatabaseList(packageName: String, databasesDir: String): Result<L
   return Result.success(result.output.filter { it.isDatabaseFileName() }.sorted())
 }
 
-fun pullFileAsync(
-    project: Project,
-    device: IDevice,
-    packageName: String,
-    remoteDirName: String,
-    remoteFileName: String,
-    onFilePullSuccess: (File) -> Unit,
-    onFilePullError: (Throwable) -> Unit,
-) {
-  object : Task.Backgroundable(
-      project,
-      ApolloBundle.message("normalizedCacheViewer.pullFromDevice.pull.ongoing"),
-      false,
-  ) {
-    override fun run(indicator: ProgressIndicator) {
-      val pullResult = pullFile(device = device, appPackageName = packageName, remoteDirName = remoteDirName, remoteFileName = remoteFileName)
-      invokeLater(ModalityState.any()) {
-        pullResult.onSuccess {
-          onFilePullSuccess(it)
-        }.onFailure {
-          logw(it, "Pull failed")
-          onFilePullError(it)
-        }
-      }
-    }
-  }.queue()
-
-}
-
-private fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, remoteFileName: String): Result<File> {
+fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, remoteFileName: String): Result<File> {
   val remoteFilePath = "$remoteDirName/$remoteFileName"
   val localFile = File.createTempFile(remoteFileName.substringBeforeLast(".") + "-tmp", ".db")
   logd("Pulling $remoteFilePath to ${localFile.absolutePath}")
