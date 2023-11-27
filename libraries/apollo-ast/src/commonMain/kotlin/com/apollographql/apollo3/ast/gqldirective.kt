@@ -135,7 +135,7 @@ private fun GQLValue?.toCatchTo(): CatchTo {
 }
 
 @ApolloInternal
-fun List<GQLDirective>.findCatchs(schema: Schema): List<Catch> {
+fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
   return filter {
     schema.originalDirectiveName(it.name) == Schema.CATCH
   }.map {

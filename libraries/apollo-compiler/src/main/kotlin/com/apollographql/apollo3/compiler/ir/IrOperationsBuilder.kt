@@ -34,7 +34,7 @@ import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
-import com.apollographql.apollo3.ast.findCatchs
+import com.apollographql.apollo3.ast.findCatches
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findNooeLevels
@@ -493,7 +493,7 @@ internal class IrOperationsBuilder(
   }
 
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
-    val defaultCatch = schema.schemaDefinition?.directives?.findCatchs(schema)?.singleOrNull()
+    val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
 
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
@@ -541,7 +541,7 @@ internal class IrOperationsBuilder(
           nooes = nooeLevels,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catchs = gqlField.directives.findCatchs(schema)
+          catchs = gqlField.directives.findCatches(schema)
       )
     }.groupBy {
       it.responseName
