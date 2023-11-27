@@ -79,17 +79,8 @@ internal class KotlinResolver(
     classNames.put(ResolverKey(kind, id), ClassName(memberName.packageName, memberName.simpleName))
   }
 
-  /**
-   * Because CatchToNull implies nullable, [removeCatchTo] will make the unwrapped type non-nullable
-   */
   private fun IrType.removeCatchTo(): IrType {
-    return catchTo(IrCatchTo.NoCatch).let {
-      if (catchTo == IrCatchTo.Null) {
-        it.nullable(false)
-      } else {
-        it
-      }
-    }
+    return catchTo(IrCatchTo.NoCatch)
   }
 
   internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false): TypeName {

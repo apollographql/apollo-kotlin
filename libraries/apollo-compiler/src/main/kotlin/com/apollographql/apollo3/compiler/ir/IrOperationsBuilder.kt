@@ -699,11 +699,6 @@ internal class IrOperationsBuilder(
       if (catchLevel != null) {
         type = type.catchTo(catchLevel.to.toIr())
         if (catchLevel.to == CatchTo.NULL) {
-          /**
-           * Mark the field as nullable which duplicates some information with CatchTo but is needed for
-           * other code paths to generate correct code and not consider this a required field
-           * See also `IrType.removeCatchTo`
-           */
           type = type.nullable(true)
         }
       }

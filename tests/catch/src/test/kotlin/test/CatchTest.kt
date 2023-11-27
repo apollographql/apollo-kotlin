@@ -9,8 +9,11 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.valueOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.example.PriceNullQuery
 import com.example.ProductIgnoreErrorsQuery
+import com.example.ProductNullQuery
 import com.example.ProductQuery
+import com.example.ProductResultQuery
 import com.example.UserNullQuery
 import com.example.UserQuery
 import com.example.UserResultQuery
@@ -37,6 +40,7 @@ class CatchTest {
 
     assertEquals("cannot resolve name", response.data?.user?.errorOrNull?.message)
   }
+
   @Test
   fun userNullOnUserNameError() {
     val response = UserNullQuery().parseResponse(userNameError)
@@ -75,6 +79,21 @@ class CatchTest {
   }
 
   @Test
+  fun productResultOnProductPriceError() {
+    val response = ProductResultQuery().parseResponse(productPriceError)
+
+    assertEquals("cannot resolve price", response.data?.product?.errorOrNull?.message)
+  }
+
+  @Test
+  fun productNullOnProductPriceError() {
+    val response = ProductNullQuery().parseResponse(productPriceError)
+
+    assertNull(response.data?.product)
+    assertNotNull(response.data)
+  }
+
+  @Test
   fun productIgnoreErrorsOnProductPriceError() {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
@@ -82,11 +101,29 @@ class CatchTest {
     assertNull(response.data?.product?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
+
+  @Test
+  fun productPriceNullOnProductPriceError() {
+    val response = PriceNullQuery().parseResponse(productPriceError)
+
+    assertNotNull(response.data?.product)
+    assertNull(response.data?.product?.price)
+    assertEquals("cannot resolve price", response.errors?.single()?.message)
+  }
+
+  @Test
+  fun productPriceNullOnProductPriceNull() {
+    val response = PriceNullQuery().parseResponse(productPriceNull)
+
+    assertNotNull(response.data?.product)
+    assertNull(response.data?.product?.price)
+    assertNull(response.errors)
+  }
 }
 
 private fun String.jsonReader(): JsonReader = Buffer().writeUtf8(this).jsonReader()
 
-fun <D: Query.Data> Query<D>.parseResponse(json: String): ApolloResponse<D> = parseResponse(json.jsonReader(), null, CustomScalarAdapters.Empty, null)
+fun <D : Query.Data> Query<D>.parseResponse(json: String): ApolloResponse<D> = parseResponse(json.jsonReader(), null, CustomScalarAdapters.Empty, null)
 
 @Language("json")
 val userNameError = """
@@ -125,6 +162,17 @@ val productPriceError = """
           "message": "cannot resolve price"
         }
       ],
+      "data": {
+        "product": {
+          "price": null
+        }
+      }
+    }
+  """.trimIndent()
+
+@Language("json")
+val productPriceNull = """
+    {
       "data": {
         "product": {
           "price": null
