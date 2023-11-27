@@ -214,7 +214,7 @@ class ApolloProcessor(
     val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata, logger)
 
     check (objectMapping.isNotEmpty()) {
-      "No @ApolloObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
+      "No @GraphQLObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
     }
 
     val irTargetObjects = objectMapping.map { entry ->
@@ -304,29 +304,43 @@ class ApolloFileVisitor : KSEmptyVisitor<Unit, Unit>() {
   }
 
   override fun visitTypeAlias(typeAlias: KSTypeAlias, data: Unit) {
-    val apolloAdapter = typeAlias.findAnnotation("ApolloAdapter")
+    val apolloAdapter = typeAlias.findAnnotation("GraphQLAdapter")
     if (apolloAdapter != null) {
-      val graphqlName =
-          typeAlias.graphqlName() ?: error("@GraphQLName is required at ${typeAlias.location}")
+      val forScalar = apolloAdapter.getArgumentValue("forScalar")!!
+      val graphqlName = typeAlias.graphqlName()
+      check(graphqlName == null) {
+        "@GraphQLName is redundant with @GraphQLAdapter name at ${typeAlias.location}"
+      }
 
-      scalarMapping.put(graphqlName, typeAlias.scalarInfo())
+      scalarMapping.put(forScalar, typeAlias.scalarInfo())
     }
   }
 
   override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
-    val apolloObject = classDeclaration.findAnnotation("ApolloObject")
+    val apolloObject = classDeclaration.findAnnotation("GraphQLObject")
 
     if (apolloObject != null) {
       val className = classDeclaration.acClassName()
-      val graphqlName = classDeclaration.graphqlName() ?: className.names.last()
+      val name = apolloObject.getArgumentValue("name").takeIf { it != "" }
+      var graphqlName = classDeclaration.graphqlName()
+
+      check (name == null || graphqlName == null) {
+        "@GraphQL is redundant with @GraphQLObject name at ${classDeclaration.location}"
+      }
+
+      graphqlName = name ?: graphqlName ?: className.names.last()
       objectMapping.put(graphqlName, ObjectInfo(className, classDeclaration))
     }
 
-    val apolloAdapter = classDeclaration.findAnnotation("ApolloAdapter")
+    val apolloAdapter = classDeclaration.findAnnotation("GraphQLAdapter")
     if (apolloAdapter != null) {
+      val forScalar = apolloAdapter.getArgumentValue("forScalar") ?: error("forScalar argument is required at ${apolloAdapter.location}")
       val graphqlName = classDeclaration.graphqlName()
-          ?: error("@GraphQLName is required at ${classDeclaration.location}")
-      scalarMapping.put(graphqlName, classDeclaration.scalarInfo())
+      check(graphqlName == null) {
+        "@GraphQLName is redundant with @GraphQLAdapter name at ${classDeclaration.location}"
+      }
+
+      scalarMapping.put(forScalar, classDeclaration.scalarInfo())
     }
   }
 
