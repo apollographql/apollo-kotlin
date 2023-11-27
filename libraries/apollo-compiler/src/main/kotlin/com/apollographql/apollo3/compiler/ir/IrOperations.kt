@@ -68,6 +68,7 @@ internal data class IrOperation(
     val responseBasedDataModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
+    val ignoreErrors: Boolean,
 )
 
 @Serializable

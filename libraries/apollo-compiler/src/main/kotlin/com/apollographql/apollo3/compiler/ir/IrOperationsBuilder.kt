@@ -309,7 +309,10 @@ internal class IrOperationsBuilder(
         filePath = sourceLocation!!.filePath!!,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
-        responseBasedDataModelGroup = responseBasedModelGroup
+        responseBasedDataModelGroup = responseBasedModelGroup,
+        ignoreErrors = directives.any {
+          schema.originalDirectiveName(it.name) == Schema.IGNORE_ERRORS
+        }
     )
   }
 
@@ -493,14 +496,6 @@ internal class IrOperationsBuilder(
   }
 
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
-    val defaultCatch = if (schema.directiveDefinitions.any {
-      schema.originalDirectiveName(it.key) == Schema.CATCH
-    }) {
-      Catch(to = CatchTo.THROW, null)
-    } else {
-      Catch(to = CatchTo.NO_CATCH, null)
-    }
-
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
       val parentTypeDefinition = schema.typeDefinition(fieldWithParent.parentType)
@@ -629,7 +624,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catchs, defaultCatch, 0)
+          .catch(first.catchs, 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -694,29 +689,30 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun IrType.catch(catchLevels: List<Catch>, defaultCatch: Catch, level: Int): IrType {
-      val catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level } ?: defaultCatch
-      return when (this) {
+    private fun IrType.catch(catchLevels: List<Catch>, level: Int): IrType {
+      val catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level }
+      var type = when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.catch(catchLevels, defaultCatch, level + 1))
-      }.catchTo(catchLevel.to.toIr()).let {
+        is IrListType -> copy(ofType = ofType.catch(catchLevels, level + 1))
+      }
+
+      if (catchLevel != null) {
+        type = type.catchTo(catchLevel.to.toIr())
         if (catchLevel.to == CatchTo.NULL) {
           /**
            * Mark the field as nullable which duplicates some information with CatchTo but is needed for
-           * other codepaths to generate correct code and not consider this a required field
+           * other code paths to generate correct code and not consider this a required field
            * See also `IrType.removeCatchTo`
            */
-          it.nullable(true)
-        } else {
-          it
+          type = type.nullable(true)
         }
       }
+
+      return type
     }
 
     private fun CatchTo.toIr(): IrCatchTo {
       return when (this) {
-        CatchTo.NO_CATCH -> IrCatchTo.NoCatch
-        CatchTo.THROW -> IrCatchTo.Throw
         CatchTo.RESULT -> IrCatchTo.Result
         CatchTo.NULL -> IrCatchTo.Null
       }

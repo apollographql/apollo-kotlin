@@ -78,6 +78,7 @@ fun <D : Executable.Data> Executable<D>.parseData(
       .falseVariables(falseVariables)
       .deferredFragmentIdentifiers(deferredFragmentIds)
       .errors(errors)
+      .ignoreErrors(ignoreErrors)
       .build()
   return adapter().nullable().fromJson(jsonReader, customScalarAdapters1)
 }

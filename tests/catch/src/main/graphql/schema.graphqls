@@ -14,6 +14,7 @@ type Query {
   nullOnlyOnError: Int @nullOnlyOnError
   deep: [[[Int]]] @nullOnlyOnError
   user: User @nullOnlyOnError
+  product: Product
 }
 
 type User {
@@ -22,3 +23,6 @@ type User {
 }
 
 
+type Product {
+  price: String
+}

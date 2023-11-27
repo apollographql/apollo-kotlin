@@ -76,8 +76,6 @@ fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
 fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirectiveName(it.name) == Schema.NONNULL }
 
 enum class CatchTo {
-  NO_CATCH,
-  THROW,
   RESULT,
   NULL
 }
@@ -126,7 +124,6 @@ private fun GQLValue?.toCatchTo(): CatchTo {
     is GQLEnumValue -> when (this.value) {
       "NULL" -> CatchTo.NULL
       "RESULT" -> CatchTo.RESULT
-      "THROW" -> CatchTo.THROW
       else -> error("Unknown CatchTo value: ${this.value}")
     }
 
@@ -139,14 +136,8 @@ fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
   return filter {
     schema.originalDirectiveName(it.name) == Schema.CATCH
   }.map {
-    val to = if (!it.getArgument("if", schema).toBoolean()) {
-      CatchTo.NO_CATCH
-    } else {
-      it.getArgument("to", schema).toCatchTo()
-    }
-
     Catch(
-        to = to,
+        to = it.getArgument("to", schema).toCatchTo(),
         level = it.getArgument("level", schema)?.toIntOrNull(),
     )
   }

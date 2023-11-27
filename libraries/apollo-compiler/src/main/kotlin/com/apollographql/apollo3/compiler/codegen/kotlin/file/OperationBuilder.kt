@@ -115,6 +115,7 @@ internal class OperationBuilder(
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
+        .addProperty(ignoreErrorsPropertySpec(operation.ignoreErrors))
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }

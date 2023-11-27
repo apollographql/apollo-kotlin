@@ -283,7 +283,7 @@ Control over list items is done using the `level` argument:
 ```graphql
 type User {
     # friends is nullable but friends[0] is null only on errors
-    friends: [ID]! @nullOnlyOnError(level: 1)
+    friends: [User] @nullOnlyOnError(level: 1)
 }
 ```
 
@@ -305,11 +305,17 @@ By default, the first GraphQL error throws and fails the whole response.
 starting at 0 if there is no list.
 If level is null, the modifier is applied to all levels
 ""${'"'}
-directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD | SCHEMA
+directive @catch(to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD
 
 enum CatchTo {
     NULL,
-    THROW,
     RESULT,
 }
+
+""${'"'}
+Never throw on errors.
+
+This is used for backward compatibility for clients where this was the default behaviour.
+""${'"'}
+directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

@@ -183,7 +183,7 @@ internal object KotlinCodeGen {
     val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks, commonCodegenOptions.codegenSchema.schema.errorAware)
     }
 
     val irSchema = commonCodegenOptions.irSchema
@@ -200,7 +200,14 @@ internal object KotlinCodeGen {
         generateMethods = generateMethods,
         jsExport = jsExport,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = upstreamResolver,
+            scalarMapping = scalarMapping,
+            requiresOptInAnnotation = requiresOptInAnnotation,
+            hooks = hooks,
+            errorAware = commonCodegenOptions.codegenSchema.schema.errorAware
+        ),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -329,7 +336,14 @@ internal object KotlinCodeGen {
         generateMethods = emptyList(),
         jsExport = false,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), null, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = null,
+            scalarMapping = codegenSchema.scalarMapping,
+            requiresOptInAnnotation = null,
+            hooks = ApolloCompilerKotlinHooks.Identity,
+            errorAware = codegenSchema.schema.errorAware
+        ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -378,12 +392,26 @@ internal object KotlinCodeGen {
         decapitalizeFields = false,
     )
 
-    val upstreamResolver = KotlinResolver(codegenMetadata.resolverInfo.entries, null, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity)
+    val upstreamResolver = KotlinResolver(
+        entries = codegenMetadata.resolverInfo.entries,
+        next = null,
+        scalarMapping = codegenSchema.scalarMapping,
+        requiresOptInAnnotation = null,
+        hooks = ApolloCompilerKotlinHooks.Identity,
+        errorAware = codegenSchema.schema.errorAware
+    )
     val context = KotlinContext(
         generateMethods = emptyList(),
         jsExport = false,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = upstreamResolver,
+            scalarMapping = codegenSchema.scalarMapping,
+            requiresOptInAnnotation = null,
+            hooks = ApolloCompilerKotlinHooks.Identity,
+            errorAware = codegenSchema.schema.errorAware
+        ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
 

@@ -1,6 +1,5 @@
-query UserThrow {
-  #
-  user @catch(to: THROW){
+query User {
+  user {
     name
   }
 }
@@ -9,7 +8,7 @@ query UserResult {
   user @catch(to: RESULT) {
     name
   }
-}
+}#
 
 query UserNull {
   user @catch(to: NULL) {
@@ -17,9 +16,14 @@ query UserNull {
   }
 }
 
-query UserIgnore {
-  user @catch(if: false) {
-    name
+query Product {
+  product {
+    price
+  }
+}
+query ProductIgnoreErrors @ignoreErrors {
+  product {
+    price
   }
 }
 

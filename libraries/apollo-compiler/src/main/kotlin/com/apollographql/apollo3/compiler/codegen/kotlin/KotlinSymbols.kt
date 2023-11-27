@@ -115,7 +115,7 @@ internal object KotlinSymbols {
   val obj = MemberName(apolloApiPackageName, "obj")
   val catchToResult = MemberName(apolloApiPackageName, "catchToResult")
   val catchToNull = MemberName(apolloApiPackageName, "catchToNull")
-  val catchToThrow = MemberName(apolloApiPackageName, "catchToThrow")
+  val errorAware = MemberName(apolloApiPackageName, "errorAware")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")

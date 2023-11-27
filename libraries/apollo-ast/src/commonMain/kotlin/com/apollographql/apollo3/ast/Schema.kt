@@ -41,6 +41,10 @@ class Schema internal constructor(
       .filterIsInstance<GQLDirectiveDefinition>()
       .associateBy { it.name }
 
+  val errorAware: Boolean = directiveDefinitions.any {
+    originalDirectiveName(it.key) == CATCH
+  }
+
   val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query", definitions)
       ?: throw SchemaValidationException("No query root type found")
 
@@ -202,6 +206,7 @@ class Schema internal constructor(
     const val REQUIRES_OPT_IN = "requiresOptIn"
     const val CATCH = "catch"
     const val NULL_ONLY_ON_ERROR = "nullOnlyOnError"
+    const val IGNORE_ERRORS = "ignoreErrors"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"

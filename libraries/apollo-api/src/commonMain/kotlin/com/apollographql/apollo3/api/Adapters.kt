@@ -383,14 +383,6 @@ class ObjectAdapter<T>(
 
 class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
-    if (reader.peek() == JsonReader.Token.NULL) {
-      val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
-      if (error != null) {
-        reader.skipValue()
-        return FieldResult.Error(error)
-      }
-    }
-
     return try {
       FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
     } catch (e: ApolloGraphQLException) {
@@ -406,9 +398,9 @@ class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<
   }
 }
 
-class CatchToThrowAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
+class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    if (reader.peek() == JsonReader.Token.NULL) {
+    if (!customScalarAdapters.ignoreErrors && reader.peek() == JsonReader.Token.NULL) {
       val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
       if (error != null) {
         reader.skipValue()
@@ -416,7 +408,6 @@ class CatchToThrowAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T
       }
     }
 
-    // This may throw
     return wrappedAdapter.fromJson(reader, customScalarAdapters)
   }
 
@@ -427,19 +418,6 @@ class CatchToThrowAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T
 
 class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
-    if (reader.peek() == JsonReader.Token.NULL) {
-      /**
-       * Code commented for reference purposes.
-       * We could check the error, but it wouldn't change the (null) result.
-       */
-//      val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
-//      if (error != null) {
-//        return null
-//      }
-      reader.skipValue()
-      return null
-    }
-
     return try {
       wrappedAdapter.fromJson(reader, customScalarAdapters)
     } catch (e: ApolloGraphQLException) {
@@ -449,6 +427,7 @@ class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@J
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T?) {
     if (value == null) {
+      // XXX: this potentially writes null instead of an error
       writer.nullValue()
     } else {
       wrappedAdapter.toJson(writer, customScalarAdapters, value)
@@ -466,10 +445,10 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-result")
-fun <T> Adapter<T>.catchToResult() = CatchToResultAdapter(this,)
+fun <T> Adapter<T>.catchToResult() = CatchToResultAdapter(this)
 
-@JvmName("-orThrow")
-fun <T> Adapter<T>.catchToThrow() = CatchToThrowAdapter(this,)
+@JvmName("-errorAware")
+fun <T> Adapter<T>.errorAware() = ErrorAwareAdapter(this)
 
 @JvmName("-orNull")
-fun <T> Adapter<T>.catchToNull() = CatchToNullAdapter(this,)
+fun <T> Adapter<T>.catchToNull() = CatchToNullAdapter(this)

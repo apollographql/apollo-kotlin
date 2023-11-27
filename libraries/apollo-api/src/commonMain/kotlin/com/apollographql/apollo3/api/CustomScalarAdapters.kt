@@ -27,6 +27,11 @@ class CustomScalarAdapters private constructor(
      */
     @JvmField
     val errors: List<Error>?,
+    /**
+     * Whether to ignore errors for backward compatibility purposes
+     */
+    @JvmField
+    val ignoreErrors: Boolean,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
@@ -133,6 +138,7 @@ class CustomScalarAdapters private constructor(
     private var falseVariables: Set<String>? = null
     private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
     private var errors: List<Error>? = null
+    private var ignoreErrors: Boolean = false
 
     fun falseVariables(falseVariables: Set<String>?) = apply {
       this.falseVariables = falseVariables
@@ -144,6 +150,10 @@ class CustomScalarAdapters private constructor(
 
     fun errors(errors: List<Error>?) = apply {
       this.errors = errors
+    }
+
+    fun ignoreErrors(ignoreErrors: Boolean) = apply {
+      this.ignoreErrors = ignoreErrors
     }
 
     fun <T> add(
@@ -180,6 +190,7 @@ class CustomScalarAdapters private constructor(
           falseVariables,
           deferredFragmentIdentifiers,
           errors,
+          ignoreErrors,
           unsafe,
       )
     }

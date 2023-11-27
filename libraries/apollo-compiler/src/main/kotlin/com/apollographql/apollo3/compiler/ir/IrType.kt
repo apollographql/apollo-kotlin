@@ -53,7 +53,6 @@ sealed interface IrType {
 
 @Serializable
 enum class IrCatchTo {
-  Throw,
   Null,
   Result,
   NoCatch

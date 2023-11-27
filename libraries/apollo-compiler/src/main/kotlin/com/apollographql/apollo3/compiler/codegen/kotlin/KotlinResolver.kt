@@ -43,6 +43,7 @@ internal class KotlinResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
     private val hooks: ApolloCompilerKotlinHooks,
+    private val errorAware: Boolean,
 ) {
   fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
 
@@ -99,7 +100,6 @@ internal class KotlinResolver(
       type.catchTo != IrCatchTo.NoCatch -> {
         resolveIrType(type.removeCatchTo(), jsExport, isInterface).let {
           when (type.catchTo) {
-            IrCatchTo.Throw -> it
             IrCatchTo.Null -> it.copy(nullable = true)
             IrCatchTo.Result -> KotlinSymbols.FieldResult.parameterizedBy(it)
             IrCatchTo.NoCatch -> error("") // keep the compiler happy
@@ -208,24 +208,29 @@ internal class KotlinResolver(
       is IrCompositeType2 -> null
     }
   }
-
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
+    return adapterInitializerInternal(type, requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware)
+  }
+  internal fun adapterInitializerInternal(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String, errorAware: Boolean): CodeBlock {
     return when {
       type.optional -> {
         val presentFun = MemberName("com.apollographql.apollo3.api", "present")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
+        CodeBlock.of("%L.%M()", adapterInitializerInternal(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware), presentFun)
       }
       type.catchTo != IrCatchTo.NoCatch -> {
-        adapterInitializer(type.removeCatchTo(), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
+        adapterInitializerInternal(type.removeCatchTo(), requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware).let {
           val member = when (type.catchTo) {
-            IrCatchTo.Throw -> KotlinSymbols.catchToThrow
             IrCatchTo.Null -> KotlinSymbols.catchToNull
             IrCatchTo.Result -> KotlinSymbols.catchToResult
             IrCatchTo.NoCatch -> error("") // happy compiler
           }
           CodeBlock.of("%L.%M()", it, member)
         }
-
+      }
+      errorAware -> {
+        adapterInitializerInternal(type.removeCatchTo(), requiresBuffering, jsExport, runtimeAdapterPrefix, false).let {
+          CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
+        }
       }
       type.nullable -> {
         // Don't hardcode the adapter when the scalar is mapped to a user-defined type
@@ -242,7 +247,7 @@ internal class KotlinResolver(
 
           else -> {
             val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
+            CodeBlock.of("%L.%M()", adapterInitializerInternal(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix, false), nullableFun)
           }
         }
       }
