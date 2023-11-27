@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.recursive_selection.TestQuery
@@ -66,8 +67,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Tree(
-          name = _name!!,
-          children = _children!!,
+          name = _name ?: missingField(reader, "name"),
+          children = _children ?: missingField(reader, "children"),
           parent = _parent
         )
       }
@@ -102,7 +103,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Tree.Child(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 
@@ -131,7 +132,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Tree.Parent(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.test_inline.GetPage
 import kotlin.String
@@ -35,7 +36,7 @@ public object GetPage_ResponseAdapter {
       }
 
       return GetPage.Data(
-        collection = _collection!!
+        collection = _collection ?: missingField(reader, "collection")
       )
     }
 
@@ -93,8 +94,8 @@ public object GetPage_ResponseAdapter {
         }
 
         return GetPage.Data.ParticularCollectionCollection(
-          __typename = __typename!!,
-          items = _items!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          items = _items ?: missingField(reader, "items")
         )
       }
 
@@ -158,9 +159,9 @@ public object GetPage_ResponseAdapter {
           }
 
           return GetPage.Data.ParticularCollectionCollection.ParticularItemItem(
-            title = _title!!,
-            __typename = __typename!!,
-            image = _image!!
+            title = _title ?: missingField(reader, "title"),
+            __typename = __typename ?: missingField(reader, "__typename"),
+            image = _image ?: missingField(reader, "image")
           )
         }
 
@@ -200,8 +201,8 @@ public object GetPage_ResponseAdapter {
           }
 
           return GetPage.Data.ParticularCollectionCollection.OtherItem(
-            title = _title!!,
-            __typename = __typename!!
+            title = _title ?: missingField(reader, "title"),
+            __typename = __typename ?: missingField(reader, "__typename")
           )
         }
 
@@ -239,8 +240,8 @@ public object GetPage_ResponseAdapter {
         }
 
         return GetPage.Data.OtherCollection(
-          __typename = __typename!!,
-          items = _items!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          items = _items ?: missingField(reader, "items")
         )
       }
 
@@ -271,7 +272,7 @@ public object GetPage_ResponseAdapter {
           }
 
           return GetPage.Data.OtherCollection.Item(
-            title = _title!!
+            title = _title ?: missingField(reader, "title")
           )
         }
 

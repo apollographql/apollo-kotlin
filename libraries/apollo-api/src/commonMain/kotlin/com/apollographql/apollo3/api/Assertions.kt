@@ -3,12 +3,13 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.exception.DefaultApolloException
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 /**
- * Helper function for the JavaCodegen
+ * Helper function for the Java codegen
  */
 fun checkFieldNotMissing(value: Any?, name: String) {
   if (value == null) {
@@ -28,4 +29,11 @@ fun assertOneOf(vararg args: Optional<*>) {
   if (presentArg.value == null || presentArg.value == Optional.Absent) {
     throw IllegalArgumentException("The value set on @oneOf input field must be non-null")
   }
+}
+
+/**
+ * Helper function for the Kotlin codegen
+ */
+fun missingField(jsonReader: JsonReader, name: String): Nothing {
+  throw DefaultApolloException("Field '$name' is missing at path ${jsonReader.getPath()}")
 }

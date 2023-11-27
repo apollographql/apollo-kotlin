@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -129,8 +130,8 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Search.OnCharacter(
-            id = _id!!,
-            name = _name!!,
+            id = _id ?: missingField(reader, "id"),
+            name = _name ?: missingField(reader, "name"),
             friends = _friends
           )
         }
@@ -233,7 +234,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.Search.OnCharacter.Friend.OnCharacter(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 
@@ -303,7 +304,7 @@ public object TestQuery_ResponseAdapter {
                     adapterContext)
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend(
-                  __typename = __typename!!,
+                  __typename = __typename ?: missingField(reader, "__typename"),
                   onCharacter = _onCharacter
                 )
               }
@@ -337,7 +338,7 @@ public object TestQuery_ResponseAdapter {
                   }
 
                   return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter(
-                    firstAppearsIn = _firstAppearsIn!!
+                    firstAppearsIn = _firstAppearsIn ?: missingField(reader, "firstAppearsIn")
                   )
                 }
 
@@ -407,7 +408,7 @@ public object TestQuery_ResponseAdapter {
                 }
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend(
-                  id = _id!!
+                  id = _id ?: missingField(reader, "id")
                 )
               }
 
@@ -439,7 +440,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Search.OnStarship(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 

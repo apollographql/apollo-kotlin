@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.monomorphic.TestQuery
 import kotlin.String
@@ -34,7 +35,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.Data(
-        cat = _cat!!
+        cat = _cat ?: missingField(reader, "cat")
       )
     }
 
@@ -91,8 +92,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.AnimalNodeCat(
-          __typename = __typename!!,
-          species = _species!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          species = _species ?: missingField(reader, "species")
         )
       }
 
@@ -127,7 +128,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherCat(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 

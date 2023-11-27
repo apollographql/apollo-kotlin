@@ -15,11 +15,11 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  * Symbols can be [ClassName] or [MemberName]
  */
 internal object KotlinSymbols {
-  val ExecutableSchemaBuilder = ClassName("com.apollographql.apollo3.execution", "ExecutableSchema", "Builder")
-  val Resolver = ClassName("com.apollographql.apollo3.execution", "Resolver")
-  val ResolveInfo = ClassName("com.apollographql.apollo3.execution", "ResolveInfo")
-  val Roots = ClassName("com.apollographql.apollo3.execution", "Roots")
-  val Schema = ClassName("com.apollographql.apollo3.ast", "Schema")
+  val ExecutableSchemaBuilder = ClassName(ClassNames.apolloExecutionPackageName, "ExecutableSchema", "Builder")
+  val Resolver = ClassName(ClassNames.apolloExecutionPackageName, "Resolver")
+  val ResolveInfo = ClassName(ClassNames.apolloExecutionPackageName, "ResolveInfo")
+  val Roots = ClassName(ClassNames.apolloExecutionPackageName, "Roots")
+  val Schema = ClassName(ClassNames.apolloAstPackageName, "Schema")
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
   val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
@@ -113,14 +113,13 @@ internal object KotlinSymbols {
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
 
   val JsExport = ClassName("kotlin.js", "JsExport")
-}
 
-internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
-
-internal object KotlinMemberNames {
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
   val assertOneOf = MemberName(apolloApiPackageName, "assertOneOf")
+  val missingField = MemberName(apolloApiPackageName, "missingField")
 }
+
+internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

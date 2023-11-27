@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.two_heroes_with_friends.TestQuery
@@ -72,8 +73,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.R2(
-          name = _name!!,
-          friendsConnection = _friendsConnection!!
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
         )
       }
 
@@ -166,7 +167,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.R2.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 
@@ -202,9 +203,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Luke(
-          id = _id!!,
-          name = _name!!,
-          friendsConnection = _friendsConnection!!
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
         )
       }
 
@@ -300,7 +301,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.Luke.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_type_coercion.TestQuery
@@ -94,9 +95,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.BarFoo(
-          __typename = __typename!!,
-          foo = _foo!!,
-          bar = _bar!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          foo = _foo ?: missingField(reader, "foo"),
+          bar = _bar ?: missingField(reader, "bar")
         )
       }
 
@@ -136,8 +137,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherFoo(
-          __typename = __typename!!,
-          foo = _foo!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          foo = _foo ?: missingField(reader, "foo")
         )
       }
 

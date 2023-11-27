@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Builder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -107,5 +107,5 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
 }
 
 private fun List<NamedType>.oneOfInitializerBlock(context: KotlinContext): CodeBlock {
-  return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinMemberNames.assertOneOf)
+  return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinSymbols.assertOneOf)
 }

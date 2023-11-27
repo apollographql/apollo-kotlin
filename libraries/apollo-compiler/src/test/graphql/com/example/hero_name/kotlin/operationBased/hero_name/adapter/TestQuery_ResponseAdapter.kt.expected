@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -82,8 +83,8 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.Hero(
           __typename = __typename,
-          name = _name!!,
-          birthDate = _birthDate!!,
+          name = _name ?: missingField(reader, "name"),
+          birthDate = _birthDate ?: missingField(reader, "birthDate"),
           onDroid = _onDroid
         )
       }

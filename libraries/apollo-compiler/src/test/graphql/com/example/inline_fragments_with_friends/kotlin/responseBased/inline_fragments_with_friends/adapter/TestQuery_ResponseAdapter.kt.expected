@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragments_with_friends.TestQuery
@@ -105,8 +106,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           height = _height,
           friends = _friends
         )
@@ -145,7 +146,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.HumanHero.Friend(
-            appearsIn = _appearsIn!!
+            appearsIn = _appearsIn ?: missingField(reader, "appearsIn")
           )
         }
 
@@ -186,8 +187,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidHero(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           primaryFunction = _primaryFunction,
           friends = _friends
         )
@@ -226,7 +227,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.DroidHero.Friend(
-            id = _id!!
+            id = _id ?: missingField(reader, "id")
           )
         }
 
@@ -261,8 +262,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = __typename!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

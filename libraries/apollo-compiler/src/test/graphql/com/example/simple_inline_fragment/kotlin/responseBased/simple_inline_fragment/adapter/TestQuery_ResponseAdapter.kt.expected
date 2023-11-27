@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.simple_inline_fragment.TestQuery
@@ -102,9 +103,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
           height = _height
         )
       }
@@ -153,9 +154,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidHero(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
           primaryFunction = _primaryFunction
         )
       }
@@ -201,9 +202,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

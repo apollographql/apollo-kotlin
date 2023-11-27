@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.String
 import kotlin.collections.List
 
@@ -35,9 +36,9 @@ public object UserFragmentImpl_ResponseAdapter {
       }
 
       return com.example.named_fragment_with_variables.fragment.UserFragment(
-        firstName = _firstName!!,
-        lastName = _lastName!!,
-        avatar = _avatar!!
+        firstName = _firstName ?: missingField(reader, "firstName"),
+        lastName = _lastName ?: missingField(reader, "lastName"),
+        avatar = _avatar ?: missingField(reader, "avatar")
       )
     }
 

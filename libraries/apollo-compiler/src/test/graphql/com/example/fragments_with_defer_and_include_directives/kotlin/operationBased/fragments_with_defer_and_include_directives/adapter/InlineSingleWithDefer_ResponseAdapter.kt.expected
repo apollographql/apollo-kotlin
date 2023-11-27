@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.label
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -111,7 +112,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
           }
 
           return InlineSingleWithDefer.Data.Hero.OnDroid(
-            name = _name!!
+            name = _name ?: missingField(reader, "name")
           )
         }
 

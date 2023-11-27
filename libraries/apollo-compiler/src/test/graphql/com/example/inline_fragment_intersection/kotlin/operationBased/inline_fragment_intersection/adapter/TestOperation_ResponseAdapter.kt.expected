@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.inline_fragment_intersection.TestOperation
@@ -42,7 +43,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       return TestOperation.Data(
-        random = _random!!
+        random = _random ?: missingField(reader, "random")
       )
     }
 
@@ -144,8 +145,8 @@ public object TestOperation_ResponseAdapter {
 
           return TestOperation.Data.Random.OnBeing(
             __typename = __typename,
-            name = _name!!,
-            friends = _friends!!,
+            name = _name ?: missingField(reader, "name"),
+            friends = _friends ?: missingField(reader, "friends"),
             onHuman = _onHuman
           )
         }
@@ -199,7 +200,7 @@ public object TestOperation_ResponseAdapter {
 
             return TestOperation.Data.Random.OnBeing.Friend(
               __typename = __typename,
-              name = _name!!,
+              name = _name ?: missingField(reader, "name"),
               onWookie = _onWookie
             )
           }
@@ -270,7 +271,7 @@ public object TestOperation_ResponseAdapter {
 
             return TestOperation.Data.Random.OnBeing.OnHuman(
               profilePictureUrl = _profilePictureUrl,
-              friends = _friends!!
+              friends = _friends ?: missingField(reader, "friends")
             )
           }
 
@@ -355,7 +356,7 @@ public object TestOperation_ResponseAdapter {
                 }
 
                 return TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie(
-                  race = _race!!
+                  race = _race ?: missingField(reader, "race")
                 )
               }
 
@@ -389,8 +390,8 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.Random.OnWookie(
-            race = _race!!,
-            friends = _friends!!
+            race = _race ?: missingField(reader, "race"),
+            friends = _friends ?: missingField(reader, "friends")
           )
         }
 

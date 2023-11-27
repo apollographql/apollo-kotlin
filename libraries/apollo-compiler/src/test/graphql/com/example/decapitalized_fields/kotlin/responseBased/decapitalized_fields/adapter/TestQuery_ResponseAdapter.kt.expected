@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.decapitalized_fields.TestQuery
@@ -66,7 +67,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Horse(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           donkey = _Donkey,
           cow = _Cow
         )

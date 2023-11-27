@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.subscriptions.TestSubscription
@@ -65,8 +66,8 @@ public object TestSubscription_ResponseAdapter {
         }
 
         return TestSubscription.Data.CommentAdded(
-          id = _id!!,
-          content = _content!!
+          id = _id ?: missingField(reader, "id"),
+          content = _content ?: missingField(reader, "content")
         )
       }
 

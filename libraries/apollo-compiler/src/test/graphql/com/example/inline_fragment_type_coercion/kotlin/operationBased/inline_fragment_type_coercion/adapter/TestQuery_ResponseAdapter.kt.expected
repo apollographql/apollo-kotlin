@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -77,7 +78,7 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.Foo(
           __typename = __typename,
-          foo = _foo!!,
+          foo = _foo ?: missingField(reader, "foo"),
           onBar = _onBar
         )
       }
@@ -114,7 +115,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Foo.OnBar(
-            bar = _bar!!
+            bar = _bar ?: missingField(reader, "bar")
           )
         }
 

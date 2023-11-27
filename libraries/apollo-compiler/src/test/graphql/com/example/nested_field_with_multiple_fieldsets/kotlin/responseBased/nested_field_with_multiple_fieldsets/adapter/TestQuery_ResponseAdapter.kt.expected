@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
@@ -93,7 +94,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Impl1Iface1(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           iface2 = _iface2
         )
       }
@@ -163,7 +164,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Impl1Iface1.Impl2Iface2(
-            __typename = __typename!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
             scalar1 = _scalar1,
             scalar2 = _scalar2,
             scalar3 = _scalar3,
@@ -215,7 +216,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Impl1Iface1.OtherIface2(
-            __typename = __typename!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
             scalar1 = _scalar1,
             scalar3 = _scalar3
           )
@@ -258,7 +259,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherIface1(
-          __typename = __typename!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
           iface2 = _iface2
         )
       }
@@ -323,7 +324,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.OtherIface1.Impl2Iface2(
-            __typename = __typename!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
             scalar1 = _scalar1,
             scalar2 = _scalar2
           )
@@ -365,7 +366,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.OtherIface1.OtherIface2(
-            __typename = __typename!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
             scalar1 = _scalar1
           )
         }

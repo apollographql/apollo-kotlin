@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.data_builders.CharacterQuery
@@ -36,7 +37,7 @@ public object CharacterQuery_ResponseAdapter {
       }
 
       return CharacterQuery.Data(
-        character = _character!!
+        character = _character ?: missingField(reader, "character")
       )
     }
 
@@ -87,8 +88,8 @@ public object CharacterQuery_ResponseAdapter {
 
         return CharacterQuery.Data.Character(
           __typename = __typename,
-          id = _id!!,
-          name = _name!!,
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
           humanFragment = _humanFragment,
           droidFragment = _droidFragment
         )

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.CharacterQuery
 import kotlin.String
@@ -34,7 +35,7 @@ public object CharacterQuery_ResponseAdapter {
       }
 
       return CharacterQuery.Data(
-        character = _character!!
+        character = _character ?: missingField(reader, "character")
       )
     }
 
@@ -101,10 +102,10 @@ public object CharacterQuery_ResponseAdapter {
         }
 
         return CharacterQuery.Data.HumanCharacter(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!,
-          homePlanet = _homePlanet!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
+          homePlanet = _homePlanet ?: missingField(reader, "homePlanet")
         )
       }
 
@@ -152,10 +153,10 @@ public object CharacterQuery_ResponseAdapter {
         }
 
         return CharacterQuery.Data.DroidCharacter(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!,
-          primaryFunction = _primaryFunction!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
+          primaryFunction = _primaryFunction ?: missingField(reader, "primaryFunction")
         )
       }
 
@@ -200,9 +201,9 @@ public object CharacterQuery_ResponseAdapter {
         }
 
         return CharacterQuery.Data.OtherCharacter(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 

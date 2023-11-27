@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.inline_fragment_for_non_optional_field.TestQuery
@@ -36,7 +37,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.Data(
-        nonOptionalHero = _nonOptionalHero!!
+        nonOptionalHero = _nonOptionalHero ?: missingField(reader, "nonOptionalHero")
       )
     }
 
@@ -78,7 +79,7 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.NonOptionalHero(
           __typename = __typename,
-          name = _name!!,
+          name = _name ?: missingField(reader, "name"),
           onHuman = _onHuman
         )
       }

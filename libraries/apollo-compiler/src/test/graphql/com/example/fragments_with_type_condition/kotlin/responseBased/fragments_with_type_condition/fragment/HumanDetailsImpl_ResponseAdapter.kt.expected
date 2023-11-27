@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -34,7 +35,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       }
 
       return HumanDetailsImpl.Data(
-        name = _name!!,
+        name = _name ?: missingField(reader, "name"),
         height = _height
       )
     }

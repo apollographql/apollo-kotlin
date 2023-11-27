@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.union_inline_fragments.TestQuery
@@ -104,9 +105,9 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.CharacterSearch(
-          __typename = __typename!!,
-          id = _id!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id ?: missingField(reader, "id"),
+          name = _name ?: missingField(reader, "name"),
           friends = _friends
         )
       }
@@ -184,8 +185,8 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.CharacterSearch.HumanFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             homePlanet = _homePlanet,
             friends = _friends
           )
@@ -227,8 +228,8 @@ public object TestQuery_ResponseAdapter {
             }
 
             return TestQuery.Data.CharacterSearch.HumanFriend.Friend(
-              __typename = __typename!!,
-              firstAppearsIn = _firstAppearsIn!!
+              __typename = __typename ?: missingField(reader, "__typename"),
+              firstAppearsIn = _firstAppearsIn ?: missingField(reader, "firstAppearsIn")
             )
           }
 
@@ -271,8 +272,8 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.CharacterSearch.DroidFriend(
-            __typename = __typename!!,
-            name = _name!!,
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name"),
             primaryFunction = _primaryFunction,
             friends = _friends
           )
@@ -312,7 +313,7 @@ public object TestQuery_ResponseAdapter {
             }
 
             return TestQuery.Data.CharacterSearch.DroidFriend.Friend(
-              id = _id!!
+              id = _id ?: missingField(reader, "id")
             )
           }
 
@@ -347,8 +348,8 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.CharacterSearch.OtherFriend(
-            __typename = __typename!!,
-            name = _name!!
+            __typename = __typename ?: missingField(reader, "__typename"),
+            name = _name ?: missingField(reader, "name")
           )
         }
 
@@ -386,8 +387,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.StarshipSearch(
-          __typename = __typename!!,
-          name = _name!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name")
         )
       }
 
@@ -422,7 +423,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherSearch(
-          __typename = __typename!!
+          __typename = __typename ?: missingField(reader, "__typename")
         )
       }
 

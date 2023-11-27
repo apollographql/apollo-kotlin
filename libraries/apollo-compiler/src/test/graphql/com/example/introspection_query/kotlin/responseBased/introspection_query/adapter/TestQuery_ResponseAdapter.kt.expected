@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.obj
 import com.example.introspection_query.TestQuery
 import com.example.introspection_query.type.__TypeKind
@@ -37,8 +38,8 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.Data(
-        __schema = ___schema!!,
-        __type = ___type!!
+        __schema = ___schema ?: missingField(reader, "__schema"),
+        __type = ___type ?: missingField(reader, "__type")
       )
     }
 
@@ -71,8 +72,8 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.__Schema(
-          queryType = _queryType!!,
-          types = _types!!
+          queryType = _queryType ?: missingField(reader, "queryType"),
+          types = _types ?: missingField(reader, "types")
         )
       }
 
@@ -165,7 +166,7 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.__Type(
           name = _name,
-          kind = _kind!!
+          kind = _kind ?: missingField(reader, "kind")
         )
       }
 

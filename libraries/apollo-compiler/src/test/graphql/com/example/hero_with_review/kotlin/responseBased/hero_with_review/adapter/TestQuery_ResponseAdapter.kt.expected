@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.hero_with_review.TestQuery
@@ -65,7 +66,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.CreateReview(
-          stars = _stars!!,
+          stars = _stars ?: missingField(reader, "stars"),
           commentary = _commentary
         )
       }

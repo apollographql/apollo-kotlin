@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.hero_details.HeroDetails
@@ -70,9 +71,9 @@ public object HeroDetails_ResponseAdapter {
         }
 
         return HeroDetails.Data.Hero(
-          type = _type!!,
-          name = _name!!,
-          friendsConnection = _friendsConnection!!
+          type = _type ?: missingField(reader, "type"),
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection")
         )
       }
 
@@ -169,7 +170,7 @@ public object HeroDetails_ResponseAdapter {
               }
 
               return HeroDetails.Data.Hero.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 

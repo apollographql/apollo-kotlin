@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_with_inline_fragment.TestQuery
@@ -106,10 +107,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = __typename!!,
-          name = _name!!,
-          friendsConnection = _friendsConnection!!,
-          appearsIn = _appearsIn!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection"),
+          appearsIn = _appearsIn ?: missingField(reader, "appearsIn")
         )
       }
 
@@ -211,7 +212,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.HumanHero.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 
@@ -255,11 +256,11 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidHero(
-          __typename = __typename!!,
-          name = _name!!,
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
           primaryFunction = _primaryFunction,
-          friendsConnection = _friendsConnection!!,
-          appearsIn = _appearsIn!!
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection"),
+          appearsIn = _appearsIn ?: missingField(reader, "appearsIn")
         )
       }
 
@@ -364,7 +365,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.DroidHero.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 
@@ -406,10 +407,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = __typename!!,
-          name = _name!!,
-          friendsConnection = _friendsConnection!!,
-          appearsIn = _appearsIn!!
+          __typename = __typename ?: missingField(reader, "__typename"),
+          name = _name ?: missingField(reader, "name"),
+          friendsConnection = _friendsConnection ?: missingField(reader, "friendsConnection"),
+          appearsIn = _appearsIn ?: missingField(reader, "appearsIn")
         )
       }
 
@@ -511,7 +512,7 @@ public object TestQuery_ResponseAdapter {
               }
 
               return TestQuery.Data.OtherHero.FriendsConnection.Edge.Node(
-                name = _name!!
+                name = _name ?: missingField(reader, "name")
               )
             }
 

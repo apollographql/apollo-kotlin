@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -123,7 +124,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Search.OnStarship(
-            id = _id!!
+            id = _id ?: missingField(reader, "id")
           )
         }
 
