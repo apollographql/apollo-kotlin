@@ -7,6 +7,8 @@ type Query {
   nullableListOfNonNullableString: [String!]
   myUnion: MyUnion
   myInterface: MyInterface
+
+  findUser(input: FindUserInput): User
 }
 
 input MyInput {
@@ -40,4 +42,27 @@ type C implements MyInterface {
 
 type D implements MyInterface {
   x: Int
+}
+
+directive @oneOf on INPUT_OBJECT
+
+type User {
+  id: ID!
+}
+
+input FindUserInput @oneOf {
+  email: String
+  name: String
+  identity: FindUserBySocialNetworkInput
+  friends: FindUserByFriendInput
+}
+
+input FindUserBySocialNetworkInput @oneOf {
+  facebookId: String
+  googleId: String
+}
+
+input FindUserByFriendInput {
+  socialNetworkId: ID!
+  friendId: ID!
 }

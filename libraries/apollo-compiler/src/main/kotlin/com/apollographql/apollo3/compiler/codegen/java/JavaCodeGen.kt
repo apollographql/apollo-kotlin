@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
@@ -35,6 +36,7 @@ import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionUnknownMapBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.UtilAssertionsBuilder
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
@@ -114,6 +116,10 @@ internal class JavaCodeGen(
       irSchema.irInputObjects.forEach { irInputObject ->
         builders.add(InputObjectBuilder(context, irInputObject))
         builders.add(InputObjectAdapterBuilder(context, irInputObject))
+      }
+      if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL && irSchema.irInputObjects.any { it.isOneOf }) {
+        // When using the Guava optionals, generate assertOneOf in the project, as apollo-api doesn't depend on Guava
+        builders.add(UtilAssertionsBuilder(context))
       }
       irSchema.irUnions.forEach { irUnion ->
         builders.add(UnionBuilder(context, irUnion))

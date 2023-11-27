@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Builder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -22,7 +23,7 @@ internal class InputObjectBuilder(
     val context: KotlinContext,
     val inputObject: IrInputObject,
     val generateInputBuilders: Boolean,
-    val withDefaultArguments: Boolean
+    val withDefaultArguments: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.typePackageName()
   private val simpleName = context.layout.inputObjectName(inputObject.name)
@@ -60,10 +61,14 @@ internal class InputObjectBuilder(
             addType(namedTypes.builderTypeSpec(context, className))
           }
         }
+        .apply {
+          if (isOneOf) {
+            addInitializerBlock(namedTypes.oneOfInitializerBlock(context))
+          }
+        }
         .build()
   }
 }
-
 
 internal fun List<NamedType>.builderTypeSpec(context: KotlinContext, returnedClassName: ClassName): TypeSpec {
   return TypeSpec.classBuilder(Builder)
@@ -99,4 +104,8 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
               .build()
       )
       .build()
+}
+
+private fun List<NamedType>.oneOfInitializerBlock(context: KotlinContext): CodeBlock {
+  return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinMemberNames.assertOneOf)
 }
