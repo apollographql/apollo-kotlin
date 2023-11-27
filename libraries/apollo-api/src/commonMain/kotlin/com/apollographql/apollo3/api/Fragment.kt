@@ -12,7 +12,7 @@ interface Fragment<D : Fragment.Data> : Executable<D> {
   @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withDefaultValues: Boolean)
 
-  override fun adapter(): CompositeAdapter<D>
+  override fun adapter(): Adapter<D>
 
   override fun rootField(): CompiledField
 

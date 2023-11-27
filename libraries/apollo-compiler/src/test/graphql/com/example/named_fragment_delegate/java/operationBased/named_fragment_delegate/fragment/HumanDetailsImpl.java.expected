@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_delegate.fragment.selections.HumanDetailsSelections;
 import com.example.named_fragment_delegate.type.Human;
@@ -66,8 +66,8 @@ public class HumanDetailsImpl implements Fragment<HumanDetails> {
   }
 
   @Override
-  public CompositeAdapter<HumanDetails> adapter() {
-    return new ObjectCompositeAdapter<HumanDetails>(HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE, false);
+  public Adapter<HumanDetails> adapter() {
+    return new ObjectAdapter<HumanDetails>(HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE, false);
   }
 
   @Override

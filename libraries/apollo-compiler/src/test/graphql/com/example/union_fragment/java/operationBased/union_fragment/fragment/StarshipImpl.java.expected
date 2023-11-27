@@ -5,11 +5,11 @@
 //
 package com.example.union_fragment.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_fragment.fragment.selections.StarshipSelections;
 import java.io.IOException;
@@ -65,8 +65,8 @@ public class StarshipImpl implements Fragment<Starship> {
   }
 
   @Override
-  public CompositeAdapter<Starship> adapter() {
-    return new ObjectCompositeAdapter<Starship>(StarshipImpl_ResponseAdapter.Starship.INSTANCE, false);
+  public Adapter<Starship> adapter() {
+    return new ObjectAdapter<Starship>(StarshipImpl_ResponseAdapter.Starship.INSTANCE, false);
   }
 
   @Override

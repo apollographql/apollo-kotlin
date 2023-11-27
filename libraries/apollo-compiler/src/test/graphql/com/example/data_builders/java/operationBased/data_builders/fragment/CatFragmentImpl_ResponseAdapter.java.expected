@@ -5,10 +5,9 @@
 //
 package com.example.data_builders.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -19,20 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CatFragmentImpl_ResponseAdapter {
-  public enum CatFragment implements CompositeAdapter<com.example.data_builders.fragment.CatFragment> {
+  public enum CatFragment implements Adapter<com.example.data_builders.fragment.CatFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("meow");
 
     @Override
     public com.example.data_builders.fragment.CatFragment fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String _meow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _meow = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _meow = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,10 +44,10 @@ public class CatFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, com.example.data_builders.fragment.CatFragment value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.data_builders.fragment.CatFragment value) throws IOException {
       writer.name("meow");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.meow);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.meow);
     }
   }
 }

@@ -5,8 +5,7 @@
 //
 package com.example.simple_union.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -22,16 +21,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object AnimalQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<AnimalQuery.Data> {
+  public object Data : Adapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, adapterContext)
+          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,23 +42,23 @@ public object AnimalQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, value.animal, adapterContext)
+      Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
     }
 
-    private object Animal : CompositeAdapter<AnimalQuery.Data.Animal> {
+    private object Animal : Adapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           AnimalQuery.Data.Animal {
         var __typename: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -69,17 +68,17 @@ public object AnimalQuery_ResponseAdapter {
         }
 
         var _catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         var _dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         return AnimalQuery.Data.Animal(
@@ -91,20 +90,20 @@ public object AnimalQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: AnimalQuery.Data.Animal,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.catFragment != null) {
           com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer,
-              value.catFragment, adapterContext)
+              customScalarAdapters, value.catFragment)
         }
 
         if (value.dogFragment != null) {
           com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer,
-              value.dogFragment, adapterContext)
+              customScalarAdapters, value.dogFragment)
         }
       }
     }

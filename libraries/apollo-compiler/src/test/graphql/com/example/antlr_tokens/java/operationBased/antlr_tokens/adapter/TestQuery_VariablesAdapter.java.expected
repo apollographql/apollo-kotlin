@@ -7,7 +7,6 @@ package com.example.antlr_tokens.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -19,10 +18,9 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.operation instanceof Optional.Present) {
       writer.name("operation");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, CustomScalarAdapters.Empty, value.operation);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.operation);
     }
   }
 }

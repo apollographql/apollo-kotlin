@@ -5,13 +5,12 @@
 //
 package com.example.subscriptions.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -23,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestSubscription_ResponseAdapter {
-  public enum Data implements CompositeAdapter<TestSubscription.Data> {
+  public enum Data implements Adapter<TestSubscription.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("commentAdded");
 
     @Override
-    public TestSubscription.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
-        throws IOException {
+    public TestSubscription.Data fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       TestSubscription.CommentAdded _commentAdded = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _commentAdded = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, adapterContext); break;
+          case 0: _commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,29 +46,29 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestSubscription.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestSubscription.Data value) throws IOException {
       writer.name("commentAdded");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, value.commentAdded, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, customScalarAdapters, value.commentAdded);
     }
   }
 
-  public enum CommentAdded implements CompositeAdapter<TestSubscription.CommentAdded> {
+  public enum CommentAdded implements Adapter<TestSubscription.CommentAdded> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "content");
 
     @Override
     public TestSubscription.CommentAdded fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _id = null;
       String _content = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.IntAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
-          case 1: _content = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: _id = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _content = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -84,13 +83,13 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestSubscription.CommentAdded value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestSubscription.CommentAdded value) throws IOException {
       writer.name("id");
-      Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("content");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.content);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.content);
     }
   }
 }

@@ -6,13 +6,11 @@
 package com.example.java_java_optionals.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ImmutableMapBuilder;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapters;
-import com.apollographql.apollo3.api.java.adapter.JavaOptionalCompositeAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_java_optionals.MyQuery;
 import com.example.java_java_optionals.type.MyInput;
@@ -24,16 +22,15 @@ public enum MyQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, MyQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new JavaOptionalAdapter<>(JavaOptionalAdapters.JavaOptionalIntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nullableInt);
+      new JavaOptionalAdapter<>(JavaOptionalAdapters.JavaOptionalIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    Adapters.IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt);
+    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new JavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, CustomScalarAdapters.Empty, value.nonNullableIntWithDefault);
+      new JavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
     }
     else if (withDefaultValues) {
       writer.name("nonNullableIntWithDefault");
@@ -41,13 +38,13 @@ public enum MyQuery_VariablesAdapter {
     }
     if (value.nullableInput.isPresent()) {
       writer.name("nullableInput");
-      new JavaOptionalCompositeAdapter<>(new JavaOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, value.nullableInput, adapterContext);
+      new JavaOptionalAdapter<>(new JavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.nullableInput);
     }
     writer.name("nonNullableInput");
-    new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, value.nonNullableInput, adapterContext);
+    new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableInput);
     if (value.nonNullableInputWithDefault.isPresent()) {
       writer.name("nonNullableInputWithDefault");
-      new JavaOptionalCompositeAdapter<>(new ObjectCompositeAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, value.nonNullableInputWithDefault, adapterContext);
+      new JavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault);
     }
     else if (withDefaultValues) {
       writer.name("nonNullableInputWithDefault");

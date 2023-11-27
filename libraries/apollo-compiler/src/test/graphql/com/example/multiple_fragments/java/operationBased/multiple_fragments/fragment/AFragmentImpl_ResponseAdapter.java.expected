@@ -5,17 +5,16 @@
 //
 package com.example.multiple_fragments.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -25,20 +24,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AFragmentImpl_ResponseAdapter {
-  public enum AFragment implements CompositeAdapter<com.example.multiple_fragments.fragment.AFragment> {
+  public enum AFragment implements Adapter<com.example.multiple_fragments.fragment.AFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.multiple_fragments.fragment.AFragment.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -49,42 +48,42 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, com.example.multiple_fragments.fragment.AFragment value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.multiple_fragments.fragment.AFragment value) throws IOException {
       writer.name("node");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, value.node, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 
-  public enum Node implements CompositeAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
+  public enum Node implements Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment.Node fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       Fragment1 _fragment1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.fromJson(reader, adapterContext);
+        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Fragment2 _fragment2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.fromJson(reader, adapterContext);
+        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new com.example.multiple_fragments.fragment.AFragment.Node(
@@ -95,18 +94,17 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
-        com.example.multiple_fragments.fragment.AFragment.Node value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.multiple_fragments.fragment.AFragment.Node value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.fragment1 != null) {
-        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, value.fragment1, adapterContext);
+        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, customScalarAdapters, value.fragment1);
       }
 
       if (value.fragment2 != null) {
-        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.toJson(writer, value.fragment2, adapterContext);
+        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.toJson(writer, customScalarAdapters, value.fragment2);
       }
     }
   }

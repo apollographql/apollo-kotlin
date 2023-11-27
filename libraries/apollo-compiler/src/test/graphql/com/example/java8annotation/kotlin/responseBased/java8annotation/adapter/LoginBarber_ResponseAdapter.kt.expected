@@ -5,8 +5,7 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,16 +17,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object LoginBarber_ResponseAdapter {
-  public object Data : CompositeAdapter<LoginBarber.Data> {
+  public object Data : Adapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _login = Login.obj().fromJson(reader, adapterContext)
+          0 -> _login = Login.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,23 +38,23 @@ public object LoginBarber_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: LoginBarber.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("login")
-      Login.obj().toJson(writer, value.login, adapterContext)
+      Login.obj().toJson(writer, customScalarAdapters, value.login)
     }
 
-    private object Login : CompositeAdapter<LoginBarber.Data.Login> {
+    private object Login : Adapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           LoginBarber.Data.Login {
         var _response: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _response = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _response = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -67,11 +66,11 @@ public object LoginBarber_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: LoginBarber.Data.Login,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("response")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.response)
+        StringAdapter.toJson(writer, customScalarAdapters, value.response)
       }
     }
   }

@@ -5,8 +5,7 @@
 //
 package com.example.arguments_hardcoded.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
@@ -22,18 +21,18 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _reviews: List<TestQuery.Data.Review?>? = null
       var _testNullableArguments: Int? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader, adapterContext)
-          1 -> _testNullableArguments = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _testNullableArguments = IntAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,28 +45,28 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("reviews")
-      Review.obj().nullable().list().nullable().toJson(writer, value.reviews, adapterContext)
+      Review.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.reviews)
 
       writer.name("testNullableArguments")
-      IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.testNullableArguments)
+      IntAdapter.toJson(writer, customScalarAdapters, value.testNullableArguments)
     }
 
-    private object Review : CompositeAdapter<TestQuery.Data.Review> {
+    private object Review : Adapter<TestQuery.Data.Review> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Review {
         var _stars: Int? = null
         var _commentary: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _commentary = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -80,14 +79,14 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Review,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("stars")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.stars)
+        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.commentary)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
       }
     }
   }

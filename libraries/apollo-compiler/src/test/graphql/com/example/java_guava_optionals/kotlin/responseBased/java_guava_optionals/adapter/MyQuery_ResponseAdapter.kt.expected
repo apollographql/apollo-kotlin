@@ -5,8 +5,7 @@
 //
 package com.example.java_guava_optionals.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
@@ -24,12 +23,12 @@ import kotlin.String
 import kotlin.collections.List
 
 public object MyQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<MyQuery.Data> {
+  public object Data : Adapter<MyQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
         "nullableMyType", "nonNullableMyType", "nullableListOfNullableString",
         "nullableListOfNonNullableString")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         MyQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
@@ -40,12 +39,12 @@ public object MyQuery_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _nonNullableInt = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader, adapterContext)
-          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, adapterContext)
-          4 -> _nullableListOfNullableString = NullableStringAdapter.list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
-          5 -> _nullableListOfNonNullableString = StringAdapter.list().nullable().fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader, customScalarAdapters)
+          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, customScalarAdapters)
+          4 -> _nullableListOfNullableString = NullableStringAdapter.list().nullable().fromJson(reader, customScalarAdapters)
+          5 -> _nullableListOfNonNullableString = StringAdapter.list().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -62,42 +61,42 @@ public object MyQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: MyQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("nullableInt")
-      NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
+      NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
       writer.name("nonNullableInt")
-      IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
+      IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
 
       writer.name("nullableMyType")
-      NullableMyType.obj().nullable().toJson(writer, value.nullableMyType, adapterContext)
+      NullableMyType.obj().nullable().toJson(writer, customScalarAdapters, value.nullableMyType)
 
       writer.name("nonNullableMyType")
-      NonNullableMyType.obj().toJson(writer, value.nonNullableMyType, adapterContext)
+      NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
 
       writer.name("nullableListOfNullableString")
-      NullableStringAdapter.list().nullable().toJson(writer, CustomScalarAdapters.Empty,
+      NullableStringAdapter.list().nullable().toJson(writer, customScalarAdapters,
           value.nullableListOfNullableString)
 
       writer.name("nullableListOfNonNullableString")
-      StringAdapter.list().nullable().toJson(writer, CustomScalarAdapters.Empty,
+      StringAdapter.list().nullable().toJson(writer, customScalarAdapters,
           value.nullableListOfNonNullableString)
     }
 
-    private object NullableMyType : CompositeAdapter<MyQuery.Data.NullableMyType> {
+    private object NullableMyType : Adapter<MyQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           MyQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -110,29 +109,29 @@ public object MyQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: MyQuery.Data.NullableMyType,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
+        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
       }
     }
 
-    private object NonNullableMyType : CompositeAdapter<MyQuery.Data.NonNullableMyType> {
+    private object NonNullableMyType : Adapter<MyQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           MyQuery.Data.NonNullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -145,14 +144,14 @@ public object MyQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: MyQuery.Data.NonNullableMyType,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nullableInt)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.nonNullableInt)
+        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
       }
     }
   }

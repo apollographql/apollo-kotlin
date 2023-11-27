@@ -5,8 +5,7 @@
 //
 package com.example.inline_fragment_intersection.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.NullableDoubleAdapter
@@ -28,16 +27,16 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : CompositeAdapter<TestOperation.Data> {
+  public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _random = Random.obj().fromJson(reader, adapterContext)
+          0 -> _random = Random.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -49,38 +48,39 @@ public object TestOperation_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("random")
-      Random.obj().toJson(writer, value.random, adapterContext)
+      Random.obj().toJson(writer, customScalarAdapters, value.random)
     }
 
-    private object Random : CompositeAdapter<TestOperation.Data.Random> {
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    private object Random : Adapter<TestOperation.Data.Random> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestOperation.Data.Random {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> BeingHumanRandom.fromJson(reader, adapterContext, __typename)
+          -> BeingHumanRandom.fromJson(reader, customScalarAdapters, __typename)
           "Wookie",
-          -> BeingWookieRandom.fromJson(reader, adapterContext, __typename)
+          -> BeingWookieRandom.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherRandom.fromJson(reader, adapterContext, __typename)
+          -> OtherRandom.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Random,
-        adapterContext: CompositeAdapterContext,
       ) {
         when(value) {
-          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer, value,
-              adapterContext)
-          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.toJson(writer, value,
-              adapterContext)
-          is TestOperation.Data.OtherRandom -> OtherRandom.toJson(writer, value, adapterContext)
+          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherRandom -> OtherRandom.toJson(writer, customScalarAdapters,
+              value)
         }
       }
     }
@@ -91,7 +91,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.BeingHumanRandom {
         var __typename: String? = typename
@@ -101,10 +101,10 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _friends = Friend.obj().list().fromJson(reader, adapterContext)
-            3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -119,44 +119,44 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.BeingHumanRandom,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, value.friends, adapterContext)
+        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
 
         writer.name("profilePictureUrl")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profilePictureUrl)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
       }
 
-      private object Friend : CompositeAdapter<TestOperation.Data.BeingHumanRandom.Friend> {
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      private object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestOperation.Data.BeingHumanRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
-            -> WookieFriend.fromJson(reader, adapterContext, __typename)
+            -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherFriend.fromJson(reader, adapterContext, __typename)
+            -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.Friend,
-          adapterContext: CompositeAdapterContext,
         ) {
           when(value) {
             is TestOperation.Data.BeingHumanRandom.WookieFriend -> WookieFriend.toJson(writer,
-                value, adapterContext)
-            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.toJson(writer, value,
-                adapterContext)
+                customScalarAdapters, value)
+            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -167,7 +167,7 @@ public object TestOperation_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.WookieFriend {
           var __typename: String? = typename
@@ -178,11 +178,11 @@ public object TestOperation_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              3 -> _isFamous = NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              4 -> _race = Race_ResponseAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+              4 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -198,23 +198,23 @@ public object TestOperation_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.WookieFriend,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
 
           writer.name("isFamous")
-          NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous)
+          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
           writer.name("race")
-          Race_ResponseAdapter.toJson(writer, CustomScalarAdapters.Empty, value.race)
+          Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
         }
       }
 
@@ -223,7 +223,7 @@ public object TestOperation_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.OtherFriend {
           var __typename: String? = typename
@@ -232,9 +232,9 @@ public object TestOperation_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -248,17 +248,17 @@ public object TestOperation_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingHumanRandom.OtherFriend,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("isFamous")
-          NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.isFamous)
+          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
         }
       }
     }
@@ -268,7 +268,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.BeingWookieRandom {
         var __typename: String? = typename
@@ -278,10 +278,10 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _friends = Friend.obj().list().fromJson(reader, adapterContext)
-            3 -> _race = Race_ResponseAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            3 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -296,44 +296,44 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.BeingWookieRandom,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, value.friends, adapterContext)
+        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
 
         writer.name("race")
-        Race_ResponseAdapter.toJson(writer, CustomScalarAdapters.Empty, value.race)
+        Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
       }
 
-      private object Friend : CompositeAdapter<TestOperation.Data.BeingWookieRandom.Friend> {
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      private object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestOperation.Data.BeingWookieRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
-            -> WookieFriend.fromJson(reader, adapterContext, __typename)
+            -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherFriend.fromJson(reader, adapterContext, __typename)
+            -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.Friend,
-          adapterContext: CompositeAdapterContext,
         ) {
           when(value) {
             is TestOperation.Data.BeingWookieRandom.WookieFriend -> WookieFriend.toJson(writer,
-                value, adapterContext)
-            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.toJson(writer, value,
-                adapterContext)
+                customScalarAdapters, value)
+            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -343,7 +343,7 @@ public object TestOperation_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.WookieFriend {
           var __typename: String? = typename
@@ -352,9 +352,9 @@ public object TestOperation_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -368,17 +368,17 @@ public object TestOperation_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.WookieFriend,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
         }
       }
 
@@ -387,7 +387,7 @@ public object TestOperation_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.OtherFriend {
           var __typename: String? = typename
@@ -396,9 +396,9 @@ public object TestOperation_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -412,17 +412,17 @@ public object TestOperation_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.BeingWookieRandom.OtherFriend,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("lifeExpectancy")
-          NullableDoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
         }
       }
     }
@@ -432,14 +432,14 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherRandom {
         var __typename: String? = typename
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -451,11 +451,11 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherRandom,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

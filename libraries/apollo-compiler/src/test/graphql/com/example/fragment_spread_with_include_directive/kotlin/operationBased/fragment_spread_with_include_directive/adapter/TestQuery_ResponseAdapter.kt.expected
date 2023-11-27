@@ -5,8 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -30,18 +29,18 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero", "getBoolean")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
       var _getBoolean: Boolean? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, adapterContext)
-          1 -> _getBoolean = NullableBooleanAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _getBoolean = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -54,28 +53,28 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, value.hero, adapterContext)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("getBoolean")
-      NullableBooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.getBoolean)
+      NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.getBoolean)
     }
 
-    private object Hero : CompositeAdapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var __typename: String? = null
         var _id: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -85,31 +84,31 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _heroDetails: HeroDetails? = null
-        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(adapterContext.falseVariables, null, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.falseVariables, null, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         var _humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         var _otherDroidDetails: OtherDroidDetails? = null
-        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
@@ -124,33 +123,33 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         if (value.heroDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              value.heroDetails, adapterContext)
+              customScalarAdapters, value.heroDetails)
         }
 
         if (value.humanDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              value.humanDetails, adapterContext)
+              customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              value.droidDetails, adapterContext)
+              customScalarAdapters, value.droidDetails)
         }
 
         if (value.otherDroidDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.toJson(writer,
-              value.otherDroidDetails, adapterContext)
+              customScalarAdapters, value.otherDroidDetails)
         }
       }
     }

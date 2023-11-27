@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -49,7 +49,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
-            ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, context.resolver.resolveModel(model.id))
+            ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.id))
         )
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)
@@ -73,7 +73,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
         .returns(adaptedClassName)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonReader, reader)
-        .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
+        .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
         .addAnnotation(JavaClassNames.Override)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
@@ -85,8 +85,8 @@ internal class MonomorphicFieldResponseAdapterBuilder(
         .addAnnotation(JavaClassNames.Override)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonWriter, Identifier.writer)
+        .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
         .addParameter(adaptedClassName, Identifier.value)
-        .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
   }

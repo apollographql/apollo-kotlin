@@ -5,9 +5,8 @@
 //
 package com.example.named_fragment_delegate.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -21,11 +20,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object HumanDetails :
-      CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
+  public object HumanDetails : Adapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails {
       var _name: String? = null
       var _profileLink: Any? = null
@@ -33,9 +31,9 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _profileLink = AnyAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, adapterContext)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -49,31 +47,30 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_delegate.fragment.HumanDetails,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("profileLink")
-      AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, value.profileLink)
+      AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, value.friendsConnection, adapterContext)
+      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
     private object FriendsConnection :
-        CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>
-        {
+        Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection {
         var _edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge?>? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, adapterContext)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -85,25 +82,25 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, value.edges, adapterContext)
+        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge :
-          CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge>
+          Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge>
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge {
           var _node: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, adapterContext)
+              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -115,25 +112,25 @@ public object HumanDetailsImpl_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, value.node, adapterContext)
+          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node :
-            CompositeAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node>
+            Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node>
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -145,11 +142,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
           override fun toJson(
             writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
             `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node,
-            adapterContext: CompositeAdapterContext,
           ) {
             writer.name("name")
-            StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+            StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }
         }
       }

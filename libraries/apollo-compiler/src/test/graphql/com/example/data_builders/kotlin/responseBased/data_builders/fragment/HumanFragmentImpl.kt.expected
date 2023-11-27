@@ -5,8 +5,8 @@
 //
 package com.example.data_builders.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -38,7 +38,7 @@ public class HumanFragmentImpl() : Fragment<HumanFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = HumanFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = HumanFragmentImpl_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

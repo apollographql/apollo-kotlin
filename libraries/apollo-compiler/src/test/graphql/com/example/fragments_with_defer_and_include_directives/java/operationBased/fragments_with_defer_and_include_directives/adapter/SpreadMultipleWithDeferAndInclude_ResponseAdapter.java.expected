@@ -5,6 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
@@ -13,11 +14,9 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude;
@@ -29,20 +28,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
-  public enum Data implements CompositeAdapter<SpreadMultipleWithDeferAndInclude.Data> {
+  public enum Data implements Adapter<SpreadMultipleWithDeferAndInclude.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
     public SpreadMultipleWithDeferAndInclude.Data fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       SpreadMultipleWithDeferAndInclude.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -53,37 +52,37 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, SpreadMultipleWithDeferAndInclude.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        SpreadMultipleWithDeferAndInclude.Data value) throws IOException {
       writer.name("hero");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
-  public enum Hero implements CompositeAdapter<SpreadMultipleWithDeferAndInclude.Hero> {
+  public enum Hero implements Adapter<SpreadMultipleWithDeferAndInclude.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
     public SpreadMultipleWithDeferAndInclude.Hero fromJson(JsonReader reader,
-        CompositeAdapterContext adapterContext) throws IOException {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond1")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2"))),new BooleanExpression.Element<BTerm>(new BLabel("b_first")),new BooleanExpression.Element<BTerm>(new BLabel("b_second")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3"))),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4")))))), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond1")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2"))),new BooleanExpression.Element<BTerm>(new BLabel("b_first")),new BooleanExpression.Element<BTerm>(new BLabel("b_second")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3"))),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4")))))), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
         reader.rewind();
-        _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, adapterContext);
+        _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new SpreadMultipleWithDeferAndInclude.Hero(
@@ -93,13 +92,13 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, SpreadMultipleWithDeferAndInclude.Hero value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        SpreadMultipleWithDeferAndInclude.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.droidDetails != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, value.droidDetails, adapterContext);
+        com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
       }
     }
   }

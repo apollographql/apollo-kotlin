@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,16 +19,16 @@ import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment :
-      CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+      Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_with_variables.fragment.QueryFragment {
       var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _organization = Organization.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,27 +40,26 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_with_variables.fragment.QueryFragment,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, value.organization, adapterContext)
+      Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
     private object Organization :
-        CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>
-        {
+        Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var _id: String? = null
         var _user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _user = User.obj(true).list().fromJson(reader, adapterContext)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _user = User.obj(true).list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -74,35 +72,35 @@ public object QueryFragmentImpl_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("user")
-        User.obj(true).list().toJson(writer, value.user, adapterContext)
+        User.obj(true).list().toJson(writer, customScalarAdapters, value.user)
       }
 
       private object User :
-          CompositeAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
+          Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
           {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           reader.rewind()
           val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
-              adapterContext)
+              customScalarAdapters)
 
           return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User(
             __typename = __typename ?: missingField(reader, "__typename"),
@@ -112,14 +110,14 @@ public object QueryFragmentImpl_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
-              value.userFragment, adapterContext)
+              customScalarAdapters, value.userFragment)
         }
       }
     }

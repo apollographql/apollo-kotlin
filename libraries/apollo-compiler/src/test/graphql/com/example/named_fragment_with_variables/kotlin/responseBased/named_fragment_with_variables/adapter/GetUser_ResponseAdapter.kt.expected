@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,18 +19,18 @@ import kotlin.String
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
-  public object Data : CompositeAdapter<GetUser.Data> {
+  public object Data : Adapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
       var __typename: String? = null
       var _organization: GetUser.Data.Organization? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _organization = Organization.obj().nullable().fromJson(reader, adapterContext)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,28 +43,28 @@ public object GetUser_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: GetUser.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, value.organization, adapterContext)
+      Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    private object Organization : CompositeAdapter<GetUser.Data.Organization> {
+    private object Organization : Adapter<GetUser.Data.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetUser.Data.Organization {
         var _id: String? = null
         var _user: List<GetUser.Data.Organization.User>? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _user = User.obj().list().fromJson(reader, adapterContext)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _user = User.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -78,21 +77,21 @@ public object GetUser_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetUser.Data.Organization,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("user")
-        User.obj().list().toJson(writer, value.user, adapterContext)
+        User.obj().list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      private object User : CompositeAdapter<GetUser.Data.Organization.User> {
+      private object User : Adapter<GetUser.Data.Organization.User> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
             "avatar")
 
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetUser.Data.Organization.User {
           var __typename: String? = null
           var _firstName: String? = null
@@ -101,10 +100,10 @@ public object GetUser_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _firstName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _lastName = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              3 -> _avatar = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -119,20 +118,20 @@ public object GetUser_ResponseAdapter {
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: GetUser.Data.Organization.User,
-          adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("firstName")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.firstName)
+          StringAdapter.toJson(writer, customScalarAdapters, value.firstName)
 
           writer.name("lastName")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.lastName)
+          StringAdapter.toJson(writer, customScalarAdapters, value.lastName)
 
           writer.name("avatar")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.avatar)
+          StringAdapter.toJson(writer, customScalarAdapters, value.avatar)
         }
       }
     }

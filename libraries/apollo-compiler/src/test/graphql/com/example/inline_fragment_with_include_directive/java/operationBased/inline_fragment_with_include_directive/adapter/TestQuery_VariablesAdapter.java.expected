@@ -6,7 +6,6 @@
 package com.example.inline_fragment_with_include_directive.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_with_include_directive.TestQuery;
@@ -17,10 +16,9 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("withDetails");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.withDetails);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.withDetails);
     writer.name("skipHumanDetails");
-    Adapters.BooleanAdapter.toJson(writer, CustomScalarAdapters.Empty, value.skipHumanDetails);
+    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.skipHumanDetails);
   }
 }

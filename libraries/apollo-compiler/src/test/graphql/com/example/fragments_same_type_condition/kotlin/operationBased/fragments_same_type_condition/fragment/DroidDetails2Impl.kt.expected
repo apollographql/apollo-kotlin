@@ -5,8 +5,8 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -30,7 +30,7 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<DroidDetails2> =
+  override fun adapter(): Adapter<DroidDetails2> =
       DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(

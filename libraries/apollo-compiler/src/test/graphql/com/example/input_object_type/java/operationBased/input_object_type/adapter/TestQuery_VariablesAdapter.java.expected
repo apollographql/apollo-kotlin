@@ -5,9 +5,8 @@
 //
 package com.example.input_object_type.adapter;
 
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_type.TestQuery;
 import com.example.input_object_type.type.ReviewInput;
@@ -20,10 +19,9 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("ep");
-    Episode_ResponseAdapter.INSTANCE.toJson(writer, CustomScalarAdapters.Empty, value.ep);
+    Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
     writer.name("review");
-    new ObjectCompositeAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, value.review, adapterContext);
+    new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.review);
   }
 }

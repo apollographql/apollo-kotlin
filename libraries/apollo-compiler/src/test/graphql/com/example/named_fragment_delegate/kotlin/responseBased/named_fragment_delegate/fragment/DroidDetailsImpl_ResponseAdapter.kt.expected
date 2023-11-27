@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -20,10 +19,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
-  public object Data : CompositeAdapter<DroidDetailsImpl.Data> {
+  public object Data : Adapter<DroidDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidDetailsImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
@@ -31,9 +30,9 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, adapterContext)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,29 +46,29 @@ public object DroidDetailsImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: DroidDetailsImpl.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("name")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.primaryFunction)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, value.friends, adapterContext)
+      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
 
-    private object Friend : CompositeAdapter<DroidDetailsImpl.Data.Friend> {
+    private object Friend : Adapter<DroidDetailsImpl.Data.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           DroidDetailsImpl.Data.Friend {
         var _name: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -81,11 +80,11 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: DroidDetailsImpl.Data.Friend,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

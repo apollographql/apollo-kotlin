@@ -5,8 +5,7 @@
 //
 package com.example.`object`.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,16 +18,16 @@ import kotlin.String
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("object")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _object = Object.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _object = Object.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,23 +39,23 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("object")
-      Object.obj().nullable().toJson(writer, value.`object`, adapterContext)
+      Object.obj().nullable().toJson(writer, customScalarAdapters, value.`object`)
     }
 
-    private object Object : CompositeAdapter<TestQuery.Data.Object> {
+    private object Object : Adapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("random")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Object {
         var _random: Int? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _random = NullableIntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _random = NullableIntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,11 +67,11 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Object,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("random")
-        NullableIntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.random)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.random)
       }
     }
   }

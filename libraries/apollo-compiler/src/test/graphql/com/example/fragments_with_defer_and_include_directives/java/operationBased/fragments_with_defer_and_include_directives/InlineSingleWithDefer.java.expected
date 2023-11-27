@@ -5,10 +5,10 @@
 //
 package com.example.fragments_with_defer_and_include_directives;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter;
@@ -104,8 +104,8 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(InlineSingleWithDefer_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(InlineSingleWithDefer_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

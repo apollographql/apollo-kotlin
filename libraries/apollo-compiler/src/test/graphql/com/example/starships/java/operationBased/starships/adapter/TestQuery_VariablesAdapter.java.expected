@@ -6,7 +6,6 @@
 package com.example.starships.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.starships.TestQuery;
@@ -17,8 +16,7 @@ public enum TestQuery_VariablesAdapter {
 
   public void serializeVariables(JsonWriter writer, TestQuery value,
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
-    CompositeAdapterContext adapterContext = new CompositeAdapterContext.Builder().customScalarAdapters(customScalarAdapters).build();
     writer.name("id");
-    Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
   }
 }

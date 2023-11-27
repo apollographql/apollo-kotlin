@@ -5,16 +5,15 @@
 //
 package com.example.data_builders.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.data_builders.AnimalQuery;
@@ -27,20 +26,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<AnimalQuery.Data> {
+  public enum Data implements Adapter<AnimalQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public AnimalQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public AnimalQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       AnimalQuery.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new ObjectCompositeAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true).fromJson(reader, adapterContext); break;
+          case 0: _animal = new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -53,42 +52,42 @@ public class AnimalQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, AnimalQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        AnimalQuery.Data value) throws IOException {
       writer.name("animal");
-      new ObjectCompositeAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true).toJson(writer, value.animal, adapterContext);
+      new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true).toJson(writer, customScalarAdapters, value.animal);
     }
   }
 
-  public enum Animal implements CompositeAdapter<AnimalQuery.Animal> {
+  public enum Animal implements Adapter<AnimalQuery.Animal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public AnimalQuery.Animal fromJson(JsonReader reader, CompositeAdapterContext adapterContext)
+    public AnimalQuery.Animal fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       CatFragment _catFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _catFragment = com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, adapterContext);
+        _catFragment = com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       DogFragment _dogFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
-        _dogFragment = com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, adapterContext);
+        _dogFragment = com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new AnimalQuery.Animal(
@@ -99,17 +98,17 @@ public class AnimalQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, AnimalQuery.Animal value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        AnimalQuery.Animal value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.catFragment != null) {
-        com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.toJson(writer, value.catFragment, adapterContext);
+        com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.toJson(writer, customScalarAdapters, value.catFragment);
       }
 
       if (value.dogFragment != null) {
-        com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.toJson(writer, value.dogFragment, adapterContext);
+        com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.toJson(writer, customScalarAdapters, value.dogFragment);
       }
     }
   }

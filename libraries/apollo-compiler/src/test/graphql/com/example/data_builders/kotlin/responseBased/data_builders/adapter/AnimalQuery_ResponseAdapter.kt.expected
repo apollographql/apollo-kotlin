@@ -5,8 +5,7 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,16 +19,16 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object AnimalQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<AnimalQuery.Data> {
+  public object Data : Adapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().fromJson(reader, adapterContext)
+          0 -> _animal = Animal.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,36 +40,36 @@ public object AnimalQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: AnimalQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("animal")
-      Animal.obj().toJson(writer, value.animal, adapterContext)
+      Animal.obj().toJson(writer, customScalarAdapters, value.animal)
     }
 
-    private object Animal : CompositeAdapter<AnimalQuery.Data.Animal> {
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    private object Animal : Adapter<AnimalQuery.Data.Animal> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           AnimalQuery.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> CatAnimal.fromJson(reader, adapterContext, __typename)
+          -> CatAnimal.fromJson(reader, customScalarAdapters, __typename)
           "Dog",
-          -> DogAnimal.fromJson(reader, adapterContext, __typename)
+          -> DogAnimal.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherAnimal.fromJson(reader, adapterContext, __typename)
+          -> OtherAnimal.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: AnimalQuery.Data.Animal,
-        adapterContext: CompositeAdapterContext,
       ) {
         when(value) {
-          is AnimalQuery.Data.CatAnimal -> CatAnimal.toJson(writer, value, adapterContext)
-          is AnimalQuery.Data.DogAnimal -> DogAnimal.toJson(writer, value, adapterContext)
-          is AnimalQuery.Data.OtherAnimal -> OtherAnimal.toJson(writer, value, adapterContext)
+          is AnimalQuery.Data.CatAnimal -> CatAnimal.toJson(writer, customScalarAdapters, value)
+          is AnimalQuery.Data.DogAnimal -> DogAnimal.toJson(writer, customScalarAdapters, value)
+          is AnimalQuery.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -80,7 +79,7 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AnimalQuery.Data.CatAnimal {
         var __typename: String? = typename
@@ -88,8 +87,8 @@ public object AnimalQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _meow = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _meow = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -102,14 +101,14 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: AnimalQuery.Data.CatAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("meow")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.meow)
+        StringAdapter.toJson(writer, customScalarAdapters, value.meow)
       }
     }
 
@@ -118,7 +117,7 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AnimalQuery.Data.DogAnimal {
         var __typename: String? = typename
@@ -126,8 +125,8 @@ public object AnimalQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _woof = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _woof = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -140,14 +139,14 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: AnimalQuery.Data.DogAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("woof")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.woof)
+        StringAdapter.toJson(writer, customScalarAdapters, value.woof)
       }
     }
 
@@ -156,14 +155,14 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AnimalQuery.Data.OtherAnimal {
         var __typename: String? = typename
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -175,11 +174,11 @@ public object AnimalQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: AnimalQuery.Data.OtherAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

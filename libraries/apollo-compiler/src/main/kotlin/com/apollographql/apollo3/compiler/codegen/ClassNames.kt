@@ -28,8 +28,6 @@ internal object ClassNames {
   val Absent = ResolverClassName(apolloApiPackageName, "Optional", "Absent")
   val Present = ResolverClassName(apolloApiPackageName, "Optional", "Present")
   val Adapter = ResolverClassName(apolloApiPackageName, "Adapter")
-  val CompositeAdapter = ResolverClassName(apolloApiPackageName, "CompositeAdapter")
-  val CompositeAdapterContext = ResolverClassName(apolloApiPackageName, "CompositeAdapterContext")
   val CompiledSelection = ResolverClassName(apolloApiPackageName, "CompiledSelection")
   val CompiledNamedType = ResolverClassName(apolloApiPackageName, "CompiledNamedType")
   val UnionType = ResolverClassName(apolloApiPackageName, "UnionType")

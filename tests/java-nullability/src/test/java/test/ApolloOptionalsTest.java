@@ -1,6 +1,5 @@
 package test;
 
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
@@ -140,7 +139,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -177,7 +176,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.present(0),
@@ -220,7 +219,7 @@ public class ApolloOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new CompositeAdapterContext.Builder().build());
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),

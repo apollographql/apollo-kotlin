@@ -5,8 +5,7 @@
 //
 package com.example.operationbased2_ex7.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -23,16 +22,16 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : CompositeAdapter<TestOperation.Data> {
+  public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,43 +43,44 @@ public object TestOperation_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("animal")
-      Animal.obj().nullable().toJson(writer, value.animal, adapterContext)
+      Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
     }
 
-    private object Animal : CompositeAdapter<TestOperation.Data.Animal> {
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    private object Animal : Adapter<TestOperation.Data.Animal> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestOperation.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> PetWarmBloodedAnimal.fromJson(reader, adapterContext, __typename)
+          -> PetWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
           "Lion",
           "Panther",
-          -> OtherWarmBloodedAnimal.fromJson(reader, adapterContext, __typename)
+          -> OtherWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
           "Turtle",
-          -> OtherPetAnimal.fromJson(reader, adapterContext, __typename)
+          -> OtherPetAnimal.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherAnimal.fromJson(reader, adapterContext, __typename)
+          -> OtherAnimal.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Animal,
-        adapterContext: CompositeAdapterContext,
       ) {
         when(value) {
-          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer, value,
-              adapterContext)
+          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer,
+              customScalarAdapters, value)
           is TestOperation.Data.OtherWarmBloodedAnimal -> OtherWarmBloodedAnimal.toJson(writer,
-              value, adapterContext)
-          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer, value,
-              adapterContext)
-          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, value, adapterContext)
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters,
+              value)
         }
       }
     }
@@ -91,7 +91,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.PetWarmBloodedAnimal {
         var __typename: String? = typename
@@ -101,10 +101,10 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            3 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+            3 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -119,20 +119,20 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.PetWarmBloodedAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("temperature")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
+        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
 
@@ -141,7 +141,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherAnimal {
         var __typename: String? = typename
@@ -149,8 +149,8 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -163,14 +163,14 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
       }
     }
 
@@ -179,7 +179,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherWarmBloodedAnimal {
         var __typename: String? = typename
@@ -188,9 +188,9 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _temperature = IntAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -204,17 +204,17 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherWarmBloodedAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("temperature")
-        IntAdapter.toJson(writer, CustomScalarAdapters.Empty, value.temperature)
+        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
       }
     }
 
@@ -223,7 +223,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherPetAnimal {
         var __typename: String? = typename
@@ -232,9 +232,9 @@ public object TestOperation_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _species = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -248,17 +248,17 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherPetAnimal,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

@@ -6,8 +6,8 @@
 package com.example.data_builders
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -49,7 +49,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

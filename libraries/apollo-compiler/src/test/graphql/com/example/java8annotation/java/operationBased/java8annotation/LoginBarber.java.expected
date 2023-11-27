@@ -5,11 +5,11 @@
 //
 package com.example.java8annotation;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter;
 import com.example.java8annotation.adapter.LoginBarber_VariablesAdapter;
@@ -110,8 +110,8 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   }
 
   @Override
-  public CompositeAdapter<Data> adapter() {
-    return new ObjectCompositeAdapter<Data>(LoginBarber_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(LoginBarber_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

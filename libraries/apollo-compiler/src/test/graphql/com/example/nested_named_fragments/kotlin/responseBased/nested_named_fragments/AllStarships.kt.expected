@@ -6,8 +6,8 @@
 package com.example.nested_named_fragments
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompositeAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -44,7 +44,7 @@ public class AllStarships() : Query<AllStarships.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): CompositeAdapter<Data> = AllStarships_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = AllStarships_ResponseAdapter.Data.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

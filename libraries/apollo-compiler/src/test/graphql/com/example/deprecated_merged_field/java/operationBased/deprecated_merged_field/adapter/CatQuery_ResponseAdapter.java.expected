@@ -5,13 +5,12 @@
 //
 package com.example.deprecated_merged_field.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CompositeAdapter;
-import com.apollographql.apollo3.api.CompositeAdapterContext;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableCompositeAdapter;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.CatQuery;
@@ -23,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CatQuery_ResponseAdapter {
-  public enum Data implements CompositeAdapter<CatQuery.Data> {
+  public enum Data implements Adapter<CatQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("cat");
 
     @Override
-    public CatQuery.Data fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       CatQuery.Cat _cat = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _cat = new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, adapterContext); break;
+          case 0: _cat = new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,33 +46,33 @@ public class CatQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CatQuery.Data value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        CatQuery.Data value) throws IOException {
       writer.name("cat");
-      new NullableCompositeAdapter<>(new ObjectCompositeAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).toJson(writer, value.cat, adapterContext);
+      new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).toJson(writer, customScalarAdapters, value.cat);
     }
   }
 
-  public enum Cat implements CompositeAdapter<CatQuery.Cat> {
+  public enum Cat implements Adapter<CatQuery.Cat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public CatQuery.Cat fromJson(JsonReader reader, CompositeAdapterContext adapterContext) throws
-        IOException {
+    public CatQuery.Cat fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, CustomScalarAdapters.Empty); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      AnimalFragment _animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, adapterContext);
+      AnimalFragment _animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -84,12 +83,12 @@ public class CatQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CatQuery.Cat value,
-        CompositeAdapterContext adapterContext) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        CatQuery.Cat value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, value.animalFragment, adapterContext);
+      com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, customScalarAdapters, value.animalFragment);
     }
   }
 }

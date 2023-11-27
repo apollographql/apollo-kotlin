@@ -5,8 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,17 +19,16 @@ import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
   public object CharacterAppearsIn :
-      CompositeAdapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn>
-      {
+      Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,11 +40,11 @@ public object CharacterAppearsInImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, CustomScalarAdapters.Empty,
+      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
           value.appearsIn)
     }
   }

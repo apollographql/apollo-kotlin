@@ -5,8 +5,7 @@
 //
 package com.example.interface_on_interface.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -22,18 +21,18 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object GetHuman_ResponseAdapter {
-  public object Data : CompositeAdapter<GetHuman.Data> {
+  public object Data : Adapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Data {
       var _human: GetHuman.Data.Human? = null
       var _node: GetHuman.Data.Node? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _human = Human.obj().fromJson(reader, adapterContext)
-          1 -> _node = Node.obj().fromJson(reader, adapterContext)
+          0 -> _human = Human.obj().fromJson(reader, customScalarAdapters)
+          1 -> _node = Node.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,20 +45,20 @@ public object GetHuman_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: GetHuman.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("human")
-      Human.obj().toJson(writer, value.human, adapterContext)
+      Human.obj().toJson(writer, customScalarAdapters, value.human)
 
       writer.name("node")
-      Node.obj().toJson(writer, value.node, adapterContext)
+      Node.obj().toJson(writer, customScalarAdapters, value.node)
     }
 
-    private object Human : CompositeAdapter<GetHuman.Data.Human> {
+    private object Human : Adapter<GetHuman.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHuman.Data.Human {
         var _id: String? = null
         var _name: String? = null
@@ -67,9 +66,9 @@ public object GetHuman_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _name = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            2 -> _height = DoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -83,40 +82,40 @@ public object GetHuman_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.Human,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("id")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
+        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
 
-    private object Node : CompositeAdapter<GetHuman.Data.Node> {
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    private object Node : Adapter<GetHuman.Data.Node> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHuman.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanNode.fromJson(reader, adapterContext, __typename)
+          -> HumanNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.fromJson(reader, adapterContext, __typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.Node,
-        adapterContext: CompositeAdapterContext,
       ) {
         when(value) {
-          is GetHuman.Data.HumanNode -> HumanNode.toJson(writer, value, adapterContext)
-          is GetHuman.Data.OtherNode -> OtherNode.toJson(writer, value, adapterContext)
+          is GetHuman.Data.HumanNode -> HumanNode.toJson(writer, customScalarAdapters, value)
+          is GetHuman.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -126,7 +125,7 @@ public object GetHuman_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetHuman.Data.HumanNode {
         var __typename: String? = typename
@@ -134,8 +133,8 @@ public object GetHuman_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _height = DoubleAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -148,14 +147,14 @@ public object GetHuman_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.HumanNode,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, CustomScalarAdapters.Empty, value.height)
+        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
 
@@ -164,14 +163,14 @@ public object GetHuman_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetHuman.Data.OtherNode {
         var __typename: String? = typename
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -183,11 +182,11 @@ public object GetHuman_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: GetHuman.Data.OtherNode,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

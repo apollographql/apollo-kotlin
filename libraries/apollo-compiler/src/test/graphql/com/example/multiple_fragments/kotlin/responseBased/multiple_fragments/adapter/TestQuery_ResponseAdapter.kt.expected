@@ -5,8 +5,7 @@
 //
 package com.example.multiple_fragments.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -22,16 +21,16 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _a: TestQuery.Data.A? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _a = A.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _a = A.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,25 +42,25 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("a")
-      A.obj().nullable().toJson(writer, value.a, adapterContext)
+      A.obj().nullable().toJson(writer, customScalarAdapters, value.a)
     }
 
-    private object A : CompositeAdapter<TestQuery.Data.A> {
+    private object A : Adapter<TestQuery.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "node")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.A {
         var __typename: String? = null
         var _node: TestQuery.Data.A.Node? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _node = Node.obj().nullable().fromJson(reader, adapterContext)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -74,36 +73,36 @@ public object TestQuery_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.A,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("node")
-        Node.obj().nullable().toJson(writer, value.node, adapterContext)
+        Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
       }
 
-      private object Node : CompositeAdapter<TestQuery.Data.A.Node> {
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      private object Node : Adapter<TestQuery.Data.A.Node> {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.A.Node {
           val __typename = reader.readTypename()
           return when(__typename) {
             "ANode",
-            -> ANodeNode.fromJson(reader, adapterContext, __typename)
+            -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherNode.fromJson(reader, adapterContext, __typename)
+            -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.A.Node,
-          adapterContext: CompositeAdapterContext,
         ) {
           when(value) {
-            is TestQuery.Data.A.ANodeNode -> ANodeNode.toJson(writer, value, adapterContext)
-            is TestQuery.Data.A.OtherNode -> OtherNode.toJson(writer, value, adapterContext)
+            is TestQuery.Data.A.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
+            is TestQuery.Data.A.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
           }
         }
       }
@@ -113,7 +112,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.A.ANodeNode {
           var __typename: String? = typename
@@ -122,9 +121,9 @@ public object TestQuery_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _field1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _field2 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -138,17 +137,17 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.A.ANodeNode,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("field1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.field1)
 
           writer.name("field2")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.field2)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.field2)
         }
       }
 
@@ -157,14 +156,14 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.A.OtherNode {
           var __typename: String? = typename
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -176,11 +175,11 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.A.OtherNode,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         }
       }
     }

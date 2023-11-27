@@ -5,8 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -18,17 +17,17 @@ import kotlin.String
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
-  public object IFragment :
-      CompositeAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
+  public object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment>
+      {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
       var __typename: String? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -38,10 +37,10 @@ public object IFragmentImpl_ResponseAdapter {
       }
 
       var _onA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA? = null
-      if (possibleTypes("A").evaluate(adapterContext.falseVariables, __typename, adapterContext.deferredFragmentIdentifiers, null)) {
+      if (possibleTypes("A").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
         _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader,
-            adapterContext)
+            customScalarAdapters)
       }
 
       return com.example.fragment_with_multiple_fieldsets.fragment.IFragment(
@@ -52,29 +51,29 @@ public object IFragmentImpl_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("__typename")
-      StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onA != null) {
         com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.toJson(writer,
-            value.onA, adapterContext)
+            customScalarAdapters, value.onA)
       }
     }
 
     private object OnA :
-        CompositeAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
+        Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
       public val RESPONSE_NAMES: List<String> = listOf("fieldA")
 
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
         var _fieldA: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _fieldA = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+            0 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -86,11 +85,11 @@ public object IFragmentImpl_ResponseAdapter {
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA,
-        adapterContext: CompositeAdapterContext,
       ) {
         writer.name("fieldA")
-        NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.fieldA)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA)
       }
     }
   }

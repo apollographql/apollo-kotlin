@@ -3,8 +3,7 @@
  */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -18,7 +17,6 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
-import com.apollographql.apollo3.compiler.ir.isComposite
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -35,7 +33,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.CompositeAdapter, adaptedTypeName))
+      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
       .apply {
@@ -51,7 +49,7 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonReader, reader)
-    .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
+    .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -66,8 +64,8 @@ private fun List<NamedType>.writeToResponseMethodSpec(
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
+      .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
       .addParameter(adaptedTypeName, value)
-      .addParameter(JavaClassNames.CompositeAdapterContext, adapterContext)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -89,11 +87,8 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  if (!type.rawType().isComposite()) {
-    builder.addStatement("$L.$toJson($writer, $T.$Empty, $value.$propertyName)", adapterInitializer, JavaClassNames.CustomScalarAdapters)
-  } else {
-    builder.addStatement("$L.$toJson($writer, $value.$propertyName, $adapterContext)", adapterInitializer)
-  }
+  builder.addStatement("$L.$toJson($writer, $customScalarAdapters, $value.$propertyName)", adapterInitializer)
+
   if (type.optional) {
     builder.endControlFlow()
   }

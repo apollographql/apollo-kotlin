@@ -5,8 +5,7 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.adapter
 
-import com.apollographql.apollo3.api.CompositeAdapter
-import com.apollographql.apollo3.api.CompositeAdapterContext
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
@@ -22,16 +21,16 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : CompositeAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, adapterContext)
+          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,33 +42,33 @@ public object TestQuery_ResponseAdapter {
 
     override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      adapterContext: CompositeAdapterContext,
     ) {
       writer.name("iface1")
-      Iface1.obj().nullable().toJson(writer, value.iface1, adapterContext)
+      Iface1.obj().nullable().toJson(writer, customScalarAdapters, value.iface1)
     }
 
-    private object Iface1 : CompositeAdapter<TestQuery.Data.Iface1> {
-      override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+    private object Iface1 : Adapter<TestQuery.Data.Iface1> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Iface1 {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Impl1",
-          -> Impl1Iface1.fromJson(reader, adapterContext, __typename)
+          -> Impl1Iface1.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherIface1.fromJson(reader, adapterContext, __typename)
+          -> OtherIface1.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Iface1,
-        adapterContext: CompositeAdapterContext,
       ) {
         when(value) {
-          is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, value, adapterContext)
-          is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, value, adapterContext)
+          is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, customScalarAdapters, value)
+          is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -79,7 +78,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.Impl1Iface1 {
         var __typename: String? = typename
@@ -87,8 +86,8 @@ public object TestQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, adapterContext)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -101,38 +100,38 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Impl1Iface1,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, value.iface2, adapterContext)
+        Iface2.obj().nullable().toJson(writer, customScalarAdapters, value.iface2)
       }
 
-      private object Iface2 : CompositeAdapter<TestQuery.Data.Impl1Iface1.Iface2> {
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      private object Iface2 : Adapter<TestQuery.Data.Impl1Iface1.Iface2> {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Impl1Iface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
-            -> Impl2Iface2.fromJson(reader, adapterContext, __typename)
+            -> Impl2Iface2.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherIface2.fromJson(reader, adapterContext, __typename)
+            -> OtherIface2.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.Iface2,
-          adapterContext: CompositeAdapterContext,
         ) {
           when(value) {
-            is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value,
-                adapterContext)
-            is TestQuery.Data.Impl1Iface1.OtherIface2 -> OtherIface2.toJson(writer, value,
-                adapterContext)
+            is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer,
+                customScalarAdapters, value)
+            is TestQuery.Data.Impl1Iface1.OtherIface2 -> OtherIface2.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -143,7 +142,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.Impl1Iface1.Impl2Iface2 {
           var __typename: String? = typename
@@ -154,11 +153,11 @@ public object TestQuery_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              3 -> _scalar3 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              4 -> _scalar4 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              4 -> _scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -174,23 +173,23 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.Impl2Iface2,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("scalar1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
 
           writer.name("scalar2")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar2)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
 
           writer.name("scalar3")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar3)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
 
           writer.name("scalar4")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar4)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4)
         }
       }
 
@@ -199,7 +198,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.Impl1Iface1.OtherIface2 {
           var __typename: String? = typename
@@ -208,9 +207,9 @@ public object TestQuery_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _scalar3 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -224,17 +223,17 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.OtherIface2,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("scalar1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
 
           writer.name("scalar3")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar3)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
         }
       }
     }
@@ -244,7 +243,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherIface1 {
         var __typename: String? = typename
@@ -252,8 +251,8 @@ public object TestQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, adapterContext)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -266,38 +265,38 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
+        @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.OtherIface1,
-        @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
       ) {
         writer.name("__typename")
-        StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, value.iface2, adapterContext)
+        Iface2.obj().nullable().toJson(writer, customScalarAdapters, value.iface2)
       }
 
-      private object Iface2 : CompositeAdapter<TestQuery.Data.OtherIface1.Iface2> {
-        override fun fromJson(reader: JsonReader, adapterContext: CompositeAdapterContext):
+      private object Iface2 : Adapter<TestQuery.Data.OtherIface1.Iface2> {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.OtherIface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
-            -> Impl2Iface2.fromJson(reader, adapterContext, __typename)
+            -> Impl2Iface2.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherIface2.fromJson(reader, adapterContext, __typename)
+            -> OtherIface2.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
         override fun toJson(
           writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.Iface2,
-          adapterContext: CompositeAdapterContext,
         ) {
           when(value) {
-            is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value,
-                adapterContext)
-            is TestQuery.Data.OtherIface1.OtherIface2 -> OtherIface2.toJson(writer, value,
-                adapterContext)
+            is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer,
+                customScalarAdapters, value)
+            is TestQuery.Data.OtherIface1.OtherIface2 -> OtherIface2.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -307,7 +306,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.OtherIface1.Impl2Iface2 {
           var __typename: String? = typename
@@ -316,9 +315,9 @@ public object TestQuery_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -332,17 +331,17 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.Impl2Iface2,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("scalar1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
 
           writer.name("scalar2")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar2)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
         }
       }
 
@@ -351,7 +350,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.OtherIface1.OtherIface2 {
           var __typename: String? = typename
@@ -359,8 +358,8 @@ public object TestQuery_ResponseAdapter {
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
-              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, CustomScalarAdapters.Empty)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -373,14 +372,14 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
+          @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.OtherIface2,
-          @Suppress("UNUSED_PARAMETER") adapterContext: CompositeAdapterContext,
         ) {
           writer.name("__typename")
-          StringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           writer.name("scalar1")
-          NullableStringAdapter.toJson(writer, CustomScalarAdapters.Empty, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
         }
       }
     }

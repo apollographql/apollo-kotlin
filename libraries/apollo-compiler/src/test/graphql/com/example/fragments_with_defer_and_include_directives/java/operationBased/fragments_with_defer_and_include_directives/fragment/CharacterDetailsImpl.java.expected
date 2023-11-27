@@ -5,11 +5,11 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompositeAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectCompositeAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetailsSelections;
 import com.example.fragments_with_defer_and_include_directives.type.Droid;
@@ -66,8 +66,8 @@ public class CharacterDetailsImpl implements Fragment<CharacterDetails> {
   }
 
   @Override
-  public CompositeAdapter<CharacterDetails> adapter() {
-    return new ObjectCompositeAdapter<CharacterDetails>(CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE, false);
+  public Adapter<CharacterDetails> adapter() {
+    return new ObjectAdapter<CharacterDetails>(CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE, false);
   }
 
   @Override

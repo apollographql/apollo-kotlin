@@ -52,7 +52,7 @@ internal fun adapterFunSpec(
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.CompositeAdapter.parameterizedBy(context.resolver.resolveIrType(type, context.jsExport)))
+      .returns(KotlinSymbols.Adapter.parameterizedBy(context.resolver.resolveIrType(type, context.jsExport)))
       .addCode(
           CodeBlock.of(
               "return·%L",

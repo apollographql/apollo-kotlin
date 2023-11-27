@@ -2,11 +2,10 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -34,7 +33,6 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
-import com.apollographql.apollo3.compiler.ir.isComposite
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -107,22 +105,13 @@ internal fun readFromResponseCodeBlock(
             regularProperties.mapIndexed { index, property ->
               val variableName = context.layout.variableName(property.info.responseName)
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
-              if (!property.info.type.rawType().isComposite()) {
-                CodeBlock.of(
-                    "case $L: $L = $L.$fromJson($reader, $T.$Empty); break;",
-                    index,
-                    variableName,
-                    adapterInitializer,
-                    JavaClassNames.CustomScalarAdapters,
-                )
-              } else {
-                CodeBlock.of(
-                    "case $L: $L = $L.$fromJson($reader, $adapterContext); break;",
-                    index,
-                    variableName,
-                    adapterInitializer
-                )
-              }
+
+              CodeBlock.of(
+                  "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
+                  index,
+                  variableName,
+                  adapterInitializer,
+              )
             }.joinToCode(separator = "\n", suffix = "\n")
         )
         .addStatement("default: break loop")
@@ -157,7 +146,7 @@ internal fun readFromResponseCodeBlock(
 
   val syntheticLoop = syntheticProperties.map { property ->
     val fromJsonCall = CodeBlock.of(
-        "$L.INSTANCE.$fromJson($reader, $adapterContext)",
+        "$L.INSTANCE.$fromJson($reader, $customScalarAdapters)",
         context.resolver.resolveModelAdapter(property.info.type.modelPath())
     )
     val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
@@ -176,7 +165,7 @@ internal fun readFromResponseCodeBlock(
               "null"
             }
             beginControlFlow(
-                "if ($T.$evaluate($L, $adapterContext.falseVariables, $__typename, $adapterContext.deferredFragmentIdentifiers, $pathLiteral))",
+                "if ($T.$evaluate($L, $customScalarAdapters.falseVariables, $__typename, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
@@ -265,18 +254,10 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name($S)", info.responseName)
-    if (!info.type.rawType().isComposite()) {
-      builder.addStatement(
-          "$L.$toJson($writer, $T.$Empty, $value.$propertyName)",
-          adapterInitializer,
-          JavaClassNames.CustomScalarAdapters,
-      )
-    } else {
-      builder.addStatement(
-          "$L.$toJson($writer, $value.$propertyName, $adapterContext)",
-          adapterInitializer,
-      )
-    }
+    builder.addStatement(
+        "$L.$toJson($writer, $customScalarAdapters, $value.$propertyName)",
+        adapterInitializer,
+    )
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
 
@@ -291,7 +272,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     }
     val fieldValue = CodeBlock.of("$value.$propertyName")
     builder.addStatement(
-        "$L.INSTANCE.$toJson($writer, $L, $adapterContext)",
+        "$L.INSTANCE.$toJson($writer, $customScalarAdapters, $L)",
         adapterInitializer,
         context.unwrapOptionalValue(fieldValue, resolvedType)
     )
@@ -313,7 +294,7 @@ internal fun List<String>.toClassName() = ClassName.get(
 fun singletonAdapterInitializer(wrappedTypeName: TypeName, adaptedTypeName: TypeName, buffered: Boolean = false): CodeBlock {
   return CodeBlock.of(
       "new $T($T.INSTANCE, $L)",
-      ParameterizedTypeName.get(JavaClassNames.ObjectCompositeAdapter, adaptedTypeName),
+      ParameterizedTypeName.get(JavaClassNames.ObjectAdapter, adaptedTypeName),
       wrappedTypeName,
       if (buffered) "true" else "false"
   )

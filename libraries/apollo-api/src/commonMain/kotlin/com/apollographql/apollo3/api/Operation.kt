@@ -29,7 +29,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   @JsName("operationId")
   fun id(): String
 
-  override fun adapter(): CompositeAdapter<D>
+  override fun adapter(): Adapter<D>
 
   @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withDefaultValues: Boolean)
