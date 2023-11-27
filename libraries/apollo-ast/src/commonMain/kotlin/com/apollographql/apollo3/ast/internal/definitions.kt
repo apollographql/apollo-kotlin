@@ -305,7 +305,7 @@ By default, the first GraphQL error throws and fails the whole response.
 starting at 0 if there is no list.
 If level is null, the modifier is applied to all levels
 ""${'"'}
-directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD
+directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD | SCHEMA
 
 enum CatchTo {
     NULL,
