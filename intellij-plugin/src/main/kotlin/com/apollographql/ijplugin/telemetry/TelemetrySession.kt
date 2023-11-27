@@ -290,9 +290,14 @@ sealed class TelemetryEvent(
   class ApolloIjMigrateToApollo4 : TelemetryEvent("akij_migrate_to_apollo4", null)
 
   /**
-   * User opened a normalized cache file in the Normalized cache viewer.
+   * User opened a normalized cache local file in the Normalized cache viewer.
    */
-  class ApolloIjNormalizedCacheOpenFile : TelemetryEvent("akij_normalized_cache_open_file", null)
+  class ApolloIjNormalizedCacheOpenLocalFile : TelemetryEvent("akij_normalized_cache_open_file", null)
+
+  /**
+   * User opened a normalized cache file pulled from a device in the Normalized cache viewer.
+   */
+  class ApolloIjNormalizedCacheOpenDeviceFile : TelemetryEvent("akij_normalized_cache_open_device_file", null)
 
   /**
    * User opened a normalized cache pulled from an app using Apollo Debug in the Normalized cache viewer.

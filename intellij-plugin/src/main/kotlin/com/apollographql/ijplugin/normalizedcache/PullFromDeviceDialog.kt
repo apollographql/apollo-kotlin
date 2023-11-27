@@ -34,7 +34,6 @@ import com.intellij.util.ui.tree.TreeUtil
 import icons.StudioIcons
 import kotlinx.coroutines.runBlocking
 import java.awt.event.InputEvent
-import java.io.File
 import javax.swing.event.TreeExpansionEvent
 import javax.swing.event.TreeExpansionListener
 import javax.swing.tree.DefaultMutableTreeNode
@@ -43,9 +42,7 @@ import javax.swing.tree.TreeSelectionModel
 
 class PullFromDeviceDialog(
     private val project: Project,
-    private val onFilePullSuccess: (File) -> Unit,
-    private val onApolloDebugCacheSelected: (apolloDebugClient: ApolloDebugClient, apolloClientId: String, normalizedCacheId: String) -> Unit,
-    private val onPullError: (Throwable) -> Unit,
+    private val onSourceSelected: (normalizedCacheSource: NormalizedCacheSource) -> Unit,
 ) : DialogWrapper(project, true), Disposable {
   private lateinit var tree: SimpleTree
   private lateinit var model: StructureTreeModel<PullFromDeviceTreeStructure>
@@ -118,21 +115,26 @@ class PullFromDeviceDialog(
   override fun doOKAction() {
     when (val selectedNode = tree.selectionPath?.lastPathComponent.cast<DefaultMutableTreeNode>()?.userObject) {
       is DatabaseNode -> {
-        pullFileAsync(
-            project = project,
-            device = selectedNode.device,
-            packageName = selectedNode.packageName,
-            remoteDirName = selectedNode.databasesDir,
-            remoteFileName = selectedNode.databaseFileName,
-            onFilePullSuccess = onFilePullSuccess,
-            onFilePullError = onPullError,
+        onSourceSelected(
+            NormalizedCacheSource.DeviceFile(
+                device = selectedNode.device,
+                packageName = selectedNode.packageName,
+                remoteDirName = selectedNode.databasesDir,
+                remoteFileName = selectedNode.databaseFileName,
+            )
         )
       }
 
       is ApolloDebugNormalizedCacheNode -> {
         // Don't close the apolloClient, it will be closed later by the caller
         apolloDebugClientsToClose.remove(selectedNode.apolloDebugClient)
-        onApolloDebugCacheSelected(selectedNode.apolloDebugClient, selectedNode.apolloClient.id, selectedNode.normalizedCache.id)
+        onSourceSelected(
+            NormalizedCacheSource.ApolloDebugServer(
+                apolloDebugClient = selectedNode.apolloDebugClient,
+                apolloClientId = selectedNode.apolloClient.id,
+                normalizedCacheId = selectedNode.normalizedCache.id
+            )
+        )
       }
     }
     super.doOKAction()
