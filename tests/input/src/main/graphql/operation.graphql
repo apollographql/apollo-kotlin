@@ -1,7 +1,13 @@
-query GetUser($input: UserInput!) {
-  user(input: $input)
+query CreateUser($input: UserInput!) {
+  createUser(input: $input)
 }
 
-query GetUser2($input: UserInput) {
-  user(input: $input)
+query CreateUser2($input: UserInput) {
+  createUser(input: $input)
+}
+
+query FindUser($input: FindUserInput) {
+  findUser(input: $input) {
+    id
+  }
 }

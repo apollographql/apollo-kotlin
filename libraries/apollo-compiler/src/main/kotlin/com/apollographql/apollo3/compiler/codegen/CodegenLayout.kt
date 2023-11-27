@@ -19,7 +19,7 @@ import com.apollographql.apollo3.compiler.singularize
 internal abstract class CodegenLayout(
     allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
-    private val schemaPackageName: String,
+    protected val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
 ) {

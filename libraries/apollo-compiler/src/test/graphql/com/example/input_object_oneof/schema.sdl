@@ -1,0 +1,26 @@
+directive @oneOf on INPUT_OBJECT
+
+input FindUserInput @oneOf {
+  email: String
+  name: String
+  identity: FindUserBySocialNetworkInput
+  friends: FindUserByFriendInput
+}
+
+input FindUserBySocialNetworkInput @oneOf {
+  facebookId: String
+  googleId: String
+}
+
+input FindUserByFriendInput {
+  socialNetworkId: ID!
+  friendId: ID!
+}
+
+type User {
+  id: ID!
+}
+
+type Query {
+  findUser(findUserInput: FindUserInput!): User
+}

@@ -130,6 +130,8 @@ public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
 }
 
 public final class com/apollographql/apollo3/api/Assertions {
+	public static final fun assertOneOf ([Lcom/apollographql/apollo3/api/Optional;)V
+	public static final fun assertOneOf ([Ljava/util/Optional;)V
 	public static final fun checkFieldNotMissing (Ljava/lang/Object;Ljava/lang/String;)V
 }
 

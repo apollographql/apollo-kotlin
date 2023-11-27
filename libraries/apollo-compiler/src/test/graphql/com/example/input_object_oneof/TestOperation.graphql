@@ -1,0 +1,5 @@
+query FindUserQuery($findUserInput: FindUserInput!) {
+  findUser(findUserInput: $findUserInput) {
+    id
+  }
+}

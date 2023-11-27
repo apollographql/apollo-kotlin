@@ -8,11 +8,11 @@ import com.apollographql.apollo3.api.json.MapJsonWriter;
 import com.google.common.base.Optional;
 import okio.Buffer;
 import optionals.guava.MyQuery;
+import optionals.guava.type.FindUserInput;
 import optionals.guava.type.MyInput;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.Map;
 
 import static test.MapUtils.entry;
@@ -241,6 +241,107 @@ public class GuavaOptionalsTest {
     );
   }
 
+  @Test
+  public void oneOfWithConstructor() {
+    FindUserInput findUserInput = new FindUserInput(
+        /* email = */ Optional.of(Optional.of("test@example.com")),
+        /* name = */ Optional.absent(),
+        /* identity = */ Optional.absent(),
+        /* friends = */ Optional.absent()
+    );
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.of("test@example.com")),
+          /* name = */ Optional.of(Optional.of("Test User")),
+          /* identity = */ Optional.absent(),
+          /* friends = */ Optional.absent()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.absent(),
+          /* name = */ Optional.absent(),
+          /* identity = */ Optional.absent(),
+          /* friends = */ Optional.absent()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 0)", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.absent()),
+          /* name = */ Optional.absent(),
+          /* identity = */ Optional.absent(),
+          /* friends = */ Optional.absent()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("The value set on @oneOf input field must be non-null", e.getMessage());
+    }
+
+    try {
+      new FindUserInput(
+          /* email = */ Optional.of(Optional.absent()),
+          /* name = */ Optional.of(Optional.of("Test User")),
+          /* identity = */ Optional.absent(),
+          /* friends = */ Optional.absent()
+      );
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+  }
+
+  @Test
+  public void oneOfWithBuilder() {
+    FindUserInput.builder()
+        .email(Optional.of("test@example.com"))
+        .build();
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.of("test@example.com"))
+          .name(Optional.of("Test User"))
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 0)", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.absent())
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("The value set on @oneOf input field must be non-null", e.getMessage());
+    }
+
+    try {
+      FindUserInput.builder()
+          .email(Optional.absent())
+          .name(Optional.of("Test User"))
+          .build();
+      Assert.fail();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals("@oneOf input must have one field set (got 2)", e.getMessage());
+    }
+  }
 
   private static MyInput myInputPresent() {
     return new MyInput(

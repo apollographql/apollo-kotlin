@@ -26,4 +26,6 @@ internal class JavaCodegenLayout(
   internal fun enumValueName(name: String) = name.escapeTypeReservedWord() ?: regularIdentifier(name)
 
   fun builderPackageName(): String = "${typePackageName()}.builder"
+
+  fun utilPackageName() = "$schemaPackageName.util"
 }
