@@ -20,8 +20,8 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.UnknownDirective
 import com.apollographql.apollo3.ast.UnusedFragment
 import com.apollographql.apollo3.ast.UnusedVariable
-import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.checkEmpty
+import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toGQLDocument
@@ -563,7 +563,7 @@ internal fun List<Issue>.group(
   val ignored = mutableListOf<Issue>()
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
-  val apolloDirectives = apolloDefinitions("v0.1").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
+  val apolloDirectives = kotlinLabsDefinitions("v0.2").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
 
   forEach {
     val severity = when (it) {

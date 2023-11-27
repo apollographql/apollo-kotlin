@@ -3,8 +3,7 @@ package com.apollographql.apollo3.ast
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.ExtensionsMerger
-import com.apollographql.apollo3.ast.internal.apollo_v0_1_definitionsStr
-import com.apollographql.apollo3.ast.internal.apollo_v0_2_definitionsStr
+import com.apollographql.apollo3.ast.internal.apolloDefinitionsStr
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo3.ast.internal.ensureSchemaDefinition
 import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
@@ -79,18 +78,13 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
-@Deprecated("Use apolloDefinitions(version) instead", ReplaceWith("apolloDefinitions(\"v0.1\")"))
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
-fun apolloDefinitions() = definitionsFromString(apollo_v0_1_definitionsStr)
-
 /**
  * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
-fun apolloDefinitions(version: String): List<GQLDefinition> {
+fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    "v0.1" -> apollo_v0_1_definitionsStr
-    "v0.2" -> apollo_v0_2_definitionsStr
-    else -> error("Apollo definitions $version are not supported")
+    "v0.2" -> apolloDefinitionsStr
+    else -> error("kotlin_labs/$version definitions are not supported, please use v0.2")
   })
 }
 
