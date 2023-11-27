@@ -493,7 +493,13 @@ internal class IrOperationsBuilder(
   }
 
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
-    val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
+    val defaultCatch = if (schema.directiveDefinitions.any {
+      schema.originalDirectiveName(it.key) == Schema.CATCH
+    }) {
+      Catch(to = CatchTo.THROW, null)
+    } else {
+      Catch(to = CatchTo.NO_CATCH, null)
+    }
 
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
@@ -623,7 +629,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catchs, defaultCatch ?: Catch(CatchTo.NO_CATCH, null), 0)
+          .catch(first.catchs, defaultCatch, 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons

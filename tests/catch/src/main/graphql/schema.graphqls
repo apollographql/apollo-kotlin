@@ -1,9 +1,7 @@
-#extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1")
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@nullOnlyOnError", "@catch"])
 
-extend schema @catch(to: THROW)
-
-directive @nullOnlyOnError(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
-directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) on FIELD | SCHEMA | QUERY | MUTATION | SUBSCRIPTION
+#directive @nullOnlyOnError(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+#directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) on FIELD
 
 enum CatchTo {
   NULL,

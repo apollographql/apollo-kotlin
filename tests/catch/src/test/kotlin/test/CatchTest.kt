@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.errorOrNull
 import com.apollographql.apollo3.api.json.JsonReader
@@ -19,49 +18,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
-
-@Language("json")
-val userNameError = """
-    {
-      "errors": [
-        {
-          "path": ["user", "name"], 
-          "message": "cannot resolve name"
-        }
-      ],
-      "data": {
-        "user": {
-          "name": null
-        }
-      }
-    }
-  """.trimIndent()
-
-@Language("json")
-val userSuccess = """
-    {
-      "data": {
-        "user": {
-          "name": "Pancakes"
-        }
-      }
-    }
-  """.trimIndent()
-
-@Language("json")
-val nooeError = """
-    {
-      "errors": [
-        {
-          "path": ["nullOnlyOnError"], 
-          "message": "cannot resolve nullOnlyOnError"
-        }
-      ],
-      "data": {
-        "nullOnlyOnError": null
-      }
-    }
-  """.trimIndent()
 
 class CatchTest {
   @Test
@@ -110,3 +66,31 @@ class CatchTest {
 private fun String.jsonReader(): JsonReader = Buffer().writeUtf8(this).jsonReader()
 
 fun <D: Query.Data> Query<D>.parseResponse(json: String): ApolloResponse<D> = parseResponse(json.jsonReader(), null, CustomScalarAdapters.Empty, null)
+
+@Language("json")
+val userNameError = """
+    {
+      "errors": [
+        {
+          "path": ["user", "name"], 
+          "message": "cannot resolve name"
+        }
+      ],
+      "data": {
+        "user": {
+          "name": null
+        }
+      }
+    }
+  """.trimIndent()
+
+@Language("json")
+val userSuccess = """
+    {
+      "data": {
+        "user": {
+          "name": "Pancakes"
+        }
+      }
+    }
+  """.trimIndent()

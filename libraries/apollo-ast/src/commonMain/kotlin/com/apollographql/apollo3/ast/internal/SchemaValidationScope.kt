@@ -62,19 +62,19 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = kotlinLabsDefinitions("v0.2")
+  val kotlinLabsDefinitions = kotlinLabsDefinitions("v0.2")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
      * Strip all the apollo directives from outgoing operation documents.
      * This will also strip schema directives like @typePolicy that should never appear in executable documents
      */
-    directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
+    directivesToStrip = directivesToStrip + kotlinLabsDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
 
     /**
      * Put apolloDefinitions first so that they override the user one in the case of a conflict
      */
-    foreignDefinitions = apolloDefinitions + foreignDefinitions
+    foreignDefinitions = kotlinLabsDefinitions + foreignDefinitions
   }
   allDefinitions = foreignDefinitions + allDefinitions
 
