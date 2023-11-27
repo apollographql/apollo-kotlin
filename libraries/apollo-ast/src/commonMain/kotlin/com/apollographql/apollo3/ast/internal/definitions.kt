@@ -267,7 +267,7 @@ This directive can be applied on field definitions:
 
 ```graphql
 type User {
-    email @nullOnlyOnError
+    email: String @nullOnlyOnError
 }
 ```
 
