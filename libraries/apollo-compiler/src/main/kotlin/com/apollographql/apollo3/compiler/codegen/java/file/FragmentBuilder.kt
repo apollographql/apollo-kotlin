@@ -74,6 +74,7 @@ internal class FragmentBuilder(
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec(context.resolver, fragment.dataProperty))
         .addMethod(selectionsMethodSpec())
+        .addMethod(ignoreErrorsFunSpec(false))
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
         .build()

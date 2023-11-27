@@ -79,4 +79,9 @@ public class CharacterAppearsInImpl implements Fragment<CharacterAppearsIn> {
     .selections(characterAppearsInSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

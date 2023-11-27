@@ -26,6 +26,8 @@ import kotlin.String
 import kotlin.Unit
 
 public class CatFragmentImpl() : Fragment<CatFragmentImpl.Data> {
+  override val ignoreErrors: Boolean = false
+
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

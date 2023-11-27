@@ -402,7 +402,6 @@ public final class com/apollographql/apollo3/compiler/ir/IrCatchTo : java/lang/E
 	public static final field NoCatch Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;
 	public static final field Null Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;
 	public static final field Result Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;
-	public static final field Throw Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/ir/IrCatchTo;

@@ -79,4 +79,9 @@ public class DroidFragmentImpl implements Fragment<DroidFragment> {
     .selections(droidFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }
