@@ -1,299 +1,299 @@
 type Query {
-  _: Int
-  albums(options: PageQueryOptions): AlbumsPage
-  album(id: ID!): Album
-  comments(options: PageQueryOptions): CommentsPage
-  comment(id: ID!): Comment
-  photos(options: PageQueryOptions): PhotosPage
-  photo(id: ID!): Photo
-  posts(options: PageQueryOptions): PostsPage
-  post(id: ID!): Post
-  todos(options: PageQueryOptions): TodosPage
-  todo(id: ID!): Todo
-  users(options: PageQueryOptions): UsersPage
-  user(id: ID!): User
+    _: Int
+    albums(options: PageQueryOptions): AlbumsPage
+    album(id: ID!): Album
+    comments(options: PageQueryOptions): CommentsPage
+    comment(id: ID!): Comment
+    photos(options: PageQueryOptions): PhotosPage
+    photo(id: ID!): Photo
+    postspagearealmostlongenoughtobecomicals(options: PageQueryOptions): PostsPageAreAlmostLongEnoughToBeComical
+    postisthemaintypebutweneedtomakethenamemuchlarger(id: ID!): PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger
+    todos(options: PageQueryOptions): TodosPage
+    todo(id: ID!): Todo
+    users(options: PageQueryOptions): UsersPage
+    user(id: ID!): ThisIsAUserButWeCallItSomethingMuchLarger
 }
 
 type Mutation {
-  _: Int
-  createAlbum(input: CreateAlbumInput!): Album
-  updateAlbum(id: ID!, input: UpdateAlbumInput!): Album
-  deleteAlbum(id: ID!): Boolean
-  createComment(input: CreateCommentInput!): Comment
-  updateComment(id: ID!, input: UpdateCommentInput!): Comment
-  deleteComment(id: ID!): Boolean
-  createPhoto(input: CreatePhotoInput!): Photo
-  updatePhoto(id: ID!, input: UpdatePhotoInput!): Photo
-  deletePhoto(id: ID!): Boolean
-  createPost(input: CreatePostInput!): Post
-  updatePost(id: ID!, input: UpdatePostInput!): Post
-  deletePost(id: ID!): Boolean
-  createTodo(input: CreateTodoInput!): Todo
-  updateTodo(id: ID!, input: UpdateTodoInput!): Todo
-  deleteTodo(id: ID!): Boolean
-  createUser(input: CreateUserInput!): User
-  updateUser(id: ID!, input: UpdateUserInput!): User
-  deleteUser(id: ID!): Boolean
+    _: Int
+    createAlbum(input: CreateAlbumInput!): Album
+    updateAlbum(id: ID!, input: UpdateAlbumInput!): Album
+    deleteAlbum(id: ID!): Boolean
+    createComment(input: CreateCommentInput!): Comment
+    updateComment(id: ID!, input: UpdateCommentInput!): Comment
+    deleteComment(id: ID!): Boolean
+    createPhoto(input: CreatePhotoInput!): Photo
+    updatePhoto(id: ID!, input: UpdatePhotoInput!): Photo
+    deletePhoto(id: ID!): Boolean
+    createPost(input: CreatePostInput!): PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger
+    updatePost(id: ID!, input: UpdatePostInput!): PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger
+    deletePost(id: ID!): Boolean
+    createTodo(input: CreateTodoInput!): Todo
+    updateTodo(id: ID!, input: UpdateTodoInput!): Todo
+    deleteTodo(id: ID!): Boolean
+    createUser(input: CreateUserInput!): ThisIsAUserButWeCallItSomethingMuchLarger
+    updateUser(id: ID!, input: UpdateUserInput!): ThisIsAUserButWeCallItSomethingMuchLarger
+    deleteUser(id: ID!): Boolean
 }
 
 type Album {
-  id: ID
-  title: String
-  user: User
-  photos(options: PageQueryOptions): PhotosPage
+    id: ID
+    title: String
+    user: ThisIsAUserButWeCallItSomethingMuchLarger
+    photos(options: PageQueryOptions): PhotosPage
 }
 
 input CreateAlbumInput {
-  title: String!
-  userId: ID!
+    title: String!
+    userId: ID!
 }
 
 input UpdateAlbumInput {
-  title: String
-  userId: ID
+    title: String
+    userId: ID
 }
 
 type Comment {
-  id: ID
-  name: String
-  email: String
-  body: String
-  post: Post
+    id: ID
+    name: String
+    email: String
+    body: String
+    post: PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger
 }
 
 input CreateCommentInput {
-  name: String!
-  email: String!
-  body: String!
+    name: String!
+    email: String!
+    body: String!
 }
 
 input UpdateCommentInput {
-  name: String
-  email: String
-  body: String
+    name: String
+    email: String
+    body: String
 }
 
 input PageQueryOptions {
-  paginate: PaginateOptions
-  slice: SliceOptions
-  sort: [SortOptions]
-  operators: [OperatorOptions]
-  search: SearchOptions
+    paginate: PaginateOptions
+    slice: SliceOptions
+    sort: [SortOptions]
+    operators: [OperatorOptions]
+    search: SearchOptions
 }
 
 input PaginateOptions {
-  page: Int
-  limit: Int
+    page: Int
+    limit: Int
 }
 
 input SliceOptions {
-  start: Int
-  end: Int
-  limit: Int
+    start: Int
+    end: Int
+    limit: Int
 }
 
 input SortOptions {
-  field: String
-  order: SortOrderEnum
+    field: String
+    order: SortOrderEnum
 }
 
 enum SortOrderEnum {
-  ASC
-  DESC
+    ASC
+    DESC
 }
 
 input OperatorOptions {
-  kind: OperatorKindEnum
-  field: String
-  value: String
+    kind: OperatorKindEnum
+    field: String
+    value: String
 }
 
 enum OperatorKindEnum {
-  GTE
-  LTE
-  NE
-  LIKE
+    GTE
+    LTE
+    NE
+    LIKE
 }
 
 input SearchOptions {
-  q: String
+    q: String
 }
 
-type PostsPage {
-  data: [Post]
-  links: PaginationLinks
-  meta: PageMetadata
+type PostsPageAreAlmostLongEnoughToBeComical {
+    postisthemaintypebutweneedtomakethenamemuchlargerdata: [PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger]
+    paginationlinksbecauseiwantittobetoolonglinks: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
 type CommentsPage {
-  data: [Comment]
-  links: PaginationLinks
-  meta: PageMetadata
+    data: [Comment]
+    links: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
 type AlbumsPage {
-  data: [Album]
-  links: PaginationLinks
-  meta: PageMetadata
+    data: [Album]
+    links: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
 type PhotosPage {
-  data: [Photo]
-  links: PaginationLinks
-  meta: PageMetadata
+    data: [Photo]
+    links: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
 type TodosPage {
-  data: [Todo]
-  links: PaginationLinks
-  meta: PageMetadata
+    data: [Todo]
+    links: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
 type UsersPage {
-  data: [User]
-  links: PaginationLinks
-  meta: PageMetadata
+    data: [ThisIsAUserButWeCallItSomethingMuchLarger]
+    links: PaginationLinksBecauseIWantItToBeTooLong
+    meta: PageMetadata
 }
 
-type PaginationLinks {
-  first: PageLimitPair
-  prev: PageLimitPair
-  next: PageLimitPair
-  last: PageLimitPair
+type PaginationLinksBecauseIWantItToBeTooLong {
+    first: PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell
+    prev: PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell
+    next: PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell
+    pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast: PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell
 }
 
-type PageLimitPair {
-  page: Int
-  limit: Int
+type PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell {
+    page: Int
+    limit: Int
 }
 
 type PageMetadata {
-  totalCount: Int
+    totalCount: Int
 }
 
 type Photo {
-  id: ID
-  title: String
-  url: String
-  thumbnailUrl: String
-  album: Album
+    id: ID
+    title: String
+    url: String
+    thumbnailUrl: String
+    album: Album
 }
 
 input CreatePhotoInput {
-  title: String!
-  url: String!
-  thumbnailUrl: String!
+    title: String!
+    url: String!
+    thumbnailUrl: String!
 }
 
 input UpdatePhotoInput {
-  title: String
-  url: String
-  thumbnailUrl: String
+    title: String
+    url: String
+    thumbnailUrl: String
 }
 
-type Post {
-  id: ID
-  title: String
-  body: String
-  user: User
-  comments(options: PageQueryOptions): CommentsPage
+type PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger {
+    id: ID
+    title: String
+    body: String
+    thisisauserbutwecallitsomethingmuchlarger: ThisIsAUserButWeCallItSomethingMuchLarger
+    comments(options: PageQueryOptions): CommentsPage
 }
 
 input CreatePostInput {
-  title: String!
-  body: String!
+    title: String!
+    body: String!
 }
 
 input UpdatePostInput {
-  title: String
-  body: String
+    title: String
+    body: String
 }
 
 type Todo {
-  id: ID
-  title: String
-  completed: Boolean
-  user: User
+    id: ID
+    title: String
+    completed: Boolean
+    user: ThisIsAUserButWeCallItSomethingMuchLarger
 }
 
 input CreateTodoInput {
-  title: String!
-  completed: Boolean!
+    title: String!
+    completed: Boolean!
 }
 
 input UpdateTodoInput {
-  title: String
-  completed: Boolean
+    title: String
+    completed: Boolean
 }
 
-type User {
-  id: ID
-  name: String
-  username: String
-  email: String
-  address: Address
-  phone: String
-  website: String
-  company: Company
-  posts(options: PageQueryOptions): PostsPage
-  albums(options: PageQueryOptions): AlbumsPage
-  todos(options: PageQueryOptions): TodosPage
+type ThisIsAUserButWeCallItSomethingMuchLarger {
+    id: ID
+    name: String
+    username: String
+    email: String
+    whereintheworldiscarmensandiegoaddress: WhereInTheWorldIsCarmenSanDiegoAddress
+    phone: String
+    website: String
+    company: Company
+    posts(options: PageQueryOptions): PostsPageAreAlmostLongEnoughToBeComical
+    albums(options: PageQueryOptions): AlbumsPage
+    todos(options: PageQueryOptions): TodosPage
 }
 
-type Address {
-  street: String
-  suite: String
-  city: String
-  zipcode: String
-  geo: Geo
+type WhereInTheWorldIsCarmenSanDiegoAddress {
+    street: String
+    suite: String
+    city: String
+    zipcode: String
+    geoisnotagembutageographiclocationinthiscase: GeoIsNotAGemButAGeographicLocationInThisCase
 }
 
-type Geo {
-  lat: Float
-  lng: Float
+type GeoIsNotAGemButAGeographicLocationInThisCase {
+    lat: Float
+    lng: Float
 }
 
 type Company {
-  name: String
-  catchPhrase: String
-  bs: String
+    name: String
+    catchPhrase: String
+    bs: String
 }
 
 input CreateUserInput {
-  name: String!
-  username: String!
-  email: String!
-  address: AddressInput
-  phone: String
-  website: String
-  company: CompanyInput
+    name: String!
+    username: String!
+    email: String!
+    address: AddressInput
+    phone: String
+    website: String
+    company: CompanyInput
 }
 
 input UpdateUserInput {
-  name: String
-  username: String
-  email: String
-  address: AddressInput
-  phone: String
-  website: String
-  company: CompanyInput
+    name: String
+    username: String
+    email: String
+    address: AddressInput
+    phone: String
+    website: String
+    company: CompanyInput
 }
 
 input AddressInput {
-  street: String
-  suite: String
-  city: String
-  zipcode: String
-  geo: GeoInput
+    street: String
+    suite: String
+    city: String
+    zipcode: String
+    geo: GeoInput
 }
 
 input GeoInput {
-  lat: Float
-  lng: Float
+    lat: Float
+    lng: Float
 }
 
 input CompanyInput {
-  name: String
-  catchPhrase: String
-  bs: String
+    name: String
+    catchPhrase: String
+    bs: String
 }

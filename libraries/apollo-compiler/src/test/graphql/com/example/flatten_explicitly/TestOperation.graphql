@@ -1,41 +1,55 @@
 # Query for a name longer than 256 characters
 query MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong(
-  $options: PageQueryOptions
+    $options: PageQueryOptions
 ){
-  posts(options: $options) {
-    ...UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharacters
-  }
+    postspagearealmostlongenoughtobecomicals(options: $options) {
+        ...UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
 }
 
-fragment UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharacters on Post {
-  __typename
-  id
-  title
+fragment UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger {
+    __typename
+    id
+    title
+    thisisauserbutwecallitsomethingmuchlarger {
+        __typename
+        id
+        name
+        whereintheworldiscarmensandiegoaddress {
+            __typename
+            city
+            geoisnotagembutageographiclocationinthiscase {
+                __typename
+                lat
+                lng
+            }
+        }
+    }
 }
 
 
-fragment UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharacters on PageLimitPair {
-  __typename
-  page
-  limit
+fragment UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell {
+    __typename
+    page
+    limit
 }
 
-fragment UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharacters on PaginationLinks {
-  __typename
-  last {
-    ...UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharacters
-  }
+fragment UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PaginationLinksBecauseIWantItToBeTooLong {
+    __typename
+    pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast {
+        ...UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
 }
 
-fragment UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharacters on PostsPage {
-  __typename
-  data {
-    ...UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharacters
-  }
-  meta {
-   totalCount
-  }
-  links {
-    ...UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharacters
-  }
+fragment UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PostsPageAreAlmostLongEnoughToBeComical {
+    __typename
+    postisthemaintypebutweneedtomakethenamemuchlargerdata {
+        ...UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+    meta {
+        totalCount
+    }
+    paginationlinksbecauseiwantittobetoolonglinks {
+        ...UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
 }
