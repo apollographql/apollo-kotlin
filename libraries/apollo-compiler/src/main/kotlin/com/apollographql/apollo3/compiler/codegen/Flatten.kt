@@ -357,11 +357,15 @@ private fun getTerminalIrModel(
   return terminalIrModel
 }
 
+private val operationSuffix = arrayOf("Query", "Subscription", "Mutation")
 private fun matchName(nodeName: String, modelName: String): Boolean {
   // Based on IrModelType naming
   val split = modelName.split('.')
   return if (split.size > 1) {
-    split.any { nodeName.startsWith(it) } // Since "Query" or "Mutation" are not always appended at this instance
+    // Since "Query", "Subscription" or "Mutation" are not always appended at this instance
+    split.any {
+      nodeName == it || operationSuffix.any { suffix -> it == nodeName.removeSuffix(suffix) }
+    }
   } else {
     nodeName == modelName
   }
