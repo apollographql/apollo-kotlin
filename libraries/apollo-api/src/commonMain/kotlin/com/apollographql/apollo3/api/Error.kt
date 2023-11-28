@@ -7,7 +7,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
  * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
  */
 class Error
-@Deprecated("Use Builder instead")
+@Deprecated("Use Error.Builder instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 constructor(
     /**
