@@ -20,7 +20,6 @@ fun Project.configureNode() {
   // See https://youtrack.jetbrains.com/issue/KT-47215
   plugins.withType(YarnPlugin::class.java).configureEach {
     project.extensions.getByType(YarnRootExtension::class.java).apply {
-      disableGranularWorkspaces()
       // Drop the patch version because there shouldn't be any dependency change
       lockFileDirectory = projectDir.resolve("kotlin-js-store-${project.getKotlinPluginVersion().substringBeforeLast(".")}")
     }

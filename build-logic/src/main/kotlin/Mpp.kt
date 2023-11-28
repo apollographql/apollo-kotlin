@@ -145,12 +145,6 @@ private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNa
     return
   }
 
-  if (System.getProperty("idea.sync.active") != null) {
-    // Early return. Inside intelliJ, only configure one target
-    targetFromPreset(presets.getByName(hostTarget), "apple")
-    return
-  }
-
   val appleMain = sourceSets.create("appleMain")
   val appleTest = sourceSets.create("appleTest")
 

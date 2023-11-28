@@ -1,13 +1,12 @@
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
-import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
 
 plugins {
-  `embedded-kotlin`
+  id("org.jetbrains.kotlin.jvm").version("1.9.21")
+  id("org.jetbrains.kotlin.plugin.sam.with.receiver").version("1.9.21")
   id("java-gradle-plugin")
   id("net.mbonnin.golatac").version("0.0.3")
 }
 
-plugins.apply(SamWithReceiverGradleSubplugin::class.java)
 extensions.configure(SamWithReceiverExtension::class.java) {
   annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
@@ -34,19 +33,12 @@ dependencies {
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin
-  if (System.getProperty("idea.sync.active") == null) {
-    implementation(golatac.lib("kotlin.plugin"))
-    runtimeOnly(golatac.lib("ksp"))
-    // XXX: This is only needed for tests. We could have different build logic for different
-    // builds but this seems just overkill for now
-    runtimeOnly(golatac.lib("kotlin.allopen"))
-    runtimeOnly(golatac.lib("kotlinx.serialization.plugin"))
-  } else {
-    implementation(golatac.lib("kotlin.plugin.duringideasync"))
-    runtimeOnly(golatac.lib("ksp.duringideasync"))
-    runtimeOnly(golatac.lib("kotlin.allopen.duringideasync"))
-    runtimeOnly(golatac.lib("kotlinx.serialization.plugin.duringideasync"))
-  }
+  implementation(golatac.lib("kotlin.plugin"))
+  runtimeOnly(golatac.lib("ksp"))
+  // XXX: This is only needed for tests. We could have different build logic for different
+  // builds but this seems just overkill for now
+  runtimeOnly(golatac.lib("kotlin.allopen"))
+  runtimeOnly(golatac.lib("kotlinx.serialization.plugin"))
 
   runtimeOnly(golatac.lib("sqldelight.plugin"))
   runtimeOnly(golatac.lib("gradle.publish.plugin"))

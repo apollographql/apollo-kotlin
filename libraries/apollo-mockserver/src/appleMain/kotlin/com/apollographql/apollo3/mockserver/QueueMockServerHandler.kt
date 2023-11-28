@@ -13,8 +13,8 @@ internal actual class QueueMockServerHandler : MockServerHandler {
     check(queue.count.toInt() > 0) {
       "No more responses in queue"
     }
-    val response = queue.objectAtIndex(0) as MockResponse
-    queue.removeObjectAtIndex(0)
+    val response = queue.objectAtIndex(0u) as MockResponse
+    queue.removeObjectAtIndex(0u)
     return response
   }
 }
