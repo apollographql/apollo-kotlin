@@ -7,7 +7,6 @@
       </value>
     </option>
     <option name="RIGHT_MARGIN" value="140" />
-    <option name="ENABLE_SECOND_REFORMAT" value="true" />
     <JavaCodeStyleSettings>
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
@@ -24,6 +23,9 @@
     <Properties>
       <option name="KEEP_BLANK_LINES" value="true" />
     </Properties>
+    <ScalaCodeStyleSettings>
+      <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
+    </ScalaCodeStyleSettings>
     <XML>
       <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
     </XML>
