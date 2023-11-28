@@ -28,32 +28,32 @@ private fun List<IrModelGroup>.flatten(excludeNames: Set<String>): List<IrModelG
  * walk2 potentially detaches the model groups
  */
 private fun IrModelGroup.walk2(
-  usedNames: MutableSet<String>,
-  collectedIrModelGroups: MutableList<IrModelGroup>,
+    usedNames: MutableSet<String>,
+    collectedIrModelGroups: MutableList<IrModelGroup>,
 ): IrModelGroup {
   return copy(
-    models = models.map { model ->
-      val name = resolveNameClashes(usedNames, model.modelName)
+      models = models.map { model ->
+        val name = resolveNameClashes(usedNames, model.modelName)
 
-      val nestedModelGroups = mutableListOf<IrModelGroup>()
-      model.modelGroups.forEach { modelGroup ->
-        if (modelGroup.models.singleOrNull()?.modelName == "Fragments") {
-          // Special case, "Fragments" are always nested
-          nestedModelGroups.add(modelGroup)
-        } else {
-          /**
-           * output the models in pre-order
-           */
-          val collected = mutableListOf<IrModelGroup>()
-          collectedIrModelGroups.add(modelGroup.walk2(usedNames, collected))
-          collectedIrModelGroups.addAll(collected)
+        val nestedModelGroups = mutableListOf<IrModelGroup>()
+        model.modelGroups.forEach { modelGroup ->
+          if (modelGroup.models.singleOrNull()?.modelName == "Fragments") {
+            // Special case, "Fragments" are always nested
+            nestedModelGroups.add(modelGroup)
+          } else {
+            /**
+             * output the models in pre-order
+             */
+            val collected = mutableListOf<IrModelGroup>()
+            collectedIrModelGroups.add(modelGroup.walk2(usedNames, collected))
+            collectedIrModelGroups.addAll(collected)
+          }
         }
+        model.copy(
+            modelName = name,
+            modelGroups = nestedModelGroups
+        )
       }
-      model.copy(
-        modelName = name,
-        modelGroups = nestedModelGroups
-      )
-    }
   )
 }
 
@@ -72,20 +72,20 @@ private fun List<IrModelGroup>.walk(depth: Int, atDepth: Int, excludeNames: Set<
 
 private fun IrModelGroup.walk(depth: Int, atDepth: Int, excludeNames: Set<String>): IrModelGroup {
   return copy(
-    models = models.map { model ->
-      model.copy(
-        modelGroups = model.modelGroups.walk(depth + 1, atDepth, excludeNames)
-      )
-    }
+      models = models.map { model ->
+        model.copy(
+            modelGroups = model.modelGroups.walk(depth + 1, atDepth, excludeNames)
+        )
+      }
   )
 }
 
 internal fun walk(
-  initial: Boolean,
-  node: ExplicitlyRemovedNode,
-  startFromIrModelGroups: List<IrModelGroup>,
-  matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
-  matchedIrModels: MutableList<ArrayDeque<IrModel>>,
+    initial: Boolean,
+    node: ExplicitlyRemovedNode,
+    startFromIrModelGroups: List<IrModelGroup>,
+    matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
+    matchedIrModels: MutableList<ArrayDeque<IrModel>>,
 ) {
   startFromIrModelGroups.forEach { startFromImageModelGroup ->
     if (initial) {
@@ -93,9 +93,10 @@ internal fun walk(
       if (!matchName(node.name, startFromImageModelGroup.baseModelId)) {
         return
       }
-      node.children.forEach { (_, childNode) ->
-        walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
-      }
+//      node.children.forEach { (_, childNode) ->
+//        walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+//      }
+      performInitialWalk(node, startFromImageModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
     } else {
       startFromImageModelGroup.models.forEach { startFromIm ->
         // Check for the name match
@@ -127,14 +128,74 @@ internal fun walk(
   }
 }
 
+internal fun performInitialWalk(
+    node: ExplicitlyRemovedNode,
+    startFromImageModelGroup: IrModelGroup,
+    startFromIrModelGroups: List<IrModelGroup>,
+    matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
+    matchedIrModels: MutableList<ArrayDeque<IrModel>>,
+) {
+  // Check if it is a fragment
+  if (startFromImageModelGroup.baseModelId.startsWith("fragmentData.") || startFromImageModelGroup.baseModelId.startsWith("fragmentInterface.")) {
+    performInitialFragmentWalk(node, startFromImageModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+  } else {
+    node.children.forEach { (_, childNode) ->
+      walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+    }
+  }
+}
+
+internal fun performInitialFragmentWalk(
+    node: ExplicitlyRemovedNode,
+    startFromImageModelGroup: IrModelGroup,
+    startFromIrModelGroups: List<IrModelGroup>,
+    matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
+    matchedIrModels: MutableList<ArrayDeque<IrModel>>,
+) {
+  val followProcedure = sanityCheckFragment(node, startFromImageModelGroup)
+  // We can't find anything to match, so just return
+  if (followProcedure == -1) return
+
+  if (followProcedure == 0) { // Nested Fragment
+    walk(false, node, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+  } else { // Nested Data class
+    // We don't support this yet, potentially in the future
+    //    node.children.forEach { (_, childNode) ->
+    //      walk(false, childNode, startFromImageModelGroup.models[0].modelGroups, matchedIrModelGroups, matchedIrModels)
+    //    }
+    return
+  }
+}
+
+internal fun sanityCheckFragment(node: ExplicitlyRemovedNode, startFromImageModelGroup: IrModelGroup): Int {
+  return when {
+    startFromImageModelGroup.models.size != 1 -> {
+      -1
+    }
+
+    startFromImageModelGroup.models[0].modelName == node.name -> {
+      0
+    }
+
+    startFromImageModelGroup.models[0].modelName == "Data" -> {
+      1
+    }
+
+    else -> {
+      -1
+    }
+  }
+}
+
 internal fun sanitizeAndRebuild(
-  initialIrModelGroup: IrModelGroup,
-  matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
-  matchedIrModels: MutableList<ArrayDeque<IrModel>>,
+    initialIrModelGroup: IrModelGroup,
+    matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
+    matchedIrModels: MutableList<ArrayDeque<IrModel>>,
 ): List<IrModelGroup> {
   if (matchedIrModelGroups.size < 2 || (matchedIrModelGroups.size != matchedIrModels.size)) {
     return listOf(initialIrModelGroup)
   }
+
 
   // Remove the empty dequeues
   val sanitizedIrModelGroups = matchedIrModelGroups.filter { it.isNotEmpty() }
@@ -159,28 +220,28 @@ internal fun verifyRebuiltIrModelGroups(rebuiltIrModelGroups: List<IrModelGroup>
 }
 
 private fun verifyRebuiltIrModelGroups(
-  irModelGroup: IrModelGroup,
-  usedNames: MutableMap<Int, MutableSet<String>>,
-  level: Int = 0
+    irModelGroup: IrModelGroup,
+    usedNames: MutableMap<Int, MutableSet<String>>,
+    level: Int = 0,
 ): IrModelGroup {
   return irModelGroup.copy(
-    models = irModelGroup.models.map { irModel ->
-      val name = resolveNameClashes(usedNames, irModel.modelName, level)
+      models = irModelGroup.models.map { irModel ->
+        val name = resolveNameClashes(usedNames, irModel.modelName, level)
         irModel.copy(
-          modelName = name,
-          modelGroups = irModel.modelGroups.map { verifyRebuiltIrModelGroups(it, usedNames, level + 1) }
+            modelName = name,
+            modelGroups = irModel.modelGroups.map { verifyRebuiltIrModelGroups(it, usedNames, level + 1) }
         )
-    }
+      }
   )
 }
 
 internal fun rebuildIrModelGroups(
-  matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
-  matchedIrModels: MutableList<ArrayDeque<IrModel>>,
-  stashed: MutableList<IrModelGroup> = mutableListOf(),
-  queuedForExtraction: MutableList<IrModelGroup> = mutableListOf(),
-  previousResults: List<IrModelGroup> = listOf(),
-  rebuiltIrModelGroups: MutableList<IrModelGroup> = mutableListOf(),
+    matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
+    matchedIrModels: MutableList<ArrayDeque<IrModel>>,
+    stashed: MutableList<IrModelGroup> = mutableListOf(),
+    queuedForExtraction: MutableList<IrModelGroup> = mutableListOf(),
+    previousResults: List<IrModelGroup> = listOf(),
+    rebuiltIrModelGroups: MutableList<IrModelGroup> = mutableListOf(),
 ): List<IrModelGroup> {
   // Store the baseline IrModelGroup dequeue
   val irModelGroups = matchedIrModelGroups.removeLastOrNull() ?: return rebuiltIrModelGroups // Reached the end
@@ -191,7 +252,7 @@ internal fun rebuildIrModelGroups(
 
   // Store the baseline IrModelGroup
   var extractedIrModelGroup =
-    checkStashed(irModelGroups.removeLast(), irModelGroups, stashed)
+      checkStashed(irModelGroups.removeLast(), irModelGroups, stashed)
   // Construct the last element in the irModels dequeues
   var terminalIrModel = getTerminalIrModel(previousResults, irModels, stashed, queuedForExtraction)
 
@@ -200,7 +261,7 @@ internal fun rebuildIrModelGroups(
 
   // After we finish updating terminalIrModel, make sure to update the IrModelGroup that contains it
   extractedIrModelGroup = extractedIrModelGroup.copy(
-    models = extractedIrModelGroup.models.filterNot { it.modelName == terminalIrModel.modelName } + terminalIrModel
+      models = extractedIrModelGroup.models.filterNot { it.modelName == terminalIrModel.modelName } + terminalIrModel
   )
 
   // Starting values from rebuilding this level
@@ -209,18 +270,18 @@ internal fun rebuildIrModelGroups(
 
   // Remove the flattened IrModelGroup from the irModel
   irModel = irModel?.copy(
-    modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId }
+      modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId }
   )
 
   // Walk up the rest of the data doing the same replacement of values with the updated model groupings
   while (irModelGroups.isNotEmpty() && irModel != null) {
     irModelGroup = checkStashed(irModelGroups.removeLast(), irModelGroups, stashed)
     irModelGroup = irModelGroup.copy(
-      models = irModelGroup.models.filterNot { it.modelName == irModel?.modelName } + irModel
+        models = irModelGroup.models.filterNot { it.modelName == irModel?.modelName } + irModel
     )
     irModel = irModels.removeLastOrNull()
     irModel = irModel?.copy(
-      modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId } + irModelGroup
+        modelGroups = irModel.modelGroups.filterNot { it.baseModelId == irModelGroup.baseModelId } + irModelGroup
     )
   }
 
@@ -236,12 +297,12 @@ internal fun rebuildIrModelGroups(
   val results = getResults(initialSize, irModelGroup, extractedIrModelGroup)
 
   return rebuildIrModelGroups(
-    matchedIrModelGroups = matchedIrModelGroups,
-    matchedIrModels = matchedIrModels,
-    stashed = stashed,
-    queuedForExtraction = queuedForExtraction,
-    previousResults = results,
-    rebuiltIrModelGroups = rebuiltIrModelGroups
+      matchedIrModelGroups = matchedIrModelGroups,
+      matchedIrModels = matchedIrModels,
+      stashed = stashed,
+      queuedForExtraction = queuedForExtraction,
+      previousResults = results,
+      rebuiltIrModelGroups = rebuiltIrModelGroups
   )
 }
 
@@ -250,9 +311,9 @@ internal fun rebuildIrModelGroups(
  * IrModelGroup which is now containing stale information.
  */
 internal fun checkStashed(
-  removeLast: IrModelGroup,
-  irModelGroups: ArrayDeque<IrModelGroup>,
-  stashed: MutableList<IrModelGroup>
+    removeLast: IrModelGroup,
+    irModelGroups: ArrayDeque<IrModelGroup>,
+    stashed: MutableList<IrModelGroup>,
 ): IrModelGroup {
   // Check if there is anything stashed to check & make sure this it the top-line IrModelGroup for this level of the rebuild
   if (stashed.isEmpty() || irModelGroups.isNotEmpty()) {
@@ -274,9 +335,9 @@ internal fun checkStashed(
 }
 
 private fun getResults(
-  initialSize: Int,
-  irModelGroup: IrModelGroup,
-  extractedIrModelGroup: IrModelGroup,
+    initialSize: Int,
+    irModelGroup: IrModelGroup,
+    extractedIrModelGroup: IrModelGroup,
 ): List<IrModelGroup> {
   return if (initialSize == 1) {
     // Only want the possibly updated irModelGroup, since that is extractedIrModelGroup, but just with a potentially
@@ -289,8 +350,8 @@ private fun getResults(
 }
 
 private fun checkQueuedForExtraction(
-  irModel: IrModel,
-  queuedForExtraction: MutableList<IrModelGroup>,
+    irModel: IrModel,
+    queuedForExtraction: MutableList<IrModelGroup>,
 ): IrModel {
   var terminalIrModel = irModel
   val iter = queuedForExtraction.iterator()
@@ -298,7 +359,7 @@ private fun checkQueuedForExtraction(
     val queued = iter.next()
     val prevSize = terminalIrModel.modelGroups.size
     terminalIrModel = terminalIrModel.copy(
-      modelGroups = terminalIrModel.modelGroups.filterNot { it.baseModelId == queued.baseModelId }
+        modelGroups = terminalIrModel.modelGroups.filterNot { it.baseModelId == queued.baseModelId }
     )
     if (prevSize != terminalIrModel.modelGroups.size) {
       // If we made a removal, we can stop looking for it in the future
@@ -309,10 +370,10 @@ private fun checkQueuedForExtraction(
 }
 
 private fun getTerminalIrModel(
-  previousResults: List<IrModelGroup>,
-  irModels: ArrayDeque<IrModel>,
-  stashed: MutableList<IrModelGroup>,
-  queuedForExtraction: MutableList<IrModelGroup>,
+    previousResults: List<IrModelGroup>,
+    irModels: ArrayDeque<IrModel>,
+    stashed: MutableList<IrModelGroup>,
+    queuedForExtraction: MutableList<IrModelGroup>,
 ): IrModel {
   // Pop of the last element in the irModels dequeues
   var terminalIrModel = irModels.removeLast()
@@ -326,7 +387,7 @@ private fun getTerminalIrModel(
       // Do a check to see if the terminalIrModel contains the same IrModelGroup as the previousResults[0], if so, we need to remove it
       val prevSize = terminalIrModel.modelGroups.size
       terminalIrModel = terminalIrModel.copy(
-        modelGroups = terminalIrModel.modelGroups.filterNot { it.baseModelId == previousResults[0].baseModelId }
+          modelGroups = terminalIrModel.modelGroups.filterNot { it.baseModelId == previousResults[0].baseModelId }
       )
       if (prevSize != terminalIrModel.modelGroups.size) {
         // If no match was made, we need ot stash this for later
@@ -344,7 +405,7 @@ private fun getTerminalIrModel(
       } else {
         // If a match was made, we need to update the terminalIrModel
         terminalIrModel = terminalIrModel.copy(
-          modelGroups = filtered + previousResults[0]
+            modelGroups = filtered + previousResults[0]
         )
       }
     }
@@ -401,10 +462,10 @@ internal fun possiblyFlatten(node: ExplicitlyRemovedNode, initialIrModelGroup: I
 }
 
 internal fun IrModelGroup.maybeFlatten(
-  flatten: Boolean,
-  node: ExplicitlyRemovedNode?,
-  atDepth: Int = 0,
-  excludeNames: Set<String> = emptySet()
+    flatten: Boolean,
+    node: ExplicitlyRemovedNode?,
+    atDepth: Int = 0,
+    excludeNames: Set<String> = emptySet(),
 ): List<IrModelGroup> {
   return if (flatten) {
     listOf(this).walk(0, atDepth, excludeNames)
