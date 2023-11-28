@@ -361,7 +361,7 @@ private fun matchName(nodeName: String, modelName: String): Boolean {
   // Based on IrModelType naming
   val split = modelName.split('.')
   return if (split.size > 1) {
-    split.contains(nodeName)
+    split.any { nodeName.startsWith(it) } // Since "Query" or "Mutation" are not always appended at this instance
   } else {
     nodeName == modelName
   }
