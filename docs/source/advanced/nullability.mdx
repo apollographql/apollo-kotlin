@@ -112,6 +112,7 @@ To do so, catch GraphQL errors using the `@catch` directive:
 query GetUser {
   user {
     id
+    # map name to FieldResult<String?> instead of stopping parsing
     name @catch
     avatarUrl
   }
@@ -121,15 +122,17 @@ query GetUser {
 Instead of failing the whole query, the `name` field is now generated as a `FieldResult<String?>` class that can contain either a nullable value or an error:
 
 ```kotlin
+// name does not have a value
 println(response.data?.user?.name?.valueOrNull) // null
+// but name has an error
 println(response.data?.user?.name?.errorOrNull?.message) // "Cannot resolve user.name"
 // partial data is available
 println(response.data?.user?.id) // "42"
-// exception is now null
+// exception is null
 println(response.exception) // null
 ```
 
-By default `@catch` applies to all list levels. If you need to apply it to a given level, use the `level` argument:
+For fields of List type, `@catch` applies to all list levels by. If you need to apply it to a given level, use the `level` argument:
 
 ```graphql
 query GetUser {
@@ -143,15 +146,19 @@ query GetUser {
 
 # `@nullOnlyOnError`
 
-Even with automatic detection of errors and handling of partial data like described above, you might still have to check for  `null` in your UI code. This is because GraphQL by default uses nullable fields. From the [GraphQL best practices](https://graphql.org/learn/best-practices/#nullability):
+Even with automatic detection of errors and handling of partial data like described above, you still have to check for  `null` in your UI code. This is because GraphQL by default recommends nullable fields. From the [GraphQL best practices](https://graphql.org/learn/best-practices/#nullability):
 
 ```
-However, in a GraphQL type system, every field is nullable by default. This is because there are many things that can go awry in a networked service backed by databases and other services. 
+However, in a GraphQL type system, every field is nullable by default. 
+This is because there are many things that can go awry in a networked 
+service backed by databases and other services. 
 ```
 
-This makes sense because JSON cannot encode errors and it's easier to have a `data` field that matches the schema. But Kotlin can encode errors. For a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
+This makes sense because JSON cannot encode errors and it's easier to have a `data` field that matches the schema. 
 
-In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@nullOnlyOnError` to `extra.graphqls` file:
+But Kotlin can encode errors. For a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
+
+In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@nullOnlyOnError` to your `extra.graphqls` file:
 
 ```graphql
 # extra.graphqls
@@ -177,7 +184,7 @@ user.name.valueOrNull // "Luke Skywalker"
 user.name.errorOrNull // null
 ```
 
-Similarly to `@catch`, `@nullOnlyOnError` supports a `level` argument:
+Similarly to `@catch`, `@nullOnlyOnError` supports a `level` argument for lists:
 
 ```graphql
 # User.friends is generated a nullable
