@@ -54,12 +54,15 @@ fun User(user: GetUserQuery.User) {
   if (user.name != null) {
     Text(text = user.name)
   } else {
-    // What to do here? Is it an error, is it a true null
+    // What to do here? Is it an error? is it a true null?
   }
 }
 ```
 
-To help deal with those issues, Apollo Kotlin offers error aware parsing, `@catch` and `@nullOnlyOnError` 
+To help deal with those issues, Apollo Kotlin offers three tools:
+* error aware parsing
+* `@catch`
+* `@nullOnlyOnError` 
 
 # Error aware parsing
 
