@@ -3,7 +3,7 @@ title: Handling nullability and errors
 description: Make your queries even more typesafe
 ---
 
-# Nullability in GraphQL
+## Nullability in GraphQL
 
 GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. With the following schema and query:
 
@@ -64,7 +64,7 @@ To help deal with those issues, Apollo Kotlin offers three tools:
 * `@catch`
 * `@nullOnlyOnError` 
 
-# Error aware parsing
+## Error aware parsing
 
 With error aware parsing, the errors are detected at parsing time so you don't have to look them up in the `errors` array. In order to opt-in error aware parsing, create a `extra.graphqls` file next to your schema and link the nullability directives:
 
@@ -102,7 +102,7 @@ println(response.exception) // ApolloGraphQLException
 
 This default makes it easy to handle errors as they are all handled at parsing time. You are guaranteed that any `null` in `response.data` is a semantic null and not an error.
 
-# Handling partial data with `@catch`
+## Handling partial data with `@catch`
 
 In some cases, you might want to display the data returned from the server, even if it is partial. 
 
@@ -144,7 +144,7 @@ query GetUser {
 }
 ```
 
-# `@nullOnlyOnError`
+## Handle semantic non-null with `@nullOnlyOnError`
 
 Even with automatic detection of errors and handling of partial data like described above, you still have to check for  `null` in your UI code. This is because GraphQL by default recommends nullable fields. From the [GraphQL best practices](https://graphql.org/learn/best-practices/#nullability):
 
