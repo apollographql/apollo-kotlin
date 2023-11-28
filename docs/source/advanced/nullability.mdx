@@ -10,7 +10,8 @@ GraphQL does not have a `Result` type. If a field errors, it is set to `null` in
 ```graphql
 type User {
   id: ID!
-  # name is nullable to account for possible errors but in practice this happens only in error cases
+  # name is nullable to account for possible errors 
+  # but in practice this happens only in error cases
   name: String
   avatarUrl: String
 }
@@ -44,9 +45,17 @@ the server returns the following response in case of error:
 }
 ```
 
-GraphQL best practices [recommend using nullable types](https://graphql.org/learn/best-practices/#nullability) by default for fields. This makes sense in distributed environments where microservices might fail and some data fail to resolve. This behaviour is robust by default: if part of your query fails, you still get the rest of the data.
+GraphQL best practices recommend using nullable types by default. From [graphql.org](https://graphql.org/learn/best-practices/#nullability):
 
-This default has one major drawback that it requires to carefully check every field when used in your UI. Sometimes it's not clear how to handle the different cases:
+```
+However, in a GraphQL type system, every field is nullable by default. 
+This is because there are many things that can go awry in a networked
+service backed by databases and other services.
+```
+
+This default makes sense in distributed environments where microservices might fail and some data fail to resolve. This behaviour is robust by default: if part of your query fails, you still get the rest of the data.
+
+This default has one major drawback for frontend developers. It requires to carefully check every field when used in your UI. Sometimes it's not clear how to handle the different cases:
 
 ```kotlin
 @Composable
@@ -54,23 +63,29 @@ fun User(user: GetUserQuery.User) {
   if (user.name != null) {
     Text(text = user.name)
   } else {
-    // What to do here? Is it an error? is it a true null?
+    // What to do here? 
+    // Is it an error? 
+    // Is it a true null?
+    // Should I display a placeholder? an error? hide the view?
   }
 }
 ```
 
-To help deal with those issues, Apollo Kotlin offers three tools:
+To help deal with those issues and make sure your UI code only sees what make sense for your app, Apollo Kotlin offers three tools:
 * error aware parsing
 * `@catch`
 * `@nullOnlyOnError` 
 
 ## Error aware parsing
 
-With error aware parsing, the errors are detected at parsing time so you don't have to look them up in the `errors` array. In order to opt-in error aware parsing, create a `extra.graphqls` file next to your schema and link the nullability directives:
+With error aware parsing, the errors are detected at parsing time, so you don't have to look them up in the `errors` array. Any GraphQL error stops the parsing and you are guaranteed that `response.data` is actual semantic data and does not contain any error. 
+
+In order to opt-in error aware parsing, create a `extra.graphqls` file next to your schema and import the `@catch` directive:
 
 ```graphql
-# opt-in error aware parsing
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@nullOnlyOnError", "@catch"])
+# Import the `@catch` directive definition. 
+# When the `@catch` directive definition, parsers generate extra code to deal with errors.
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch"])
 ```
 
 Once error aware parsing is enabled, the parsing stops at the first GraphQL error and the whole query is failed. In the example above:
@@ -100,9 +115,11 @@ println(response.data) // null
 println(response.exception) // ApolloGraphQLException 
 ```
 
-This default makes it easy to handle errors as they are all handled at parsing time. You are guaranteed that any `null` in `response.data` is a semantic null and not an error.
+This default makes it easy to handle errors as they are all handled at parsing time. If you see a `null` in `response.data`, you are guaranteed it is a semantic null and not an error, and you should probably handle it.
 
-## Handling partial data with `@catch`
+Sometimes failing the whole query feels a bit overkill though. For those cases, you can handle errors with `@catch`.
+
+## Handle errors and receive partial data with `@catch`
 
 In some cases, you might want to display the data returned from the server, even if it is partial. 
 
@@ -146,22 +163,17 @@ query GetUser {
 
 ## Handle semantic non-null with `@nullOnlyOnError`
 
-Even with automatic detection of errors and handling of partial data like described above, you still have to check for  `null` in your UI code. This is because GraphQL by default recommends nullable fields. From the [GraphQL best practices](https://graphql.org/learn/best-practices/#nullability):
+Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 
 
-```
-However, in a GraphQL type system, every field is nullable by default. 
-This is because there are many things that can go awry in a networked 
-service backed by databases and other services. 
-```
-
-This makes sense because JSON cannot encode errors and it's easier to have a `data` field that matches the schema. 
-
-But Kotlin can encode errors. For a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
+But a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
 
 In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@nullOnlyOnError` to your `extra.graphqls` file:
 
 ```graphql
 # extra.graphqls
+
+# Import the `@nullOnlyOnError` directive definition in addition to `@catch`. 
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "@nullOnlyOnError"])
 # make User.name nullable only on error
 extend type User @nullOnlyOnError(field: "name")
 ```
