@@ -177,7 +177,7 @@ class CodegenTest {
             buildList {
               addAll(it)
               // add Java if supported
-              if (it.first().folder.name != "big_query") {
+              if (it.first().folder.name != "big_query" && it.first().folder.name != "flatten_explicitly") {
                 add(it.first().copy(generateKotlinModels = false, codegenModels = MODELS_OPERATION_BASED))
               }
             }
