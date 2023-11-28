@@ -312,6 +312,11 @@ class CodegenTest {
         targetLanguage == JAVA -> true
         else -> false
       }
+      val flattenModelsExplicitly = when {
+        folder.name in listOf("flatten_explicitly",) -> parseFileToString("input.json", folder)
+        targetLanguage == JAVA -> ""
+        else -> ""
+      }
       val scalarMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
@@ -391,6 +396,7 @@ class CodegenTest {
           executableFiles = graphqlFiles,
           outputDir = outputDir,
           flattenModels = flattenModels,
+          flattenModelsExplicitly = flattenModelsExplicitly,
           codegenModels = codegenModels,
           decapitalizeFields = decapitalizeFields,
           operationOutputGenerator = operationOutputGenerator,
@@ -416,6 +422,9 @@ class CodegenTest {
       )
       return outputDir
     }
+
+    private fun parseFileToString(testJsonFileName: String, folder: File): String =
+        File(folder, testJsonFileName).path
 
     private fun GQLNode.hasFragments(): Boolean {
       if (this is GQLInlineFragment || this is GQLFragmentSpread) {

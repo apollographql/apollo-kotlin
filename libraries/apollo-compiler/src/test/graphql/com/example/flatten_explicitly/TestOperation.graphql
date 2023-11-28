@@ -1,0 +1,41 @@
+# Query for a name longer than 256 characters
+query MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong(
+  $options: PageQueryOptions
+){
+  posts(options: $options) {
+    ...UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharacters
+  }
+}
+
+fragment UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharacters on Post {
+  __typename
+  id
+  title
+}
+
+
+fragment UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharacters on PageLimitPair {
+  __typename
+  page
+  limit
+}
+
+fragment UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharacters on PaginationLinks {
+  __typename
+  last {
+    ...UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharacters
+  }
+}
+
+fragment UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharacters on PostsPage {
+  __typename
+  data {
+    ...UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharacters
+  }
+  meta {
+   totalCount
+  }
+  links {
+    ...UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharacters
+  }
+}
