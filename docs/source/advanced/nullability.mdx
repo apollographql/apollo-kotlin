@@ -5,7 +5,7 @@ description: Make your queries even more typesafe
 
 # Nullability in GraphQL
 
-GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response:
+GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. With the following schema and query:
 
 ```graphql
 type User {
@@ -24,7 +24,7 @@ query GetUser {
 }
 ```
 
-In the exceptional case that an error happens, the server returns the following response:
+the server returns the following response in case of error:
 
 ```json
 {
