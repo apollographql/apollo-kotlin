@@ -1,0 +1,27 @@
+[
+  {
+    "className": "GetConversationMessagesQuery$Data$V3GetConversationMessagesV3GetConversationMessagesQuery$V3GetConversationMessagesDataConnectionContainerData$Connection$Edge$Node$Board$UserCollaboratingUsersConnectionContainerCollaboratingUsers$Connection$Edge$Node",
+    "extract": "GetConversationMessagesQuery$Data$V3GetConversationMessagesV3GetConversationMessagesQuery$V3GetConversationMessagesDataConnectionContainerData",
+    "renameTo": ""
+  },
+  {
+    "className": "GetConversationsQuery$Data$V3GetConversationsV3GetConversationsQuery$V3GetConversationsDataConnectionContainerData$Connection$Edge$Node$LastMessage$Board$UserCollaboratingUsersConnectionContainerCollaboratingUsers$Connection$Edge$Node$VerifiedIdentity",
+    "extract": "GetConversationsQuery$Data$V3GetConversationsV3GetConversationsQuery$V3GetConversationsDataConnectionContainerData$Connection$Edge$Node$LastMessage",
+    "renameTo": ""
+  },
+  {
+    "className": "MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery$Data$Postspagearealmostlongenoughtobecomicals$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress$Geoisnotagembutageographiclocationinthiscase",
+    "extract": "MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery$Data$Postspagearealmostlongenoughtobecomicals$Postisthemaintypebutweneedtomakethenamemuchlargerdatum",
+    "renameTo": ""
+  },
+  {
+    "className": "MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery$Data$Postspagearealmostlongenoughtobecomicals$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress$Geoisnotagembutageographiclocationinthiscase",
+    "extract": "MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery$Data$Postspagearealmostlongenoughtobecomicals$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress",
+    "renameTo": ""
+  },
+  {
+    "className": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress$Geoisnotagembutageographiclocationinthiscase",
+    "extract": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger",
+    "renameTo": ""
+  }
+]
