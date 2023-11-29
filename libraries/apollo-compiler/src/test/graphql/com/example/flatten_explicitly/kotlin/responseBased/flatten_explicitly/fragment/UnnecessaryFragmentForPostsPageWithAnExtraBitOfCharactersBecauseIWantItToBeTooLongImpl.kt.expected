@@ -60,53 +60,6 @@ public class
         List<Postisthemaintypebutweneedtomakethenamemuchlargerdatum>? =
         postisthemaintypebutweneedtomakethenamemuchlargerdata?.filterNotNull()
 
-    public data class Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
-      override val __typename: String,
-      override val id: String?,
-      override val title: String?,
-      override val thisisauserbutwecallitsomethingmuchlarger:
-          Thisisauserbutwecallitsomethingmuchlarger?,
-    ) : UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong,
-        UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum
-        {
-      public data class Thisisauserbutwecallitsomethingmuchlarger(
-        override val __typename: String,
-        override val id: String?,
-        override val name: String?,
-        override val whereintheworldiscarmensandiegoaddress:
-            Whereintheworldiscarmensandiegoaddress?,
-      ) :
-          UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger,
-          com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger {
-        public data class Whereintheworldiscarmensandiegoaddress(
-          override val __typename: String,
-          override val city: String?,
-          override val geoisnotagembutageographiclocationinthiscase:
-              Geoisnotagembutageographiclocationinthiscase?,
-        ) :
-            UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress,
-            com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress
-            {
-          public data class Geoisnotagembutageographiclocationinthiscase(
-            override val __typename: String,
-            override val lat: Double?,
-            override val lng: Double?,
-          ) :
-              UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
-              com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase
-        }
-      }
-
-      public companion object {
-        @Suppress("USELESS_CAST")
-        public
-            fun Postisthemaintypebutweneedtomakethenamemuchlargerdatum.unnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong():
-            UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong? =
-            this as?
-            UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
-      }
-    }
-
     public data class Meta(
       override val totalCount: Int?,
     ) : UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Meta
@@ -144,6 +97,52 @@ public class
             = this as?
             UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
       }
+    }
+  }
+
+  public data class Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
+    override val __typename: String,
+    override val id: String?,
+    override val title: String?,
+    override val thisisauserbutwecallitsomethingmuchlarger:
+        Thisisauserbutwecallitsomethingmuchlarger?,
+  ) : UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong,
+      UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum
+      {
+    public companion object {
+      @Suppress("USELESS_CAST")
+      public
+          fun Postisthemaintypebutweneedtomakethenamemuchlargerdatum.unnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong():
+          UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong? =
+          this as?
+          UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+  }
+
+  public data class Thisisauserbutwecallitsomethingmuchlarger(
+    override val __typename: String,
+    override val id: String?,
+    override val name: String?,
+    override val whereintheworldiscarmensandiegoaddress: Whereintheworldiscarmensandiegoaddress?,
+  ) :
+      UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger,
+      com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger {
+    public data class Whereintheworldiscarmensandiegoaddress(
+      override val __typename: String,
+      override val city: String?,
+      override val geoisnotagembutageographiclocationinthiscase:
+          Geoisnotagembutageographiclocationinthiscase?,
+    ) :
+        UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress,
+        com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress
+        {
+      public data class Geoisnotagembutageographiclocationinthiscase(
+        override val __typename: String,
+        override val lat: Double?,
+        override val lng: Double?,
+      ) :
+          UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
+          com.example.flatten_explicitly.fragment.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase
     }
   }
 }

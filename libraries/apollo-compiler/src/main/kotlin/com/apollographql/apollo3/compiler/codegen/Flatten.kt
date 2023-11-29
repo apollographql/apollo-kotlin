@@ -422,7 +422,16 @@ private fun matchName(nodeName: String, modelName: String): Boolean {
   return if (split.size > 1) {
     // Since "Query", "Subscription" or "Mutation" are not always appended at this instance. operationBased can append "Impl" to the end
     split.any {
-      nodeName == it || operationSuffix.any { suffix -> it == nodeName.removeSuffix(suffix) }
+      nodeName == it || operationSuffix.any { suffix ->
+        if (operationSuffix.any { ending ->
+              it.endsWith(ending)
+            }) {
+          // Don't remove the suffix, it's part of the name
+          it == nodeName
+        } else {
+          it == nodeName.removeSuffix(suffix)
+        }
+      }
     }
   } else {
     nodeName == modelName

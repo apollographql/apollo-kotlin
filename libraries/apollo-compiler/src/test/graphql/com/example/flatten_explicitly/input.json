@@ -28,5 +28,10 @@
     "className": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl$Data$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress$Geoisnotagembutageographiclocationinthiscase",
     "extract": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl$Data$Postisthemaintypebutweneedtomakethenamemuchlargerdatum",
     "renameTo": ""
+  },
+  {
+    "className": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl$Data$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger$Whereintheworldiscarmensandiegoaddress$Geoisnotagembutageographiclocationinthiscase",
+    "extract": "UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl$Data$Postisthemaintypebutweneedtomakethenamemuchlargerdatum$Thisisauserbutwecallitsomethingmuchlarger",
+    "renameTo": ""
   }
 ]
