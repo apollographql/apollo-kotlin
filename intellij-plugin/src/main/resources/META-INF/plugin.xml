@@ -136,6 +136,18 @@
         level="INFO"
     />
 
+    <!-- "OneOf Input creation" inspection  -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        language="kotlin"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloOneOfInputCreationInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.oneOfInputCreation.displayName"
+        enabledByDefault="true"
+        level="ERROR"
+    />
+
     <!-- Suppression of inspections on individual fields -->
     <lang.inspectionSuppressor
         language="GraphQL"

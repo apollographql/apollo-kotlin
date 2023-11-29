@@ -4,7 +4,9 @@ import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
+import org.jetbrains.kotlin.idea.caches.resolve.getResolutionFacade
 import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
+import org.jetbrains.kotlin.idea.caches.resolve.safeAnalyze
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.psi.KtBlockExpression
@@ -12,6 +14,7 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtLambdaArgument
@@ -19,6 +22,7 @@ import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 fun PsiElement.containingKtFile(): KtFile? = getStrictParentOfType()
@@ -72,6 +76,8 @@ fun KtCallExpression.getMethodName(): String? = calleeExpression.cast<KtNameRefe
 
 fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? = valueArguments.firstIsInstanceOrNull<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
 
-fun KtDeclaration.type() = (resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
+fun KtDeclaration.type(): KotlinType? = (resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
+
+fun KtExpression.type(): KotlinType? = safeAnalyze(getResolutionFacade()).getType(this)
 
 fun KtReferenceExpression.resolve() = mainReference.resolve()

@@ -37,7 +37,7 @@ class OptionalTest {
 
   @Test
   fun getOrThrowAbsent() {
-    val optional = Optional.absent<String?>()
+    val optional: Optional<String?> = Optional.absent()
     try {
       val value = optional.getOrThrow()
       fail("An exception was expected but got '$value' instead")
