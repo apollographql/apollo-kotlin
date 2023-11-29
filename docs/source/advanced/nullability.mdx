@@ -237,7 +237,7 @@ Enabling error aware parsing and adding `@ignoreErrors` to all your operation is
 flowchart TD
 A(Are you happy with the current nullability\nand error handling?) --> |YES| B[Do nothing]
 B --> V
-A --> |NO| D[<a href='http://google.com'>Import the `@catch` directive</a>\n]
+A --> |NO| D["Import the `@catch` directive"]
 D --> E(Do you want partial data by default?)
 E --> |partial data by default| F["Catch to null by default\nextend schema @catch(to: NULL)"]
 F --> J["Use `@catch(to: RESULT)`\nto get the inline errors\nin your Kotlin code"]
