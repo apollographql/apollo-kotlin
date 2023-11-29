@@ -11,19 +11,19 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
-import com.example.flatten_explicitly.MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery
+import com.example.flatten_explicitly.MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong
 import com.example.flatten_explicitly.type.adapter.PageQueryOptions_InputAdapter
 import kotlin.Boolean
 import kotlin.Suppress
 
-public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_VariablesAdapter {
+public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong_VariablesAdapter {
   @Suppress(
     "UNUSED_PARAMETER",
     "UNUSED_VARIABLE",
   )
   public fun serializeVariables(
     writer: JsonWriter,
-    `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery,
+    `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong,
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {

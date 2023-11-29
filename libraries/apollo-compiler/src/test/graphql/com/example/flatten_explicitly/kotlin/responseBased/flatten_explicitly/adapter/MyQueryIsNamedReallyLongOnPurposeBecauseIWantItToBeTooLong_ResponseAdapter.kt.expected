@@ -17,20 +17,19 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.example.flatten_explicitly.MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery
+import com.example.flatten_explicitly.MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_ResponseAdapter {
-  public object Data : Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data>
-      {
+public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong_ResponseAdapter {
+  public object Data : Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("postspagearealmostlongenoughtobecomicals")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data {
-      var _postspagearealmostlongenoughtobecomicals: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals? = null
+        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data {
+      var _postspagearealmostlongenoughtobecomicals: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -39,7 +38,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         }
       }
 
-      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data(
+      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data(
         postspagearealmostlongenoughtobecomicals = _postspagearealmostlongenoughtobecomicals
       )
     }
@@ -47,7 +46,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data,
+      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data,
     ) {
       writer.name("postspagearealmostlongenoughtobecomicals")
       Postspagearealmostlongenoughtobecomicals.obj().nullable().toJson(writer, customScalarAdapters,
@@ -55,18 +54,18 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     }
 
     private object Postspagearealmostlongenoughtobecomicals :
-        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals>
+        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals>
         {
       public val RESPONSE_NAMES: List<String> = listOf("__typename",
           "postisthemaintypebutweneedtomakethenamemuchlargerdata", "meta",
           "paginationlinksbecauseiwantittobetoolonglinks")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals {
+          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals {
         var __typename: String? = null
-        var _postisthemaintypebutweneedtomakethenamemuchlargerdata: List<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum?>? = null
-        var _meta: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Meta? = null
-        var _paginationlinksbecauseiwantittobetoolonglinks: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks? = null
+        var _postisthemaintypebutweneedtomakethenamemuchlargerdata: List<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum?>? = null
+        var _meta: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Meta? = null
+        var _paginationlinksbecauseiwantittobetoolonglinks: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -78,7 +77,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
           }
         }
 
-        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals(
+        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals(
           __typename = __typename ?: missingField(reader, "__typename"),
           postisthemaintypebutweneedtomakethenamemuchlargerdata = _postisthemaintypebutweneedtomakethenamemuchlargerdata,
           meta = _meta,
@@ -89,7 +88,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals,
+        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals,
       ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -107,12 +106,12 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
       }
 
       private object Meta :
-          Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Meta>
+          Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Meta>
           {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Meta {
+            MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Meta {
           var _totalCount: Int? = null
 
           while (true) {
@@ -122,7 +121,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
             }
           }
 
-          return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Meta(
+          return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Meta(
             totalCount = _totalCount
           )
         }
@@ -130,7 +129,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Meta,
+          `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Meta,
         ) {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -138,15 +137,15 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
       }
 
       private object Paginationlinksbecauseiwantittobetoolonglinks :
-          Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks>
+          Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks>
           {
         public val RESPONSE_NAMES: List<String> = listOf("__typename",
             "pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks {
+            MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks {
           var __typename: String? = null
-          var _pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast? = null
+          var _pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
@@ -156,7 +155,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
             }
           }
 
-          return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks(
+          return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks(
             __typename = __typename ?: missingField(reader, "__typename"),
             pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast = _pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast
           )
@@ -165,7 +164,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks,
+          `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks,
         ) {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -177,12 +176,12 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         }
 
         private object Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast :
-            Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast>
+            Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast>
             {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "page", "limit")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast {
+              MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast {
             var __typename: String? = null
             var _page: Int? = null
             var _limit: Int? = null
@@ -196,7 +195,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
               }
             }
 
-            return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast(
+            return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast(
               __typename = __typename ?: missingField(reader, "__typename"),
               page = _page,
               limit = _limit
@@ -206,7 +205,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
           override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast,
+            `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Data.Postspagearealmostlongenoughtobecomicals.Paginationlinksbecauseiwantittobetoolonglinks.Pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast,
           ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -223,17 +222,17 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
   }
 
   public object Postisthemaintypebutweneedtomakethenamemuchlargerdatum :
-      Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum>
+      Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum>
       {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "title",
         "thisisauserbutwecallitsomethingmuchlarger")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum {
+        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum {
       var __typename: String? = null
       var _id: String? = null
       var _title: String? = null
-      var _thisisauserbutwecallitsomethingmuchlarger: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger? = null
+      var _thisisauserbutwecallitsomethingmuchlarger: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -245,7 +244,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         }
       }
 
-      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
+      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
         __typename = __typename ?: missingField(reader, "__typename"),
         id = _id,
         title = _title,
@@ -256,7 +255,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum,
+      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum,
     ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -273,17 +272,17 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     }
 
     private object Thisisauserbutwecallitsomethingmuchlarger :
-        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger>
+        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger>
         {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name",
           "whereintheworldiscarmensandiegoaddress")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger {
+          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger {
         var __typename: String? = null
         var _id: String? = null
         var _name: String? = null
-        var _whereintheworldiscarmensandiegoaddress: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress? = null
+        var _whereintheworldiscarmensandiegoaddress: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -295,7 +294,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
           }
         }
 
-        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger(
+        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger(
           __typename = __typename ?: missingField(reader, "__typename"),
           id = _id,
           name = _name,
@@ -306,7 +305,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger,
+        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger,
       ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -325,16 +324,16 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
   }
 
   public object Whereintheworldiscarmensandiegoaddress :
-      Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress>
+      Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress>
       {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "city",
         "geoisnotagembutageographiclocationinthiscase")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress {
+        MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress {
       var __typename: String? = null
       var _city: String? = null
-      var _geoisnotagembutageographiclocationinthiscase: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase? = null
+      var _geoisnotagembutageographiclocationinthiscase: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -345,7 +344,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
         }
       }
 
-      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress(
+      return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress(
         __typename = __typename ?: missingField(reader, "__typename"),
         city = _city,
         geoisnotagembutageographiclocationinthiscase = _geoisnotagembutageographiclocationinthiscase
@@ -355,7 +354,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress,
+      `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress,
     ) {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -369,12 +368,12 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
     }
 
     private object Geoisnotagembutageographiclocationinthiscase :
-        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase>
+        Adapter<MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase>
         {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "lat", "lng")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase {
+          MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase {
         var __typename: String? = null
         var _lat: Double? = null
         var _lng: Double? = null
@@ -388,7 +387,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
           }
         }
 
-        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase(
+        return MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase(
           __typename = __typename ?: missingField(reader, "__typename"),
           lat = _lat,
           lng = _lng
@@ -398,7 +397,7 @@ public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery_Re
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuery.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
+        `value`: MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
       ) {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

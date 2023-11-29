@@ -16,7 +16,7 @@ import com.example.flatten_explicitly.type.GraphQLString
 import com.example.flatten_explicitly.type.PostsPageAreAlmostLongEnoughToBeComical
 import kotlin.collections.List
 
-public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongQuerySelections {
+public object MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLongSelections {
   private val __postspagearealmostlongenoughtobecomicals: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
