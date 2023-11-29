@@ -87,24 +87,21 @@ internal fun walk(
     matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
     matchedIrModels: MutableList<ArrayDeque<IrModel>>,
 ) {
-  startFromIrModelGroups.forEach { startFromImageModelGroup ->
+  startFromIrModelGroups.forEach { startFromIrModelGroup ->
     if (initial) {
       // Initial case is strange where the first Class name will "match" the baseModelId
-      if (!matchName(node.name, startFromImageModelGroup.baseModelId)) {
+      if (!matchName(node.name, startFromIrModelGroup.baseModelId)) {
         return
       }
-//      node.children.forEach { (_, childNode) ->
-//        walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
-//      }
-      performInitialWalk(node, startFromImageModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+      performInitialWalk(node, startFromIrModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
     } else {
-      startFromImageModelGroup.models.forEach { startFromIm ->
+      startFromIrModelGroup.models.forEach { startFromIm ->
         // Check for the name match
         if (matchName(node.name, startFromIm.modelName)) {
           // Matched, add to the dequeues
           val irModelGroupDeque = matchedIrModelGroups.last()
           val irModelDeque = matchedIrModels.last()
-          irModelGroupDeque.add(startFromImageModelGroup)
+          irModelGroupDeque.add(startFromIrModelGroup)
           irModelDeque.add(startFromIm)
 
           if (node.hasExtracted) {
@@ -130,14 +127,14 @@ internal fun walk(
 
 internal fun performInitialWalk(
     node: ExplicitlyRemovedNode,
-    startFromImageModelGroup: IrModelGroup,
+    startFromIrModelGroup: IrModelGroup,
     startFromIrModelGroups: List<IrModelGroup>,
     matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
     matchedIrModels: MutableList<ArrayDeque<IrModel>>,
 ) {
   // Check if it is a fragment
-  if (startFromImageModelGroup.baseModelId.startsWith("fragmentData.") || startFromImageModelGroup.baseModelId.startsWith("fragmentInterface.")) {
-    performInitialFragmentWalk(node, startFromImageModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+  if (startFromIrModelGroup.baseModelId.startsWith("fragmentData.") || startFromIrModelGroup.baseModelId.startsWith("fragmentInterface.")) {
+    performInitialFragmentWalk(node, startFromIrModelGroup, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
   } else {
     node.children.forEach { (_, childNode) ->
       walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
@@ -147,37 +144,37 @@ internal fun performInitialWalk(
 
 internal fun performInitialFragmentWalk(
     node: ExplicitlyRemovedNode,
-    startFromImageModelGroup: IrModelGroup,
+    startFromIrModelGroup: IrModelGroup,
     startFromIrModelGroups: List<IrModelGroup>,
     matchedIrModelGroups: MutableList<ArrayDeque<IrModelGroup>>,
     matchedIrModels: MutableList<ArrayDeque<IrModel>>,
 ) {
-  val followProcedure = sanityCheckFragment(node, startFromImageModelGroup)
+  val followProcedure = sanityCheckFragment(node, startFromIrModelGroup)
   // We can't find anything to match, so just return
   if (followProcedure == -1) return
 
   if (followProcedure == 0) { // Nested Fragment
     walk(false, node, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
-  } else { // Nested Data class
-    // We don't support this yet, potentially in the future
-    //    node.children.forEach { (_, childNode) ->
-    //      walk(false, childNode, startFromImageModelGroup.models[0].modelGroups, matchedIrModelGroups, matchedIrModels)
-    //    }
+  } else if (followProcedure == 1) {
+    // Nested Data class, walk it like an operation
+    node.children.forEach { (_, childNode) ->
+      walk(false, childNode, startFromIrModelGroups, matchedIrModelGroups, matchedIrModels)
+    }
     return
   }
 }
 
-internal fun sanityCheckFragment(node: ExplicitlyRemovedNode, startFromImageModelGroup: IrModelGroup): Int {
+internal fun sanityCheckFragment(node: ExplicitlyRemovedNode, startFromIrModelGroup: IrModelGroup): Int {
   return when {
-    startFromImageModelGroup.models.size != 1 -> {
+    startFromIrModelGroup.models.size != 1 -> {
       -1
     }
 
-    startFromImageModelGroup.models[0].modelName == node.name -> {
+    startFromIrModelGroup.models[0].modelName == node.name -> {
       0
     }
 
-    startFromImageModelGroup.models[0].modelName == "Data" -> {
+    startFromIrModelGroup.models[0].modelName == "Data" -> {
       1
     }
 
@@ -418,12 +415,12 @@ private fun getTerminalIrModel(
   return terminalIrModel
 }
 
-private val operationSuffix = arrayOf("Query", "Subscription", "Mutation")
+private val operationSuffix = arrayOf("Query", "Subscription", "Mutation", "Impl")
 private fun matchName(nodeName: String, modelName: String): Boolean {
   // Based on IrModelType naming
   val split = modelName.split('.')
   return if (split.size > 1) {
-    // Since "Query", "Subscription" or "Mutation" are not always appended at this instance
+    // Since "Query", "Subscription" or "Mutation" are not always appended at this instance. operationBased can append "Impl" to the end
     split.any {
       nodeName == it || operationSuffix.any { suffix -> it == nodeName.removeSuffix(suffix) }
     }
