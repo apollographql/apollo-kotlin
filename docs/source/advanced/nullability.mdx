@@ -3,7 +3,7 @@ title: Handling nullability and errors
 description: Make your queries even more typesafe
 ---
 
-> ⚠️ **Nullability annotations are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Data%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+> ⚠️ **Nullability annotations are still discussed in the [GraphQL nullability working group](https://github.com/graphql/nullability-wg/) and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Data%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/). 
 
 ## Nullability in GraphQL
 
@@ -73,9 +73,11 @@ fun User(user: GetUserQuery.User) {
 ```
 
 To help deal with those issues and make sure your UI code only sees what make sense for your app, Apollo Kotlin offers three tools:
-* error aware parsing
+* Error aware parsing
 * `@catch`
-* `@semanticNonNull` 
+* `@semanticNonNull`
+
+> These tools change the GraphQL default from "always handle field errors" to "opt-in field errors handling"
 
 ## Error aware parsing
 
