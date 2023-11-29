@@ -203,3 +203,87 @@ Similarly to `@catch`, `@semanticNonNull` supports a `level` argument for lists:
 # User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
 extend type User @semanticNonNull(field: "friends", level: 1)
 ```
+
+## Choosing your error handling preferences
+
+Different teams have different needs: 
+
+* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNull`.
+* Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices. 
+  * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
+  * Some of them are ok with failing the whole request to simplify the client code because errors are very rare or just because all the data is equally important and partial data cannot be displayed.
+
+Finally, some teams want to opt-in error aware parsing without breaking their existing codebase. For those cases, `@ignoreErrors` can allow a more progressive solution. 
+
+### `@ignoreErrors`
+
+`@ignoreErrors` is an operation directive that disable error aware parsing for that operation. Effectively, it's as-if error aware parsing was disabled.
+
+```graphql
+"""
+Never throw on errors.
+
+This is used for backward compatibility for clients where this was the default behaviour.
+"""
+directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
+```
+
+Enabling error aware parsing and adding `@ignoreErrors` to all your operation is a no-op operation. You can then progressively remove `@ignoreErrors` from your operations progressively. 
+
+### decision flowchart 
+
+```mermaid
+
+flowchart TD
+A(Are you happy with the current nullability\nand error handling?) --> |YES| B[Do nothing]
+B --> V
+A --> |NO| D[<a href='http://google.com'>Import the `@catch` directive</a>\n]
+D --> E(Do you want partial data by default?)
+E --> |partial data by default| F["Catch to null by default\nextend schema @catch(to: NULL)"]
+F --> J["Use `@catch(to: RESULT)`\nto get the inline errors\nin your Kotlin code"]
+J --> H("Do you have fields in your schema\nthat are nullable only for error reasons?")
+H --> |no|V
+H --> |yes|I["import the `@semanticNonNull` directive"]
+I --> K["Add `@semanticNonNull`\nto appropriate fields in your schema"]
+K --> L["Those field are now generated\nas non-null in Kotlin"]
+L --> V["The end 🎉"]
+E --> |no-errors by default| P["Errors stop the parsing.\nresponse.data is new error-free"]
+P --> G("Do you have existing code that\nhandles partial data?")
+M --> R["Consider a single\n`@ignoreErrors` operation"]
+R --> O["catch errors with\n`@catch(to: RESULT)`\nand let partial data through"]
+O --> |test|Q("Is it working as expected?")
+Q --> |yes|S["Remove `@ignoreErrors`"]
+S --> T("Are there any `@ignoreErrors`\noperations left?")
+T --> |yes|R
+T --> |no|H
+Q --> |no|O
+G --> |yes| M["Add `@ignoreErrors` to every\noperation"]
+G --> |no|N["Use `@catch(to: RESULT)`\nto get the inline errors\nin your Kotlin code"]
+N --> H
+
+A:::question
+H:::question
+E:::question
+Q:::question
+T:::question
+G:::question
+D:::action
+K:::action
+S:::action
+M:::action
+N:::action
+I:::action
+J:::action
+F:::action
+O:::action
+V:::success
+R:::info
+P:::info
+B:::info
+L:::info
+
+classDef question fill:#3F20BA,stroke:#0A061E,stroke-width:2px;
+classDef action fill:#1B7471,stroke:#0A061E,stroke-width:1px;
+classDef info fill:#135250,stroke:#0A061E,stroke-width:1px;
+classDef success fill:#0F417A,stroke:#0A061E,stroke-width:2px;
+```
