@@ -188,7 +188,7 @@ class User(
 )
 ```
 
-If, by any chance, an error happens that you still want to handle on that field, you can use `@catch` to map name to a `FieldResult<String>` property containing a non-null value or an error.
+If, by any chance, an error happens that you still want to handle on that field, you can use `@catch` to map `name` to a `FieldResult<String>` property containing a non-null value or an error.
 
 ```kotlin
 user.name.valueOrNull // "Luke Skywalker"
