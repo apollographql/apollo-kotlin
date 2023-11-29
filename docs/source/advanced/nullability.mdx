@@ -80,7 +80,7 @@ To help deal with those issues and make sure your UI code only sees what make se
 
 With error aware parsing, the errors are detected at parsing time, so you don't have to look them up in the `errors` array. Any GraphQL error stops the parsing and you are guaranteed that `response.data` is actual semantic data and does not contain any error. 
 
-In order to opt-in error aware parsing, create a `extra.graphqls` file next to your schema and import the `@catch` directive:
+In order to opt-in error aware parsing, create an `extra.graphqls` file next to your schema and import the `@catch` directive:
 
 ```graphql
 # Import the `@catch` directive definition. 
