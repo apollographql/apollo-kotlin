@@ -217,7 +217,7 @@ Finally, some teams want to opt-in error aware parsing without breaking their ex
 
 ### `@ignoreErrors`
 
-`@ignoreErrors` is an operation directive that disable error aware parsing for that operation. Effectively, it's as-if error aware parsing was disabled.
+`@ignoreErrors` is an operation directive that disables error aware parsing for a specific operation:
 
 ```graphql
 """
@@ -228,12 +228,11 @@ This is used for backward compatibility for clients where this was the default b
 directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 ```
 
-Enabling error aware parsing and adding `@ignoreErrors` to all your operation is a no-op operation. You can then progressively remove `@ignoreErrors` from your operations progressively. 
+Enabling error aware parsing and adding `@ignoreErrors` to all your operations is a no-op. You can then remove `@ignoreErrors` from your operations progressively. 
 
 ### decision flowchart 
 
 ```mermaid
-
 flowchart TD
     A("Are you happy with the current nullability\nand error handling?") --> |YES| B["Do nothing"]
     B --> V
