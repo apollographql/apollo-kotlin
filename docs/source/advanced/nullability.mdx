@@ -10,8 +10,7 @@ GraphQL does not have a `Result` type. If a field errors, it is set to `null` in
 ```graphql
 type User {
   id: ID!
-  # name is nullable to account for possible errors 
-  # but in practice this happens only in error cases
+  # name is nullable, but in practice this happens only in error cases
   name: String
   avatarUrl: String
 }
