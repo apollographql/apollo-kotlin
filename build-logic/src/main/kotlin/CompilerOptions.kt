@@ -63,6 +63,9 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
 private fun Project.treatWarningsAsErrors() {
   tasks.withType(KotlinCompile::class.java) {
     kotlinOptions {
+      /**
+       * sadly languageVersion = 1.5 outputs a warning that we can't selectively disable
+       */
       //allWarningsAsErrors = true
     }
   }
