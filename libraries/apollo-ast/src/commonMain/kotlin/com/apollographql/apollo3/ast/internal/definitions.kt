@@ -287,29 +287,43 @@ type User {
 }
 ```
 
-@param field the name of the field if applied to an object definition or null if applied
-to a field definition
+The `field` argument is the name of the field if `@semanticNonNull` is applied to an object definition.
+If `@semanticNonNull` is applied to a field definition, `field` must be null.
 
-@param level in case of a list type, level is the dimension where to apply the modifier,
-starting at 0 if there is no list.
-If level is null, the modifier is applied to all levels
+The `level` argument can be used to indicate what level is semantically non null in case of lists.
+`level` starts at 0 if there is no list. If `level` is null, all levels are semantically non null.
 ""${'"'}
 directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
 
 ""${'"'}
-Indicates that a field acts as an error boundary in case of a GraphQL error.
+Indicates that the given position stops GraphQL errors to propagate up the tree.
 
-By default, the first GraphQL error throws and fails the whole response.
+By default, the first GraphQL error stops the parsing and fails the whole response.
+Using `@catch` recovers from this error and allows the parsing to continue.
 
-@param level in case of a list type, level is the dimension where to apply the modifier,
-starting at 0 if there is no list.
-If level is null, the modifier is applied to all levels
+`@catch` can be used on the schema definition, in which case, it is the default for
+every field. If no `@catch` is applied to the schema definition, errors are not
+caught by default and the parsing stops at the first error.
+
+The `to` argument can be used to choose how to recover from errors. See `CatchTo`
+for more details.
+
+The `level` argument can be used to indicate where to catch in case of lists.
+`level` starts at 0 if there is no list. If `level` is null, all levels catch.
 ""${'"'}
-directive @catch(to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD
+directive @catch(to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD | SCHEMA
 
 enum CatchTo {
-    NULL,
+    ""${'"'}
+    Map to a result type that can contain either a value or an error.
+    ""${'"'}
     RESULT,
+    ""${'"'}
+    Map to a nullable type that will be null in the case of error.
+    This does not allow to distinguish between semantic null and error but
+    can be simpler in some cases.
+    ""${'"'}
+    NULL,
 }
 
 ""${'"'}

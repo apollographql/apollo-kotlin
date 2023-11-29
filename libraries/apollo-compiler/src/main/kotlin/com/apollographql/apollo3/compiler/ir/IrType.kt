@@ -43,11 +43,33 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed interface IrType {
+  /**
+   * This type may by an error
+   * true if the type is nullable in the server schema
+   */
+  val maybeError: Boolean
+
+  /**
+   * This type is nullable in Kotlin
+   */
   val nullable: Boolean
+
+  /**
+   * This type is optional in Kotlin
+   */
   val optional: Boolean
+
+  /**
+   * reading this type must catch exceptions during parsing
+   */
   val catchTo: IrCatchTo
 
-  fun copyWith(nullable: Boolean = this.nullable, optional: Boolean = this.optional, catchTo: IrCatchTo = this.catchTo): IrType
+  fun copyWith(
+      maybeError: Boolean = this.maybeError,
+      nullable: Boolean = this.nullable,
+      optional: Boolean = this.optional,
+      catchTo: IrCatchTo = this.catchTo,
+  ): IrType
   fun rawType(): IrNamedType
 }
 
@@ -61,6 +83,7 @@ enum class IrCatchTo {
 fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
 fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
 fun IrType.catchTo(catchTo: IrCatchTo): IrType = copyWith(catchTo = catchTo)
+fun IrType.maybeError(maybeError: Boolean): IrType = copyWith(maybeError = maybeError)
 
 @Serializable
 @SerialName("list")
@@ -69,8 +92,9 @@ data class IrListType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
 
   override fun rawType() = ofType.rawType()
 }
@@ -88,8 +112,9 @@ data class IrScalarType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
   override fun rawType() = this
 }
 
@@ -100,8 +125,9 @@ data class IrInputObjectType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
   override fun rawType() = this
 }
 
@@ -112,8 +138,9 @@ data class IrEnumType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
   override fun rawType() = this
 }
 
@@ -124,8 +151,9 @@ data class IrObjectType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrNamedType {
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
   override fun rawType() = this
 }
 
@@ -155,11 +183,12 @@ internal data class IrModelType(
     override val nullable: Boolean = false,
     override val optional: Boolean = false,
     override val catchTo: IrCatchTo = IrCatchTo.NoCatch,
+    override val maybeError: Boolean = false,
 ) : IrNamedType {
   override val name: String
     get() = path
 
-  override fun copyWith(nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo)
+  override fun copyWith(maybeError: Boolean, nullable: Boolean, optional: Boolean, catchTo: IrCatchTo): IrType = copy(nullable = nullable, optional = optional, catchTo = catchTo, maybeError = maybeError)
   override fun rawType() = this
 }
 
@@ -178,32 +207,32 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
 
 internal fun GQLType.toIr(schema: Schema): IrType {
   return when (this) {
-    is GQLNonNullType -> type.toIr(schema).copyWith(nullable = false)
-    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true)
+    is GQLNonNullType -> type.toIr(schema).copyWith(nullable = false, maybeError = false)
+    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true, maybeError = true)
     is GQLNamedType -> {
       when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
-          IrScalarType(name, nullable = true)
+          IrScalarType(name, nullable = true, maybeError = true)
         }
 
         is GQLEnumTypeDefinition -> {
-          IrEnumType(name, nullable = true)
+          IrEnumType(name, nullable = true, maybeError = true)
         }
 
         is GQLInputObjectTypeDefinition -> {
-          IrInputObjectType(name, nullable = true)
+          IrInputObjectType(name, nullable = true, maybeError = true)
         }
 
         is GQLObjectTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
 
         is GQLInterfaceTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
 
         is GQLUnionTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
       }
     }

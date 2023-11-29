@@ -14,7 +14,18 @@ dependencies {
 }
 
 apollo {
-  service("service") {
-    packageName.set("com.example")
+  service("default") {
+    srcDir("src/main/graphql/default")
+    packageName.set("default")
+  }
+  service("null") {
+    srcDir("src/main/graphql/default")
+    srcDir("src/main/graphql/null")
+    packageName.set("null")
+  }
+  service("result") {
+    srcDir("src/main/graphql/default")
+    srcDir("src/main/graphql/result")
+    packageName.set("result")
   }
 }

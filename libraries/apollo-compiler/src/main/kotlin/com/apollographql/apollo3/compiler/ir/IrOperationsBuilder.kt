@@ -88,6 +88,8 @@ internal class IrOperationsBuilder(
     else -> error("codegenModels='$codegenModels' is not supported")
   }
 
+  val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
+
   fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = fragmentDefinitions.map { it.toIr() }
@@ -482,7 +484,7 @@ internal class IrOperationsBuilder(
       val deprecationReason: String?,
       val optInFeature: String?,
       val nooes: List<Int?>,
-      val catchs: List<Catch>,
+      val catches: List<Catch>,
       val forceOptional: Boolean,
 
       /**
@@ -542,7 +544,7 @@ internal class IrOperationsBuilder(
           nooes = nooeLevels,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catchs = gqlField.directives.findCatches(schema)
+          catches = gqlField.directives.findCatches(schema)
       )
     }.groupBy {
       it.responseName
@@ -624,7 +626,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catchs, 0)
+          .catch(first.catches, defaultCatch, 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -689,13 +691,16 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun IrType.catch(catchLevels: List<Catch>, level: Int): IrType {
-      val catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level }
+    private fun IrType.catch(catchLevels: List<Catch>, defaultCatch: Catch?, level: Int): IrType {
+      var catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level }
       var type = when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.catch(catchLevels, level + 1))
+        is IrListType -> copy(ofType = ofType.catch(catchLevels, defaultCatch, level + 1))
       }
 
+      if (catchLevel == null && type.maybeError) {
+        catchLevel = defaultCatch
+      }
       if (catchLevel != null) {
         type = type.catchTo(catchLevel.to.toIr())
         if (catchLevel.to == CatchTo.NULL) {

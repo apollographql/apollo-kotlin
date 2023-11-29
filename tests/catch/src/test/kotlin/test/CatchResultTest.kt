@@ -1,31 +1,24 @@
 package test
 
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.errorOrNull
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseResponse
+import com.apollographql.apollo3.api.valueOrNull
 import com.apollographql.apollo3.api.valueOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
-import default.PriceNullQuery
-import default.ProductIgnoreErrorsQuery
-import default.ProductNullQuery
-import default.ProductQuery
-import default.ProductResultQuery
-import default.UserNullQuery
-import default.UserQuery
-import default.UserResultQuery
-import okio.Buffer
-import org.intellij.lang.annotations.Language
+import result.PriceNullQuery
+import result.ProductIgnoreErrorsQuery
+import result.ProductNullQuery
+import result.ProductQuery
+import result.ProductResultQuery
+import result.UserNullQuery
+import result.UserQuery
+import result.UserResultQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class CatchTest {
+class CatchResultTest {
   @Test
   fun userOnUserNameError() {
     val response = UserQuery().parseResponse(userNameError)
@@ -52,21 +45,21 @@ class CatchTest {
   fun userThrowOnUserSuccess() {
     val response = UserQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.name)
+    assertEquals("Pancakes", response.data!!.user.valueOrNull?.name?.valueOrNull)
   }
 
   @Test
   fun userResultOnUserSuccess() {
     val response = UserResultQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name)
+    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name.valueOrNull)
   }
 
   @Test
   fun userNullOnUserSuccess() {
     val response = UserNullQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user!!.name)
+    assertEquals("Pancakes", response.data!!.user!!.name.valueOrNull)
   }
 
   @Test
@@ -98,7 +91,7 @@ class CatchTest {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.price)
+    assertNull(response.data?.product?.valueOrNull?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 
@@ -107,7 +100,7 @@ class CatchTest {
     val response = PriceNullQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.price)
+    assertNull(response.data?.product?.valueOrNull?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 
@@ -116,67 +109,7 @@ class CatchTest {
     val response = PriceNullQuery().parseResponse(productPriceNull)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.price)
+    assertNull(response.data?.product?.valueOrNull?.price)
     assertNull(response.errors)
   }
 }
-
-private fun String.jsonReader(): JsonReader = Buffer().writeUtf8(this).jsonReader()
-
-fun <D : Query.Data> Query<D>.parseResponse(json: String): ApolloResponse<D> = parseResponse(json.jsonReader(), null, CustomScalarAdapters.Empty, null)
-
-@Language("json")
-val userNameError = """
-    {
-      "errors": [
-        {
-          "path": ["user", "name"], 
-          "message": "cannot resolve name"
-        }
-      ],
-      "data": {
-        "user": {
-          "name": null
-        }
-      }
-    }
-  """.trimIndent()
-
-@Language("json")
-val userSuccess = """
-    {
-      "data": {
-        "user": {
-          "name": "Pancakes"
-        }
-      }
-    }
-  """.trimIndent()
-
-@Language("json")
-val productPriceError = """
-    {
-      "errors": [
-        {
-          "path": ["product", "price"], 
-          "message": "cannot resolve price"
-        }
-      ],
-      "data": {
-        "product": {
-          "price": null
-        }
-      }
-    }
-  """.trimIndent()
-
-@Language("json")
-val productPriceNull = """
-    {
-      "data": {
-        "product": {
-          "price": null
-        }
-      }
-    }
-  """.trimIndent()

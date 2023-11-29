@@ -1,8 +1,5 @@
 extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@semanticNonNull", "@catch"])
 
-#directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
-#directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) on FIELD
-
 enum CatchTo {
   NULL,
   THROW,
