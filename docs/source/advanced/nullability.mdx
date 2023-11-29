@@ -114,7 +114,8 @@ println(response.data) // null
 println(response.exception) // ApolloGraphQLException 
 ```
 
-This default makes it easy to handle errors as they are all handled at parsing time. If you see a `null` in `response.data`, you are guaranteed it is a semantic null and not an error, and you should probably handle it.
+This default makes it easy to handle errors as they are all handled at parsing time. 
+Any `null` in the response is guaranteed to be a semantic null and not an error, and you should probably handle it.
 
 Sometimes failing the whole query feels a bit overkill though. For those cases, you can handle errors with `@catch`.
 
