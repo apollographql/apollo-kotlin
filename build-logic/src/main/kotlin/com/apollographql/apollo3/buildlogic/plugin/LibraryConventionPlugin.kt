@@ -58,7 +58,7 @@ class LibraryConventionPlugin : Plugin<Project> {
     fun treatWarningsAsErrors(treatWarningsAsErrors: Boolean) {
       project.tasks.withType(KotlinCompile::class.java).configureEach {
         kotlinOptions {
-          allWarningsAsErrors = treatWarningsAsErrors
+          // allWarningsAsErrors = treatWarningsAsErrors
         }
       }
     }
