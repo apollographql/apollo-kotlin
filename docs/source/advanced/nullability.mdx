@@ -246,7 +246,7 @@ flowchart TD
     I --> K["Add `@semanticNonNull`\nto appropriate fields in your schema"]
     K --> L["Those field are now generated\nas non-null in Kotlin"]
     L --> V["The end 🎉"]
-    E --> |no-errors by default| P["Errors stop the parsing.\nresponse.data is new error-free"]
+    E --> |no-errors by default| P["Errors stop the parsing.\nresponse.data is now error-free"]
     P --> G("Do you have existing code that\nhandles partial data?")
     M --> R["Consider a single\n`@ignoreErrors` operation"]
     R --> O["catch errors with\n`@catch(to: RESULT)`\nand let partial data through"]
