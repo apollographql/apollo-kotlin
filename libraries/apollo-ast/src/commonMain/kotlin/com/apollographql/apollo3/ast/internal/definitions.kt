@@ -267,7 +267,7 @@ This directive can be applied on field definitions:
 
 ```graphql
 type User {
-    email: String @nullOnlyOnError
+    email: String @semanticNonNull
 }
 ```
 
@@ -275,7 +275,7 @@ It can also be applied on object type extensions for use in client applications 
 not own the base schema:
 
 ```graphql
-extend type User @nullOnlyOnError(field: "email")
+extend type User @semanticNonNull(field: "email")
 ```
 
 Control over list items is done using the `level` argument:
@@ -283,7 +283,7 @@ Control over list items is done using the `level` argument:
 ```graphql
 type User {
     # friends is nullable but friends[0] is null only on errors
-    friends: [User] @nullOnlyOnError(level: 1)
+    friends: [User] @semanticNonNull(level: 1)
 }
 ```
 
@@ -294,7 +294,7 @@ to a field definition
 starting at 0 if there is no list.
 If level is null, the modifier is applied to all levels
 ""${'"'}
-directive @nullOnlyOnError(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
 
 ""${'"'}
 Indicates that a field acts as an error boundary in case of a GraphQL error.

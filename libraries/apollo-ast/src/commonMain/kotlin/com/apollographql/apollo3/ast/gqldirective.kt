@@ -146,7 +146,7 @@ fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
 @ApolloInternal
 fun GQLFieldDefinition.findNooeLevels(schema: Schema): List<Int?> {
   return directives.filter {
-    schema.originalDirectiveName(it.name) == Schema.NULL_ONLY_ON_ERROR
+    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()
   }
@@ -155,7 +155,7 @@ fun GQLFieldDefinition.findNooeLevels(schema: Schema): List<Int?> {
 @ApolloInternal
 fun GQLTypeDefinition.findNooeLevels(fieldName: String, schema: Schema): List<Int?> {
   return directives.filter {
-    schema.originalDirectiveName(it.name) == Schema.NULL_ONLY_ON_ERROR
+    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
         && it.getArgument("field", schema)?.toStringOrNull() == fieldName
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()

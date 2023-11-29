@@ -205,7 +205,7 @@ class Schema internal constructor(
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
     const val CATCH = "catch"
-    const val NULL_ONLY_ON_ERROR = "nullOnlyOnError"
+    const val SEMANTIC_NON_NULL = "semanticNonNull"
     const val IGNORE_ERRORS = "ignoreErrors"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"

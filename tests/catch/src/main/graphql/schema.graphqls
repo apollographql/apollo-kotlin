@@ -1,6 +1,6 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@nullOnlyOnError", "@catch"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@semanticNonNull", "@catch"])
 
-#directive @nullOnlyOnError(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+#directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
 #directive @catch(if: Boolean! = true, to: CatchTo! = RESULT, level: Int = null) on FIELD
 
 enum CatchTo {
@@ -11,15 +11,15 @@ enum CatchTo {
 
 type Query {
   nullable: Int
-  nullOnlyOnError: Int @nullOnlyOnError
-  deep: [[[Int]]] @nullOnlyOnError
-  user: User @nullOnlyOnError
+  semanticNonNull: Int @semanticNonNull
+  deep: [[[Int]]] @semanticNonNull
+  user: User @semanticNonNull
   product: Product
 }
 
 type User {
-  name: String @nullOnlyOnError
-  friends: [User] @nullOnlyOnError
+  name: String @semanticNonNull
+  friends: [User] @semanticNonNull
 }
 
 

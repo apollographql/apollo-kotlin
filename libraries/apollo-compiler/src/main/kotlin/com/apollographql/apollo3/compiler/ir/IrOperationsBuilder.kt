@@ -510,7 +510,7 @@ internal class IrOperationsBuilder(
       parentTypeDefinition.findNooeLevels(gqlField.name, schema).let {
         if (it.isNotEmpty()) {
           check(nooeLevels.isEmpty()) {
-            "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+            "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
           }
           nooeLevels = it
         }
@@ -518,14 +518,14 @@ internal class IrOperationsBuilder(
 
       if (parentTypeDefinition.isFieldNonNull(gqlField.name, schema)) {
         check(nooeLevels.isEmpty()) {
-          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
         nooeLevels = listOf(0)
       }
 
       if (gqlField.directives.findNonnull(schema)) {
         check(nooeLevels.isEmpty()) {
-          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @nullOnlyOnError) in the schema."
+          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
         nooeLevels = listOf(0)
       }
@@ -674,12 +674,12 @@ internal class IrOperationsBuilder(
   }
 
   companion object {
-    private fun IrType.nooe(nullOnlyOnErrorLevels: List<Int?>, level: Int): IrType {
-      val isNonNull = nullOnlyOnErrorLevels.any { it == null || it == level }
+    private fun IrType.nooe(semanticNonNullLevels: List<Int?>, level: Int): IrType {
+      val isNonNull = semanticNonNullLevels.any { it == null || it == level }
 
       return when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.nooe(nullOnlyOnErrorLevels, level + 1))
+        is IrListType -> copy(ofType = ofType.nooe(semanticNonNullLevels, level + 1))
       }.let {
         if (isNonNull) {
           it.nullable(false)
