@@ -173,7 +173,7 @@ In those cases, you can mark a field as "semantic non-null" and the Apollo Kotli
 
 # Import the `@semanticNonNull` directive definition in addition to `@catch`. 
 extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "@semanticNonNull"])
-# make User.name nullable only on error
+# mark User.name as semantic non-null
 extend type User @semanticNonNull(field: "name")
 ```
 
