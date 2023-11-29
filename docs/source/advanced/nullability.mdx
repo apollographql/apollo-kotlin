@@ -84,7 +84,7 @@ In order to opt-in error aware parsing, create an `extra.graphqls` file next to 
 
 ```graphql
 # Import the `@catch` directive definition. 
-# When the `@catch` directive definition, parsers generate extra code to deal with errors.
+# When it is imported, parsers generate extra code to deal with errors.
 extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch"])
 ```
 
