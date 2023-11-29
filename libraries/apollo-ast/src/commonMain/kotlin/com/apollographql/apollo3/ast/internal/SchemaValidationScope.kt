@@ -16,6 +16,7 @@ import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
@@ -183,6 +184,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
   mergedScope.validateInputObjects()
+  mergedScope.validateCatch(mergedSchemaDefinition)
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -441,6 +443,54 @@ private fun ValidationScope.validateObjects() {
   }
 }
 
+private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?) {
+  val hasCatchDefinition = directiveDefinitions.any {
+    originalDirectiveName(it.key) == Schema.CATCH
+  }
+
+  if (!hasCatchDefinition) {
+    return
+  }
+
+  if (schemaDefinition == null) {
+    issues.add(OtherValidationIssue(
+        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        sourceLocation = null
+    ))
+    return
+  }
+
+
+  val catches = schemaDefinition.directives.filter {
+    originalDirectiveName(it.name) == Schema.CATCH
+  }
+
+  if (catches.isEmpty()) {
+    issues.add(OtherValidationIssue(
+        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        sourceLocation = schemaDefinition.sourceLocation
+    ))
+    return
+  } else if (catches.size > 1) {
+    issues.add(OtherValidationIssue(
+        message = "There can be only one `@catch` directive on the schema definition",
+        sourceLocation = schemaDefinition.sourceLocation
+    ))
+    return
+  }
+
+  val catch = catches.single()
+
+  catch.arguments.forEach {
+    if (it.name == "level" && it.value !is GQLNullValue) {
+      issues.add(OtherValidationIssue(
+          message = "The 'level' argument must be null when `@catch` is applied to the schema",
+          sourceLocation = it.sourceLocation
+      ))
+    }
+  }
+
+}
 private fun ValidationScope.validateInputObjects() {
   typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>().forEach { o ->
     if (o.inputFields.isEmpty()) {

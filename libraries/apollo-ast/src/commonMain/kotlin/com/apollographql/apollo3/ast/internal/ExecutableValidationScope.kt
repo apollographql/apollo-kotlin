@@ -344,6 +344,7 @@ internal class ExecutableValidationScope(
     validateCommon(this, selections, directives, rootTypeDefinition)
 
     fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
+
     issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
 
     val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentVariableUsages.get(it) ?: emptyList() } + variableUsages
