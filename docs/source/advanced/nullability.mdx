@@ -164,7 +164,7 @@ query GetUser {
 
 Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 
 
-But a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
+But a field like 'User.name' is _semantically non-null_: it should never be `null`, except when something goes really wrong.
 
 In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@semanticNonNull` to your `extra.graphqls` file:
 
