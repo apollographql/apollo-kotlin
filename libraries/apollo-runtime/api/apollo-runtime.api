@@ -34,6 +34,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
+	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;

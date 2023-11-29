@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -86,6 +87,12 @@ private constructor(
    */
   fun <D : Subscription.Data> subscription(subscription: Subscription<D>): ApolloCall<D> {
     return ApolloCall(this, subscription)
+  }
+
+  @Deprecated("Use close() instead", ReplaceWith("close()"), level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  fun dispose() {
+    close()
   }
 
   override fun close() {

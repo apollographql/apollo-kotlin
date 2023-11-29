@@ -41,7 +41,7 @@ interface MockServer : Closeable {
    */
   suspend fun url(): String
 
-  @Deprecated("use close instead", ReplaceWith("close"), DeprecationLevel.ERROR)
+  @Deprecated("use close instead", ReplaceWith("close()"), DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   suspend fun stop() = close()
 
@@ -265,7 +265,7 @@ fun MockServer(handler: MockServerHandler): MockServer =
         TcpServer(0),
         null)
 
-@Deprecated("Use enqueueString instead", ReplaceWith("enqueueString"), DeprecationLevel.ERROR)
+@Deprecated("Use enqueueString instead", ReplaceWith("enqueueString(string = string, delayMs = delayMs, statusCode = statusCode)"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
 
@@ -291,6 +291,13 @@ fun MultipartBody.enqueueStrings(parts: List<String>, responseDelayMillis: Long 
     enqueuePart(value.encodeUtf8(), index == parts.lastIndex)
   }
 }
+
+@Deprecated("Use enqueueStrings()", ReplaceWith("enqueueMultipart(\"application/json\").enqueueStrings(parts)"), level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("UNUSED_PARAMETER")
+fun MockServer.enqueueMultipart(
+    parts: List<String>
+): Nothing = TODO()
 
 @ApolloExperimental
 fun MockServer.enqueueMultipart(
