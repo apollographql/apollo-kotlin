@@ -74,7 +74,7 @@ fun User(user: GetUserQuery.User) {
 To help deal with those issues and make sure your UI code only sees what make sense for your app, Apollo Kotlin offers three tools:
 * error aware parsing
 * `@catch`
-* `@nullOnlyOnError` 
+* `@semanticNonNull` 
 
 ## Error aware parsing
 
@@ -161,21 +161,21 @@ query GetUser {
 }
 ```
 
-## Handle semantic non-null with `@nullOnlyOnError`
+## Handle semantic non-null with `@semanticNonNull`
 
 Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 
 
 But a field like 'User.name', it would make sense that it's always non-null unless something goes really wrong. 
 
-In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@nullOnlyOnError` to your `extra.graphqls` file:
+In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@semanticNonNull` to your `extra.graphqls` file:
 
 ```graphql
 # extra.graphqls
 
-# Import the `@nullOnlyOnError` directive definition in addition to `@catch`. 
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "@nullOnlyOnError"])
+# Import the `@semanticNonNull` directive definition in addition to `@catch`. 
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "@semanticNonNull"])
 # make User.name nullable only on error
-extend type User @nullOnlyOnError(field: "name")
+extend type User @semanticNonNull(field: "name")
 ```
 
 `name` is now a non-null Kotlin types:
@@ -196,10 +196,10 @@ user.name.valueOrNull // "Luke Skywalker"
 user.name.errorOrNull // null
 ```
 
-Similarly to `@catch`, `@nullOnlyOnError` supports a `level` argument for lists:
+Similarly to `@catch`, `@semanticNonNull` supports a `level` argument for lists:
 
 ```graphql
 # User.friends is generated a nullable
 # User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
-extend type User @nullOnlyOnError(field: "friends", level: 1)
+extend type User @semanticNonNull(field: "friends", level: 1)
 ```
