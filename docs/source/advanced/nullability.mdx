@@ -166,7 +166,7 @@ Even with automatic detection of errors and handling of partial data like descri
 
 But a field like 'User.name' is _semantically non-null_: it should never be `null`, except when something goes really wrong.
 
-In those cases, you can mark a field as "null only on error" and the Apollo Kotlin compiler will generate it as non-nullable even if nullable in the server schema. To do so, add `@semanticNonNull` to your `extra.graphqls` file:
+In those cases, you can mark a field as "semantic non-null" and the Apollo Kotlin compiler will generate it as non-nullable even though it is nullable in the server schema. To do so, add `@semanticNonNull` to your `extra.graphqls` file:
 
 ```graphql
 # extra.graphqls
