@@ -49,7 +49,7 @@ class CatchTest {
   }
 
   @Test
-  fun userThrowOnUserSuccess() {
+  fun userOnUserSuccess() {
     val response = UserQuery().parseResponse(userSuccess)
 
     assertEquals("Pancakes", response.data!!.user.name)

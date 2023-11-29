@@ -77,7 +77,8 @@ fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirect
 
 enum class CatchTo {
   RESULT,
-  NULL
+  NULL,
+  THROW
 }
 
 @ApolloInternal
@@ -124,6 +125,7 @@ private fun GQLValue?.toCatchTo(): CatchTo {
     is GQLEnumValue -> when (this.value) {
       "NULL" -> CatchTo.NULL
       "RESULT" -> CatchTo.RESULT
+      "THROW" -> CatchTo.THROW
       else -> error("Unknown CatchTo value: ${this.value}")
     }
 

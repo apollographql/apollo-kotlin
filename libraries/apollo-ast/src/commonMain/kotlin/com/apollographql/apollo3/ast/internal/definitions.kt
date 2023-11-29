@@ -301,8 +301,9 @@ Indicates that the given position stops GraphQL errors to propagate up the tree.
 By default, the first GraphQL error stops the parsing and fails the whole response.
 Using `@catch` recovers from this error and allows the parsing to continue.
 
-`@catch` can be used on the schema definition, in which case, it is the default for
-every field. If no `@catch` is applied to the schema definition, errors are not
+`@catch` can be used on the schema definition. In this case, it is the default for
+every field that can return an error (nullable fields).
+If no `@catch` is applied to the schema definition, errors are not
 caught by default and the parsing stops at the first error.
 
 The `to` argument can be used to choose how to recover from errors. See `CatchTo`
@@ -324,12 +325,16 @@ enum CatchTo {
     can be simpler in some cases.
     ""${'"'}
     NULL,
+    ""${'"'}
+    Do not catch and let any exception through
+    ""${'"'}
+    THROW
 }
 
 ""${'"'}
-Never throw on errors.
+Never throw on field errors.
 
 This is used for backward compatibility for clients where this was the default behaviour.
 ""${'"'}
-directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
+directive @ignoreFieldErrors on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

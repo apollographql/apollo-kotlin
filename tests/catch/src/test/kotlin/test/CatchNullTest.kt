@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.api.errorOrNull
+import com.apollographql.apollo3.api.valueOrNull
 import com.apollographql.apollo3.api.valueOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import `null`.PriceNullQuery
@@ -8,6 +8,7 @@ import `null`.ProductIgnoreErrorsQuery
 import `null`.ProductNullQuery
 import `null`.ProductQuery
 import `null`.ProductResultQuery
+import `null`.ProductThrowQuery
 import `null`.UserNullQuery
 import `null`.UserQuery
 import `null`.UserResultQuery
@@ -30,18 +31,18 @@ class CatchNullTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
-    assertEquals("cannot resolve name", response.data?.user?.errorOrNull?.message)
+    assertNull(response.data?.user?.valueOrNull?.name)
   }
 
   @Test
   fun userNullOnUserNameError() {
     val response = UserNullQuery().parseResponse(userNameError)
 
-    assertNull(response.data!!.user)
+    assertNull(response.data!!.user?.name)
   }
 
   @Test
-  fun userThrowOnUserSuccess() {
+  fun userOnUserSuccess() {
     val response = UserQuery().parseResponse(userSuccess)
 
     assertEquals("Pancakes", response.data!!.user?.name)
@@ -65,23 +66,31 @@ class CatchNullTest {
   fun productOnProductPriceError() {
     val response = ProductQuery().parseResponse(productPriceError)
 
+    assertNotNull(response.data)
     val exception = response.exception
     assertIs<ApolloGraphQLException>(exception)
     assertEquals("cannot resolve price", exception.error.message)
   }
 
   @Test
+  fun productThrowOnProductPriceError() {
+    val response = ProductThrowQuery().parseResponse(productPriceError)
+
+    assertNull(response.data)
+  }
+
+  @Test
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
-    assertEquals("cannot resolve price", response.data?.product?.errorOrNull?.message)
+    assertNull(null, response.data?.product?.valueOrNull?.price)
   }
 
   @Test
   fun productNullOnProductPriceError() {
     val response = ProductNullQuery().parseResponse(productPriceError)
 
-    assertNull(response.data?.product)
+    assertNull(response.data?.product?.price)
     assertNotNull(response.data)
   }
 

@@ -88,7 +88,7 @@ internal class IrOperationsBuilder(
     else -> error("codegenModels='$codegenModels' is not supported")
   }
 
-  val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
+  private val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
 
   fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
@@ -715,6 +715,7 @@ internal class IrOperationsBuilder(
       return when (this) {
         CatchTo.RESULT -> IrCatchTo.Result
         CatchTo.NULL -> IrCatchTo.Null
+        CatchTo.THROW -> IrCatchTo.NoCatch
       }
     }
 
