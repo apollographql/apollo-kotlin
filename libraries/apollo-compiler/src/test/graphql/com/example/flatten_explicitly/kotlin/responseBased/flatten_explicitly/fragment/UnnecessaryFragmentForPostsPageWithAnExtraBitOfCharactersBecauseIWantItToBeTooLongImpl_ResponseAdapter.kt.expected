@@ -35,7 +35,7 @@ public object
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data {
       var __typename: String? = null
-      var _postisthemaintypebutweneedtomakethenamemuchlargerdata: List<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum?>? = null
+      var _postisthemaintypebutweneedtomakethenamemuchlargerdata: List<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum?>? = null
       var _meta: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Meta? = null
       var _paginationlinksbecauseiwantittobetoolonglinks: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Paginationlinksbecauseiwantittobetoolonglinks? = null
 
@@ -75,196 +75,6 @@ public object
       writer.name("paginationlinksbecauseiwantittobetoolonglinks")
       Paginationlinksbecauseiwantittobetoolonglinks.obj().nullable().toJson(writer,
           customScalarAdapters, value.paginationlinksbecauseiwantittobetoolonglinks)
-    }
-
-    private object Postisthemaintypebutweneedtomakethenamemuchlargerdatum :
-        Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum>
-        {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "title",
-          "thisisauserbutwecallitsomethingmuchlarger")
-
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum {
-        var __typename: String? = null
-        var _id: String? = null
-        var _title: String? = null
-        var _thisisauserbutwecallitsomethingmuchlarger: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger? = null
-
-        while (true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _title = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _thisisauserbutwecallitsomethingmuchlarger = Thisisauserbutwecallitsomethingmuchlarger.obj().nullable().fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
-          __typename = __typename ?: missingField(reader, "__typename"),
-          id = _id,
-          title = _title,
-          thisisauserbutwecallitsomethingmuchlarger = _thisisauserbutwecallitsomethingmuchlarger
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum,
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("id")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.id)
-
-        writer.name("title")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.title)
-
-        writer.name("thisisauserbutwecallitsomethingmuchlarger")
-        Thisisauserbutwecallitsomethingmuchlarger.obj().nullable().toJson(writer,
-            customScalarAdapters, value.thisisauserbutwecallitsomethingmuchlarger)
-      }
-
-      private object Thisisauserbutwecallitsomethingmuchlarger :
-          Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger>
-          {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name",
-            "whereintheworldiscarmensandiegoaddress")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger {
-          var __typename: String? = null
-          var _id: String? = null
-          var _name: String? = null
-          var _whereintheworldiscarmensandiegoaddress: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress? = null
-
-          while (true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _id = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> _whereintheworldiscarmensandiegoaddress = Whereintheworldiscarmensandiegoaddress.obj().nullable().fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger(
-            __typename = __typename ?: missingField(reader, "__typename"),
-            id = _id,
-            name = _name,
-            whereintheworldiscarmensandiegoaddress = _whereintheworldiscarmensandiegoaddress
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger,
-        ) {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-          writer.name("id")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.id)
-
-          writer.name("name")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-          writer.name("whereintheworldiscarmensandiegoaddress")
-          Whereintheworldiscarmensandiegoaddress.obj().nullable().toJson(writer,
-              customScalarAdapters, value.whereintheworldiscarmensandiegoaddress)
-        }
-
-        private object Whereintheworldiscarmensandiegoaddress :
-            Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress>
-            {
-          public val RESPONSE_NAMES: List<String> = listOf("__typename", "city",
-              "geoisnotagembutageographiclocationinthiscase")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress {
-            var __typename: String? = null
-            var _city: String? = null
-            var _geoisnotagembutageographiclocationinthiscase: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase? = null
-
-            while (true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> _city = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                2 -> _geoisnotagembutageographiclocationinthiscase = Geoisnotagembutageographiclocationinthiscase.obj().nullable().fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress(
-              __typename = __typename ?: missingField(reader, "__typename"),
-              city = _city,
-              geoisnotagembutageographiclocationinthiscase = _geoisnotagembutageographiclocationinthiscase
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress,
-          ) {
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-            writer.name("city")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.city)
-
-            writer.name("geoisnotagembutageographiclocationinthiscase")
-            Geoisnotagembutageographiclocationinthiscase.obj().nullable().toJson(writer,
-                customScalarAdapters, value.geoisnotagembutageographiclocationinthiscase)
-          }
-
-          private object Geoisnotagembutageographiclocationinthiscase :
-              Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase>
-              {
-            public val RESPONSE_NAMES: List<String> = listOf("__typename", "lat", "lng")
-
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase {
-              var __typename: String? = null
-              var _lat: Double? = null
-              var _lng: Double? = null
-
-              while (true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> _lat = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-                  2 -> _lng = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-                  else -> break
-                }
-              }
-
-              return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase(
-                __typename = __typename ?: missingField(reader, "__typename"),
-                lat = _lat,
-                lng = _lng
-              )
-            }
-
-            override fun toJson(
-              writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
-              `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Data.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
-            ) {
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-              writer.name("lat")
-              NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lat)
-
-              writer.name("lng")
-              NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lng)
-            }
-          }
-        }
-      }
     }
 
     private object Meta :
@@ -377,6 +187,196 @@ public object
 
           writer.name("limit")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.limit)
+        }
+      }
+    }
+  }
+
+  public object Postisthemaintypebutweneedtomakethenamemuchlargerdatum :
+      Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum>
+      {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "title",
+        "thisisauserbutwecallitsomethingmuchlarger")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum {
+      var __typename: String? = null
+      var _id: String? = null
+      var _title: String? = null
+      var _thisisauserbutwecallitsomethingmuchlarger: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger? = null
+
+      while (true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _id = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _title = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          3 -> _thisisauserbutwecallitsomethingmuchlarger = Thisisauserbutwecallitsomethingmuchlarger.obj().nullable().fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum(
+        __typename = __typename ?: missingField(reader, "__typename"),
+        id = _id,
+        title = _title,
+        thisisauserbutwecallitsomethingmuchlarger = _thisisauserbutwecallitsomethingmuchlarger
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum,
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("id")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.id)
+
+      writer.name("title")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.title)
+
+      writer.name("thisisauserbutwecallitsomethingmuchlarger")
+      Thisisauserbutwecallitsomethingmuchlarger.obj().nullable().toJson(writer,
+          customScalarAdapters, value.thisisauserbutwecallitsomethingmuchlarger)
+    }
+
+    private object Thisisauserbutwecallitsomethingmuchlarger :
+        Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger>
+        {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name",
+          "whereintheworldiscarmensandiegoaddress")
+
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger {
+        var __typename: String? = null
+        var _id: String? = null
+        var _name: String? = null
+        var _whereintheworldiscarmensandiegoaddress: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress? = null
+
+        while (true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            3 -> _whereintheworldiscarmensandiegoaddress = Whereintheworldiscarmensandiegoaddress.obj().nullable().fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
+
+        return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger(
+          __typename = __typename ?: missingField(reader, "__typename"),
+          id = _id,
+          name = _name,
+          whereintheworldiscarmensandiegoaddress = _whereintheworldiscarmensandiegoaddress
+        )
+      }
+
+      override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger,
+      ) {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+        writer.name("id")
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.id)
+
+        writer.name("name")
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+        writer.name("whereintheworldiscarmensandiegoaddress")
+        Whereintheworldiscarmensandiegoaddress.obj().nullable().toJson(writer, customScalarAdapters,
+            value.whereintheworldiscarmensandiegoaddress)
+      }
+
+      private object Whereintheworldiscarmensandiegoaddress :
+          Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress>
+          {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "city",
+            "geoisnotagembutageographiclocationinthiscase")
+
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+            UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress {
+          var __typename: String? = null
+          var _city: String? = null
+          var _geoisnotagembutageographiclocationinthiscase: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase? = null
+
+          while (true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _city = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _geoisnotagembutageographiclocationinthiscase = Geoisnotagembutageographiclocationinthiscase.obj().nullable().fromJson(reader, customScalarAdapters)
+              else -> break
+            }
+          }
+
+          return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress(
+            __typename = __typename ?: missingField(reader, "__typename"),
+            city = _city,
+            geoisnotagembutageographiclocationinthiscase = _geoisnotagembutageographiclocationinthiscase
+          )
+        }
+
+        override fun toJson(
+          writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
+          `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress,
+        ) {
+          writer.name("__typename")
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+          writer.name("city")
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.city)
+
+          writer.name("geoisnotagembutageographiclocationinthiscase")
+          Geoisnotagembutageographiclocationinthiscase.obj().nullable().toJson(writer,
+              customScalarAdapters, value.geoisnotagembutageographiclocationinthiscase)
+        }
+
+        private object Geoisnotagembutageographiclocationinthiscase :
+            Adapter<UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase>
+            {
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "lat", "lng")
+
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+              UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase {
+            var __typename: String? = null
+            var _lat: Double? = null
+            var _lng: Double? = null
+
+            while (true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> _lat = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+                2 -> _lng = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+                else -> break
+              }
+            }
+
+            return UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase(
+              __typename = __typename ?: missingField(reader, "__typename"),
+              lat = _lat,
+              lng = _lng
+            )
+          }
+
+          override fun toJson(
+            writer: JsonWriter,
+            customScalarAdapters: CustomScalarAdapters,
+            `value`: UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLongImpl.Postisthemaintypebutweneedtomakethenamemuchlargerdatum.Thisisauserbutwecallitsomethingmuchlarger.Whereintheworldiscarmensandiegoaddress.Geoisnotagembutageographiclocationinthiscase,
+          ) {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+            writer.name("lat")
+            NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lat)
+
+            writer.name("lng")
+            NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lng)
+          }
         }
       }
     }
