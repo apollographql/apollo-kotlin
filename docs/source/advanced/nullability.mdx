@@ -148,7 +148,7 @@ println(response.data?.user?.id) // "42"
 println(response.exception) // null
 ```
 
-For fields of List type, `@catch` applies to all list levels by. If you need to apply it to a given level, use the `level` argument:
+For fields of List type, `@catch` applies to all list levels by default. If you need to apply it to a given level, use the `level` argument:
 
 ```graphql
 query GetUser {
