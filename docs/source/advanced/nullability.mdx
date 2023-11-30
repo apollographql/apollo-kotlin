@@ -88,10 +88,25 @@ In order to opt-in error aware parsing, create an `extra.graphqls` file next to 
 ```graphql
 # Import the `@catch` directive definition. 
 # When it is imported, parsers generate extra code to deal with errors.
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "CatchTo"])
 ```
 
-Once error aware parsing is enabled, the parsing stops at the first GraphQL error and the whole query is failed. In the example above:
+And choose your default error handling. You can choose to coerce errors to `null`, like the current GraphQL default:
+
+```graphql
+# Coerce errors to null by default. Partial data is returned. This partial data may contain errors that need to be checked
+# against the `errors` array
+extend schema @catch(to: NULL)
+```
+
+Or re-throw errors:
+
+```graphql
+# Errors stop the parsing. The data never contains error. Use `@catch` in operations to let partial data through
+extend schema @catch(to: THROW)
+```
+
+In the `@catch(to: THROW)` mode, the parsing stops at the first GraphQL error and the whole query is failed. In the example above:
 
 ```json
 {
@@ -120,6 +135,9 @@ println(response.exception) // ApolloGraphQLException
 
 This default makes it easy to handle errors as they are all handled at parsing time. 
 Any `null` in the response is guaranteed to be a semantic null and not an error, and you should probably handle it.
+
+> Note: if you have existing code that uses partial data, you can [use `@ignoreErrors`](#migrate-progressively-with-ignoreerrors) to disable throwing on a query
+> per query basis.
 
 Sometimes failing the whole query feels a bit overkill though. For those cases, you can handle errors with `@catch`.
 
@@ -208,18 +226,7 @@ Similarly to `@catch`, `@semanticNonNull` supports a `level` argument for lists:
 extend type User @semanticNonNull(field: "friends", level: 1)
 ```
 
-## Choosing your error handling preferences
-
-Different teams have different needs: 
-
-* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNull`.
-* Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices. 
-  * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
-  * Some of them are ok with failing the whole request to simplify the client code because errors are very rare or just because all the data is equally important and partial data cannot be displayed.
-
-Finally, some teams want to opt-in error aware parsing without breaking their existing codebase. For those cases, `@ignoreErrors` allows a more progressive solution. 
-
-### `@ignoreErrors`
+## Migrate progressively with `@ignoreErrors`
 
 `@ignoreErrors` is an operation directive that disables error aware parsing for a specific operation:
 
@@ -234,7 +241,16 @@ directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 
 Enabling error aware parsing and adding `@ignoreErrors` to all your operations is a no-op. You can then remove `@ignoreErrors` from your operations progressively. 
 
-### decision flowchart 
+## Decision flowchart 
+
+Different teams have different needs:
+
+* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNull`.
+* Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices.
+  * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
+  * Some of them are ok with failing the whole request to simplify the client code because errors are very rare or just because all the data is equally important and partial data cannot be displayed.
+
+Finally, some teams want to opt-in error aware parsing without breaking their existing codebase. For those cases, `@ignoreErrors` allows a more progressive solution.
 
 ```mermaid
 flowchart TD
