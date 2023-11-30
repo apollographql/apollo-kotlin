@@ -31,7 +31,7 @@ class CatchNullTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
-    assertNull(response.data?.user?.valueOrNull?.name)
+    assertNull(response.data?.user?.valueOrNull()?.name)
   }
 
   @Test
@@ -83,7 +83,7 @@ class CatchNullTest {
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
-    assertNull(null, response.data?.product?.valueOrNull?.price)
+    assertNull(null, response.data?.product?.valueOrNull()?.price)
   }
 
   @Test

@@ -606,9 +606,9 @@ public final class com/apollographql/apollo3/api/FakeResolverKt {
 public abstract interface class com/apollographql/apollo3/api/FieldResult {
 }
 
-public final class com/apollographql/apollo3/api/FieldResult$Error : com/apollographql/apollo3/api/FieldResult {
-	public fun <init> (Lcom/apollographql/apollo3/api/Error;)V
-	public final fun getError ()Lcom/apollographql/apollo3/api/Error;
+public final class com/apollographql/apollo3/api/FieldResult$Failure : com/apollographql/apollo3/api/FieldResult {
+	public fun <init> (Lcom/apollographql/apollo3/exception/ApolloException;)V
+	public final fun getException ()Lcom/apollographql/apollo3/exception/ApolloException;
 }
 
 public final class com/apollographql/apollo3/api/FieldResult$Success : com/apollographql/apollo3/api/FieldResult {
@@ -617,10 +617,11 @@ public final class com/apollographql/apollo3/api/FieldResult$Success : com/apoll
 }
 
 public final class com/apollographql/apollo3/api/FieldResultKt {
-	public static final fun getErrorOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Lcom/apollographql/apollo3/api/Error;
+	public static final fun exceptionOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Exception;
 	public static final fun getOrElse (Lcom/apollographql/apollo3/api/FieldResult;Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun getValueOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
+	public static final fun graphQLErrorOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Lcom/apollographql/apollo3/api/Error;
 	public static final fun isSuccess (Lcom/apollographql/apollo3/api/FieldResult;)Z
+	public static final fun valueOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
 	public static final fun valueOrThrow (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
 }
 

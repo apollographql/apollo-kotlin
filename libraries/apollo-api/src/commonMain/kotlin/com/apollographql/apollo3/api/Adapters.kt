@@ -386,7 +386,7 @@ class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<
     return try {
       FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
     } catch (e: ApolloGraphQLException) {
-      FieldResult.Error(e.error)
+      FieldResult.Failure(ApolloGraphQLException(e.error))
     }
   }
 

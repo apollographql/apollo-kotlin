@@ -3,7 +3,8 @@ package test
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.errorOrNull
+import com.apollographql.apollo3.api.exceptionOrNull
+import com.apollographql.apollo3.api.graphQLErrorOrNull
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
@@ -38,7 +39,7 @@ class CatchTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
-    assertEquals("cannot resolve name", response.data?.user?.errorOrNull?.message)
+    assertEquals("cannot resolve name", response.data?.user?.graphQLErrorOrNull()?.message)
   }
 
   @Test
@@ -82,7 +83,7 @@ class CatchTest {
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
-    assertEquals("cannot resolve price", response.data?.product?.errorOrNull?.message)
+    assertEquals("cannot resolve price", response.data?.product?.graphQLErrorOrNull()?.message)
   }
 
   @Test
