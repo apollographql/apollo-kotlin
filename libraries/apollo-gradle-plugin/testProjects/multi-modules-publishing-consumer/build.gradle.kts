@@ -7,7 +7,6 @@ plugins {
 dependencies {
   add("implementation", libs.apollo.api)
   add("implementation", "com.jvm:jvm-producer:1.0.0")
-  add("apolloMetadata", "com.jvm:jvm-producer-apollo:1.0.0")
 }
 
 apollo {
@@ -15,6 +14,7 @@ apollo {
    * Both services use the same schema so it's fine to not set it
    */
   service("jvm") {
+    dependsOn("com.jvm:jvm-producer-apollo:1.0.0")
     packageName.set("com.consumer")
   }
   service("jvm2") {

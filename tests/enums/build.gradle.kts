@@ -12,6 +12,7 @@ dependencies {
 
 apollo {
   service("kotlin") {
+    languageVersion.set("1.5")
     packageName.set("enums.kotlin")
     sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
   }

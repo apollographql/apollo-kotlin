@@ -12,8 +12,6 @@ dependencies {
   implementation(project(":node1"))
   implementation(project(":node2"))
 
-  apolloMetadata(project(":node1"))
-  apolloMetadata(project(":node2"))
 }
 
 application {
@@ -23,5 +21,7 @@ application {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
+    dependsOn(project(":node1"))
+    dependsOn(project(":node2"))
   }
 }

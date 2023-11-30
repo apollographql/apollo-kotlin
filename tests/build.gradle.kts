@@ -1,6 +1,7 @@
 plugins {
   id("apollo.test").apply(false)
   id("net.mbonnin.golatac").version("0.0.3")
+  id("com.apollographql.apollo3").version("4.0.0-beta.3-SNAPSHOT").apply(false)
 }
 
 golatac.init(file("../gradle/libraries.toml"))
@@ -17,4 +18,3 @@ tasks.register("ciBuild") {
     checkGitStatus()
   }
 }
-

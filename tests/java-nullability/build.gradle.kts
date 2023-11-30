@@ -18,7 +18,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("apolloOptional")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("javaOptional") {
@@ -27,7 +27,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("javaOptional")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("guavaOptional") {
@@ -36,7 +36,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("guavaOptional")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("jetbrainsAnnotations") {
@@ -45,7 +45,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("jetbrainsAnnotations")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("androidAnnotations") {
@@ -54,7 +54,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("androidAnnotations")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("jsr305Annotations") {
@@ -63,7 +63,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("jsr305Annotations")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
 }

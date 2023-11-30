@@ -17,5 +17,6 @@ apollo {
     addTypename.set("always")
     mapScalar("Long1", "com.example.MyLong", "com.example.MyLongAdapter")
     mapScalar("Long2", "com.example.MyLong")
+    this.languageVersion.set("1.5")
   }
 }

@@ -17,7 +17,7 @@ apollo {
   service("main") {
     srcDir("src/main/graphql/main")
     packageName.set("javatest")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
     mapScalarToJavaString("LanguageCode")
     mapScalarToJavaObject("Json")
     mapScalarToJavaLong("Long")
@@ -27,19 +27,19 @@ apollo {
   service("graphql-ws") {
     srcDir("src/main/graphql/graphql-ws")
     packageName.set("graphqlws")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("appsync") {
     srcDir("src/main/graphql/appsync")
     packageName.set("appsync")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
   service("batching") {
     srcDir("src/main/graphql/batching")
     packageName.set("batching")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
   }
 
 }

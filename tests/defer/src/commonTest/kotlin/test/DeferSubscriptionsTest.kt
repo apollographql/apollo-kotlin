@@ -29,7 +29,7 @@ class DeferSubscriptionsTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

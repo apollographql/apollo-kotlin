@@ -17,6 +17,7 @@ kotlin {
     val commonTest by getting {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
+        implementation(golatac.lib("okio"))
         implementation(golatac.lib("kotlinx.coroutines.test"))
       }
     }

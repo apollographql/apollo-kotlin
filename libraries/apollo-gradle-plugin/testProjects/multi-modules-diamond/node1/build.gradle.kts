@@ -9,12 +9,12 @@ dependencies {
   testImplementation(libs.kotlin.test.junit)
 
   api(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
+    dependsOn(project(":root"))
   }
 }

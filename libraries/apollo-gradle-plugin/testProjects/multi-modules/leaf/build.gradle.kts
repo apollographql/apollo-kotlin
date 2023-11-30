@@ -10,7 +10,6 @@ dependencies {
   testImplementation(libs.kotlin.test.junit)
 
   implementation(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 application {
@@ -19,6 +18,7 @@ application {
 
 apollo {
   service("service") {
+    dependsOn(project(":root"))
     packageNamesFromFilePaths()
   }
 }

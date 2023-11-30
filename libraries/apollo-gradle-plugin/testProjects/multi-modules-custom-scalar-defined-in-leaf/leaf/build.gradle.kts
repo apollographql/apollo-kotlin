@@ -9,11 +9,11 @@ dependencies {
   testImplementation(libs.kotlin.test.junit)
 
   implementation(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
+    dependsOn(project(":root"))
     packageName.set("com.library")
     mapScalar("Long", "java.lang.Long")
   }

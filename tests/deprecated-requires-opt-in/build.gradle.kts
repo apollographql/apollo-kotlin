@@ -12,15 +12,18 @@ dependencies {
 
 apollo {
   service("default") {
+    languageVersion.set("1.5")
     srcDir("graphql")
     packageName.set("default")
   }
   service("none") {
+    languageVersion.set("1.5")
     srcDir("graphql")
     requiresOptInAnnotation.set("none")
     packageName.set("none")
   }
   service("custom") {
+    languageVersion.set("1.5")
     srcDir("graphql")
     requiresOptInAnnotation.set("com.example.MyRequiresOptIn")
     packageName.set("custom")

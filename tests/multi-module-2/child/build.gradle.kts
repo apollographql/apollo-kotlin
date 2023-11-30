@@ -7,12 +7,12 @@ plugins {
 dependencies {
   implementation(golatac.lib("apollo.runtime"))
   implementation(project(":multi-module-2:root"))
-  apolloMetadata(project(":multi-module-2:root"))
   testImplementation(golatac.lib("kotlin.test.junit"))
 }
 
 apollo {
   service("multimodule2") {
+    dependsOn(project(":multi-module-2:root"))
     packageName.set("multimodule2.child")
     flattenModels.set(false)
     generateDataBuilders.set(true)

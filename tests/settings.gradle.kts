@@ -13,8 +13,6 @@ rootProject.projectDir
       include(project)
     }
 
-includeBuild("../")
-
 pluginManagement {
   includeBuild("../build-logic")
 }

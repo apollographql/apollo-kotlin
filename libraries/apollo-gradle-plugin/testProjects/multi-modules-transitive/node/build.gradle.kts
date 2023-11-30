@@ -7,11 +7,11 @@ dependencies {
   implementation(libs.apollo.api)
 
   api(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
+    dependsOn(project(":root"))
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
   }

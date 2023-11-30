@@ -12,6 +12,6 @@ apollo {
   service("service") {
     packageName.set("multimodule1.root")
     generateApolloMetadata.set(true)
-    customScalarsMapping.set(mapOf("Long" to "kotlin.Long"))
+    mapScalar("Long", "kotlin.Long")
   }
 }
