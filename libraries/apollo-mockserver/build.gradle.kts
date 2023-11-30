@@ -28,6 +28,11 @@ kotlin {
         implementation(golatac.lib("kotlinx.nodejs"))
       }
     }
+    findByName("appleMain")?.apply {
+      dependencies {
+        implementation(golatac.lib("atomicfu"))
+      }
+    }
 
     findByName("commonTest")?.apply {
       dependencies {

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
+import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.cinterop.ByteVar
@@ -29,7 +30,6 @@ import platform.posix.setsockopt
 import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
-import kotlin.native.concurrent.AtomicInt
 
 class Socket(
     private val socketFd: Int,
@@ -37,7 +37,7 @@ class Socket(
     private val mockServerHandler: MockServerHandler,
 ) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
-  private val running = AtomicInt(1)
+  private val running = atomic(1)
   private val lock = reentrantLock()
   private val recordedRequests = NSMutableArray()
 
@@ -84,7 +84,7 @@ class Socket(
 
         val one = alloc<IntVar>()
         one.value = 1
-        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4)
+        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4u)
 
         handleConnection(connectionFd)
         close(connectionFd)
@@ -162,7 +162,7 @@ class Socket(
     memScoped {
       val buf = allocArray<ByteVar>(1)
       // Write a placeholder byte to unblock the reader if needed
-      write(pipeFd[1], buf, 1)
+      write(pipeFd[1], buf, 1u)
     }
     nativeHeap.free(pipeFd.rawValue)
   }
@@ -172,8 +172,8 @@ class Socket(
       check(recordedRequests.count.toInt() > 0) {
         "no recorded request"
       }
-      recordedRequests.objectAtIndex(0).also {
-        recordedRequests.removeObjectAtIndex(0)
+      recordedRequests.objectAtIndex(0u).also {
+        recordedRequests.removeObjectAtIndex(0u)
       } as MockRequest
     }
   }
