@@ -48,7 +48,7 @@ class ParserTest {
     }
 
     private fun testFilterMatches(value: String): Boolean {
-      val testFilter = System.getenv("testFilter") ?: true
+      val testFilter = System.getenv("testFilter") ?: return true
 
       return Regex(testFilter).containsMatchIn(value)
     }
