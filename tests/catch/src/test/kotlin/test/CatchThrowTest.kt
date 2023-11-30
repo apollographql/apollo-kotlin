@@ -38,6 +38,7 @@ class CatchThrowTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
+    assertNull(response.exception)
     assertEquals("cannot resolve name", response.data?.user?.graphQLErrorOrNull()?.message)
   }
 
@@ -45,6 +46,7 @@ class CatchThrowTest {
   fun userNullOnUserNameError() {
     val response = UserNullQuery().parseResponse(userNameError)
 
+    assertNull(response.exception)
     assertNull(response.data!!.user)
   }
 
@@ -52,6 +54,7 @@ class CatchThrowTest {
   fun userOnUserSuccess() {
     val response = UserQuery().parseResponse(userSuccess)
 
+    assertNull(response.exception)
     assertEquals("Pancakes", response.data!!.user.name)
   }
 
@@ -59,6 +62,7 @@ class CatchThrowTest {
   fun userResultOnUserSuccess() {
     val response = UserResultQuery().parseResponse(userSuccess)
 
+    assertNull(response.exception)
     assertEquals("Pancakes", response.data!!.user.getOrThrow().name)
   }
 
@@ -66,6 +70,7 @@ class CatchThrowTest {
   fun userNullOnUserSuccess() {
     val response = UserNullQuery().parseResponse(userSuccess)
 
+    assertNull(response.exception)
     assertEquals("Pancakes", response.data!!.user!!.name)
   }
 
@@ -82,6 +87,7 @@ class CatchThrowTest {
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
+    assertNull(response.exception)
     assertEquals("cannot resolve price", response.data?.product?.graphQLErrorOrNull()?.message)
   }
 
@@ -89,6 +95,7 @@ class CatchThrowTest {
   fun productNullOnProductPriceError() {
     val response = ProductNullQuery().parseResponse(productPriceError)
 
+    assertNull(response.exception)
     assertNull(response.data?.product)
     assertNotNull(response.data)
   }
@@ -97,6 +104,7 @@ class CatchThrowTest {
   fun productIgnoreErrorsOnProductPriceError() {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
+    assertNull(response.exception)
     assertNotNull(response.data?.product)
     assertNull(response.data?.product?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
@@ -106,6 +114,7 @@ class CatchThrowTest {
   fun productPriceNullOnProductPriceError() {
     val response = PriceNullQuery().parseResponse(productPriceError)
 
+    assertNull(response.exception)
     assertNotNull(response.data?.product)
     assertNull(response.data?.product?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
@@ -115,6 +124,7 @@ class CatchThrowTest {
   fun productPriceNullOnProductPriceNull() {
     val response = PriceNullQuery().parseResponse(productPriceNull)
 
+    assertNull(response.exception)
     assertNotNull(response.data?.product)
     assertNull(response.data?.product?.price)
     assertNull(response.errors)
