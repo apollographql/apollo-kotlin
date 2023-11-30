@@ -260,7 +260,7 @@ Different teams have different needs:
 * Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNull`.
 * Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices.
   * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
-  * Some of them are ok with failing the whole request to simplify the client code because errors are very rare or just because all the data is equally important and partial data cannot be displayed.
+  * Some of them want to opt-in the errors they want to handle and save the code to check every field.
 
 Finally, some teams want to opt-in error aware parsing without breaking their existing codebase. For those cases, `@ignoreErrors` allows a more progressive solution.
 
