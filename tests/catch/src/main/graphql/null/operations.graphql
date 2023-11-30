@@ -1,5 +1,5 @@
 query ProductThrow {
   product @catch(to: THROW) {
-    price
+    price @catch(to: THROW)
   }
 }

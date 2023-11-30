@@ -1,11 +1,5 @@
 extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@semanticNonNull", "@catch", "CatchTo"])
 
-enum CatchTo {
-  NULL,
-  THROW,
-  RESULT,
-}
-
 type Query {
   nullable: Int
   semanticNonNull: Int @semanticNonNull
