@@ -45,7 +45,7 @@
 <a class="library-name--link" href="../../index.html">
                             apollo-kotlin
                     </a>            </div>
-            <div class="library-version">4.0.0-beta.3-SNAPSHOT
+            <div class="library-version">3.8.3-SNAPSHOT
             </div>
         </div>
         <div class="filter-section" id="filter-section">
@@ -73,7 +73,22 @@
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
         <h2 class="">Types</h2>
-        <div class="table"><a data-name="1796481775%2FClasslikes%2F301449719" anchor-label="ApolloCompositeException" id="1796481775%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="-1562108619%2FClasslikes%2F301449719" anchor-label="ApolloCanceledException" id="-1562108619%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-apollo-canceled-exception/index.html"><span>Apollo</span><wbr><span>Canceled</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1562108619%2FClasslikes%2F301449719"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v3_0_0/index.html">ApolloDeprecatedSince.Version.v3_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-apollo-canceled-exception/index.html"><strike>ApolloCanceledException</strike></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1796481775%2FClasslikes%2F301449719" anchor-label="ApolloCompositeException" id="1796481775%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -83,7 +98,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-composite-exception/index.html"><strike>ApolloCompositeException</strike></a> : <a href="-apollo-exception/index.html">ApolloException</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-composite-exception/index.html">ApolloCompositeException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">first<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">second<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div><div class="brief "><p class="paragraph">Multiple exceptions happened. This happens typically when a CacheFirst request fails to fetch both the cache and the network. In that case, <a href="-apollo-composite-exception/index.html">ApolloCompositeException</a> is thrown, and you can access the underlying cache and network exceptions in <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/index.html">suppressedExceptions</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -98,22 +113,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-apollo-exception/index.html">ApolloException</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-runtime-exception/index.html">RuntimeException</a></div><div class="brief "><p class="paragraph">The base class for all exceptions</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-apollo-exception/index.html">ApolloException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-runtime-exception/index.html">RuntimeException</a></div><div class="brief "><p class="paragraph">The base class for all exceptions</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1986518703%2FClasslikes%2F301449719" anchor-label="ApolloGraphQLException" id="-1986518703%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="193429439%2FClasslikes%2F301449719" anchor-label="ApolloGenericException" id="193429439%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-apollo-graph-q-l-exception/index.html"><span>Apollo</span><wbr><span>Graph</span><wbr><span><span>QLException</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1986518703%2FClasslikes%2F301449719"></span>
+                  <div><a href="-apollo-generic-exception/index.html"><span>Apollo</span><wbr><span>Generic</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="193429439%2FClasslikes%2F301449719"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-graph-q-l-exception/index.html">ApolloGraphQLException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>errors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.apollographql.apollo3.api/-error/index.html">Error</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-deprecated-since/-version/v3_0_0/index.html">ApolloDeprecatedSince.Version.v3_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-apollo-generic-exception/index.html"><strike>ApolloGenericException</strike></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div><div class="brief "><p class="paragraph">Something went wrong but it's not sure exactly what</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -208,21 +223,6 @@
               </div>
             </div>
           </div>
-<a data-name="759575079%2FClasslikes%2F301449719" anchor-label="DefaultApolloException" id="759575079%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-default-apollo-exception/index.html"><span>Default</span><wbr><span>Apollo</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="759575079%2FClasslikes%2F301449719"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-default-apollo-exception/index.html">DefaultApolloException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div><div class="brief "><p class="paragraph">A generic exception when no additional context exists</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
 <a data-name="-1765575123%2FClasslikes%2F301449719" anchor-label="HttpCacheMissException" id="-1765575123%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
@@ -283,21 +283,6 @@
               </div>
             </div>
           </div>
-<a data-name="-1293794824%2FClasslikes%2F301449719" anchor-label="NoDataException" id="-1293794824%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-no-data-exception/index.html"><span>No</span><wbr><span>Data</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1293794824%2FClasslikes%2F301449719"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-no-data-exception/index.html">NoDataException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-apollo-exception/index.html">ApolloException</a></div><div class="brief "><p class="paragraph">No data was found</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
 <a data-name="-1070055167%2FClasslikes%2F301449719" anchor-label="SubscriptionOperationException" id="-1070055167%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
@@ -344,7 +329,7 @@
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
                     <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-api:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-apollo-network-exception/index.html#-2084242858%2FMain%2F-1904555911">ApolloNetworkException</a><span class="token punctuation">.</span><a href="ns-error.html">nsError</a><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span></div></div>                  </div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-apollo-network-exception/index.html">ApolloNetworkException</a><span class="token punctuation">.</span><a href="ns-error.html">nsError</a><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span></div></div>                  </div>
                 </div>
               </div>
             </div>
