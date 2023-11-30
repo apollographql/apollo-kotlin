@@ -1,4 +1,5 @@
 @file:OptIn(ApolloInternal::class)
+@file:Suppress("DEPRECATION")
 
 package test
 
@@ -16,11 +17,13 @@ import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.conflateFetchPolicyInterceptorResponses
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.CacheMissException
@@ -61,7 +64,7 @@ class FetchPolicyTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store = store).build()
   }
 
   private suspend fun tearDown() {
@@ -100,22 +103,26 @@ class FetchPolicyTest {
 
   @Test
   fun cacheFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     // First query should hit the network and save in cache
+    @Suppress("DEPRECATION")
     var response = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.NetworkFirst)
-        .execute()
+        .conflateFetchPolicyInterceptorResponses(true)
+        .executeOrThrow()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Second query should only hit the cache
-    response = apolloClient.query(query).execute()
+    @Suppress("DEPRECATION")
+    response = apolloClient.query(query)
+        .conflateFetchPolicyInterceptorResponses(true)
+        .executeOrThrow()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
@@ -124,27 +131,32 @@ class FetchPolicyTest {
     store.clearAll()
     mockServer.enqueueString("malformed")
     try {
-      apolloClient.query(query).execute()
+      @Suppress("DEPRECATION")
+      apolloClient.query(query)
+          .conflateFetchPolicyInterceptorResponses(true)
+          .executeOrThrow()
       fail("we expected the query to fail")
     } catch (e: Exception) {
-      assertIs<CacheMissException>(e)
+      @Suppress("DEPRECATION")
+      assertIs<ApolloCompositeException>(e)
     }
   }
 
 
   @Test
   fun cacheFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     // First query should hit the network and save in cache
+    @Suppress("DEPRECATION")
     var responses = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.NetworkFirst)
-        .toFlow()
+        .conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
 
     responses.test {
       val response1 = awaitItem()
@@ -154,9 +166,11 @@ class FetchPolicyTest {
     }
 
     // Second query should only hit the cache
+    @Suppress("DEPRECATION")
     responses = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.CacheFirst)
-        .toFlow()
+        .conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
       val response1 = awaitItem()
       assertEquals(data, response1.data)
@@ -167,11 +181,14 @@ class FetchPolicyTest {
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
     mockServer.enqueueString("malformed")
+    @Suppress("DEPRECATION")
     responses = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.CacheFirst)
-        .toFlow()
+        .conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
-      assertIs<CacheMissException>(awaitError())
+      @Suppress("DEPRECATION")
+      assertIs<ApolloCompositeException>(awaitError())
     }
   }
 
@@ -215,8 +232,7 @@ class FetchPolicyTest {
 
   @Test
   fun networkFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -247,7 +263,9 @@ class FetchPolicyTest {
     mockServer.enqueueString("malformed")
     store.clearAll()
     try {
-      call.execute()
+      @Suppress("DEPRECATION")
+      call.conflateFetchPolicyInterceptorResponses(true)
+          .executeOrThrow()
       fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
     } catch (e: Exception) {
 
@@ -256,8 +274,7 @@ class FetchPolicyTest {
 
   @Test
   fun networkFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
@@ -266,7 +283,9 @@ class FetchPolicyTest {
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
-    var responses = call.toFlow()
+    @Suppress("DEPRECATION")
+    var responses = call.conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
       val response1 = awaitItem()
       assertEquals(data, response1.data)
@@ -276,7 +295,9 @@ class FetchPolicyTest {
 
     // Now data is cached but it shouldn't be used since network will go through
     mockServer.enqueue(query, data)
-    responses = call.toFlow()
+    @Suppress("DEPRECATION")
+    responses = call.conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
       val response1 = awaitItem()
       assertEquals(data, response1.data)
@@ -286,7 +307,9 @@ class FetchPolicyTest {
 
     // Network error -> we should hit now the cache
     mockServer.enqueueString("malformed")
-    responses = call.toFlow()
+    @Suppress("DEPRECATION")
+    responses = call.conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
       val response1 = awaitItem()
       assertEquals(data, response1.data)
@@ -297,9 +320,12 @@ class FetchPolicyTest {
     // Network error and no cache -> we should get an error
     mockServer.enqueueString("malformed")
     store.clearAll()
-    responses = call.toFlow()
+    @Suppress("DEPRECATION")
+    responses = call.conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow()
     responses.test {
-      assertIs<JsonEncodingException>(awaitError())
+      @Suppress("DEPRECATION")
+      assertIs<ApolloCompositeException>(awaitError())
     }
   }
 
@@ -344,8 +370,7 @@ class FetchPolicyTest {
 
   @Test
   fun networkOnlyThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -353,7 +378,9 @@ class FetchPolicyTest {
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
-    val response = call.execute()
+    @Suppress("DEPRECATION")
+    val response = call.conflateFetchPolicyInterceptorResponses(true)
+        .executeOrThrow()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
@@ -361,9 +388,11 @@ class FetchPolicyTest {
     // Offer a malformed response, it should fail
     mockServer.enqueueString("malformed")
     try {
-      call.execute()
+      @Suppress("DEPRECATION")
+      call.conflateFetchPolicyInterceptorResponses(true)
+          .executeOrThrow()
       fail("we expected a failure")
-    } catch (e: Exception) {
+    } catch (_: Exception) {
 
     }
   }
@@ -440,8 +469,7 @@ class FetchPolicyTest {
 
   @Test
   fun cacheAndNetworkThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
-    @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    apolloClient = apolloClient.newBuilder().build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
@@ -449,14 +477,24 @@ class FetchPolicyTest {
     // Initial state: everything fails
     // Cache Error + Network Error => Error
     mockServer.enqueueString(statusCode = 500)
-    assertFailsWith<CacheMissException> {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
+
+    @Suppress("DEPRECATION")
+    assertFailsWith<ApolloCompositeException> {
+      @Suppress("DEPRECATION")
+      apolloClient.query(query)
+          .fetchPolicy(FetchPolicy.CacheAndNetwork)
+          .conflateFetchPolicyInterceptorResponses(true)
+          .toThrowingFlow()
+          .toList()
     }
 
     // Make the network return something
     // Cache Error + Network Success => 1 response (no exception)
     mockServer.enqueue(query, data)
-    var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+    @Suppress("DEPRECATION")
+    var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow().catch { caught = it }.toList()
 
     assertNull(caught)
     assertEquals(1, responses.size)
@@ -468,7 +506,9 @@ class FetchPolicyTest {
     // Cache Success + Network Error => 1 response + 1 network exception
     caught = null
     mockServer.enqueueString(statusCode = 500)
-    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+    @Suppress("DEPRECATION")
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow().catch { caught = it }.toList()
 
     assertIs<ApolloException>(caught)
     assertEquals(1, responses.size)
@@ -478,7 +518,9 @@ class FetchPolicyTest {
 
     // Cache Success + Network Success => 1 response
     mockServer.enqueue(query, data)
-    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
+    @Suppress("DEPRECATION")
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).conflateFetchPolicyInterceptorResponses(true)
+        .toThrowingFlow().toList()
 
     assertEquals(2, responses.size)
     assertNotNull(responses[0].data)

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -125,7 +126,17 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * ```
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
-    val request = ApolloRequest.Builder(operation)
+    return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
+  }
+
+  @Deprecated("Use toFlow() and handle ApolloResponse.exception instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  fun toThrowingFlow(): Flow<ApolloResponse<D>> {
+    return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
+  }
+
+  private fun toApolloRequest(): ApolloRequest<D> {
+    return ApolloRequest.Builder(operation)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
@@ -134,7 +145,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .build()
-    return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true)
+  }
+  @Deprecated("Use execute() and handle ApolloResponse.exception instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  suspend fun executeOrThrow(): ApolloResponse<D> {
+    @Suppress("DEPRECATION")
+    return singleSuccessOrException(toThrowingFlow())
   }
 
   /**
@@ -146,7 +162,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * @throws ApolloException if the call returns zero or multiple valid GraphQL responses.
    */
   suspend fun execute(): ApolloResponse<D> {
-    val responses = toFlow().toList()
+    return singleSuccessOrException(toFlow())
+  }
+
+  private suspend fun singleSuccessOrException(flow: Flow<ApolloResponse<D>>): ApolloResponse<D> {
+    val responses = flow.toList()
     val (exceptionResponses, successResponses) = responses.partition { it.exception != null }
     return when (successResponses.size) {
       0 -> {
