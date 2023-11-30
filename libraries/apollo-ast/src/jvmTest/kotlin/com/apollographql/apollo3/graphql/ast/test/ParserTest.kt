@@ -44,14 +44,11 @@ class ParserTest {
         return true
       }
 
-      return when (System.getProperty("updateTestFixtures")?.trim()) {
-        "on", "true", "1" -> true
-        else -> false
-      }
+      return false
     }
 
     private fun testFilterMatches(value: String): Boolean {
-      val testFilter = System.getenv("testFilter") ?: System.getProperty("testFilter") ?: return true
+      val testFilter = System.getenv("testFilter") ?: true
 
       return Regex(testFilter).containsMatchIn(value)
     }

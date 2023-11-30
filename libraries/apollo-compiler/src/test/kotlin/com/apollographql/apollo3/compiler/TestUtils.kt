@@ -18,10 +18,7 @@ internal object TestUtils {
       return true
     }
 
-    return when (System.getProperty("updateTestFixtures")?.trim()) {
-      "on", "true", "1" -> true
-      else -> false
-    }
+    return false
   }
   internal fun shouldUpdateMeasurements(): Boolean {
     return shouldUpdateTestFixtures()
@@ -49,10 +46,11 @@ internal object TestUtils {
    * ./gradlew :apollo-compiler:test -testFilter="fragments_with_type_condition" --tests '*Codegen*'
    */
   fun testFilterMatches(value: String): Boolean {
-    val testFilter = System.getenv("testFilter") ?: System.getProperty("testFilter") ?: return true
+    val testFilter = System.getenv("testFilter") ?: return true
 
     return Regex(testFilter).containsMatchIn(value)
   }
+
   fun testParametersForGraphQLFilesIn(path: String): Collection<Array<Any>> {
     return File(path)
         .walk()

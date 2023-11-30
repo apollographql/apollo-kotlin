@@ -82,13 +82,14 @@ enum class CatchTo {
 }
 
 @ApolloInternal
-class Catch(val to: CatchTo, val level: Int?)
+data class Catch(val to: CatchTo, val level: Int?)
 
 private fun GQLDirectiveDefinition.getArgumentDefaultValue(argName: String): GQLValue? {
   return arguments.firstOrNull { it.name == argName }?.defaultValue
 }
 
-private fun GQLDirective.getArgument(argName: String, schema: Schema): GQLValue? {
+@ApolloInternal
+fun GQLDirective.getArgument(argName: String, schema: Schema): GQLValue? {
   val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name)!!
   val argument = arguments.firstOrNull { it.name == argName }
   if (argument == null) {
