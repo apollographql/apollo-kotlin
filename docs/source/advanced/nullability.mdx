@@ -258,18 +258,20 @@ flowchart TD
     B --> V
     A --> |NO| D["Import the `@catch` directive"]
     D --> E("Do you want partial data by default?")
-    E --> |partial data by default| F["Catch to null by default\nextend schema @catch(to: NULL)"]
-    F --> J["Use `@catch(to: RESULT)`\nto get the inline errors\nin your Kotlin code"]
+    E --> |partial data by default| F["Coerce to null by default\nextend schema @catch(to: NULL)"]
+    F --> X["Things are mostly unchanged\nbut you can now use `@catch`"]
+    X --> J["Use `@catch(to: RESULT)`\nin your operations\nto get the inline errors\nin your Kotlin code"]
     J --> H("Do you have fields in your schema\nthat are nullable only for error reasons?")
     H --> |no|V
     H --> |yes|I["import the `@semanticNonNull` directive"]
     I --> K["Add `@semanticNonNull`\nto appropriate fields in your schema"]
     K --> L["Those field are now generated\nas non-null in Kotlin"]
     L --> V["The end 🎉"]
-    E --> |no-errors by default| P["Errors stop the parsing.\nresponse.data is now error-free"]
-    P --> G("Do you have existing code that\nhandles partial data?")
+    E --> |no-errors by default| P["Rethrow by default\nextend schema @catch(to: THROW)"]
+    P --> W["Errors stop the parsing.\nresponse.data is now error-free"]
+    W --> G("Do you have existing code that\nhandles partial data?")
     M --> R["Consider a single\n`@ignoreErrors` operation"]
-    R --> O["catch errors with\n`@catch(to: RESULT)`\nand let partial data through"]
+    R --> O["Catch errors with\n`@catch(to: RESULT)`\nin your operations\nand let partial data through"]
     O --> |test|Q("Is it working as expected?")
     Q --> |yes|S["Remove `@ignoreErrors`"]
     S --> T("Are there any `@ignoreErrors`\noperations left?")
@@ -277,6 +279,6 @@ flowchart TD
     T --> |no|H
     Q --> |no|O
     G --> |yes| M["Add `@ignoreErrors` to every\noperation"]
-    G --> |no|N["Use `@catch(to: RESULT)`\nto get the inline errors\nin your Kotlin code"]
+    G --> |no|N["Use `@catch(to: RESULT)`\nin your operations\nto get the inline errors\nin your Kotlin code"]
     N --> H
 ```
