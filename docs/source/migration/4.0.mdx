@@ -5,24 +5,35 @@ description: From 3.x
 
 > Note: as version 4 is currently under development, this page is a work in progress.
 
-## Dependencies / compatibility
+Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
 
-- Apollo Kotlin 4 now requires the Kotlin Gradle Plugin version 1.6+ (whereas 3.x needed 1.5+).
-- Compatibility with non-hierarchical multiplatform projects (`enableCompatibilityMetadataVariant`) has been removed.
+Apollo Kotlin 4.0 focuses on tooling, stability and fixing some API regrets that came with 3.x.
+
+Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710).
+
+If you are using a lib that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own app to 4.0.
+
+## Automatic migration using the Android Studio plugin
+
+Apollo Kotlin 4 ships with a companion [Android Studio plugin that automates most of the migration](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin#migration-helpers). 
+
+It automates most of the API replacements but cannot deal with behaviour changes like error handling. 
+
+We recommend using the plugin to automate the repetitive tasks but still go through this document for the details. 
 
 ## Error handling
 
-### Exception surfacing
+> ⚠️ Error handling changes are a behaviour change that is not be detected at compile time. Usages of `execute`, `toFlow` and `watch` must be updated to the new error handling or changed to their v3 compat equivalent.
 
-In v3, non-GraphQL errors like network errors, cache misses, and WebSocket protocol errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was not ideal because it was a difference in how to handle GraphQL errors vs other errors. Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
+### Fetch errors do not throw
 
-In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. 
+In Apollo Kotlin 3.x, non-GraphQL errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was problematic because it was a difference in how to handle GraphQL errors vs other errors. Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
 
-In addition to this, GraphQL errors are also surfaced in an `ApolloGraphQLException` set on `exception` (`.errors` still exists for convenience).
+In Apollo Kotlin 4.0, a new field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non-null `exception` instead of throwing it. 
 
-This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
+This allows consumers to handle different kinds of errors at the same place, and it prevents Flows from being terminated. 
 
-To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+Queries and mutations: 
 
 ```kotlin
 // Replace
@@ -55,7 +66,11 @@ if (data != null) {
     }
   }
 }
+```
 
+Subscriptions:
+
+```kotlin
 // Replace
 client.subscription(MySubscription()).toFlow().collect { response ->
   if (response.hasErrors()) {
@@ -84,22 +99,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 }
 ```
 
-### Exception folding when using the cache
-
-In v3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
-
-In v4, this is now the default behavior and `emitCacheMisses` has been removed. 
-With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
-
-To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
-
-### Exceptions in `watch`
-
-In v3, `ApolloCall.watch()` would accept a `fetchThrows` and `refetchThrows` parameters to control whether to throw cache or network exceptions happening during the initial fetch or subsequent refetches, the default value being `false`.
-
-In v4, these exceptions are now emitted in `ApolloResponse.exception`.
-
-If they are undesirable, ignore them by filtering them out:
+Note that this is true for all `Flows`, including watchers. If you don't want to receive error responses, filter them out:
 
 ```kotlin   
 client.query(MyQuery()).watch().filter { it.exception == null }.collect { response ->
@@ -107,7 +107,49 @@ client.query(MyQuery()).watch().filter { it.exception == null }.collect { respon
 }
 ```
 
-## HTTP headers
+### ApolloCompositeException is not thrown anymore
+
+When using the cache, Apollo Kotlin 3.x threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException` if both cache and network failed.
+
+In those cases, Apollo Kotlin 4.0 throws the first exception and adds the second as a suppressed exception:
+
+```kotlin
+    // Replace
+if (exception is ApolloCompositeException) {
+  val cacheMissException = exception.first
+  val networkException = exception.second
+}
+
+// With
+val cacheMissException = exception
+val networkException = exception.suppressedExceptions.firstOrNull()
+```
+
+### emitCacheMisses(Boolean) is removed
+
+In Apollo Kotlin 3.x, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
+
+In Apollo Kotlin 4.0, this is now the default behavior and `emitCacheMisses` has been removed.
+
+With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
+
+### Migration helpers
+
+To ease the migration from 3.x, drop-in helpers functions are provided that restore the V3 behaviour:
+
+* `ApolloCall.executeV3()`
+* `ApolloCall.toFlowV3()`
+
+Those helper functions:
+* throw on fetch errors
+* make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
+* throw ApolloComposite exception if needed.
+
+Because of the number of different options in 3.x and the complexity of error handling, these functions do not pretend to match 1:1 the V3 behaviour, especially in the advanced cases involving watchers. If you are in one of those cases, we strongly recommend using the 4.0 functions that are easier to reason about.
+
+## Other Apollo Runtime changes
+
+### HTTP headers
 
 In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
@@ -124,9 +166,13 @@ val call = client.query(MyQuery())
   .execute()
 ```
 
-## Multi-module improvements
+## Apollo Gradle Plugin
 
-In a multi-module setup, the syntax for depending on an upstream module (e.g. the schema module) has changed: use `dependsOn` in the `apollo` block instead of `apolloMetadata` in the `dependencies` block.
+### Multi-module `dependsOn`
+
+In Apollo Kotlin 3, you could depend on an upstream GraphQL module by using the `apolloMetadata` configuration.
+
+In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. This allows better management of dependencies when multiple services are used as better symmetry with `isADependencyOf` below. 
 
 ```kotlin
 // feature1/build.gradle.kts
@@ -170,6 +216,21 @@ To enable this, add the "opposite" link of dependencies with `isADependencyOf()`
 
 ```kotlin
 // schema/build.gradle.kts
+
+// Replace
+apollo {
+  service("service") {
+    // ...
+    
+    // Generate all the types in the schema module
+    alwaysGenerateTypesMatching.set(listOf(".*"))
+
+    // Enable generation of metadata for use by downstream modules 
+    generateApolloMetadata.set(true)
+  }
+}
+
+// With
 apollo {
   service("service") {
     // ...
@@ -177,43 +238,158 @@ apollo {
     // Enable generation of metadata for use by downstream modules 
     generateApolloMetadata.set(true)
 
-    // Get used types from the downstream module
+    // Get used types from the downstream module1
     isADependencyOf(project(":feature1"))
 
-    // You can have several downstream modules
+    // Get used types from the downstream module2
     isADependencyOf(project(":feature2"))
+    
+    // ...
   }
 }
 ```
 
-## Code generation
+If you were using `apolloUsedCoordinates`, you can also remove it:
 
-- Enum class names now have their first letter capitalized, as other generated types.
-- To avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`) when using the `generateSchema` option.
-- `addTypename = "ifFragments"` is deprecated as it could lead to cache misses for cache users:
+```kotlin
+dependencies {
+  // Remove this 
+  apolloUsedCoordinates(project(":feature1"))
+}
+```
+
+### Custom scalars declaration
+
+`customScalarsMapping` is removed and replaced with `mapScalar()` that allows mapping to built-in types easier and/or provide a compile type adapter for a given type:
+
+```kotlin
+// Replace
+customScalarsMapping.set(mapOf(
+    "Date" to "kotlinx.datetime.LocalDate"
+))
+
+// With
+mapScalar("Date", "kotlinx.datetime.LocalDate")
+
+// Replace
+customScalarsMapping.put("MyLong", "kotlin.Long")
+
+// With
+mapScalarToKotlinLong("MyLong")
+
+```
+
+### Misc
+
+* Publishing is no longer configured automatically.
+* Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"`
+
+## Apollo Compiler
+
+### "compat" `codegenModels` is removed
+
+The `"compat"` codegen models was provided for compatibility with 2.x and is now removed. `"operationBased"` is more consistent and generates less code:
+
+```kotlin
+// Replace
+apollo {
+  service("service") {
+    codegenModels.set("compat")
+  }
+}
+
+// With
+apollo {
+  service("service") {
+    codegenModels.set("codegenModels")
+  }
+}
+```
+
+In the generated models, inline fragments accessors are prefixed with `on`:
+
+```kotlin
+// Replace
+data.hero.asDroid
+
+// With
+data.hero.onDroid
+```
+
+The `fragments` synthetic property is not needed anymore:
+
+```kotlin
+// Replace
+data.hero.fragments.heroDetails
+
+// With
+data.hero.fragments.heroDetails
+```
+
+Finally some fields that were merged from inline fragments in their parents must now be accessed through the inline fragment:
+
+```kotlin
+// Replace
+/**
+ * {
+ *   hero {
+ *     # this condition is always true
+ *     # allowing to merge the name field
+ *     ... on Character {
+ *       name
+ *     }
+ *   }
+ * }
+ */
+data.hero.name
+
+// With 
+/**
+ * name is not marged anymore
+ */
+data.hero.onCharacter?.name
+```
+
+### Enum class names now have their first letter capitalized
+
+For consistency with other types, GraphQL enums are now capitalized in Kotlin. You can restore the previous behaviour using `@targetName`:
 
 ```graphql
-{
-  node(id: 42) {
-    # no fragment here means but we if we don't query __typename, the query below will emit a cache miss 
-    title
-    price
-  }
-}
-
-{
-  product(id: 42) {
-    # __typename is added here automatically
-    __typename
-    ... on Product {
-      title
-      price
-    }
-  }
+# Make sure `someEnum` isn't renamed to `SomeEnum`
+enum someEnum @targetName(name: "someEnum"){
+  A
+  B
 }
 ```
 
-Instead, use `"always"` if you're using the cache or `"ifPolymorphic"` else. See [#3965](https://github.com/apollographql/apollo-kotlin/issues/3965) for more details.
+### `__Schema` is in the `schema` subpackage
+
+If using the `generateSchema` option, and to avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`) when using the `generateSchema` option:
+
+```kotlin
+// Replace
+import com.example.type.__Schema
+
+// With
+import data.builders.schema.__Schema
+```
+
+### KotlinLabs directive are now version 0.2
+
+The embedded [kotlinlabs/0.2](https://specs.apollo.dev/kotlin_labs/v0.2/) directives are now version 0.2.
+
+These are the client directives supported by Apollo Kotlin. They are imported automatically but if you relied on an explicit import for renames or another reason, you'll need to bump the version:
+
+```graphql
+# Replace
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1/", import: ["@typePolicy"])
+
+# With
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.2/", import: ["@typePolicy"])
+```
+
+This is a backward compatible change.
+
 
 ## Cache
 
@@ -232,15 +408,9 @@ The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes ar
 It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
 
 
-
-## Gradle configuration
-
-* Publishing is no longer configured automatically.
-* Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"` 
-
-
 ## Removed RxJava artifacts
 
 * Use `toFlow().asFlowable()` and [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3)
 
-## KotlinLabs 0.1 is not supported anymore
+
+
