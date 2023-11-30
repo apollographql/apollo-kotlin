@@ -401,8 +401,7 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 	public final field deferredFragmentIdentifiers Ljava/util/Set;
 	public final field errors Ljava/util/List;
 	public final field falseVariables Ljava/util/Set;
-	public final field ignoreErrors Z
-	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun adapterFor (Ljava/lang/String;)Lcom/apollographql/apollo3/api/Adapter;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
@@ -419,7 +418,6 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
 	public final fun deferredFragmentIdentifiers (Ljava/util/Set;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun falseVariables (Ljava/util/Set;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
-	public final fun ignoreErrors (Z)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 }
 
 public final class com/apollographql/apollo3/api/CustomScalarAdapters$Key : com/apollographql/apollo3/api/ExecutionContext$Key {

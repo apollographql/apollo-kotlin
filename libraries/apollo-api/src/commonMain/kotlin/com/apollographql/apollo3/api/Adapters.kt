@@ -400,7 +400,7 @@ class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<
 
 class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    if (!customScalarAdapters.ignoreErrors && reader.peek() == JsonReader.Token.NULL) {
+    if (reader.peek() == JsonReader.Token.NULL) {
       val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
       if (error != null) {
         reader.skipValue()
