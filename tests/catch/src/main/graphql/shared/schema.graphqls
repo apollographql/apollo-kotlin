@@ -1,0 +1,20 @@
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@semanticNonNull", "@catch", "CatchTo"])
+
+type Query {
+  nullable: Int
+  nonNull: Int!
+  semanticNonNull: Int @semanticNonNull
+  deep: [[[Int]]] @semanticNonNull
+  user: User @semanticNonNull
+  product: Product
+}
+
+type User {
+  name: String @semanticNonNull
+  friends: [User] @semanticNonNull
+}
+
+
+type Product {
+  price: String
+}

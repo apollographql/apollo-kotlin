@@ -1,0 +1,10 @@
+query ProductThrow {
+  product @catch(to: THROW) {
+    price @catch(to: THROW)
+  }
+}
+
+query NullAndNonNull {
+  nonNull
+  nullable
+}

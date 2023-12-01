@@ -1,52 +1,8 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.AnonymousOperation
-import com.apollographql.apollo3.ast.DeprecatedUsage
-import com.apollographql.apollo3.ast.DifferentShape
-import com.apollographql.apollo3.ast.ExecutableValidationResult
-import com.apollographql.apollo3.ast.GQLArgument
-import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLDirective
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFloatValue
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLListValue
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNode
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLObjectValue
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.GQLValue
-import com.apollographql.apollo3.ast.GQLVariableValue
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.OtherValidationIssue
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.UnusedFragment
-import com.apollographql.apollo3.ast.UnusedVariable
-import com.apollographql.apollo3.ast.VariableUsage
-import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.internal.validation.validateDeferLabels
-import com.apollographql.apollo3.ast.pretty
-import com.apollographql.apollo3.ast.rawType
-import com.apollographql.apollo3.ast.responseName
-import com.apollographql.apollo3.ast.rootTypeDefinition
-import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 
 
 @OptIn(ApolloInternal::class)
@@ -67,6 +23,7 @@ internal class ExecutableValidationScope(
   private val fragmentVariableUsages = mutableMapOf<String, List<VariableUsage>>()
   private val cyclicFragments = mutableSetOf<String>()
   private val usedFragments = mutableSetOf<String>()
+  private val hasCatch = schema.directiveDefinitions.any { schema.originalTypeName(it.key) == Schema.CATCH }
 
   /**
    * These are scoped to the current operation/fragment being validated
@@ -219,6 +176,83 @@ internal class ExecutableValidationScope(
         variableUsages.add(it)
       }
     }
+    if (hasCatch) {
+      validateCatches(fieldDefinition)
+    }
+  }
+
+  private class CatchUsage(val level: Int?, val catchTo: String, val sourceLocation: SourceLocation?)
+
+  private fun GQLType.maxDimension(): Int {
+    var dimension = 0
+    var type = this
+    while (true) {
+      when(type) {
+        is GQLListType -> {
+          dimension++
+          type = type.type
+        }
+        is GQLNonNullType -> {
+          type = type.type
+        }
+        else -> return dimension
+      }
+    }
+  }
+  private fun GQLField.validateCatches(fieldDefinition: GQLFieldDefinition) {
+    val levelToCatch = directives.filter {
+      schema.originalDirectiveName(it.name) == Schema.CATCH
+    }.mapNotNull {
+      val to = it.getArgument("to", schema) as? GQLEnumValue
+      if (to == null) {
+        // caught by other validation rules
+        return@mapNotNull null
+      }
+      val levelInt = when(val levelValue = it.getArgument("level", schema)) {
+        is GQLNullValue -> null
+        is GQLIntValue -> levelValue.value.toIntOrNull() ?: error("`@catch` level too big: ${levelValue.value}")
+        else -> return@mapNotNull  null
+      }
+
+      if (levelInt != null) {
+        val maxDimension = fieldDefinition.type.maxDimension()
+        if (levelInt > maxDimension) {
+          registerIssue(
+              message = "Invalid 'level' value '$levelInt' for `@catch` usage: this type has a max list level of $maxDimension",
+              sourceLocation = it.sourceLocation
+          )
+          return@mapNotNull  null
+        }
+      }
+      CatchUsage(levelInt, to.value, it.sourceLocation)
+    }.groupBy {
+      it.level
+    }.mapNotNull {
+      val sameLevel = it.value.distinct()
+      if (sameLevel.size > 1) {
+        registerIssue(
+            message = "Conflicting `@catch` usages for level '${it.key}': a given list level must have a single CatchTo value",
+            sourceLocation = it.value.first().sourceLocation
+        )
+        return@mapNotNull null
+      }
+
+      it.value.single()
+    }.associateBy {
+      it.level
+    }
+
+    val default = levelToCatch[null]?.catchTo
+    levelToCatch.filter {
+      it.key != null
+    }.forEach {
+      if (default != null && it.value.catchTo != default) {
+        registerIssue(
+            message = "Conflicting `@catch` usages for level '${it.key}': this level conflicts with the default 'null' level",
+            sourceLocation = it.value.sourceLocation
+        )
+      }
+    }
   }
 
   private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition) {
@@ -344,6 +378,7 @@ internal class ExecutableValidationScope(
     validateCommon(this, selections, directives, rootTypeDefinition)
 
     fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
+
     issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
 
     val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentVariableUsages.get(it) ?: emptyList() } + variableUsages
@@ -438,6 +473,10 @@ internal class ExecutableValidationScope(
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different types")
       return
     }
+    if (hasCatch && !areCatchesEqual(fieldA.directives.findCatches(schema), fieldB.directives.findCatches(schema))) {
+      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different `@catch` directives")
+      return
+    }
 
     if (!areArgumentsEqual(fieldA.arguments, fieldB.arguments)) {
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different arguments")
@@ -486,13 +525,17 @@ internal class ExecutableValidationScope(
     }
   }
 
+  private fun areCatchesEqual(catchesA: List<Catch>, catchesB: List<Catch>): Boolean {
+    return catchesA.toSet() == catchesB.toSet()
+  }
+
   private fun areArgumentsEqual(argumentsA: List<GQLArgument>, argumentsB: List<GQLArgument>): Boolean {
     if (argumentsA.size != argumentsB.size) {
       return false
     }
 
     (argumentsA + argumentsB).groupBy {
-      // other validations will ensure no duplicates so it's safe to
+      // other validations will ensure no duplicates, so it's safe to
       // put everything in a Map here
       it.name
     }.values.forEach {

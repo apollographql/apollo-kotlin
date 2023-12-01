@@ -79,4 +79,9 @@ public class BFragmentImpl implements Fragment<BFragment> {
     .selections(bFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

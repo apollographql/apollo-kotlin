@@ -79,4 +79,9 @@ public class PilotFragmentImpl implements Fragment<PilotFragment> {
     .selections(pilotFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

@@ -1,0 +1,48 @@
+query User {
+  user {
+    name
+  }
+}
+
+query UserResult {
+  user @catch(to: RESULT) {
+    name
+  }
+}
+
+query UserNull {
+  user @catch(to: NULL) {
+    name
+  }
+}
+
+query Product {
+  product {
+    price
+  }
+}
+
+query ProductResult {
+  product @catch(to: RESULT) {
+    price
+  }
+}
+
+query ProductNull {
+  product @catch(to: NULL) {
+    price
+  }
+}
+
+query ProductIgnoreErrors @ignoreErrors {
+  product {
+    price
+  }
+}
+
+query PriceNull {
+  product {
+    price @catch(to: NULL)
+  }
+}
+

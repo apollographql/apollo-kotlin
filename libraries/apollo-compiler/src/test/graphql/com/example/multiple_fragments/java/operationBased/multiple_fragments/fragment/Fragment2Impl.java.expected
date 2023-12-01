@@ -79,4 +79,9 @@ public class Fragment2Impl implements Fragment<Fragment2> {
     .selections(fragment2Selections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

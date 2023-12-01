@@ -61,4 +61,5 @@ internal object ClassNames {
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
   val JetBrainsNullable = ResolverClassName(jetbrainsAnnotationsPackageName, "Nullable")
   val JetBrainsNonNull = ResolverClassName(jetbrainsAnnotationsPackageName, "NotNull")
+  val FieldResult = ResolverClassName(apolloApiPackageName, "FieldResult")
 }

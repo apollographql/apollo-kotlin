@@ -118,6 +118,10 @@ internal fun ValidationScope.validateAndCoerceValue(
           return validateAndCoerceEnum(value, expectedTypeDefinition)
         }
 
+        null -> {
+          registerIssue("Unknown type '${expectedType.pretty()}' for input value", value.sourceLocation)
+          return value
+        }
         else -> {
           registerIssue("Value cannot be of non-input type ${expectedType.pretty()}", value.sourceLocation)
           return value

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrEnumType2
@@ -108,6 +109,8 @@ internal class JavaResolver(
   fun resolveIrType(type: IrType): TypeName {
     return if (type.optional) {
       resolveIrType(type.optional(false)).wrapInOptional().addNonNullableAnnotation()
+    } else if (type.catchTo != IrCatchTo.NoCatch) {
+      error("Java codegen does not support @catch")
     } else if (type.nullable) {
       resolveRawIrType(type).boxIfPrimitiveType().let {
         if (wrapNullableFieldsInOptional) it.wrapInOptional() else it.addNullableAnnotation()
@@ -185,10 +188,12 @@ internal class JavaResolver(
     return if (type.optional) {
       val adapterClassName = if (!type.rawType().isComposite()) optionalAdapterClassName else optionalAdapterClassName
       return CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.optional(false), requiresBuffering))
+    } else if (type.catchTo != IrCatchTo.NoCatch) {
+      error("Java codegen does not support @catch")
     } else if (type.nullable) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
-       when {
+      when {
         type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
         type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
         type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Boolean")

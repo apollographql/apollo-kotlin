@@ -79,4 +79,9 @@ public class CharacterNameImpl implements Fragment<CharacterName> {
     .selections(characterNameSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }
