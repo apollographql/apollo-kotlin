@@ -37,8 +37,8 @@ import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findCatches
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
-import com.apollographql.apollo3.ast.findNooeLevels
 import com.apollographql.apollo3.ast.findOptInFeature
+import com.apollographql.apollo3.ast.findSemanticNonNulls
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
@@ -483,7 +483,7 @@ internal class IrOperationsBuilder(
       val type: GQLType,
       val deprecationReason: String?,
       val optInFeature: String?,
-      val nooes: List<Int?>,
+      val semanticNonNulls: List<Int?>,
       val catches: List<Catch>,
       val forceOptional: Boolean,
 
@@ -507,29 +507,29 @@ internal class IrOperationsBuilder(
         "cannot find field definition for field '${gqlField.responseName()}' of type '${parentTypeDefinition.name}'"
       }
 
-      var nooeLevels = fieldDefinition.findNooeLevels(schema)
+      var semanticNonNulls = fieldDefinition.findSemanticNonNulls(schema)
 
-      parentTypeDefinition.findNooeLevels(gqlField.name, schema).let {
+      parentTypeDefinition.findSemanticNonNulls(gqlField.name, schema).let {
         if (it.isNotEmpty()) {
-          check(nooeLevels.isEmpty()) {
+          check(semanticNonNulls.isEmpty()) {
             "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
           }
-          nooeLevels = it
+          semanticNonNulls = it
         }
       }
 
       if (parentTypeDefinition.isFieldNonNull(gqlField.name, schema)) {
-        check(nooeLevels.isEmpty()) {
+        check(semanticNonNulls.isEmpty()) {
           "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
-        nooeLevels = listOf(0)
+        semanticNonNulls = listOf(0)
       }
 
       if (gqlField.directives.findNonnull(schema)) {
-        check(nooeLevels.isEmpty()) {
+        check(semanticNonNulls.isEmpty()) {
           "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
-        nooeLevels = listOf(0)
+        semanticNonNulls = listOf(0)
       }
 
       CollectedField(
@@ -541,7 +541,7 @@ internal class IrOperationsBuilder(
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           optInFeature = fieldDefinition.directives.findOptInFeature(schema),
-          nooes = nooeLevels,
+          semanticNonNulls = semanticNonNulls,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
           catches = gqlField.directives.findCatches(schema)
@@ -614,7 +614,7 @@ internal class IrOperationsBuilder(
           .type
           .toIr()
           // Apply the schema transformations
-          .nooe(first.nooes, 0)
+          .semanticNonNull(first.semanticNonNulls, 0)
           .let {
             /**
              * We map @optional fields to nullable fields. This probably needs to be revisited in light of @catch
@@ -676,12 +676,12 @@ internal class IrOperationsBuilder(
   }
 
   companion object {
-    private fun IrType.nooe(semanticNonNullLevels: List<Int?>, level: Int): IrType {
+    private fun IrType.semanticNonNull(semanticNonNullLevels: List<Int?>, level: Int): IrType {
       val isNonNull = semanticNonNullLevels.any { it == null || it == level }
 
       return when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.nooe(semanticNonNullLevels, level + 1))
+        is IrListType -> copy(ofType = ofType.semanticNonNull(semanticNonNullLevels, level + 1))
       }.let {
         if (isNonNull) {
           it.nullable(false)
