@@ -111,6 +111,7 @@ class CustomScalarAdapters private constructor(
   }
 
   private fun List<Any>.startsWith(responsePath: List<Any>): Boolean {
+    // start at 1 to drop the `data.`
     for (i in 1.until(responsePath.size)) {
       if (i - 1 >= this.size) {
         return false

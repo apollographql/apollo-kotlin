@@ -382,23 +382,6 @@ class ObjectAdapter<T>(
   }
 }
 
-private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
-    return try {
-      FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
-    } catch (e: ApolloException) {
-      FieldResult.Failure(e)
-    }
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: FieldResult<T>) {
-    when (value) {
-      is FieldResult.Success -> wrappedAdapter.toJson(writer, customScalarAdapters, value.valueOrThrow())
-      else -> Unit // ignore errors
-    }
-  }
-}
-
 private class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     if (reader.peek() == JsonReader.Token.NULL) {
@@ -414,6 +397,23 @@ private class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Ada
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
     wrappedAdapter.toJson(writer, customScalarAdapters, value)
+  }
+}
+
+private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
+    return try {
+      FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    } catch (e: ApolloException) {
+      FieldResult.Failure(e)
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: FieldResult<T>) {
+    when (value) {
+      is FieldResult.Success -> wrappedAdapter.toJson(writer, customScalarAdapters, value.valueOrThrow())
+      else -> Unit // ignore errors
+    }
   }
 }
 
