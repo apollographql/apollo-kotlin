@@ -20,5 +20,8 @@ class ApolloOneOfInputCreationInspectionTest : ApolloTestCase() {
     assertTrue(highlightInfos.any { it.description == "@oneOf input class constructor must have exactly one argument" && it.text == "FindUserInput" && it.line == 8 })
     assertTrue(highlightInfos.any { it.description == "@oneOf input class constructor must have exactly one argument" && it.text == "FindUserInput" && it.line == 10 })
     assertTrue(highlightInfos.any { it.description == "@oneOf input class argument must be Present" && it.text == "FindUserInput" && it.line == 20 })
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class builder must have exactly one field set" && it.text == "name(\"John\")" && it.line == 28 })
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class argument must be non-null" && it.text == "email(null)" && it.line == 36 })
+    assertTrue(highlightInfos.any { it.description == "@oneOf input class argument must be non-null" && it.text == "email(someNullableEmail)" && it.line == 41 && it.type.getSeverity(null).name == "WARNING" })
   }
 }

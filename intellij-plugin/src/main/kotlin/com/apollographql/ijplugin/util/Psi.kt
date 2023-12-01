@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.isNullabilityFlexible
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 fun PsiElement.containingKtFile(): KtFile? = getStrictParentOfType()
@@ -81,3 +82,5 @@ fun KtDeclaration.type(): KotlinType? = (resolveToDescriptorIfAny() as? Callable
 fun KtExpression.type(): KotlinType? = safeAnalyze(getResolutionFacade()).getType(this)
 
 fun KtReferenceExpression.resolve() = mainReference.resolve()
+
+fun KotlinType.canBeNull() = isMarkedNullable || isNullabilityFlexible()

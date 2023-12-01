@@ -99,7 +99,9 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
       fromFile = "src/main/graphql/schema.graphqls",
       fromElement = { elementAt<PsiElement>("lastName", afterText = "input personInput {")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/type/PersonInput.kt",
-      toElement = { elementAt<KtParameter>("lastName")!! },
+      toElement = { elementAt<KtParameter>("lastName: String?")!! },
+      // We have 2 targets because of builders
+      multipleTarget = true,
   )
 }
 
