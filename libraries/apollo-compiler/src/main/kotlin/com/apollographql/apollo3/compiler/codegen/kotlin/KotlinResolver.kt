@@ -27,6 +27,7 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
 import com.apollographql.apollo3.compiler.ir.catchTo
+import com.apollographql.apollo3.compiler.ir.maybeError
 import com.apollographql.apollo3.compiler.ir.nullable
 import com.apollographql.apollo3.compiler.ir.optional
 import com.squareup.kotlinpoet.ClassName
@@ -43,7 +44,6 @@ internal class KotlinResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
     private val hooks: ApolloCompilerKotlinHooks,
-    private val errorAware: Boolean,
 ) {
   fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
 
@@ -79,17 +79,13 @@ internal class KotlinResolver(
     classNames.put(ResolverKey(kind, id), ClassName(memberName.packageName, memberName.simpleName))
   }
 
-  private fun IrType.removeCatchTo(): IrType {
-    return catchTo(IrCatchTo.NoCatch)
-  }
-
   internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false): TypeName {
     return when {
       type.optional -> {
         KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
       }
       type.catchTo != IrCatchTo.NoCatch -> {
-        resolveIrType(type.removeCatchTo(), jsExport, isInterface).let {
+        resolveIrType(type.catchTo(IrCatchTo.NoCatch), jsExport, isInterface).let {
           when (type.catchTo) {
             IrCatchTo.Null -> it.copy(nullable = true)
             IrCatchTo.Result -> KotlinSymbols.FieldResult.parameterizedBy(it)
@@ -199,17 +195,15 @@ internal class KotlinResolver(
       is IrCompositeType2 -> null
     }
   }
+
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
-    return adapterInitializerInternal(type, requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware)
-  }
-  internal fun adapterInitializerInternal(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String, errorAware: Boolean): CodeBlock {
     return when {
       type.optional -> {
         val presentFun = MemberName("com.apollographql.apollo3.api", "present")
-        CodeBlock.of("%L.%M()", adapterInitializerInternal(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware), presentFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
       }
       type.catchTo != IrCatchTo.NoCatch -> {
-        adapterInitializerInternal(type.removeCatchTo(), requiresBuffering, jsExport, runtimeAdapterPrefix, errorAware).let {
+        adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
           val member = when (type.catchTo) {
             IrCatchTo.Null -> KotlinSymbols.catchToNull
             IrCatchTo.Result -> KotlinSymbols.catchToResult
@@ -218,8 +212,8 @@ internal class KotlinResolver(
           CodeBlock.of("%L.%M()", it, member)
         }
       }
-      errorAware -> {
-        adapterInitializerInternal(type.removeCatchTo(), requiresBuffering, jsExport, runtimeAdapterPrefix, false).let {
+      type.maybeError -> {
+        adapterInitializer(type.maybeError(false), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
           CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
         }
       }
@@ -238,7 +232,7 @@ internal class KotlinResolver(
 
           else -> {
             val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-            CodeBlock.of("%L.%M()", adapterInitializerInternal(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix, false), nullableFun)
+            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
           }
         }
       }

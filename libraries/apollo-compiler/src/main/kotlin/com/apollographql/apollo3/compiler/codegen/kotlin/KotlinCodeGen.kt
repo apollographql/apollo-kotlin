@@ -183,7 +183,7 @@ internal object KotlinCodeGen {
     val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks, commonCodegenOptions.codegenSchema.schema.errorAware)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
     }
 
     val irSchema = commonCodegenOptions.irSchema
@@ -205,8 +205,7 @@ internal object KotlinCodeGen {
             next = upstreamResolver,
             scalarMapping = scalarMapping,
             requiresOptInAnnotation = requiresOptInAnnotation,
-            hooks = hooks,
-            errorAware = commonCodegenOptions.codegenSchema.schema.errorAware
+            hooks = hooks
         ),
         targetLanguageVersion = targetLanguageVersion,
     )
@@ -341,8 +340,7 @@ internal object KotlinCodeGen {
             next = null,
             scalarMapping = codegenSchema.scalarMapping,
             requiresOptInAnnotation = null,
-            hooks = ApolloCompilerKotlinHooks.Identity,
-            errorAware = codegenSchema.schema.errorAware
+            hooks = ApolloCompilerKotlinHooks.Identity
         ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
@@ -397,8 +395,7 @@ internal object KotlinCodeGen {
         next = null,
         scalarMapping = codegenSchema.scalarMapping,
         requiresOptInAnnotation = null,
-        hooks = ApolloCompilerKotlinHooks.Identity,
-        errorAware = codegenSchema.schema.errorAware
+        hooks = ApolloCompilerKotlinHooks.Identity
     )
     val context = KotlinContext(
         generateMethods = emptyList(),
@@ -409,8 +406,7 @@ internal object KotlinCodeGen {
             next = upstreamResolver,
             scalarMapping = codegenSchema.scalarMapping,
             requiresOptInAnnotation = null,
-            hooks = ApolloCompilerKotlinHooks.Identity,
-            errorAware = codegenSchema.schema.errorAware
+            hooks = ApolloCompilerKotlinHooks.Identity
         ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
