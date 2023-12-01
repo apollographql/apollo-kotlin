@@ -289,6 +289,7 @@ public final class com/apollographql/apollo3/api/CompiledCondition {
 }
 
 public final class com/apollographql/apollo3/api/CompiledField : com/apollographql/apollo3/api/CompiledSelection {
+	public final fun argumentValue (Ljava/lang/String;Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/Optional;
 	public final fun getAlias ()Ljava/lang/String;
 	public final fun getArguments ()Ljava/util/List;
 	public final fun getCondition ()Ljava/util/List;
@@ -298,7 +299,7 @@ public final class com/apollographql/apollo3/api/CompiledField : com/apollograph
 	public final fun getType ()Lcom/apollographql/apollo3/api/CompiledType;
 	public final fun nameWithArguments (Lcom/apollographql/apollo3/api/Executable$Variables;)Ljava/lang/String;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CompiledField$Builder;
-	public final fun resolveArgument (Ljava/lang/String;Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/Optional;
+	public final fun resolveArgument (Ljava/lang/String;Lcom/apollographql/apollo3/api/Executable$Variables;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/CompiledField$Builder {
@@ -412,6 +413,9 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Key : com/
 public final class com/apollographql/apollo3/api/CustomScalarType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getClassName ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/api/CustomTypeAdapter {
 }
 
 public class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {

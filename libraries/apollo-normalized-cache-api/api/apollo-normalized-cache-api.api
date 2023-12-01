@@ -43,6 +43,8 @@ public final class com/apollographql/apollo3/cache/normalized/api/CacheKey {
 public final class com/apollographql/apollo3/cache/normalized/api/CacheKey$Companion {
 	public final fun canDeserialize (Ljava/lang/String;)Z
 	public final fun deserialize (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
+	public final fun from (Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
+	public final fun from (Ljava/lang/String;[Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
 	public final fun rootKey ()Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
 }
 
