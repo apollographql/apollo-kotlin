@@ -1054,10 +1054,6 @@ public final class com/apollographql/apollo3/ast/VariableUsage {
 	public final fun isOneOfInputField ()Z
 }
 
-public final class com/apollographql/apollo3/ast/internal/DefinitionsKt {
-	public static final fun getNullabilityDefinitionsStr ()Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/ast/internal/SchemaValidationScopeKt {
 }
 

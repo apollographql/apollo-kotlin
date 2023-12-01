@@ -256,7 +256,7 @@ internal val linkDefinitionsStr = """
   ) repeatable on SCHEMA
 """.trimIndent()
 
-val nullabilityDefinitionsStr = """
+internal val nullabilityDefinitionsStr = """
 ""${'"'}
 Indicates that a field is only null if there is a matching error in the `errors` array.
 In all other cases, the field is non-null.

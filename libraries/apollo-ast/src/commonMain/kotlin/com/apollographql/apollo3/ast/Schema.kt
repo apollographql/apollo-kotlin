@@ -204,8 +204,9 @@ class Schema internal constructor(
     const val NONNULL = "nonnull"
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
-    const val CATCH = "catch"
 
+    @ApolloExperimental
+    const val CATCH = "catch"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL = "semanticNonNull"
     @ApolloExperimental
