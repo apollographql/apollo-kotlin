@@ -381,7 +381,7 @@ class ObjectAdapter<T>(
   }
 }
 
-class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
+private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
     return try {
       FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
@@ -398,7 +398,7 @@ class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<
   }
 }
 
-class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
+private class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     if (reader.peek() == JsonReader.Token.NULL) {
       val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
@@ -416,7 +416,7 @@ class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> 
   }
 }
 
-class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
+private class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
     return try {
       wrappedAdapter.fromJson(reader, customScalarAdapters)
@@ -445,10 +445,10 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-catchToResult")
-fun <T> Adapter<T>.catchToResult() = CatchToResultAdapter(this)
+fun <T> Adapter<T>.catchToResult(): Adapter<FieldResult<T>> = CatchToResultAdapter(this)
 
 @JvmName("-errorAware")
-fun <T> Adapter<T>.errorAware() = ErrorAwareAdapter(this)
+fun <T> Adapter<T>.errorAware(): Adapter<T> = ErrorAwareAdapter(this)
 
 @JvmName("-catchToNull")
-fun <T> Adapter<T>.catchToNull() = CatchToNullAdapter(this)
+fun <T> Adapter<T>.catchToNull(): Adapter<T?> = CatchToNullAdapter(this)
