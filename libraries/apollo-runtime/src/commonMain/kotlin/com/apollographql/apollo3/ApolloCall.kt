@@ -129,6 +129,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
     return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
   }
 
+  /**
+   * A version of [execute] that restores 3.x behaviour:
+   * - throw on fetch errors.
+   * - make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
+   * - throw ApolloComposite exception if needed.
+   */
   @Deprecated("Use toFlow() and handle ApolloResponse.exception instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun toFlowV3(): Flow<ApolloResponse<D>> {
@@ -149,6 +155,13 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .canBeBatched(canBeBatched)
         .build()
   }
+
+  /**
+   * A version of [execute] that restores 3.x behaviour:
+   * - throw on fetch errors.
+   * - make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
+   * - throw ApolloComposite exception if needed.
+   */
   @Deprecated("Use execute() and handle ApolloResponse.exception instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   suspend fun executeV3(): ApolloResponse<D> {
