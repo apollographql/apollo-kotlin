@@ -5,6 +5,7 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
@@ -28,7 +29,7 @@ class NativeThreadTest {
 
         val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
         val response = apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).execute()
-        mockServer.stop()
+        mockServer.close()
         assertEquals(response.data?.hero?.name, "R2-D2")
       }
     } finally {

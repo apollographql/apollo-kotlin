@@ -20,7 +20,7 @@ class FragmentNormalizerTest{
   fun test() = runTest {
     val cacheFactory = MemoryCacheFactory()
 
-    val apolloClient = ApolloClient.builder()
+    val apolloClient = ApolloClient.Builder()
         .serverUrl("https:/example.com")
         .normalizedCache(cacheFactory)
         .build()

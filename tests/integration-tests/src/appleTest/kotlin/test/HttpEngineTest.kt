@@ -5,6 +5,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.get
@@ -93,6 +94,6 @@ class HttpEngineTest {
      */
     assertTrue(after - before >= 1000)
     assertTrue(after - before <= 1500)
-    mockServer.stop()
+    mockServer.close()
   }
 }

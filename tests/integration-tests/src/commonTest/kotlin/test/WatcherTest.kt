@@ -36,6 +36,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -149,7 +150,9 @@ class WatcherTest {
     val operation = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
     apolloClient.enqueueTestResponse(operation, episodeHeroNameWithIdData)
     val job = launch {
-      apolloClient.query(operation).watch().collect {
+      apolloClient.query(operation).watch()
+          .filter { it.exception == null }
+          .collect {
         channel.send(it.data)
       }
     }
@@ -182,7 +185,9 @@ class WatcherTest {
     // The first query should get a "R2-D2" name
     apolloClient.enqueueTestResponse(query, episodeHeroNameData)
     val job = launch {
-      apolloClient.query(query).watch().collect {
+      apolloClient.query(query).watch()
+          .filter { it.exception == null }
+          .collect {
         channel.send(it.data)
       }
     }
@@ -209,7 +214,9 @@ class WatcherTest {
     val episodeHeroNameWithIdQuery = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
     apolloClient.enqueueTestResponse(episodeHeroNameWithIdQuery, episodeHeroNameWithIdData)
     val job = launch {
-      apolloClient.query(episodeHeroNameWithIdQuery).watch().collect {
+      apolloClient.query(episodeHeroNameWithIdQuery).watch()
+          .filter { it.exception == null }
+          .collect {
         channel.send(it.data)
       }
     }
@@ -240,7 +247,9 @@ class WatcherTest {
     val episodeHeroNameQuery = EpisodeHeroNameQuery(Episode.EMPIRE)
     apolloClient.enqueueTestResponse(episodeHeroNameQuery, episodeHeroNameData)
     val job = launch {
-      apolloClient.query(episodeHeroNameQuery).watch().collect {
+      apolloClient.query(episodeHeroNameQuery).watch()
+          .filter { it.exception == null }
+          .collect {
         channel.send(it.data)
       }
     }
@@ -356,7 +365,9 @@ class WatcherTest {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
           .refetchPolicy(FetchPolicy.CacheOnly)
-          .watch().collect {
+          .watch()
+          .filter { it.exception == null }
+          .collect {
             channel.send(it.data)
           }
     }
@@ -387,9 +398,9 @@ class WatcherTest {
       // 1. query (will be a cache miss since the cache starts empty), then watch
       var data: EpisodeHeroNameQuery.Data? = null
       apolloClient.query(query).toFlow()
-          .catch {
+          .filter {
             // Swallow cache and network errors
-            if (it !is ApolloException) throw it
+            it.exception == null
           }
           .onEach { data = it.data }
           .onCompletion {
@@ -516,6 +527,7 @@ class WatcherTest {
 
     val job = launch {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
+          .filter { it.exception == null }
           .collect {
             channel.send(it.data)
           }
@@ -578,6 +590,7 @@ class WatcherTest {
 
     val job = launch {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
+          .filter { it.exception == null }
           .collect {
             channel.send(it.data)
           }
@@ -609,6 +622,7 @@ class WatcherTest {
 
     val job = launch {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
+          .filter { it.exception == null }
           .collect {
             channel.send(it.data)
           }
