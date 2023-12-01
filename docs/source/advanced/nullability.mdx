@@ -227,7 +227,7 @@ If, by any chance, an error happens that you still want to handle on that field,
 
 ```kotlin
 user.name.valueOrNull // "Luke Skywalker"
-user.name.errorOrNull // null
+user.name.graphQLErrorOrNull // null
 ```
 
 Similarly to `@catch`, `@semanticNonNull` supports a `level` argument for lists:
