@@ -34,15 +34,6 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun toGQLValue$default (Ljava/lang/String;Lcom/apollographql/apollo3/ast/ParserOptions;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLValue;
 }
 
-public final class com/apollographql/apollo3/ast/CatchTo : java/lang/Enum {
-	public static final field NULL Lcom/apollographql/apollo3/ast/CatchTo;
-	public static final field RESULT Lcom/apollographql/apollo3/ast/CatchTo;
-	public static final field THROW Lcom/apollographql/apollo3/ast/CatchTo;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/CatchTo;
-	public static fun values ()[Lcom/apollographql/apollo3/ast/CatchTo;
-}
-
 public final class com/apollographql/apollo3/ast/ConditionalFragment : com/apollographql/apollo3/ast/ApolloIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
