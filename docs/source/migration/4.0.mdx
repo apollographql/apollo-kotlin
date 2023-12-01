@@ -9,7 +9,7 @@ Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
 
 Apollo Kotlin 4.0 focuses on tooling, stability and fixing some API regrets that came with 3.x.
 
-Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710).
+Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710). 
 
 If you are using a lib that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own app to 4.0.
 
@@ -101,10 +101,12 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 
 Note that this is true for all `Flows`, including watchers. If you don't want to receive error responses, filter them out:
 
-```kotlin   
-client.query(MyQuery()).watch().filter { it.exception == null }.collect { response ->
-  // Handle responses
-}
+```
+// Replace
+apolloClient.query(query).watch()
+
+// With
+apolloClient.query(query).watch().filter { it.exception == null }
 ```
 
 ### ApolloCompositeException is not thrown anymore
@@ -413,4 +415,7 @@ It is not possible to create a `Schema` from a File or String directly anymore. 
 * Use `toFlow().asFlowable()` and [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3)
 
 
+## Example of a migration
+
+If you are looking for inspiration, we updated the [3.x integration tests to use 4.0](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.
 
