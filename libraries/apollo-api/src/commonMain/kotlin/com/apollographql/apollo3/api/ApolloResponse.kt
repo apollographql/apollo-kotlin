@@ -102,10 +102,13 @@ private constructor(
    * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
    */
   @get:JvmName("dataAssertNoErrors")
-  @Deprecated(message = "Use dataOrThrow instead", replaceWith = ReplaceWith("dataOrThrow()"))
   val dataAssertNoErrors: D
     get() {
-      return dataOrThrow()
+      return when {
+        hasErrors() -> throw ApolloGraphQLException(errors!!.first())
+        exception != null -> throw DefaultApolloException("An exception happened", exception)
+        else -> dataOrThrow()
+      }
     }
 
   /**
