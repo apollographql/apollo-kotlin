@@ -1,4 +1,5 @@
 @file:JvmName("FetchPolicyInterceptors")
+@file:Suppress("DEPRECATION") // for ApolloCompositeException, see https://youtrack.jetbrains.com/issue/KT-30155
 
 package com.apollographql.apollo3.cache.normalized
 

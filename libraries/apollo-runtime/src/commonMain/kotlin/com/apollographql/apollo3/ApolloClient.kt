@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -15,7 +14,6 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -118,14 +116,6 @@ private constructor(
       apolloRequest: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
     return executeAsFlow(apolloRequest, false, false)
-  }
-
-  @Deprecated("Use executeAsFlow() and handle ApolloResponse.exception instead")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun <D : Operation.Data> executeAsThrowingFlow(
-      apolloRequest: ApolloRequest<D>,
-  ): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, false, true)
   }
 
   internal fun <D : Operation.Data> executeAsFlow(

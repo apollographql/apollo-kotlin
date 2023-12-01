@@ -131,8 +131,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   @Deprecated("Use toFlow() and handle ApolloResponse.exception instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun toThrowingFlow(): Flow<ApolloResponse<D>> {
-    return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
+  fun toFlowV3(): Flow<ApolloResponse<D>> {
+    @Suppress("DEPRECATION")
+    return conflateFetchPolicyInterceptorResponses(true)
+        .apolloClient
+        .executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
   }
 
   private fun toApolloRequest(): ApolloRequest<D> {
@@ -148,9 +151,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
   @Deprecated("Use execute() and handle ApolloResponse.exception instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  suspend fun executeOrThrow(): ApolloResponse<D> {
+  suspend fun executeV3(): ApolloResponse<D> {
     @Suppress("DEPRECATION")
-    return singleSuccessOrException(toThrowingFlow())
+    return singleSuccessOrException(toFlowV3())
   }
 
   /**

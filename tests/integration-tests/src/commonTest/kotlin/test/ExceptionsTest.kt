@@ -64,7 +64,7 @@ class ExceptionsTest {
 
     val throwingClient = apolloClient.newBuilder().build()
     var result = kotlin.runCatching {
-      throwingClient.query(HeroNameQuery()).toThrowingFlow().toList()
+      throwingClient.query(HeroNameQuery()).toFlowV3().toList()
     }
     assertNotNull(result.exceptionOrNull())
   }
@@ -88,7 +88,7 @@ class ExceptionsTest {
           }
       """.trimIndent())
     val errorClient = apolloClient.newBuilder().build()
-    val response = errorClient.query(HeroNameQuery()).toThrowingFlow().toList()
+    val response = errorClient.query(HeroNameQuery()).toFlowV3().toList()
     assertTrue(response.first().errors?.isNotEmpty() ?: false)
   }
 
@@ -124,7 +124,7 @@ class ExceptionsTest {
     mockServer.enqueueString(PARTIAL_DATA_RESPONSE)
     val errorClient = apolloClient.newBuilder()
         .build()
-    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).executeOrThrow()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).executeV3()
     assertNotNull(response.data)
     assertTrue(response.errors?.isNotEmpty() == true)
   }

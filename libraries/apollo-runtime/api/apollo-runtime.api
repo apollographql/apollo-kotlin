@@ -9,7 +9,7 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun executeOrThrow (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun executeV3 (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
@@ -29,7 +29,7 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
-	public final fun toThrowingFlow ()Lkotlinx/coroutines/flow/Flow;
+	public final fun toFlowV3 ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/ExecutionOptions, java/io/Closeable {
@@ -38,7 +38,6 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public fun close ()V
 	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public final fun executeAsThrowingFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
@@ -142,6 +141,11 @@ public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql
 }
 
 public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
+}
+
+public final class com/apollographql/apollo3/ConflatedResponsesKt {
+	public static final fun conflateFetchPolicyInterceptorResponses (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun getConflateFetchPolicyInterceptorResponses (Lcom/apollographql/apollo3/api/ApolloRequest;)Z
 }
 
 public abstract interface class com/apollographql/apollo3/interceptor/ApolloInterceptor {
