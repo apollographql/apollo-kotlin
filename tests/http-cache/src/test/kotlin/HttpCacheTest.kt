@@ -92,14 +92,14 @@ class HttpCacheTest {
     mockServer.enqueueString(statusCode = 500)
 
     runBlocking {
-      val response = apolloClient.query(GetRandomQuery()).execute()
+      val response = apolloClient.query(GetRandomQuery()).executeV3()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
       assertFails {
         apolloClient.query(GetRandomQuery())
             .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
-            .execute()
+            .executeV3()
       }
     }
   }
@@ -141,7 +141,7 @@ class HttpCacheTest {
         apolloClient.query(GetRandomQuery())
             .httpExpireTimeout(500)
             .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
-            .execute()
+            .executeV3()
       }
     }
   }
@@ -211,11 +211,11 @@ class HttpCacheTest {
   fun incompleteJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueString("""{"data":""")
     assertFailsWith<ApolloParseException> {
-      apolloClient.query(GetRandomQuery()).execute()
+      apolloClient.query(GetRandomQuery()).executeV3()
     }
     // Should not have been cached
     assertFailsWith<HttpCacheMissException> {
-      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).executeV3()
     }
   }
 
@@ -229,10 +229,10 @@ class HttpCacheTest {
           "errors": [ { "message": "GraphQL error" } ]
         }
       """)
-    apolloClient.query(GetRandomQuery()).execute()
+    apolloClient.query(GetRandomQuery()).executeV3()
     // Should not have been cached
     assertFailsWith<HttpCacheMissException> {
-      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).executeV3()
     }
   }
 
@@ -247,7 +247,7 @@ class HttpCacheTest {
     try {
       apolloClient.query(GetRandomQuery())
           .addHttpHeader("foo", "bar")
-          .execute()
+          .executeV3()
       fail("An exception was expected")
     } catch (e: Exception) {
 
