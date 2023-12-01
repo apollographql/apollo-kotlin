@@ -45,7 +45,7 @@
 <a class="library-name--link" href="../../../../index.html">
                             apollo-kotlin
                     </a>            </div>
-            <div class="library-version">3.8.3-SNAPSHOT
+            <div class="library-version">4.0.0-beta.3-SNAPSHOT
             </div>
         </div>
         <div class="filter-section" id="filter-section">
@@ -66,7 +66,7 @@
   <div class="breadcrumbs"><a href="../../../index.html">apollo-normalized-cache-incubating</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.cache.normalized</a><span class="delimiter">/</span><a href="../index.html">FetchPolicy</a><span class="delimiter">/</span><span class="current">CacheFirst</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Cache</span><wbr><span><span>First</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="index.html">CacheFirst</a></div></div><p class="paragraph">Try the cache, if that failed, try the network.</p><p class="paragraph">An <a href="../../../../apollo-api/com.apollographql.apollo3.exception/-apollo-composite-exception/index.html">ApolloCompositeException</a> is thrown if the data is not in the cache and the network call failed. If coming from the cache 1 value is emitted, otherwise 1 or multiple values can be emitted from the network.</p><p class="paragraph">This is the default behaviour.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><a href="index.html">CacheFirst</a></div></div><p class="paragraph">Try the cache, if that failed, try the network.</p><p class="paragraph">This <a href="../index.html">FetchPolicy</a> emits one or more <a href="../../../../apollo-api/com.apollographql.apollo3.api/-apollo-response/index.html">ApolloResponse</a>s. Cache misses and network errors have <a href="../../../../apollo-api/com.apollographql.apollo3.api/-apollo-response/exception.html">ApolloResponse.exception</a> set to a non-null <a href="../../../../apollo-api/com.apollographql.apollo3.exception/-apollo-exception/index.html">ApolloException</a></p><p class="paragraph">This is the default behaviour.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
