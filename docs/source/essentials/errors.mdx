@@ -12,7 +12,6 @@ if (response.data != null) {
 } else {
   // an error happened, check response.exception for more details or just display a generic error 
   when (response.exception) {
-    is ApolloGraphQLException -> // do something with exception.errors
     is ApolloHttpException -> // do something with exception.statusCode
     is ApolloNetworkException -> TODO()
     is ApolloParseException -> TODO()
