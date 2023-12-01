@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.api.getOrNull
 import com.apollographql.apollo3.api.getOrThrow
-import com.apollographql.apollo3.exception.ApolloGraphQLException
 import `null`.PriceNullQuery
 import `null`.ProductIgnoreErrorsQuery
 import `null`.ProductNullQuery
@@ -14,7 +13,6 @@ import `null`.UserQuery
 import `null`.UserResultQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -22,9 +20,7 @@ class CatchNullTest {
   @Test
   fun userOnUserNameError() {
     val response = UserQuery().parseResponse(userNameError)
-    val exception = response.exception
-    assertIs<ApolloGraphQLException>(exception)
-    assertEquals("cannot resolve name", exception.error.message)
+    assertNull(response.exception)
   }
 
   @Test
@@ -67,9 +63,7 @@ class CatchNullTest {
     val response = ProductQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data)
-    val exception = response.exception
-    assertIs<ApolloGraphQLException>(exception)
-    assertEquals("cannot resolve price", exception.error.message)
+    assertNull(response.exception)
   }
 
   @Test

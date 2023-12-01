@@ -29,8 +29,12 @@ private constructor(
 
     /**
      * Parsed response of GraphQL [operation] execution.
+     * [data] is non-null if some data is received from the server.
+     * [data] might contain partial data in case of field errors
      *
-     * See also [exception]
+     * @see [errors]
+     * @see [exception]
+     * @see [dataOrThrow]
      */
     @JvmField
     val data: D?,
@@ -48,7 +52,18 @@ private constructor(
     @JvmField
     val errors: List<Error>?,
 
-    exception: ApolloException?,
+    /**
+     * An [ApolloException] if a GraphQL response wasn't received.
+     *
+     * For example, `exception` is non-null in those cases:
+     * - network failure
+     * - cache miss
+     * - parsing error
+     *
+     * See also [data]
+     */
+    @JvmField
+    val exception: ApolloException?,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -80,22 +95,6 @@ private constructor(
 ) {
 
   /**
-   * An [ApolloException] if a complete GraphQL response wasn't received, an instance of [ApolloGraphQLException] if GraphQL
-   * errors were return or another instance of [ApolloException] if a network, parsing, caching or other error happened.
-   *
-   * For example, `exception` is non-null if there is a network failure or cache miss.
-   *
-   * See also [data]
-   */
-  @JvmField
-  val exception: ApolloException? = when  {
-    exception != null -> exception
-    !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
-    data == null -> DefaultApolloException("No data and no error was returned")
-    else -> null
-  }
-
-  /**
    * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
    *
    * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
@@ -109,7 +108,7 @@ private constructor(
     }
 
   /**
-   * Return [data] if not null or throws [exception] else
+   * Return [data] if not null or throws [NoDataException] else
    */
   fun dataOrThrow(): D {
     return data ?: throw NoDataException(cause = exception)
