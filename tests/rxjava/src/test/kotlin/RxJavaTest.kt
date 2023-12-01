@@ -47,7 +47,7 @@ class RxJavaTest {
 
   @Test
   fun errorsAreReceived() {
-    mockServer.enqueue("bad response")
+    mockServer.enqueueString("bad response")
 
     apolloClient.query(GetRandomQuery())
         .rxSingle()

@@ -85,7 +85,7 @@ class FetchPolicyTest {
 
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     try {
       apolloClient.query(query).execute()
       fail("we expected the query to fail")
@@ -116,14 +116,14 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Network error -> we should hit now the cache
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     response = call.execute()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
 
     // Network error and no cache -> we should get an error
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     store.clearAll()
     try {
       call.execute()
@@ -169,7 +169,7 @@ class FetchPolicyTest {
     assertFalse(response.isFromCache)
 
     // Offer a malformed response, it should fail
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
     try {
       call.execute()
       fail("we expected a failure")

@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 class HttpGetTest {
   @Test
   fun getTest() = mockServerTest {
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": {
           "hero": {

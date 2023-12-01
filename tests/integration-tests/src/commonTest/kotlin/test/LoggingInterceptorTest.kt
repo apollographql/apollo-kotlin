@@ -137,7 +137,7 @@ class LoggingInterceptorTest {
   fun dontConsumeBody() = runTest(before = { setUp() }, after = { tearDown() }) {
     var uploadRead = 0
     // We only test the data that is sent to the server, we don't really mind the response
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": null
       }

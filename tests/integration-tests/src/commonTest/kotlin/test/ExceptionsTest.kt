@@ -29,7 +29,7 @@ class ExceptionsTest {
 
   @Test
   fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("malformed")
+    mockServer.enqueueString("malformed")
 
     val result = kotlin.runCatching {
       apolloClient.query(HeroNameQuery()).execute()
@@ -65,7 +65,7 @@ class ExceptionsTest {
 
   @Test
   fun WhenQueryAndMalformedNetworkResponseAssertSuccessAfterRetry() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("")
+    mockServer.enqueueString("")
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)

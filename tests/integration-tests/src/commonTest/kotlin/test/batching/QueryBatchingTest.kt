@@ -95,8 +95,8 @@ class QueryBatchingTest {
 
   @Test
   fun queriesAreNotBatchedIfSubmittedFarApart() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
-    mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"83"}}}]""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 10)
@@ -120,8 +120,8 @@ class QueryBatchingTest {
 
   @Test
   fun queriesCanBeOptOutOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""{"data":{"launch":{"id":"83"}}}""")
-    mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
+    mockServer.enqueueString("""{"data":{"launch":{"id":"83"}}}""")
+    mockServer.enqueueString("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)

@@ -77,7 +77,7 @@ class FileUploadTest {
     mockServer = MockServer()
 
     // We only test the data that is sent to the server, we don't really mind the response
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": null
       }

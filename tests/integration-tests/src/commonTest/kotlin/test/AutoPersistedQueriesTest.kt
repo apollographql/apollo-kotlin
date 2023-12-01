@@ -61,7 +61,7 @@ class AutoPersistedQueriesTest {
 
   @Test
   fun withApqsRetriesAfterError() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "errors": [
           {
@@ -86,7 +86,7 @@ class AutoPersistedQueriesTest {
 
   @Test
   fun mutationsAreSentWithPostRegardlessOfSetting() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "errors": [
           {

@@ -36,7 +36,7 @@ class CacheMissLoggingInterceptorTest {
         .normalizedCache(MemoryCacheFactory())
         .build()
 
-    mockServer.enqueue("""
+    mockServer.enqueueString("""
       {
         "data": {
           "hero": {
