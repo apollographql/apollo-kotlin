@@ -9,6 +9,7 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.Test
@@ -32,22 +33,14 @@ class ExceptionsTest {
   fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString("malformed")
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    assertTrue(result.exceptionOrNull() != null)
+    assertTrue( apolloClient.query(HeroNameQuery()).execute().exception != null)
   }
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString(statusCode = 404)
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
+    val exception = apolloClient.query(HeroNameQuery()).execute().exception
     assertTrue(exception is ApolloHttpException)
     assertEquals(404, exception.statusCode)
   }
@@ -56,12 +49,7 @@ class ExceptionsTest {
   fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
     mockServer.close()
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
-    assertTrue(exception is ApolloNetworkException)
+    assertTrue(apolloClient.query(HeroNameQuery()).execute().exception is ApolloNetworkException)
   }
 
   @Test
@@ -74,6 +62,11 @@ class ExceptionsTest {
     val response = apolloClient
         .query(query)
         .toFlow()
+        .onEach {
+          if (it.exception != null) {
+            throw it.exception!!
+          }
+        }
         .retryWhen { _, attempt -> attempt == 0L }
         .single()
 

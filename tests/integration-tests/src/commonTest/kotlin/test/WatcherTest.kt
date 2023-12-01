@@ -570,6 +570,7 @@ class WatcherTest {
     }
 
     apolloClient.close()
+    mockServer.close()
   }
 
 

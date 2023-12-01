@@ -26,12 +26,7 @@ class HttpErrorBodyTest {
         string = "Ooops",
         statusCode = 500)
 
-    try {
-      apolloClient.query(HeroNameQuery()).execute()
-      fail("An exception was expected")
-    } catch (e: ApolloHttpException) {
-      assertEquals("Ooops", e.body?.readUtf8())
-    }
+    assertEquals("Ooops", (apolloClient.query(HeroNameQuery()).execute().exception as ApolloHttpException).body?.readUtf8())
 
     apolloClient.close()
     mockServer.close()

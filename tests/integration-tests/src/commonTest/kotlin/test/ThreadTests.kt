@@ -125,6 +125,7 @@ class ThreadTests {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
     val response = apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).execute()
     mockServer.close()
+    apolloClient.close()
     assertEquals(response.data?.hero?.name, "R2-D2")
   }
 }

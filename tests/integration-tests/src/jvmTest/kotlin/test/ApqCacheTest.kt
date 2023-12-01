@@ -28,6 +28,7 @@ class ApqCacheTest {
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
+        .normalizedCache(normalizedCacheFactory = MemoryCacheFactory(10 * 1024 * 1024))
         // Note that mutations will always be sent as POST requests, regardless of these settings, as to avoid hitting caches.
         .autoPersistedQueries(
             // For the initial hashed query that does not send the actual Graphql document
@@ -35,7 +36,6 @@ class ApqCacheTest {
             // For the follow-up query that sends the full document if the initial hashed query was not found
             httpMethodForDocumentQueries = HttpMethod.Get
         )
-        .normalizedCache(normalizedCacheFactory = MemoryCacheFactory(10 * 1024 * 1024))
         .build()
 
     // put in the cache

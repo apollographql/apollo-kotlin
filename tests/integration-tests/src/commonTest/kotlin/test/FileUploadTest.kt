@@ -147,15 +147,6 @@ class FileUploadTest {
     assertMapPart(parts[1], "expectedMapPartBodyNested.json")
     assertOperationsPart(parts[0], "expectedOperationsPartBodyNested.json")
   }
-
-  @Test
-  fun defaultUploadDisallowMultipleWriteTo() {
-    val defaultUpload = DefaultUpload.Builder().content(Buffer().readByteArray()).build()
-    defaultUpload.writeTo(Buffer())
-    assertFailsWith<IllegalStateException> {
-      defaultUpload.writeTo(Buffer())
-    }
-  }
 }
 
 internal class Part(

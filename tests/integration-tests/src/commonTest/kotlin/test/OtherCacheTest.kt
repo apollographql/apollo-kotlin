@@ -27,6 +27,7 @@ import kotlinx.datetime.Instant
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -76,25 +77,24 @@ class OtherCacheTest {
         .execute()
 
     // Some details are not present in the master query, we should get a cache miss
-    try {
-      apolloClient.query(CharacterDetailsQuery("1002")).fetchPolicy(FetchPolicy.CacheOnly).execute()
-      fail("we expected a cache miss")
-    } catch (e: CacheMissException) {
-      assertTrue(e.message!!.contains("Object '1002' has no field named '__typename'"))
-    }
-  }
+    val exception = apolloClient.query(CharacterDetailsQuery("1002"))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+        .exception
 
+    assertIs<CacheMissException>(exception)
+    assertTrue(exception.message!!.contains("Object '1002' has no field named '__typename'"))
+  }
 
   @Test
   fun cacheMissThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
-    try {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .execute()
-      fail("we expected a cache miss")
-    } catch (e: CacheMissException) {
-      assertTrue(e.message!!.contains("Object 'QUERY_ROOT' has no field named 'hero"))
-    }
+    val exception = apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+        .exception
+
+    assertIs<CacheMissException>(exception)
+    assertTrue(exception.message!!.contains("Object 'QUERY_ROOT' has no field named 'hero"))
   }
 
   @Test
@@ -155,15 +155,14 @@ class OtherCacheTest {
     assertEquals(response.data?.hero?.friends, null)
 
     // Now try to get the friends from the cache, it should fail
-    try {
-      apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .execute()
+    val exception = apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+        .exception
 
-      fail("A CacheMissException was expected")
-    } catch (e: CacheMissException) {
-      assertTrue(e.message!!.contains("has no field named 'friends'"))
-    }
+    assertIs<CacheMissException>(exception)
+    assertTrue(exception.message!!.contains("has no field named 'friends'"))
+
   }
 
   @Test

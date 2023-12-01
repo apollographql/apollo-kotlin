@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.mockserver.KtorTcpServer
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueString
@@ -29,11 +30,7 @@ class HttpEngineTest {
   fun canReadNSError() = runTest {
     val apolloClient = ApolloClient.Builder().serverUrl("https://inexistent.host/graphql").build()
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val apolloNetworkException = result.exceptionOrNull()
+    val apolloNetworkException = apolloClient.query(HeroNameQuery()).execute().exception
     assertNotNull(apolloNetworkException)
     assertIs<ApolloNetworkException>(apolloNetworkException)
 
@@ -55,7 +52,9 @@ class HttpEngineTest {
 
   @Test
   fun connectTimeoutIsWorking() = runTest {
-    val mockServer = MockServer(2_000)
+    val mockServer = MockServer.Builder()
+        .tcpServer(KtorTcpServer(acceptDelayMillis = 2_000))
+        .build()
     // Enqueue a trivial response to not crash in the mockServer
     mockServer.enqueueString("")
 
