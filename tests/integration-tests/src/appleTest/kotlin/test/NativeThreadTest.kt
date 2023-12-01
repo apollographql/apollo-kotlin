@@ -24,7 +24,7 @@ class NativeThreadTest {
         assertTrue(!NSThread.isMainThread)
 
         val mockServer = MockServer()
-        mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+        mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
 
         val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
         val response = apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).execute()

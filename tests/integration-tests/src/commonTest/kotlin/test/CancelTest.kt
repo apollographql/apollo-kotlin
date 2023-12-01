@@ -1,13 +1,15 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
@@ -23,12 +25,12 @@ class CancelTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun cancelFlow() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponse.json"))
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
     val job = launch {
@@ -42,11 +44,11 @@ class CancelTest {
 
   @Test
   fun canCancelQueryCacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponse.json"), 500)
+    mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponse.json"), 500)
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).normalizedCache(MemoryCacheFactory()).build()
 
     val job = launch {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).executeCacheAndNetwork().toList()
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
     }
     delay(100)
     job.cancel()

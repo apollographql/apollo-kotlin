@@ -6,6 +6,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,10 +22,9 @@ class HttpErrorBodyTest {
         .httpExposeErrorBody(true)
         .build()
 
-    mockServer.enqueue(
-            statusCode = 500,
-        string = "Ooops"
-    )
+    mockServer.enqueueString(
+        string = "Ooops",
+        statusCode = 500)
 
     try {
       apolloClient.query(HeroNameQuery()).execute()
@@ -33,7 +33,7 @@ class HttpErrorBodyTest {
       assertEquals("Ooops", e.body?.readUtf8())
     }
 
-    apolloClient.dispose()
-    mockServer.stop()
+    apolloClient.close()
+    mockServer.close()
   }
 }

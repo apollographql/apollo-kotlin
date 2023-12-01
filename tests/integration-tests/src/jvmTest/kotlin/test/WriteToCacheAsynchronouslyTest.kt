@@ -50,7 +50,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheAsynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(true)
         .execute()
@@ -67,7 +67,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheSynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(false)
         .execute()

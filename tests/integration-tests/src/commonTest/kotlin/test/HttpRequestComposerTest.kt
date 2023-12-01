@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
@@ -20,7 +21,7 @@ class HttpRequestComposerTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test

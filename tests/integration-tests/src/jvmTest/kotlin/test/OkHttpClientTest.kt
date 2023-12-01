@@ -22,7 +22,7 @@ class OkHttpClientTest {
 
     runBlocking {
       val mockServer = MockServer()
-      mockServer.enqueue(statusCode = 200)
+      mockServer.enqueueString(statusCode = 200)
 
       val apolloClient = ApolloClient.Builder()
           .serverUrl(mockServer.url())

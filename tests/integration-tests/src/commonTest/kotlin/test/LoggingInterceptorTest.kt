@@ -6,6 +6,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
 import com.apollographql.apollo3.testing.internal.runTest
@@ -24,7 +25,7 @@ class LoggingInterceptorTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   private class Logger {
@@ -51,7 +52,7 @@ class LoggingInterceptorTest {
         .serverUrl(mockServer.url())
         .addHttpInterceptor(LoggingInterceptor(level = Level.NONE, log = logger::log))
         .build()
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
     client.query(HeroNameQuery()).execute()
     logger.assertLog("")
   }
@@ -62,7 +63,7 @@ class LoggingInterceptorTest {
         .serverUrl(mockServer.url())
         .addHttpInterceptor(LoggingInterceptor(level = Level.BASIC, log = logger::log))
         .build()
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
@@ -77,7 +78,7 @@ class LoggingInterceptorTest {
         .serverUrl(mockServer.url())
         .addHttpInterceptor(LoggingInterceptor(level = Level.HEADERS, log = logger::log))
         .build()
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
@@ -98,7 +99,7 @@ class LoggingInterceptorTest {
         .serverUrl(mockServer.url())
         .addHttpInterceptor(LoggingInterceptor(level = Level.BODY, log = logger::log))
         .build()
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/

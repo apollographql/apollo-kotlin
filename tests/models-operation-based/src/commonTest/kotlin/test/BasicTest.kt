@@ -41,7 +41,7 @@ class BasicTest {
   }
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8(resourceName))
+    mockServer.enqueueString(testFixtureToUtf8(resourceName))
     var response = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     response.block()
     response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

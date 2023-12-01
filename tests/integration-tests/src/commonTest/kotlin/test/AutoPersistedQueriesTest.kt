@@ -9,6 +9,7 @@ import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -24,12 +25,12 @@ class AutoPersistedQueriesTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun withApqsDoesntSendDocument() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -45,7 +46,7 @@ class AutoPersistedQueriesTest {
 
   @Test
   fun canDisableApqsPerQuery() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries().build()
 
@@ -72,7 +73,7 @@ class AutoPersistedQueriesTest {
     """.trimIndent()
     )
 
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries().build()
 
@@ -97,7 +98,7 @@ class AutoPersistedQueriesTest {
     """.trimIndent()
     )
 
-    mockServer.enqueue(testFixtureToUtf8("UpdateReviewResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("UpdateReviewResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())

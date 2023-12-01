@@ -69,7 +69,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
               }
 
               "upload" -> {
-                mapScalarToUpload("Upload")
+                mapScalar("Upload", "com.apollographql.apollo3.api.Upload")
                 operationManifestFormat.set("persistedQueryManifest")
               }
 
@@ -95,6 +95,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             this.generateKotlinModels.set(generateKotlinModels)
             generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
+            languageVersion.set("1.5")
           }
         }
     file("src/commonTest/kotlin/test").listFiles()!!
@@ -102,6 +103,8 @@ fun configureApollo(generateKotlinModels: Boolean) {
         .forEach {
           service("${it.name}-$extra") {
             srcDir(it)
+
+            languageVersion.set("1.5")
 
             when (it.name) {
               "fragment_normalizer" -> {
@@ -141,11 +144,14 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
 configureApollo(true)
 configureApollo(false)
 
+fun String.removeWhiteSpace(): String {
+  return this.replace("\n", "").replace(" ", "").replace("\r", "")
+}
 val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
   dependsOn("generateApolloSources")
   doLast {
     check(
-        file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText() == file("testFixtures/manifest.json").readText()
+        file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json").readText().removeWhiteSpace() == file("testFixtures/manifest.json").readText().removeWhiteSpace()
     ) {
       "Persisted Query Manifest has changed"
     }

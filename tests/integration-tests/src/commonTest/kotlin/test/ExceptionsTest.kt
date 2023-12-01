@@ -6,6 +6,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.retryWhen
@@ -24,7 +25,7 @@ class ExceptionsTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -40,7 +41,7 @@ class ExceptionsTest {
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(statusCode = 404)
+    mockServer.enqueueString(statusCode = 404)
 
     val result = kotlin.runCatching {
       apolloClient.query(HeroNameQuery()).execute()
@@ -53,7 +54,7 @@ class ExceptionsTest {
 
   @Test
   fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
-    mockServer.stop()
+    mockServer.close()
 
     val result = kotlin.runCatching {
       apolloClient.query(HeroNameQuery()).execute()

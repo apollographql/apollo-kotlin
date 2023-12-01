@@ -20,6 +20,7 @@ import com.apollographql.apollo3.integration.normalizer.UpdateReviewWithoutVaria
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.datetime.Instant
@@ -45,13 +46,13 @@ class OtherCacheTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
   fun masterDetailSuccess() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
@@ -69,7 +70,7 @@ class OtherCacheTest {
   @Throws(Exception::class)
   fun masterDetailFailIncomplete() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
@@ -99,7 +100,7 @@ class OtherCacheTest {
   @Test
   @Throws(Exception::class)
   fun skipIncludeDirective() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
@@ -139,7 +140,7 @@ class OtherCacheTest {
   @Test
   fun skipIncludeDirectiveUnsatisfiedCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a response that doesn't contain friends
-    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
     apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()

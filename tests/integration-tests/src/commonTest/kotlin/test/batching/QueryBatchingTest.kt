@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -31,9 +32,9 @@ class QueryBatchingTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
     // This is important. JS will hang if the BatchingHttpInterceptor scope is not cancelled
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -60,7 +61,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(string = response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
@@ -153,7 +154,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(string = response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
@@ -200,7 +201,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(string = response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
@@ -237,7 +238,7 @@ class QueryBatchingTest {
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
 
-    mockServer.enqueue(response)
+    mockServer.enqueueString(string = response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)

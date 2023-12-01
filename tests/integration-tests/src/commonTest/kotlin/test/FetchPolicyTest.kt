@@ -26,6 +26,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -59,8 +60,8 @@ class FetchPolicyTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
-    apolloClient.dispose()
+    mockServer.close()
+    apolloClient.close()
   }
 
   @Test
@@ -186,7 +187,7 @@ class FetchPolicyTest {
 
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
     }
@@ -205,7 +206,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response + 1 network exception
     caught = null
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
 
     assertIs<ApolloException>(caught)
@@ -232,15 +233,15 @@ class FetchPolicyTest {
 
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(query).executeCacheAndNetwork().toList()
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
     }
 
     // Make the network return something
     // Cache Error + Nework Success => 1 response
     mockServer.enqueue(query, data)
-    var responses = apolloClient.query(query).executeCacheAndNetwork().toList()
+    var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
 
     assertEquals(1, responses.size)
     assertNotNull(responses[0].data)
@@ -249,8 +250,8 @@ class FetchPolicyTest {
 
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response
-    mockServer.enqueue(statusCode = 500)
-    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
+    mockServer.enqueueString(statusCode = 500)
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
 
     assertEquals(1, responses.size)
     assertNotNull(responses[0].data)
@@ -259,7 +260,7 @@ class FetchPolicyTest {
 
     // Cache Success + Network Success => 1 response
     mockServer.enqueue(query, data)
-    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
 
     assertEquals(2, responses.size)
     assertNotNull(responses[0].data)
@@ -313,8 +314,8 @@ class FetchPolicyTest {
      * Make a first query that is disjoint from the watcher
      */
     val operation2 = CharacterNameByIdQuery("83")
-    mockServer.enqueue(
-        buildJsonString {
+    mockServer.enqueueString(
+        string = buildJsonString {
           operation2.composeJsonResponse(
               this,
               CharacterNameByIdQuery.Data(
@@ -340,8 +341,8 @@ class FetchPolicyTest {
     } catch (_: TimeoutCancellationException) {
     }
 
-    mockServer.enqueue(
-        buildJsonString {
+    mockServer.enqueueString(
+        string = buildJsonString {
           operation1.composeJsonResponse(
               this,
               HeroNameQuery.Data(
@@ -369,8 +370,8 @@ class FetchPolicyTest {
      */
     store.clearAll()
 
-    mockServer.enqueue(
-        buildJsonString {
+    mockServer.enqueueString(
+        string = buildJsonString {
           operation1.composeJsonResponse(
               this,
               HeroNameQuery.Data(

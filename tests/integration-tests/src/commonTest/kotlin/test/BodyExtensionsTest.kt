@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -57,7 +58,7 @@ class BodyExtensionsTest {
         )
         .build()
 
-    mockServer.enqueue(statusCode = 500)
+    mockServer.enqueueString(statusCode = 500)
     kotlin.runCatching {
       apolloClient.query(HeroNameQuery())
           .execute()
@@ -69,7 +70,7 @@ class BodyExtensionsTest {
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
     assertEquals(asMap["extensions"], "extension value")
 
-    apolloClient.dispose()
-    mockServer.stop()
+    apolloClient.close()
+    mockServer.close()
   }
 }

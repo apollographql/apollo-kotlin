@@ -5,14 +5,13 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.CustomTypeAdapter
-import com.apollographql.apollo3.api.CustomTypeValue
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.integration.fullstack.LaunchDetailsByDateQuery
 import com.apollographql.apollo3.integration.fullstack.type.Date
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.example.MyDate
 import testFixtureToUtf8
@@ -28,7 +27,7 @@ class ScalarAdapterTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   private object MyDateAdapter : Adapter<MyDate> {
@@ -42,20 +41,20 @@ class ScalarAdapterTest {
     }
   }
 
-  private object MyDateV2CustomTypeAdapter : CustomTypeAdapter<MyDate> {
-    override fun decode(value: CustomTypeValue<*>): MyDate {
-      val elements = value.value.toString().split('-').map { it.toInt() }
+  private object MyDateV2CustomTypeAdapter : Adapter<MyDate> {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyDate {
+      val elements = reader.nextString()!!.split('-').map { it.toInt() }
       return MyDate(elements[0], elements[1], elements[2])
     }
 
-    override fun encode(value: MyDate): CustomTypeValue<*> {
-      return CustomTypeValue.fromRawValue("${value.year}-${value.month}-${value.day}")
+    override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: MyDate) {
+      writer.value("${value.year}-${value.month}-${value.day}")
     }
   }
 
   @Test
   fun regularCustomScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -72,11 +71,11 @@ class ScalarAdapterTest {
 
   @Test
   fun version2CustomTypeAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
+    mockServer.enqueueString(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .addCustomTypeAdapter(Date.type, MyDateV2CustomTypeAdapter)
+        .addCustomScalarAdapter(Date.type, MyDateV2CustomTypeAdapter)
         .build()
 
     val response = apolloClient.query(LaunchDetailsByDateQuery(MyDate(2001, 6, 23))).execute()

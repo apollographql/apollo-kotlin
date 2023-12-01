@@ -39,7 +39,7 @@ class StoreTest {
 
   @Test
   fun readFragmentFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsWithTypename.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsWithTypename.json"))
     apolloClient.query(HeroAndFriendsWithTypenameQuery()).execute()
 
     val heroWithFriendsFragment = store.readFragment(
@@ -84,7 +84,7 @@ class StoreTest {
    */
   @Test
   fun fragments() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
+    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query).execute()
     assertEquals(response.data?.hero?.__typename, "Droid")

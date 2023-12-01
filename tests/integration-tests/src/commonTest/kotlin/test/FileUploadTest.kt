@@ -15,6 +15,7 @@ import com.apollographql.apollo3.internal.MultipartReader
 import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
@@ -87,7 +88,7 @@ class FileUploadTest {
   }
 
   private suspend fun tearDown() {
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -149,7 +150,7 @@ class FileUploadTest {
 
   @Test
   fun defaultUploadDisallowMultipleWriteTo() {
-    val defaultUpload = DefaultUpload.Builder().content(Buffer()).build()
+    val defaultUpload = DefaultUpload.Builder().content(Buffer().readByteArray()).build()
     defaultUpload.writeTo(Buffer())
     assertFailsWith<IllegalStateException> {
       defaultUpload.writeTo(Buffer())
