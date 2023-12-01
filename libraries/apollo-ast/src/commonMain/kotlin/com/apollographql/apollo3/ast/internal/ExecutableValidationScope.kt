@@ -193,7 +193,6 @@ internal class ExecutableValidationScope(
           type = type.type
         }
         is GQLNonNullType -> {
-          dimension++
           type = type.type
         }
         else -> return dimension
