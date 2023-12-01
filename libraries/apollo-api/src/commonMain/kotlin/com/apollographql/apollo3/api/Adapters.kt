@@ -444,11 +444,11 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 @JvmName("-obj")
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
-@JvmName("-result")
+@JvmName("-catchToResult")
 fun <T> Adapter<T>.catchToResult() = CatchToResultAdapter(this)
 
 @JvmName("-errorAware")
 fun <T> Adapter<T>.errorAware() = ErrorAwareAdapter(this)
 
-@JvmName("-orNull")
+@JvmName("-catchToNull")
 fun <T> Adapter<T>.catchToNull() = CatchToNullAdapter(this)
