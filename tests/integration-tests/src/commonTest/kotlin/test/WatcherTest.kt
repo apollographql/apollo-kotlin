@@ -16,6 +16,7 @@ import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -52,6 +53,8 @@ class WatcherTest {
   private lateinit var store: ApolloStore
 
   private fun setUp() {
+    val exception: Exception = DefaultApolloException("")
+
     store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
     apolloClient = ApolloClient.Builder().networkTransport(QueueTestNetworkTransport()).store(store).build()
   }
@@ -119,7 +122,6 @@ class WatcherTest {
     val job = launch {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .emitCacheMisses(true)
           .watch()
           .collect {
             channel.send(it.data)
@@ -555,8 +557,7 @@ class WatcherTest {
       assertEquals("R2-D2", response.data?.hero?.name)
     }
 
-    mockServer.stop()
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
 

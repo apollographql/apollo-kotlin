@@ -17,7 +17,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.enqueueStrings
@@ -30,7 +29,6 @@ import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -62,7 +60,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is empty
     assertFailsWith<CacheMissException> {
-      apolloClient.query(WithFragmentSpreadsQuery()).execute()
+      apolloClient.query(WithFragmentSpreadsQuery()).executeV3()
     }
 
     // Fill the cache by doing a network only request
@@ -72,11 +70,11 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
-    apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
+    apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlowV3().collect()
     mockServer.takeRequest()
 
     // Cache is not empty, so this doesn't go to the server
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataOrThrow()
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).executeV3().dataOrThrow()
     assertFails { mockServer.takeRequest() }
 
     // We get the last/fully formed data
@@ -136,7 +134,7 @@ class DeferNormalizedCacheTest {
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
     // Cache is empty, so this goes to the server
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlowV3().toList().map { it.dataAssertNoErrors }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -156,7 +154,7 @@ class DeferNormalizedCacheTest {
     assertEquals(networkExpected, networkActual)
 
     // Cache is not empty, so this doesn't go to the server
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).executeV3().dataAssertNoErrors
     assertFails { mockServer.takeRequest() }
 
     // We get the last/fully formed data
@@ -216,7 +214,8 @@ class DeferNormalizedCacheTest {
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList1)
 
     // Cache is empty
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    @Suppress("DEPRECATION")
+    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlowV3().toList().map { it.dataAssertNoErrors }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -279,7 +278,7 @@ class DeferNormalizedCacheTest {
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
     // Cache is empty, so this goes to the server
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
+    val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
     mockServer.takeRequest()
 
     val query = WithFragmentSpreadsQuery()
@@ -323,14 +322,14 @@ class DeferNormalizedCacheTest {
             )
             .build(),
     )
-    assertResponseListEquals(networkExpected, networkActual)
+    assertResponseListEquals(networkExpected, responses.subList(1, 4))
 
     mockServer.enqueueString(statusCode = 500)
 
 
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
     val exception = assertFailsWith<ApolloCompositeException> {
-      apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
+      apolloClient.query(WithFragmentSpreadsQuery()).executeV3().dataAssertNoErrors
     }
     assertIs<CacheMissException>(exception.suppressedExceptions.first())
     assertIs<ApolloHttpException>(exception.suppressedExceptions.getOrNull(1))
@@ -374,7 +373,8 @@ class DeferNormalizedCacheTest {
                     emit(networkResponse as ApolloResponse<D>)
                   }
                   delay(10)
-                  throw ApolloNetworkException("Network error")
+
+                  emit(ApolloResponse.Builder(request.operation, request.requestUuid, ApolloNetworkException("Network error")).build())
                 }
               }
 
@@ -387,19 +387,16 @@ class DeferNormalizedCacheTest {
     // - an exception happens
     // - fallback to the cache
     // - because of the error the cache is missing some fields, so we get a cache miss
-    var throwable: Throwable? = null
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow()
-        .catch { t ->
-          throwable = t
-        }
+    val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow()
         .toList()
 
-    assertResponseListEquals(networkResponses, networkActual)
-    assertIs<ApolloCompositeException>(throwable)
-    throwable as ApolloCompositeException
-    assertIs<ApolloNetworkException>(throwable!!.suppressedExceptions.first())
-    assertIs<CacheMissException>(throwable!!.suppressedExceptions.getOrNull(1))
-    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", throwable!!.suppressedExceptions.getOrNull(1)!!.message)
+    assertResponseListEquals(networkResponses, responses.take(2))
+
+    assertIs<ApolloNetworkException>(responses.get(2).exception)
+    responses.get(3).exception.apply {
+      assertIs<CacheMissException>(this)
+      assertEquals("Object 'computers.0.screen' has no field named 'isColor'", message)
+    }
   }
 
   @Test
