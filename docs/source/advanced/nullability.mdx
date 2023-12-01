@@ -172,7 +172,7 @@ Instead of failing the whole query, the `name` field is now generated as a `Fiel
 // name does not have a value
 println(response.data?.user?.name?.valueOrNull) // null
 // but name has an error
-println(response.data?.user?.name?.errorOrNull?.message) // "Cannot resolve user.name"
+println(response.data?.user?.name?.graphQLErrorOrNull?.message) // "Cannot resolve user.name"
 // partial data is available
 println(response.data?.user?.id) // "42"
 // exception is null
