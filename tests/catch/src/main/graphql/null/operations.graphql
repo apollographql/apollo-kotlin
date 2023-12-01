@@ -3,3 +3,8 @@ query ProductThrow {
     price @catch(to: THROW)
   }
 }
+
+query NullAndNonNull {
+  nonNull
+  nullable
+}

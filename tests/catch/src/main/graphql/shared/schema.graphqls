@@ -2,6 +2,7 @@ extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["
 
 type Query {
   nullable: Int
+  nonNull: Int!
   semanticNonNull: Int @semanticNonNull
   deep: [[[Int]]] @semanticNonNull
   user: User @semanticNonNull
