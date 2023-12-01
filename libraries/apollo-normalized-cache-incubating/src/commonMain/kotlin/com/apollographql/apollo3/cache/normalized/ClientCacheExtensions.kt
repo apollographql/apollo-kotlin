@@ -141,7 +141,10 @@ fun ApolloClient.Builder.logCacheMisses(
   return addInterceptor(CacheMissLoggingInterceptor(log))
 }
 
-fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
+fun ApolloClient.Builder.store(
+    store: ApolloStore,
+    writeToCacheAsynchronously: Boolean = false,
+): ApolloClient.Builder {
   check(interceptors.none { it is AutoPersistedQueryInterceptor }) {
     "Apollo: the normalized cache must be configured before the auto persisted queries"
   }

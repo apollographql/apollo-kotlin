@@ -140,12 +140,12 @@ class CacheMissException @ApolloInternal constructor(
 }
 
 /**
- * A HTTP cache miss happened
+ * An HTTP cache miss happened
  */
 class HttpCacheMissException(message: String, cause: Exception? = null) : ApolloException(message = message, cause = cause)
 
 // See https://github.com/apollographql/apollo-kotlin/issues/4062
-@Deprecated("ApolloCompositeException is not used anymore, check for suppressed exceptions instead", level = DeprecationLevel.ERROR)
+@Deprecated("ApolloCompositeException is deprecated. Handle each ApolloResponse.exception instead.")
 class ApolloCompositeException : ApolloException {
   constructor(first: Throwable?, second: Throwable?) : super(message = "Multiple exceptions happened", second) {
     if (first != null) addSuppressed(first)
