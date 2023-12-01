@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -385,8 +386,8 @@ private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : 
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
     return try {
       FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
-    } catch (e: ApolloGraphQLException) {
-      FieldResult.Failure(ApolloGraphQLException(e.error))
+    } catch (e: ApolloException) {
+      FieldResult.Failure(e)
     }
   }
 
@@ -420,7 +421,7 @@ private class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Ad
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
     return try {
       wrappedAdapter.fromJson(reader, customScalarAdapters)
-    } catch (e: ApolloGraphQLException) {
+    } catch (e: ApolloException) {
       null
     }
   }
