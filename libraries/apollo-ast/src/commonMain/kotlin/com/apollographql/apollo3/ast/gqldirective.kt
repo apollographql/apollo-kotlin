@@ -75,6 +75,7 @@ fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
 @ApolloInternal
 fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirectiveName(it.name) == Schema.NONNULL }
 
+@ApolloInternal
 enum class CatchTo {
   RESULT,
   NULL,
