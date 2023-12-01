@@ -612,8 +612,7 @@ internal class IrOperationsBuilder(
 
       val irType = first
           .type
-          .toIr()
-          // Apply the schema transformations
+          .toIr(schema)
           .semanticNonNull(first.semanticNonNulls, 0)
           .let {
             /**

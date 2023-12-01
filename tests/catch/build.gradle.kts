@@ -14,10 +14,10 @@ dependencies {
 }
 
 apollo {
-  service("default") {
+  service("throw") {
     srcDir("src/main/graphql/shared")
     srcDir("src/main/graphql/throw")
-    packageName.set("default")
+    packageName.set("throw")
   }
   service("null") {
     srcDir("src/main/graphql/shared")

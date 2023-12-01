@@ -44,12 +44,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface IrType {
   /**
-   * This type may by an error
-   * true if the type is nullable in the server schema
-   */
-  val maybeError: Boolean
-
-  /**
    * This type is nullable in Kotlin
    */
   val nullable: Boolean
@@ -63,6 +57,13 @@ sealed interface IrType {
    * reading this type must catch exceptions during parsing
    */
   val catchTo: IrCatchTo
+
+  /**
+   * This type may be an error
+   * true if the type is nullable in the server schema.
+   * Used to generate error aware adapters
+   */
+  val maybeError: Boolean
 
   fun copyWith(
       maybeError: Boolean = this.maybeError,
@@ -208,31 +209,31 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
 internal fun GQLType.toIr(schema: Schema): IrType {
   return when (this) {
     is GQLNonNullType -> type.toIr(schema).copyWith(nullable = false, maybeError = false)
-    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true, maybeError = true)
+    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true, maybeError = schema.errorAware)
     is GQLNamedType -> {
       when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
-          IrScalarType(name, nullable = true, maybeError = true)
+          IrScalarType(name, nullable = true, maybeError = schema.errorAware)
         }
 
         is GQLEnumTypeDefinition -> {
-          IrEnumType(name, nullable = true, maybeError = true)
+          IrEnumType(name, nullable = true, maybeError = schema.errorAware)
         }
 
         is GQLInputObjectTypeDefinition -> {
-          IrInputObjectType(name, nullable = true, maybeError = true)
+          IrInputObjectType(name, nullable = true, maybeError = schema.errorAware)
         }
 
         is GQLObjectTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
         }
 
         is GQLInterfaceTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
         }
 
         is GQLUnionTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
         }
       }
     }

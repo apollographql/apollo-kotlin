@@ -3,21 +3,20 @@ package test
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.exceptionOrNull
 import com.apollographql.apollo3.api.graphQLErrorOrNull
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.getOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
-import default.PriceNullQuery
-import default.ProductIgnoreErrorsQuery
-import default.ProductNullQuery
-import default.ProductQuery
-import default.ProductResultQuery
-import default.UserNullQuery
-import default.UserQuery
-import default.UserResultQuery
+import `throw`.PriceNullQuery
+import `throw`.ProductIgnoreErrorsQuery
+import `throw`.ProductNullQuery
+import `throw`.ProductQuery
+import `throw`.ProductResultQuery
+import `throw`.UserNullQuery
+import `throw`.UserQuery
+import `throw`.UserResultQuery
 import okio.Buffer
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
@@ -26,7 +25,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class CatchTest {
+class CatchThrowTest {
   @Test
   fun userOnUserNameError() {
     val response = UserQuery().parseResponse(userNameError)
