@@ -301,10 +301,8 @@ Indicates that the given position stops GraphQL errors to propagate up the tree.
 By default, the first GraphQL error stops the parsing and fails the whole response.
 Using `@catch` recovers from this error and allows the parsing to continue.
 
-`@catch` can be used on the schema definition. In this case, it is the default for
-every field that can return an error (nullable fields).
-If no `@catch` is applied to the schema definition, errors are not
-caught by default and the parsing stops at the first error.
+`@catch` must also be applied to the schema definition to specify the default to
+use for every field that can return an error (nullable fields).
 
 The `to` argument can be used to choose how to recover from errors. See `CatchTo`
 for more details.
