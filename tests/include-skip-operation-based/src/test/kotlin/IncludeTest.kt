@@ -215,7 +215,7 @@ class IncludeTest {
     }
 
     val records = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
-    assertTrue(records.containsKey("""animalById({"id":null})"""))
+    assertTrue(records.containsKey("""animalById({"id":0})"""))
   }
 
   @Test
