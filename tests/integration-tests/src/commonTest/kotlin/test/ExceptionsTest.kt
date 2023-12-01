@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.conflateFetchPolicyInterceptorResponses
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -136,7 +135,7 @@ class ExceptionsTest {
     val errorClient = apolloClient.newBuilder()
         .normalizedCache(MemoryCacheFactory(1024 * 1024))
         .build()
-    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).conflateFetchPolicyInterceptorResponses(true).executeOrThrow()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).executeV3()
     assertNotNull(response.data)
     assertTrue(response.errors?.isNotEmpty() == true)
   }
