@@ -40,9 +40,9 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     }
    *
    *     booleanNonOptional: false
-   *     listOfStringNonOptional: \[\]
+   *     listOfStringNonOptional: []
    *   }
-   *   , listOfInts: \[$stars,$stars\]) {
+   *   , listOfInts: [$stars,$stars]) {
    *     name
    *     height(unit: FOOT)
    *   }

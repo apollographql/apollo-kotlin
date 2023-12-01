@@ -463,7 +463,6 @@ fun <T> Adapter<T>.catchToNull(): Adapter<T?> = CatchToNullAdapter(this)
  *
  * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
  */
-@Deprecated("Used for backward compatibility with 2.x, use Adapter instead", level = DeprecationLevel.ERROR)
+@Deprecated("CustomTypeAdapter was used for backward compatibility with 2.x. Use Adapter instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_0_0)
-interface CustomTypeAdapter<T> {
-}
+interface CustomTypeAdapter<T>
