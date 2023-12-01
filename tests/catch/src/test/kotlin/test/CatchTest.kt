@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.graphQLErrorOrNull
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
-import com.apollographql.apollo3.api.valueOrThrow
+import com.apollographql.apollo3.api.getOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import default.PriceNullQuery
 import default.ProductIgnoreErrorsQuery
@@ -60,7 +60,7 @@ class CatchTest {
   fun userResultOnUserSuccess() {
     val response = UserResultQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name)
+    assertEquals("Pancakes", response.data!!.user.getOrThrow().name)
   }
 
   @Test

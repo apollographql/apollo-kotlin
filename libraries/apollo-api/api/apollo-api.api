@@ -597,10 +597,10 @@ public final class com/apollographql/apollo3/api/FieldResult$Success : com/apoll
 public final class com/apollographql/apollo3/api/FieldResultKt {
 	public static final fun exceptionOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Exception;
 	public static final fun getOrElse (Lcom/apollographql/apollo3/api/FieldResult;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun getOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
+	public static final fun getOrThrow (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
 	public static final fun graphQLErrorOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Lcom/apollographql/apollo3/api/Error;
 	public static final fun isSuccess (Lcom/apollographql/apollo3/api/FieldResult;)Z
-	public static final fun valueOrNull (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
-	public static final fun valueOrThrow (Lcom/apollographql/apollo3/api/FieldResult;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {

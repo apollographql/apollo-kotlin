@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.valueOrNull
-import com.apollographql.apollo3.api.valueOrThrow
+import com.apollographql.apollo3.api.getOrNull
+import com.apollographql.apollo3.api.getOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import `null`.PriceNullQuery
 import `null`.ProductIgnoreErrorsQuery
@@ -31,7 +31,7 @@ class CatchNullTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
-    assertNull(response.data?.user?.valueOrNull()?.name)
+    assertNull(response.data?.user?.getOrNull()?.name)
   }
 
   @Test
@@ -52,7 +52,7 @@ class CatchNullTest {
   fun userResultOnUserSuccess() {
     val response = UserResultQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name)
+    assertEquals("Pancakes", response.data!!.user.getOrThrow().name)
   }
 
   @Test
@@ -83,7 +83,7 @@ class CatchNullTest {
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
-    assertNull(null, response.data?.product?.valueOrNull()?.price)
+    assertNull(null, response.data?.product?.getOrNull()?.price)
   }
 
   @Test

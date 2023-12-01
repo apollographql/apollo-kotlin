@@ -1,8 +1,8 @@
 package test
 
 import com.apollographql.apollo3.api.graphQLErrorOrNull
-import com.apollographql.apollo3.api.valueOrNull
-import com.apollographql.apollo3.api.valueOrThrow
+import com.apollographql.apollo3.api.getOrNull
+import com.apollographql.apollo3.api.getOrThrow
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import result.PriceNullQuery
 import result.ProductIgnoreErrorsQuery
@@ -31,7 +31,7 @@ class CatchResultTest {
   fun userResultOnUserNameError() {
     val response = UserResultQuery().parseResponse(userNameError)
 
-    assertEquals("cannot resolve name", response.data?.user?.valueOrNull()?.name?.graphQLErrorOrNull()?.message)
+    assertEquals("cannot resolve name", response.data?.user?.getOrNull()?.name?.graphQLErrorOrNull()?.message)
   }
 
   @Test
@@ -45,21 +45,21 @@ class CatchResultTest {
   fun userOnUserSuccess() {
     val response = UserQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.valueOrNull()?.name?.valueOrNull())
+    assertEquals("Pancakes", response.data!!.user.getOrNull()?.name?.getOrNull())
   }
 
   @Test
   fun userResultOnUserSuccess() {
     val response = UserResultQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user.valueOrThrow().name.valueOrNull())
+    assertEquals("Pancakes", response.data!!.user.getOrThrow().name.getOrNull())
   }
 
   @Test
   fun userNullOnUserSuccess() {
     val response = UserNullQuery().parseResponse(userSuccess)
 
-    assertEquals("Pancakes", response.data!!.user!!.name.valueOrNull())
+    assertEquals("Pancakes", response.data!!.user!!.name.getOrNull())
   }
 
   @Test
@@ -75,7 +75,7 @@ class CatchResultTest {
   fun productResultOnProductPriceError() {
     val response = ProductResultQuery().parseResponse(productPriceError)
 
-    assertEquals("cannot resolve price", response.data?.product?.valueOrNull()?.price?.graphQLErrorOrNull()?.message)
+    assertEquals("cannot resolve price", response.data?.product?.getOrNull()?.price?.graphQLErrorOrNull()?.message)
   }
 
   @Test
@@ -91,7 +91,7 @@ class CatchResultTest {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.valueOrNull()?.price?.valueOrNull())
+    assertNull(response.data?.product?.getOrNull()?.price?.getOrNull())
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 
@@ -100,7 +100,7 @@ class CatchResultTest {
     val response = PriceNullQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.valueOrNull()?.price)
+    assertNull(response.data?.product?.getOrNull()?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 
@@ -109,7 +109,7 @@ class CatchResultTest {
     val response = PriceNullQuery().parseResponse(productPriceNull)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.valueOrNull()?.price)
+    assertNull(response.data?.product?.getOrNull()?.price)
     assertNull(response.errors)
   }
 }
