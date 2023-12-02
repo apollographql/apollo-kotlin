@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.DefaultApolloException
@@ -137,36 +138,23 @@ private constructor(
     private var isLast = false
 
     /**
-     * Constructs a successful response with a valid data, no errors nor extensions
-     */
-    constructor(
-        operation: Operation<D>,
-        requestUuid: Uuid,
-        data: D,
-    ): this(operation, requestUuid, data, null, null, null)
-
-    /**
-     * Constructs a response from data, errors and extensions
+     * Construct a new [Builder] that doesn't contain data, errors nor exception
      *
-     * If there are GraphQL errors, they will also be forwarded to [exception] so that the caller can do all the
-     * checking in a single place
+     * While possible, this case is probably symptomatic of a buggy GraphQL implementation
+     * that returned no data while not setting any error
      */
     constructor(
         operation: Operation<D>,
         requestUuid: Uuid,
-        data: D?,
-        errors: List<Error>?,
-        extensions: Map<String, Any?>?,
-    ): this(operation, requestUuid, data, errors, extensions, null)
+    ): this(operation, requestUuid, null, null, null, null)
 
-    /**
-     * Constructs an exception response
-     */
+    @Deprecated("Use 2 params constructor instead", ReplaceWith("Builder(operation = operation, requestUuid = requestUuid).data(data = data)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     constructor(
         operation: Operation<D>,
         requestUuid: Uuid,
-        exception: ApolloException
-    ): this(operation, requestUuid, null, null, null, exception)
+        data: D?
+    ): this(operation, requestUuid, data, null, null, null)
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext

@@ -51,7 +51,8 @@ class AutoPersistedQueryInterceptor(
         }
         isPersistedQueryNotSupported(response.errors) -> {
           emit(
-              ApolloResponse.Builder(request.operation, request.requestUuid, AutoPersistedQueriesNotSupported())
+              ApolloResponse.Builder(request.operation, request.requestUuid)
+                  .exception(AutoPersistedQueriesNotSupported())
                   .build()
           )
           return@flow

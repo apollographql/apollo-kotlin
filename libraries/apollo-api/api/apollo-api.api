@@ -106,9 +106,8 @@ public final class com/apollographql/apollo3/api/ApolloResponse {
 }
 
 public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
+	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;)V
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation$Data;)V
-	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;)V
-	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/exception/ApolloException;)V
 	public final fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/ApolloResponse;
 	public final fun data (Lcom/apollographql/apollo3/api/Operation$Data;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;

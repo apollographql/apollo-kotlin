@@ -75,7 +75,8 @@ public class HttpNetworkTransport implements NetworkTransport {
   }
 
   @NotNull private static <D extends Operation.Data> ApolloResponse<D> getExceptionResponse(@NotNull ApolloRequest<D> request, @NotNull ApolloException exception) {
-    return new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid(), exception)
+    return new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid())
+        .exception(exception)
         .build();
   }
 

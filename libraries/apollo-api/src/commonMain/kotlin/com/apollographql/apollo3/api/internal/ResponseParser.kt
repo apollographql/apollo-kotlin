@@ -44,7 +44,11 @@ internal object ResponseParser {
 
     jsonReader.endObject()
 
-    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = operation, data = data, errors = errors, extensions = extensions).build()
+    return ApolloResponse.Builder(operation = operation, requestUuid = requestUuid ?: uuid4())
+        .errors(errors)
+        .data(data)
+        .extensions(extensions)
+        .build()
   }
 
   fun parseError(

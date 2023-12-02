@@ -275,23 +275,27 @@ class DeferWithRouterTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = HandlesErrorsThrownInDeferredFragmentsQuery.Data(
-                HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
-                    "Computer", "Computer1", null
+        )
+            .data(
+                HandlesErrorsThrownInDeferredFragmentsQuery.Data(
+                    HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
+                        "Computer", "Computer1", null
+                    )
                 )
             )
-        )
             .build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
-            data = HandlesErrorsThrownInDeferredFragmentsQuery.Data(
-                HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
-                    "Computer", "Computer1", ComputerErrorField(null)
+        )
+            .data(
+                HandlesErrorsThrownInDeferredFragmentsQuery.Data(
+                    HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
+                        "Computer", "Computer1", ComputerErrorField(null)
+                    )
                 )
             )
-        )
             .errors(
                 listOf(
                     Error.Builder(message = "Subgraph errors redacted")
@@ -319,7 +323,8 @@ class DeferWithRouterTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
+        ).data(
+            HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
                 HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Computer(
                     "Computer", "Computer1", null
                 )
@@ -330,12 +335,14 @@ class DeferWithRouterTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
-                HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Computer(
-                    "Computer", "Computer1", null
+        )
+            .data(
+                HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
+                    HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Computer(
+                        "Computer", "Computer1", null
+                    )
                 )
             )
-        )
             .errors(listOf(Error.Builder(message = "Subgraph errors redacted").build()))
             .build(),
     )
@@ -355,7 +362,8 @@ class DeferWithRouterTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery.Data(
+        ).data(
+            HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery.Data(
                 null
             )
         )
