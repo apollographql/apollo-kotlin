@@ -29,6 +29,7 @@ dependencies {
   implementation(libs.android.plugin)
   implementation(libs.gradle.japicmp.plugin)
   implementation(libs.vespene)
+  implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)
   implementation(libs.poet.kotlin)
   implementation(libs.intellij.plugin)

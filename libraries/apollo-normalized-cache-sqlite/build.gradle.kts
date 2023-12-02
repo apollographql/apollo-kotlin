@@ -9,6 +9,7 @@ apolloLibrary(
     javaModuleName = "com.apollographql.apollo3.cache.normalized.sql",
     withLinux = false,
     withJs = false, // https://github.com/cashapp/sqldelight/pull/1486
+    withWasm = false
 )
 
 configure<app.cash.sqldelight.gradle.SqlDelightExtension> {

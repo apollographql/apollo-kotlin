@@ -24,7 +24,8 @@ expect fun currentThreadName(): String
 enum class Platform {
   Jvm,
   Native,
-  Js
+  Js,
+  WasmJs
 }
 
 /**

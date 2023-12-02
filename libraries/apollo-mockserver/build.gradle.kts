@@ -2,9 +2,9 @@ plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
 
-apolloLibrary (
-  javaModuleName = "com.apollographql.apollo3.mockserver",
-  withLinux = false
+apolloLibrary(
+    javaModuleName = "com.apollographql.apollo3.mockserver",
+    withLinux = false,
 )
 
 kotlin {
@@ -52,3 +52,4 @@ kotlin {
     }
   }
 }
+

@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
-private val allAppleTargets = setOf(
+internal val allAppleTargets = setOf(
     "macosX64",
     "macosArm64",
     "iosArm64",
@@ -33,49 +33,13 @@ private val enableLinux = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?
 private val enableJs = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 private val enableApple = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 
-fun Project.configureMppDefaults(
-    withJvm: Boolean,
-    withJs: Boolean,
-    withLinux: Boolean,
-    withAndroid: Boolean,
-    withApple: Boolean,
-) {
-  configureMpp(
-      withJvm = withJvm,
-      withJs = withJs,
-      browserTest = false,
-      withLinux = withLinux,
-      appleTargets = if (!withApple) emptySet() else allAppleTargets,
-      withAndroid = withAndroid,
-  )
-}
-
-
-/**
- * Same as [configureMppDefaults] but without Linux targets. Apple targets can be configured.
- * Tests only run on the JVM, JS and macOS
- */
-fun Project.configureMppTestsDefaults(
-    withJs: Boolean,
-    withJvm: Boolean,
-    browserTest: Boolean,
-    appleTargets: Collection<String>,
-) {
-  configureMpp(
-      withJvm = withJvm,
-      withJs = withJs,
-      browserTest = browserTest,
-      withLinux = false,
-      withAndroid = false,
-      appleTargets = appleTargets,
-  )
-}
 
 fun Project.configureMpp(
     withJvm: Boolean,
     withJs: Boolean,
     withLinux: Boolean,
     withAndroid: Boolean,
+    withWasm: Boolean,
     appleTargets: Collection<String>,
     browserTest: Boolean,
 ) {
@@ -136,6 +100,11 @@ fun Project.configureMpp(
           "tvosX64" -> tvosX64()
           "tvosSimulatorArm64" -> tvosSimulatorArm64()
         }
+      }
+    }
+    if (withWasm) {
+      wasmJs {
+        nodejs()
       }
     }
 

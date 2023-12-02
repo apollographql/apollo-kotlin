@@ -8,6 +8,7 @@ fun Project.apolloLibrary(
     withLinux: Boolean = true,
     withApple: Boolean = true,
     withJvm: Boolean = true,
+    withWasm: Boolean = true,
     publish: Boolean = true
 ) {
   group = property("GROUP")!!
@@ -35,12 +36,14 @@ fun Project.apolloLibrary(
   }
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {
-    configureMppDefaults(
+    configureMpp(
         withJvm = withJvm,
         withJs = withJs,
+        browserTest = false,
         withLinux = withLinux,
+        appleTargets = if (!withApple) emptySet() else allAppleTargets,
         withAndroid = extensions.findByName("android") != null,
-        withApple = withApple,
+        withWasm = withWasm
     )
   }
 
@@ -68,11 +71,14 @@ fun Project.apolloTest(
   configureTesting()
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {
-    configureMppTestsDefaults(
-        withJs = withJs,
+    configureMpp(
         withJvm = withJvm,
+        withJs = withJs,
         browserTest = browserTest,
+        withLinux = false,
+        withAndroid = false,
         appleTargets = appleTargets,
+        withWasm = false
     )
   }
 }
