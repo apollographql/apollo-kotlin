@@ -9,6 +9,7 @@ import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -53,7 +54,7 @@ class OptimisticDataTest {
         .normalizedCache(MemoryCacheFactory())
         .build()
 
-    server.enqueue("""
+    server.enqueueString(string = """
       {
         "data": {
           "animal": {

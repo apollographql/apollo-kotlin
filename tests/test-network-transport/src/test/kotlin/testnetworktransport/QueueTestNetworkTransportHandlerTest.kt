@@ -3,15 +3,18 @@ package testnetworktransport
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ApolloResponse.Builder
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseData
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.toList
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -33,7 +36,7 @@ class QueueTestNetworkTransportHandlerTest {
   @Test
   fun enqueueResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = GetHeroQuery("001")
-    val testResponse1 = ApolloResponse.Builder(query1, uuid4(), null)
+    val testResponse1 = Builder(operation = query1, requestUuid = uuid4())
         .errors(listOf(Error(
             message = "There was an error",
             locations = listOf(Error.Location(line = 1, column = 2)),
@@ -100,7 +103,7 @@ class QueueTestNetworkTransportHandlerTest {
 
     apolloClient.query(GetHeroQuery("001")).toFlow()
         .test {
-          assertTrue(awaitError().message?.contains("Network error queued") ?: false)
+          assertTrue(awaitItem().exception?.message?.contains("Network error queued") ?: false)
           cancelAndConsumeRemainingEvents()
         }
   }
@@ -109,10 +112,11 @@ class QueueTestNetworkTransportHandlerTest {
   fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
-      hero = droidHero {
-        name = "R2D2"
+      hero = buildDroid {
+        "name" to "R2D2"
       }
     }
+
     apolloClient.enqueueTestResponse(query, testData)
 
     val actual = apolloClient.query(query).execute().data!!

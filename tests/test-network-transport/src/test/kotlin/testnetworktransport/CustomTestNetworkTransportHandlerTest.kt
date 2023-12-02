@@ -4,6 +4,9 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseData
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
@@ -11,7 +14,7 @@ import com.apollographql.apollo3.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -28,7 +31,7 @@ class CustomTestNetworkTransportHandlerTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   private class CustomTestNetworkTransport : NetworkTransport {
@@ -41,7 +44,7 @@ class CustomTestNetworkTransportHandlerTest {
               operation = GetHeroQuery("mock"),
               requestUuid = request.requestUuid,
               data = GetHeroQuery.Data {
-                hero = droidHero {
+                hero = buildDroid {
                   name = "Droid ${counter++}"
                 }
               }
@@ -66,7 +69,7 @@ class CustomTestNetworkTransportHandlerTest {
   @Test
   fun registerAndQueueMethodsFail() = runTest(before = { setUp() }, after = { tearDown() }) {
     assertFailsWith(IllegalStateException::class) {
-      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), null).build())
+      apolloClient.enqueueTestResponse(ApolloResponse.Builder(operation = GetHeroQuery("id"), requestUuid = uuid4()).exception(DefaultApolloException("")).build())
     }
     assertFailsWith(IllegalStateException::class) {
       apolloClient.registerTestResponse(GetHeroQuery("id"), null)

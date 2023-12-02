@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ApolloResponse.Builder
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -285,17 +286,20 @@ class DeferNormalizedCacheTest {
     val uuid = uuid4()
 
     val networkExpected = listOf(
-        ApolloResponse.Builder(
-            query,
-            uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-            )
-        ).build(),
+        Builder(
+            operation = query,
+            requestUuid = uuid
+        )
+            .data(
+                data = WithFragmentSpreadsQuery.Data(
+                    listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+                )
+            ).build(),
 
-        ApolloResponse.Builder(
-            query,
-            uuid,
+        Builder(
+            operation = query,
+            requestUuid = uuid
+        ).data(
             data = WithFragmentSpreadsQuery.Data(
                 listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480", null))))
@@ -374,7 +378,7 @@ class DeferNormalizedCacheTest {
                   }
                   delay(10)
 
-                  emit(ApolloResponse.Builder(request.operation, request.requestUuid, ApolloNetworkException("Network error")).build())
+                  emit(ApolloResponse.Builder(request.operation, request.requestUuid).exception(ApolloNetworkException("Network error")).build())
                 }
               }
 

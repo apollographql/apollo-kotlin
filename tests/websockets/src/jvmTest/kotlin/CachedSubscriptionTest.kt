@@ -8,6 +8,7 @@ import com.apollographql.apollo3.cache.normalized.watch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -57,6 +58,7 @@ class CachedSubscriptionTest {
       val job = launch {
         apolloClient.query(TimeQuery())
             .watch()
+            .filter { it.exception == null }
             .map { it.data!!.time }
             .collect {
               channel.send(it)

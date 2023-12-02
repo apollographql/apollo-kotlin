@@ -7,6 +7,7 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import multipart.CounterSubscription
+import okio.Buffer
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -31,7 +32,7 @@ class MultipartSubscriptionsFakeTest {
 
   private suspend fun tearDown() {
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -42,7 +43,12 @@ class MultipartSubscriptionsFakeTest {
         """{"incremental": [{"data":{"counter":{"count":2}},"path":[]}],"hasNext":true}""",
         """{"incremental": [{"data":{"counter":{"count":3}},"path":[]}],"hasNext":false}""",
     )
-    mockServer.enqueueMultipart(parts, chunksDelayMillis = 100)
+    mockServer.enqueueMultipart("application/json").let { body ->
+      parts.withIndex().forEach {
+        body.enqueueDelay(100)
+        body.enqueuePart(Buffer().writeUtf8(it.value).readByteString(), it.index == parts.lastIndex)
+      }
+    }
 
     val expectedDataList = listOf(
         CounterSubscription.Data(CounterSubscription.Counter(0)),

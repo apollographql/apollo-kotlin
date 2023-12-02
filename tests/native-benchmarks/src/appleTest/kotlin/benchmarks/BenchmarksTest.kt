@@ -5,6 +5,7 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.FileSystem
@@ -56,13 +57,13 @@ class BenchmarksTest {
           .serverUrl(server.url())
           .build()
 
-      server.enqueue("""
-      {
-        "data": {
-          "random": 42
+      server.enqueueString(string = """
+        {
+          "data": {
+            "random": 42
+          }
         }
-      }
-      """)
+        """)
     }
 
     client

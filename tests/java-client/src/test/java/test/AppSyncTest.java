@@ -43,10 +43,6 @@ public class AppSyncTest {
       @Override public void onResponse(@NotNull ApolloResponse<CommentsSubscription.Data> response) {
         System.out.println(response.data);
       }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        e.printStackTrace();
-      }
     });
 
     sleep(100000);

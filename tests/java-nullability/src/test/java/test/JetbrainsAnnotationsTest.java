@@ -34,7 +34,7 @@ public class JetbrainsAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -70,7 +70,7 @@ public class JetbrainsAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -96,7 +96,7 @@ public class JetbrainsAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty, false);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(

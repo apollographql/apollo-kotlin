@@ -3,13 +3,15 @@ package testnetworktransport
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseData
 import com.apollographql.apollo3.testing.MapTestNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.toList
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -25,13 +27,13 @@ class MapTestNetworkTransportHandlerTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
   fun registerResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = GetHeroQuery("001")
-    val testResponse1 = ApolloResponse.Builder(query1, uuid4(), null)
+    val testResponse1 = ApolloResponse.Builder(operation = query1, requestUuid = uuid4())
         .errors(listOf(Error(
             message = "There was an error",
             locations = listOf(Error.Location(line = 1, column = 2)),
@@ -96,10 +98,11 @@ class MapTestNetworkTransportHandlerTest {
   fun registerDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
-      hero = droidHero {
-        name = "R2D2"
+      hero = buildDroid {
+        "name" to "R2D2"
       }
     }
+
     apolloClient.registerTestResponse(query, testData)
 
     val actual = apolloClient.query(query).execute().data!!

@@ -26,6 +26,7 @@ import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
 import sqlite.GetUserQuery
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -55,12 +56,13 @@ class ExpirationTest {
       it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 15))
     }
 
-    try {
-      client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-      fail("An exception was expected")
-    } catch (e: CacheMissException) {
-      assertTrue(e.stale)
-    }
+    client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+        .exception
+        .apply {
+          assertIs<CacheMissException>(this)
+          assertTrue(stale)
+        }
 
     // with max stale, should succeed
     val response1 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly)
@@ -124,14 +126,13 @@ class ExpirationTest {
     )
     client.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     // read from cache -> it should fail
-    try {
-      client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-      fail("An exception was expected")
-    } catch (e: CacheMissException) {
-      assertTrue(e.stale)
-    }
+    client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
+        .exception
+        .apply {
+          assertIs<CacheMissException>(this)
+          assertTrue(stale)
+        }
   }
-
 
   private fun cacheHeaders(date: Long): CacheHeaders {
     return CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DATE, date.toString()).build()

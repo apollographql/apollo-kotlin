@@ -15,6 +15,5 @@ apollo {
     dependsOn(project(":multi-module-2:root"))
     packageName.set("multimodule2.child")
     flattenModels.set(false)
-    generateDataBuilders.set(true)
   }
 }

@@ -13,6 +13,7 @@ apollo {
     packageName.set("multimodule2.root")
     generateApolloMetadata.set(true)
     generateDataBuilders.set(true)
+    languageVersion.set("1.5")
   }
 }
 

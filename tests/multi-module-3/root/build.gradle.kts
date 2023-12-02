@@ -16,6 +16,7 @@ apollo {
     generateApolloMetadata.set(true)
     isADependencyOf(project(":multi-module-3:child"))
     generateDataBuilders.set(true)
+    languageVersion.set("1.5")
   }
 }
 

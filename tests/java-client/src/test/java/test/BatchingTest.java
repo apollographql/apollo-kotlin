@@ -10,6 +10,7 @@ import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.google.common.truth.Truth;
@@ -43,7 +44,7 @@ public class BatchingTest {
 
   @Before
   public void before() {
-    mockServer = new MockServer();
+    mockServer = MockServerKt.MockServer();
 
     /*
       Because url doesn't suspend on the JVM, we can just use the return value
@@ -75,14 +76,13 @@ public class BatchingTest {
     CountDownLatch latch = new CountDownLatch(2);
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -90,14 +90,13 @@ public class BatchingTest {
 
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -133,14 +132,14 @@ public class BatchingTest {
     CountDownLatch latch = new CountDownLatch(2);
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
+
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -148,14 +147,14 @@ public class BatchingTest {
 
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
+
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -184,14 +183,14 @@ public class BatchingTest {
         .httpHeaders(Collections.singletonList(new HttpHeader("client0", "0")))
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+            if (response.exception != null) {
+              throw response.exception;
+            }
+
             synchronized (items) {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 
@@ -199,14 +198,13 @@ public class BatchingTest {
 
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -236,14 +234,14 @@ public class BatchingTest {
         .canBeBatched(true)
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+            if (response.exception != null) {
+              throw response.exception;
+            }
+
             synchronized (items) {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 
@@ -254,14 +252,13 @@ public class BatchingTest {
         .canBeBatched(true)
         .enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+            if (response.exception != null) {
+              throw response.exception;
+            }
             synchronized (items) {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 
@@ -300,14 +297,13 @@ public class BatchingTest {
     CountDownLatch latch = new CountDownLatch(2);
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -315,14 +311,13 @@ public class BatchingTest {
 
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         synchronized (items) {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -354,14 +349,13 @@ public class BatchingTest {
         .addHttpHeader("query1+query2-different-value", "0")
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+            if (response.exception != null) {
+              throw response.exception;
+            }
             synchronized (items) {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 
@@ -374,14 +368,13 @@ public class BatchingTest {
         .addHttpHeader("query1+query2-different-value", "1")
         .enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
+            if (response.exception != null) {
+              throw response.exception;
+            }
             synchronized (items) {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 

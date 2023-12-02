@@ -7,6 +7,7 @@ import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
@@ -39,7 +40,7 @@ public class ClientTest {
 
   @Before
   public void before() {
-    mockServer = new MockServer();
+    mockServer = MockServerKt.MockServer();
 
     /*
       Because url doesn't suspend on the JVM, we can just use the return value
@@ -163,10 +164,6 @@ public class ClientTest {
     ApolloDisposable disposable = apolloClient.query(GetRandomQuery.builder().build()).enqueue(new ApolloCallback<GetRandomQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetRandomQuery.Data> response) {
         received[0] = response;
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        received[0] = e;
       }
     });
 

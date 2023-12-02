@@ -33,7 +33,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test
@@ -45,7 +45,10 @@ class HeadersTest {
         .build()
 
     mockServer.enqueue(operation, data)
-    apolloClient.query(GetRandomQuery()).httpHeaders(emptyList()).execute()
+    apolloClient.query(GetRandomQuery())
+        .httpHeaders(emptyList())
+        .ignoreApolloClientHttpHeaders(true)
+        .execute()
 
     mockServer.takeRequest().also {
       assertEquals(null, it.headers.get("clientKey"))
@@ -53,30 +56,7 @@ class HeadersTest {
     }
 
     apolloClient.close()
-    mockServer.stop()
-  }
-
-  @Test
-  fun addAndReplaceHeadersThrows() = runTest {
-    val mockServer = MockServer()
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .addHttpHeader("clientKey", "clientValue")
-        .build()
-
-    try {
-      apolloClient.query(GetRandomQuery())
-          .httpHeaders(listOf(HttpHeader("requestKey", "requestValue")))
-          .addHttpHeader("requestKey", "requestValue")
-          .execute()
-
-      fail("an exception was expected")
-    } catch (e: Exception) {
-      assertTrue(e.message!!.contains("it is an error to call both .headers() and .addHeader()"))
-    }
-
-    apolloClient.close()
-    mockServer.stop()
+    mockServer.close()
   }
 
   @Test

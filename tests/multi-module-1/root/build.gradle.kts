@@ -13,5 +13,6 @@ apollo {
     packageName.set("multimodule1.root")
     generateApolloMetadata.set(true)
     mapScalar("Long", "kotlin.Long")
+    languageVersion.set("1.5")
   }
 }

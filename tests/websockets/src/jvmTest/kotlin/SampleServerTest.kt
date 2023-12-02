@@ -171,13 +171,11 @@ class SampleServerTest {
         .build()
 
     runBlocking {
-      var caught: Throwable? = null
-      apolloClient.subscription(OperationErrorSubscription())
+      val caught = apolloClient.subscription(OperationErrorSubscription())
           .toFlow()
-          .catch {
-            caught = it
-          }
-          .collect()
+          .first()
+          .exception
+
       assertIs<SubscriptionOperationException>(caught)
       val error = caught.cast<SubscriptionOperationException>().payload
           .cast<Map<String, *>>()

@@ -8,6 +8,7 @@ dependencies {
   implementation(golatac.lib("apollo.api.java"))
   implementation(golatac.lib("guava.jre"))
   implementation(golatac.lib("androidx.annotation"))
+  implementation(golatac.lib("jetbrains.annotations"))
   testImplementation(golatac.lib("junit"))
 }
 

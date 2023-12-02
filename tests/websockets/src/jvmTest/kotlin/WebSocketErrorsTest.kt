@@ -54,12 +54,12 @@ class WebSocketErrorsTest {
     apolloClient.subscription(TimeSubscription())
         .toFlow()
         .test {
-          val error = awaitError()
-          assertIs<ApolloNetworkException>(error)
-          assertTrue(error.cause?.message?.contains("Connection error") == true)
+          val exception = awaitItem().exception
+          assertIs<ApolloNetworkException>(exception)
+          assertTrue(exception.cause?.message?.contains("Connection error") == true)
         }
 
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -78,12 +78,13 @@ class WebSocketErrorsTest {
     apolloClient.subscription(TimeSubscription())
         .toFlow()
         .test {
-          val error = awaitError()
+          val error = awaitItem().exception
           assertIs<ApolloNetworkException>(error)
           assertTrue(error.cause?.message?.contains("WebSocket Closed code='3666'") == true)
+          awaitComplete()
         }
 
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -149,7 +150,7 @@ class WebSocketErrorsTest {
     assertIs<ApolloWebSocketClosedException>(exception)
     assertEquals(1011, (exception as ApolloWebSocketClosedException).code)
 
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -169,7 +170,7 @@ class WebSocketErrorsTest {
         }
 
     println("dispose")
-    apolloClient.dispose()
+    apolloClient.close()
 
     apolloClient = ApolloClient.Builder()
         .httpServerUrl("http://localhost:8080/graphql")
@@ -203,19 +204,17 @@ class WebSocketErrorsTest {
 
     apolloClient.subscription(CountSubscription(2, 500))
         .toFlow()
-        .map {
-          it.dataAssertNoErrors.count
-        }
         .test {
           awaitItem()
-          val exception = awaitError()
+          val exception = awaitItem().exception
           assertIs<ApolloNetworkException>(exception)
           val cause = exception.cause
           assertIs<ApolloWebSocketClosedException>(cause)
           assertEquals(1011, cause.code)
+          awaitComplete()
         }
 
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -252,7 +251,7 @@ class WebSocketErrorsTest {
           awaitComplete()
         }
 
-    apolloClient.dispose()
+    apolloClient.close()
 
     // connectionInitCount is 2 since we returned true in webSocketReopenWhen
     assertEquals(2, connectionInitCount)

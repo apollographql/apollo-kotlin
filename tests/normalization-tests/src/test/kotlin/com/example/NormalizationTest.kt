@@ -19,6 +19,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
@@ -134,7 +135,7 @@ class NormalizationTest {
         .normalizedCache(MemoryCacheFactory())
         .build()
 
-    mockserver.enqueue("""
+    mockserver.enqueueString(string = """
       {
         "data": {
           "country": {
@@ -147,6 +148,6 @@ class NormalizationTest {
       check(data?.country?.name == "Foo")
     }
     apolloClient.close()
-    mockserver.stop()
+    mockserver.close()
   }
 }

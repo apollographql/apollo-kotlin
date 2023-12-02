@@ -5,7 +5,6 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.KtorTcpServer
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
@@ -63,7 +62,7 @@ class HttpEngineTest {
 
   @Test
   fun readTimeoutIsWorking() = runTest {
-    val mockServer = MockServer(0)
+    val mockServer = MockServer()
     // Enqueue a response with a 2 seconds delay
     mockServer.enqueueString("", 2_000)
 

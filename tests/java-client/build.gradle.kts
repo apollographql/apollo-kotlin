@@ -8,6 +8,8 @@ dependencies {
   implementation(golatac.lib("apollo.runtime.java"))
   implementation(golatac.lib("apollo.mockserver"))
   implementation(golatac.lib("apollo.rx3.java"))
+  implementation(golatac.lib("jetbrains.annotations"))
+
   testImplementation(golatac.lib("junit"))
   testImplementation(golatac.lib("truth"))
   testImplementation(project(":sample-server"))

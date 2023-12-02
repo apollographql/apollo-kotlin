@@ -20,7 +20,7 @@ fun main() = runBlocking {
     e.printStackTrace()
   }
 
-  apolloClient.dispose()
+  apolloClient.close()
   okHttpClient.dispatcher.executorService.shutdown()
   okHttpClient.connectionPool.evictAll()
 

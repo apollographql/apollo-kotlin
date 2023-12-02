@@ -62,13 +62,12 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(5, 100)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        actual.add(response.dataAssertNoErrors().count);
-        latch.countDown();
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
+        if (response.exception != null) {
+          failure[0] = response.exception;
+        } else {
+          actual.add(response.dataAssertNoErrors().count);
+          latch.countDown();
+        }
       }
     });
     disposable.addListener(() -> {
@@ -99,12 +98,12 @@ public class ApolloWsTest {
     apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         items.add(response.dataAssertNoErrors().count * 2);
       }
 
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
-      }
     }).addListener(latch::countDown);
 
     sleep(500);
@@ -112,11 +111,10 @@ public class ApolloWsTest {
     apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (response.exception != null) {
+          throw response.exception;
+        }
         items.add(response.dataAssertNoErrors().count * 2 + 1);
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     }).addListener(latch::countDown);
 
@@ -132,13 +130,12 @@ public class ApolloWsTest {
     apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+          return;
+        }
         throw new AssertionError("Should not be called");
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -154,12 +151,10 @@ public class ApolloWsTest {
   @SuppressWarnings("unchecked")
   public void operationErrorWithRx() throws Exception {
     Rx3Apollo.flowable(apolloClient.subscription(new OperationErrorSubscription()), BackpressureStrategy.BUFFER)
-        .map(response -> response)
-        .toList()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
-        .assertError(e -> {
-          Map<String, Object> payload = (Map<String, Object>) ((SubscriptionOperationException) e).getPayload();
+        .assertValue(v -> {
+          Map<String, Object> payload = (Map<String, Object>)((SubscriptionOperationException)v.exception).getPayload();
           List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
           return errors.get(0).get("message").equals("Woops");
         });
@@ -176,13 +171,12 @@ public class ApolloWsTest {
     apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+          return;
+        }
         throw new AssertionError("Should not be called");
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -203,11 +197,6 @@ public class ApolloWsTest {
           disposable[0].dispose();
           latch.countDown();
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        throw new AssertionError("Should not be called");
       }
     });
 
@@ -231,6 +220,12 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+          return;
+        }
+
         items.add(response.dataAssertNoErrors().count);
         if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by closing the websocket
@@ -238,18 +233,8 @@ public class ApolloWsTest {
             @Override
             public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
             }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-            }
           });
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -283,6 +268,11 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+          return;
+        }
         if (hasReopenOccurred.get()) {
           itemsAfterReopen.add(response.dataAssertNoErrors().count);
         } else {
@@ -294,18 +284,8 @@ public class ApolloWsTest {
             @Override
             public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
             }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-            }
           });
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -350,17 +330,17 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 200)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+          return;
+        }
+
         itemsBeforeReopen.add(response.dataAssertNoErrors().count);
         if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by stopping the whole server
           context.close();
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 

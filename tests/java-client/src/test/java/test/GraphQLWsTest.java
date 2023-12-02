@@ -79,13 +79,12 @@ public class GraphQLWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new GreetingsSubscription()).enqueue(new ApolloCallback<GreetingsSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<GreetingsSubscription.Data> response) {
-        actual.add(response.dataAssertNoErrors().greetings);
-        latch.countDown();
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
+        if (response.exception != null) {
+          failure[0] = response.exception;
+        } else {
+          actual.add(response.dataAssertNoErrors().greetings);
+          latch.countDown();
+        }
       }
     });
     disposable.addListener(() -> {

@@ -353,10 +353,13 @@ class CursorBasedPaginationTest {
       }
     }
     apolloClient.enqueueTestResponse(query1, data1)
-    var resultData = apolloClient.query(query1).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList().map { it.data }
+    var resultData = apolloClient.query(query1).fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .toFlow()
+        .toList()
+        .map { it.data }
     // Cache: nothing
     // Network: data1
-    assertContentEquals(listOf(data1), resultData)
+    assertContentEquals(listOf(null, data1), resultData)
 
 
     // Page after

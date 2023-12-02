@@ -28,6 +28,7 @@ kotlin {
 
 apollo {
   service("service") {
+    languageVersion.set("1.5")
     srcDir(file("../models-fixtures/graphql"))
     packageName.set("codegen.models")
     generateFragmentImplementations.set(true)
