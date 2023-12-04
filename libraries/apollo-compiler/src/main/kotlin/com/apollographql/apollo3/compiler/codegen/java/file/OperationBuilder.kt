@@ -125,7 +125,7 @@ internal class OperationBuilder(
                 The un-minimized version is:
 
 
-                """.trimIndent() + operation.sourceWithFragments.escapeKdoc()
+                """.trimIndent() + operation.sourceWithFragments.asJavadocCodeBlock()
               )
               .build()
           )
@@ -239,11 +239,11 @@ internal class OperationBuilder(
       .addStatement("return $OPERATION_NAME")
       .build()
 
-  /**
-   * Things like `[${'$'}oo]` do not compile. See https://youtrack.jetbrains.com/issue/KT-43906
-   */
-  private fun String.escapeKdoc(): String {
-    return replace("[", "\\[").replace("]", "\\]")
+  private fun String.asJavadocCodeBlock(): String {
+    /**
+     * TODO: proper Javadoc formatting
+     */
+    return this
   }
 
   private fun rootFieldMethodSpec(): MethodSpec {
