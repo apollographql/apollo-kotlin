@@ -148,6 +148,26 @@
         level="ERROR"
     />
 
+    <!-- "Input class constructor issue" inspection  -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        language="kotlin"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloInputConstructorNamedArgsInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.inputConstructorNamedArgs.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+    />
+
+    <!-- "Change input class constructor to builder" intention -->
+    <intentionAction>
+      <language>kotlin</language>
+      <className>com.apollographql.ijplugin.intention.ApolloInputConstructorChangeToBuilderIntention</className>
+      <!--suppress PluginXmlCapitalization -->
+      <category>Apollo Kotlin</category>
+    </intentionAction>
+
     <!-- Suppression of inspections on individual fields -->
     <lang.inspectionSuppressor
         language="GraphQL"
