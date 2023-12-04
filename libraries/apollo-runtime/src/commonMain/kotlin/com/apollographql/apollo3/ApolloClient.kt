@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -616,5 +617,10 @@ private constructor(
     return builder.copy()
   }
 
-  companion object
+  companion object {
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"), level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_0_0)
+    @JvmStatic
+    fun builder() = Builder()
+  }
 }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
@@ -21,6 +22,7 @@ import com.apollographql.apollo3.api.Operation
  */
 @Deprecated("Handle each ApolloResponse.exception instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@ApolloInternal
 fun <T> MutableExecutionOptions<T>.conflateFetchPolicyInterceptorResponses(conflateResponses: Boolean) = addExecutionContext(
     ConflateResponsesContext(conflateResponses)
 )
@@ -32,6 +34,6 @@ internal class ConflateResponsesContext(val conflateResponses: Boolean) : Execut
   companion object Key : ExecutionContext.Key<ConflateResponsesContext>
 }
 
-
+@ApolloInternal
 val <D : Operation.Data> ApolloRequest<D>.conflateFetchPolicyInterceptorResponses
   get() = executionContext[ConflateResponsesContext]?.conflateResponses ?: false

@@ -34,7 +34,21 @@ class CompiledField internal constructor(
    * @return [Optional.Absent] if no runtime value is present for this argument else returns the argument
    * value with variables substituted for their values.
    */
+  @Deprecated("This function does not distinguish between null and absent arguments. Use argumentValue instead", ReplaceWith("argumentValue(name = name, variables = variables)"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun resolveArgument(
+      name: String,
+      variables: Executable.Variables,
+  ): Any? {
+    return argumentValue(name, variables).getOrNull()
+  }
+  /**
+   * Resolves field argument value by [name].
+   *
+   * @return [Optional.Absent] if no runtime value is present for this argument else returns the argument
+   * value with variables substituted for their values.
+   */
+  fun argumentValue(
       name: String,
       variables: Executable.Variables,
   ): Optional<ApolloJsonElement> {
@@ -62,7 +76,7 @@ class CompiledField internal constructor(
    * Absent arguments are not returned
    */
   @ApolloExperimental
-  fun resolveArguments(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean= {true}): Map<String, ApolloJsonElement> {
+  fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean= {true}): Map<String, ApolloJsonElement> {
     val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
     if (arguments.isEmpty()) {
       return emptyMap()
@@ -79,7 +93,7 @@ class CompiledField internal constructor(
    * This is mostly used internally to compute records
    */
   fun nameWithArguments(variables: Executable.Variables): String {
-    val arguments = resolveArguments(variables) { !it.isPagination }
+    val arguments = argumentValues(variables) { !it.isPagination }
     if (arguments.isEmpty()) {
       return name
     }
