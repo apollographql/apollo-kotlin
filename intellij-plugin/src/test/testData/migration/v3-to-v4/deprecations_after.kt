@@ -18,7 +18,7 @@ import com.apollographql.apollo3.cache.normalized.FetchPolicy
 
 suspend fun test() {
   val response: ApolloResponse<*>? = null
-  println(response?.dataOrThrow())
+  println(response?.dataAssertNoErrors)
 
   val apolloClient: ApolloClient? = ApolloClient.Builder()
       .dispatcher(null)
@@ -27,13 +27,15 @@ suspend fun test() {
       .build()
   val query: Query<*>? = null
 
-  apolloClient!!.query(query!!).toFlow()
+  apolloClient!!.query(query!!).toFlowV3()
 
   apolloClient!!.query(query!!).watch()
   apolloClient!!.query(query!!).watch()
   apolloClient!!.query(query!!).watch()
   apolloClient!!.query(query!!).watch()
   apolloClient!!.query(query!!).watch()
+  apolloClient!!.query(query!!).executeV3()
+  apolloClient!!.query(query!!).toFlowV3()
 
   val compositeException: ApolloException? = null
   println(compositeException!!.suppressedExceptions.first())
