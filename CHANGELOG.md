@@ -1,6 +1,121 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.3
+
+_2023-12-05_
+
+## 🧩 IDE plugin: in-memory cache support
+
+The normalized cache viewer can now display the contents of your in-memory cache. To do so, it relies on a
+helper server that you need to run in your debug builds:
+
+```kotlin
+
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .build()
+
+if (BuildConfig.DEBUG) {
+  ApolloDebugServer.registerApolloClient(apolloClient)
+}
+```
+
+You can read more about it [here](https://www.apollographql.com/docs/kotlin/v4/testing/apollo-debug-server).
+
+## Experimental `@catch` and `@semanticNonNull` support
+
+`@catch` makes it possible to model GraphQL errors in your Kotlin classes using `FieldResult`:
+
+```graphql
+query GetUser {
+  user {
+    id
+    # map name to FieldResult<String?> instead of stopping the parsing
+    name @catch
+    avatarUrl
+  }
+}
+```
+
+`@semanticNonNull` is a better `@nonnull`. It makes it possible to mark a field as null only on error. The matching Kotlin property is then generated as non-null:
+
+```graphql
+# mark User.name as semantically non-null
+extend type User @semanticNonNull(field: "name")
+```
+
+Both those directives are experimental and require opt-in of the [nullability directives](https://github.com/apollographql/specs/pull/36)
+
+You can read more about it [here](https://www.apollographql.com/docs/kotlin/v4/advanced/nullability).
+
+## Experimental `@oneOf` support
+
+`@oneOf` introduce a form of input polymorphism to GraphQL ([RFC](https://github.com/graphql/graphql-spec/pull/825)):
+
+```graphql
+input PetInput @oneOf {
+  cat: CatInput
+  dog: DogInput
+  fish: FishInput
+}
+
+input CatInput { name: String!, numberOfLives: Int }
+input DogInput { name: String!, wagsTail: Boolean }
+input FishInput { name: String!, bodyLengthInMm: Int }
+
+type Mutation {
+  addPet(pet: PetInput!): Pet
+}
+```
+
+With `@oneOf`, only one of `cat`, `dog` or `fish` can be set. `@oneOf` support is automatically enabled if your schema has the `@oneOf` directive definition.
+
+## 👷‍ All changes
+
+* [all] `@oneOf` support (#5394, #5388)
+* [all] `@catch` and `@semanticNonNull` support (#5405)
+* [all] Take default values into account when computing field cache keys (#5384)
+* [all] Bump Kotlin to 2.0.0-Beta1 (#5373)
+
+* [IJ Plugin] Add 'Input class constructor issue' inspection (#5427)
+* [IJ plugin] Update v3->v4 migration following API tweaks (#5421)
+* [IJ Plugin] Report invalid oneOf input object builder uses (#5416)
+* [IJ Plugin] Add inspection for @oneOf input type constructor invocation (#5395)
+* [IJ plugin] Make the refresh button work with all normalized cache sources. (#5400)
+* [IJ Plugin] Cache viewer: take numbers into account in key sorting (#5396)
+* [IJ Plugin] Bump pluginUntilBuild to 233 (#5377)
+* [IJ Plugin] Telemetry: don't use a libraries changed listener (#5361)
+* [IJ Plugin] Cache viewer: add cache size to selector (#5357)
+* [IJ plugin] Use apollo-debug-server to retrieve normalized caches (#5348)
+* [IJ plugin] Cache viewer: "Pull from Device" modal dialog instead of action menu (#5333)
+* [IJ Plugin] Fix v3->v4 migration with ApolloCompositeException (#5330)
+
+* [runtime] remove some of the ApolloResponse.Builders (#5426)
+* [runtime] Add a few symbols as ERROR deprecation for the migration (#5422)
+* [runtime] Add executeV3 + toFlowV3 (#5417)
+* [runtime] Revive dataAssertNoErrors (#5419)
+* [runtime] Allow no data and no exception in case of GraphQL errors (#5408)
+* [runtime] Expose ExecutionContext to HttpEngine and add OkHttp helpers (#5383)
+* [runtime] Improve deprecation messages (#5411)
+* [runtime] Go back to just one Adapter class (#5403)
+* [runtime] Fix Optional.getOrElse (#5399)
+
+* [compiler] Remove kotlin-labs-0.1 directives (#5404)
+* [compiler] Throw a better exception than NullPointerException if a value is missing (#5402)
+* [compiler] ExecutableValidationResult is returned by validateAsExecutable() and cannot be @ApolloInternal (#5406)
+* [compiler] Rework the IrType hierarchy (#5392)
+* [compiler] remove CCN (#5387)
+* [compiler] Remove antlr (#5336)
+* [compiler] Tweak description javadoc, there is no need to use the same escaping as Kotlin (#5424)
+
+* [mockserver] Support setting port for Apollo MockServer (#5389)
+* [mockserver] Add WebSocket support to the MockServer (#5334)
+* [tools] Implement 2-step introspection (#5371)
+* [apollo-execution] Allow to pass arguments to the root types (#5352)
+* [apollo-ksp] Initial support for interfaces (#5351)
+* [apollo-debug-server] Add apollo-debug-server (#5353)
+
 # Version 4.0.0-beta.2
 
 _2023-10-23_
