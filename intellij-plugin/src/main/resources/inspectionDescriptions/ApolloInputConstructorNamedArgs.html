@@ -1,8 +1,8 @@
 <html>
 <body>
-Reports invocations of input class constructors without using named parameters.
+Reports invocations of input class constructors not using named parameters.
 
-<p>It is recommended to use name parameters or builders when creating input objects to avoid issues when the schema changes.</p>
+<p>Using named parameters makes your app robust to ordering changes in your schema.</p>
 
 <p>For example, given the following schema:<br>
 <pre>
@@ -20,12 +20,13 @@ PersonInput("John", "Doe")
 If the schema changes to:<br>
 <pre>
 input PersonInput {
+  # lastName and firstName order changed
   lastName: String
   firstName: String
 }
 </pre>
 
-The input object will be created with the wrong values, without any warning. Using named parameters or builders will avoid this issue:<br>
+The input object will be created with the wrong values, without any warning. Using named parameters or builders avoids this issue:<br>
 <pre>
 PersonInput(firstName = "John", lastName = "Doe")
 </pre>
