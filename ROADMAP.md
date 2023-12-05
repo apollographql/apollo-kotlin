@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-11-09**
+**Last updated: 2023-12-05**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -19,17 +19,21 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate GA Date: Autumn 2023 (GA)_
+_Approximate GA Date: January 2024 (GA)_
 
-Our next major release is currently in the beta stage. Expect new beta to be released as we make progress towards a GA release candidate. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible. 
+Our next major release is currently in the beta stage. Expect new beta to be released as we make progress towards a GA release candidate. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  We are hoping to do a GA release after Kotlin 2.0.0 is generally available.
 
 Here's a high-level overview of what to expect:
 
 - [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
 - [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
-- Better error handling ([RFC](https://github.com/apollographql/apollo-kotlin/issues/4711)), potentially with the `@catch` directive ([RFC](https://github.com/apollographql/apollo-kotlin/issues/5337))
+- Better error handling ([RFC](https://github.com/apollographql/apollo-kotlin/issues/4711))
+    - Move exceptions to `ApolloResponse`
+    - Add `@catch` directive ([RFC](https://github.com/apollographql/apollo-kotlin/issues/5337))
+    - Add `@semanticNonNull` directive
 - [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
-- Client-controlled nullability (experimental)
+- Support `@oneOf` for Input Objects
+- Support Wasm JS target
 
 ## Better support for Jetpack Compose
 
