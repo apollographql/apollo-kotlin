@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -11,6 +12,8 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloGraphQLException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -80,7 +83,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
 }
 
 /**
- * PresentAdapter can only express something that's present. Absent values are handled outside of the adapter.
+ * PresentAdapter can only express something that's present. Absent values are handled outside the adapter.
  *
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
@@ -117,9 +120,6 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
     }
   }
 }
-
-@JvmName("-obj")
-fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmField
 val StringAdapter = object : Adapter<String> {
@@ -283,12 +283,6 @@ val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
 @JvmField
 val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
 
-@JvmName("-nullable")
-fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
-
-@JvmName("-list")
-fun <T> Adapter<T>.list() = ListAdapter(this)
-
 /**
  * Note that Arrays require their type to be known at compile time, so we construct an anonymous object with reference to
  * function with reified type parameters as a workaround.
@@ -297,7 +291,11 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 @JvmName("-array")
 inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
 
-  private inline fun <reified T> arrayFromJson(wrappedAdapter: Adapter<T>, reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Array<T> {
+  private inline fun <reified T> arrayFromJson(
+      wrappedAdapter: Adapter<T>,
+      reader: JsonReader,
+      customScalarAdapters: CustomScalarAdapters,
+  ): Array<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
@@ -311,7 +309,7 @@ inline fun <reified T> Adapter<T>.array() = object : Adapter<Array<T>> {
       wrappedAdapter: Adapter<T>,
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: Array<T>
+      value: Array<T>,
   ) {
     writer.beginArray()
     value.forEach {
@@ -363,14 +361,14 @@ class ObjectAdapter<T>(
     }
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T, ) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
     if (buffered && writer !is MapJsonWriter) {
       /**
        * Convert to a Map first
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
-      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value, )
+      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value)
       mapWriter.endObject()
 
       /**
@@ -379,8 +377,92 @@ class ObjectAdapter<T>(
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
-      wrappedAdapter.toJson(writer, customScalarAdapters, value,)
+      wrappedAdapter.toJson(writer, customScalarAdapters, value)
       writer.endObject()
     }
   }
 }
+
+private class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+    if (reader.peek() == JsonReader.Token.NULL) {
+      val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
+      if (error != null) {
+        reader.skipValue()
+        throw ApolloGraphQLException(error)
+      }
+    }
+
+    return wrappedAdapter.fromJson(reader, customScalarAdapters)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+    wrappedAdapter.toJson(writer, customScalarAdapters, value)
+  }
+}
+
+private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<FieldResult<T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
+    return try {
+      FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    } catch (e: ApolloException) {
+      FieldResult.Failure(e)
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: FieldResult<T>) {
+    when (value) {
+      is FieldResult.Success -> wrappedAdapter.toJson(writer, customScalarAdapters, value.getOrThrow())
+      else -> Unit // ignore errors
+    }
+  }
+}
+
+private class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
+    return try {
+      wrappedAdapter.fromJson(reader, customScalarAdapters)
+    } catch (e: ApolloException) {
+      null
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T?) {
+    if (value == null) {
+      // XXX: this potentially writes null instead of an error
+      writer.nullValue()
+    } else {
+      wrappedAdapter.toJson(writer, customScalarAdapters, value)
+    }
+  }
+}
+
+@JvmName("-nullable")
+fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+
+@JvmName("-list")
+fun <T> Adapter<T>.list() = ListAdapter(this)
+
+@JvmName("-obj")
+fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+
+@JvmName("-catchToResult")
+fun <T> Adapter<T>.catchToResult(): Adapter<FieldResult<T>> = CatchToResultAdapter(this)
+
+@JvmName("-errorAware")
+fun <T> Adapter<T>.errorAware(): Adapter<T> = ErrorAwareAdapter(this)
+
+@JvmName("-catchToNull")
+fun <T> Adapter<T>.catchToNull(): Adapter<T?> = CatchToNullAdapter(this)
+
+/**
+ * A replica of Apollo Android v2's CustomTypeAdapter, to ease migration from v2 to v3.
+ *
+ * Make your CustomTypeAdapters implement this interface by updating the imports
+ * from `com.apollographql.apollo.api` to `com.apollographql.apollo3.api`.
+ *
+ * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
+ */
+@Deprecated("CustomTypeAdapter was used for backward compatibility with 2.x. Use Adapter instead", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_0_0)
+interface CustomTypeAdapter<T>

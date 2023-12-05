@@ -1,12 +1,16 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
-class MockResponse internal constructor(
+class MockResponse
+@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+constructor(
     val statusCode: Int = 200,
     val body: Flow<ByteString> = emptyFlow(),
     val headers: Map<String, String> = mapOf("Content-Length" to "0"),
@@ -48,6 +52,8 @@ class MockResponse internal constructor(
 
     fun build(): MockResponse {
       val headersWithContentLength = if (contentLength == null) headers else headers + mapOf("Content-Length" to contentLength.toString())
+      // https://youtrack.jetbrains.com/issue/KT-34480
+      @Suppress("DEPRECATION_ERROR")
       return MockResponse(statusCode = statusCode, body = body, headers = headersWithContentLength, delayMillis = delayMillis)
     }
   }

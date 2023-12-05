@@ -13,5 +13,6 @@ apollo {
   service("main") {
     packageName.set("com.example.generated")
     languageVersion.set("1.5")
+    generateInputBuilders.set(true)
   }
 }

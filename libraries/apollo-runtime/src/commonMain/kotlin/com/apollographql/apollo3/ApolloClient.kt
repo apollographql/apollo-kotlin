@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -14,8 +15,6 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -37,6 +36,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -55,7 +55,6 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-    private val useV3ExceptionHandling: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
@@ -88,6 +87,12 @@ private constructor(
     return ApolloCall(this, subscription)
   }
 
+  @Deprecated("Use close() instead", ReplaceWith("close()"), level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  fun dispose() {
+    close()
+  }
+
   override fun close() {
     concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
@@ -109,13 +114,16 @@ private constructor(
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
-  fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, false)
+  fun <D : Operation.Data> executeAsFlow(
+      apolloRequest: ApolloRequest<D>,
+  ): Flow<ApolloResponse<D>> {
+    return executeAsFlow(apolloRequest, false, false)
   }
 
   internal fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
+      throwing: Boolean,
   ): Flow<ApolloResponse<D>> {
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
@@ -128,7 +136,6 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .useV3ExceptionHandling(useV3ExceptionHandling)
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
@@ -155,20 +162,16 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
-          if (apolloRequest.useV3ExceptionHandling != null) {
-            useV3ExceptionHandling(apolloRequest.useV3ExceptionHandling)
-          }
         }
         .build()
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
         .proceed(request)
         .let {
-          if (request.useV3ExceptionHandling == true) {
+          if (throwing) {
             it.onEach { response ->
-              val exception = response.exception ?: return@onEach
-              if (exception !is ApolloGraphQLException) {
-                throw exception
+              if (response.exception != null) {
+                throw response.exception!!
               }
             }
           } else {
@@ -244,22 +247,6 @@ private constructor(
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
-    }
-
-    private var useV3ExceptionHandling: Boolean? = null
-      private set
-
-    /**
-     * Configures whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
-     * [ApolloResponse.exception].
-     *
-     * If true, the call site must catch [ApolloException]. This was the behavior in Apollo Kotlin 3.
-     *
-     * Default: false
-     */
-    @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
-    fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder = apply {
-      this.useV3ExceptionHandling = useV3ExceptionHandling
     }
 
     /**
@@ -587,7 +574,6 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          useV3ExceptionHandling = useV3ExceptionHandling,
 
           // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
           // are important to rebuild `networkTransport` (and potentially others)
@@ -608,7 +594,7 @@ private constructor(
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
-          .useV3ExceptionHandling(useV3ExceptionHandling)
+
       _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }
@@ -631,5 +617,10 @@ private constructor(
     return builder.copy()
   }
 
-  companion object
+  companion object {
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"), level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_0_0)
+    @JvmStatic
+    fun builder() = Builder()
+  }
 }

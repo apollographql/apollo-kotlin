@@ -79,4 +79,9 @@ public class IFragmentImpl implements Fragment<IFragment> {
     .selections(iFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

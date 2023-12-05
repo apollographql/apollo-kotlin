@@ -1,4 +1,5 @@
 @file:JvmName("FetchPolicyInterceptors")
+@file:Suppress("DEPRECATION") // for ApolloCompositeException, see https://youtrack.jetbrains.com/issue/KT-30155
 
 package com.apollographql.apollo3.cache.normalized
 
@@ -6,8 +7,9 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.conflateFetchPolicyInterceptorResponses
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -127,14 +129,14 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
   }
 }
 
-internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
+internal object FetchPolicyRouterInterceptor : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     if (request.operation !is Query) {
       // Subscriptions and Mutations do not support fetchPolicies
       return chain.proceed(request)
     }
 
-    if (request.useV3ExceptionHandling != true) {
+    if (!request.conflateFetchPolicyInterceptorResponses) {
       // Fast path
       return request.fetchPolicyInterceptor.intercept(request, chain)
     }
@@ -144,7 +146,7 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
 
       request.fetchPolicyInterceptor.intercept(request, chain)
           .collect {
-            if (!hasEmitted && it.exception != null && it.exception !is ApolloGraphQLException) {
+            if (!hasEmitted && it.exception != null) {
               // Remember to send the exception later
               exceptions.add(it.exception!!)
               return@collect
@@ -162,20 +164,23 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
             hasEmitted = true
           }
 
+      @Suppress("DEPRECATION")
       if (!hasEmitted) {
         // If we haven't emitted anything, send a composite exception
-        val first = exceptions.firstOrNull()
-        val exception = if (first == null) {
-          DefaultApolloException("No response emitted")
-        } else {
-          first.also { firstException ->
-            exceptions.drop(1).forEach {
-              firstException.addSuppressed(it)
+        val exception = when (exceptions.size) {
+          0 -> DefaultApolloException("No response emitted")
+          1 -> exceptions.first()
+          2 -> ApolloCompositeException(exceptions.first(), exceptions.get(1))
+          else -> ApolloCompositeException(exceptions.first(), exceptions.get(1)).apply {
+            exceptions.drop(2).forEach {
+              addSuppressed(it)
             }
           }
         }
+
         emit(
-            ApolloResponse.Builder(request.operation, request.requestUuid, exception)
+            ApolloResponse.Builder(request.operation, request.requestUuid)
+                .exception(exception)
                 .build()
 
         )

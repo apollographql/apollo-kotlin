@@ -141,7 +141,10 @@ fun ApolloClient.Builder.logCacheMisses(
   return addInterceptor(CacheMissLoggingInterceptor(log))
 }
 
-fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
+fun ApolloClient.Builder.store(
+    store: ApolloStore,
+    writeToCacheAsynchronously: Boolean = false,
+): ApolloClient.Builder {
   check(interceptors.none { it is AutoPersistedQueryInterceptor }) {
     "Apollo: the normalized cache must be configured before the auto persisted queries"
   }
@@ -641,3 +644,13 @@ fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheHeaders(cacheHeaders: Ca
 
 val <D : Operation.Data> ApolloResponse<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
+
+/**
+ * Gets the result from the cache first and always fetch from the network. Use this to get an early
+ * cached result while also updating the network values.
+ *
+ * Any [FetchPolicy] previously set will be ignored
+ */
+@Deprecated("Use fetchPolicy(FetchPolicy.CacheAndNetwork) instead", ReplaceWith("fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()"), level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_7_5)
+fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> = TODO()

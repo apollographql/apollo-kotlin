@@ -17,6 +17,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
+import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
@@ -158,7 +159,7 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(model.properties.map { property ->
         val maybeAssertNotNull = if (
-            !property.info.type.nullable
+            (property.info.type.catchTo == IrCatchTo.Result || !property.info.type.nullable)
             && !property.info.type.optional
             && !checkedProperties.contains(property.info.responseName)
         ) {

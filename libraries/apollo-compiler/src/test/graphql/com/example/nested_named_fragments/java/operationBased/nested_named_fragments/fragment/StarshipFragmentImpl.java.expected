@@ -79,4 +79,9 @@ public class StarshipFragmentImpl implements Fragment<StarshipFragment> {
     .selections(starshipFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

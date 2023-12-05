@@ -65,7 +65,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
  * @throws JsonDataException if the data is not of the expected type
  */
 @JvmOverloads
-@Deprecated("Use parseResponse or jsonReader.toApolloResponse() instead", ReplaceWith("parseResponse"))
+@Deprecated("Use parseResponse or jsonReader.toApolloResponse() instead", ReplaceWith("parseResponse()"))
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -120,7 +120,8 @@ fun <D : Operation.Data> Operation<D>.parseResponse(
           cause = throwable
       )
     }
-    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this, exception = apolloException)
+    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this)
+        .exception(exception = apolloException)
         .isLast(true)
         .build()
   }

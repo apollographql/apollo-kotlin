@@ -105,6 +105,7 @@ internal class FragmentBuilder(
                   .build()
           )
         }
+        .addProperty(ignoreErrorsPropertySpec(false))
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }

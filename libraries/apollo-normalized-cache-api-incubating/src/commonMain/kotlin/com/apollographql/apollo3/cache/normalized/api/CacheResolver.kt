@@ -197,7 +197,7 @@ object FieldPolicyCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val keyArgsValues = field.resolveArguments(variables) { it.isKey }.values.map { it.toString() }
+    val keyArgsValues = field.argumentValues(variables) { it.isKey }.values.map { it.toString() }
 
     if (keyArgsValues.isNotEmpty()) {
       return CacheKey(field.type.rawType().name, keyArgsValues)

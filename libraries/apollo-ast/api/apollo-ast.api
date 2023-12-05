@@ -771,6 +771,7 @@ public final class com/apollographql/apollo3/ast/GqldocumentKt {
 	public static final fun builtinDefinitions ()Ljava/util/List;
 	public static final fun kotlinLabsDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun linkDefinitions ()Ljava/util/List;
+	public static final fun nullabilityDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun toSchema (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/Schema;
 	public static final fun withBuiltinDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static final fun withoutBuiltinDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
@@ -929,16 +930,20 @@ public final class com/apollographql/apollo3/ast/ReservedEnumValueName : com/apo
 }
 
 public final class com/apollographql/apollo3/ast/Schema {
+	public static final field CATCH Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/ast/Schema$Companion;
 	public static final field FIELD_POLICY Ljava/lang/String;
 	public static final field FIELD_POLICY_FOR_FIELD Ljava/lang/String;
 	public static final field FIELD_POLICY_KEY_ARGS Ljava/lang/String;
 	public static final field FIELD_POLICY_PAGINATION_ARGS Ljava/lang/String;
+	public static final field IGNORE_ERRORS Ljava/lang/String;
 	public static final field NONNULL Ljava/lang/String;
 	public static final field OPTIONAL Ljava/lang/String;
 	public static final field REQUIRES_OPT_IN Ljava/lang/String;
+	public static final field SEMANTIC_NON_NULL Ljava/lang/String;
 	public static final field TYPE_POLICY Ljava/lang/String;
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;
+	public final fun getErrorAware ()Z
 	public final fun getForeignNames ()Ljava/util/Map;
 	public final fun getMutationTypeDefinition ()Lcom/apollographql/apollo3/ast/GQLTypeDefinition;
 	public final fun getQueryTypeDefinition ()Lcom/apollographql/apollo3/ast/GQLTypeDefinition;

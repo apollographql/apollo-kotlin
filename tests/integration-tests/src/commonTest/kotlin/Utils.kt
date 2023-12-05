@@ -26,7 +26,7 @@ fun assertEquals2(actual: Any?, expected: Any?) = assertEquals(expected, actual)
  */
 object IdCacheResolver: CacheResolver {
   override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
-    val id = field.resolveArgument("id", variables).getOrNull()?.toString()
+    val id = field.argumentValue("id", variables).getOrNull()?.toString()
     if (id != null) {
       return CacheKey(id)
     }

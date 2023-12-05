@@ -30,6 +30,9 @@ class Schema internal constructor(
     @ApolloInternal
     val connectionTypes: Set<String>,
 ) {
+  @ApolloInternal
+  val schemaDefinition: GQLSchemaDefinition? = definitions.filterIsInstance<GQLSchemaDefinition>().singleOrNull()
+
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }
@@ -37,6 +40,10 @@ class Schema internal constructor(
   val directiveDefinitions: Map<String, GQLDirectiveDefinition> = definitions
       .filterIsInstance<GQLDirectiveDefinition>()
       .associateBy { it.name }
+
+  val errorAware: Boolean = directiveDefinitions.any {
+    originalDirectiveName(it.key) == CATCH
+  }
 
   val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query", definitions)
       ?: throw SchemaValidationException("No query root type found")
@@ -95,6 +102,7 @@ class Schema internal constructor(
         // This could certainly be improved
         possibleTypes(it).toList()
       }.toSet()
+
       is GQLObjectTypeDefinition -> setOf(typeDefinition.name)
       is GQLScalarTypeDefinition -> setOf(typeDefinition.name)
       is GQLEnumTypeDefinition -> typeDefinition.enumValues.map { it.name }.toSet()
@@ -143,11 +151,13 @@ class Schema internal constructor(
         }.map { it.name }
         typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + unions
       }
+
       is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
       is GQLUnionTypeDefinition,
       is GQLScalarTypeDefinition,
       is GQLEnumTypeDefinition,
       -> setOf(name)
+
       else -> error("Cannot determine implementedTypes of $name")
     }
   }
@@ -194,6 +204,13 @@ class Schema internal constructor(
     const val NONNULL = "nonnull"
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
+
+    @ApolloExperimental
+    const val CATCH = "catch"
+    @ApolloExperimental
+    const val SEMANTIC_NON_NULL = "semanticNonNull"
+    @ApolloExperimental
+    const val IGNORE_ERRORS = "ignoreErrors"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"

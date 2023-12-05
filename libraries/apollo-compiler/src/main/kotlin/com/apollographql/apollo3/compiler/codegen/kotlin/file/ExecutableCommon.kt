@@ -17,6 +17,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -41,6 +42,13 @@ internal fun serializeVariablesFunSpec(
       .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
       .addParameter(withDefaultValues, KotlinSymbols.Boolean)
       .addCode(body)
+      .build()
+}
+
+internal fun ignoreErrorsPropertySpec(value: Boolean): PropertySpec {
+  return PropertySpec.builder(Identifier.ignoreErrors, KotlinSymbols.Boolean)
+      .addModifiers(KModifier.OVERRIDE)
+      .initializer(value.toString())
       .build()
 }
 

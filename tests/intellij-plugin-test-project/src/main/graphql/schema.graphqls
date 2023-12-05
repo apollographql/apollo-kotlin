@@ -2,6 +2,7 @@ type Query {
   animals: [Animal!]!
   computers: [Computer!]!
   myEnum(inputEnum: myEnum): myEnum
+  findUser(findUserInput: FindUserInput!): User
 }
 
 type Mutation {
@@ -63,4 +64,29 @@ input personInput {
 input AddressInput {
   num: Int
   street: String
+}
+
+
+
+directive @oneOf on INPUT_OBJECT
+
+type User {
+  id: ID!
+}
+
+input FindUserInput @oneOf {
+  email: String
+  name: String
+  identity: FindUserBySocialNetworkInput
+  friends: FindUserByFriendInput
+}
+
+input FindUserBySocialNetworkInput @oneOf {
+  facebookId: String
+  googleId: String
+}
+
+input FindUserByFriendInput {
+  socialNetworkId: ID!
+  friendId: ID!
 }

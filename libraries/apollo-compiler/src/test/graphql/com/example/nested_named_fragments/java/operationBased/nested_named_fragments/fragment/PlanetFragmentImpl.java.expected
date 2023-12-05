@@ -79,4 +79,9 @@ public class PlanetFragmentImpl implements Fragment<PlanetFragment> {
     .selections(planetFragmentSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

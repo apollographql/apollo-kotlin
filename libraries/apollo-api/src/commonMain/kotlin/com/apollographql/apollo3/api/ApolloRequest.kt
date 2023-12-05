@@ -21,9 +21,6 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-
-    @ApolloInternal
-    val useV3ExceptionHandling: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -40,7 +37,6 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .useV3ExceptionHandling(useV3ExceptionHandling)
   }
 
   class Builder<D : Operation.Data>(
@@ -96,13 +92,6 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
-    private var useV3ExceptionHandling: Boolean? = null
-
-    @ApolloInternal
-    fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder<D> = apply {
-      this.useV3ExceptionHandling = useV3ExceptionHandling
-    }
-
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
     }
@@ -127,7 +116,6 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          useV3ExceptionHandling = useV3ExceptionHandling,
       )
     }
   }

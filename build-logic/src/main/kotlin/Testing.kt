@@ -8,10 +8,9 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 fun Project.configureTesting() {
   tasks.withType(Test::class.java) {
-    systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
-    systemProperty("testFilter", System.getProperty("testFilter"))
-    systemProperty("codegenModels", System.getProperty("codegenModels"))
-
+    forwardEnv("updateTestFixtures")
+    forwardEnv("testFilter")
+    forwardEnv("codegenModels")
   }
   
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
@@ -32,6 +31,16 @@ fun Project.configureTesting() {
       events.add(TestLogEvent.FAILED)
       showStandardStreams = true
     }
+  }
+}
+
+/**
+ * forwards an environment variable to a test task and mark it as input
+ */
+fun Test.forwardEnv(name: String) {
+  System.getenv(name)?.let { value ->
+    environment(name, value)
+    inputs.property(name, value)
   }
 }
 

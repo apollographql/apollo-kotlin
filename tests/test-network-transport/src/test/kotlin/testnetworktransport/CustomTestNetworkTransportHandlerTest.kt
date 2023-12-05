@@ -41,7 +41,8 @@ class CustomTestNetworkTransportHandlerTest {
           ApolloResponse.Builder(
               operation = GetHeroQuery("mock"),
               requestUuid = request.requestUuid,
-              data = GetHeroQuery.Data {
+          ).data(
+              GetHeroQuery.Data {
                 hero = buildDroid {
                   name = "Droid ${counter++}"
                 }
@@ -67,7 +68,7 @@ class CustomTestNetworkTransportHandlerTest {
   @Test
   fun registerAndQueueMethodsFail() = runTest(before = { setUp() }, after = { tearDown() }) {
     assertFailsWith(IllegalStateException::class) {
-      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), DefaultApolloException()).build())
+      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4()).exception( DefaultApolloException()).build())
     }
     assertFailsWith(IllegalStateException::class) {
       apolloClient.registerTestResponse(GetHeroQuery("id"), null)

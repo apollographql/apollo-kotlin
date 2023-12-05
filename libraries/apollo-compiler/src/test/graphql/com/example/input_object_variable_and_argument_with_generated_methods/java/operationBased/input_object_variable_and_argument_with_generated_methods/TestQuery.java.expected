@@ -40,9 +40,9 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     }
    *
    *     booleanNonOptional: false
-   *     listOfStringNonOptional: \[\]
+   *     listOfStringNonOptional: []
    *   }
-   *   , listOfInts: \[$stars,$stars\]) {
+   *   , listOfInts: [$stars,$stars]) {
    *     name
    *     height(unit: FOOT)
    *   }
@@ -150,6 +150,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
   }
 
   public static final class Builder {

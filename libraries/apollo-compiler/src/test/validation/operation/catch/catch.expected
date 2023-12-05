@@ -1,0 +1,17 @@
+OtherValidationIssue (2:5)
+`foo` cannot be merged with `foo` (at catch.graphql: (3, 5)): they have different `@catch` directives. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (3:5)
+`foo` cannot be merged with `foo` (at catch.graphql: (2, 5)): they have different `@catch` directives. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (7:9)
+Conflicting `@catch` usages for level 'null': a given list level must have a single CatchTo value
+------------
+OtherValidationIssue (11:9)
+Conflicting `@catch` usages for level '1': a given list level must have a single CatchTo value
+------------
+OtherValidationIssue (15:9)
+Conflicting `@catch` usages for level '1': this level conflicts with the default 'null' level
+------------
+OtherValidationIssue (19:9)
+Invalid 'level' value '3' for `@catch` usage: this type has a max list level of 2

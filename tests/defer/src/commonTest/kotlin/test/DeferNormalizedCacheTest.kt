@@ -299,28 +299,28 @@ class DeferNormalizedCacheTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-            )
-        ).build(),
+        ).data(WithFragmentSpreadsQuery.Data(
+            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null))))
-            )
-        ).build(),
+        ).data(WithFragmentSpreadsQuery.Data(
+            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                ComputerFields.Screen("Screen", "640x480", null))))
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null))))
-            )
         )
+            .data(
+                WithFragmentSpreadsQuery.Data(
+                    listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                        ComputerFields.Screen("Screen", "640x480", null))))
+                )
+            )
             .errors(
                 listOf(
                     Error.Builder(message = "Cannot resolve isColor")
@@ -350,19 +350,17 @@ class DeferNormalizedCacheTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-            )
-        ).build(),
+        ).data(WithFragmentSpreadsQuery.Data(
+            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null))))
-            )
-        ).build(),
+        ).data(WithFragmentSpreadsQuery.Data(
+            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                ComputerFields.Screen("Screen", "640x480", null))))
+        )).build(),
     )
 
     apolloClient = ApolloClient.Builder()
@@ -378,7 +376,8 @@ class DeferNormalizedCacheTest {
                     emit(networkResponse as ApolloResponse<D>)
                   }
                   delay(10)
-                  emit(ApolloResponse.Builder(requestUuid = uuid, operation = query, exception = ApolloNetworkException("Network error"))
+                  emit(ApolloResponse.Builder(requestUuid = uuid, operation = query)
+                      .exception(ApolloNetworkException("Network error"))
                       .isLast(true)
                       .build() as ApolloResponse<D>)
                 }

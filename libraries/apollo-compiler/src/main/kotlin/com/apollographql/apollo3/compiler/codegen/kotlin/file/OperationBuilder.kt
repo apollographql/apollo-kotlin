@@ -115,6 +115,7 @@ internal class OperationBuilder(
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
+        .addProperty(ignoreErrorsPropertySpec(operation.ignoreErrors))
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }
@@ -182,7 +183,7 @@ internal class OperationBuilder(
                 The un-minimized version is:
 
 
-                """.trimIndent() + operation.sourceWithFragments.escapeKdoc()
+                """.trimIndent() + operation.sourceWithFragments.asKotlinCodeBlock()
               )
               .build()
           )
@@ -213,7 +214,7 @@ internal class OperationBuilder(
    *
    * See https://youtrack.jetbrains.com/issue/KT-43906
    */
-  private fun String.escapeKdoc(): String {
+  private fun String.asKotlinCodeBlock(): String {
     return "```\n$this\n```\n"
   }
 

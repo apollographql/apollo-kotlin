@@ -35,6 +35,8 @@ suspend fun test() {
   apolloClient!!.query(query!!).watch(fetchThrows = true, refetchThrows = false)
   apolloClient!!.query(query!!).watch(fetchThrows = true)
   apolloClient!!.query(query!!).watch()
+  apolloClient!!.query(query!!).execute()
+  apolloClient!!.query(query!!).toFlow()
 
   val compositeException: ApolloCompositeException? = null
   println(compositeException!!.first)

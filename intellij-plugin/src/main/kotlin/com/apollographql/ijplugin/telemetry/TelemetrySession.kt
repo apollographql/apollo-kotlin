@@ -368,6 +368,22 @@ sealed class TelemetryEvent(
    * User applied the quickfix for the 'High latency field' inspection of the Apollo Kotlin IntelliJ plugin.
    */
   class ApolloIjHighLatencyFieldQuickFix : TelemetryEvent("akij_high_latency_field_quickfix", null)
+
+  /**
+   * User applied the 'Add names to call arguments' quickfix for the 'Input class constructor issue' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjInputConstructorNamedArgsAddArgumentNamesQuickFix : TelemetryEvent("akij_input_constructor_named_args_add_argument_names_quickfix", null)
+
+  /**
+   * User applied the 'Change to builder construction' quickfix for the 'Input class constructor issue' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjInputConstructorNamedArgsChangeToBuilderQuickFix : TelemetryEvent("akij_input_constructor_named_args_change_to_builder_quickfix", null)
+
+  /**
+   * User applied the 'Change input class constructor to builder' intention of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjInputConstructorChangeToBuilderIntentionApply : TelemetryEvent("akij_input_constructor_change_to_builder_intention_apply", null)
+
 }
 
 class TelemetryEventList {

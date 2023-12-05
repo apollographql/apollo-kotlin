@@ -12,7 +12,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   private fun testFindUsages(
       fromFile: String,
       moveCaret: () -> Unit,
-      expected: Set<Pair<String, String>>,
+      expected: List<Pair<String, String>>,
   ) {
     // Open file
     myFixture.configureFromTempProjectFile(fromFile)
@@ -26,7 +26,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
         .filterNot { it.cast<UsageInfo2UsageAdapter>()!!.file.path.contains("build") }
 
     // Evaluate this expression to see expected results
-    // usages.map {(it as UsageInfo2UsageAdapter).file.name + " / " + it.plainText}
+    // usages.map {(it as UsageInfo2UsageAdapter).file.name.quoted() + " to " + it.plainText.trim().quoted()}.joinToString(",\n")
 
     // Compare with expected results
     assertEquals(expected.size, usages.size)
@@ -44,7 +44,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun operation() = testFindUsages(
       fromFile = "src/main/graphql/AnimalsQuery.graphql",
       moveCaret = { moveCaret("animals") },
-      expected = setOf(
+      expected = listOf(
           "Main.kt" to "import com.example.generated.AnimalsQuery",
           "Main.kt" to "val animalsQuery = AnimalsQuery()",
           "Markers.kt" to "import com.example.generated.AnimalsQuery",
@@ -56,7 +56,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun fragment() = testFindUsages(
       fromFile = "src/main/graphql/ComputerFields.graphql",
       moveCaret = { moveCaret("computerFields") },
-      expected = setOf(
+      expected = listOf(
           "ComputersQuery.graphql" to "...computerFields",
           "Main.kt" to "import com.example.generated.fragment.ComputerFields",
           "Main.kt" to "val computerFields = ComputerFields(",
@@ -68,7 +68,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun enumClass() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
       moveCaret = { moveCaret("myEnum", afterText = "enum myEnum {") },
-      expected = setOf(
+      expected = listOf(
           "Main.kt" to "import com.example.generated.type.MyEnum",
           "Main.kt" to "MyEnum.VALUE_C",
           "schema.graphqls" to "inputEnum: myEnum",
@@ -81,7 +81,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun enumValue() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
       moveCaret = { moveCaret("VALUE_C", afterText = "enum myEnum {") },
-      expected = setOf(
+      expected = listOf(
           "Main.kt" to "MyEnum.VALUE_C",
       ),
   )
@@ -91,11 +91,20 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun inputType() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
       moveCaret = { moveCaret("personInput", afterText = "input personInput {") },
-      expected = setOf(
+      expected = listOf(
+          "schema.graphqls" to "createPerson(personInput: personInput): Boolean",
+          "CreatePersonMutation.graphql" to "mutation CreatePerson(\$personInput: personInput) {",
           "Main.kt" to "import com.example.generated.type.PersonInput",
           "Main.kt" to "val personInput = PersonInput(",
-          "schema.graphqls" to "personInput: personInput",
-          "CreatePersonMutation.graphql" to "mutation CreatePerson(\$personInput: personInput) {",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "import com.example.generated.type.PersonInput",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
+          "InputConstructor.kt" to "PersonInput(",
       )
   )
 
@@ -103,7 +112,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
   fun inputField() = testFindUsages(
       fromFile = "src/main/graphql/schema.graphqls",
       moveCaret = { moveCaret("lastName", afterText = "input personInput {") },
-      expected = setOf(
+      expected = listOf(
           "Main.kt" to "lastName =",
       ),
   )
