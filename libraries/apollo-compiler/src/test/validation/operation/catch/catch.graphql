@@ -1,0 +1,25 @@
+query Query1 {
+    foo
+    foo @catch(to: THROW)
+}
+
+query Query2 {
+    foo @catch(to: THROW) @catch(to: NULL)
+}
+
+query Query3 {
+    foo @catch(level: 1, to: THROW) @catch(level: 1, to: NULL)
+}
+
+query Query4 {
+    foo @catch(level: 1, to: THROW) @catch(to: NULL)
+}
+
+query Query5 {
+    foo @catch(level: 3, to: THROW)
+}
+
+# OK
+query Query6 {
+    foo @catch(level: 1, to: THROW) @catch(level: 2, to: NULL)
+}

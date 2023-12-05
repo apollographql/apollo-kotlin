@@ -37,7 +37,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 fun <D : Operation.Data> ApolloCall<D>.toState(context: CoroutineContext = EmptyCoroutineContext): State<ApolloResponse<D>?> {
   val responseFlow = remember {
     toFlow()
-        .catch { emit(ApolloResponse.Builder(operation, uuid4(), it as? ApolloException ?: throw it).build()) }
+        .catch { emit(ApolloResponse.Builder(operation, uuid4()).exception(it as? ApolloException ?: throw it).build()) }
   }
   return responseFlow.collectAsState(initial = null, context = context)
 }
@@ -62,7 +62,7 @@ fun <D : Operation.Data> ApolloCall<D>.toState(context: CoroutineContext = Empty
 fun <D : Query.Data> ApolloCall<D>.watchAsState(context: CoroutineContext = EmptyCoroutineContext): State<ApolloResponse<D>?> {
   val responseFlow = remember {
     watch()
-        .catch { emit(ApolloResponse.Builder(operation, uuid4(), it as? ApolloException ?: throw it).build()) }
+        .catch { emit(ApolloResponse.Builder(operation, uuid4()).exception(it as? ApolloException ?: throw it).build()) }
   }
   return responseFlow.collectAsState(initial = null, context = context)
 }

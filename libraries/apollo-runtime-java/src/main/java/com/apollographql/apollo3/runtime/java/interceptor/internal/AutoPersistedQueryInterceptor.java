@@ -50,7 +50,8 @@ public class AutoPersistedQueryInterceptor implements ApolloInterceptor {
         if (isPersistedQueryNotFound(response.errors)) {
           continueWithDocumentRequest(chain, request, callback);
         } else if (isPersistedQueryNotSupported(response.errors)) {
-          callback.onResponse(new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid(), new AutoPersistedQueriesNotSupported())
+          callback.onResponse(new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid())
+              .exception(new AutoPersistedQueriesNotSupported())
               .build());
         } else {
           // Cache hit

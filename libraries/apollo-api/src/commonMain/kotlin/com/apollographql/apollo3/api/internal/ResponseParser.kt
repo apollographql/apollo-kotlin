@@ -34,7 +34,7 @@ internal object ResponseParser {
       when (jsonReader.nextName()) {
         "data" -> {
           val falseVariables = operation.falseVariables(customScalarAdapters)
-          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds)
+          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds, errors)
         }
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
@@ -44,7 +44,11 @@ internal object ResponseParser {
 
     jsonReader.endObject()
 
-    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = operation, data = data, errors = errors, extensions = extensions).build()
+    return ApolloResponse.Builder(operation = operation, requestUuid = requestUuid ?: uuid4())
+        .errors(errors)
+        .data(data)
+        .extensions(extensions)
+        .build()
   }
 
   fun parseError(

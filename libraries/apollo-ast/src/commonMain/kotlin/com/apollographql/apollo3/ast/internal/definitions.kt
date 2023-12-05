@@ -7,7 +7,7 @@ package com.apollographql.apollo3.ast.internal
  * - link.graphqls: the [core schemas](https://specs.apollo.dev/link/v1.0/) definitions.
  * - apollo-${version}.graphqls: the client directives supported by Apollo Kotlin. Changes are versioned at https://github.com/apollographql/specs. Changing them requires a new version and a PR.
  */
-internal val apolloDefinitionsStr = """
+internal val kotlinLabsDefinitions = """
   ""${'"'}
   Marks a field or variable definition as optional or required
   By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
@@ -254,4 +254,85 @@ internal val linkDefinitionsStr = """
     import: [Import],
     for: Purpose
   ) repeatable on SCHEMA
+""".trimIndent()
+
+internal val nullabilityDefinitionsStr = """
+""${'"'}
+Indicates that a field is only null if there is a matching error in the `errors` array.
+In all other cases, the field is non-null.
+
+Tools doing code generation may use this information to generate the field as non-null.
+
+This directive can be applied on field definitions:
+
+```graphql
+type User {
+    email: String @semanticNonNull
+}
+```
+
+It can also be applied on object type extensions for use in client applications that do
+not own the base schema:
+
+```graphql
+extend type User @semanticNonNull(field: "email")
+```
+
+Control over list items is done using the `level` argument:
+
+```graphql
+type User {
+    # friends is nullable but friends[0] is null only on errors
+    friends: [User] @semanticNonNull(level: 1)
+}
+```
+
+The `field` argument is the name of the field if `@semanticNonNull` is applied to an object definition.
+If `@semanticNonNull` is applied to a field definition, `field` must be null.
+
+The `level` argument can be used to indicate what level is semantically non null in case of lists.
+`level` starts at 0 if there is no list. If `level` is null, all levels are semantically non null.
+""${'"'}
+directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+
+""${'"'}
+Indicates that the given position stops GraphQL errors to propagate up the tree.
+
+By default, the first GraphQL error stops the parsing and fails the whole response.
+Using `@catch` recovers from this error and allows the parsing to continue.
+
+`@catch` must also be applied to the schema definition to specify the default to
+use for every field that can return an error (nullable fields).
+
+The `to` argument can be used to choose how to recover from errors. See `CatchTo`
+for more details.
+
+The `level` argument can be used to indicate where to catch in case of lists.
+`level` starts at 0 if there is no list. If `level` is null, all levels catch.
+""${'"'}
+directive @catch(to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD | SCHEMA
+
+enum CatchTo {
+    ""${'"'}
+    Map to a result type that can contain either a value or an error.
+    ""${'"'}
+    RESULT,
+    ""${'"'}
+    Map to a nullable type that will be null in the case of error.
+    This does not allow to distinguish between semantic null and error but
+    can be simpler in some cases.
+    ""${'"'}
+    NULL,
+    ""${'"'}
+    Do not catch and let any exception through
+    ""${'"'}
+    THROW
+}
+
+""${'"'}
+Never throw on field errors.
+
+This is used for backward compatibility for clients where this was the default behaviour.
+""${'"'}
+directive @ignoreFieldErrors on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

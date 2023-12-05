@@ -200,7 +200,13 @@ internal object KotlinCodeGen {
         generateMethods = generateMethods,
         jsExport = jsExport,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = upstreamResolver,
+            scalarMapping = scalarMapping,
+            requiresOptInAnnotation = requiresOptInAnnotation,
+            hooks = hooks
+        ),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -329,7 +335,13 @@ internal object KotlinCodeGen {
         generateMethods = emptyList(),
         jsExport = false,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), null, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = null,
+            scalarMapping = codegenSchema.scalarMapping,
+            requiresOptInAnnotation = null,
+            hooks = ApolloCompilerKotlinHooks.Identity
+        ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -378,12 +390,24 @@ internal object KotlinCodeGen {
         decapitalizeFields = false,
     )
 
-    val upstreamResolver = KotlinResolver(codegenMetadata.resolverInfo.entries, null, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity)
+    val upstreamResolver = KotlinResolver(
+        entries = codegenMetadata.resolverInfo.entries,
+        next = null,
+        scalarMapping = codegenSchema.scalarMapping,
+        requiresOptInAnnotation = null,
+        hooks = ApolloCompilerKotlinHooks.Identity
+    )
     val context = KotlinContext(
         generateMethods = emptyList(),
         jsExport = false,
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, codegenSchema.scalarMapping, null, ApolloCompilerKotlinHooks.Identity),
+        resolver = KotlinResolver(
+            entries = emptyList(),
+            next = upstreamResolver,
+            scalarMapping = codegenSchema.scalarMapping,
+            requiresOptInAnnotation = null,
+            hooks = ApolloCompilerKotlinHooks.Identity
+        ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
 

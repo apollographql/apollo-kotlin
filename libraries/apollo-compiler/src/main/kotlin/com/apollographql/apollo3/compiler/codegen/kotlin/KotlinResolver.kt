@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrEnumType2
@@ -25,6 +26,8 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
+import com.apollographql.apollo3.compiler.ir.catchTo
+import com.apollographql.apollo3.compiler.ir.maybeError
 import com.apollographql.apollo3.compiler.ir.nullable
 import com.apollographql.apollo3.compiler.ir.optional
 import com.squareup.kotlinpoet.ClassName
@@ -77,32 +80,46 @@ internal class KotlinResolver(
   }
 
   internal fun resolveIrType(type: IrType, jsExport: Boolean, isInterface: Boolean = false): TypeName {
-    if (type.optional) {
-      return KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
-    } else if (type.nullable) {
-      return resolveIrType(type.nullable(false), jsExport, isInterface).copy(nullable = true)
-    } else {
-      return when (type) {
-        is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
-        is IrScalarType -> {
-          // Try mapping first, then built-ins, then fallback to Any
-          resolveScalarTarget(type.name) ?: when (type.name) {
-            "String" -> KotlinSymbols.String
-            "Float" -> KotlinSymbols.Double
-            "Int" -> KotlinSymbols.Int
-            "Boolean" -> KotlinSymbols.Boolean
-            "ID" -> KotlinSymbols.String
-            else -> KotlinSymbols.Any
+    return when {
+      type.optional -> {
+        KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
+      }
+      type.catchTo != IrCatchTo.NoCatch -> {
+        resolveIrType(type.catchTo(IrCatchTo.NoCatch), jsExport, isInterface).let {
+          when (type.catchTo) {
+            IrCatchTo.Null -> it.copy(nullable = true)
+            IrCatchTo.Result -> KotlinSymbols.FieldResult.parameterizedBy(it)
+            IrCatchTo.NoCatch -> error("") // keep the compiler happy
           }
         }
-        is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
-        is IrEnumType -> if (jsExport) {
-          KotlinSymbols.String
-        } else {
-          resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-        }
+      }
+      type.nullable -> {
+        resolveIrType(type.nullable(false), jsExport, isInterface).copy(nullable = true)
+      }
+      else -> {
+        when (type) {
+          is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
+          is IrScalarType -> {
+            // Try mapping first, then built-ins, then fallback to Any
+            resolveScalarTarget(type.name) ?: when (type.name) {
+              "String" -> KotlinSymbols.String
+              "Float" -> KotlinSymbols.Double
+              "Int" -> KotlinSymbols.Int
+              "Boolean" -> KotlinSymbols.Boolean
+              "ID" -> KotlinSymbols.String
+              else -> KotlinSymbols.Any
+            }
+          }
 
-        is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+          is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
+          is IrEnumType -> if (jsExport) {
+            KotlinSymbols.String
+          } else {
+            resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+          }
+
+          is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+        }
       }
     }
   }
@@ -180,54 +197,73 @@ internal class KotlinResolver(
   }
 
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
-    return if (type.optional) {
-       val presentFun = MemberName("com.apollographql.apollo3.api", "present")
-       CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
-    } else if (type.nullable) {
-      // Don't hardcode the adapter when the scalar is mapped to a user-defined type
-      val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
-      when {
-        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
-        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
-        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
-        type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
-        }
-
-        else -> {
-          val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-          CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
+    return when {
+      type.optional -> {
+        val presentFun = MemberName("com.apollographql.apollo3.api", "present")
+        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
+      }
+      type.catchTo != IrCatchTo.NoCatch -> {
+        adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
+          val member = when (type.catchTo) {
+            IrCatchTo.Null -> KotlinSymbols.catchToNull
+            IrCatchTo.Result -> KotlinSymbols.catchToResult
+            IrCatchTo.NoCatch -> error("") // happy compiler
+          }
+          CodeBlock.of("%L.%M()", it, member)
         }
       }
-    } else {
-      when (type) {
-        is IrListType -> {
-          adapterInitializer(type.ofType, requiresBuffering, jsExport, runtimeAdapterPrefix).list(jsExport)
+      type.maybeError -> {
+        adapterInitializer(type.maybeError(false), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
+          CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
         }
+      }
+      type.nullable -> {
+        // Don't hardcode the adapter when the scalar is mapped to a user-defined type
+        val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
+        when {
+          type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
+          type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
+          type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
+          type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
+          type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
+          type is IrScalarType && resolveScalarTarget(type.name) == null -> {
+            CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
+          }
 
-        is IrScalarType -> {
-          scalarAdapterInitializer(type.name, runtimeAdapterPrefix)
-        }
-
-        is IrEnumType -> {
-          if (jsExport) {
-            scalarAdapterInitializer("String", runtimeAdapterPrefix)
-          } else {
-            CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
+          else -> {
+            val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
+            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
           }
         }
+      }
+      else -> {
+        when (type) {
+          is IrListType -> {
+            adapterInitializer(type.ofType, requiresBuffering, jsExport, runtimeAdapterPrefix).list(jsExport)
+          }
 
-        is IrInputObjectType -> {
-          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name)).obj(requiresBuffering)
+          is IrScalarType -> {
+            scalarAdapterInitializer(type.name, runtimeAdapterPrefix)
+          }
+
+          is IrEnumType -> {
+            if (jsExport) {
+              scalarAdapterInitializer("String", runtimeAdapterPrefix)
+            } else {
+              CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
+            }
+          }
+
+          is IrInputObjectType -> {
+            CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name)).obj(requiresBuffering)
+          }
+
+          is IrModelType -> {
+            CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path)).obj(requiresBuffering)
+          }
+
+          is IrObjectType -> error("IrObjectType cannot be adapted")
         }
-
-        is IrModelType -> {
-          CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path)).obj(requiresBuffering)
-        }
-
-        is IrObjectType -> error("IrObjectType cannot be adapted")
       }
     }
   }

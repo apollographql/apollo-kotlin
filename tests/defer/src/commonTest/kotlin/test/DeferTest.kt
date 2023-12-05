@@ -173,18 +173,18 @@ class DeferTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
-                )
+        ).data(WithFragmentSpreadsQuery.Data(
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
             )
-        ).build(),
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
+        ).data(
+            WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                         ComputerFields.Screen("Screen", "640x480", null))),
@@ -196,14 +196,16 @@ class DeferTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
-                listOf(
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null))),
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
-                )
-            )
         )
+            .data(
+                WithFragmentSpreadsQuery.Data(
+                    listOf(
+                        WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                            ComputerFields.Screen("Screen", "640x480", null))),
+                        WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
+                    )
+                )
+            )
             .errors(
                 listOf(
                     Error.Builder(message = "Cannot resolve isColor")
@@ -217,7 +219,8 @@ class DeferTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
+        ).data(
+            WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                         ComputerFields.Screen("Screen", "640x480", null))),
@@ -230,7 +233,8 @@ class DeferTest {
         ApolloResponse.Builder(
             query,
             uuid,
-            data = WithFragmentSpreadsQuery.Data(
+        ).data(
+            WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                         ComputerFields.Screen("Screen", "640x480", null))),

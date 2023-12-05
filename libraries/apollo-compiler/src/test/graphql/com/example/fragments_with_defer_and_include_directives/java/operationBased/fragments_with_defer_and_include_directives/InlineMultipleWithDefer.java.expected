@@ -121,6 +121,11 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     .build();
   }
 
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
+
   public static final class Builder {
     Builder() {
     }

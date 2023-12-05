@@ -13,7 +13,6 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDepende
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
-import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.AddUseV3ExceptionHandling
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveMethodInService
@@ -25,7 +24,7 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowA
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
-private const val apollo4LatestVersion = "4.0.0-beta.2"
+private const val apollo4LatestVersion = "4.0.0-beta.3"
 
 /**
  * Migrations of Apollo Kotlin v3 to v4.
@@ -37,7 +36,6 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
 
   override val migrationItems = listOf(
       // Deprecations / renames
-      UpdateFieldName("$apollo3.api.ApolloResponse", "dataAssertNoErrors", "dataOrThrow()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "first", "suppressedExceptions.first()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
       UpdateThrowApolloCompositeException,
@@ -52,6 +50,8 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateMethodName("$apollo3.ApolloClient.Companion", "builder", "Builder"),
       UpdateMethodName("$apollo3.ApolloClient.Builder", "requestedDispatcher", "dispatcher"),
       UpdateMethodName("$apollo3.cache.http.DiskLruHttpCache", "delete", "clearAll"),
+      UpdateMethodName("$apollo3.ApolloCall", "execute", "executeV3"),
+      UpdateMethodName("$apollo3.ApolloCall", "toFlow", "toFlowV3"),
       RemoveMethodCall("$apollo3.cache.normalized.NormalizedCache", "emitCacheMisses", extensionTargetClassName = "$apollo3.api.MutableExecutionOptions"),
       UpdateMethodCall(
           "$apollo3.cache.normalized.NormalizedCache",
@@ -80,9 +80,6 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateWebSocketReconnectWhen,
 
       UpdateEnumClassUpperCase,
-
-      // Exception handling
-      AddUseV3ExceptionHandling,
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),

@@ -16,6 +16,7 @@ import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
@@ -28,20 +29,21 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
 import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
-import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.builtinDefinitions
 import com.apollographql.apollo3.ast.canHaveKeyFields
 import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.introspection.defaultSchemaDefinition
+import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.linkDefinitions
+import com.apollographql.apollo3.ast.nullabilityDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.rawType
@@ -61,19 +63,19 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = kotlinLabsDefinitions("v0.2")
+  val kotlinLabsDefinitions = kotlinLabsDefinitions("v0.2")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
      * Strip all the apollo directives from outgoing operation documents.
      * This will also strip schema directives like @typePolicy that should never appear in executable documents
      */
-    directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
+    directivesToStrip = directivesToStrip + kotlinLabsDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
 
     /**
      * Put apolloDefinitions first so that they override the user one in the case of a conflict
      */
-    foreignDefinitions = apolloDefinitions + foreignDefinitions
+    foreignDefinitions = kotlinLabsDefinitions + foreignDefinitions
   }
   allDefinitions = foreignDefinitions + allDefinitions
 
@@ -182,6 +184,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
   mergedScope.validateInputObjects()
+  mergedScope.validateCatch(mergedSchemaDefinition)
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -329,8 +332,14 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         }.toMap()
 
 
-        if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = kotlinLabsDefinitions(version).rename(mappings, prefix)
+        val foreignDefinitions = when (foreignName) {
+          "kotlin_labs" -> kotlinLabsDefinitions(version)
+          "nullability" -> nullabilityDefinitions(version)
+          else -> null
+        }
+
+        if (foreignDefinitions != null) {
+          val (definitions, renames) = foreignDefinitions.rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
@@ -434,6 +443,54 @@ private fun ValidationScope.validateObjects() {
   }
 }
 
+private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?) {
+  val hasCatchDefinition = directiveDefinitions.any {
+    originalDirectiveName(it.key) == Schema.CATCH
+  }
+
+  if (!hasCatchDefinition) {
+    return
+  }
+
+  if (schemaDefinition == null) {
+    issues.add(OtherValidationIssue(
+        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        sourceLocation = null
+    ))
+    return
+  }
+
+
+  val catches = schemaDefinition.directives.filter {
+    originalDirectiveName(it.name) == Schema.CATCH
+  }
+
+  if (catches.isEmpty()) {
+    issues.add(OtherValidationIssue(
+        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        sourceLocation = schemaDefinition.sourceLocation
+    ))
+    return
+  } else if (catches.size > 1) {
+    issues.add(OtherValidationIssue(
+        message = "There can be only one `@catch` directive on the schema definition",
+        sourceLocation = schemaDefinition.sourceLocation
+    ))
+    return
+  }
+
+  val catch = catches.single()
+
+  catch.arguments.forEach {
+    if (it.name == "level" && it.value !is GQLNullValue) {
+      issues.add(OtherValidationIssue(
+          message = "The 'level' argument must be null when `@catch` is applied to the schema",
+          sourceLocation = it.sourceLocation
+      ))
+    }
+  }
+
+}
 private fun ValidationScope.validateInputObjects() {
   typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>().forEach { o ->
     if (o.inputFields.isEmpty()) {

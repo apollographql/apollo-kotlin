@@ -72,10 +72,12 @@ fun <D : Executable.Data> Executable<D>.parseData(
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     falseVariables: Set<String>? = null,
     deferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
+    errors: List<Error>? = null
 ): D? {
   val customScalarAdapters1 = customScalarAdapters.newBuilder()
       .falseVariables(falseVariables)
       .deferredFragmentIdentifiers(deferredFragmentIds)
+      .errors(if (ignoreErrors) emptyList() else errors)
       .build()
   return adapter().nullable().fromJson(jsonReader, customScalarAdapters1)
 }

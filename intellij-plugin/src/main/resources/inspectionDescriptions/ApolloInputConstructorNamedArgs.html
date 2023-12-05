@@ -1,0 +1,45 @@
+<html>
+<body>
+Reports invocations of input class constructors not using named parameters.
+
+<p>Using named parameters makes your app robust to ordering changes in your schema.</p>
+
+<p>For example, given the following schema:<br>
+<pre>
+input PersonInput {
+  firstName: String
+  lastName: String
+}
+</pre>
+
+And creating the input object without using named parameters like this:<br>
+<pre>
+PersonInput("John", "Doe")
+</pre>
+
+If the schema changes to:<br>
+<pre>
+input PersonInput {
+  # lastName and firstName order changed
+  lastName: String
+  firstName: String
+}
+</pre>
+
+The input object will be created with the wrong values, without any warning. Using named parameters or builders avoids this issue:<br>
+<pre>
+PersonInput(firstName = "John", lastName = "Doe")
+</pre>
+
+Or:<br>
+
+<pre>
+PersonInput.builder()
+  .firstName("John")
+  .lastName("Doe")
+  .build()
+</pre>
+
+</p>
+</body>
+</html>

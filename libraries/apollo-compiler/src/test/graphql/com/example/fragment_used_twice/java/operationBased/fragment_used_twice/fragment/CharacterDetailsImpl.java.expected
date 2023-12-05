@@ -79,4 +79,9 @@ public class CharacterDetailsImpl implements Fragment<CharacterDetails> {
     .selections(CharacterDetailsSelections.__root)
     .build();
   }
+
+  @Override
+  public boolean getIgnoreErrors() {
+    return false;
+  }
 }

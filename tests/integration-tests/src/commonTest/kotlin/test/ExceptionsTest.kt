@@ -61,9 +61,9 @@ class ExceptionsTest {
   fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString("malformed")
 
-    val throwingClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    val throwingClient = apolloClient.newBuilder().build()
     var result = kotlin.runCatching {
-      throwingClient.query(HeroNameQuery()).toFlow().toList()
+      throwingClient.query(HeroNameQuery()).toFlowV3().toList()
     }
     assertNotNull(result.exceptionOrNull())
   }
@@ -86,8 +86,8 @@ class ExceptionsTest {
             ]
           }
       """.trimIndent())
-    val errorClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
-    val response = errorClient.query(HeroNameQuery()).toFlow().toList()
+    val errorClient = apolloClient.newBuilder().build()
+    val response = errorClient.query(HeroNameQuery()).toFlowV3().toList()
     assertTrue(response.first().errors?.isNotEmpty() ?: false)
   }
 
@@ -122,9 +122,8 @@ class ExceptionsTest {
   fun v3ExceptionHandlingKeepsPartialData() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString(PARTIAL_DATA_RESPONSE)
     val errorClient = apolloClient.newBuilder()
-        .useV3ExceptionHandling(true)
         .build()
-    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).execute()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).executeV3()
     assertNotNull(response.data)
     assertTrue(response.errors?.isNotEmpty() == true)
   }
@@ -135,9 +134,8 @@ class ExceptionsTest {
     mockServer.enqueueString(PARTIAL_DATA_RESPONSE.trimIndent())
     val errorClient = apolloClient.newBuilder()
         .normalizedCache(MemoryCacheFactory(1024 * 1024))
-        .useV3ExceptionHandling(true)
         .build()
-    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).execute()
+    val response = errorClient.query(HeroAndFriendsNamesQuery(Episode.EMPIRE)).executeV3()
     assertNotNull(response.data)
     assertTrue(response.errors?.isNotEmpty() == true)
   }

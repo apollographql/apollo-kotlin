@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.DefaultApolloException
@@ -29,8 +30,12 @@ private constructor(
 
     /**
      * Parsed response of GraphQL [operation] execution.
+     * [data] is non-null if some data is received from the server.
+     * [data] might contain partial data in case of field errors
      *
-     * See also [exception]
+     * @see [errors]
+     * @see [exception]
+     * @see [dataOrThrow]
      */
     @JvmField
     val data: D?,
@@ -48,7 +53,18 @@ private constructor(
     @JvmField
     val errors: List<Error>?,
 
-    exception: ApolloException?,
+    /**
+     * An [ApolloException] if a GraphQL response wasn't received.
+     *
+     * For example, `exception` is non-null in those cases:
+     * - network failure
+     * - cache miss
+     * - parsing error
+     *
+     * See also [data]
+     */
+    @JvmField
+    val exception: ApolloException?,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -80,36 +96,23 @@ private constructor(
 ) {
 
   /**
-   * An [ApolloException] if a complete GraphQL response wasn't received, an instance of [ApolloGraphQLException] if GraphQL
-   * errors were return or another instance of [ApolloException] if a network, parsing, caching or other error happened.
-   *
-   * For example, `exception` is non-null if there is a network failure or cache miss.
-   *
-   * See also [data]
-   */
-  @JvmField
-  val exception: ApolloException? = when  {
-    exception != null -> exception
-    !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
-    data == null -> DefaultApolloException("No data and no error was returned")
-    else -> null
-  }
-
-  /**
    * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
    *
    * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
    * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
    */
   @get:JvmName("dataAssertNoErrors")
-  @Deprecated(message = "Use dataOrThrow instead", replaceWith = ReplaceWith("dataOrThrow()"))
   val dataAssertNoErrors: D
     get() {
-      return dataOrThrow()
+      return when {
+        hasErrors() -> throw ApolloGraphQLException(errors!!.first())
+        exception != null -> throw DefaultApolloException("An exception happened", exception)
+        else -> dataOrThrow()
+      }
     }
 
   /**
-   * Return [data] if not null or throws [exception] else
+   * Return [data] if not null or throws [NoDataException] else
    */
   fun dataOrThrow(): D {
     return data ?: throw NoDataException(cause = exception)
@@ -135,36 +138,23 @@ private constructor(
     private var isLast = false
 
     /**
-     * Constructs a successful response with a valid data, no errors nor extensions
-     */
-    constructor(
-        operation: Operation<D>,
-        requestUuid: Uuid,
-        data: D,
-    ): this(operation, requestUuid, data, null, null, null)
-
-    /**
-     * Constructs a response from data, errors and extensions
+     * Construct a new [Builder] that doesn't contain data, errors nor exception
      *
-     * If there are GraphQL errors, they will also be forwarded to [exception] so that the caller can do all the
-     * checking in a single place
+     * While possible, this case is probably symptomatic of a buggy GraphQL implementation
+     * that returned no data while not setting any error
      */
     constructor(
         operation: Operation<D>,
         requestUuid: Uuid,
-        data: D?,
-        errors: List<Error>?,
-        extensions: Map<String, Any?>?,
-    ): this(operation, requestUuid, data, errors, extensions, null)
+    ): this(operation, requestUuid, null, null, null, null)
 
-    /**
-     * Constructs an exception response
-     */
+    @Deprecated("Use 2 params constructor instead", ReplaceWith("Builder(operation = operation, requestUuid = requestUuid).data(data = data)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     constructor(
         operation: Operation<D>,
         requestUuid: Uuid,
-        exception: ApolloException
-    ): this(operation, requestUuid, null, null, null, exception)
+        data: D?
+    ): this(operation, requestUuid, data, null, null, null)
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext

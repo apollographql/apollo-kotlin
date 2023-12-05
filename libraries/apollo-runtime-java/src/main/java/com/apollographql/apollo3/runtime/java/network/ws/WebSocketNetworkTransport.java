@@ -151,7 +151,8 @@ public class WebSocketNetworkTransport implements NetworkTransport {
       if (subscriptionInfo == null) return;
       ApolloRequest<?> request = subscriptionInfo.request;
       //noinspection unchecked,rawtypes
-      subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(request.getOperation(), request.getRequestUuid(), new SubscriptionOperationException(request.getOperation().name(), payload))
+      subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(request.getOperation(), request.getRequestUuid())
+          .exception(new SubscriptionOperationException(request.getOperation().name(), payload))
           .build());
       disposeSubscription(id);
     }
@@ -190,7 +191,8 @@ public class WebSocketNetworkTransport implements NetworkTransport {
         activeSubscriptions.clear();
         for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
           //noinspection unchecked,rawtypes
-          subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(subscriptionInfo.request.getOperation(), subscriptionInfo.request.getRequestUuid(), networkException)
+          subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(subscriptionInfo.request.getOperation(), subscriptionInfo.request.getRequestUuid())
+              .exception(networkException)
               .build());
           subscriptionInfo.disposable.dispose();
         }
