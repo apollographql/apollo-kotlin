@@ -7,6 +7,7 @@ import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.originalClassName
+import com.apollographql.ijplugin.util.registerProblem
 import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
@@ -41,7 +42,7 @@ class ApolloInputConstructorNamedArgsInspection : LocalInspectionTool() {
           add(AddArgumentNamesQuickFix)
           if (projectApolloVersion.isAtLeastV4) add(ChangeToBuilderQuickFix)
         }.toTypedArray()
-        holder.registerProblem(expression, ApolloBundle.message("inspection.inputConstructorNamedArgs.reportText"), *quickFixes)
+        holder.registerProblem(expression, ApolloBundle.message("inspection.inputConstructorNamedArgs.reportText"), withMoreLink = true, *quickFixes)
       }
     }
   }
