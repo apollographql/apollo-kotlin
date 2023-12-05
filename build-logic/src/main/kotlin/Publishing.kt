@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import kotlinx.coroutines.runBlocking
@@ -269,6 +270,23 @@ private fun Project.configurePublishingInternal() {
   }
   tasks.withType(Sign::class.java).configureEach {
     isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
+  }
+
+  // https://github.com/gradle/gradle/issues/26132
+  afterEvaluate {
+    tasks.all {
+      if (name.startsWith("compileTestKotlin")) {
+        val target = name.substring("compileTestKotlin".length)
+        val sign = try {
+          tasks.named("sign${target}Publication")
+        } catch (e: Throwable) {
+          null
+        }
+        if (sign != null) {
+          dependsOn(sign)
+        }
+      }
+    }
   }
 }
 

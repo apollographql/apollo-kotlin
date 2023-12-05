@@ -114,11 +114,11 @@ internal class NormalizedCache(
 internal class GraphQLRecord(
     private val record: Record,
 ) {
-  fun key() = record.key
+  fun key(): String = record.key
 
-  fun fields() = record.fields
+  fun fields(): Map<String, Any?> = record.fields
 
-  fun sizeInBytes() = record.sizeInBytes
+  fun sizeInBytes(): Int = record.sizeInBytes
 }
 
 @GraphQLAdapter(forScalar = "Fields")
