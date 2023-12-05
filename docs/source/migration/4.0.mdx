@@ -52,18 +52,14 @@ try {
 
 // With
 val response = client.query(MyQuery()).execute()
-val data = response.data
-if (data != null) {
-  // No errors
-  // ...
+if (response.data != null) {
+  // Handle (potentially partial) data
 } else {
-  when (response.exception) {
-    is ApolloGraphQLException -> {
-      // Handle GraphQL errors
-    }
-    else -> {
-      // Handle network error
-    }
+  // Something wrong happened
+  if (response.exception != null) {
+    // Handle non-GraphQL errors
+  } else {
+    // Handle GraphQL errors in response.errors
   }
 }
 ```
