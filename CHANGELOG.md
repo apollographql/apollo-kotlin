@@ -51,7 +51,7 @@ You can read more about it [here](https://www.apollographql.com/docs/kotlin/v4/a
 
 ## Experimental `@oneOf` support
 
-`@oneOf` introduce a form of input polymorphism to GraphQL ([RFC](https://github.com/graphql/graphql-spec/pull/825)):
+`@oneOf` introduces a form of input polymorphism to GraphQL ([RFC](https://github.com/graphql/graphql-spec/pull/825)):
 
 ```graphql
 input PetInput @oneOf {
