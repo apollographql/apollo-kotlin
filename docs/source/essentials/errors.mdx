@@ -2,20 +2,19 @@
 title: Error handling
 ---
 
-Use `response.data` to check if the server returned data:
+## `ApolloResponse` 
+
+Use `ApolloResponse.data` to check if the server returned data:
 
 ```kotlin
-val response = apolloClient.query(ExampleQuery()).execute()
-
 if (response.data != null) {
-  println("The server returned data: ${response.data}")
+  // Handle (potentially partial) data
 } else {
-  // an error happened, check response.exception for more details or just display a generic error 
-  when (response.exception) {
-    is ApolloHttpException -> // do something with exception.statusCode
-    is ApolloNetworkException -> TODO()
-    is ApolloParseException -> TODO()
-    else -> // generic error
+  // Something wrong happened
+  if (response.exception != null) {
+    // Handle non-GraphQL errors
+  } else {
+    // Handle GraphQL errors in response.errors
   }
 }
 ```
@@ -25,9 +24,13 @@ This is also true when calling `toFlow()` (e.g. with [subscriptions](../essentia
 ```kotlin
 apolloClient.subscription(subscription).toFlow().collect { response ->
   if (response.data != null) {
-    // handle data
+    // Handle (potentially partial) data
   } else {
-    // handle exceptions
+    if (response.exception != null) {
+      // Handle non-GraphQL errors
+    } else {
+      // Handle GraphQL errors in response.errors
+    }
   }
 }
 ```
@@ -41,10 +44,10 @@ val data = apolloClient.query(ExampleQuery()).execute().dataOrThrow()
 
 ## Different types of errors
 
-Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two high-level types of errors can occur:
+Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two types of errors can occur:
 
 * **Fetch errors**: a GraphQL response wasn't received because an error occurred while communicating with your GraphQL server. This might be an SSL error, a socket error because your app is offline, or a 500 or any other HTTP error. When a fetch error occurs, no data is returned and `response.exception` is non-null.
-* **GraphQL errors**: a GraphQL response _is_ received, and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
+* **GraphQL errors**: a GraphQL response _is_ received (HTTP 200), and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
 
 ### Fetch errors
 
@@ -129,5 +132,7 @@ For an example, it is possible for a person to not have a starship:
 
 In that case, `starship` is a true null and not an error. 
 
-Because making the difference between true nulls and errors is cumbersome, Apollo Kotlin offers a way to handle errors automatically at parsing time. Fields that are nullable only for error purposes can also be generated as non-null in Kotlin. Read ["handling nullability"](advanced/nullability) for more details.
+### Handling GraphQL errors at parsing time
+
+Because making the difference between true nulls and error nulls is cumbersome, Apollo Kotlin offers a way to handle errors automatically at parsing time. Fields that are nullable only for error purposes can also be generated as non-null in Kotlin. Read ["handling nullability"](advanced/nullability) for more details.
 
