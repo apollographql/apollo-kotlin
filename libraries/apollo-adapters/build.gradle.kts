@@ -13,6 +13,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(libs.kotlinx.datetime)
+        api(project(":apollo-annotations"))
       }
     }
     findByName("jsMain")?.apply {
