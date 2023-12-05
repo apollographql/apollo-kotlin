@@ -120,7 +120,8 @@ fun <D : Operation.Data> Operation<D>.parseResponse(
           cause = throwable
       )
     }
-    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this, exception = apolloException)
+    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this)
+        .exception(exception = apolloException)
         .isLast(true)
         .build()
   }

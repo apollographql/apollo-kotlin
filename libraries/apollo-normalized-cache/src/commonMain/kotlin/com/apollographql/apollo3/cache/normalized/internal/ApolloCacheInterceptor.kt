@@ -215,8 +215,8 @@ internal class ApolloCacheInterceptor(
       return ApolloResponse.Builder(
           requestUuid = request.requestUuid,
           operation = operation,
-          exception = e,
       )
+          .exception(e)
           .addExecutionContext(request.executionContext)
           .cacheInfo(
               CacheInfo.Builder()
@@ -233,10 +233,8 @@ internal class ApolloCacheInterceptor(
     return ApolloResponse.Builder(
         requestUuid = request.requestUuid,
         operation = operation,
-        data = data,
-        errors = null,
-        extensions = null,
-    ).addExecutionContext(request.executionContext)
+    ).data(data)
+        .addExecutionContext(request.executionContext)
         .cacheInfo(
             CacheInfo.Builder()
                 .cacheStartMillis(startMillis)

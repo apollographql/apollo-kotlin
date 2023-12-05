@@ -340,7 +340,8 @@ private constructor(
   private fun <D : Operation.Data> errorResponse(
       request: ApolloRequest<D>,
       apolloException: ApolloException,
-  ) = ApolloResponse.Builder(requestUuid = request.requestUuid, operation = request.operation, exception = apolloException)
+  ) = ApolloResponse.Builder(requestUuid = request.requestUuid, operation = request.operation)
+      .exception(apolloException)
       .isLast(true)
       .build()
 

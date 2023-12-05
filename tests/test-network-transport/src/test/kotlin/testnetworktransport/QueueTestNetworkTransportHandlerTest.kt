@@ -36,14 +36,13 @@ class QueueTestNetworkTransportHandlerTest {
     val testResponse1 = ApolloResponse.Builder(
         operation = query1,
         requestUuid = uuid4(),
-        data = null,
-        errors = listOf(
+    ).errors(
+        listOf(
             Error.Builder(message = "There was an error")
                 .locations(listOf(Error.Location(line = 1, column = 2)))
                 .path(listOf("hero", "name"))
                 .build()
-        ),
-        extensions = null
+        )
     ).build()
 
     val query2 = GetHeroQuery("002")
@@ -56,10 +55,11 @@ class QueueTestNetworkTransportHandlerTest {
             onHuman = null
         )
     )
-    val testResponse2 = ApolloResponse.Builder(query2, uuid4(), query2TestData).build()
+    val testResponse2 = ApolloResponse.Builder(query2, uuid4()).data(query2TestData).build()
 
     val query3 = GetHeroNameOnlyQuery()
-    val testResponse3 = ApolloResponse.Builder(query3, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
+    val testResponse3 = ApolloResponse.Builder(query3, uuid4())
+        .data(GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
     apolloClient.apply {
