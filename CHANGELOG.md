@@ -5,10 +5,12 @@ Change Log
 
 _2023-12-05_
 
+Many thanks @chris-hatton and @sdfgsdfgd for contributing this version 💙
+
 ## 🧩 IDE plugin: in-memory cache support
 
 The normalized cache viewer can now display the contents of your in-memory cache. To do so, it relies on a
-helper server that you need to run in your debug builds:
+debug server that you need to run in your debug builds:
 
 ```kotlin
 
@@ -21,11 +23,11 @@ if (BuildConfig.DEBUG) {
 }
 ```
 
-You can read more about it [here](https://www.apollographql.com/docs/kotlin/v4/testing/apollo-debug-server).
+You can read more about it [in the "Apollo debug server" documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/apollo-debug-server).
 
 ## Experimental `@catch` and `@semanticNonNull` support
 
-`@catch` makes it possible to model GraphQL errors in your Kotlin classes using `FieldResult`:
+`@catch` makes it possible to model GraphQL errors as `FieldResult` Kotlin classes giving you inline access to errors:
 
 ```graphql
 query GetUser {
@@ -38,7 +40,7 @@ query GetUser {
 }
 ```
 
-`@semanticNonNull` is a better `@nonnull`. It makes it possible to mark a field as null only on error. The matching Kotlin property is then generated as non-null:
+`@semanticNonNull` is a better `@nonnull`. `@semanticNonNull` makes it possible to mark a field as null only on error. The matching Kotlin property is then generated as non-null:
 
 ```graphql
 # mark User.name as semantically non-null
@@ -47,11 +49,11 @@ extend type User @semanticNonNull(field: "name")
 
 Both those directives are experimental and require opt-in of the [nullability directives](https://github.com/apollographql/specs/pull/36)
 
-You can read more about it [here](https://www.apollographql.com/docs/kotlin/v4/advanced/nullability).
+You can read more about them [in the "handle nullability" documentation page](https://www.apollographql.com/docs/kotlin/v4/advanced/nullability).
 
 ## Experimental `@oneOf` support
 
-`@oneOf` introduces a form of input polymorphism to GraphQL ([RFC](https://github.com/graphql/graphql-spec/pull/825)):
+`@oneOf` introduces input polymorphism to GraphQL:
 
 ```graphql
 input PetInput @oneOf {
@@ -69,7 +71,11 @@ type Mutation {
 }
 ```
 
-With `@oneOf`, only one of `cat`, `dog` or `fish` can be set. `@oneOf` support is automatically enabled if your schema has the `@oneOf` directive definition.
+With `@oneOf`, only one of `cat`, `dog` or `fish` can be set. 
+
+`@oneOf` support is automatically enabled if your schema has the `@oneOf` directive definition.
+
+You can read more about it [in the `@oneOf` RFC](https://github.com/graphql/graphql-spec/pull/825)
 
 ## 👷‍ All changes
 
