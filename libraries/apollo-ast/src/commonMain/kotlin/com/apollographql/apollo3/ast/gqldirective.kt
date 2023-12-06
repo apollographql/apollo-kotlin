@@ -122,26 +122,31 @@ private fun GQLValue?.toBoolean(): Boolean {
   }
 }
 
-private fun GQLValue?.toCatchTo(): CatchTo {
+private fun GQLValue?.toCatchTo(): CatchTo? {
   return when (this) {
     is GQLEnumValue -> when (this.value) {
       "NULL" -> CatchTo.NULL
       "RESULT" -> CatchTo.RESULT
       "THROW" -> CatchTo.THROW
-      else -> error("Unknown CatchTo value: ${this.value}")
+      else -> null
     }
 
-    else -> error("${this?.sourceLocation}: expected CatchTo! value")
+    else -> null
   }
+}
+
+private fun GQLDirective.isDefinedAndMatchesOriginalName(schema: Schema, originalName: String): Boolean {
+  return schema.directiveDefinitions.get(name) != null && schema.originalDirectiveName(name) == originalName
 }
 
 @ApolloInternal
 fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
   return filter {
-    schema.originalDirectiveName(it.name) == Schema.CATCH
-  }.map {
+    it.isDefinedAndMatchesOriginalName(schema, Schema.CATCH)
+  }.mapNotNull {
+    val to = it.getArgument("to", schema).toCatchTo() ?: return@mapNotNull null
     Catch(
-        to = it.getArgument("to", schema).toCatchTo(),
+        to = to,
         level = it.getArgument("level", schema)?.toIntOrNull(),
     )
   }
@@ -150,7 +155,7 @@ fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
 @ApolloInternal
 fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int?> {
   return directives.filter {
-    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
+    it.isDefinedAndMatchesOriginalName(schema, Schema.SEMANTIC_NON_NULL)
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()
   }
@@ -159,7 +164,7 @@ fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int?> {
 @ApolloInternal
 fun GQLTypeDefinition.findSemanticNonNulls(fieldName: String, schema: Schema): List<Int?> {
   return directives.filter {
-    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
+    it.isDefinedAndMatchesOriginalName(schema, Schema.SEMANTIC_NON_NULL)
         && it.getArgument("field", schema)?.toStringOrNull() == fieldName
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()

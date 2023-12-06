@@ -29,4 +29,8 @@ apollo {
     srcDir("src/main/graphql/result")
     packageName.set("result")
   }
+  service("missing-import") {
+    srcDir("src/main/graphql/missing-import")
+    packageName.set("missingimport")
+  }
 }
