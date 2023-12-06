@@ -135,7 +135,7 @@ internal fun ValidationScope.validateDirective(
       -> {
         // Require full schemas to allow the usage of newest directives
         // See https://github.com/apollographql/apollo-kotlin/issues/2673
-        issues.add(UnknownDirective("'@${originalName}' directive must be defined in the schema to be used", directive.sourceLocation, requireDefinition = true))
+        issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
       }
 
       else -> {
