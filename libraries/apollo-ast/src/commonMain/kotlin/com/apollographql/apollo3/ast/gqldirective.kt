@@ -91,7 +91,7 @@ private fun GQLDirectiveDefinition.getArgumentDefaultValue(argName: String): GQL
 
 @ApolloInternal
 fun GQLDirective.getArgument(argName: String, schema: Schema): GQLValue? {
-  val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name) ?: return null
+  val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name)!!
   val argument = arguments.firstOrNull { it.name == argName }
   if (argument == null) {
     return directiveDefinition.getArgumentDefaultValue(argName)
