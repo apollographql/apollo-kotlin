@@ -938,6 +938,7 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public static final field FIELD_POLICY_PAGINATION_ARGS Ljava/lang/String;
 	public static final field IGNORE_ERRORS Ljava/lang/String;
 	public static final field NONNULL Ljava/lang/String;
+	public static final field ONE_OF Ljava/lang/String;
 	public static final field OPTIONAL Ljava/lang/String;
 	public static final field REQUIRES_OPT_IN Ljava/lang/String;
 	public static final field SEMANTIC_NON_NULL Ljava/lang/String;
