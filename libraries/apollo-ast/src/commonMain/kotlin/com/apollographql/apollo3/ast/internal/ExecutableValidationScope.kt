@@ -394,6 +394,16 @@ internal class ExecutableValidationScope(
         ))
       }
     }
+    directives.forEach {
+      validateDirective(it, this) {
+        issues.add(
+            OtherValidationIssue(
+                "Operation directive arguments cannot contain variables",
+                it.variable.sourceLocation
+            )
+        )
+      }
+    }
   }
 
   private fun List<GQLSelection>.collectFragmentSpreads(): Set<String> {

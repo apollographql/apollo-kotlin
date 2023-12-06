@@ -127,11 +127,19 @@ internal fun ValidationScope.validateDirective(
   val directiveDefinition = directiveDefinitions[directive.name]
 
   if (directiveDefinition == null) {
-    if (directive.name == "oneOf") {
-      // We require full schemas to allow the usage of @oneOf
-      issues.add(UnknownDirective("'@${directive.name}' directive must be defined in the schema to be used", directive.sourceLocation, requireDefinition = true))
-    } else {
-      issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
+    when (val originalName = originalDirectiveName(directive.name)) {
+      Schema.ONE_OF,
+      Schema.CATCH,
+      Schema.SEMANTIC_NON_NULL,
+      Schema.IGNORE_ERRORS,
+      -> {
+        // Require full schemas to allow the usage of newest directives
+        issues.add(UnknownDirective("'@${originalName}' directive must be defined in the schema to be used", directive.sourceLocation, requireDefinition = true))
+      }
+
+      else -> {
+        issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
+      }
     }
 
     return

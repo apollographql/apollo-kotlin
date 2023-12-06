@@ -29,7 +29,7 @@ fun List<GQLDirective>.findSpecifiedBy() = firstOrNull { it.name == "specifiedBy
           }
     }
 
-fun List<GQLDirective>.findOneOf() = any { it.name == "oneOf" }
+fun List<GQLDirective>.findOneOf() = any { it.name == Schema.ONE_OF }
 
 @ApolloInternal
 fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { schema.originalDirectiveName(it.name) == Schema.REQUIRES_OPT_IN }
@@ -91,7 +91,7 @@ private fun GQLDirectiveDefinition.getArgumentDefaultValue(argName: String): GQL
 
 @ApolloInternal
 fun GQLDirective.getArgument(argName: String, schema: Schema): GQLValue? {
-  val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name)!!
+  val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name) ?: return null
   val argument = arguments.firstOrNull { it.name == argName }
   if (argument == null) {
     return directiveDefinition.getArgumentDefaultValue(argName)

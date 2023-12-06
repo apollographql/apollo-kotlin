@@ -334,5 +334,5 @@ Never throw on field errors.
 
 This is used for backward compatibility for clients where this was the default behaviour.
 ""${'"'}
-directive @ignoreFieldErrors on QUERY | MUTATION | SUBSCRIPTION
+directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

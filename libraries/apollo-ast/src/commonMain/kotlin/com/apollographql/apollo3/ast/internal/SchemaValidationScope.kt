@@ -132,9 +132,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
     }
   }
 
-  directiveDefinitions["oneOf"]?.let {
+  directiveDefinitions[Schema.ONE_OF]?.let {
     if (it.locations != listOf(GQLDirectiveLocation.INPUT_OBJECT) || it.arguments.isNotEmpty() || it.repeatable) {
-      issues.add(IncompatibleDirectiveDefinition("oneOf", "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
+      issues.add(IncompatibleDirectiveDefinition(Schema.ONE_OF, "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
     }
   }
 

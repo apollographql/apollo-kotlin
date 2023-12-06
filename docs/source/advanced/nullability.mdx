@@ -252,6 +252,15 @@ This is used for backward compatibility for clients where this was the default b
 directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 ```
 
+To enable it, import it like `@catch`, `CatchTo` and `@semanticNonNull`:
+
+```graphql
+extend schema @link(
+  url: "https://specs.apollo.dev/nullability/v0.1",
+  import: ["@catch", "CatchTo", "@semanticNonNull", "@ignoreErrors"]
+)
+```
+
 Enabling error aware parsing and adding `@ignoreErrors` to all your operations is a no-op. You can then remove `@ignoreErrors` from your operations progressively. 
 
 ## Decision flowchart 
