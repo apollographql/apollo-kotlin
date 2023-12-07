@@ -394,6 +394,11 @@ internal class ExecutableValidationScope(
         ))
       }
     }
+    directives.forEach {
+      validateDirective(it, this) {
+        variableUsages.add(it)
+      }
+    }
   }
 
   private fun List<GQLSelection>.collectFragmentSpreads(): Set<String> {

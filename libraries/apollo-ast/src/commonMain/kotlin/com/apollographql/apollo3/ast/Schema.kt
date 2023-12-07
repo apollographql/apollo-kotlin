@@ -206,6 +206,8 @@ class Schema internal constructor(
     const val REQUIRES_OPT_IN = "requiresOptIn"
 
     @ApolloExperimental
+    const val ONE_OF = "oneOf"
+    @ApolloExperimental
     const val CATCH = "catch"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL = "semanticNonNull"

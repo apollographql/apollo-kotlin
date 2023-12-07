@@ -31,6 +31,7 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.HOST_FILESYSTEM
+import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import kotlinx.serialization.KSerializer
@@ -488,7 +489,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         directives = if (isOneOf == true) {
           listOf(
               GQLDirective(
-                  name = "oneOf",
+                  name = Schema.ONE_OF,
                   arguments = emptyList()
               )
           )

@@ -1,2 +1,2 @@
 UnknownDirective (5:9)
-'@oneOf' directive must be defined in the schema to be used
+No directive definition found for '@oneOf'
