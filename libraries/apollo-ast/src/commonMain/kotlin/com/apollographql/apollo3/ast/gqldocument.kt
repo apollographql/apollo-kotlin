@@ -79,23 +79,27 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
+const val KOTLIN_LABS_VERSION = "v0.2"
+
 /**
  * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
 fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    "v0.2" -> kotlinLabsDefinitions
-    else -> error("kotlin_labs/$version definitions are not supported, please use v0.2")
+    KOTLIN_LABS_VERSION -> kotlinLabsDefinitions
+    else -> error("kotlin_labs/$version definitions are not supported, please use $KOTLIN_LABS_VERSION")
   })
 }
+
+const val NULLABILITY_VERSION = "v0.1"
 
 /**
  * Extra nullability definitions from https://specs.apollo.dev/nullability/<[version]>
  */
 fun nullabilityDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    "v0.1" -> nullabilityDefinitionsStr
-    else -> error("nullability/$version definitions are not supported, please use v0.1")
+    NULLABILITY_VERSION -> nullabilityDefinitionsStr
+    else -> error("nullability/$version definitions are not supported, please use $NULLABILITY_VERSION")
   })
 }
 

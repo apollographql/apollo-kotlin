@@ -30,8 +30,11 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
+import com.apollographql.apollo3.ast.IncompatibleEnumDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo3.ast.MergeOptions
+import com.apollographql.apollo3.ast.NULLABILITY_VERSION
 import com.apollographql.apollo3.ast.NoQueryType
 import com.apollographql.apollo3.ast.OtherValidationIssue
 import com.apollographql.apollo3.ast.Schema
@@ -63,7 +66,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val kotlinLabsDefinitions = kotlinLabsDefinitions("v0.2")
+  val kotlinLabsDefinitions = kotlinLabsDefinitions(KOTLIN_LABS_VERSION)
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
@@ -129,6 +132,28 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
          */
         issues.add(OtherValidationIssue("Found an executable definition. Schemas should only contain type system definitions.", gqlDefinition.sourceLocation))
       }
+    }
+  }
+
+  nullabilityDefinitions(NULLABILITY_VERSION).forEach { definition ->
+    when (definition) {
+      is GQLDirectiveDefinition -> {
+        val existing = directiveDefinitions[definition.name]
+        if (existing != null) {
+          if (!existing.semanticEquals(definition)) {
+            issues.add(IncompatibleDirectiveDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+          }
+        }
+      }
+      is GQLEnumTypeDefinition -> {
+        val existing = typeDefinitions[definition.name]
+        if (existing != null) {
+          if (existing !is GQLEnumTypeDefinition || !existing.semanticEquals(definition)) {
+            issues.add(IncompatibleEnumDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+          }
+        }
+      }
+      else -> {}
     }
   }
 
@@ -491,6 +516,7 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
   }
 
 }
+
 private fun ValidationScope.validateInputObjects() {
   typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>().forEach { o ->
     if (o.inputFields.isEmpty()) {

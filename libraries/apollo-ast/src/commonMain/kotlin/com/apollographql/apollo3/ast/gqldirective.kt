@@ -122,16 +122,16 @@ private fun GQLValue?.toBoolean(): Boolean {
   }
 }
 
-private fun GQLValue?.toCatchTo(): CatchTo? {
+private fun GQLValue?.toCatchTo(): CatchTo {
   return when (this) {
     is GQLEnumValue -> when (this.value) {
       "NULL" -> CatchTo.NULL
       "RESULT" -> CatchTo.RESULT
       "THROW" -> CatchTo.THROW
-      else -> null
+      else -> error("Unknown CatchTo value: ${this.value}")
     }
 
-    else -> null
+    else -> error("${this?.sourceLocation}: expected CatchTo! value")
   }
 }
 
@@ -143,8 +143,8 @@ private fun GQLDirective.isDefinedAndMatchesOriginalName(schema: Schema, origina
 fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
   return filter {
     it.isDefinedAndMatchesOriginalName(schema, Schema.CATCH)
-  }.mapNotNull {
-    val to = it.getArgument("to", schema).toCatchTo() ?: return@mapNotNull null
+  }.map {
+    val to = it.getArgument("to", schema).toCatchTo()
     Catch(
         to = to,
         level = it.getArgument("level", schema)?.toIntOrNull(),

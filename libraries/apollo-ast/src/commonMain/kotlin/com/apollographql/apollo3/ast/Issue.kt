@@ -60,6 +60,17 @@ class IncompatibleDirectiveDefinition(
 }
 
 /**
+ * The enum definition is inconsistent with the expected one.
+ */
+class IncompatibleEnumDefinition(
+    enumName: String,
+    expectedDefinition: String,
+    override val sourceLocation: SourceLocation?,
+) : GraphQLValidationIssue {
+  override val message = "Unexpected '@$enumName' enum definition. Expecting '$expectedDefinition'."
+}
+
+/**
  * Fields have different shapes and cannot be merged
  *
  */
