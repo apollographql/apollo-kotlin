@@ -135,18 +135,13 @@ private fun GQLValue?.toCatchTo(): CatchTo {
   }
 }
 
-private fun GQLDirective.isDefinedAndMatchesOriginalName(schema: Schema, originalName: String): Boolean {
-  return schema.directiveDefinitions.get(name) != null && schema.originalDirectiveName(name) == originalName
-}
-
 @ApolloInternal
 fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
   return filter {
-    it.isDefinedAndMatchesOriginalName(schema, Schema.CATCH)
+    schema.originalDirectiveName(it.name) == Schema.CATCH
   }.map {
-    val to = it.getArgument("to", schema).toCatchTo()
     Catch(
-        to = to,
+        to = it.getArgument("to", schema).toCatchTo(),
         level = it.getArgument("level", schema)?.toIntOrNull(),
     )
   }
@@ -155,7 +150,7 @@ fun List<GQLDirective>.findCatches(schema: Schema): List<Catch> {
 @ApolloInternal
 fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int?> {
   return directives.filter {
-    it.isDefinedAndMatchesOriginalName(schema, Schema.SEMANTIC_NON_NULL)
+    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()
   }
@@ -164,7 +159,7 @@ fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int?> {
 @ApolloInternal
 fun GQLTypeDefinition.findSemanticNonNulls(fieldName: String, schema: Schema): List<Int?> {
   return directives.filter {
-    it.isDefinedAndMatchesOriginalName(schema, Schema.SEMANTIC_NON_NULL)
+    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
         && it.getArgument("field", schema)?.toStringOrNull() == fieldName
   }.map {
     it.getArgument("level", schema)?.toIntOrNull()
