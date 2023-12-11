@@ -148,7 +148,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       is GQLEnumTypeDefinition -> {
         val existing = typeDefinitions[definition.name]
         if (existing != null) {
-          if (existing !is GQLEnumTypeDefinition || !existing.semanticEquals(definition)) {
+          if (!existing.semanticEquals(definition)) {
             issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
           }
         }
