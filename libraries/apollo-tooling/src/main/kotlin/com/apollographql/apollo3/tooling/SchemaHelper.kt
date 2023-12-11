@@ -6,6 +6,8 @@ import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDefinition
@@ -99,7 +101,13 @@ internal object SchemaHelper {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    return fetch(ByteStringHttpBody("application/json", introspectionQuery), endpoint, headers, insecure)
+    val jsonBody = buildJsonString {
+      writeObject {
+        name("operationName").value("IntrospectionQuery")
+        name("query").value(introspectionQuery)
+      }
+    }
+    return fetch(ByteStringHttpBody("application/json", jsonBody), endpoint, headers, insecure)
   }
 
   internal fun List<GQLDefinition>.reworkIntrospectionQuery(features: Set<GraphQLFeature>) =
