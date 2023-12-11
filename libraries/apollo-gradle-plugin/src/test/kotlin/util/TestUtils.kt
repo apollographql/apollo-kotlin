@@ -19,7 +19,7 @@ object TestUtils {
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "libs.plugins.kotlin.android")
   val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "libs.plugins.apollo")
 
-  fun withDirectory(testDir: String? = null, block: (File) -> Unit) {
+  fun <T> withDirectory(testDir: String? = null, block: (File) -> T): T {
     val dest = if (testDir == null) {
       File.createTempFile("testProject", "", File(System.getProperty("user.dir")).resolve("build"))
     } else {
@@ -34,7 +34,7 @@ object TestUtils {
       |
     """.trimMargin())
 
-    try {
+    return try {
       block(dest)
     } finally {
       // Comment this line if you want to keep the directory around during development
@@ -139,7 +139,7 @@ object TestUtils {
       block = block
   )
 
-  fun withTestProject(name: String, testDir: String? = null, block: (File) -> Unit) = withDirectory(testDir) { dir ->
+  fun <T> withTestProject(name: String, testDir: String? = null, block: (File) -> T): T = withDirectory(testDir) { dir ->
     File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
 
     block(dir)

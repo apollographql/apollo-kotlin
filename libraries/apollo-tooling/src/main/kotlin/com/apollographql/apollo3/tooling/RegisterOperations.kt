@@ -26,7 +26,6 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
@@ -256,14 +255,14 @@ object RegisterOperations {
     val response = runBlocking { call.execute() }
     val data = response.data
     if (data == null) {
-      when (val e = response.exception!!) {
+      when (val e = response.exception) {
         is ApolloHttpException -> {
           val body = e.body?.use { it.readUtf8() } ?: ""
           throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
         }
 
-        is ApolloGraphQLException -> {
-          throw Exception("Cannot push operations: ${e.errors.joinToString { it.message }}")
+        null -> {
+          throw Exception("Cannot push operations: ${response.errors?.joinToString { it.message }}")
         }
 
         else -> {

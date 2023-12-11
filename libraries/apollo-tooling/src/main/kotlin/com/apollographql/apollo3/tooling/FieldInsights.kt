@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.exception.ApolloGraphQLException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.FieldLatenciesQuery
 import java.time.Instant
@@ -35,14 +34,14 @@ object FieldInsights {
     val data = response.data
     return when {
       data == null -> {
-        val cause = when (val e = response.exception!!) {
+        val cause = when (val e = response.exception) {
           is ApolloHttpException -> {
             val body = e.body?.use { it.readUtf8() } ?: ""
             Exception("Cannot fetch field latencies: (code: ${e.statusCode})\n$body", e)
           }
 
-          is ApolloGraphQLException -> {
-            Exception("Cannot fetch field latencies: ${e.errors.joinToString { it.message }}")
+          null -> {
+            Exception("Cannot fetch field latencies: ${response.errors?.joinToString { it.message }}")
           }
 
           else -> {
