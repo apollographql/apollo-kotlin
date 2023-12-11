@@ -1,182 +1,199 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun GQLDirectiveDefinition.semanticEquals(other: GQLDirectiveDefinition): Boolean {
-  if (name != other.name) {
-    return false
-  }
-
-  if (locations != other.locations) {
-    return false
-  }
-
-  if (repeatable != other.repeatable) {
-    return false
-  }
-
-  if (arguments.size != other.arguments.size) {
-    return false
-  }
-
-  arguments.forEach { argument ->
-    val otherArgument = other.arguments.firstOrNull { it.name == argument.name }
-    if (otherArgument == null) {
-      return false
-    }
-
-    if (!argument.type.semanticEquals(otherArgument.type)) {
-      return false
-    }
-
-    if (argument.defaultValue != null && otherArgument.defaultValue != null) {
-      if (!argument.defaultValue.semanticEquals(otherArgument.defaultValue)) {
+internal fun GQLNode.semanticEquals(other: GQLNode): Boolean {
+  when (this) {
+    is GQLDirectiveDefinition -> {
+      if (other !is GQLDirectiveDefinition) {
         return false
       }
-    } else if (argument.defaultValue != null || otherArgument.defaultValue != null) {
-      return false
+
+      if (locations != other.locations) {
+        return false
+      }
+
+      if (repeatable != other.repeatable) {
+        return false
+      }
     }
-  }
 
-  return true
-}
+    is GQLInputValueDefinition -> {
+      if (other !is GQLInputValueDefinition) {
+        return false
+      }
 
-internal fun GQLType.semanticEquals(other: GQLType): Boolean {
-  return when (this) {
+      if (!type.semanticEquals(other.type)) {
+        return false
+      }
+
+      if (defaultValue != null && other.defaultValue != null) {
+        if (!defaultValue.semanticEquals(other.defaultValue)) {
+          return false
+        }
+      } else if (defaultValue != null || other.defaultValue != null) {
+        return false
+      }
+    }
+
     is GQLNonNullType -> {
-      other is GQLNonNullType && type.semanticEquals(other.type)
+      if (other !is GQLNonNullType) {
+        return false
+      }
     }
 
     is GQLListType -> {
-      other is GQLListType && type.semanticEquals(other.type)
+      if (other !is GQLListType) {
+        return false
+      }
     }
 
     is GQLNamedType -> {
-      other is GQLNamedType && name == other.name
+      if (other !is GQLNamedType) {
+        return false
+      }
     }
-  }
-}
 
-internal fun GQLValue.semanticEquals(other: GQLValue): Boolean {
-  return when (this) {
     is GQLNullValue -> {
-      other is GQLNullValue
+      if (other !is GQLNullValue) {
+        return false
+      }
     }
 
     is GQLListValue -> {
-      other is GQLListValue && values.size == other.values.size && values.zip(other.values).all { (a, b) -> a.semanticEquals(b) }
+      if (other !is GQLListValue) {
+        return false
+      }
     }
 
     is GQLObjectValue -> {
-      other is GQLObjectValue && fields.size == other.fields.size && fields.sortedBy { it.name }.zip(other.fields.sortedBy { it.name }).all { (a, b) ->
-        a.name == b.name && a.value.semanticEquals(b.value)
+      if (other !is GQLObjectValue) {
+        return false
       }
     }
 
     is GQLStringValue -> {
-      other is GQLStringValue && value == other.value
+      if (other !is GQLStringValue) {
+        return false
+      }
+      if (value != other.value) {
+        return false
+      }
     }
 
     is GQLBooleanValue -> {
-      other is GQLBooleanValue && value == other.value
+      if (other !is GQLBooleanValue) {
+        return false
+      }
+      if (value != other.value) {
+        return false
+      }
     }
 
     is GQLIntValue -> {
-      other is GQLIntValue && value == other.value
+      if (other !is GQLIntValue) {
+        return false
+      }
+      if (value != other.value) {
+        return false
+      }
     }
 
     is GQLFloatValue -> {
-      other is GQLFloatValue && value == other.value
+      if (other !is GQLFloatValue) {
+        return false
+      }
+      if (value != other.value) {
+        return false
+      }
     }
 
     is GQLEnumValue -> {
-      other is GQLEnumValue && value == other.value
+      if (other !is GQLEnumValue) {
+        return false
+      }
+      if (value != other.value) {
+        return false
+      }
     }
 
     is GQLVariableValue -> {
-      other is GQLVariableValue && name == other.name
+      if (other !is GQLVariableValue) {
+        return false
+      }
+      if (name != other.name) {
+        return false
+      }
+    }
+
+    is GQLEnumTypeDefinition -> {
+      if (other !is GQLEnumTypeDefinition) {
+        return false
+      }
+      if (name != other.name) {
+        return false
+      }
+    }
+
+    is GQLDirective -> {
+      if (other !is GQLDirective) {
+        return false
+      }
+      if (name != other.name) {
+        return false
+      }
+    }
+
+    is GQLArgument -> {
+      if (other !is GQLArgument) {
+        return false
+      }
+      if (name != other.name) {
+        return false
+      }
+    }
+
+    else -> {}
+  }
+
+  if (this is GQLNamed) {
+    if (other !is GQLNamed) {
+      return false
+    }
+    if (name != other.name) {
+      return false
     }
   }
-}
 
-
-internal fun GQLEnumTypeDefinition.semanticEquals(definition: GQLEnumTypeDefinition): Boolean {
-  if (name != definition.name) {
+  if (children.size != other.children.size) {
     return false
   }
-
-  if (directives.size != definition.directives.size) {
-    return false
-  }
-
-  directives.zip(definition.directives).forEach { (a, b) ->
-    if (!a.semanticEquals(b)) {
+  for (i in children.indices) {
+    if (!children[i].semanticEquals(other.children[i])) {
       return false
     }
   }
-
-  if (enumValues.size != definition.enumValues.size) {
-    return false
-  }
-
-  enumValues.forEach { value ->
-    val otherValue = definition.enumValues.firstOrNull { it.name == value.name }
-    if (otherValue == null) {
-      return false
-    }
-
-    if (value.directives.size != otherValue.directives.size) {
-      return false
-    }
-
-    if (value.directives.zip(otherValue.directives).any { (a, b) -> !a.semanticEquals(b) }) {
-      return false
-    }
-  }
-
   return true
 }
-
-private fun GQLDirective.semanticEquals(other: GQLDirective): Boolean {
-  if (name != other.name) {
-    return false
-  }
-
-  if (arguments.size != other.arguments.size) {
-    return false
-  }
-
-  arguments.forEach { argument ->
-    val otherArgument = other.arguments.firstOrNull { it.name == argument.name }
-    if (otherArgument == null) {
-      return false
-    }
-
-    if (!argument.value.semanticEquals(otherArgument.value)) {
-      return false
-    }
-  }
-
-  return true
-}
-
 
 internal fun GQLDirectiveDefinition.toSemanticSdl(): String {
   return copy(description = null, arguments = arguments.map { it.copy(description = null) }).toUtf8().trim()

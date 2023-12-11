@@ -56,7 +56,7 @@ class IncompatibleDefinition(
     expectedDefinition: String,
     override val sourceLocation: SourceLocation?,
 ) : GraphQLValidationIssue {
-  override val message = "Unexpected '@$name' definition. Expecting '$expectedDefinition'."
+  override val message = "Unexpected '$name' definition. Expecting '$expectedDefinition'."
 }
 
 /**
