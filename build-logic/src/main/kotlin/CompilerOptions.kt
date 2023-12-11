@@ -89,7 +89,15 @@ fun Project.configureJavaAndKotlinCompilers() {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
   }
-  
+
+  /**
+   * Required because of:
+   *
+   * > Task :apollo-runtime:compileKotlinWasmJs
+   * w: duplicate library name: kotlin
+   *
+   * (maybe https://youtrack.jetbrains.com/issue/KT-51110?)
+   */
   allWarningsAsErrors(false)
 }
 
