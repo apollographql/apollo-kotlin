@@ -126,7 +126,7 @@ internal fun GQLEnumTypeDefinition.semanticEquals(definition: GQLEnumTypeDefinit
     return false
   }
 
-  directives.sortedBy { it.name }.zip(definition.directives.sortedBy { it.name }).forEach { (a, b) ->
+  directives.zip(definition.directives).forEach { (a, b) ->
     if (!a.semanticEquals(b)) {
       return false
     }
@@ -146,7 +146,7 @@ internal fun GQLEnumTypeDefinition.semanticEquals(definition: GQLEnumTypeDefinit
       return false
     }
 
-    if (value.directives.sortedBy { it.name }.zip(otherValue.directives.sortedBy { it.name }).any { (a, b) -> !a.semanticEquals(b) }) {
+    if (value.directives.zip(otherValue.directives).any { (a, b) -> !a.semanticEquals(b) }) {
       return false
     }
   }
