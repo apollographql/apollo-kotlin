@@ -1,5 +1,0 @@
-query MyQuery {
-  a {
-    b @catch
-  }
-}
