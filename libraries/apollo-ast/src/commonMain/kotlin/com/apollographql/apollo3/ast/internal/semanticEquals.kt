@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLEnumValueDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLInputValueDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
@@ -21,7 +22,13 @@ import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun GQLNode.semanticEquals(other: GQLNode): Boolean {
+/**
+ * Returns true if the two nodes are semantically equal, which ignores the source location and the description.
+ * Note that not all cases are implemented - currently [GQLEnumTypeDefinition] and [GQLDirectiveDefinition] are fully supported, and
+ * unsupported types will throw.
+ */
+internal fun GQLNode.semanticEquals(other: GQLNode?): Boolean {
+  if (other == null) return false
   when (this) {
     is GQLDirectiveDefinition -> {
       if (other !is GQLDirectiveDefinition) {
@@ -46,11 +53,11 @@ internal fun GQLNode.semanticEquals(other: GQLNode): Boolean {
         return false
       }
 
-      if (defaultValue != null && other.defaultValue != null) {
+      if (defaultValue != null) {
         if (!defaultValue.semanticEquals(other.defaultValue)) {
           return false
         }
-      } else if (defaultValue != null || other.defaultValue != null) {
+      } else if (other.defaultValue != null) {
         return false
       }
     }
@@ -140,16 +147,10 @@ internal fun GQLNode.semanticEquals(other: GQLNode): Boolean {
       if (other !is GQLVariableValue) {
         return false
       }
-      if (name != other.name) {
-        return false
-      }
     }
 
     is GQLEnumTypeDefinition -> {
       if (other !is GQLEnumTypeDefinition) {
-        return false
-      }
-      if (name != other.name) {
         return false
       }
     }
@@ -158,21 +159,23 @@ internal fun GQLNode.semanticEquals(other: GQLNode): Boolean {
       if (other !is GQLDirective) {
         return false
       }
-      if (name != other.name) {
-        return false
-      }
     }
 
     is GQLArgument -> {
       if (other !is GQLArgument) {
         return false
       }
-      if (name != other.name) {
+    }
+
+    is GQLEnumValueDefinition -> {
+      if (other !is GQLEnumValueDefinition) {
         return false
       }
     }
 
-    else -> {}
+    else -> {
+      TODO("semanticEquals not supported for ${this::class.simpleName}")
+    }
   }
 
   if (this is GQLNamed) {
