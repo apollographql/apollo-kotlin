@@ -49,25 +49,14 @@ class UnknownDirective @ApolloInternal constructor(
 }
 
 /**
- * The directive definition is inconsistent with the expected one.
+ * The definition is inconsistent with the expected one.
  */
-class IncompatibleDirectiveDefinition(
-    directiveName: String,
+class IncompatibleDefinition(
+    name: String,
     expectedDefinition: String,
     override val sourceLocation: SourceLocation?,
 ) : GraphQLValidationIssue {
-  override val message = "Unexpected '@$directiveName' directive definition. Expecting '$expectedDefinition'."
-}
-
-/**
- * The enum definition is inconsistent with the expected one.
- */
-class IncompatibleEnumDefinition(
-    enumName: String,
-    expectedDefinition: String,
-    override val sourceLocation: SourceLocation?,
-) : GraphQLValidationIssue {
-  override val message = "Unexpected '@$enumName' enum definition. Expecting '$expectedDefinition'."
+  override val message = "Unexpected '@$name' definition. Expecting '$expectedDefinition'."
 }
 
 /**

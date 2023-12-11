@@ -29,8 +29,7 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
-import com.apollographql.apollo3.ast.IncompatibleEnumDefinition
+import com.apollographql.apollo3.ast.IncompatibleDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo3.ast.MergeOptions
@@ -141,25 +140,27 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = directiveDefinitions[definition.name]
         if (existing != null) {
           if (!existing.semanticEquals(definition)) {
-            issues.add(IncompatibleDirectiveDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
           }
         }
       }
+
       is GQLEnumTypeDefinition -> {
         val existing = typeDefinitions[definition.name]
         if (existing != null) {
           if (existing !is GQLEnumTypeDefinition || !existing.semanticEquals(definition)) {
-            issues.add(IncompatibleEnumDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
           }
         }
       }
+
       else -> {}
     }
   }
 
   directiveDefinitions[Schema.ONE_OF]?.let {
     if (it.locations != listOf(GQLDirectiveLocation.INPUT_OBJECT) || it.arguments.isNotEmpty() || it.repeatable) {
-      issues.add(IncompatibleDirectiveDefinition(Schema.ONE_OF, "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
+      issues.add(IncompatibleDefinition(Schema.ONE_OF, "directive @oneOf on INPUT_OBJECT", it.sourceLocation))
     }
   }
 

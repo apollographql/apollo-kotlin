@@ -1,10 +1,10 @@
-IncompatibleDirectiveDefinition (39:1)
+IncompatibleDefinition (39:1)
 Unexpected '@catch' directive definition. Expecting 'directive @catch (to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD|SCHEMA'.
 ------------
-IncompatibleEnumDefinition (56:1)
+IncompatibleDefinition (56:1)
 Unexpected '@CatchTo' enum definition. Expecting 'enum CatchTo { RESULT NULL THROW }'.
 ------------
-IncompatibleDirectiveDefinition (73:1)
+IncompatibleDefinition (73:1)
 Unexpected '@ignoreFieldErrors' directive definition. Expecting 'directive @ignoreFieldErrors on QUERY|MUTATION|SUBSCRIPTION'.
 ------------
 OtherValidationIssue (null:null)
