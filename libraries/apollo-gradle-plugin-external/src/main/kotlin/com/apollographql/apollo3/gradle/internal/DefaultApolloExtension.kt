@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
+import com.apollographql.apollo3.gradle.api.ApolloDependencies
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.SchemaConnection
@@ -996,4 +997,6 @@ abstract class DefaultApolloExtension(
 
     return project.dependencies.project(mapOf("path" to project.path, "configuration" to producer.name))
   }
+
+  override val deps: ApolloDependencies = ApolloDependencies(project.dependencies)
 }
