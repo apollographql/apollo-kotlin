@@ -2,6 +2,7 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.internal.ExtensionsMerger
 import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo3.ast.internal.ensureSchemaDefinition
@@ -79,7 +80,7 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
-const val KOTLIN_LABS_VERSION = "v0.2"
+@ApolloInternal const val KOTLIN_LABS_VERSION = "v0.2"
 
 /**
  * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
@@ -91,7 +92,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   })
 }
 
-const val NULLABILITY_VERSION = "v0.1"
+@ApolloInternal const val NULLABILITY_VERSION = "v0.1"
 
 /**
  * Extra nullability definitions from https://specs.apollo.dev/nullability/<[version]>

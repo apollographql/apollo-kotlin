@@ -768,8 +768,6 @@ public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 }
 
 public final class com/apollographql/apollo3/ast/GqldocumentKt {
-	public static final field KOTLIN_LABS_VERSION Ljava/lang/String;
-	public static final field NULLABILITY_VERSION Ljava/lang/String;
 	public static final fun builtinDefinitions ()Ljava/util/List;
 	public static final fun kotlinLabsDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun linkDefinitions ()Ljava/util/List;
