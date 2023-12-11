@@ -8,6 +8,7 @@ import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputValueDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLListType
@@ -18,6 +19,7 @@ import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.toUtf8
@@ -169,6 +171,18 @@ internal fun GQLNode.semanticEquals(other: GQLNode?): Boolean {
 
     is GQLEnumValueDefinition -> {
       if (other !is GQLEnumValueDefinition) {
+        return false
+      }
+    }
+
+    is GQLInputObjectTypeDefinition -> {
+      if (other !is GQLInputObjectTypeDefinition) {
+        return false
+      }
+    }
+
+    is GQLScalarTypeDefinition -> {
+      if (other !is GQLScalarTypeDefinition) {
         return false
       }
     }
