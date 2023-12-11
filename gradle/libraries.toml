@@ -126,7 +126,7 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
 moshix-sealed-codegen = { group = "dev.zacsweers.moshix", name = "moshi-sealed-codegen", version.ref = "moshix" }
 moshix-sealed-runtime = { group = "dev.zacsweers.moshix", name = "moshi-sealed-runtime", version.ref = "moshix" }
-okio = { group = "com.squareup.okio", name = "okio", version.ref = "3.6.0" }
+okio = { group = "com.squareup.okio", name = "okio", version = "3.6.0" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }

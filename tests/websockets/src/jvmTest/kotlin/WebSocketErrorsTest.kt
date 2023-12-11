@@ -57,6 +57,7 @@ class WebSocketErrorsTest {
           val exception = awaitItem().exception
           assertIs<ApolloNetworkException>(exception)
           assertTrue(exception.cause?.message?.contains("Connection error") == true)
+          awaitComplete()
         }
 
     apolloClient.close()
