@@ -14,6 +14,7 @@ apolloLibrary(
     withLinux = false,
     withApple = false,
     withJs = false,
+    withWasm = false
 )
 
 kotlin {

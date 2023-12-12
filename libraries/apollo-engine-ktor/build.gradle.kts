@@ -4,7 +4,8 @@ plugins {
 
 apolloLibrary(
     javaModuleName = "com.apollographql.apollo3.engine.ktor",
-    withLinux = false
+    withLinux = false,
+    withWasm = false
 )
 
 kotlin {
