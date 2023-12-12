@@ -9,13 +9,12 @@ _2023-12-12_
 
 This release adds initial support for WebAssembly by adding the `wasmJs` target.
 
-Executing operations is working but this target is
-experimental ([Kotlin/Wasm](https://kotlinlang.org/docs/wasm-overview.html) is Alpha) and has some limitations:
+Executing queries/mutations is working but this target is
+experimental ([Kotlin/Wasm](https://kotlinlang.org/docs/wasm-overview.html) is Alpha) and has multiple limitations:
 
-- WebSockets are not implemented
+- No WebSockets
 - No caching
 - No support for WASI or NodeJS
-- No tests
 
 ## 🪲 Bug fix
 
