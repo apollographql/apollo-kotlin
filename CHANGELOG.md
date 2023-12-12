@@ -1,6 +1,37 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.4
+
+_2023-12-12_
+
+## ✨ Initial Wasm support (#5458)
+
+This release adds initial support for WebAssembly by adding the `wasmJs` target.
+
+Executing queries/mutations is working but this target is
+experimental ([Kotlin/Wasm](https://kotlinlang.org/docs/wasm-overview.html) is Alpha) and has multiple limitations:
+
+- No WebSockets
+- No caching
+- No support for WASI or NodeJS
+
+## 🪲 Bug fix
+
+Downloading a schema from introspection (`./gradlew downloadServiceSchemaFromIntrospection`) got broken in the previous
+release (#5449) and is now fixed.
+
+## 👷‍ All changes
+
+* [compiler] validate operation directives & enforce presence of the nullability directive definitions by @martinbonnin
+  in https://github.com/apollographql/apollo-kotlin/pull/5443
+* [build] Bump okio version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5447
+* [build] Bump uuid version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5448
+* Fix 2nd step introspection by @BoD in https://github.com/apollographql/apollo-kotlin/pull/5451
+* Add wasmJs target by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5458
+* Add validation to check schema definitions are compatible with the bundled ones by @BoD
+  in https://github.com/apollographql/apollo-kotlin/pull/5444
+
 # Version 4.0.0-beta.3
 
 _2023-12-05_
