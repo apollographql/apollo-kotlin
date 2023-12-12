@@ -1,5 +1,8 @@
 type Query {
     apolloClients: [ApolloClient!]!
+    """
+    Returns null if an ApolloClient with the given id is not found.
+    """
     apolloClient(id: ID!): ApolloClient
 }
 

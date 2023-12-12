@@ -38,31 +38,39 @@ fun publishOperations(
         .execute()
   }
 
-  val graph1 = response.dataOrThrow().graph
-  if (graph1 == null) {
-    return GraphNotFound
+  val data = response.data
+  if (data != null) {
+    val graph1 = data.graph
+    if (graph1 == null) {
+      return GraphNotFound
+    }
+    val ops = graph1.persistedQueryList.publishOperations
+    return when {
+      ops.onPublishOperationsResult != null -> {
+        val counts = ops.onPublishOperationsResult.build.publish.operationCounts
+        PublishOperationsSuccess(
+            counts.added,
+            counts.removed,
+            counts.identical,
+            counts.updated,
+            counts.unaffected,
+            ops.onPublishOperationsResult.build.list.name,
+            ops.onPublishOperationsResult.build.revision
+        )
+      }
+      ops.onPermissionError != null -> {
+        PermissionError(ops.onPermissionError.message)
+      }
+      ops.onCannotModifyOperationBodyError != null -> {
+        CannotModifyOperationBody(ops.onCannotModifyOperationBodyError.message)
+      }
+      else -> error("Unknown ops: ${ops.__typename}")
+    }
   }
 
-  val ops = graph1.persistedQueryList.publishOperations
-  return when {
-    ops.onPublishOperationsResult != null -> {
-      val counts = ops.onPublishOperationsResult.build.publish.operationCounts
-      PublishOperationsSuccess(
-          counts.added,
-          counts.removed,
-          counts.identical,
-          counts.updated,
-          counts.unaffected,
-          ops.onPublishOperationsResult.build.list.name,
-          ops.onPublishOperationsResult.build.revision
-      )
-    }
-    ops.onPermissionError != null -> {
-      PermissionError(ops.onPermissionError.message)
-    }
-    ops.onCannotModifyOperationBodyError != null -> {
-      CannotModifyOperationBody(ops.onCannotModifyOperationBodyError.message)
-    }
-    else -> error("")
+  if (response.exception != null) {
+    throw Exception("Cannot publish operations", response.exception)
   }
+
+  throw Exception("Cannot publish operations: ${response.errors?.joinToString { it.message }}")
 }

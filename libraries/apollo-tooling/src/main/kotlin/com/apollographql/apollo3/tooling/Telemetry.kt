@@ -38,7 +38,8 @@ object Telemetry {
             },
         )
     ).execute()
-    if (response.data != null && response.errors.isNullOrEmpty()) {
+
+    if (response.data != null) {
       return Result.success(Unit)
     }
 

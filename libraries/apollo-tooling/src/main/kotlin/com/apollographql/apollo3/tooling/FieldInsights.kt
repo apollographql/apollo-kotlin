@@ -32,31 +32,10 @@ object FieldInsights {
         )
     ).execute()
     val data = response.data
-    return when {
-      data == null -> {
-        val cause = when (val e = response.exception) {
-          is ApolloHttpException -> {
-            val body = e.body?.use { it.readUtf8() } ?: ""
-            Exception("Cannot fetch field latencies: (code: ${e.statusCode})\n$body", e)
-          }
-
-          null -> {
-            Exception("Cannot fetch field latencies: ${response.errors?.joinToString { it.message }}")
-          }
-
-          else -> {
-            Exception("Cannot fetch field latencies: ${e.message}", e)
-          }
-        }
-        FieldLatenciesResult.Error(cause = cause)
-      }
-
-      data.service == null && response.hasErrors() -> {
-        FieldLatenciesResult.Error(cause = Exception("Cannot fetch field latencies: ${response.errors!!.joinToString { it.message }}"))
-      }
-
-      else -> {
-        FieldLatencies(fieldLatencies = data.service?.statsWindow?.fieldLatencies?.mapNotNull {
+    if (data != null) {
+      val service = data.service
+      if (service != null) {
+        return FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
           val parentType = it.groupBy.parentType ?: return@mapNotNull null
           val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
           val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
@@ -65,9 +44,27 @@ object FieldInsights {
               fieldName = fieldName,
               durationMs = durationMs
           )
-        } ?: emptyList())
+        })
+      } else {
+        FieldLatenciesResult.Error(cause = Exception("Cannot find service $serviceId: ${response.errors?.joinToString { it.message }}}"))
       }
     }
+
+    val cause = when (val e = response.exception) {
+      is ApolloHttpException -> {
+        val body = e.body?.use { it.readUtf8() } ?: ""
+        Exception("Cannot fetch field latencies: (code: ${e.statusCode})\n$body", e)
+      }
+
+      null -> {
+        Exception("Cannot fetch field latencies: ${response.errors?.joinToString { it.message }}")
+      }
+
+      else -> {
+        Exception("Cannot fetch field latencies: ${e.message}")
+      }
+    }
+    return FieldLatenciesResult.Error(cause = cause)
   }
 
   @ApolloExperimental

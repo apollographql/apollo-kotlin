@@ -254,30 +254,34 @@ object RegisterOperations {
 
     val response = runBlocking { call.execute() }
     val data = response.data
-    if (data == null) {
-      when (val e = response.exception) {
-        is ApolloHttpException -> {
-          val body = e.body?.use { it.readUtf8() } ?: ""
-          throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
-        }
-
-        null -> {
-          throw Exception("Cannot push operations: ${response.errors?.joinToString { it.message }}")
-        }
-
-        else -> {
-          throw Exception("Cannot push operations: ${e.message}", e)
-        }
+    if (data != null) {
+      val service = data.service
+      if (service == null) {
+        throw Exception("Cannot find service $graphID: ${response.errors?.joinToString { it.message }}")
       }
-    } else {
-      val errors = data.service?.registerOperationsWithResponse?.invalidOperations?.flatMap {
+      val errors = data.service.registerOperationsWithResponse.invalidOperations.flatMap {
         it.errors ?: emptyList()
-      } ?: emptyList()
+      }
 
-      check(errors.isEmpty()) {
-        "Cannot push operations:\n${errors.joinToString("\n")}"
+      if(errors.isNotEmpty()) {
+        throw Exception("Cannot push operations:\n${errors.joinToString("\n")}")
       }
       println("Operations pushed successfully")
+      return
+    }
+    when (val e = response.exception) {
+      is ApolloHttpException -> {
+        val body = e.body?.use { it.readUtf8() } ?: ""
+        throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
+      }
+
+      null -> {
+        throw Exception("Cannot push operations: ${response.errors?.joinToString { it.message }}")
+      }
+
+      else -> {
+        throw Exception("Cannot push operations: ${e.message}", e)
+      }
     }
   }
 }

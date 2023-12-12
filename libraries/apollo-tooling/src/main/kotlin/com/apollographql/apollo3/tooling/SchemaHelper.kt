@@ -82,17 +82,22 @@ internal object SchemaHelper {
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
           .execute()
     }
-    response.exception?.let { e ->
-      if (e is ApolloHttpException) {
+    val data = response.data
+    if (data != null) {
+      return data
+    }
+    when (val e = response.exception) {
+      is ApolloHttpException -> {
         val body = e.body?.use { it.readUtf8() } ?: ""
         throw Exception("Cannot execute pre-introspection query from $endpoint: (code: ${e.statusCode})\n$body", e)
       }
-      throw e
+      null -> {
+        throw Exception("Cannot execute pre-introspection query from $endpoint: ${response.errors?.joinToString { it.message }}")
+      }
+      else -> {
+        throw Exception("Cannot execute pre-introspection query from $endpoint", e)
+      }
     }
-    if (response.errors?.isNotEmpty() == true) {
-      throw Exception("Cannot execute pre-introspection query from $endpoint: ${response.errors!!.joinToString { it.message }}")
-    }
-    return response.data!!
   }
 
   internal fun executeIntrospectionQuery(

@@ -172,15 +172,23 @@ object SchemaDownloader {
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) } + HttpHeader("x-api-key", key))
           .execute()
     }
-    if (response.exception != null) throw response.exception!!
-    if (response.errors?.isNotEmpty() == true) {
-      throw Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant")
+    val data = response.data
+
+    if (data != null) {
+      if (data.graph == null) {
+        throw Exception("Cannot retrieve graph '$graph': ${response.errors?.joinToString { it.message }}")
+      }
+      if (data.graph.variant == null) {
+        throw Exception("Cannot retrieve variant '$variant': ${response.errors?.joinToString { it.message }}")
+      }
+      return data.graph.variant.latestPublication.schema.document
     }
-    val document = response.data?.graph?.variant?.latestPublication?.schema?.document
-    check(document != null) {
-      "Cannot retrieve document from $endpoint\nCheck graph id and variant"
+
+    if (response.exception != null) {
+      throw response.exception!!
     }
-    return document
+
+    throw Exception("Cannot retrieve document from $endpoint: ${response.errors?.joinToString { it.message }}\nCheck graph id and variant")
   }
 
   inline fun <reified T> Any?.cast() = this as? T
