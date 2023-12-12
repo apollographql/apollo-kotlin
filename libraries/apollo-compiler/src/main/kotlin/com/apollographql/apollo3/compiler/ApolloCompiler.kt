@@ -12,8 +12,9 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.IncompatibleDirectiveDefinition
+import com.apollographql.apollo3.ast.IncompatibleDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo3.ast.ParserOptions
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
@@ -563,7 +564,7 @@ internal fun List<Issue>.group(
   val ignored = mutableListOf<Issue>()
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
-  val apolloDirectives = kotlinLabsDefinitions("v0.2").mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
+  val apolloDirectives = kotlinLabsDefinitions(KOTLIN_LABS_VERSION).mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
 
   forEach {
     val severity = when (it) {
@@ -576,7 +577,7 @@ internal fun List<Issue>.group(
        * Because some users might have added the apollo directive to their schema, we just let that through for now
        */
       is DirectiveRedefinition -> if (it.name in apolloDirectives) Severity.None else Severity.Warning
-      is IncompatibleDirectiveDefinition -> Severity.Warning
+      is IncompatibleDefinition -> Severity.Warning
       else -> Severity.Error
     }
 

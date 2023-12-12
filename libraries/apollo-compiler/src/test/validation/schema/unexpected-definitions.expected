@@ -1,0 +1,11 @@
+IncompatibleDefinition (39:1)
+Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD|SCHEMA'.
+------------
+IncompatibleDefinition (56:1)
+Unexpected 'CatchTo' definition. Expecting 'enum CatchTo { RESULT NULL THROW }'.
+------------
+IncompatibleDefinition (73:1)
+Unexpected 'ignoreErrors' definition. Expecting 'directive @ignoreErrors on QUERY|MUTATION|SUBSCRIPTION'.
+------------
+OtherValidationIssue (null:null)
+Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: $to)`

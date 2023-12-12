@@ -827,7 +827,7 @@ public abstract interface class com/apollographql/apollo3/ast/GraphQLIssue : com
 public abstract interface class com/apollographql/apollo3/ast/GraphQLValidationIssue : com/apollographql/apollo3/ast/GraphQLIssue {
 }
 
-public final class com/apollographql/apollo3/ast/IncompatibleDirectiveDefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
+public final class com/apollographql/apollo3/ast/IncompatibleDefinition : com/apollographql/apollo3/ast/GraphQLValidationIssue {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo3/ast/SourceLocation;
