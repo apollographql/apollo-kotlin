@@ -18,6 +18,8 @@ With declarative cache IDs, the codegen process adds ID fields automatically and
 
 To do this, Apollo Kotlin extends your back-end schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
 
+Note that you'll need to make sure that the `extra.graphqls` file is included in your [schema configuration](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration#combining-multiple-schema-files)
+
 You can obtain a given object type's cache ID from one of two sources:
 
 | Source | Directive | Description |
