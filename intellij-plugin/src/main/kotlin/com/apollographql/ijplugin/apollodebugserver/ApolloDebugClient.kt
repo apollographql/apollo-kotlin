@@ -5,6 +5,9 @@ import com.android.tools.idea.adb.AdbShellCommandsUtil
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.debug.GetApolloClientsQuery
 import com.apollographql.apollo3.debug.GetNormalizedCacheQuery
+import com.apollographql.apollo3.network.http.LoggingInterceptor
+import com.apollographql.ijplugin.util.executeCatching
+import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import java.io.Closeable
 
@@ -23,9 +26,7 @@ class ApolloDebugClient(
     }
 
     private fun IDevice.getApolloDebugPackageList(): Result<List<String>> {
-      val commandResult = runCatching {
-        AdbShellCommandsUtil.create(this).executeCommandBlocking("cat /proc/net/unix | grep $SOCKET_NAME_PREFIX | cat")
-      }
+      val commandResult = AdbShellCommandsUtil.create(this).executeCatching("cat /proc/net/unix | grep $SOCKET_NAME_PREFIX | cat")
       if (commandResult.isFailure) {
         val e = commandResult.exceptionOrNull()!!
         logw(e, "Could not list Apollo Debug packages")
@@ -39,12 +40,12 @@ class ApolloDebugClient(
       }
       // Results are in the form:
       // 0000000000000000: 00000002 00000000 00010000 0001 01 116651 @apollo_debug_com.example.myapplication
-      return Result.success(
-          result.output
-              .filter { it.contains(SOCKET_NAME_PREFIX) }
-              .map { it.substringAfterLast(SOCKET_NAME_PREFIX) }
-              .sorted()
-      )
+      val packageList = result.output
+          .filter { it.contains(SOCKET_NAME_PREFIX) }
+          .map { it.substringAfterLast(SOCKET_NAME_PREFIX) }
+          .sorted()
+      logd("Found Apollo Debug packages: $packageList")
+      return Result.success(packageList)
     }
 
     fun IDevice.getApolloDebugClients(): Result<List<ApolloDebugClient>> {
@@ -61,15 +62,29 @@ class ApolloDebugClient(
 
   private val apolloClient = ApolloClient.Builder()
       .serverUrl("http://localhost:$port")
+      .addHttpInterceptor(LoggingInterceptor { line ->
+        logd("ApolloDebugClient HTTP - $line")
+      })
       .build()
 
   private fun createPortForward() {
-    device.createForward(port, "$SOCKET_NAME_PREFIX$packageName", IDevice.DeviceUnixSocketNamespace.ABSTRACT)
+    logd("Creating port forward to $port for $packageName")
+    try {
+      device.createForward(port, "$SOCKET_NAME_PREFIX$packageName", IDevice.DeviceUnixSocketNamespace.ABSTRACT)
+    } catch (e: Exception) {
+      logw(e, "Could not create port forward to $port for $packageName")
+      throw e
+    }
     hasPortForward = true
   }
 
   private fun removePortForward() {
-    device.removeForward(port)
+    logd("Removing port forward to $port for $packageName")
+    try {
+      device.removeForward(port)
+    } catch (e: Exception) {
+      logw(e, "Could not remove port forward to $port for $packageName")
+    }
     hasPortForward = false
   }
 
