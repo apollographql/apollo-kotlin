@@ -34,16 +34,6 @@ dependencies {
   testImplementation(libs.assertj)
   testImplementation(libs.okhttp.mockwebserver)
   testImplementation(libs.okhttp.tls)
-
-  testImplementation(project(":apollo-execution-incubating"))
-
-  testImplementation(platform(libs.http4k.bom.get()))
-  testImplementation(libs.http4k.core)
-  testImplementation(libs.http4k.server.jetty)
-  testImplementation(libs.slf4j.get().toString()) {
-    because("jetty uses SL4F")
-  }
-
 }
 
 if (relocateJar) {
