@@ -257,7 +257,7 @@ object RegisterOperations {
     if (data != null) {
       val service = data.service
       if (service == null) {
-        throw Exception("Cannot find service $graphID: ${response.errors?.joinToString { it.message }}")
+        throw Exception("Cannot push operations: cannot find service '$graphID': ${response.errors?.joinToString { it.message }}")
       }
       val errors = data.service.registerOperationsWithResponse.invalidOperations.flatMap {
         it.errors ?: emptyList()
