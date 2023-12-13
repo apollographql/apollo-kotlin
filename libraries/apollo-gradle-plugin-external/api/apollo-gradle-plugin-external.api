@@ -21,10 +21,21 @@ public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
 }
 
+public final class com/apollographql/apollo3/gradle/api/ApolloDependencies {
+	public fun <init> (Lorg/gradle/api/artifacts/dsl/DependencyHandler;)V
+	public final fun getApi ()Lorg/gradle/api/artifacts/Dependency;
+	public final fun getAst ()Lorg/gradle/api/artifacts/Dependency;
+	public final fun getMockServer ()Lorg/gradle/api/artifacts/Dependency;
+	public final fun getNormalizedCache ()Lorg/gradle/api/artifacts/Dependency;
+	public final fun getNormalizedCacheSqlite ()Lorg/gradle/api/artifacts/Dependency;
+	public final fun getRuntime ()Lorg/gradle/api/artifacts/Dependency;
+}
+
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension {
 	public abstract fun apolloKspProcessor (Ljava/io/File;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public abstract fun getDeps ()Lcom/apollographql/apollo3/gradle/api/ApolloDependencies;
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;
 	public abstract fun getLinkSqlite ()Lorg/gradle/api/provider/Property;
 	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V

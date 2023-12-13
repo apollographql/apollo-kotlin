@@ -96,4 +96,9 @@ interface ApolloExtension {
    * - the apollo-ksp dependency
    */
   fun apolloKspProcessor(schema: File, service: String, packageName: String): Any
+
+  /**
+   * Common apollo dependencies using the same version as the Apollo Gradle Plugin currently in the classpath
+   */
+  val deps: ApolloDependencies
 }
