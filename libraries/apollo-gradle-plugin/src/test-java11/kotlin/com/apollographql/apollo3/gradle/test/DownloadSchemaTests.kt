@@ -1,15 +1,34 @@
 package com.apollographql.apollo3.gradle.test
 
 
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.execution.ExecutableSchema
+import com.apollographql.apollo3.execution.GraphQLRequest
+import com.apollographql.apollo3.execution.GraphQLRequestError
+import com.apollographql.apollo3.execution.parsePostGraphQLRequest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
+import okio.Buffer
+import okio.buffer
+import okio.source
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
+import org.http4k.core.HttpHandler
+import org.http4k.core.Method
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
+import org.http4k.routing.bind
+import org.http4k.routing.routes
+import org.http4k.server.Jetty
+import org.http4k.server.asServer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import util.TestUtils
 import util.TestUtils.withSimpleProject
+import util.TestUtils.withTestProject
 import java.io.File
 
 class DownloadSchemaTests {
@@ -267,4 +286,47 @@ class DownloadSchemaTests {
     }
   }
 
+  @Test
+  fun `download a schema from a real server is working`() {
+    val executableSchema = ExecutableSchema.Builder()
+        .schema("type Query {foo: Int}")
+        .build()
+
+    val server = routes("/graphql" bind Method.POST to GraphQLHttpHandler(executableSchema, ExecutionContext.Empty))
+        .asServer(Jetty(8001))
+        .start()
+
+    val buildResult = withTestProject("downloadIntrospection") {dir ->
+      TestUtils.executeGradle(dir, "downloadServiceApolloSchemaFromIntrospection")
+    }
+
+    assertEquals(TaskOutcome.SUCCESS, buildResult.task(":downloadServiceApolloSchemaFromIntrospection")?.outcome)
+
+    server.stop()
+  }
+
+  class GraphQLHttpHandler(val executableSchema: ExecutableSchema, val executionContext: ExecutionContext) : HttpHandler {
+    override fun invoke(request: Request): Response {
+
+      val graphQLRequestResult = when (request.method) {
+        org.http4k.core.Method.POST -> request.body.stream.source().buffer().use { it.parsePostGraphQLRequest() }
+        else -> error("")
+      }
+
+      if (graphQLRequestResult is GraphQLRequestError) {
+        return Response(Status.BAD_REQUEST).body(graphQLRequestResult.message)
+      }
+      graphQLRequestResult as GraphQLRequest
+
+      val response = executableSchema.execute(graphQLRequestResult, executionContext)
+
+      val buffer = Buffer()
+      response.serialize(buffer)
+      val responseText = buffer.readUtf8()
+
+      return Response(Status.OK)
+          .header("content-type", "application/json")
+          .body(responseText)
+    }
+  }
 }
