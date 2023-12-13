@@ -234,13 +234,14 @@ abstract class DefaultApolloExtension(
         } else {
           "project(\":foo\")"
         }
-      }.joinToString("\n") { "dependsOn($it)" }
+      }.joinToString("\n") { "    dependsOn($it)" }
+
       """
         Apollo: using apolloMetadata is not supported anymore. Please use `dependsOn`:
          
         apollo {
           service("service") {
-            $projectLines
+        $projectLines
           }
         }
       """.trimIndent()
