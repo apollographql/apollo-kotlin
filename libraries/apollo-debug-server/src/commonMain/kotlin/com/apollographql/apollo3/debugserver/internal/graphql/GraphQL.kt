@@ -84,8 +84,11 @@ internal class GraphQLApolloClient(
 
   fun displayName() = id
 
-  fun normalizedCaches(): List<NormalizedCache> = runBlocking { apolloClient.apolloStore.dump() }.map {
-    NormalizedCache(id, it.key, it.value)
+  fun normalizedCaches(): List<NormalizedCache> {
+    val apolloStore = runCatching {  apolloClient.apolloStore }.getOrNull() ?: return emptyList()
+    return runBlocking { apolloStore.dump() }.map {
+      NormalizedCache(id, it.key, it.value)
+    }
   }
 
   fun normalizedCache(id: String): NormalizedCache? {

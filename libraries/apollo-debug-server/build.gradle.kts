@@ -24,9 +24,9 @@ kotlin {
 
       dependencies {
         implementation(project(":apollo-normalized-cache"))
-
-        api(project(":apollo-ast"))
-        api(project(":apollo-api"))
+        implementation(project(":apollo-normalized-cache-api"))
+        implementation(project(":apollo-ast"))
+        api(project(":apollo-runtime"))
       }
     }
 
