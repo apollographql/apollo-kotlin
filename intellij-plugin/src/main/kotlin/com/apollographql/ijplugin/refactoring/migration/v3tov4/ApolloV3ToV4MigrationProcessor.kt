@@ -24,12 +24,14 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowA
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.intellij.openapi.project.Project
 
-private const val apollo4LatestVersion = "4.0.0-beta.4"
-
 /**
  * Migrations of Apollo Kotlin v3 to v4.
  */
 class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactoringProcessor(project) {
+  companion object {
+    const val apollo4LatestVersion = "4.0.0-beta.4"
+  }
+
   override val refactoringName = ApolloBundle.message("ApolloV3ToV4MigrationProcessor.title")
 
   override val noUsageMessage = ApolloBundle.message("ApolloV3ToV4MigrationProcessor.noUsage")

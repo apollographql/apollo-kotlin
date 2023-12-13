@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.inspection
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.action.ApolloV3ToV4MigrationAction
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.ApolloV3ToV4MigrationProcessor
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.getMethodName
@@ -36,11 +37,15 @@ class Apollo4AvailableInspection : LocalInspectionTool() {
   // XXX kts files are not highlighted in tests
   private val buildGradleFileName = if (isUnitTestMode()) "build.gradle.kt" else "build.gradle.kts"
 
+  // Do not warn until 4.0 is stable (but keep enabled always in unit tests)
+  private val isEnabled = isUnitTestMode() || !ApolloV3ToV4MigrationProcessor.apollo4LatestVersion.contains('-')
+
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : PsiElementVisitor() {
       private val registeredTomlVersionValues = mutableSetOf<PsiElement>()
 
       override fun visitElement(element: PsiElement) {
+        if (!isEnabled) return
         if (!element.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         when {
           element.containingFile.name.endsWith(".versions.toml") && element is TomlLiteral -> {
