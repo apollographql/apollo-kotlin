@@ -101,7 +101,7 @@ class JsonDataException(message: String) : ApolloException(message)
  */
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
-class ApolloGraphQLException(val error: Error): ApolloException("GraphQL error") {
+class ApolloGraphQLException(val error: Error): ApolloException("GraphQL error: '${error.message}'") {
   constructor(errors: List<Error>): this(errors.first())
 
   @Deprecated("Use error instead", level = DeprecationLevel.ERROR)
