@@ -34,8 +34,8 @@ object FieldInsights {
     val data = response.data
     if (data != null) {
       val service = data.service
-      if (service != null) {
-        return FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
+      return if (service != null) {
+        FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
           val parentType = it.groupBy.parentType ?: return@mapNotNull null
           val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
           val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
