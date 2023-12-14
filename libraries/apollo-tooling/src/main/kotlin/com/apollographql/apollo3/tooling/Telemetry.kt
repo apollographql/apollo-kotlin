@@ -2,7 +2,6 @@ package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.TrackApolloKotlinUsageMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.ApolloKotlinUsageEventInput
 import com.apollographql.apollo3.tooling.platformapi.internal.type.ApolloKotlinUsagePropertyInput
@@ -39,24 +38,11 @@ object Telemetry {
         )
     ).execute()
 
-    if (response.data != null) {
-      return Result.success(Unit)
+    if (response.data == null) {
+      throw response.toException("Cannot track Apollo Kotlin usage")
     }
 
-    return when (val e = response.exception) {
-      is ApolloHttpException -> {
-        val body = e.body?.use { it.readUtf8() } ?: ""
-        Result.failure(Exception("Cannot track Apollo Kotlin usage: (code: ${e.statusCode})\n$body", e))
-      }
-
-      null -> {
-        Result.failure(Exception("Cannot track Apollo Kotlin usage: ${response.errors?.joinToString { it.message }}"))
-      }
-
-      else -> {
-        Result.failure(Exception("Cannot track Apollo Kotlin usage: ${e.message}", e))
-      }
-    }
+    return Result.success(Unit)
   }
 
   @ApolloInternal

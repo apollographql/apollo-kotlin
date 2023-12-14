@@ -26,7 +26,6 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredOperationInput
@@ -254,34 +253,22 @@ object RegisterOperations {
 
     val response = runBlocking { call.execute() }
     val data = response.data
-    if (data != null) {
-      val service = data.service
-      if (service == null) {
-        throw Exception("Cannot push operations: cannot find service '$graphID': ${response.errors?.joinToString { it.message }}")
-      }
-      val errors = data.service.registerOperationsWithResponse.invalidOperations.flatMap {
-        it.errors ?: emptyList()
-      }
-
-      if(errors.isNotEmpty()) {
-        throw Exception("Cannot push operations:\n${errors.joinToString("\n")}")
-      }
-      println("Operations pushed successfully")
-      return
+    if (data == null) {
+      throw response.toException("Cannot push operations")
     }
-    when (val e = response.exception) {
-      is ApolloHttpException -> {
-        val body = e.body?.use { it.readUtf8() } ?: ""
-        throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
-      }
 
-      null -> {
-        throw Exception("Cannot push operations: ${response.errors?.joinToString { it.message }}")
-      }
-
-      else -> {
-        throw Exception("Cannot push operations: ${e.message}", e)
-      }
+    val service = data.service
+    if (service == null) {
+      throw Exception("Cannot push operations: cannot find service '$graphID': ${response.errors?.joinToString { it.message }}")
     }
+
+    val errors = data.service.registerOperationsWithResponse.invalidOperations.flatMap {
+      it.errors ?: emptyList()
+    }
+
+    if (errors.isNotEmpty()) {
+      throw Exception("Cannot push operations:\n${errors.joinToString("\n")}")
+    }
+    println("Operations pushed successfully")
   }
 }

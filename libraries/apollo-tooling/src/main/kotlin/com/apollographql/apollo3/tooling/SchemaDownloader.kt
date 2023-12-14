@@ -176,30 +176,18 @@ object SchemaDownloader {
     }
     val data = response.data
 
-    if (data != null) {
-      if (data.graph == null) {
-        throw Exception("Cannot retrieve graph '$graph': ${response.errors?.joinToString { it.message }}")
-      }
-      if (data.graph.variant == null) {
-        throw Exception("Cannot retrieve variant '$variant': ${response.errors?.joinToString { it.message }}")
-      }
-      return data.graph.variant.latestPublication.schema.document
+    if (data == null) {
+      throw response.toException("Cannot download schema")
     }
 
-    when (val e = response.exception) {
-      is ApolloHttpException -> {
-        val body = e.body?.use { it.readUtf8() } ?: ""
-        throw Exception("Cannot download schema: (code: ${e.statusCode})\n$body", e)
-      }
-
-      null -> {
-        throw Exception("Cannot download schema: ${response.errors?.joinToString { it.message }}")
-      }
-
-      else -> {
-        throw Exception("Cannot download schema: ${e.message}", e)
-      }
+    if (data.graph == null) {
+      throw Exception("Cannot retrieve graph '$graph': ${response.errors?.joinToString { it.message }}")
     }
+
+    if (data.graph.variant == null) {
+      throw Exception("Cannot retrieve variant '$variant': ${response.errors?.joinToString { it.message }}")
+    }
+    return data.graph.variant.latestPublication.schema.document
   }
 
   inline fun <reified T> Any?.cast() = this as? T

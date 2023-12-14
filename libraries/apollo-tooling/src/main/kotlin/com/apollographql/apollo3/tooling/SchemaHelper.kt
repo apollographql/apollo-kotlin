@@ -14,7 +14,6 @@ import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.GraphQLFeature.*
@@ -83,21 +82,11 @@ internal object SchemaHelper {
           .execute()
     }
     val data = response.data
-    if (data != null) {
-      return data
+    if (data == null) {
+      throw response.toException("Cannot execute pre-introspection query from $endpoint")
     }
-    when (val e = response.exception) {
-      is ApolloHttpException -> {
-        val body = e.body?.use { it.readUtf8() } ?: ""
-        throw Exception("Cannot execute pre-introspection query from $endpoint: (code: ${e.statusCode})\n$body", e)
-      }
-      null -> {
-        throw Exception("Cannot execute pre-introspection query from $endpoint: ${response.errors?.joinToString { it.message }}")
-      }
-      else -> {
-        throw Exception("Cannot execute pre-introspection query from $endpoint", e)
-      }
-    }
+
+    return data
   }
 
   internal fun executeIntrospectionQuery(

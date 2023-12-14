@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.FieldLatenciesQuery
 import java.time.Instant
 
@@ -32,9 +31,9 @@ object FieldInsights {
         )
     ).execute()
     val data = response.data
-    if (data != null) {
+    return if (data != null) {
       val service = data.service
-      return if (service != null) {
+      if (service != null) {
         FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
           val parentType = it.groupBy.parentType ?: return@mapNotNull null
           val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
@@ -48,23 +47,9 @@ object FieldInsights {
       } else {
         FieldLatenciesResult.Error(cause = Exception("Cannot find service $serviceId: ${response.errors?.joinToString { it.message }}}"))
       }
+    } else {
+      FieldLatenciesResult.Error(cause = response.toException("Cannot fetch field latencies"))
     }
-
-    val cause = when (val e = response.exception) {
-      is ApolloHttpException -> {
-        val body = e.body?.use { it.readUtf8() } ?: ""
-        Exception("Cannot fetch field latencies: (code: ${e.statusCode})\n$body", e)
-      }
-
-      null -> {
-        Exception("Cannot fetch field latencies: ${response.errors?.joinToString { it.message }}")
-      }
-
-      else -> {
-        Exception("Cannot fetch field latencies: ${e.message}")
-      }
-    }
-    return FieldLatenciesResult.Error(cause = cause)
   }
 
   @ApolloExperimental

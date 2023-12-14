@@ -64,9 +64,9 @@ class ApolloWebSocketClosedException(
 /**
  * The response was received but the response code was not 200
  *
- * @param statusCode: the HTTP status code
- * @param headers: the HTTP headers
- * @param body: the HTTP error body. By default, [body] is always null. You can opt-in [exposeHttpErrorBody] in [HttpNetworkTransport]
+ * @param statusCode the HTTP status code
+ * @param headers the HTTP headers
+ * @param body the HTTP error body. By default, [body] is always null. You can opt-in [HttpNetworkTransport.httpExposeErrorBody]
  * if you need it. If you're doing this, you **must** call [BufferedSource.close] on [body] to avoid sockets and other resources leaking.
  */
 class ApolloHttpException(

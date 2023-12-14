@@ -2,7 +2,6 @@ package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.public.PublishOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.public.type.OperationType
 import com.apollographql.apollo3.tooling.platformapi.public.type.PersistedQueryInput
@@ -16,10 +15,18 @@ class PersistedQuery(
 )
 
 sealed interface PublishOperationsResult
-object GraphNotFound: PublishOperationsResult
-class PermissionError(val message: String): PublishOperationsResult
-class CannotModifyOperationBody(val message: String): PublishOperationsResult
-class PublishOperationsSuccess(val added: Int, val removed: Int, val identical: Int, val updated: Int, val unaffected: Int, val name: String, val revision: Int) : PublishOperationsResult
+object GraphNotFound : PublishOperationsResult
+class PermissionError(val message: String) : PublishOperationsResult
+class CannotModifyOperationBody(val message: String) : PublishOperationsResult
+class PublishOperationsSuccess(
+    val added: Int,
+    val removed: Int,
+    val identical: Int,
+    val updated: Int,
+    val unaffected: Int,
+    val name: String,
+    val revision: Int,
+) : PublishOperationsResult
 
 @ApolloExperimental
 fun publishOperations(
@@ -40,47 +47,38 @@ fun publishOperations(
   }
 
   val data = response.data
-  if (data != null) {
-    val graph1 = data.graph
-    if (graph1 == null) {
-      return GraphNotFound
-    }
-    val ops = graph1.persistedQueryList.publishOperations
-    return when {
-      ops.onPublishOperationsResult != null -> {
-        val counts = ops.onPublishOperationsResult.build.publish.operationCounts
-        PublishOperationsSuccess(
-            counts.added,
-            counts.removed,
-            counts.identical,
-            counts.updated,
-            counts.unaffected,
-            ops.onPublishOperationsResult.build.list.name,
-            ops.onPublishOperationsResult.build.revision
-        )
-      }
-      ops.onPermissionError != null -> {
-        PermissionError(ops.onPermissionError.message)
-      }
-      ops.onCannotModifyOperationBodyError != null -> {
-        CannotModifyOperationBody(ops.onCannotModifyOperationBodyError.message)
-      }
-      else -> error("Unknown ops: ${ops.__typename}")
-    }
+  if (data == null) {
+    throw response.toException("Cannot publish operations")
   }
 
-  when (val e = response.exception) {
-    is ApolloHttpException -> {
-      val body = e.body?.use { it.readUtf8() } ?: ""
-      throw Exception("Cannot publish operations: (code: ${e.statusCode})\n$body", e)
-    }
-
-    null -> {
-      throw Exception("Cannot publish operations: ${response.errors?.joinToString { it.message }}")
-    }
-
-    else -> {
-      throw Exception("Cannot publish operations: ${e.message}", e)
-    }
+  val graph1 = data.graph
+  if (graph1 == null) {
+    return GraphNotFound
   }
+  val ops = graph1.persistedQueryList.publishOperations
+  return when {
+    ops.onPublishOperationsResult != null -> {
+      val counts = ops.onPublishOperationsResult.build.publish.operationCounts
+      PublishOperationsSuccess(
+          counts.added,
+          counts.removed,
+          counts.identical,
+          counts.updated,
+          counts.unaffected,
+          ops.onPublishOperationsResult.build.list.name,
+          ops.onPublishOperationsResult.build.revision
+      )
+    }
+
+    ops.onPermissionError != null -> {
+      PermissionError(ops.onPermissionError.message)
+    }
+
+    ops.onCannotModifyOperationBodyError != null -> {
+      CannotModifyOperationBody(ops.onCannotModifyOperationBodyError.message)
+    }
+
+    else -> error("Unknown ops: ${ops.__typename}")
+  }
+
 }
