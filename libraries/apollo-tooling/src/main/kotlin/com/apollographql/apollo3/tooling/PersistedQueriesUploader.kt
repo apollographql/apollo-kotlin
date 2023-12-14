@@ -2,6 +2,7 @@ package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.public.PublishOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.public.type.OperationType
 import com.apollographql.apollo3.tooling.platformapi.public.type.PersistedQueryInput
@@ -68,9 +69,18 @@ fun publishOperations(
     }
   }
 
-  if (response.exception != null) {
-    throw Exception("Cannot publish operations", response.exception)
-  }
+  when (val e = response.exception) {
+    is ApolloHttpException -> {
+      val body = e.body?.use { it.readUtf8() } ?: ""
+      throw Exception("Cannot publish operations: (code: ${e.statusCode})\n$body", e)
+    }
 
-  throw Exception("Cannot publish operations: ${response.errors?.joinToString { it.message }}")
+    null -> {
+      throw Exception("Cannot publish operations: ${response.errors?.joinToString { it.message }}")
+    }
+
+    else -> {
+      throw Exception("Cannot publish operations: ${e.message}", e)
+    }
+  }
 }
