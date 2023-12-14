@@ -38,6 +38,8 @@ object FieldInsights {
 
     val service = data.service
     if (service == null) {
+      // As of Dec-2023, service doesn't return an error when it is null
+      // Better safe than sorry though, and we still display the GraphQL errors.
       return FieldLatenciesResult.Error(cause = Exception("Cannot find service $serviceId: ${response.errors?.joinToString { it.message }}}"))
     }
 

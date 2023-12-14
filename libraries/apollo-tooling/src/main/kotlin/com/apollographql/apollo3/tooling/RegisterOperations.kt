@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.ast.GQLArgument
@@ -223,6 +224,8 @@ object RegisterOperations {
     return OperationIdGenerator.Sha256.apply(normalize(), "")
   }
 
+  @Deprecated("Use persisted queries and publishOperations instead. See https://www.apollographql.com/docs/graphos/operations/persisted-queries/")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun registerOperations(
       key: String,
       graphID: String,
