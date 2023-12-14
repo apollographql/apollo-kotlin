@@ -35,7 +35,8 @@ private class AndroidServer(
 
   override fun start() {
     if (localServerSocket != null) error("Already started")
-    val localServerSocket = LocalServerSocket("$SOCKET_NAME_PREFIX${ApolloDebugServerInitializer.packageName}")
+    val packageName = ApolloDebugServerInitializer.packageName ?: "unknown.${System.currentTimeMillis()}"
+    val localServerSocket = LocalServerSocket("$SOCKET_NAME_PREFIX$packageName")
     this.localServerSocket = localServerSocket
     coroutineScope.launch {
       while (true) {

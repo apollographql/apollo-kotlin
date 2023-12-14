@@ -11,6 +11,6 @@ internal class ApolloDebugServerInitializer : Initializer<Unit> {
   override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 
   companion object {
-    lateinit var packageName: String
+    var packageName: String? = null
   }
 }
