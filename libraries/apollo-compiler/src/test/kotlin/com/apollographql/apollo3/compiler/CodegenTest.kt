@@ -153,6 +153,7 @@ class CodegenTest {
 
             when {
               file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
+              file.name == "flatten_explicitly" -> listOf(Parameters(file, MODELS_RESPONSE_BASED, true))
               hasFragments -> {
                 @Suppress("DEPRECATION")
                 val list = listOf(
