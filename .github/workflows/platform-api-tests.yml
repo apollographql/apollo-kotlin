@@ -1,0 +1,34 @@
+name: platform-api-tests
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+
+jobs:
+  defer-with-router-tests:
+    runs-on: macos-11
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
+
+      - name: Setup Java
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+
+      - name: Run Gradle Plugin tests against the Apollo Platform API
+        env:
+          COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_ENABLED: true
+          COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_KEY: ${{ secrets.COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_KEY }}
+          COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_GRAPH: ${{ secrets.COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_GRAPH }}
+          COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_SUBGRAPH: ${{ secrets.COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_SUBGRAPH }}
+          COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_PQ_LIST_ID: ${{ secrets.COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_PQ_LIST_ID }}
+        run: |
+          ./gradlew --no-daemon --console plain :apollo-gradle-plugin:allTests
