@@ -13,6 +13,7 @@ import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment
@@ -166,6 +167,7 @@ object SchemaDownloader {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(endpoint)
         .okHttpClient(SchemaHelper.newOkHttpClient(insecure))
+        .httpExposeErrorBody(true)
         .build()
     val response = runBlocking {
       apolloClient.query(DownloadSchemaQuery(graphID = graph, variant = variant))
@@ -184,11 +186,20 @@ object SchemaDownloader {
       return data.graph.variant.latestPublication.schema.document
     }
 
-    if (response.exception != null) {
-      throw response.exception!!
-    }
+    when (val e = response.exception) {
+      is ApolloHttpException -> {
+        val body = e.body?.use { it.readUtf8() } ?: ""
+        throw Exception("Cannot download schema: (code: ${e.statusCode})\n$body", e)
+      }
 
-    throw Exception("Cannot retrieve document from $endpoint: ${response.errors?.joinToString { it.message }}\nCheck graph id and variant")
+      null -> {
+        throw Exception("Cannot download schema: ${response.errors?.joinToString { it.message }}")
+      }
+
+      else -> {
+        throw Exception("Cannot download schema: ${e.message}", e)
+      }
+    }
   }
 
   inline fun <reified T> Any?.cast() = this as? T
