@@ -13,7 +13,7 @@ suspend fun executeTelemetryNetworkCall(telemetrySession: TelemetrySession) {
       instanceId = telemetrySession.instanceId,
       properties = telemetrySession.properties.map { it.toToolingTelemetryProperty() },
       events = telemetrySession.events.map { it.toTelemetryEvent() },
-  ).getOrThrow()
+  )
 }
 
 @OptIn(ApolloInternal::class)

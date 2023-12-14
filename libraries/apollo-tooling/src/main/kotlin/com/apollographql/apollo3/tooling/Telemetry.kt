@@ -17,7 +17,7 @@ object Telemetry {
       instanceId: String,
       properties: List<TelemetryProperty>,
       events: List<TelemetryEvent>,
-  ): Result<Unit> {
+  ) {
     val apolloClient = newInternalPlatformApiApolloClient(serverUrl = serverUrl ?: INTERNAL_PLATFORM_API_URL)
     val response = apolloClient.mutation(
         TrackApolloKotlinUsageMutation(
@@ -41,8 +41,6 @@ object Telemetry {
     if (response.data == null) {
       throw response.toException("Cannot track Apollo Kotlin usage")
     }
-
-    return Result.success(Unit)
   }
 
   @ApolloInternal
