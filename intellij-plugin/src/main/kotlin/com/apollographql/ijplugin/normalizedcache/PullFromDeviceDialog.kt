@@ -257,6 +257,7 @@ class PullFromDeviceDialog(
     @SuppressLint("SdCardPath")
     override fun computeChildren() {
       device.getDebuggablePackageList().onFailure {
+        logw(it, "Could not list debuggable packages")
         updateChild(ErrorNode((ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listDebuggablePackages.error"))))
       }.onSuccess {
         if (it.isEmpty()) {
@@ -296,6 +297,7 @@ class PullFromDeviceDialog(
 
     override fun computeChildren() {
       device.getDatabaseList(packageName, databasesDir).onFailure {
+        logw(it, "Could not list databases")
         updateChild(ErrorNode(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listDatabases.error")))
       }.onSuccess {
         if (it.isEmpty()) {
@@ -335,6 +337,7 @@ class PullFromDeviceDialog(
 
     override fun computeChildren() {
       runBlocking { apolloDebugClient.getApolloClients() }.onFailure {
+        logw(it, "Could not list Apollo clients")
         updateChild(ErrorNode(ApolloBundle.message("normalizedCacheViewer.pullFromDevice.listApolloClients.error")))
       }.onSuccess { apolloClients ->
         if (apolloClients.isEmpty()) {

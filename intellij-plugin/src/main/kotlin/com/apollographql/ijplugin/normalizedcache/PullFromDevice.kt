@@ -4,6 +4,8 @@ import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.android.ddmlib.SyncService
 import com.android.tools.idea.adb.AdbShellCommandsUtil
+import com.apollographql.ijplugin.util.execute
+import com.apollographql.ijplugin.util.executeCatching
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import java.io.File
@@ -21,12 +23,10 @@ fun getConnectedDevices(): List<IDevice> {
 }
 
 fun IDevice.getDebuggablePackageList(): Result<List<String>> {
-  val commandResult = runCatching {
-    AdbShellCommandsUtil.create(this).executeCommandBlocking(
-        // List all packages, and try run-as on them - if it succeeds, the package is debuggable
-        "for p in \$(pm list packages -3 | cut -d : -f 2); do (run-as \$p true >/dev/null 2>&1 && echo \$p); done; true"
-    )
-  }
+  val commandResult = AdbShellCommandsUtil.create(this).executeCatching(
+      // List all packages, and try run-as on them - if it succeeds, the package is debuggable
+      "for p in \$(pm list packages -3 | cut -d : -f 2); do (run-as \$p true >/dev/null 2>&1 && echo \$p); done; true"
+  )
   if (commandResult.isFailure) {
     val e = commandResult.exceptionOrNull()!!
     logw(e, "Could not list debuggable packages")
@@ -42,9 +42,7 @@ fun IDevice.getDebuggablePackageList(): Result<List<String>> {
 }
 
 fun IDevice.getDatabaseList(packageName: String, databasesDir: String): Result<List<String>> {
-  val commandResult = runCatching {
-    AdbShellCommandsUtil.create(this).executeCommandBlocking("run-as $packageName ls -1 $databasesDir")
-  }
+  val commandResult = AdbShellCommandsUtil.create(this).executeCatching("run-as $packageName ls -1 $databasesDir")
   if (commandResult.isFailure) {
     val e = commandResult.exceptionOrNull()!!
     logw(e, "Could not list databases")
@@ -69,18 +67,18 @@ fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, rem
   val intermediateRemoteFilePath = "/data/local/tmp/${localFile.name}"
   val shellCommandsUtil = AdbShellCommandsUtil.create(device)
   return runCatching {
-    var commandResult = shellCommandsUtil.executeCommandBlocking("touch $intermediateRemoteFilePath")
+    var commandResult = shellCommandsUtil.execute("touch $intermediateRemoteFilePath")
     if (commandResult.isError) {
       throw Exception("'touch' command failed")
     }
-    commandResult = shellCommandsUtil.executeCommandBlocking("run-as $appPackageName sh -c 'cp $remoteFilePath $intermediateRemoteFilePath'")
+    commandResult = shellCommandsUtil.execute("run-as $appPackageName sh -c 'cp $remoteFilePath $intermediateRemoteFilePath'")
     if (commandResult.isError) {
       throw Exception("'copy' command failed")
     }
     try {
       device.syncService.pullFile(intermediateRemoteFilePath, localFile.absolutePath, NullSyncProgressMonitor)
     } finally {
-      commandResult = shellCommandsUtil.executeCommandBlocking("rm $intermediateRemoteFilePath")
+      commandResult = shellCommandsUtil.execute("rm $intermediateRemoteFilePath")
       if (commandResult.isError) {
         logw("'rm' command failed")
       }
