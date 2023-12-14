@@ -39,6 +39,6 @@ jobs:
 
       - name: Run Apollo Kotlin @defer tests
         env:
-          COM_APOLLOGRAPHQL_DEFER_WITH_ROUTER_TESTS: true
+          DEFER_WITH_ROUTER_TESTS: true
         run: |
           ./gradlew --no-daemon --console plain -p tests :defer:allTests

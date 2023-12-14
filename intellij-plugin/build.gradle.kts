@@ -224,7 +224,7 @@ dependencies {
   testImplementation(libs.google.testparameterinjector)
 }
 
-fun isSnapshotBuild() = System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()
+fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 
 apollo {
   service("apolloDebug") {

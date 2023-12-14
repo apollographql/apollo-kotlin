@@ -15,10 +15,10 @@ import java.io.File
  * They are enabled only when running from the specific `platform-api-tests` CI workflow.
  */
 class PlatformApiTests {
-  private fun getKey() = System.getenv("COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_KEY")
-  private fun getGraph() = System.getenv("COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_GRAPH")
-  private fun getSubgraph() = System.getenv("COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_SUBGRAPH")
-  private fun getPQListId() = System.getenv("COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_PQ_LIST_ID")
+  private fun getKey() = System.getenv("PLATFORM_API_TESTS_KEY")
+  private fun getGraph() = System.getenv("PLATFORM_API_TESTS_GRAPH")
+  private fun getSubgraph() = System.getenv("PLATFORM_API_TESTS_SUBGRAPH")
+  private fun getPQListId() = System.getenv("PLATFORM_API_TESTS_PQ_LIST_ID")
 
   private fun withPlatformApiProject(block: (File) -> Unit) {
     TestUtils.withTestProject("platform-api") { dir ->

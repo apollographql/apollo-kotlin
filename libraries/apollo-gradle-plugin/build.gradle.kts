@@ -206,7 +206,7 @@ tasks.named("testJava17").configure {
 
 tasks.withType(AbstractTestTask::class.java) {
   // Run the Platform API tests only from a specific CI job
-  val runPlatformApiTests = System.getenv("COM_APOLLOGRAPHQL_PLATFORM_API_TESTS_ENABLED").toBoolean()
+  val runPlatformApiTests = System.getenv("PLATFORM_API_TESTS_ENABLED").toBoolean()
   if (runPlatformApiTests) {
     filter.setIncludePatterns("com.apollographql.apollo3.gradle.test.platformapi.*")
   } else {
