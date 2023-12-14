@@ -57,6 +57,7 @@ apollo {
       endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
       schemaFile.set(file("src/main/graphql/platform-api/internal/schema.graphqls"))
     }
+    mapScalar("Void", "kotlin.Unit", "com.apollographql.apollo3.tooling.VoidAdapter")
     mapScalar("Timestamp", "java.time.Instant", "com.apollographql.apollo3.tooling.TimestampAdapter")
   }
 }
