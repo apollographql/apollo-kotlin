@@ -30,7 +30,7 @@ object FieldInsights {
             percentile = percentile,
         )
     ).execute()
-    
+
     val data = response.data
     if (data == null) {
       return FieldLatenciesResult.Error(cause = response.toException("Cannot fetch field latencies"))
@@ -42,17 +42,17 @@ object FieldInsights {
     }
 
     return FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
-        val parentType = it.groupBy.parentType ?: return@mapNotNull null
-        val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
-        val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
-        FieldLatencies.FieldLatency(
-            parentType = parentType,
-            fieldName = fieldName,
-            durationMs = durationMs
-        )
-      })
-    }
+      val parentType = it.groupBy.parentType ?: return@mapNotNull null
+      val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
+      val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
+      FieldLatencies.FieldLatency(
+          parentType = parentType,
+          fieldName = fieldName,
+          durationMs = durationMs
+      )
+    })
   }
+
 
   @ApolloExperimental
   sealed interface FieldLatenciesResult {
