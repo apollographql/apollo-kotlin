@@ -26,7 +26,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
       context: Context,
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
-      callback: SupportSQLiteOpenHelper.Callback = AndroidSqliteDriver.Callback(schema),
+      callback: SupportSQLiteOpenHelper.Callback = AndroidSqliteDriver.Callback(getSchema()),
       useNoBackupDirectory: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
