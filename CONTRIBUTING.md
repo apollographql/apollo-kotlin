@@ -255,6 +255,22 @@ java -cp build/libs/r8_with_deps.jar com.android.tools.r8.retrace.Retrace apollo
 [copy paste your stacktrace and press Crtl-D to launch the retracing]
 ```
 
+## Tests
+
+You can run tests with `./gradlew build`.
+
+Because the Apollo Kotlin compiler runs from a Gradle Plugin, a lot of integration tests are in the `tests` composite build.
+
+You can run integration tests with `./gradlew -p tests build`
+
+Gradle tests are slow and not always easy to debug in the IDE. Most of the times,
+an integration test from the `tests` composite build is faster. Keep Gradle tests for the cases
+where:
+
+* We need to test a specific version of Gradle and/or KGP, AGP or another buildscript dependency.
+* We need to tweak the Gradle environment, for an example, a server needs to run in the background.
+* We need to test up-to-date checks, build cache or other things that require instrumenting the build outcome.
+
 ## Overview of the CI
 
 The project uses [GitHub Actions](https://docs.github.com/en/actions) to automate the build process.
