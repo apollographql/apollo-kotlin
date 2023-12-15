@@ -18,6 +18,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
   /**
    * @param [name] Name of the database file, or null for an in-memory database (as per Android framework implementation).
    * @param [factory] Factory class to create instances of [SupportSQLiteOpenHelper]
+   * @param [callback] Callback class to get database lifecycle events. Uses [AndroidSqliteDriver.Callback] by default.
    * @param [useNoBackupDirectory] Sets whether to use a no backup directory or not.
    */
   @JvmOverloads
@@ -25,6 +26,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
       context: Context,
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
+      callback: SupportSQLiteOpenHelper.Callback = AndroidSqliteDriver.Callback(schema),
       useNoBackupDirectory: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
@@ -32,6 +34,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
           context.applicationContext,
           name,
           factory,
+          callback,
           useNoBackupDirectory = useNoBackupDirectory
       ),
   )
