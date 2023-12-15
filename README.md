@@ -232,7 +232,7 @@ And then use the `4.0.0-beta.5-SNAPSHOT` version for the plugin and libraries.
 
 These snapshots are updated on each push to `main`.
 
-Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](tree/main/intellij-plugin#snapshots). 
+Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](tree/main/intellij-plugin#weekly-snapshots). 
 
 ## Deprecation policy
 
