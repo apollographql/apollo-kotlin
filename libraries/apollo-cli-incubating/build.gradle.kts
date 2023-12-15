@@ -5,8 +5,8 @@ plugins {
 
 apolloLibrary(
     javaModuleName = "com.apollographql.apollo3.cli",
-    publish = false
 )
+
 dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-annotations"))

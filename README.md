@@ -234,9 +234,14 @@ And then use the `4.0.0-beta.5-SNAPSHOT` version for the plugin and libraries.
 
 Snapshots for the Android Studio / IntelliJ plugin [are also available](https://github.com/apollographql/apollo-kotlin/tree/main/intellij-plugin#snapshots). 
 
-## Deprecation policy
+## Stability of different artifacts
 
-The project observes [Semantic Versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases.
+Apollo Kotlin is very modular and publishes several artifacts.
+
+* Artifacts ending with `-incubating` are not finalized yet and subject to change any time.
+* Other artifacts observe [Semantic Versioning](https://semver.org/).
+    * No breaking change should be introduced in minor or patch releases except for symbols annotated with `@ApolloExperimental` that are subject to change at any time.
+    * Deprecated symbols may be removed in the next major release. We strongly recommend removing deprecated usages before migrating to the next major version.
 
 ## Contributing
 
