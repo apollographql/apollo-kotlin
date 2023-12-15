@@ -214,9 +214,9 @@ pluginManagement {
 ```
 And then use the `4.0.0-beta.5-SNAPSHOT` version for the plugin and libraries.
 
-### Android Studio / IntelliJ plugin
+These snapshots are updated on each push to `main`.
 
-Snapshots for the Android Studio / IntelliJ plugin [are also available](tree/main/intellij-plugin#snapshots). 
+Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](testing/android-studio-plugin#weekly-snapshots). 
 
 ## Stability of different artifacts
 
