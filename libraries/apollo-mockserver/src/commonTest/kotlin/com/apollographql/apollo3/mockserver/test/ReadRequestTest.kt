@@ -41,9 +41,9 @@ class ReadRequestTest {
     assertEquals("/", recordedRequest.path)
     assertEquals("HTTP/2", recordedRequest.version)
     assertEquals(mapOf(
-        "Host" to "github.com",
-        "User-Agent" to "curl/7.64.1",
-        "Accept" to "*/*"
+        "host" to "github.com",
+        "user-agent" to "curl/7.64.1",
+        "accept" to "*/*"
     ), recordedRequest.headers)
     assertEquals(0, (recordedRequest as MockRequest).body.size)
   }
