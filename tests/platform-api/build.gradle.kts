@@ -14,7 +14,7 @@ apollo {
     packageName.set("com.example")
 
     val apiKey = System.getenv("PLATFORM_API_TESTS_KEY")
-    if (key != null) {
+    if (apiKey != null) {
       registry {
         key.set(apiKey)
         graph.set("Apollo-Kotlin-CI-tests")
