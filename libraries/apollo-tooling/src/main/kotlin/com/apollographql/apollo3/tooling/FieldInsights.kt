@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.exception.ApolloGraphQLException
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.FieldLatenciesQuery
 import java.time.Instant
 
@@ -32,44 +30,31 @@ object FieldInsights {
             percentile = percentile,
         )
     ).execute()
+
     val data = response.data
-    return when {
-      data == null -> {
-        val cause = when (val e = response.exception!!) {
-          is ApolloHttpException -> {
-            val body = e.body?.use { it.readUtf8() } ?: ""
-            Exception("Cannot fetch field latencies: (code: ${e.statusCode})\n$body", e)
-          }
-
-          is ApolloGraphQLException -> {
-            Exception("Cannot fetch field latencies: ${e.errors.joinToString { it.message }}")
-          }
-
-          else -> {
-            Exception("Cannot fetch field latencies: ${e.message}", e)
-          }
-        }
-        FieldLatenciesResult.Error(cause = cause)
-      }
-
-      data.service == null && response.hasErrors() -> {
-        FieldLatenciesResult.Error(cause = Exception("Cannot fetch field latencies: ${response.errors!!.joinToString { it.message }}"))
-      }
-
-      else -> {
-        FieldLatencies(fieldLatencies = data.service?.statsWindow?.fieldLatencies?.mapNotNull {
-          val parentType = it.groupBy.parentType ?: return@mapNotNull null
-          val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
-          val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
-          FieldLatencies.FieldLatency(
-              parentType = parentType,
-              fieldName = fieldName,
-              durationMs = durationMs
-          )
-        } ?: emptyList())
-      }
+    if (data == null) {
+      return FieldLatenciesResult.Error(cause = response.toException("Cannot fetch field latencies"))
     }
+
+    val service = data.service
+    if (service == null) {
+      // As of Dec-2023, service doesn't return an error when it is null
+      // Better safe than sorry though, and we still display the GraphQL errors.
+      return FieldLatenciesResult.Error(cause = Exception("Cannot find service $serviceId: ${response.errors?.joinToString { it.message }}}"))
+    }
+
+    return FieldLatencies(fieldLatencies = service.statsWindow.fieldLatencies.mapNotNull {
+      val parentType = it.groupBy.parentType ?: return@mapNotNull null
+      val fieldName = it.groupBy.fieldName ?: return@mapNotNull null
+      val durationMs = it.metrics.fieldHistogram.durationMs ?: return@mapNotNull null
+      FieldLatencies.FieldLatency(
+          parentType = parentType,
+          fieldName = fieldName,
+          durationMs = durationMs
+      )
+    })
   }
+
 
   @ApolloExperimental
   sealed interface FieldLatenciesResult {

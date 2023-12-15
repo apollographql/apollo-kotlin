@@ -15,7 +15,7 @@ androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-beta.5-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "4.0.0-beta.2"
+apollo-published = "4.0.0-beta.3"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.5-dev-k2.0.0-Beta1-06b8ae672a4"

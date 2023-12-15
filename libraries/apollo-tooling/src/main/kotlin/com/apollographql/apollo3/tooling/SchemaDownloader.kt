@@ -13,6 +13,7 @@ import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment
@@ -166,21 +167,27 @@ object SchemaDownloader {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(endpoint)
         .okHttpClient(SchemaHelper.newOkHttpClient(insecure))
+        .httpExposeErrorBody(true)
         .build()
     val response = runBlocking {
       apolloClient.query(DownloadSchemaQuery(graphID = graph, variant = variant))
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) } + HttpHeader("x-api-key", key))
           .execute()
     }
-    if (response.exception != null) throw response.exception!!
-    if (response.errors?.isNotEmpty() == true) {
-      throw Exception("Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant")
+    val data = response.data
+
+    if (data == null) {
+      throw response.toException("Cannot download schema")
     }
-    val document = response.data?.graph?.variant?.latestPublication?.schema?.document
-    check(document != null) {
-      "Cannot retrieve document from $endpoint\nCheck graph id and variant"
+
+    if (data.graph == null) {
+      throw Exception("Cannot retrieve graph '$graph': ${response.errors?.joinToString { it.message }}")
     }
-    return document
+
+    if (data.graph.variant == null) {
+      throw Exception("Cannot retrieve variant '$variant': ${response.errors?.joinToString { it.message }}")
+    }
+    return data.graph.variant.latestPublication.schema.document
   }
 
   inline fun <reified T> Any?.cast() = this as? T

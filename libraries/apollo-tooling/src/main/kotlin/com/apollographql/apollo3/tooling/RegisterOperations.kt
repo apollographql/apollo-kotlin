@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.ast.GQLArgument
@@ -26,8 +27,6 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.exception.ApolloGraphQLException
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredOperationInput
@@ -225,6 +224,8 @@ object RegisterOperations {
     return OperationIdGenerator.Sha256.apply(normalize(), "")
   }
 
+  @Deprecated("Use persisted queries and publishOperations instead. See https://www.apollographql.com/docs/graphos/operations/persisted-queries/")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun registerOperations(
       key: String,
       graphID: String,
@@ -256,29 +257,21 @@ object RegisterOperations {
     val response = runBlocking { call.execute() }
     val data = response.data
     if (data == null) {
-      when (val e = response.exception!!) {
-        is ApolloHttpException -> {
-          val body = e.body?.use { it.readUtf8() } ?: ""
-          throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
-        }
-
-        is ApolloGraphQLException -> {
-          throw Exception("Cannot push operations: ${e.errors.joinToString { it.message }}")
-        }
-
-        else -> {
-          throw Exception("Cannot push operations: ${e.message}", e)
-        }
-      }
-    } else {
-      val errors = data.service?.registerOperationsWithResponse?.invalidOperations?.flatMap {
-        it.errors ?: emptyList()
-      } ?: emptyList()
-
-      check(errors.isEmpty()) {
-        "Cannot push operations:\n${errors.joinToString("\n")}"
-      }
-      println("Operations pushed successfully")
+      throw response.toException("Cannot push operations")
     }
+
+    val service = data.service
+    if (service == null) {
+      throw Exception("Cannot push operations: cannot find service '$graphID': ${response.errors?.joinToString { it.message }}")
+    }
+
+    val errors = data.service.registerOperationsWithResponse.invalidOperations.flatMap {
+      it.errors ?: emptyList()
+    }
+
+    if (errors.isNotEmpty()) {
+      throw Exception("Cannot push operations:\n${errors.joinToString("\n")}")
+    }
+    println("Operations pushed successfully")
   }
 }

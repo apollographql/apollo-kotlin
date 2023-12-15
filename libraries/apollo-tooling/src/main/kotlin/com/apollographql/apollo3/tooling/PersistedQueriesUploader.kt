@@ -15,10 +15,18 @@ class PersistedQuery(
 )
 
 sealed interface PublishOperationsResult
-object GraphNotFound: PublishOperationsResult
-class PermissionError(val message: String): PublishOperationsResult
-class CannotModifyOperationBody(val message: String): PublishOperationsResult
-class PublishOperationsSuccess(val added: Int, val removed: Int, val identical: Int, val updated: Int, val unaffected: Int, val name: String, val revision: Int) : PublishOperationsResult
+object GraphNotFound : PublishOperationsResult
+class PermissionError(val message: String) : PublishOperationsResult
+class CannotModifyOperationBody(val message: String) : PublishOperationsResult
+class PublishOperationsSuccess(
+    val added: Int,
+    val removed: Int,
+    val identical: Int,
+    val updated: Int,
+    val unaffected: Int,
+    val name: String,
+    val revision: Int,
+) : PublishOperationsResult
 
 @ApolloExperimental
 fun publishOperations(
@@ -38,11 +46,15 @@ fun publishOperations(
         .execute()
   }
 
-  val graph1 = response.dataOrThrow().graph
+  val data = response.data
+  if (data == null) {
+    throw response.toException("Cannot publish operations")
+  }
+
+  val graph1 = data.graph
   if (graph1 == null) {
     return GraphNotFound
   }
-
   val ops = graph1.persistedQueryList.publishOperations
   return when {
     ops.onPublishOperationsResult != null -> {
@@ -57,12 +69,16 @@ fun publishOperations(
           ops.onPublishOperationsResult.build.revision
       )
     }
+
     ops.onPermissionError != null -> {
       PermissionError(ops.onPermissionError.message)
     }
+
     ops.onCannotModifyOperationBodyError != null -> {
       CannotModifyOperationBody(ops.onCannotModifyOperationBodyError.message)
     }
-    else -> error("")
+
+    else -> error("Unknown ops: ${ops.__typename}")
   }
+
 }
