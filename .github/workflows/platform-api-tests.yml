@@ -23,12 +23,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
 
-      - name: Run Gradle Plugin tests against the Apollo Platform API
+      - name: Run tests against the Apollo Platform API
         env:
-          PLATFORM_API_TESTS_ENABLED: true
           PLATFORM_API_TESTS_KEY: ${{ secrets.PLATFORM_API_TESTS_KEY }}
-          PLATFORM_API_TESTS_GRAPH: ${{ secrets.PLATFORM_API_TESTS_GRAPH }}
-          PLATFORM_API_TESTS_SUBGRAPH: ${{ secrets.PLATFORM_API_TESTS_SUBGRAPH }}
-          PLATFORM_API_TESTS_PQ_LIST_ID: ${{ secrets.PLATFORM_API_TESTS_PQ_LIST_ID }}
         run: |
-          ./gradlew --no-daemon --console plain :apollo-gradle-plugin:allTests
+          ./gradlew -p tests --no-daemon --console plain :platform-api:registerServiceApolloOperations
+          ./gradlew -p tests --no-daemon --console plain :platform-api:downloadServiceApolloSchemaFromRegistry
+          ./gradlew -p tests --no-daemon --console plain :platform-api:pushApolloSchema --key=$PLATFORM_API_TESTS_KEY --subgraph=changeme --schema=src/main/graphql/schema.graphqls --revision=1 --graphVariant=current
