@@ -18,12 +18,12 @@ class LoggingInterceptorTest {
   private lateinit var mockServer: MockServer
   private lateinit var logger: Logger
 
-  private suspend fun setUp() {
+  private fun setUp() {
     mockServer = MockServer()
     logger = Logger()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
   }
 
@@ -41,9 +41,48 @@ class LoggingInterceptorTest {
     }
 
     fun assertLog(expected: String) {
-      assertEquals(expected.trimIndent().lowercase(), fullLog.toString().lowercase().trim())
+      val actual = fullLog.toString().lowercase().trim()
+      if (expected == "") {
+        assertEquals("", actual)
+        return
+      }
+
+      /**
+       * This is more involved than expected because the response headers order is not preserved on JS.
+       * The order of HTTP headers is not important unless there are multiple headers with the same name.
+       * It would be a nice property to keep the HTTP headers order albeit it is currently not the case.
+       *
+       * See https://youtrack.jetbrains.com/issue/KTOR-6582/
+       */
+      expected
+          .lowercase()
+          .toStream()
+          .assertEquals(actual.toStream())
+    }
+
+    private fun String.toStream(): Stream {
+      val responseIndex = indexOf("http: ")
+      check(responseIndex > 0)
+
+      val request = substring(0, responseIndex)
+      val responseLines = substring(responseIndex).split("\n")
+      val endOfHeaders = responseLines.indexOfFirst { it == "[end of headers]" }
+      return if (endOfHeaders > 0) {
+        Stream(request, responseLines.subList(1, endOfHeaders), responseLines.subList(0, 1) + responseLines.subList(endOfHeaders, responseLines.size))
+      } else {
+        Stream(request, emptyList(), responseLines)
+      }
+    }
+
+    private class Stream(val request: String, val responseHeaders: List<String>, val otherResponseLines: List<String>) {
+      fun assertEquals(other: Stream) {
+        assertEquals(request, other.request)
+        assertEquals(responseHeaders.sorted(), other.responseHeaders.sorted())
+        assertEquals(otherResponseLines, other.otherResponseLines)
+      }
     }
   }
+
 
   @Test
   fun levelNone() = runTest(before = { setUp() }, after = { tearDown() }) {
@@ -68,7 +107,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
 
       HTTP: 200
-    """)
+    """.trimIndent())
   }
 
   @Test
@@ -90,7 +129,7 @@ class LoggingInterceptorTest {
       Content-Type: text/plain
       Content-Length: 322
       [end of headers]
-    """)
+    """.trimIndent())
   }
 
   @Test
@@ -132,7 +171,7 @@ class LoggingInterceptorTest {
           }
         }
       }
-    """)
+    """.trimIndent())
   }
 
   @Test
@@ -142,6 +181,7 @@ class LoggingInterceptorTest {
         .addHttpInterceptor(LoggingInterceptor(level = Level.BODY, log = logger::log))
         .build()
     mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json").replace("\n", ""))
+
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
@@ -156,7 +196,7 @@ class LoggingInterceptorTest {
       Content-Length: 303
       [end of headers]
       {  "data": {    "hero": {      "__typename": "Droid",      "name": "R2-D2"    }  },  "extensions": {    "cost": {      "requestedQueryCost": 3,      "actualQueryCost": 3,      "throttleStatus": {        "maximumAvailable": 1000,        "currentlyAvailable": 997,        "restoreRate": 50      }    }  }}
-    """)
+    """.trimIndent())
   }
 
   @Test
