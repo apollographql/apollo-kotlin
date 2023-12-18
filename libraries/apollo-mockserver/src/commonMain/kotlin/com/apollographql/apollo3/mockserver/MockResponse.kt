@@ -51,7 +51,13 @@ constructor(
     fun delayMillis(delayMillis: Long) = apply { this.delayMillis = delayMillis }
 
     fun build(): MockResponse {
-      val headersWithContentLength = if (contentLength == null) headers else headers + mapOf("Content-Length" to contentLength.toString())
+      val headersWithContentLength = buildMap {
+        putAll(headers)
+        if (contentLength != null) {
+          put("Content-Length", contentLength.toString())
+        }
+      }
+
       // https://youtrack.jetbrains.com/issue/KT-34480
       @Suppress("DEPRECATION_ERROR")
       return MockResponse(statusCode = statusCode, body = body, headers = headersWithContentLength, delayMillis = delayMillis)

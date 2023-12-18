@@ -267,11 +267,20 @@ fun MockServer(handler: MockServerHandler): MockServer =
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
 
-fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
+fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200, contentType: String = "text/plain") {
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .body(string)
+      .addHeader("Content-Type", contentType)
       .delayMillis(delayMs)
+      .build())
+}
+
+fun MockServer.enqueueGraphQLString(string: String) {
+  enqueue(MockResponse.Builder()
+      .statusCode(200)
+      .addHeader("content-type", "application/graphql-response+json")
+      .body(string)
       .build())
 }
 

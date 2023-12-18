@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
 import okio.Buffer
-import okio.IOException
 
 internal interface Reader {
   val buffer: Buffer
@@ -35,7 +34,7 @@ private fun parseRequestLine(line: String): Triple<String, String, String> {
   return Triple(method, match.groupValues[2], match.groupValues[3])
 }
 
-internal class ConnectionClosed(cause: Throwable?): Exception("client closed the connection", cause)
+internal class ConnectionClosed(cause: Throwable?) : Exception("client closed the connection", cause)
 
 internal suspend fun readRequest(reader: Reader): MockRequestBase {
   suspend fun nextLine(): String {
@@ -62,23 +61,21 @@ internal suspend fun readRequest(reader: Reader): MockRequestBase {
     return buffer2
   }
 
-  /**
-   * Check if the client closed the connection
-   */
-  if (reader.buffer.size == 0L) {
-    try {
-      reader.fillBuffer()
-    } catch (e: IOException) {
-      throw ConnectionClosed(e)
-    }
+  var line = try {
+    nextLine()
+  } catch (e: Exception) {
+    /**
+     * XXX: if the connection is closed in the middle of the first request line, this is detected
+     * as a normal connection close.
+     */
+    throw ConnectionClosed(e)
   }
-
-  var line = nextLine()
 
   val (method, path, version) = parseRequestLine(line.trimEol())
   //println("Line: ${line.trimEol()}")
 
   val headers = mutableMapOf<String, String>()
+
   /**
    * Read headers
    */
@@ -93,8 +90,8 @@ internal suspend fun readRequest(reader: Reader): MockRequestBase {
     headers.put(key, value)
   }
 
-  val contentLength = headers["Content-Length"]?.toLongOrNull() ?: 0
-  val transferEncoding = headers["Transfer-Encoding"]?.lowercase()
+  val contentLength = headers.headerValueOf("content-length")?.toLongOrNull() ?: 0
+  val transferEncoding = headers.headerValueOf("transfer-encoding")?.lowercase()
   check(transferEncoding == null || transferEncoding == "identity" || transferEncoding == "chunked") {
     "Transfer-Encoding $transferEncoding is not supported"
   }
