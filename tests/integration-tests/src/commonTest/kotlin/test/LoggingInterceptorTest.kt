@@ -87,6 +87,7 @@ class LoggingInterceptorTest {
       [end of headers]
 
       HTTP: 200
+      Content-Type: text/plain
       Content-Length: 322
       [end of headers]
     """)
@@ -109,6 +110,7 @@ class LoggingInterceptorTest {
       {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }"}
 
       HTTP: 200
+      Content-Type: text/plain
       Content-Length: 322
       [end of headers]
       {
@@ -150,6 +152,7 @@ class LoggingInterceptorTest {
       {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }"}
 
       HTTP: 200
+      Content-Type: text/plain
       Content-Length: 303
       [end of headers]
       {  "data": {    "hero": {      "__typename": "Droid",      "name": "R2-D2"    }  },  "extensions": {    "cost": {      "requestedQueryCost": 3,      "actualQueryCost": 3,      "throttleStatus": {        "maximumAvailable": 1000,        "currentlyAvailable": 997,        "restoreRate": 50      }    }  }}
