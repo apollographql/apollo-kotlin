@@ -2,6 +2,7 @@ package com.apollographql.apollo3.debugserver.internal.server
 
 import android.net.LocalServerSocket
 import android.net.LocalSocket
+import android.util.Log
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.debugserver.internal.graphql.GraphQL
 import com.apollographql.apollo3.debugserver.internal.initializer.ApolloDebugServerInitializer
@@ -36,9 +37,14 @@ private class AndroidServer(
   override fun start() {
     if (localServerSocket != null) error("Already started")
     val packageName = ApolloDebugServerInitializer.packageName ?: "unknown.${System.currentTimeMillis()}"
-    val localServerSocket = LocalServerSocket("$SOCKET_NAME_PREFIX$packageName")
-    this.localServerSocket = localServerSocket
     coroutineScope.launch {
+      val localServerSocket = try {
+        LocalServerSocket("$SOCKET_NAME_PREFIX$packageName")
+      } catch (e: Exception) {
+        Log.w("ApolloDebugServer", "Could not create server socket", e)
+        return@launch
+      }
+      this@AndroidServer.localServerSocket = localServerSocket
       while (true) {
         val clientSocket = try {
           localServerSocket.accept()
