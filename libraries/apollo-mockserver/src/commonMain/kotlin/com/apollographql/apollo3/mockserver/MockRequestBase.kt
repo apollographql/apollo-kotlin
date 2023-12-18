@@ -11,7 +11,21 @@ interface MockRequestBase {
   val method: String
   val path: String
   val version: String
+
+  /**
+   * The request headers
+   *
+   * Names are copied as-is from the wire. Since headers are case-insensitive, use [headerValueOf] to retrieve values.
+   * Values are trimmed.
+   */
   val headers: Map<String, String>
+}
+
+/**
+ * Retrieves the value of the given key, using a case-insensitive matching
+ */
+fun Map<String, String>.headerValueOf(name: String): String? {
+  return entries.firstOrNull { it.key.compareTo(name, ignoreCase = true) == 0 }?.value
 }
 
 class MockRequest(

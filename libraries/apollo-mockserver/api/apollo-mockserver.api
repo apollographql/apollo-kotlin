@@ -15,6 +15,10 @@ public abstract interface class com/apollographql/apollo3/mockserver/MockRequest
 	public abstract fun getVersion ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/mockserver/MockRequestBaseKt {
+	public static final fun headerValueOf (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo3/mockserver/MockResponse {
 	public fun <init> ()V
 	public fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;J)V

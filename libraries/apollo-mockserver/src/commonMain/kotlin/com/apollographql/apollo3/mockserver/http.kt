@@ -87,11 +87,11 @@ internal suspend fun readRequest(reader: Reader): MockRequestBase {
     }
 
     val (key, value) = parseHeader(line.trimEol())
-    headers.put(key.lowercase(), value)
+    headers.put(key, value)
   }
 
-  val contentLength = headers["content-length"]?.toLongOrNull() ?: 0
-  val transferEncoding = headers["transfer-encoding"]?.lowercase()
+  val contentLength = headers.headerValueOf("content-length")?.toLongOrNull() ?: 0
+  val transferEncoding = headers.headerValueOf("transfer-encoding")?.lowercase()
   check(transferEncoding == null || transferEncoding == "identity" || transferEncoding == "chunked") {
     "Transfer-Encoding $transferEncoding is not supported"
   }
