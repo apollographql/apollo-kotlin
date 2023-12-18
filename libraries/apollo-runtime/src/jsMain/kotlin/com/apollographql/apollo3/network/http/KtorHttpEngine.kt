@@ -58,6 +58,7 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
       }
       val responseByteArray: ByteArray = response.body()
       val responseBufferedSource = Buffer().write(responseByteArray)
+
       return HttpResponse.Builder(statusCode = response.status.value)
           .body(responseBufferedSource)
           .addHeaders(response.headers.flattenEntries().map { HttpHeader(it.first, it.second) })

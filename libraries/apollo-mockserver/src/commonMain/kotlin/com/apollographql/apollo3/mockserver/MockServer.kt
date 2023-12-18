@@ -271,7 +271,7 @@ fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode:
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .body(string)
-      .addHeader("content-type", contentType)
+      .addHeader("Content-Type", contentType)
       .delayMillis(delayMs)
       .build())
 }
