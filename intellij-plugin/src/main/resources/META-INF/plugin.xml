@@ -187,6 +187,12 @@
         implementationClass="com.apollographql.ijplugin.inspection.GraphQLInspectionSuppressor"
     />
 
+    <!-- Suppression of GraphQLUnresolvedReference for certain known directives -->
+    <lang.inspectionSuppressor
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.GraphQLUnresolvedReferenceInspectionSuppressor"
+    />
+
     <!-- Fields insights service (fetch and cache data) -->
     <projectService
         serviceInterface="com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService"

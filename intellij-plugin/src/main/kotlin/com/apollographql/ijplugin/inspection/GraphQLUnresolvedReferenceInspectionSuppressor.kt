@@ -1,0 +1,48 @@
+package com.apollographql.ijplugin.inspection
+
+import com.intellij.codeInspection.InspectionSuppressor
+import com.intellij.codeInspection.SuppressQuickFix
+import com.intellij.lang.jsgraphql.psi.GraphQLArgument
+import com.intellij.lang.jsgraphql.psi.GraphQLDirective
+import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
+import com.intellij.lang.jsgraphql.psi.GraphQLSchemaDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
+import com.intellij.psi.PsiElement
+
+/**
+ * Do not highlight certain known directives as unresolved references.
+ *
+ * TODO: remove this once https://github.com/JetBrains/js-graphql-intellij-plugin/pull/698 is merged.
+ */
+class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
+  override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
+    val parent = element.parent
+    return when (toolId) {
+      "GraphQLUnresolvedReference" -> parent.isKnownDirective() || parent.isKnownDirectiveArgument()
+
+      "GraphQLMissingType" -> (element is GraphQLSchemaDefinition || element is GraphQLSchemaExtension) &&
+          (element as GraphQLDirectivesAware).directives.all { it.isKnownDirective() }
+
+      else -> false
+    }
+  }
+
+  override fun getSuppressActions(psiElement: PsiElement?, s: String): Array<SuppressQuickFix> = SuppressQuickFix.EMPTY_ARRAY
+}
+
+private val knownDirectivesWithArguments = mapOf(
+    "link" to setOf("url", "as", "import", "for"),
+    "semanticNonNull" to setOf("field", "level"),
+    "catch" to setOf("to", "level"),
+    "ignoreErrors" to setOf(),
+)
+
+private fun PsiElement.isKnownDirective(): Boolean {
+  return this is GraphQLDirective && name in knownDirectivesWithArguments.keys
+}
+
+private fun PsiElement.isKnownDirectiveArgument(): Boolean {
+  return this is GraphQLArgument &&
+      parent?.parent?.isKnownDirective() == true &&
+      name in knownDirectivesWithArguments[(parent.parent as GraphQLDirective).name].orEmpty()
+}
