@@ -5,8 +5,6 @@ import com.intellij.codeInspection.SuppressQuickFix
 import com.intellij.lang.jsgraphql.psi.GraphQLArgument
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
-import com.intellij.lang.jsgraphql.psi.GraphQLSchemaDefinition
-import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
 import com.intellij.psi.PsiElement
 
 private val KNOWN_DIRECTIVES = mapOf(
@@ -27,8 +25,7 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
     return when (toolId) {
       "GraphQLUnresolvedReference" -> parent.isKnownDirective() || parent.isKnownDirectiveArgument()
 
-      "GraphQLMissingType" -> (element is GraphQLSchemaDefinition || element is GraphQLSchemaExtension) &&
-          (element as GraphQLDirectivesAware).directives.all { it.isKnownDirective() }
+      "GraphQLMissingType" -> element is GraphQLDirectivesAware && element.directives.all { it.isKnownDirective() }
 
       else -> false
     }

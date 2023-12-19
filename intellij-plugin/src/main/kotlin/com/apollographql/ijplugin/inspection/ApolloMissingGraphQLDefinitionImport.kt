@@ -97,11 +97,20 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
     val element = descriptor.psiElement as GraphQLNamedElement
     val schemaFiles = element.schemaFiles()
     val linkDirective = schemaFiles.flatMap { it.linkDirectives() }.firstOrNull()
+
+    // Also add a @catch directive to the schema if we're importing @catch
+    val catchDirectiveSchemaExtension = if (element.name == "catch" && schemaFiles.flatMap { it.schemaCatchDirectives() }.isEmpty()) {
+      createCatchDirectiveSchemaExtension(project)
+    } else {
+      null
+    }
+
     if (linkDirective == null) {
-      val schemaExtension = createLinkDirectiveSchemaExtension(project, listOf(element.nameForImport))
+      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, listOf(element.nameForImport))
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
-        GraphQLElementFactory.createFile(project, schemaExtension.text).also {
+        val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }
+        GraphQLElementFactory.createFile(project, fileText).also {
           // Save the file to the project
           it.name = "extra.graphqls"
           schemaFiles.first().containingDirectory!!.add(it)
@@ -110,14 +119,25 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
           project.gradleToolingModelService.triggerFetchToolingModels()
         }
       } else {
-        extraSchemaFile.add(schemaExtension)
+        extraSchemaFile.add(linkDirectiveSchemaExtension)
+        catchDirectiveSchemaExtension?.let {
+          extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+          extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+          extraSchemaFile.add(it)
+        }
       }
     } else {
+      val extraSchemaFile = linkDirective.containingFile
       val importedNames = buildList {
         addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
         add(element.nameForImport)
       }
       linkDirective.replace(createLinkDirective(project, importedNames))
+      catchDirectiveSchemaExtension?.let {
+        extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+        extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+        extraSchemaFile.add(it)
+      }
     }
   }
 }
@@ -137,6 +157,17 @@ private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: 
       .findChildrenOfType<GraphQLSchemaExtension>().single()
 }
 
+private fun createCatchDirectiveSchemaExtension(project: Project): GraphQLSchemaExtension {
+  return GraphQLElementFactory.createFile(project, "extend schema @catch(to: THROW)")
+      .findChildrenOfType<GraphQLSchemaExtension>().single()
+}
+
 private fun createLinkDirective(project: Project, importedNames: List<String>): GraphQLDirective {
   return createLinkDirectiveSchemaExtension(project, importedNames).directives.single()
+}
+
+private fun GraphQLFile.schemaCatchDirectives(): List<GraphQLDirective> {
+  val schemaDirectives = typeDefinitions.filterIsInstance<GraphQLSchemaExtension>().flatMap { it.directives } +
+      typeDefinitions.filterIsInstance<GraphQLSchemaDefinition>().flatMap { it.directives }
+  return schemaDirectives.filter { it.name == "catch" }
 }
