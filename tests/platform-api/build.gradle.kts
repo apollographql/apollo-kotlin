@@ -42,7 +42,7 @@ apollo {
 
 if (apiKey != null) {
   tasks.named<ApolloPushSchemaTask>("pushApolloSchema") {
-    key.set(System.getenv("PLATFORM_API_TESTS_KEY"))
+    key.set(apiKey)
     graph.set("Apollo-Kotlin-CI-tests")
     subgraph.set("subgraph1")
     schema.set("platform-api/src/main/graphql/schema.graphqls")
