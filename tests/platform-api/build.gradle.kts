@@ -15,11 +15,12 @@ dependencies {
   testImplementation(libs.apollo.testingsupport)
 }
 
+val apiKey = System.getenv("PLATFORM_API_TESTS_KEY")
+
 apollo {
   service("service") {
     packageName.set("com.example")
 
-    val apiKey = System.getenv("PLATFORM_API_TESTS_KEY")
     if (apiKey != null) {
       registry {
         key.set(apiKey)
@@ -39,21 +40,23 @@ apollo {
   }
 }
 
-tasks.named<ApolloPushSchemaTask>("pushApolloSchema") {
-  key.set(System.getenv("PLATFORM_API_TESTS_KEY"))
-  graph.set("Apollo-Kotlin-CI-tests")
-  subgraph.set("subgraph1")
-  schema.set("platform-api/src/main/graphql/schema.graphqls")
-  revision.set("1")
-  graphVariant.set("current")
-}
+if (apiKey != null) {
+  tasks.named<ApolloPushSchemaTask>("pushApolloSchema") {
+    key.set(System.getenv("PLATFORM_API_TESTS_KEY"))
+    graph.set("Apollo-Kotlin-CI-tests")
+    subgraph.set("subgraph1")
+    schema.set("platform-api/src/main/graphql/schema.graphqls")
+    revision.set("1")
+    graphVariant.set("current")
+  }
 
-tasks.named("generateServiceApolloSources").dependsOn("downloadServiceApolloSchemaFromRegistry")
+  tasks.named("generateServiceApolloSources").dependsOn("downloadServiceApolloSchemaFromRegistry")
 
-tasks.register("platformApiTests") {
-  description = "Execute Platform API tests"
-  dependsOn("registerServiceApolloOperations")
-  dependsOn("downloadServiceApolloSchemaFromRegistry")
-  dependsOn("pushApolloSchema")
-  dependsOn("test")
+  tasks.register("platformApiTests") {
+    description = "Execute Platform API tests"
+    dependsOn("registerServiceApolloOperations")
+    dependsOn("downloadServiceApolloSchemaFromRegistry")
+    dependsOn("pushApolloSchema")
+    dependsOn("test")
+  }
 }
