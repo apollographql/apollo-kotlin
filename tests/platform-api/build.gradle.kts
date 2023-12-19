@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.apollographql.apollo3.gradle.internal.ApolloPushSchemaTask
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -34,4 +37,23 @@ apollo {
       }
     }
   }
+}
+
+tasks.named<ApolloPushSchemaTask>("pushApolloSchema") {
+  key.set(System.getenv("PLATFORM_API_TESTS_KEY"))
+  graph.set("Apollo-Kotlin-CI-tests")
+  subgraph.set("subgraph1")
+  schema.set("platform-api/src/main/graphql/schema.graphqls")
+  revision.set("1")
+  graphVariant.set("current")
+}
+
+tasks.named("generateServiceApolloSources").dependsOn("downloadServiceApolloSchemaFromRegistry")
+
+tasks.register("platformApiTests") {
+  description = "Execute Platform API tests"
+  dependsOn("registerServiceApolloOperations")
+  dependsOn("downloadServiceApolloSchemaFromRegistry")
+  dependsOn("pushApolloSchema")
+  dependsOn("test")
 }

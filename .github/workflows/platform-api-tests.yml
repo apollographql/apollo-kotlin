@@ -1,8 +1,8 @@
 name: platform-api-tests
 
 on:
-  #  pull_request:
-  #    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
@@ -31,6 +31,4 @@ jobs:
         env:
           PLATFORM_API_TESTS_KEY: ${{ secrets.PLATFORM_API_TESTS_KEY }}
         run: |
-          ./gradlew -p tests --no-daemon --console plain :platform-api:registerServiceApolloOperations
-          ./gradlew -p tests --no-daemon --console plain :platform-api:downloadServiceApolloSchemaFromRegistry
-          ./gradlew -p tests --no-daemon --console plain :platform-api:pushApolloSchema --key=$PLATFORM_API_TESTS_KEY --subgraph=subgraph1 --schema=platform-api/src/main/graphql/schema.graphqls --revision=1 --graphVariant=current
+          ./gradlew -p tests :platform-api:platformApiTests
