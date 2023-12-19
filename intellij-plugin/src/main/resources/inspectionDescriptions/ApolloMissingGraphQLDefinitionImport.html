@@ -1,0 +1,19 @@
+<html>
+<body>
+Reports usages of directives that are not imported.
+<p>
+    Certain directives, such as <code>@semanticNonNull</code> and <code>@catch</code>, are not imported by default.<br>
+    To be used, they must be imported by your schema, using the <code>@link</code> directive<br>:
+<pre>
+        extend schema
+        @link(
+          url: "https://specs.apollo.dev/nullability/v0.1",
+          import: ["@semanticNonNull"]
+        )
+    </pre>
+</p>
+<p>
+    <a href="https://specs.apollo.dev/link/v1.0/">More information about the <code>@link</code> directive</a>
+</p>
+</body>
+</html>
