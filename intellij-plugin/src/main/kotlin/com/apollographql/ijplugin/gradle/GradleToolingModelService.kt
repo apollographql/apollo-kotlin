@@ -117,6 +117,11 @@ class GradleToolingModelService(
     })
   }
 
+  fun triggerFetchToolingModels() {
+    logd()
+    startOrAbortFetchToolingModels()
+  }
+
   private fun startOrAbortFetchToolingModels() {
     logd()
     abortFetchToolingModels()
@@ -181,7 +186,7 @@ class GradleToolingModelService(
           logd("Fetch tooling model for :${gradleProject.name}")
           return@execute try {
             val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.RESOLVE_PROJECT, project)
-            gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, connection,id, executionSettings,  ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+            gradleExecutionHelper.getModelBuilder(ApolloGradleToolingModel::class.java, connection, id, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
                 .withCancellationToken(gradleCancellation!!.token())
                 .get()
                 .takeIf {
@@ -296,3 +301,5 @@ class GradleToolingModelService(
     }
   }
 }
+
+val Project.gradleToolingModelService get() = service<GradleToolingModelService>()
