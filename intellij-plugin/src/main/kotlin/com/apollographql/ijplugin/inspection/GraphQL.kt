@@ -1,6 +1,10 @@
 package com.apollographql.ijplugin.inspection
 
+import com.apollographql.ijplugin.util.findPsiFileByUrl
+import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
+import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLFieldDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLInterfaceTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedTypeDefinition
@@ -65,4 +69,15 @@ private fun matchingFieldCoordinates(
   val implementedInterfaceTypeDefinitions = implementedInterfaces.typeNameList.mapNotNull { it.nameIdentifier.reference?.resolve()?.parentOfType<GraphQLInterfaceTypeDefinition>() }
   if (implementedInterfaceTypeDefinitions.isEmpty()) return fieldCoordinates
   return fieldCoordinates + implementedInterfaceTypeDefinitions.flatMap { matchingFieldCoordinates(fieldDefinition, it) }
+}
+
+/**
+ * Return the schema files associated with the given element.
+ */
+fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
+  val containingFile = containingFile ?: return emptyList()
+  val projectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(containingFile) ?: return emptyList()
+  return projectConfig.schema.mapNotNull { schema ->
+    schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
+  }
 }

@@ -7,7 +7,6 @@ import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.findChildrenOfType
-import com.apollographql.ijplugin.util.findPsiFileByUrl
 import com.apollographql.ijplugin.util.quoted
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
@@ -16,10 +15,8 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
-import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
@@ -29,16 +26,13 @@ import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 
-private const val URL_NULLABILITY = "https://specs.apollo.dev/nullability/v0.1"
-private val DIRECTIVES_TO_CHECK = setOf("semanticNonNull", "catch", "ignoreErrors")
-
 class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitDirective(o: GraphQLDirective) {
         super.visitDirective(o)
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV4) return
-        if (o.name !in DIRECTIVES_TO_CHECK) return
+        if (o.name !in NULLABILITY_DIRECTIVES.keys) return
         if (!o.isImported()) {
           holder.registerProblem(o, ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")), ImportDefinitionQuickFix(ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")))
         }
@@ -46,43 +40,6 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
     }
   }
 }
-
-private fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
-  val containingFile = containingFile ?: return emptyList()
-  val projectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(containingFile) ?: return emptyList()
-  return projectConfig.schema.mapNotNull { schema ->
-    schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
-  }
-}
-
-private fun GraphQLNamedElement.isImported(): Boolean {
-  for (schemaFile in schemaFiles()) {
-    if (schemaFile.hasImportFor(this)) return true
-  }
-  return false
-}
-
-private fun GraphQLFile.linkDirectives(): List<GraphQLDirective> {
-  val schemaDirectives = typeDefinitions.filterIsInstance<GraphQLSchemaExtension>().flatMap { it.directives } +
-      typeDefinitions.filterIsInstance<GraphQLSchemaDefinition>().flatMap { it.directives }
-  return schemaDirectives.filter { directive ->
-    directive.name == "link" &&
-        directive.arguments?.argumentList.orEmpty().any { arg -> arg.name == "url" && arg.value?.text == URL_NULLABILITY.quoted() }
-  }
-}
-
-private fun GraphQLFile.hasImportFor(element: GraphQLNamedElement): Boolean {
-  for (directive in linkDirectives()) {
-    val importArgValue = directive.arguments?.argumentList.orEmpty().firstOrNull { it.name == "import" }?.value as? GraphQLArrayValue
-        ?: continue
-    if (importArgValue.valueList.any { it.text == element.nameForImport.quoted() }) {
-      return true
-    }
-  }
-  return false
-}
-
-private val GraphQLNamedElement.nameForImport get() = if (this is GraphQLDirective) "@" + name!! else name!!
 
 private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
   override fun getName() = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.quickFix", typeName)
@@ -147,7 +104,7 @@ private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: 
       """
         extend schema
         @link(
-          url: "$URL_NULLABILITY",
+          url: "$NULLABILITY_URL",
           import: [${names.joinToString { it.quoted() }}]
         )
       """.trimIndent()

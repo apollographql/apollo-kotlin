@@ -7,12 +7,9 @@ import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
 import com.intellij.psi.PsiElement
 
-private val KNOWN_DIRECTIVES = mapOf(
-    "link" to setOf("url", "as", "import", "for"),
-    "semanticNonNull" to setOf("field", "level"),
-    "catch" to setOf("to", "level"),
-    "ignoreErrors" to setOf(),
-)
+private val KNOWN_DIRECTIVES: Map<String, Collection<String>> by lazy {
+  mapOf("link" to setOf("url", "as", "import", "for")) + NULLABILITY_DIRECTIVES
+}
 
 /**
  * Do not highlight certain known directives as unresolved references.
@@ -35,11 +32,14 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
 }
 
 private fun PsiElement.isKnownDirective(): Boolean {
-  return this is GraphQLDirective && name in KNOWN_DIRECTIVES.keys
+  return this is GraphQLDirective && (name in KNOWN_DIRECTIVES.keys || this.isImported())
 }
 
 private fun PsiElement.isKnownDirectiveArgument(): Boolean {
   return this is GraphQLArgument &&
       parent?.parent?.isKnownDirective() == true &&
-      name in KNOWN_DIRECTIVES[(parent.parent as GraphQLDirective).name].orEmpty()
+      name in KNOWN_DIRECTIVES[(parent.parent as GraphQLDirective).nameWithoutPrefix].orEmpty()
 }
+
+private val GraphQLDirective.nameWithoutPrefix: String
+  get() = name!!.substringAfter("__")
