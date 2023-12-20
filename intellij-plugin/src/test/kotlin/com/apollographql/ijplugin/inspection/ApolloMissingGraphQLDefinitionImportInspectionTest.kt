@@ -25,14 +25,14 @@ class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
     myFixture.configureByFile("missing-catch.graphql")
 
     var highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.any { it.description == "The directive is not imported" })
-    val quickFixAction = myFixture.findSingleIntention("Import directive")
+    assertTrue(highlightInfos.any { it.description == "Unresolved directive: catch" })
+    val quickFixAction = myFixture.findSingleIntention("Import directive 'catch'")
     assertNotNull(quickFixAction)
 
     // Apply quickfix
     myFixture.launchAction(quickFixAction)
     highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.none { it.description == "The directive is not imported" })
+    assertTrue(highlightInfos.none { it.description == "Unresolved directive: catch" })
 
     myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
     myFixture.checkResultByFile("missing-catch-extra_after.graphqls", true)
@@ -47,14 +47,14 @@ class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
     myFixture.configureByFile("missing-CatchTo.graphql")
 
     var highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.any { it.description == "The enum is not imported" })
-    val quickFixAction = myFixture.findSingleIntention("Import enum")
+    assertTrue(highlightInfos.any { it.description == "Unresolved enum: CatchTo" })
+    val quickFixAction = myFixture.findSingleIntention("Import enum 'CatchTo'")
     assertNotNull(quickFixAction)
 
     // Apply quickfix
     myFixture.launchAction(quickFixAction)
     highlightInfos = doHighlighting()
-    assertTrue(highlightInfos.none { it.description == "The enum is not imported" })
+    assertTrue(highlightInfos.none { it.description == "Unresolved enum: CatchTo" })
 
     myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
     myFixture.checkResultByFile("missing-CatchTo-extra_after.graphqls", true)

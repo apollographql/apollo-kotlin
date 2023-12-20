@@ -35,9 +35,19 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV4) return
         if (o.name !in NULLABILITY_DIRECTIVES.keys) return
         if (!o.isImported()) {
-          holder.registerProblem(o, ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")), ImportDefinitionQuickFix(ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")))
+          val typeName = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")
+          holder.registerProblem(
+              o,
+              ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", typeName, o.name!!),
+              ImportDefinitionQuickFix(type = typeName, elementName = o.name!!),
+          )
         } else if (o.isCatchAndCatchToNotImported()) {
-          holder.registerProblem(o.argumentValue("to")!!, ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.enum")), ImportDefinitionQuickFix(ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.enum")))
+          val typeName = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.enum")
+          holder.registerProblem(
+              o.argumentValue("to")!!,
+              ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", typeName, CATCH_TO),
+              ImportDefinitionQuickFix(type = typeName, elementName = CATCH_TO),
+          )
         }
       }
     }
@@ -45,13 +55,16 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
 }
 
 private fun GraphQLDirective.isCatchAndCatchToNotImported(): Boolean {
-  if (name != "catch") return false
+  if (name != CATCH) return false
   if (argumentValue("to") as? GraphQLEnumValue == null) return false
-  return !isEnumImported(this, "CatchTo")
+  return !isEnumImported(this, CATCH_TO)
 }
 
-private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
-  override fun getName() = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.quickFix", typeName)
+private class ImportDefinitionQuickFix(
+    val type: String,
+    val elementName: String,
+) : LocalQuickFix {
+  override fun getName() = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.quickFix", type, "'$elementName'")
   override fun getFamilyName() = name
 
   override fun availableInBatchMode() = false
@@ -65,7 +78,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
     val linkDirective = schemaFiles.flatMap { it.linkDirectives() }.firstOrNull()
 
     // Also add a @catch directive to the schema if we're importing @catch
-    val catchDirectiveSchemaExtension = if (element.name == "catch" && schemaFiles.flatMap { it.schemaCatchDirectives() }.isEmpty()) {
+    val catchDirectiveSchemaExtension = if (element.name == CATCH && schemaFiles.flatMap { it.schemaCatchDirectives() }.isEmpty()) {
       createCatchDirectiveSchemaExtension(project)
     } else {
       null
@@ -107,7 +120,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
 }
 
 private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: Set<String>): GraphQLSchemaExtension {
-  val names = if ("@catch" in importedNames) importedNames + "CatchTo" else importedNames
+  val names = if ("@catch" in importedNames) importedNames + CATCH_TO else importedNames
   return GraphQLElementFactory.createFile(
       project,
       """
@@ -133,5 +146,5 @@ private fun createLinkDirective(project: Project, importedNames: Set<String>): G
 private fun GraphQLFile.schemaCatchDirectives(): List<GraphQLDirective> {
   val schemaDirectives = typeDefinitions.filterIsInstance<GraphQLSchemaExtension>().flatMap { it.directives } +
       typeDefinitions.filterIsInstance<GraphQLSchemaDefinition>().flatMap { it.directives }
-  return schemaDirectives.filter { it.name == "catch" }
+  return schemaDirectives.filter { it.name == CATCH }
 }

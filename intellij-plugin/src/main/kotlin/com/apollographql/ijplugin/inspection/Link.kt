@@ -26,6 +26,9 @@ val NULLABILITY_DIRECTIVES: Map<String, Collection<String>> by lazy {
       .toMap()
 }
 
+const val CATCH = "catch"
+const val CATCH_TO = "CatchTo"
+
 fun GraphQLNamedElement.isImported(): Boolean {
   for (schemaFile in schemaFiles()) {
     if (schemaFile.hasImportFor(this.name!!, this is GraphQLDirective)) return true
