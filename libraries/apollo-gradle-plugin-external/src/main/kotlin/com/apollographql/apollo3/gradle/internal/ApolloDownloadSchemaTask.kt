@@ -99,7 +99,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         headers = header.toMap() + extraHeaders,
     )
 
-    logger.lifecycle("Apollo: schema downloaded to ${file.absolutePath}")
+    logger.info("Apollo: schema downloaded to ${file.absolutePath}")
   }
 
   private fun List<String>.toMap(): Map<String, String> {

@@ -92,6 +92,6 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
         revision = revision,
     )
 
-    logger.lifecycle("Apollo: schema pushed successfully")
+    logger.info("Apollo: schema pushed successfully")
   }
 }

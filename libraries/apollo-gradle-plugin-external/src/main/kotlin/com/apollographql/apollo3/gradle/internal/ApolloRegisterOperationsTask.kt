@@ -70,7 +70,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
 
       when(result) {
         is PublishOperationsSuccess -> {
-          logger.lifecycle("Apollo: persisted query list uploaded successfully")
+          logger.info("Apollo: persisted query list uploaded successfully")
         }
 
         is CannotModifyOperationBody -> error("Cannot upload persisted query list: cannot modify operation body ('${result.message}')")
