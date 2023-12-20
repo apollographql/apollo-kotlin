@@ -98,6 +98,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,
     )
+
+    logger.lifecycle("Apollo: schema downloaded to ${file.absolutePath}")
   }
 
   private fun List<String>.toMap(): Map<String, String> {

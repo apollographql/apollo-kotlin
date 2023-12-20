@@ -70,7 +70,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
 
       when(result) {
         is PublishOperationsSuccess -> {
-          println("Apollo: persisted query list uploaded successfully")
+          logger.lifecycle("Apollo: persisted query list uploaded successfully")
         }
 
         is CannotModifyOperationBody -> error("Cannot upload persisted query list: cannot modify operation body ('${result.message}')")
@@ -78,7 +78,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
         is PermissionError -> error("Cannot upload persisted query list: permission error ('${result.message}')")
       }
     } else {
-      println("Apollo: registering operations without a listId is deprecated")
+      logger.warn("Apollo: registering operations without a listId is deprecated")
       check(operationManifestFormat.get() == MANIFEST_OPERATION_OUTPUT) {
         """Apollo: registering legacy operations requires operationManifestFormat = "$MANIFEST_OPERATION_OUTPUT":
           |apollo {
