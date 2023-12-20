@@ -6,11 +6,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@TestDataPath("\$CONTENT_ROOT/testData/inspection")
+@TestDataPath("\$CONTENT_ROOT/testData/inspection/MissingGraphQLDefinitionImport")
 @RunWith(JUnit4::class)
 class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
 
-  override fun getTestDataPath() = "src/test/testData/inspection"
+  override fun getTestDataPath() = "src/test/testData/inspection/MissingGraphQLDefinitionImport"
 
   @Throws(Exception::class)
   override fun setUp() {
@@ -19,10 +19,10 @@ class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
   }
 
   @Test
-  fun testInspection() {
-    myFixture.copyFileToProject("MissingGraphQLDefinitionImport.graphqls", "MissingGraphQLDefinitionImport.graphqls")
-    myFixture.copyFileToProject("MissingGraphQLDefinitionImport.config.yml", "graphql.config.yml")
-    myFixture.configureByFile("MissingGraphQLDefinitionImport.graphql")
+  fun missingCatch() {
+    myFixture.copyFileToProject("missing-catch.graphqls", "missing-catch.graphqls")
+    myFixture.copyFileToProject("missing-catch.config.yml", "graphql.config.yml")
+    myFixture.configureByFile("missing-catch.graphql")
 
     var highlightInfos = doHighlighting()
     assertTrue(highlightInfos.any { it.description == "The directive is not imported" })
@@ -35,6 +35,29 @@ class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
     assertTrue(highlightInfos.none { it.description == "The directive is not imported" })
 
     myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
-    myFixture.checkResultByFile("MissingGraphQLDefinitionImport_extra_after.graphqls", true)
+    myFixture.checkResultByFile("missing-catch-extra_after.graphqls", true)
   }
+
+
+  @Test
+  fun missingCatchTo() {
+    myFixture.copyFileToProject("missing-CatchTo.graphqls", "missing-CatchTo.graphqls")
+    myFixture.copyFileToProject("missing-CatchTo-extra.graphqls", "extra.graphqls")
+    myFixture.copyFileToProject("missing-CatchTo.config.yml", "graphql.config.yml")
+    myFixture.configureByFile("missing-CatchTo.graphql")
+
+    var highlightInfos = doHighlighting()
+    assertTrue(highlightInfos.any { it.description == "The enum is not imported" })
+    val quickFixAction = myFixture.findSingleIntention("Import enum")
+    assertNotNull(quickFixAction)
+
+    // Apply quickfix
+    myFixture.launchAction(quickFixAction)
+    highlightInfos = doHighlighting()
+    assertTrue(highlightInfos.none { it.description == "The enum is not imported" })
+
+    myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
+    myFixture.checkResultByFile("missing-CatchTo-extra_after.graphqls", true)
+  }
+
 }

@@ -1,0 +1,5 @@
+extend schema
+@link(
+  url: "https://specs.apollo.dev/nullability/v0.1",
+  import: ["@catch"]
+)

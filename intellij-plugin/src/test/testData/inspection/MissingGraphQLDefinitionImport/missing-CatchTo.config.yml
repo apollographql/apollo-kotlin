@@ -1,4 +1,4 @@
 schema:
-  - MissingGraphQLDefinitionImport.graphqls
+  - missing-CatchTo.graphqls
   - extra.graphqls
 documents: '**/*.graphql'

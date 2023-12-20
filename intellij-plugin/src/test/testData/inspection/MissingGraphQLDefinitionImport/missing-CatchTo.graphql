@@ -1,0 +1,8 @@
+query MyQuery {
+  person {
+    identity {
+      firstName @catch(to: TH<caret>ROW)
+      lastName
+    }
+  }
+}
