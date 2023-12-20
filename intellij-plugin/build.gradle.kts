@@ -221,6 +221,7 @@ dependencies {
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
   implementation(libs.apollo.runtime.published)
+  runtimeOnly(libs.slf4j)
   testImplementation(libs.google.testparameterinjector)
 }
 
