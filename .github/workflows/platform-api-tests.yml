@@ -31,4 +31,4 @@ jobs:
         env:
           PLATFORM_API_TESTS_KEY: ${{ secrets.PLATFORM_API_TESTS_KEY }}
         run: |
-          ./gradlew -p tests :platform-api:platformApiTests
+          ./gradlew --no-daemon -p tests :platform-api:platformApiTests
