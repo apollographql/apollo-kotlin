@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.inspection
 
 import com.apollographql.ijplugin.util.findPsiFileByUrl
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
+import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLFieldDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
@@ -9,6 +10,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLInterfaceTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLObjectTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLValue
 import com.intellij.psi.util.parentOfType
 
 /**
@@ -81,3 +83,6 @@ fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
     schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
   }
 }
+
+fun GraphQLDirective.argumentValue(argumentName: String): GraphQLValue? =
+    arguments?.argumentList.orEmpty().firstOrNull { it.name == argumentName }?.value

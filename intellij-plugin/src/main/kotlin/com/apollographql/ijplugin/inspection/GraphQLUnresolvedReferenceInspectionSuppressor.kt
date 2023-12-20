@@ -40,6 +40,3 @@ private fun PsiElement.isKnownDirectiveArgument(): Boolean {
       parent?.parent?.isKnownDirective() == true &&
       name in KNOWN_DIRECTIVES[(parent.parent as GraphQLDirective).nameWithoutPrefix].orEmpty()
 }
-
-private val GraphQLDirective.nameWithoutPrefix: String
-  get() = name!!.substringAfter("__")

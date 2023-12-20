@@ -18,13 +18,14 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
+import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
-import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
 import com.intellij.lang.jsgraphql.psi.GraphQLSchemaDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.parentOfType
 
 class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -35,10 +36,18 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
         if (o.name !in NULLABILITY_DIRECTIVES.keys) return
         if (!o.isImported()) {
           holder.registerProblem(o, ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")), ImportDefinitionQuickFix(ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")))
+        } else if (o.isCatchAndCatchToNotImported()) {
+          holder.registerProblem(o.argumentValue("to")!!, ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.enum")), ImportDefinitionQuickFix(ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.enum")))
         }
       }
     }
   }
+}
+
+private fun GraphQLDirective.isCatchAndCatchToNotImported(): Boolean {
+  if (name != "catch") return false
+  if (argumentValue("to") as? GraphQLEnumValue == null) return false
+  return !isEnumImported(this, "CatchTo")
 }
 
 private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
@@ -51,7 +60,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
     if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjMissingGraphQLDefinitionImportQuickFix())
 
-    val element = descriptor.psiElement as GraphQLNamedElement
+    val element = descriptor.psiElement.parentOfType<GraphQLDirective>(withSelf = true)!!
     val schemaFiles = element.schemaFiles()
     val linkDirective = schemaFiles.flatMap { it.linkDirectives() }.firstOrNull()
 
@@ -63,7 +72,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
     }
 
     if (linkDirective == null) {
-      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, listOf(element.nameForImport))
+      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport))
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
         val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }.orEmpty()
@@ -84,7 +93,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
       }
     } else {
       val extraSchemaFile = linkDirective.containingFile
-      val importedNames = buildList {
+      val importedNames = buildSet {
         addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
         add(element.nameForImport)
       }
@@ -97,8 +106,8 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
   }
 }
 
-private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: List<String>): GraphQLSchemaExtension {
-  val names = if ("@catch" in importedNames && "CatchTo" !in importedNames) importedNames + "CatchTo" else importedNames
+private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: Set<String>): GraphQLSchemaExtension {
+  val names = if ("@catch" in importedNames) importedNames + "CatchTo" else importedNames
   return GraphQLElementFactory.createFile(
       project,
       """
@@ -117,7 +126,7 @@ private fun createCatchDirectiveSchemaExtension(project: Project): GraphQLSchema
       .findChildrenOfType<GraphQLSchemaExtension>().single()
 }
 
-private fun createLinkDirective(project: Project, importedNames: List<String>): GraphQLDirective {
+private fun createLinkDirective(project: Project, importedNames: Set<String>): GraphQLDirective {
   return createLinkDirectiveSchemaExtension(project, importedNames).directives.single()
 }
 
