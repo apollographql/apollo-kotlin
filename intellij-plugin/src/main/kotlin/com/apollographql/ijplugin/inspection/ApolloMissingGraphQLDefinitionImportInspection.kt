@@ -7,7 +7,7 @@ import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.findChildrenOfType
-import com.apollographql.ijplugin.util.findPsiFileByPath
+import com.apollographql.ijplugin.util.findPsiFileByUrl
 import com.apollographql.ijplugin.util.quoted
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
@@ -32,7 +32,7 @@ import com.intellij.psi.PsiElementVisitor
 private const val URL_NULLABILITY = "https://specs.apollo.dev/nullability/v0.1"
 private val DIRECTIVES_TO_CHECK = setOf("semanticNonNull", "catch", "ignoreErrors")
 
-class ApolloMissingGraphQLDefinitionImport : LocalInspectionTool() {
+class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitDirective(o: GraphQLDirective) {
@@ -50,8 +50,12 @@ class ApolloMissingGraphQLDefinitionImport : LocalInspectionTool() {
 private fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
   val containingFile = containingFile ?: return emptyList()
   val projectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(containingFile) ?: return emptyList()
-  return projectConfig.schema.mapNotNull { schemaPointer ->
-    schemaPointer.outputPath?.let { path -> project.findPsiFileByPath(path) } as? GraphQLFile
+//  return projectConfig.schema.mapNotNull { schemaPointer ->
+//    schemaPointer.outputPath?.let { path -> project.findPsiFileByPath(path) } as? GraphQLFile
+//  }
+
+  return projectConfig.schema.mapNotNull { schema ->
+    schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
   }
 }
 

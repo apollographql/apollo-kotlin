@@ -1,0 +1,4 @@
+schema:
+  - MissingGraphQLDefinitionImport.graphqls
+  - extra.graphqls
+documents: '**/*.graphql'

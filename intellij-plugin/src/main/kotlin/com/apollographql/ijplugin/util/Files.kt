@@ -20,6 +20,11 @@ fun Project.findPsiFileByPath(path: String): PsiFile? {
   return VirtualFileManager.getInstance().findFileByNioPath(Path.of(path))?.let { PsiManager.getInstance(this).findFile(it) }
 }
 
+fun Project.findPsiFileByUrl(url: String): PsiFile? {
+  return VirtualFileManager.getInstance().findFileByUrl(url)?.let { PsiManager.getInstance(this).findFile(it) }
+}
+
+
 fun Project.findPsiFilesByExtension(extension: String, searchScope: GlobalSearchScope): List<PsiFile> {
   val virtualFiles = FilenameIndex.getAllFilesByExt(this, extension, searchScope)
   return PsiUtilCore.toPsiFiles(PsiManager.getInstance(this), virtualFiles)

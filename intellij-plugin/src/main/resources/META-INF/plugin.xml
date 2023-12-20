@@ -128,7 +128,7 @@
     <!--suppress PluginXmlCapitalization -->
     <localInspection
         language="GraphQL"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloMissingGraphQLDefinitionImport"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloMissingGraphQLDefinitionImportInspection"
         groupPathKey="inspection.group.graphql"
         groupKey="inspection.group.graphql.apolloKotlin"
         key="inspection.missingGraphQLDefinitionImport.displayName"
