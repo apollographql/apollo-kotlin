@@ -50,10 +50,6 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
 private fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
   val containingFile = containingFile ?: return emptyList()
   val projectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(containingFile) ?: return emptyList()
-//  return projectConfig.schema.mapNotNull { schemaPointer ->
-//    schemaPointer.outputPath?.let { path -> project.findPsiFileByPath(path) } as? GraphQLFile
-//  }
-
   return projectConfig.schema.mapNotNull { schema ->
     schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
   }
@@ -69,9 +65,9 @@ private fun GraphQLNamedElement.isImported(): Boolean {
 private fun GraphQLFile.linkDirectives(): List<GraphQLDirective> {
   val schemaDirectives = typeDefinitions.filterIsInstance<GraphQLSchemaExtension>().flatMap { it.directives } +
       typeDefinitions.filterIsInstance<GraphQLSchemaDefinition>().flatMap { it.directives }
-  return schemaDirectives.filter {
-    it.name == "link" &&
-        it.arguments?.argumentList.orEmpty().any { it.name == "url" && it.value?.text == URL_NULLABILITY.quoted() }
+  return schemaDirectives.filter { directive ->
+    directive.name == "link" &&
+        directive.arguments?.argumentList.orEmpty().any { arg -> arg.name == "url" && arg.value?.text == URL_NULLABILITY.quoted() }
   }
 }
 
@@ -113,7 +109,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
       val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, listOf(element.nameForImport))
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
-        val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }
+        val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }.orEmpty()
         GraphQLElementFactory.createFile(project, fileText).also {
           // Save the file to the project
           it.name = "extra.graphqls"
@@ -125,8 +121,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
       } else {
         extraSchemaFile.add(linkDirectiveSchemaExtension)
         catchDirectiveSchemaExtension?.let {
-          extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
-          extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+          extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
           extraSchemaFile.add(it)
         }
       }
@@ -138,8 +133,7 @@ private class ImportDefinitionQuickFix(val typeName: String) : LocalQuickFix {
       }
       linkDirective.replace(createLinkDirective(project, importedNames))
       catchDirectiveSchemaExtension?.let {
-        extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
-        extraSchemaFile.add(GraphQLElementFactory.createNewLine(project))
+        extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
         extraSchemaFile.add(it)
       }
     }
