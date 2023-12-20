@@ -82,6 +82,7 @@ apollo-rx3-java = { group = "com.apollographql.apollo3", name = "apollo-rx3-supp
 apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-testingsupport-published = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo-published" }
+apollo-tooling = { group = "com.apollographql.apollo3", name = "apollo-tooling", version.ref = "apollo" }
 assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
 atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version = "0.23.1" }
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }

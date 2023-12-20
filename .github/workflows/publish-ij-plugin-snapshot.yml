@@ -25,12 +25,12 @@ jobs:
           git config user.email github-actions@github.com
           ./scripts/increment-ij-plugin-snapshot.main.kts
         env:
-          COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT: true
+          IJ_PLUGIN_SNAPSHOT: true
           GH_TOKEN: ${{ github.token }}
 
       - name: Publish snapshot to Repsy
         run: ./gradlew --no-build-cache :intellij-plugin:publishAllPublicationsToRepsyIjPluginSnapshots
         env:
-          COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT: true
+          IJ_PLUGIN_SNAPSHOT: true
           IJ_PLUGIN_REPSY_USERNAME: ${{ secrets.IJ_PLUGIN_REPSY_USERNAME }}
           IJ_PLUGIN_REPSY_PASSWORD: ${{ secrets.IJ_PLUGIN_REPSY_PASSWORD }}

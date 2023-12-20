@@ -91,5 +91,7 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
         subgraph = subgraph,
         revision = revision,
     )
+
+    logger.info("Apollo: schema pushed successfully")
   }
 }
