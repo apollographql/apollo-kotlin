@@ -1,5 +1,7 @@
 package com.apollographql.ijplugin.inspection
 
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.linkDefinitions
 import com.intellij.codeInspection.InspectionSuppressor
 import com.intellij.codeInspection.SuppressQuickFix
 import com.intellij.lang.jsgraphql.psi.GraphQLArgument
@@ -7,8 +9,8 @@ import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
 import com.intellij.psi.PsiElement
 
-private val KNOWN_DIRECTIVES: Map<String, Collection<String>> by lazy {
-  mapOf("link" to setOf("url", "as", "import", "for")) + NULLABILITY_DIRECTIVES
+private val KNOWN_DIRECTIVES: List<GQLDirectiveDefinition> by lazy {
+  linkDefinitions().filterIsInstance<GQLDirectiveDefinition>() + NULLABILITY_DIRECTIVE_DEFINITIONS
 }
 
 /**
@@ -32,11 +34,11 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
 }
 
 private fun PsiElement.isKnownDirective(): Boolean {
-  return this is GraphQLDirective && (name in KNOWN_DIRECTIVES.keys || this.isImported())
+  return this is GraphQLDirective && (name in KNOWN_DIRECTIVES.map { it.name } || this.isImported())
 }
 
 private fun PsiElement.isKnownDirectiveArgument(): Boolean {
   return this is GraphQLArgument &&
       parent?.parent?.isKnownDirective() == true &&
-      name in KNOWN_DIRECTIVES[(parent.parent as GraphQLDirective).nameWithoutPrefix].orEmpty()
+      name in KNOWN_DIRECTIVES.firstOrNull { it.name == (parent.parent as GraphQLDirective).nameWithoutPrefix }?.arguments?.map { it.name }.orEmpty()
 }

@@ -3,6 +3,7 @@
 package com.apollographql.ijplugin.inspection
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.NULLABILITY_VERSION
 import com.apollographql.apollo3.ast.nullabilityDefinitions
@@ -19,15 +20,15 @@ import com.intellij.lang.jsgraphql.psi.GraphQLStringValue
 
 const val NULLABILITY_URL = "https://specs.apollo.dev/nullability/$NULLABILITY_VERSION"
 
-val NULLABILITY_DIRECTIVES: Map<String, Collection<String>> by lazy {
+val NULLABILITY_DEFINITIONS: List<GQLDefinition> by lazy {
   nullabilityDefinitions(NULLABILITY_VERSION)
-      .filterIsInstance<GQLDirectiveDefinition>()
-      .map { it.name to it.arguments.map { it.name } }
-      .toMap()
+}
+
+val NULLABILITY_DIRECTIVE_DEFINITIONS: List<GQLDirectiveDefinition> by lazy {
+  NULLABILITY_DEFINITIONS.filterIsInstance<GQLDirectiveDefinition>()
 }
 
 const val CATCH = "catch"
-const val CATCH_TO = "CatchTo"
 
 fun GraphQLNamedElement.isImported(): Boolean {
   for (schemaFile in schemaFiles()) {
@@ -36,7 +37,7 @@ fun GraphQLNamedElement.isImported(): Boolean {
   return false
 }
 
-fun isEnumImported(element: GraphQLElement, enumName: String): Boolean {
+fun isImported(element: GraphQLElement, enumName: String): Boolean {
   for (schemaFile in element.schemaFiles()) {
     if (schemaFile.hasImportFor(enumName, false)) return true
   }
