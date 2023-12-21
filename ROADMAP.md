@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-12-05**
+**Last updated: 2023-12-21**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -26,8 +26,8 @@ Our next major release is currently in the beta stage. Expect new beta to be rel
 Here's a high-level overview of what to expect:
 
 - [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
-- [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
-- Better error handling ([RFC](https://github.com/apollographql/apollo-kotlin/issues/4711))
+- [Java runtime](https://github.com/apollographql/apollo-kotlin/milestone/25)
+- Error handling changes ([RFC](https://github.com/apollographql/apollo-kotlin/issues/4711))
     - Move exceptions to `ApolloResponse`
     - Add `@catch` directive ([RFC](https://github.com/apollographql/apollo-kotlin/issues/5337))
     - Add `@semanticNonNull` directive
@@ -35,7 +35,7 @@ Here's a high-level overview of what to expect:
 - Support `@oneOf` for Input Objects
 - Support Wasm JS target
 
-## Better support for Jetpack Compose
+## Jetpack Compose extensions
 
 _This is currently available as an experimental feature.  We will release a stable version after getting sufficient user feedback_
 
