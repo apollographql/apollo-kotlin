@@ -384,6 +384,10 @@ sealed class TelemetryEvent(
    */
   class ApolloIjInputConstructorChangeToBuilderIntentionApply : TelemetryEvent("akij_input_constructor_change_to_builder_intention_apply", null)
 
+  /**
+   * User applied the 'Import directive' quickfix for the 'Missing GraphQL definition import' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjMissingGraphQLDefinitionImportQuickFix : TelemetryEvent("akij_missing_graphql_definition_import_quickfix", null)
 }
 
 class TelemetryEventList {

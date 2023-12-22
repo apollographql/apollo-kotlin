@@ -124,6 +124,19 @@
         editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES"
     />
 
+    <!-- Missing GraphQL definition import -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloMissingGraphQLDefinitionImportInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.missingGraphQLDefinitionImport.displayName"
+        enabledByDefault="true"
+        level="ERROR"
+        editorAttributes="WRONG_REFERENCES_ATTRIBUTES"
+    />
+
     <!-- "Missing introspection" inspection  -->
     <!--suppress PluginXmlCapitalization -->
     <localInspection
@@ -172,6 +185,12 @@
     <lang.inspectionSuppressor
         language="GraphQL"
         implementationClass="com.apollographql.ijplugin.inspection.GraphQLInspectionSuppressor"
+    />
+
+    <!-- Suppression of GraphQLUnresolvedReference for certain known directives -->
+    <lang.inspectionSuppressor
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.GraphQLUnresolvedReferenceInspectionSuppressor"
     />
 
     <!-- Fields insights service (fetch and cache data) -->

@@ -217,6 +217,7 @@ publishing {
 
 dependencies {
   implementation(project(":apollo-gradle-plugin-external"))
+  implementation(project(":apollo-ast"))
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)

@@ -1,0 +1,4 @@
+schema:
+  - missing-CatchTo.graphqls
+  - extra.graphqls
+documents: '**/*.graphql'
