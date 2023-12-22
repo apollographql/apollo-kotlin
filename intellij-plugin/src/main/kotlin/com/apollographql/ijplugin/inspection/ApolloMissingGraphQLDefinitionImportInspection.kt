@@ -26,8 +26,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
-import com.intellij.lang.jsgraphql.psi.GraphQLFile
-import com.intellij.lang.jsgraphql.psi.GraphQLSchemaDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
@@ -116,19 +114,11 @@ private class ImportDefinitionQuickFix(
     val schemaFiles = element.schemaFiles()
     val linkDirective = schemaFiles.flatMap { it.linkDirectives(definitionsUrl) }.firstOrNull()
 
-    // Special case: also add a @catch directive to the schema if we're importing @catch
-    val catchDirectiveSchemaExtension = if (element.name == CATCH && schemaFiles.flatMap { it.schemaCatchDirectives() }.isEmpty()) {
-      createCatchDirectiveSchemaExtension(project)
-    } else {
-      null
-    }
-
     if (linkDirective == null) {
       val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
-        val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }.orEmpty()
-        GraphQLElementFactory.createFile(project, fileText).also {
+        GraphQLElementFactory.createFile(project, linkDirectiveSchemaExtension.text).also {
           // Save the file to the project
           it.name = "extra.graphqls"
           schemaFiles.first().containingDirectory!!.add(it)
@@ -137,24 +127,15 @@ private class ImportDefinitionQuickFix(
           project.gradleToolingModelService.triggerFetchToolingModels()
         }
       } else {
-        extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
-        extraSchemaFile.add(linkDirectiveSchemaExtension)
-        catchDirectiveSchemaExtension?.let {
-          extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
-          extraSchemaFile.add(it)
-        }
+        val addedElement = extraSchemaFile.addBefore(linkDirectiveSchemaExtension, extraSchemaFile.firstChild)
+        extraSchemaFile.addAfter(GraphQLElementFactory.createWhiteSpace(project, "\n\n"), addedElement)
       }
     } else {
-      val extraSchemaFile = linkDirective.containingFile
       val importedNames = buildSet {
         addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
         add(element.nameForImport)
       }
       linkDirective.replace(createLinkDirective(project, importedNames, definitions, definitionsUrl))
-      catchDirectiveSchemaExtension?.let {
-        extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
-        extraSchemaFile.add(it)
-      }
     }
   }
 }
@@ -187,11 +168,6 @@ private fun createLinkDirectiveSchemaExtension(
       .findChildrenOfType<GraphQLSchemaExtension>().single()
 }
 
-private fun createCatchDirectiveSchemaExtension(project: Project): GraphQLSchemaExtension {
-  return GraphQLElementFactory.createFile(project, "extend schema @catch(to: THROW)")
-      .findChildrenOfType<GraphQLSchemaExtension>().single()
-}
-
 private fun createLinkDirective(
     project: Project,
     importedNames: Set<String>,
@@ -199,10 +175,4 @@ private fun createLinkDirective(
     definitionsUrl: String,
 ): GraphQLDirective {
   return createLinkDirectiveSchemaExtension(project, importedNames, definitions, definitionsUrl).directives.single()
-}
-
-private fun GraphQLFile.schemaCatchDirectives(): List<GraphQLDirective> {
-  val schemaDirectives = typeDefinitions.filterIsInstance<GraphQLSchemaExtension>().flatMap { it.directives } +
-      typeDefinitions.filterIsInstance<GraphQLSchemaDefinition>().flatMap { it.directives }
-  return schemaDirectives.filter { it.name == CATCH }
 }
