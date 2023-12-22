@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.inspection
 
 import com.apollographql.ijplugin.ApolloTestCase
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestDataPath
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +59,27 @@ class ApolloMissingGraphQLDefinitionImportInspectionTest : ApolloTestCase() {
 
     myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
     myFixture.checkResultByFile("missing-CatchTo-extra_after.graphqls", true)
+  }
+
+  @Test
+  fun missingTargetNameTo() {
+    myFixture.copyFileToProject("missing-targetName.graphqls", "missing-targetName.graphqls")
+    myFixture.copyFileToProject("missing-targetName-extra.graphqls", "extra.graphqls")
+    myFixture.copyFileToProject("missing-targetName.config.yml", "graphql.config.yml")
+    myFixture.configureByFile("missing-targetName.graphql")
+
+    var highlightInfos = doHighlighting()
+    assertTrue(highlightInfos.any { it.description == "Implicitly imported directive: targetName" && it.severity == HighlightSeverity.WEAK_WARNING })
+    val quickFixAction = myFixture.findSingleIntention("Import directive 'targetName'")
+    assertNotNull(quickFixAction)
+
+    // Apply quickfix
+    myFixture.launchAction(quickFixAction)
+    highlightInfos = doHighlighting()
+    assertTrue(highlightInfos.none { it.description == "Implicitly imported directive: targetName" })
+
+    myFixture.openFileInEditor(myFixture.findFileInTempDir("extra.graphqls"))
+    myFixture.checkResultByFile("missing-targetName-extra_after.graphqls", true)
   }
 
 }

@@ -10,7 +10,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
 import com.intellij.psi.PsiElement
 
 private val KNOWN_DIRECTIVES: List<GQLDirectiveDefinition> by lazy {
-  linkDefinitions().filterIsInstance<GQLDirectiveDefinition>() + NULLABILITY_DIRECTIVE_DEFINITIONS
+  linkDefinitions().directives() + NULLABILITY_DEFINITIONS.directives()
 }
 
 /**
@@ -26,6 +26,9 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
 
       "GraphQLMissingType" -> element is GraphQLDirectivesAware && element.directives.all { it.isKnownDirective() }
 
+      // We need to suppress this one too because the plugin doesn't know that @link is repeatable
+      "GraphQLDuplicateDirective" -> element is GraphQLDirective && element.name == "link"
+
       else -> false
     }
   }
@@ -34,7 +37,7 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
 }
 
 private fun PsiElement.isKnownDirective(): Boolean {
-  return this is GraphQLDirective && (name in KNOWN_DIRECTIVES.map { it.name } || this.isImported())
+  return this is GraphQLDirective && (name in KNOWN_DIRECTIVES.map { it.name } || this.isImported(NULLABILITY_URL))
 }
 
 private fun PsiElement.isKnownDirectiveArgument(): Boolean {

@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.inspection
 
+import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -20,6 +21,7 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
@@ -38,30 +40,44 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
       override fun visitDirective(o: GraphQLDirective) {
         super.visitDirective(o)
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV4) return
-        if (o.name !in NULLABILITY_DIRECTIVE_DEFINITIONS.map { it.name }) return
-        if (!o.isImported()) {
-          val typeKind = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")
+        visitDirective(o, holder, NULLABILITY_DEFINITIONS, NULLABILITY_URL, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        visitDirective(o, holder, KOTLIN_LABS_DEFINITIONS, KOTLIN_LABS_URL, ProblemHighlightType.WEAK_WARNING)
+      }
+    }
+  }
+
+  private fun visitDirective(
+      directiveElement: GraphQLDirective,
+      holder: ProblemsHolder,
+      definitions: List<GQLDefinition>,
+      definitionsUrl: String,
+      highlightType: ProblemHighlightType,
+  ) {
+    if (directiveElement.name !in definitions.directives().map { it.name }) return
+    val message = if (highlightType == ProblemHighlightType.WEAK_WARNING) "inspection.missingGraphQLDefinitionImport.reportText.warning" else "inspection.missingGraphQLDefinitionImport.reportText.error"
+    if (!directiveElement.isImported(definitionsUrl)) {
+      val typeKind = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")
+      holder.registerProblem(
+          directiveElement,
+          ApolloBundle.message(message, typeKind, directiveElement.name!!),
+          highlightType,
+          ImportDefinitionQuickFix(typeKind = typeKind, elementName = directiveElement.name!!, definitions = definitions, definitionsUrl = definitionsUrl),
+      )
+    } else {
+      val directiveDefinition = definitions.directives().firstOrNull { it.name == directiveElement.name } ?: return
+      val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
+      val arguments = directiveElement.arguments?.argumentList.orEmpty()
+      for (argument in arguments) {
+        val argumentDefinition = directiveDefinition.arguments.firstOrNull { it.name == argument.name } ?: continue
+        val argumentTypeToImport = argumentDefinition.type.rawType().name.takeIf { it in knownDefinitionNames } ?: continue
+        if (!isImported(directiveElement, argumentTypeToImport, definitionsUrl)) {
+          val typeKind = getTypeKind(argumentTypeToImport)
           holder.registerProblem(
-              o,
-              ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", typeKind, o.name!!),
-              ImportDefinitionQuickFix(typeKind = typeKind, elementName = o.name!!),
+              argument,
+              ApolloBundle.message(message, typeKind, argumentTypeToImport),
+              highlightType,
+              ImportDefinitionQuickFix(typeKind = typeKind, elementName = argumentTypeToImport, definitions = definitions, definitionsUrl = definitionsUrl),
           )
-        } else {
-          val directiveDefinition = NULLABILITY_DIRECTIVE_DEFINITIONS.firstOrNull { it.name == o.name } ?: return
-          val knownDefinitionNames = NULLABILITY_DEFINITIONS.filterIsInstance<GQLNamed>().map { it.name }
-          val arguments = o.arguments?.argumentList.orEmpty()
-          for (argument in arguments) {
-            val argumentDefinition = directiveDefinition.arguments.firstOrNull { it.name == argument.name } ?: continue
-            val argumentTypeToImport = argumentDefinition.type.rawType().name.takeIf { it in knownDefinitionNames } ?: continue
-            if (!isImported(o, argumentTypeToImport)) {
-              val typeKind = getTypeKind(argumentTypeToImport)
-              holder.registerProblem(
-                  argument,
-                  ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText", typeKind, argumentTypeToImport),
-                  ImportDefinitionQuickFix(typeKind = typeKind, elementName = argumentTypeToImport),
-              )
-            }
-          }
         }
       }
     }
@@ -84,6 +100,8 @@ private fun getTypeKind(typeName: String): String {
 private class ImportDefinitionQuickFix(
     val typeKind: String,
     val elementName: String,
+    private val definitions: List<GQLDefinition>,
+    private val definitionsUrl: String,
 ) : LocalQuickFix {
   override fun getName() = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.quickFix", typeKind, "'$elementName'")
   override fun getFamilyName() = name
@@ -96,7 +114,7 @@ private class ImportDefinitionQuickFix(
 
     val element = descriptor.psiElement.parentOfType<GraphQLDirective>(withSelf = true)!!
     val schemaFiles = element.schemaFiles()
-    val linkDirective = schemaFiles.flatMap { it.linkDirectives() }.firstOrNull()
+    val linkDirective = schemaFiles.flatMap { it.linkDirectives(definitionsUrl) }.firstOrNull()
 
     // Special case: also add a @catch directive to the schema if we're importing @catch
     val catchDirectiveSchemaExtension = if (element.name == CATCH && schemaFiles.flatMap { it.schemaCatchDirectives() }.isEmpty()) {
@@ -106,7 +124,7 @@ private class ImportDefinitionQuickFix(
     }
 
     if (linkDirective == null) {
-      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport))
+      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
         val fileText = linkDirectiveSchemaExtension.text + catchDirectiveSchemaExtension?.let { "\n\n" + it.text }.orEmpty()
@@ -119,6 +137,7 @@ private class ImportDefinitionQuickFix(
           project.gradleToolingModelService.triggerFetchToolingModels()
         }
       } else {
+        extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
         extraSchemaFile.add(linkDirectiveSchemaExtension)
         catchDirectiveSchemaExtension?.let {
           extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
@@ -131,7 +150,7 @@ private class ImportDefinitionQuickFix(
         addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
         add(element.nameForImport)
       }
-      linkDirective.replace(createLinkDirective(project, importedNames))
+      linkDirective.replace(createLinkDirective(project, importedNames, definitions, definitionsUrl))
       catchDirectiveSchemaExtension?.let {
         extraSchemaFile.add(GraphQLElementFactory.createWhiteSpace(project, "\n\n"))
         extraSchemaFile.add(it)
@@ -140,11 +159,16 @@ private class ImportDefinitionQuickFix(
   }
 }
 
-private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: Set<String>): GraphQLSchemaExtension {
+private fun createLinkDirectiveSchemaExtension(
+    project: Project,
+    importedNames: Set<String>,
+    definitions: List<GQLDefinition>,
+    definitionsUrl: String,
+): GraphQLSchemaExtension {
   // If any of the imported name is a directive, add its argument types to the import list
-  val knownDefinitionNames = NULLABILITY_DEFINITIONS.filterIsInstance<GQLNamed>().map { it.name }
+  val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
   val additionalNames = importedNames.flatMap { importedName ->
-    NULLABILITY_DIRECTIVE_DEFINITIONS.firstOrNull { "@${it.name}" == importedName }
+    definitions.directives().firstOrNull { "@${it.name}" == importedName }
         ?.arguments
         ?.map { it.type.rawType().name }
         ?.filter { it in knownDefinitionNames }.orEmpty()
@@ -155,7 +179,7 @@ private fun createLinkDirectiveSchemaExtension(project: Project, importedNames: 
       """
         extend schema
         @link(
-          url: "$NULLABILITY_URL",
+          url: "$definitionsUrl",
           import: [${(importedNames + additionalNames).joinToString { it.quoted() }}]
         )
       """.trimIndent()
@@ -168,8 +192,13 @@ private fun createCatchDirectiveSchemaExtension(project: Project): GraphQLSchema
       .findChildrenOfType<GraphQLSchemaExtension>().single()
 }
 
-private fun createLinkDirective(project: Project, importedNames: Set<String>): GraphQLDirective {
-  return createLinkDirectiveSchemaExtension(project, importedNames).directives.single()
+private fun createLinkDirective(
+    project: Project,
+    importedNames: Set<String>,
+    definitions: List<GQLDefinition>,
+    definitionsUrl: String,
+): GraphQLDirective {
+  return createLinkDirectiveSchemaExtension(project, importedNames, definitions, definitionsUrl).directives.single()
 }
 
 private fun GraphQLFile.schemaCatchDirectives(): List<GraphQLDirective> {
