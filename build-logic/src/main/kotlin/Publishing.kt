@@ -2,6 +2,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
 import dev.adamko.dokkatoo.dokka.plugins.DokkaHtmlPluginParameters
+import dev.adamko.dokkatoo.dokka.plugins.DokkaVersioningPluginParameters
 import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
@@ -44,8 +45,9 @@ fun Project.configureDokka() {
   apply {
     plugin("dev.adamko.dokkatoo-html")
   }
-
   val dokkatoo = extensions.getByType(DokkatooExtension::class.java)
+
+
   dokkatoo.apply {
     pluginsConfiguration.getByName("html") {
       this as DokkaHtmlPluginParameters
@@ -82,6 +84,16 @@ fun Project.configureDokka() {
           "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
         }
     )
+    dependencies.add(
+        "dokkatooPluginHtml",
+        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+          "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
+        }
+    )
+    dokkatoo.pluginsConfiguration.getByName("versioning") {
+      this as DokkaVersioningPluginParameters
+      olderVersionsDir.set(file("build/kdoc-versions"))
+    }
   } else {
     rootProject.dependencies.add("dokkatoo", this)
   }
