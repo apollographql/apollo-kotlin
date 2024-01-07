@@ -1,6 +1,8 @@
-
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
+import dev.adamko.dokkatoo.DokkatooExtension
+import dev.adamko.dokkatoo.dokka.plugins.DokkaHtmlPluginParameters
+import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
@@ -13,9 +15,8 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
-import org.jetbrains.dokka.gradle.AbstractDokkaTask
-import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+
+//import org.jetbrains.dokka.gradle.DokkaTask
 
 fun Project.configurePublishing() {
   apply {
@@ -41,27 +42,23 @@ fun Project.configurePublishing() {
 
 fun Project.configureDokka() {
   apply {
-    plugin("org.jetbrains.dokka")
+    plugin("dev.adamko.dokkatoo-html")
   }
 
-  tasks.withType(DokkaTask::class.java).configureEach {
-    //https://github.com/Kotlin/dokka/issues/1455
-    dependsOn("assemble")
-    notCompatibleWithConfigurationCache("See https://github.com/Kotlin/dokka/issues/1217")
-  }
-
-  tasks.withType(DokkaTaskPartial::class.java).configureEach {
-    //https://github.com/Kotlin/dokka/issues/1455
-    dependsOn("assemble")
-    notCompatibleWithConfigurationCache("See https://github.com/Kotlin/dokka/issues/1217")
-  }
-
-  tasks.withType(AbstractDokkaTask::class.java).configureEach {
-    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
-      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
-      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+  val dokkatoo = extensions.getByType(DokkatooExtension::class.java)
+  dokkatoo.apply {
+    pluginsConfiguration.getByName("html") {
+      this as DokkaHtmlPluginParameters
+      customStyleSheets.from(
+          listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+      )
+      customAssets.from(
+          listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+      )
     }
+  }
 
+  tasks.withType(DokkatooGenerateTask::class.java).configureEach {
     /**
      * Speed up development. When running the Gradle integration tests, we don't need KDoc to be generated
      */
@@ -72,9 +69,21 @@ fun Project.configureDokka() {
           }) {
         return@onlyIf false
       }
-
       true
     }
+
+    workerMaxHeapSize.set("8g")
+  }
+
+  if (this == rootProject) {
+    dependencies.add(
+        "dokkatooPluginHtml",
+        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+          "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
+        }
+    )
+  } else {
+    rootProject.dependencies.add("dokkatoo", this)
   }
 }
 
@@ -112,7 +121,7 @@ private fun Project.configurePublishingInternal() {
     archiveClassifier.set("javadoc")
 
     runCatching {
-      from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
+      from(tasks.named("dokkatooGeneratePublicationHtml").flatMap { (it as DokkatooGenerateTask).outputDirectory })
     }
   }
   val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {

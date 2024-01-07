@@ -21,8 +21,7 @@ dependencies {
   implementation(libs.okhttp)
 
   implementation(libs.kotlinx.benchmark)
-  implementation(libs.dokka.plugin)
-  implementation(libs.dokka.base)
+  implementation(libs.dokkatoo)
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
