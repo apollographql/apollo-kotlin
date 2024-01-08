@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
@@ -93,9 +94,15 @@ fun Project.configureDokka() {
           "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
         }
     )
+
+    val downloadOlderVersions = tasks.register("downloadOlderVersions") {
+      // More stuff coming here
+      outputs.dir(layout.buildDirectory.dir("kdoc-versions"))
+    }
+
     dokkatoo.pluginsConfiguration.getByName("versioning") {
       this as DokkaVersioningPluginParameters
-      olderVersionsDir.set(file("build/kdoc-versions"))
+      olderVersionsDir.fileProvider(downloadOlderVersions.map { it.outputs.files.singleFile })
     }
   } else {
     rootProject.dependencies.add("dokkatoo", this)
