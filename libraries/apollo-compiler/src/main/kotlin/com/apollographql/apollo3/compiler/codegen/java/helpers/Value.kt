@@ -51,7 +51,7 @@ internal fun IrValue.codeBlock(): CodeBlock {
     }
 
     is IrFloatValue -> {
-      val asDouble = value.toIntOrNull()
+      val asDouble = value.toDoubleOrNull()
       if (asDouble != null) {
         // The value fits in a kotlin Double
         CodeBlock.of(L, value)
