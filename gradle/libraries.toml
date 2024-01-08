@@ -18,7 +18,7 @@ apollo = "4.0.0-beta.5-SNAPSHOT"
 apollo-published = "4.0.0-beta.3"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-compose-compiler = "1.5.5-dev-k2.0.0-Beta1-06b8ae672a4"
+compose-compiler = "1.5.8-dev-k2.0.0-Beta2-99ed868a0f8"
 compose = "1.5.1"
 dokka = "1.9.0"
 guava = "31.1-jre"
