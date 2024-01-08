@@ -92,7 +92,7 @@ fun Project.configureDokka() {
   val project = this
   val kdocProject = project(":apollo-kdoc")
   kdocProject.configurations.all {
-    if (name == "dokkatoo" && project.name == "apollo-annotations") {
+    if (name == "dokkatoo") {
       dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
     }
   }
