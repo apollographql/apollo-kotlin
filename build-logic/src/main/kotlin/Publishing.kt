@@ -93,7 +93,7 @@ fun Project.configureDokka() {
   val kdocProject = project(":apollo-kdoc")
   kdocProject.configurations.all {
     if (name == "dokkatoo") {
-      dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
+      this.dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
     }
   }
 }
@@ -113,14 +113,15 @@ fun Project.configureDokkaAggregate() {
       }
   )
 
-  val kdocVersionTasks = listOf<String>().map {version ->
+  val olderVersions = listOf<String>()
+  val kdocVersionTasks = olderVersions.map {version ->
     val versionString = version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
       isCanBeResolved = true
       isCanBeConsumed = false
       isTransitive = false
 
-      dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-api:$version:javadoc"))
+      dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-kdoc:$version:javadoc"))
     }
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
@@ -140,6 +141,10 @@ fun Project.configureDokkaAggregate() {
 
   dokkatoo.pluginsConfiguration.getByName("versioning") {
     this as DokkaVersioningPluginParameters
+    val currentVersion = findProperty("VERSION_NAME") as String
+    version.set(currentVersion)
+    // Workaround for https://github.com/adamko-dev/dokkatoo/pull/135
+    versionsOrdering.set((olderVersions + currentVersion).reversed())
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
 }
@@ -273,8 +278,17 @@ private fun Project.configurePublishingInternal() {
           /**
            * No plugin applied -> this is the aggregate publication
            */
+          /**
+           * Strip the /older/ directory to save a bit of space
+           */
+          val kdocWithoutOlder = tasks.register("kdocWithoutOlder", org.gradle.jvm.tasks.Jar::class.java) {
+            archiveClassifier.set("javadoc")
+            from(tasks.named("dokkatooGeneratePublicationHtml").map { (it as DokkatooGenerateTask).outputDirectory.get().asFile })
+            exclude("/older/**")
+          }
+
           create("default", MavenPublication::class.java) {
-            artifact(dokkaJarTaskProvider)
+            artifact(kdocWithoutOlder)
 
             artifactId = project.name
           }
