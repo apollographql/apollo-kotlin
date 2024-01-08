@@ -13,6 +13,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
@@ -95,14 +96,30 @@ fun Project.configureDokka() {
         }
     )
 
-    val downloadOlderVersions = tasks.register("downloadOlderVersions") {
-      // More stuff coming here
-      outputs.dir(layout.buildDirectory.dir("kdoc-versions"))
+    val kdocVersionTasks = listOf<String>().map {version ->
+      val versionString = version.replace(".", "_").replace("-", "_")
+      val configuration = configurations.create("apolloKdocVersion_$versionString") {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+        isTransitive = false
+
+        dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-api:$version:javadoc"))
+      }
+
+      tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
+        from(configuration.map { zipTree(it) })
+        into(layout.buildDirectory.dir("kdoc-versions/$version"))
+      }
+    }
+
+    val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
+      dependsOn(kdocVersionTasks)
+      outputs.file(layout.buildDirectory.dir("kdoc-versions/"))
     }
 
     dokkatoo.pluginsConfiguration.getByName("versioning") {
       this as DokkaVersioningPluginParameters
-      olderVersionsDir.fileProvider(downloadOlderVersions.map { it.outputs.files.singleFile })
+      olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
     }
   } else {
     rootProject.dependencies.add("dokkatoo", this)
