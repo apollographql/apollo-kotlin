@@ -112,10 +112,6 @@ val ciBuild = tasks.register("ciBuild") {
 }
 
 rootProject.configureDokka()
-tasks.named("dokkaHtmlMultiModule").configure {
-  this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
-  outputDirectory.set(layout.buildDirectory.asFile.get().resolve("dokkaHtml/kdoc"))
-}
 
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)

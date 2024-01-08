@@ -1,3 +1,3 @@
-# apollo-ast
+# Module apollo-ast
 
-A set of APIs to work with GraphQL documents, parse them to AST and serialize them again
+apollo-ast contains code to work with the GraphQL Abstract Syntax Tree.

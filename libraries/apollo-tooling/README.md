@@ -1,4 +1,4 @@
-# apollo-tooling
+# Module apollo-tooling
 
-A set of extra APIs on top of apollo-compiler to work with GraphQL schemas and APIs. Used from the CLI and Gradle plugin
+apollo-tooling contains APIs to work with GraphQL schemas and operations as well as the GraphOS API. It is used from the CLI and Gradle plugin
 
