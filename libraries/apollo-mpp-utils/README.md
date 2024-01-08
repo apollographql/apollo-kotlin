@@ -1,3 +1,3 @@
-# apollo-mpp-utils
+# Module apollo-mpp-utils
 
-A few utilities for working with multiplatform projects. 
+apollo-mpp-utils contains a few utilities for working with multiplatform projects. 

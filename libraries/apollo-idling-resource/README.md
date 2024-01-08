@@ -1,0 +1,1 @@
+# Module apollo-idling-resource

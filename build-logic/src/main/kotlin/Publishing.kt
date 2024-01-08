@@ -77,6 +77,9 @@ fun Project.configureDokka() {
     workerMaxHeapSize.set("8g")
   }
 
+  dokkatoo.dokkatooSourceSets.configureEach {
+    includes.from("README.md")
+  }
   if (this == rootProject) {
     dependencies.add(
         "dokkatooPluginHtml",

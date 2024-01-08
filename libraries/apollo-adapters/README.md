@@ -1,6 +1,6 @@
-# Apollo Adapters
+# Module apollo-adapters
 
-A few convenient adapters:
+apollo-adapters contains adapters for common date and big decimal GraphQL scalars.
 
 | Adapter                                                         | Description                                                                                         |
 |-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
