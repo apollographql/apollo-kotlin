@@ -111,8 +111,6 @@ val ciBuild = tasks.register("ciBuild") {
   dependsOn(subprojectTasks("build"))
 }
 
-rootProject.configureDokka()
-
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
   rejectVersionIf {

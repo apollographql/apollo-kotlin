@@ -19,9 +19,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 
-//import org.jetbrains.dokka.gradle.DokkaTask
-
-fun Project.configurePublishing() {
+fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
   apply {
     plugin("signing")
   }
@@ -40,15 +38,18 @@ fun Project.configurePublishing() {
       singleVariant("release")
     }
   }
+
+  if (isAggregateKdoc) {
+    configureDokkaAggregate()
+  }
   configurePublishingInternal()
 }
 
-fun Project.configureDokka() {
+fun Project.configureDokkaCommon(): DokkatooExtension {
   apply {
     plugin("dev.adamko.dokkatoo-html")
   }
   val dokkatoo = extensions.getByType(DokkatooExtension::class.java)
-
 
   dokkatoo.apply {
     pluginsConfiguration.getByName("html") {
@@ -82,47 +83,60 @@ fun Project.configureDokka() {
   dokkatoo.dokkatooSourceSets.configureEach {
     includes.from("README.md")
   }
-  if (this == rootProject) {
-    dependencies.add(
-        "dokkatooPluginHtml",
-        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-          "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
-        }
-    )
-    dependencies.add(
-        "dokkatooPluginHtml",
-        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-          "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
-        }
-    )
 
-    val kdocVersionTasks = listOf<String>().map {version ->
-      val versionString = version.replace(".", "_").replace("-", "_")
-      val configuration = configurations.create("apolloKdocVersion_$versionString") {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-        isTransitive = false
+  return dokkatoo
+}
 
-        dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-api:$version:javadoc"))
+fun Project.configureDokka() {
+  configureDokkaCommon()
+  val project = this
+  val kdocProject = project(":apollo-kdoc")
+  kdocProject.configurations.all {
+    if (name == "dokkatoo") {
+      dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
+    }
+  }
+}
+
+fun Project.configureDokkaAggregate() {
+  val dokkatoo = configureDokkaCommon()
+  dependencies.add(
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
       }
-
-      tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
-        from(configuration.map { zipTree(it) })
-        into(layout.buildDirectory.dir("kdoc-versions/$version"))
+  )
+  dependencies.add(
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
       }
+  )
+
+  val kdocVersionTasks = listOf<String>().map {version ->
+    val versionString = version.replace(".", "_").replace("-", "_")
+    val configuration = configurations.create("apolloKdocVersion_$versionString") {
+      isCanBeResolved = true
+      isCanBeConsumed = false
+      isTransitive = false
+
+      dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-api:$version:javadoc"))
     }
 
-    val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
-      dependsOn(kdocVersionTasks)
-      outputs.file(layout.buildDirectory.dir("kdoc-versions/"))
+    tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
+      from(configuration.map { zipTree(it) })
+      into(layout.buildDirectory.dir("kdoc-versions/$version"))
     }
+  }
 
-    dokkatoo.pluginsConfiguration.getByName("versioning") {
-      this as DokkaVersioningPluginParameters
-      olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
-    }
-  } else {
-    rootProject.dependencies.add("dokkatoo", this)
+  val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
+    dependsOn(kdocVersionTasks)
+    outputs.file(layout.buildDirectory.dir("kdoc-versions/"))
+  }
+
+  dokkatoo.pluginsConfiguration.getByName("versioning") {
+    this as DokkaVersioningPluginParameters
+    olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
 }
 
@@ -159,10 +173,14 @@ private fun Project.configurePublishingInternal() {
   val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
 
+    /**
+     * Dokka is not enabled for Android projects and dokkatooGeneratePublicationHtml is not found
+     */
     runCatching {
       from(tasks.named("dokkatooGeneratePublicationHtml").flatMap { (it as DokkatooGenerateTask).outputDirectory })
     }
   }
+
   val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     // Add an appendix to avoid the output of this task to overlap with defaultJavadocJar
     archiveAppendix.set("empty")
@@ -243,7 +261,7 @@ private fun Project.configurePublishingInternal() {
           }
         }
 
-        else -> {
+        extensions.findByName("java") != null -> {
           /**
            * Kotlin JVM do not create publications (yet?). Do it ourselves.
            */
@@ -252,6 +270,17 @@ private fun Project.configurePublishingInternal() {
             from(components.findByName("java"))
             artifact(javadocJarTaskProvider)
             artifact(createJavaSourcesTask())
+
+            artifactId = project.name
+          }
+        }
+
+        else -> {
+          /**
+           * No plugin applied -> this is the aggregate publication
+           */
+          create("default", MavenPublication::class.java) {
+            artifact(dokkaJarTaskProvider)
 
             artifactId = project.name
           }
