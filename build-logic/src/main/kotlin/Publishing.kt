@@ -92,7 +92,7 @@ fun Project.configureDokka() {
   val project = this
   val kdocProject = project(":apollo-kdoc")
   kdocProject.configurations.all {
-    if (name == "dokkatoo") {
+    if (name == "dokkatoo" && project.name == "apollo-annotations") {
       dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
     }
   }
@@ -131,7 +131,11 @@ fun Project.configureDokkaAggregate() {
 
   val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
     dependsOn(kdocVersionTasks)
-    outputs.file(layout.buildDirectory.dir("kdoc-versions/"))
+    outputs.dir(layout.buildDirectory.dir("kdoc-versions/"))
+    doLast {
+      // Make sure the folder is created
+      outputs.files.singleFile.mkdirs()
+    }
   }
 
   dokkatoo.pluginsConfiguration.getByName("versioning") {
@@ -177,7 +181,7 @@ private fun Project.configurePublishingInternal() {
      * Dokka is not enabled for Android projects and dokkatooGeneratePublicationHtml is not found
      */
     runCatching {
-      from(tasks.named("dokkatooGeneratePublicationHtml").flatMap { (it as DokkatooGenerateTask).outputDirectory })
+      from(tasks.named("dokkatooGeneratePublicationHtml").map { (it as DokkatooGenerateTask).outputDirectory.get().asFile })
     }
   }
 
@@ -185,16 +189,6 @@ private fun Project.configurePublishingInternal() {
     // Add an appendix to avoid the output of this task to overlap with defaultJavadocJar
     archiveAppendix.set("empty")
     archiveClassifier.set("javadoc")
-  }
-
-  /**
-   * Type `echo "apollographql_publish_kdoc=false" >> ~/.gradle/gradle.properties` on your development machine
-   * to save some time during Gradle tests and publishing to mavenLocal
-   */
-  val javadocJarTaskProvider = if (properties["apollographql_publish_kdoc"] == "false") {
-    emptyJavadocJarTaskProvider
-  } else {
-    dokkaJarTaskProvider
   }
 
   tasks.withType(Jar::class.java) {
@@ -217,7 +211,7 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java).configureEach {
             if (name == "kotlinMultiplatform") {
               // Add the javadoc to the multiplatform publications
-              artifact(javadocJarTaskProvider)
+              artifact(dokkaJarTaskProvider)
             } else {
               // And an empty one for others so as to save some space
               artifact(emptyJavadocJarTaskProvider)
@@ -238,7 +232,7 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java) {
             // Only add sources and javadoc for the main publication
             if (!name.lowercase().contains("marker")) {
-              artifact(javadocJarTaskProvider)
+              artifact(dokkaJarTaskProvider)
               artifact(createJavaSourcesTask())
             }
           }
@@ -254,7 +248,7 @@ private fun Project.configurePublishingInternal() {
               from(components.findByName("release"))
             }
 
-            artifact(javadocJarTaskProvider)
+            artifact(dokkaJarTaskProvider)
             artifact(createAndroidSourcesTask())
 
             artifactId = project.name
@@ -268,7 +262,7 @@ private fun Project.configurePublishingInternal() {
           create("default", MavenPublication::class.java) {
 
             from(components.findByName("java"))
-            artifact(javadocJarTaskProvider)
+            artifact(dokkaJarTaskProvider)
             artifact(createJavaSourcesTask())
 
             artifactId = project.name
