@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
-import com.apollographql.apollo3.api.json.JsonNumber;
 import com.example.arguments_hardcoded.type.GraphQLInt;
 import com.example.arguments_hardcoded.type.GraphQLString;
 import com.example.arguments_hardcoded.type.Review;
@@ -24,7 +23,7 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value("JEDI").build(), new CompiledArgument.Builder("starsFloat").value(new JsonNumber("9.9")).build(), new CompiledArgument.Builder("starsInt").value(10).build())).selections(__reviews).build(),
+    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value("JEDI").build(), new CompiledArgument.Builder("starsFloat").value(9.9).build(), new CompiledArgument.Builder("starsInt").value(10).build())).selections(__reviews).build(),
     new CompiledField.Builder("testNullableArguments", new CompiledNotNullType(GraphQLInt.type)).arguments(Arrays.asList(new CompiledArgument.Builder("boolean").value(null).build(), new CompiledArgument.Builder("episode").value(null).build(), new CompiledArgument.Builder("float").value(null).build(), new CompiledArgument.Builder("int").value(null).build(), new CompiledArgument.Builder("list").value(null).build(), new CompiledArgument.Builder("review").value(null).build(), new CompiledArgument.Builder("string").value(null).build())).build()
   );
 }

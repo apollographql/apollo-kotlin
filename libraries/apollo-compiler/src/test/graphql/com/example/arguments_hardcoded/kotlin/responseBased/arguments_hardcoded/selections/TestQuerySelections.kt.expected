@@ -8,7 +8,6 @@ package com.example.arguments_hardcoded.selections
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.arguments_hardcoded.type.GraphQLInt
@@ -34,7 +33,7 @@ public object TestQuerySelections {
           type = Review.type.list()
         ).arguments(listOf(
           CompiledArgument.Builder("episode").value("JEDI").build(),
-          CompiledArgument.Builder("starsFloat").value(JsonNumber("9.9")).build(),
+          CompiledArgument.Builder("starsFloat").value(9.9).build(),
           CompiledArgument.Builder("starsInt").value(10).build()
         ))
         .selections(__reviews)
