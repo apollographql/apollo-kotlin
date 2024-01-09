@@ -1,0 +1,40 @@
+@file:JvmName("ApolloClientDirectiveStripper")
+
+package com.apollographql.ijplugin.graphql
+
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.TransformResult
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.transform
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
+import com.apollographql.ijplugin.inspection.schemaFiles
+import com.apollographql.ijplugin.util.logw
+import com.intellij.lang.jsgraphql.psi.GraphQLFile
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiDocumentManager
+
+@OptIn(ApolloInternal::class, ApolloExperimental::class)
+fun stripApolloClientDirectives(operationEditor: Editor, operationText: String): String {
+  val operationGraphQLFile = operationEditor.project?.let { project -> PsiDocumentManager.getInstance(project).getPsiFile(operationEditor.document) } as? GraphQLFile
+      ?: return operationText
+  val schemaFiles = operationGraphQLFile.schemaFiles()
+  val schemaText = schemaFiles.fold("") { acc, schemaFile -> acc + "\n" + schemaFile.text }
+  return runCatching {
+    val schemaGQLDocument = schemaText.parseAsGQLDocument().getOrThrow()
+    val schema = schemaGQLDocument.validateAsSchemaAndAddApolloDefinition().getOrThrow()
+    val operationDocument = operationText.parseAsGQLDocument().getOrThrow()
+    val strippedOperationDocument = operationDocument.transform {
+      if (it is GQLDirective && schema.shouldStrip(it.name)) {
+        TransformResult.Delete
+      } else {
+        TransformResult.Continue
+      }
+    }!!
+    strippedOperationDocument.toUtf8()
+  }
+      .onFailure { logw(it) }
+      .getOrDefault(operationText)
+}
