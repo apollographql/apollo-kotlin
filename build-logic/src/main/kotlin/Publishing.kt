@@ -176,24 +176,22 @@ private fun Project.getOssStagingUrl(): String {
 }
 
 private fun Project.configurePublishingInternal() {
-  /**
-   * Javadoc
-   */
-  val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val emptyJavadocJar = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
 
-    /**
-     * Dokka is not enabled for Android projects and dokkatooGeneratePublicationHtml is not found
-     */
-    runCatching {
-      from(tasks.named("dokkatooGeneratePublicationHtml").map { (it as DokkatooGenerateTask).outputDirectory.get().asFile })
+    // Inspired by https://github.com/adamko-dev/dokkatoo/blob/4b5ac135add99ebc9ca7c5d51057b27071b24897/buildSrc/src/main/kotlin/buildsrc/conventions/kotlin-gradle-plugin.gradle.kts#L14-L29
+    from(
+        resources.text.fromString(
+            """
+      This Javadoc JAR is intentionally empty.
+      
+      For documentation, see the sources JAR or https://www.apollographql.com/docs/kotlin/kdoc/index.html
+      
+    """.trimIndent()
+        )
+    ) {
+      rename { "readme.txt" }
     }
-  }
-
-  val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    // Add an appendix to avoid the output of this task to overlap with defaultJavadocJar
-    archiveAppendix.set("empty")
-    archiveClassifier.set("javadoc")
   }
 
   tasks.withType(Jar::class.java) {
@@ -214,13 +212,7 @@ private fun Project.configurePublishingInternal() {
            * It only misses the javadoc
            */
           withType(MavenPublication::class.java).configureEach {
-            if (name == "kotlinMultiplatform") {
-              // Add the javadoc to the multiplatform publications
-              artifact(dokkaJarTaskProvider)
-            } else {
-              // And an empty one for others so as to save some space
-              artifact(emptyJavadocJarTaskProvider)
-            }
+            artifact(emptyJavadocJar)
           }
         }
 
@@ -237,7 +229,7 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java) {
             // Only add sources and javadoc for the main publication
             if (!name.lowercase().contains("marker")) {
-              artifact(dokkaJarTaskProvider)
+              artifact(emptyJavadocJar)
               artifact(createJavaSourcesTask())
             }
           }
@@ -253,7 +245,7 @@ private fun Project.configurePublishingInternal() {
               from(components.findByName("release"))
             }
 
-            artifact(dokkaJarTaskProvider)
+            artifact(emptyJavadocJar)
             artifact(createAndroidSourcesTask())
 
             artifactId = project.name
@@ -267,7 +259,7 @@ private fun Project.configurePublishingInternal() {
           create("default", MavenPublication::class.java) {
 
             from(components.findByName("java"))
-            artifact(dokkaJarTaskProvider)
+            artifact(emptyJavadocJar)
             artifact(createJavaSourcesTask())
 
             artifactId = project.name
