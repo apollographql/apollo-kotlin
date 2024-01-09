@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
@@ -12,14 +13,13 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 
-//import org.jetbrains.dokka.gradle.DokkaTask
-
-fun Project.configurePublishing() {
+fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
   apply {
     plugin("signing")
   }
@@ -38,15 +38,18 @@ fun Project.configurePublishing() {
       singleVariant("release")
     }
   }
+
+  if (isAggregateKdoc) {
+    configureDokkaAggregate()
+  }
   configurePublishingInternal()
 }
 
-fun Project.configureDokka() {
+fun Project.configureDokkaCommon(): DokkatooExtension {
   apply {
     plugin("dev.adamko.dokkatoo-html")
   }
   val dokkatoo = extensions.getByType(DokkatooExtension::class.java)
-
 
   dokkatoo.apply {
     pluginsConfiguration.getByName("html") {
@@ -80,25 +83,69 @@ fun Project.configureDokka() {
   dokkatoo.dokkatooSourceSets.configureEach {
     includes.from("README.md")
   }
-  if (this == rootProject) {
-    dependencies.add(
-        "dokkatooPluginHtml",
-        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-          "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
-        }
-    )
-    dependencies.add(
-        "dokkatooPluginHtml",
-        dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-          "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
-        }
-    )
-    dokkatoo.pluginsConfiguration.getByName("versioning") {
-      this as DokkaVersioningPluginParameters
-      olderVersionsDir.set(file("build/kdoc-versions"))
+
+  return dokkatoo
+}
+
+fun Project.configureDokka() {
+  configureDokkaCommon()
+  val project = this
+  val kdocProject = project(":apollo-kdoc")
+  kdocProject.configurations.all {
+    if (name == "dokkatoo") {
+      this.dependencies.add(kdocProject.dependencies.project(mapOf("path" to project.path)))
     }
-  } else {
-    rootProject.dependencies.add("dokkatoo", this)
+  }
+}
+
+fun Project.configureDokkaAggregate() {
+  val dokkatoo = configureDokkaCommon()
+  dependencies.add(
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
+      }
+  )
+  dependencies.add(
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
+      }
+  )
+
+  val olderVersions = listOf<String>()
+  val kdocVersionTasks = olderVersions.map {version ->
+    val versionString = version.replace(".", "_").replace("-", "_")
+    val configuration = configurations.create("apolloKdocVersion_$versionString") {
+      isCanBeResolved = true
+      isCanBeConsumed = false
+      isTransitive = false
+
+      dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-kdoc:$version:javadoc"))
+    }
+
+    tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
+      from(configuration.map { zipTree(it) })
+      into(layout.buildDirectory.dir("kdoc-versions/$version"))
+    }
+  }
+
+  val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
+    dependsOn(kdocVersionTasks)
+    outputs.dir(layout.buildDirectory.dir("kdoc-versions/"))
+    doLast {
+      // Make sure the folder is created
+      outputs.files.singleFile.mkdirs()
+    }
+  }
+
+  dokkatoo.pluginsConfiguration.getByName("versioning") {
+    this as DokkaVersioningPluginParameters
+    val currentVersion = findProperty("VERSION_NAME") as String
+    version.set(currentVersion)
+    // Workaround for https://github.com/adamko-dev/dokkatoo/pull/135
+    versionsOrdering.set((olderVersions + currentVersion).reversed())
+    olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
 }
 
@@ -129,30 +176,22 @@ private fun Project.getOssStagingUrl(): String {
 }
 
 private fun Project.configurePublishingInternal() {
-  /**
-   * Javadoc
-   */
-  val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val emptyJavadocJar = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
 
-    runCatching {
-      from(tasks.named("dokkatooGeneratePublicationHtml").flatMap { (it as DokkatooGenerateTask).outputDirectory })
+    // Inspired by https://github.com/adamko-dev/dokkatoo/blob/4b5ac135add99ebc9ca7c5d51057b27071b24897/buildSrc/src/main/kotlin/buildsrc/conventions/kotlin-gradle-plugin.gradle.kts#L14-L29
+    from(
+        resources.text.fromString(
+            """
+      This Javadoc JAR is intentionally empty.
+      
+      For documentation, see the sources JAR or https://www.apollographql.com/docs/kotlin/kdoc/index.html
+      
+    """.trimIndent()
+        )
+    ) {
+      rename { "readme.txt" }
     }
-  }
-  val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    // Add an appendix to avoid the output of this task to overlap with defaultJavadocJar
-    archiveAppendix.set("empty")
-    archiveClassifier.set("javadoc")
-  }
-
-  /**
-   * Type `echo "apollographql_publish_kdoc=false" >> ~/.gradle/gradle.properties` on your development machine
-   * to save some time during Gradle tests and publishing to mavenLocal
-   */
-  val javadocJarTaskProvider = if (properties["apollographql_publish_kdoc"] == "false") {
-    emptyJavadocJarTaskProvider
-  } else {
-    dokkaJarTaskProvider
   }
 
   tasks.withType(Jar::class.java) {
@@ -173,13 +212,7 @@ private fun Project.configurePublishingInternal() {
            * It only misses the javadoc
            */
           withType(MavenPublication::class.java).configureEach {
-            if (name == "kotlinMultiplatform") {
-              // Add the javadoc to the multiplatform publications
-              artifact(javadocJarTaskProvider)
-            } else {
-              // And an empty one for others so as to save some space
-              artifact(emptyJavadocJarTaskProvider)
-            }
+            artifact(emptyJavadocJar)
           }
         }
 
@@ -196,7 +229,7 @@ private fun Project.configurePublishingInternal() {
           withType(MavenPublication::class.java) {
             // Only add sources and javadoc for the main publication
             if (!name.lowercase().contains("marker")) {
-              artifact(javadocJarTaskProvider)
+              artifact(emptyJavadocJar)
               artifact(createJavaSourcesTask())
             }
           }
@@ -212,8 +245,22 @@ private fun Project.configurePublishingInternal() {
               from(components.findByName("release"))
             }
 
-            artifact(javadocJarTaskProvider)
+            artifact(emptyJavadocJar)
             artifact(createAndroidSourcesTask())
+
+            artifactId = project.name
+          }
+        }
+
+        extensions.findByName("java") != null -> {
+          /**
+           * Kotlin JVM do not create publications (yet?). Do it ourselves.
+           */
+          create("default", MavenPublication::class.java) {
+
+            from(components.findByName("java"))
+            artifact(emptyJavadocJar)
+            artifact(createJavaSourcesTask())
 
             artifactId = project.name
           }
@@ -221,13 +268,19 @@ private fun Project.configurePublishingInternal() {
 
         else -> {
           /**
-           * Kotlin JVM do not create publications (yet?). Do it ourselves.
+           * No plugin applied -> this is the aggregate publication
            */
-          create("default", MavenPublication::class.java) {
+          /**
+           * Strip the /older/ directory to save a bit of space
+           */
+          val kdocWithoutOlder = tasks.register("kdocWithoutOlder", org.gradle.jvm.tasks.Jar::class.java) {
+            archiveClassifier.set("javadoc")
+            from(tasks.named("dokkatooGeneratePublicationHtml").map { (it as DokkatooGenerateTask).outputDirectory.get().asFile })
+            exclude("/older/**")
+          }
 
-            from(components.findByName("java"))
-            artifact(javadocJarTaskProvider)
-            artifact(createJavaSourcesTask())
+          create("default", MavenPublication::class.java) {
+            artifact(kdocWithoutOlder)
 
             artifactId = project.name
           }

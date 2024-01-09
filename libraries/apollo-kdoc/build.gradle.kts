@@ -1,0 +1,2 @@
+configurePublishing(isAggregateKdoc = true)
+
