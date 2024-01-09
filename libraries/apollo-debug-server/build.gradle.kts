@@ -1,4 +1,5 @@
 import com.android.build.gradle.tasks.BundleAar
+import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import org.gradle.api.internal.artifacts.transform.UnzipTransform
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -55,15 +56,6 @@ val shadowUnzipped = configurations.create("shadowUnzipped") {
 }
 
 dependencies {
-  add("kspCommonMainMetadata", project(":apollo-ksp-incubating"))
-  add(
-      "kspCommonMainMetadata",
-      apollo.apolloKspProcessor(
-          schema = file(path = "src/androidMain/resources/schema.graphqls"),
-          service = "apolloDebugServer",
-          packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
-      )
-  )
   // apollo-execution is not published: we bundle it into the aar artifact
   add(shadow.name, project(":apollo-execution-incubating")) {
     isTransitive = false
@@ -91,16 +83,36 @@ android {
   }
 }
 
-// KMP ksp configuration inspired by https://medium.com/@actiwerks/setting-up-kotlin-multiplatform-with-ksp-7f598b1681bf
-tasks.withType<KotlinCompile>().configureEach {
-  dependsOn("kspCommonMainKotlinMetadata")
-}
-
-tasks.configureEach {
-  if (name.endsWith("sourcesJar", ignoreCase = true)) {
+/**
+ * KSP configuration
+ * KMP support isn't great so we wire most of the things manually
+ * See https://github.com/google/ksp/pull/1021
+ */
+fun configureKsp() {
+  dependencies {
+    add("kspCommonMainMetadata", project(":apollo-ksp-incubating"))
+    add(
+        "kspCommonMainMetadata",
+        apollo.apolloKspProcessor(
+            schema = file(path = "src/androidMain/resources/schema.graphqls"),
+            service = "apolloDebugServer",
+            packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
+        )
+    )
+  }
+  tasks.withType<KotlinCompile>().configureEach {
     dependsOn("kspCommonMainKotlinMetadata")
   }
+  tasks.withType<DokkatooGenerateTask>().configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+  }
+  tasks.configureEach {
+    if (name.endsWith("sourcesJar", ignoreCase = true)) {
+      dependsOn("kspCommonMainKotlinMetadata")
+    }
+  }
 }
+configureKsp()
 
 // apollo-execution is not published: we bundle it into the aar artifact
 val jarApolloExecution = tasks.register<Jar>("jarApolloExecution") {
