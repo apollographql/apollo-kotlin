@@ -1,0 +1,8 @@
+query MyQuery {
+  <caret>person {
+    identity {
+      firstName @nonnull
+      lastName
+    }
+  }
+}
