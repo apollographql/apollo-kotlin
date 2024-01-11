@@ -189,7 +189,7 @@ class IrOptions(
 )
 
 @Serializable
-data class CommonCodegenOptions(
+class CommonCodegenOptions(
     val packageName: String? = null,
     val packageNamesFromFilePaths: Boolean? = null,
 
@@ -363,7 +363,7 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 @Serializable
-data class ScalarInfo(
+class ScalarInfo(
     val targetName: String,
     val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
     val userDefined: Boolean = true,

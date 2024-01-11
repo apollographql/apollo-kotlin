@@ -112,18 +112,6 @@ public final class com/apollographql/apollo3/compiler/CommonCodegenOptions {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/Boolean;
-	public final fun component3 ()Ljava/lang/Boolean;
-	public final fun component4 ()Ljava/lang/Boolean;
-	public final fun component5 ()Ljava/util/List;
-	public final fun component6 ()Ljava/lang/Boolean;
-	public final fun component7 ()Ljava/lang/Boolean;
-	public final fun component8 ()Ljava/lang/String;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/CommonCodegenOptions;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CommonCodegenOptions;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CommonCodegenOptions;
-	public fun equals (Ljava/lang/Object;)Z
 	public final fun getGenerateFragmentImplementations ()Ljava/lang/Boolean;
 	public final fun getGenerateMethods ()Ljava/util/List;
 	public final fun getGenerateQueryDocument ()Ljava/lang/Boolean;
@@ -133,8 +121,6 @@ public final class com/apollographql/apollo3/compiler/CommonCodegenOptions {
 	public final fun getPackageName ()Ljava/lang/String;
 	public final fun getPackageNamesFromFilePaths ()Ljava/lang/Boolean;
 	public final fun getUseSemanticNaming ()Ljava/lang/Boolean;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/CommonCodegenOptions$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -345,17 +331,9 @@ public final class com/apollographql/apollo3/compiler/ScalarInfo {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ScalarInfo$Companion;
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Lcom/apollographql/apollo3/compiler/AdapterInitializer;
-	public final fun component3 ()Z
-	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;Z)Lcom/apollographql/apollo3/compiler/ScalarInfo;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ScalarInfo;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;ZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
-	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAdapterInitializer ()Lcom/apollographql/apollo3/compiler/AdapterInitializer;
 	public final fun getTargetName ()Ljava/lang/String;
 	public final fun getUserDefined ()Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/ScalarInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
