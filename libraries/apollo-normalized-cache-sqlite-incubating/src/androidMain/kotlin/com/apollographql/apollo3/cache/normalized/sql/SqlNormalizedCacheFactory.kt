@@ -32,6 +32,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
       configure: ((SupportSQLiteDatabase) -> Unit)? = null,
       useNoBackupDirectory: Boolean = false,
+      windowSizeBytes: Long? = null,
       withDates: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
@@ -39,7 +40,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
           context.applicationContext,
           name,
           factory,
-          object : AndroidSqliteDriver.Callback(getSchema()) {
+          object : AndroidSqliteDriver.Callback(getSchema(withDates)) {
             override fun onConfigure(db: SupportSQLiteDatabase) {
               super.onConfigure(db)
               configure?.invoke(db)
