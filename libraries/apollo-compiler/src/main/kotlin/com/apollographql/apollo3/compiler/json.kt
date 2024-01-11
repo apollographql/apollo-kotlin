@@ -1,3 +1,5 @@
+@file:JvmName("FileUtils")
+
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -41,8 +43,11 @@ internal fun File.toCodegenOptions(): CodegenOptions = parseFromJson()
 /**
  * Writing options to files need to be public to start
  */
+@JvmName("writeCodegenSchemaOptions")
 fun CodegenSchemaOptions.writeTo(file: File) = encodeToJson(file)
+@JvmName("writeIrOptions")
 fun IrOptions.writeTo(file: File) = encodeToJson(file)
+@JvmName("writeCodegenOptions")
 fun CodegenOptions.writeTo(file: File) = encodeToJson(file)
 
 /**
@@ -54,8 +59,10 @@ internal fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
 @ApolloInternal // XXX: make internal
 fun File.toCodegenMetadata(): CodegenMetadata = parseFromJson()
 // Public on purpose
+@JvmName("readOperationOutput")
 fun File.toOperationOutput(): OperationOutput = parseFromJson<Map<String, OperationDescriptor>>()
 // Public on purpose
+@JvmName("readPersistedQueryManifest")
 fun File.toPersistedQueryManifest(): PersistedQueryManifest = parseFromJson()
 
 /**

@@ -159,6 +159,14 @@ public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializ
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/FileUtils {
+	public static final fun readOperationOutput (Ljava/io/File;)Ljava/util/Map;
+	public static final fun readPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
+	public static final fun writeCodegenOptions (Lcom/apollographql/apollo3/compiler/CodegenOptions;Ljava/io/File;)V
+	public static final fun writeCodegenSchemaOptions (Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Ljava/io/File;)V
+	public static final fun writeIrOptions (Lcom/apollographql/apollo3/compiler/IrOptions;Ljava/io/File;)V
+}
+
 public final class com/apollographql/apollo3/compiler/GeneratedMethod : java/lang/Enum {
 	public static final field COPY Lcom/apollographql/apollo3/compiler/GeneratedMethod;
 	public static final field Companion Lcom/apollographql/apollo3/compiler/GeneratedMethod$Companion;
@@ -227,14 +235,6 @@ public final class com/apollographql/apollo3/compiler/JavaNullable : java/lang/E
 
 public final class com/apollographql/apollo3/compiler/JavaNullable$Companion {
 	public final fun fromName (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/JavaNullable;
-}
-
-public final class com/apollographql/apollo3/compiler/JsonKt {
-	public static final fun toOperationOutput (Ljava/io/File;)Ljava/util/Map;
-	public static final fun toPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenOptions;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/IrOptions;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo3/compiler/KotlinCodegenOptions {
