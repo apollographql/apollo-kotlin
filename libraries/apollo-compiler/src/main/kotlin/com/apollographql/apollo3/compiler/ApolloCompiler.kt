@@ -487,6 +487,7 @@ object ApolloCompiler {
       irSchema: IrSchema? = null,
       upstreamCodegenMetadata: List<CodegenMetadata> = emptyList(),
       codegenOptions: CodegenOptions = CodegenOptions(),
+      logger: Logger = defaultLogger,
       packageNameGenerator: PackageNameGenerator? = null,
       packageNameRoots: Set<String>? = null,
       operationOutputGenerator: OperationOutputGenerator? = null,
@@ -532,30 +533,29 @@ object ApolloCompiler {
     )
 
     if (codegenSchema.targetLanguage == TargetLanguage.JAVA) {
-      check(compilerKotlinHooks == null) {
-        "Apollo: compilerKotlinHooks is not used in Java"
+      if (compilerKotlinHooks != null) {
+        logger.warning("Apollo: compilerKotlinHooks is not used in Java")
       }
-      check(codegenOptions.kotlin.generateAsInternal == null) {
-        "Apollo: generateAsInternal is not used in Java"
+      if (codegenOptions.kotlin.generateAsInternal != null) {
+        logger.warning("Apollo: generateAsInternal is not used in Java")
       }
-      // This is set inconditionally by the Gradle plugin
-//      check(codegenOptions.kotlin.generateFilterNotNull == null) {
-//        "Apollo: generateFilterNotNull is not used in Java"
-//      }
-      check(codegenOptions.kotlin.sealedClassesForEnumsMatching == null) {
-        "Apollo: sealedClassesForEnumsMatching is not used in Java"
+      if (codegenOptions.kotlin.generateFilterNotNull != null) {
+        logger.warning("Apollo: generateFilterNotNull is not used in Java")
       }
-      check(codegenOptions.kotlin.addJvmOverloads == null) {
-        "Apollo: addJvmOverloads is not used in Java"
+      if (codegenOptions.kotlin.sealedClassesForEnumsMatching != null) {
+        logger.warning("Apollo: sealedClassesForEnumsMatching is not used in Java")
       }
-      check(codegenOptions.kotlin.requiresOptInAnnotation == null) {
-        "Apollo: requiresOptInAnnotation is not used in Java"
+      if (codegenOptions.kotlin.addJvmOverloads != null) {
+        logger.warning("Apollo: addJvmOverloads is not used in Java")
       }
-      check(codegenOptions.kotlin.jsExport == null) {
-        "Apollo: jsExport is not used in Java"
+      if (codegenOptions.kotlin.requiresOptInAnnotation != null) {
+        logger.warning("Apollo: requiresOptInAnnotation is not used in Java")
       }
-      check(codegenOptions.kotlin.generateInputBuilders == null) {
-        "Apollo: generateInputBuilders is not used in Java"
+      if (codegenOptions.kotlin.jsExport != null) {
+        logger.warning("Apollo: jsExport is not used in Java")
+      }
+      if (codegenOptions.kotlin.generateInputBuilders != null) {
+        logger.warning("Apollo: generateInputBuilders is not used in Java")
       }
       JavaCodeGen.writeOperations(
           codegenSchema = codegenSchema,
@@ -571,21 +571,20 @@ object ApolloCompiler {
           codegenMetadataFile = codegenMetadataFile
       )
     } else {
-      check(compilerJavaHooks == null) {
-        "Apollo: compilerJavaHooks is not used in Kotlin"
+      if (compilerJavaHooks != null) {
+        logger.warning("Apollo: compilerJavaHooks is not used in Kotlin")
       }
-
-      check(codegenOptions.java.nullableFieldStyle == null) {
-        "Apollo: nullableFieldStyle is not used in Kotlin"
+      if (codegenOptions.java.nullableFieldStyle != null) {
+        logger.warning("Apollo: nullableFieldStyle is not used in Kotlin")
       }
-      check(codegenOptions.java.generateModelBuilders == null) {
-        "Apollo: generateModelBuilders is not used in Kotlin"
+      if (codegenOptions.java.generateModelBuilders != null) {
+        logger.warning("Apollo: generateModelBuilders is not used in Kotlin")
       }
-      check(codegenOptions.java.classesForEnumsMatching == null) {
-        "Apollo: classesForEnumsMatching is not used in Kotlin"
+      if (codegenOptions.java.classesForEnumsMatching != null) {
+        logger.warning("Apollo: classesForEnumsMatching is not used in Kotlin")
       }
-      check(codegenOptions.java.generatePrimitiveTypes == null) {
-        "Apollo: generatePrimitiveTypes is not used in Kotlin"
+      if (codegenOptions.java.generatePrimitiveTypes != null) {
+        logger.warning("Apollo: generatePrimitiveTypes is not used in Kotlin")
       }
 
       KotlinCodeGen.writeSchemaAndOperations(

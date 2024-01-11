@@ -14,7 +14,6 @@ import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.SchemaConnection
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
-import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
@@ -668,7 +667,7 @@ abstract class DefaultApolloExtension(
        */
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateAsInternal.set(service.generateAsInternal)
-      task.generateFilterNotNull.set(project.isKotlinMultiplatform)
+      task.generateFilterNotNull.set(service.generateFilterNotNull())
       task.generateInputBuilders.set(service.generateInputBuilders)
       task.addJvmOverloads.set(service.addJvmOverloads)
       task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)

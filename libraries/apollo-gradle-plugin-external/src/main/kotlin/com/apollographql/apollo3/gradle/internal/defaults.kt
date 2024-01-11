@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasJavaPlugin
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.file.RegularFileProperty
@@ -140,5 +141,15 @@ internal fun DefaultService.operationManifestFile(): RegularFileProperty {
 internal fun DefaultService.operationManifestFormat(): Provider<String> {
   return project.provider {
     resolveOperationManifest().first
+  }
+}
+
+internal fun DefaultService.generateFilterNotNull(): Provider<Boolean> {
+  return project.provider {
+    if (targetLanguage() == TargetLanguage.JAVA) {
+      null
+    } else {
+      project.isKotlinMultiplatform
+    }
   }
 }
