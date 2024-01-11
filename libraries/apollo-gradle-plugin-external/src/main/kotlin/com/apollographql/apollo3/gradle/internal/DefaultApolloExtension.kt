@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
@@ -782,7 +783,7 @@ abstract class DefaultApolloExtension(
     task.setPackageNameProperties(service)
     service.packageNameGenerator.disallowChanges()
 
-    task.operationOutputGenerator = service.operationOutputGenerator.orNull
+    task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
     task.compilerKotlinHooks = service.compilerKotlinHooks.orNull?.let { ApolloCompilerKotlinHooksChain(it) }

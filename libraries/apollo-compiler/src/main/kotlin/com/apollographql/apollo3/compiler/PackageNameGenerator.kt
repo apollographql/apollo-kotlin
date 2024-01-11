@@ -50,9 +50,12 @@ private fun relativeToRoots(roots: Set<String>, filePath: String): String {
 
       return relative
     } catch (e: IllegalArgumentException) {
+
     }
   }
-  throw IllegalArgumentException("$filePath is not found in:\n${roots.joinToString("\n")}\n")
+  // Be robust if the file is not found.
+  // This is for compatibility reasons mainly.
+  return ""
 }
 
 /**
