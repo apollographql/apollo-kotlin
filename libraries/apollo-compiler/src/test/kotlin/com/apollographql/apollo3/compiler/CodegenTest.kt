@@ -353,7 +353,7 @@ class CodegenTest {
           generateMethods = generateMethods,
           packageName = packageName
       )
-      ApolloCompiler.compile(
+      ApolloCompiler.build(
           schemaFiles = setOf(schemaFile),
           executableFiles = graphqlFiles,
           codegenSchemaOptions = CodegenSchemaOptions(

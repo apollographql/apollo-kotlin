@@ -244,24 +244,11 @@ public final class com/apollographql/apollo3/compiler/JavaNullable$Companion {
 }
 
 public final class com/apollographql/apollo3/compiler/JsonKt {
-	public static final fun toCodegenMetadata (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenMetadata;
-	public static final fun toCodegenOptions (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenOptions;
-	public static final fun toCodegenSchema (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenSchema;
-	public static final fun toCodegenSchemaOptions (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;
-	public static final fun toIrOperations (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/ir/IrOperations;
-	public static final fun toIrOptions (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/IrOptions;
-	public static final fun toIrSchema (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/ir/IrSchema;
 	public static final fun toOperationOutput (Ljava/io/File;)Ljava/util/Map;
 	public static final fun toPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;
-	public static final fun writeOperationOutputTo (Ljava/util/Map;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenMetadata;Ljava/io/File;)V
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenOptions;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/io/File;)V
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Ljava/io/File;)V
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/IrOptions;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/ir/IrSchema;Ljava/io/File;)V
-	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo3/compiler/KotlinCodegenOptions {

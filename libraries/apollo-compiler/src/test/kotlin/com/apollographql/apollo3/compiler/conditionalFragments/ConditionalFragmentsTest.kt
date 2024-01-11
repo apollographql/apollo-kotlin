@@ -25,7 +25,7 @@ class ConditionalFragmentsTest {
   @Test
   fun `responseBased codegen fails with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
     val throwable = assertFails {
-      ApolloCompiler.compile(
+      ApolloCompiler.build(
           executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
           codegenSchemaOptions = CodegenSchemaOptions(packageName = "", targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_RESPONSE_BASED),
@@ -40,7 +40,7 @@ class ConditionalFragmentsTest {
 
   @Test
   fun `operationBased codegen succeeds with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
-    ApolloCompiler.compile(
+    ApolloCompiler.build(
         executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
         codegenSchemaOptions = CodegenSchemaOptions(packageName = "", targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_OPERATION_BASED),

@@ -26,7 +26,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 
   @TaskAction
   fun taskAction() {
-    ApolloCompiler.compile(
+    ApolloCompiler.build(
         schemaFiles = schemaFiles.files,
         executableFiles = graphqlFiles.files,
         codegenSchemaOptionsFile = codegenSchemaOptionsFile.get().asFile,
