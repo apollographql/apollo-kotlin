@@ -2,15 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import kotlinx.serialization.json.okio.encodeToBufferedSink
-import okio.buffer
-import okio.sink
-import okio.source
-import java.io.File
 
 /**
  * A [Schema] linked with other options that are bound to this schema and need to be the same in all modules
@@ -36,19 +28,4 @@ internal fun CodegenSchema.allTypes(): List<CodegenType> {
   return schema.typeDefinitions.values.map {
     CodegenType(it.name, it.directives.findTargetName(schema))
   }.sortedBy { it.name }
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-fun CodegenSchema.writeTo(file: File) {
-  file.sink().buffer().use {
-    Json.encodeToBufferedSink(CodegenSchema.serializer(), this, it)
-  }
-
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-fun File.toCodegenSchema(): CodegenSchema {
-  return source().buffer().use {
-    Json.decodeFromBufferedSource(CodegenSchema.serializer(), it)
-  }
 }

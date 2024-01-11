@@ -31,6 +31,24 @@ object BuildDirLayout {
         "generated/ir/apollo/${service.name}/ir.json"
     )
   }
+
+  internal fun irOptions(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/options/apollo/${service.name}/irOptions.json"
+    )
+  }
+
+  internal fun codegenOptions(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/options/apollo/${service.name}/codegenOptions.json"
+    )
+  }
+
+  internal fun codegenSchemaOptions(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/options/apollo/${service.name}/codegenSchemaOptions.json"
+    )
+  }
   internal fun schema(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/schema/apollo/${service.name}/schema.graphqls"

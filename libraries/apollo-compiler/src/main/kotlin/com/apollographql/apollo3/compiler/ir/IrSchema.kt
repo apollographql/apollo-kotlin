@@ -21,8 +21,9 @@ import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 internal class DefaultIrSchema(
     val irScalars: List<IrScalar>,
     val irEnums: List<IrEnum>,
@@ -46,6 +47,7 @@ internal sealed interface IrSchemaType {
   val targetName: String?
 }
 
+@Serializable
 internal data class IrInputObject(
     override val name: String,
     override val targetName: String?,
@@ -55,6 +57,7 @@ internal data class IrInputObject(
     val isOneOf: Boolean,
 ) : IrSchemaType
 
+@Serializable
 internal data class IrObject(
     override val name: String,
     override val targetName: String?,
@@ -71,6 +74,7 @@ internal data class IrObject(
 ) : IrSchemaType
 
 
+@Serializable
 internal data class IrInterface(
     override val name: String,
     override val targetName: String?,
@@ -82,6 +86,7 @@ internal data class IrInterface(
     val mapProperties: List<IrMapProperty>,
 ) : IrSchemaType
 
+@Serializable
 internal data class IrUnion(
     override val name: String,
     override val targetName: String?,
@@ -90,6 +95,7 @@ internal data class IrUnion(
     val deprecationReason: String?,
 ) : IrSchemaType
 
+@Serializable
 internal data class IrScalar(
     override val name: String,
     override val targetName: String?,
@@ -103,18 +109,26 @@ internal data class IrScalar(
  * This is a separate type from [IrType] because [IrType] is quite big already. We might
  * want to refactor our type handling at some point
  */
+@Serializable
 internal sealed interface IrType2
+@Serializable
 internal class IrNonNullType2(val ofType: IrType2) : IrType2
+@Serializable
 internal class IrListType2(val ofType: IrType2) : IrType2
+@Serializable
 internal class IrScalarType2(val name: String) : IrType2
+@Serializable
 internal class IrEnumType2(val name: String) : IrType2
+@Serializable
 internal class IrCompositeType2(val name: String) : IrType2
 
+@Serializable
 internal data class IrMapProperty(
     val name: String,
     val type: IrType2,
 )
 
+@Serializable
 internal data class IrEnum(
     override val name: String,
     override val targetName: String?,
@@ -123,6 +137,7 @@ internal data class IrEnum(
 ) : IrSchemaType {
   val type = IrEnumType(name, nullable = true)
 
+  @Serializable
   data class Value(
       val name: String,
       val targetName: String,
@@ -140,6 +155,7 @@ internal data class IrEnum(
  * misses description, deprecation and optIn so they are modeled differently in
  * [IrOperations]
  */
+@Serializable
 internal data class IrInputField(
     val name: String,
     val description: String?,

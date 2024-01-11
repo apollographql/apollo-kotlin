@@ -1,9 +1,14 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.ApolloCompiler.clearContents
+import com.apollographql.apollo3.compiler.CodegenMetadata
+import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
@@ -37,54 +42,89 @@ import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionUnknownMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UtilAssertionsBuilder
+import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
+import com.apollographql.apollo3.compiler.defaultGeneratePrimitiveTypes
+import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
+import com.apollographql.apollo3.compiler.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
+import com.apollographql.apollo3.compiler.generateMethodsJava
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
+import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo3.compiler.ir.IrSchema
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.apollographql.apollo3.compiler.writeTo
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.JavaFile
 import java.io.File
 
 
-internal class JavaCodeGen(
-    private val commonCodegenOptions: CommonCodegenOptions,
-    private val javaCodegenOptions: JavaCodegenOptions,
-) {
-  /**
-   * @param outputDir: the directory where to write the Kotlin files
-   * @return a ResolverInfo to be used by downstream modules
-   */
-  fun write(outputDir: File): ResolverInfo {
-    val ir = commonCodegenOptions.ir
-    check(ir is DefaultIrOperations)
+internal object JavaCodeGen {
+  fun writeOperations(
+      codegenSchema: CodegenSchema,
+      irOperations: IrOperations,
+      irSchema: IrSchema?,
+      operationOutput: OperationOutput,
+      upstreamCodegenMetadata: List<CodegenMetadata>,
+      commonCodegenOptions: CommonCodegenOptions,
+      javaCodegenOptions: JavaCodegenOptions,
+      packageNameGenerator: PackageNameGenerator,
+      compilerJavaHooks: ApolloCompilerJavaHooks,
+      outputDir: File,
+      codegenMetadataFile: File?,
+  ) {
+    check(irOperations is DefaultIrOperations)
 
-    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
-    val operationOutput = commonCodegenOptions.operationOutput
-    val useSemanticNaming = commonCodegenOptions.useSemanticNaming
-    val packageNameGenerator = commonCodegenOptions.packageNameGenerator
-    val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
-    val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
-    val generateMethods = commonCodegenOptions.generateMethods
-    val generateQueryDocument = commonCodegenOptions.generateQueryDocument
-    val generatedSchemaName = commonCodegenOptions.generatedSchemaName
-    val flatten = ir.flattenModels
-    val classesForEnumsMatching = javaCodegenOptions.classesForEnumsMatching
-    val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
-    val generateDataBuilders = ir.generateDataBuilders
-    val generateModelBuilders = javaCodegenOptions.generateModelBuilders
-    val generatePrimitiveTypes = javaCodegenOptions.generatePrimitiveTypes
-    val nullableFieldStyle = javaCodegenOptions.nullableFieldStyle
-    val decapitalizeFields = ir.decapitalizeFields
-    val hooks = javaCodegenOptions.compilerJavaHooks
-    val generateSchema = commonCodegenOptions.generateSchema || generateDataBuilders
+    outputDir.clearContents()
+
+    if (codegenSchema.codegenModels != MODELS_OPERATION_BASED) {
+      error("Java codegen does not support ${codegenSchema.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
+    }
+    if (!irOperations.flattenModels) {
+      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
+          "enclosing one.")
+    }
+
+    val resolverInfos = upstreamCodegenMetadata.map { it.resolverInfo }
+
+    val flatten = irOperations.flattenModels
+    val generateDataBuilders = irOperations.generateDataBuilders
+    val decapitalizeFields = irOperations.decapitalizeFields
+
+    val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
+    val generateMethods = generateMethodsJava(commonCodegenOptions.generateMethods)
+    val generateQueryDocument = commonCodegenOptions.generateQueryDocument ?: defaultGenerateQueryDocument
+    val generateSchema = commonCodegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
+    val generatedSchemaName = commonCodegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
+    val useSemanticNaming = commonCodegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
+
+    val classesForEnumsMatching = javaCodegenOptions.classesForEnumsMatching ?: defaultClassesForEnumsMatching
+    val generateModelBuilders = javaCodegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
+    val generatePrimitiveTypes = javaCodegenOptions.generatePrimitiveTypes ?: defaultGeneratePrimitiveTypes
+    val nullableFieldStyle = javaCodegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
+
+    val scalarMapping = codegenSchema.scalarMapping
+    val schemaPackageName = codegenSchema.packageName
 
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
-      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks)
+      JavaResolver(
+          entries = resolverInfo.entries,
+          next = acc,
+          scalarMapping = scalarMapping,
+          generatePrimitiveTypes = generatePrimitiveTypes,
+          nullableFieldStyle = nullableFieldStyle,
+          hooks = compilerJavaHooks
+      )
     }
-    val irSchema = commonCodegenOptions.irSchema
 
     val layout = JavaCodegenLayout(
-        allTypes = commonCodegenOptions.codegenSchema.allTypes(),
+        allTypes = codegenSchema.allTypes(),
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
@@ -93,13 +133,19 @@ internal class JavaCodeGen(
 
     val context = JavaContext(
         layout = layout,
-        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks),
-        generateMethods = generateMethods,
+        resolver = JavaResolver(
+            entries = emptyList(),
+            next = upstreamResolver,
+            scalarMapping = scalarMapping,
+            generatePrimitiveTypes = generatePrimitiveTypes,
+            nullableFieldStyle = nullableFieldStyle,
+            hooks = compilerJavaHooks
+        ),
+        generateMethods = generateMethodsJava(generateMethods),
         generateModelBuilders = generateModelBuilders,
         nullableFieldStyle = nullableFieldStyle,
     )
     val builders = mutableListOf<JavaClassBuilder>()
-
 
     if (irSchema is DefaultIrSchema) {
       irSchema.irScalars.forEach { irScalar ->
@@ -152,7 +198,7 @@ internal class JavaCodeGen(
       }
     }
 
-    ir.fragments
+    irOperations.fragments
         .forEach { fragment ->
           builders.add(
               FragmentModelsBuilder(
@@ -184,7 +230,7 @@ internal class JavaCodeGen(
           }
         }
 
-    ir.operations
+    irOperations.operations
         .forEach { operation ->
           if (operation.variables.isNotEmpty()) {
             builders.add(OperationVariablesAdapterBuilder(context, operation))
@@ -224,18 +270,23 @@ internal class JavaCodeGen(
               .build()
           ApolloCompilerJavaHooks.FileInfo(javaFile = javaFile)
         }
-        .let { hooks.postProcessFiles(it) }
+        .let { compilerJavaHooks.postProcessFiles(it) }
 
     // Write the files to disk
     fileInfos.forEach {
       it.javaFile.writeTo(outputDir)
     }
 
-    return ResolverInfo(
-        magic = "KotlinCodegen",
-        version = APOLLO_VERSION,
-        entries = context.resolver.entries()
+    val codegenMetadata = CodegenMetadata(
+        ResolverInfo(
+            magic = "JavaCodegen",
+            version = APOLLO_VERSION,
+            entries = context.resolver.entries()
+        )
     )
+    if (codegenMetadataFile != null) {
+      codegenMetadata.writeTo(codegenMetadataFile)
+    }
   }
 }
 

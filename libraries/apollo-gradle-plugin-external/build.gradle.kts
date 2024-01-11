@@ -17,6 +17,7 @@ dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-ast"))
   implementation(libs.asm)
+  implementation(libs.kotlinx.serialization.json)
 }
 
 gradlePlugin {

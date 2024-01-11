@@ -18,9 +18,10 @@ object ModelNames {
   fun generateApolloSources() = "generateApolloSources"
   fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
   fun generateApolloSourcesFromIr(service: Service) = camelCase("generate", service.name, "ApolloSourcesFromIr")
-  fun generateApolloSchema(service: Service) = camelCase("generate", service.name, "ApolloSchema")
-  fun generateApolloIr(service: Service) = camelCase("generate", service.name, "ApolloIr")
-  fun generateApolloUsedCoordinates(service: Service) = camelCase("generate", service.name, "ApolloUsedCoordinates")
+  fun generateApolloCodegenSchema(service: Service) = camelCase("generate", service.name, "ApolloCodegenSchema")
+  fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
+  fun generateApolloIrSchema(service: Service) = camelCase("generate", service.name, "ApolloIrSchema")
+  fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
@@ -31,12 +32,12 @@ object ModelNames {
 
   // Configuration names
   fun metadataConfiguration() = "apolloMetadata"
-  fun metadataProducerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
-  fun metadataConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
+  fun codegenMetadataProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenMetadataProducer")
+  fun codegenMetadataConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenMetadataConsumer")
   fun upstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrProducer")
   fun upstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrConsumer")
   fun downstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrProducer")
   fun downstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrConsumer")
-  fun schemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "SchemaProducer")
-  fun schemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "SchemaConsumer")
+  fun codegenSchemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaProducer")
+  fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
 }

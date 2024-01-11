@@ -1,29 +1,15 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.MANIFEST_NONE
-import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
-import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
-import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
-import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.Roots
-import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.defaultCodegenModels
-import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasJavaPlugin
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Provider
 import org.gradle.util.GradleVersion
 import java.io.File
 import javax.inject.Inject
@@ -35,7 +21,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal val downstreamDependencies = mutableListOf<Dependency>()
 
   private val objects = project.objects
-  var registered = false
+  internal var registered = false
+  internal var packageNamesFromFilePaths: Boolean = false
 
   init {
     @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -48,6 +35,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       classesForEnumsMatching.convention(null as List<String>?)
       generateMethods.convention(null as List<String>?)
+      compilerJavaHooks.convention(null as List<ApolloCompilerJavaHooks>?)
+      compilerKotlinHooks.convention(null as List<ApolloCompilerKotlinHooks>?)
     } else {
       includes.set(null as List<String>?)
       excludes.set(null as List<String>?)
@@ -55,6 +44,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       sealedClassesForEnumsMatching.set(null as List<String>?)
       classesForEnumsMatching.set(null as List<String>?)
       generateMethods.set(null as List<String>?)
+      compilerJavaHooks.set(null as List<ApolloCompilerJavaHooks>?)
+      compilerKotlinHooks.set(null as List<ApolloCompilerKotlinHooks>?)
     }
   }
 
@@ -166,15 +157,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {
-    packageNameGenerator.set(
-        project.provider {
-          PackageNameGenerator.FilePathAware(
-              roots = Roots(graphqlSourceDirectorySet.srcDirs),
-              rootPackageName = rootPackageName ?: ""
-          )
-        }
-    )
-    packageNameGenerator.disallowChanges()
+    packageNamesFromFilePaths = true
   }
 
   val scalarTypeMapping = mutableMapOf<String, String>()
@@ -222,208 +205,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     downstreamDependencies.add(project.dependencies.create(dependencyNotation))
   }
 
-  internal fun targetLanguage(): TargetLanguage {
-    val generateKotlinModels: Boolean
-    when {
-      this.generateKotlinModels.isPresent -> {
-        generateKotlinModels = this.generateKotlinModels.get()
-        if (generateKotlinModels) {
-          check(project.hasKotlinPlugin()) {
-            "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
-          }
-        } else {
-          check(project.hasJavaPlugin()) {
-            "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
-          }
-        }
-      }
-
-      project.hasKotlinPlugin() -> {
-        generateKotlinModels = true
-      }
-
-      project.hasJavaPlugin() -> {
-        generateKotlinModels = false
-      }
-
-      else -> {
-        error("Apollo: No Java or Kotlin plugin found")
-      }
-    }
-
-    return if (generateKotlinModels) {
-      getKotlinTargetLanguage(project, this.languageVersion.orNull)
-    } else {
-      TargetLanguage.JAVA
-    }
-  }
-
-  internal fun packageNameGenerator(): PackageNameGenerator {
-    check(!(packageName.isPresent && packageNameGenerator.isPresent)) {
-      "Apollo: it is an error to specify both 'packageName' and 'packageNameGenerator' "
-    }
-    var packageNameGenerator = this.packageNameGenerator.orNull
-    if (packageNameGenerator == null) {
-      packageNameGenerator = PackageNameGenerator.Flat(packageName.orNull ?: error("""
-            |Apollo: specify 'packageName':
-            |apollo {
-            |  service("service") {
-            |    packageName.set("com.example")
-            |  }
-            |}
-          """.trimMargin()))
-    }
-    return packageNameGenerator
-  }
-
-  internal fun generateMethods(): List<GeneratedMethod> {
-    val generateMethods = generateMethods.orNull?.map {
-      GeneratedMethod.fromName(it) ?: error("Apollo: unknown method type: $it for generateMethods")
-    } ?: return GeneratedMethod.defaultsFor(targetLanguage())
-
-    when(targetLanguage()) {
-      TargetLanguage.JAVA -> {
-        check(!generateMethods.contains(GeneratedMethod.DATA_CLASS)) {
-          "Java codegen does not support dataClass as an option for generateMethods"
-        }
-        check(!generateMethods.contains(GeneratedMethod.COPY)) {
-          "Java codegen does not support copy as an option for generateMethods"
-        }
-      }
-      else -> {
-        if (generateMethods.contains(GeneratedMethod.DATA_CLASS) && generateMethods.size > 1) {
-          error("Apollo: dataClass subsumes all other method types and must be the only option passed to generateMethods")
-        }
-      }
-    }
-
-    return generateMethods
-  }
-
-  internal fun jsExport(): Boolean {
-    if (!jsExport.isPresent || jsExport.get() == false) {
-      return false
-    }
-    return when (targetLanguage()) {
-      TargetLanguage.JAVA -> {
-        throw IllegalStateException("jsExport can only be used for Kotlin codegen")
-      }
-
-      else -> {
-        check(codegenModels.isPresent && codegenModels.get() == MODELS_RESPONSE_BASED) {
-          "jsExport only supports responseBased codegen, received codegenModels=${codegenModels.orNull}"
-        }
-        check(!generateAsInternal.isPresent || generateAsInternal.get() != true) {
-          "jsExport does not support generateAsInternal because the compiler ignores JsExport on internal classes"
-        }
-        true
-      }
-    }
-  }
-
-  internal fun codegenModels(): String {
-    return when (targetLanguage()) {
-      TargetLanguage.JAVA -> {
-        check(!codegenModels.isPresent || codegenModels.get() == MODELS_OPERATION_BASED) {
-          "Java codegen does not support codegenModels=${codegenModels.orNull}"
-        }
-        MODELS_OPERATION_BASED
-      }
-
-      else -> codegenModels.getOrElse(defaultCodegenModels)
-    }
-  }
-
-  internal fun alwaysGenerateTypesMatching(): Set<String> {
-    if (alwaysGenerateTypesMatching.isPresent) {
-      // The user specified something, use this!
-      return alwaysGenerateTypesMatching.get()
-    }
-
-    if (downstreamDependencies.isEmpty()) {
-      // No downstream dependency, generate everything because we don't know what types are going to be used downstream
-      return setOf(".*")
-    } else {
-      // get the used coordinates from the downstream dependencies
-      return emptySet()
-    }
-  }
-
-  internal fun flattenModels(): Boolean {
-    return flattenModels.getOrElse(when (codegenModels()) {
-      MODELS_RESPONSE_BASED -> false
-      else -> true
-    })
-  }
-
-  /**
-   * Resolves the operation manifest and formats.
-   */
-  @Suppress("DEPRECATION")
-  private fun resolveOperationManifest(): Pair<String, File?> {
-    generateOperationOutput.disallowChanges()
-    operationOutputFile.disallowChanges()
-    operationManifest.disallowChanges()
-    operationManifestFormat.disallowChanges()
-
-    var format = operationManifestFormat.orNull
-    if (format == null) {
-      if (generateOperationOutput.orElse(false).get()) {
-        format = MANIFEST_OPERATION_OUTPUT
-      }
-    } else {
-      when (format) {
-        MANIFEST_NONE,
-        MANIFEST_OPERATION_OUTPUT,
-        MANIFEST_PERSISTED_QUERY,
-        -> Unit
-
-        else -> {
-          error("Apollo: unknown operation manifest format: $format")
-        }
-      }
-      check(!generateOperationOutput.isPresent) {
-        "Apollo: it is an error to set both `generateOperationOutput` and `operationManifestFormat`. Remove `generateOperationOutput`"
-      }
-    }
-    var userFile = operationManifest.orNull?.asFile
-    if (userFile == null) {
-      userFile = operationOutputFile.orNull?.asFile
-    } else {
-      check(!operationOutputFile.isPresent) {
-        "Apollo: it is an error to set both `operationManifest` and `operationOutputFile`. Remove `operationOutputFile`"
-      }
-    }
-
-    if (userFile != null) {
-      if (format == null) {
-        format = MANIFEST_OPERATION_OUTPUT
-      }
-    } else {
-      userFile = if (format == null || format == MANIFEST_NONE) {
-        null
-      } else {
-        BuildDirLayout.operationManifest(project, this, format)
-      }
-    }
-
-    if (format == null) {
-      format = MANIFEST_NONE
-    }
-    return format to userFile
-  }
-
-  fun operationManifestFile(): RegularFileProperty {
-    return project.provider {
-      resolveOperationManifest().second
-    }.let { fileProvider ->
-      project.objects.fileProperty().fileProvider(fileProvider)
-    }
-  }
-
-  fun operationManifestFormat(): Provider<String> {
-    return project.provider {
-      resolveOperationManifest().first
-    }
-  }
+  internal fun isMultiModule(): Boolean = generateApolloMetadata.getOrElse(false) || downstreamDependencies.isNotEmpty() || upstreamDependencies.isNotEmpty()
+  internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 }
+

@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.toIrOperations
-import com.apollographql.apollo3.compiler.ir.writeTo
 import com.google.common.truth.Truth
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -13,9 +10,15 @@ import kotlin.test.fail
 
 class MetadataTest {
   private val buildDir = File("build/metadata-test/")
-  private val codegenSchema = File(buildDir, "codegenSchema.json")
-  private val rootIr = File(buildDir, "root-ir-operations.json")
-  private val leafIr = File(buildDir, "leaf-ir-operations.json")
+  private val codegenSchemaFile = File(buildDir, "codegenSchema.json")
+  private val codegenSchemaOptionsFile = File(buildDir, "codegenSchemaOptions.json")
+  private val irOptionsFile = File(buildDir, "irOptions.json")
+  private val rootCodegenOptionsFile = File(buildDir, "root-codegenOptions.json")
+  private val leafCodegenOptionsFile = File(buildDir, "leaf-codegenOptions.json")
+  private val rootIrSchemaFile = File(buildDir, "root-ir-schema.json")
+  private val rootCodegenMetadata = File(buildDir, "root-codegen-metadata.json")
+  private val rootIrOperationsFile = File(buildDir, "root-ir-operations.json")
+  private val leafIrOperationsFile = File(buildDir, "leaf-ir-operations.json")
   private val rootSourcesDir = File(buildDir, "root/sources")
   private val leafSourcesDir = File(buildDir, "leaf/sources")
 
@@ -30,170 +33,67 @@ class MetadataTest {
   private val rootPackageName = "root"
   private val leafPackageName = "leaf"
 
-  private fun withBuildDir(block: () -> Unit) {
-    buildDir.deleteRecursively()
-    buildDir.mkdirs()
-    block()
-  }
 
-  private fun buildCodegenSchema(): CodegenSchema {
-    val schemaFile = File("src/test/metadata/schema.graphqls")
-    val codegenSchema = ApolloCompiler.buildCodegenSchema(
-        schemaFiles = listOf(schemaFile),
-        logger = defaultLogger,
-        packageNameGenerator = PackageNameGenerator.Flat(rootPackageName),
-        scalarMapping = emptyMap(),
-        codegenModels = defaultCodegenModels,
-        targetLanguage = defaultTargetLanguage,
-        generateDataBuilders = false
+  private fun compileRoot(directory: String) {
+    CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, packageName = rootPackageName).writeTo(codegenSchemaOptionsFile)
+    IrOptions().writeTo(irOptionsFile)
+    CodegenOptions(common = CommonCodegenOptions(packageName = rootPackageName)).writeTo(rootCodegenOptionsFile)
+    CodegenOptions(common = CommonCodegenOptions(packageName = leafPackageName)).writeTo(leafCodegenOptionsFile)
+
+    ApolloCompiler.buildCodegenSchema(
+        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")),
+        codegenSchemaOptionsFile = codegenSchemaOptionsFile,
+        codegenSchemaFile = codegenSchemaFile
     )
 
-    this.codegenSchema.let {
-      it.parentFile.mkdirs()
-      codegenSchema.writeTo(it)
-    }
-
-    return this.codegenSchema.toCodegenSchema()
-  }
-
-  @Test
-  fun codegenSchemaIsSerializable() = withBuildDir {
-    buildCodegenSchema()
-  }
-
-  private fun buildIrOperations(
-      codegenSchema: CodegenSchema,
-      executableFile: File,
-      outputFile: File,
-      upstreamIr: List<IrOperations>,
-      alwaysGenerateTypesMatching: Set<String>,
-  ): IrOperations {
-
-    val irOptions = IrOptions(
-        executableFiles = setOf(executableFile),
-        codegenSchema = codegenSchema,
-        incomingFragments = upstreamIr.flatMap { it.fragmentDefinitions },
-        fieldsOnDisjointTypesMustMerge = defaultFieldsOnDisjointTypesMustMerge,
-        decapitalizeFields = defaultDecapitalizeFields,
-        flattenModels = defaultFlattenModels,
-        warnOnDeprecatedUsages = false,
-        failOnWarnings = true,
-        logger = defaultLogger,
-        addTypename = defaultAddTypename,
-        generateOptionalOperationVariables = defaultGenerateOptionalOperationVariables,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-    )
-    val irOperations = ApolloCompiler.buildIrOperations(irOptions)
-
-    outputFile.let {
-      it.parentFile.mkdirs()
-      irOperations.writeTo(outputFile)
-    }
-    return outputFile.toIrOperations()
-  }
-
-  @Test
-  fun irOperationsIsSerializable() = withBuildDir {
-    buildIrOperations(
-        codegenSchema = buildCodegenSchema(),
-        executableFile = rootGraphQLFile("simple"),
-        outputFile = rootIr,
-        upstreamIr = emptyList(),
-        alwaysGenerateTypesMatching = emptySet()
+    ApolloCompiler.buildIrOperations(
+        codegenSchemaFile = codegenSchemaFile,
+        executableFiles = setOf(rootGraphQLFile(directory)),
+        upstreamIrFiles = emptySet(),
+        irOptionsFile = irOptionsFile,
+        irOperationsFile = rootIrOperationsFile
     )
 
-    rootIr.toIrOperations()
+    ApolloCompiler.buildIrOperations(
+        codegenSchemaFile = codegenSchemaFile,
+        executableFiles = setOf(leafGraphQLFile(directory)),
+        upstreamIrFiles = setOf(rootIrOperationsFile),
+        irOptionsFile = irOptionsFile,
+        irOperationsFile = leafIrOperationsFile
+    )
+
+    ApolloCompiler.buildIrSchema(
+        codegenSchemaFile = codegenSchemaFile,
+        irOperationsFiles = setOf(rootIrOperationsFile, leafIrOperationsFile),
+        irSchemaFile = rootIrSchemaFile
+    )
+
+    ApolloCompiler.buildSchemaAndOperationSources(
+        codegenSchemaFile = codegenSchemaFile,
+        irOperationsFile = rootIrOperationsFile,
+        irSchemaFile = rootIrSchemaFile,
+        upstreamCodegenMetadataFiles = emptySet(),
+        codegenOptionsFile = rootCodegenOptionsFile,
+        sourcesDir = rootSourcesDir,
+        codegenMetadataFile = rootCodegenMetadata
+    )
+
+    ApolloCompiler.buildSchemaAndOperationSources(
+        codegenSchemaFile = codegenSchemaFile,
+        irOperationsFile = leafIrOperationsFile,
+        irSchemaFile = null,
+        upstreamCodegenMetadataFiles = setOf(rootCodegenMetadata),
+        codegenOptionsFile = leafCodegenOptionsFile,
+        sourcesDir = leafSourcesDir,
+        codegenMetadataFile = null
+    )
   }
 
   private fun compile(directory: String) {
-    val codegenSchema = buildCodegenSchema()
+    buildDir.deleteRecursively()
+    buildDir.mkdirs()
 
-    val rootIrOperations = buildIrOperations(
-        codegenSchema = buildCodegenSchema(),
-        executableFile = rootGraphQLFile(directory),
-        outputFile = rootIr,
-        upstreamIr = emptyList(),
-        alwaysGenerateTypesMatching = emptySet()
-    )
-
-    val leafIrOperations = buildIrOperations(
-        codegenSchema = buildCodegenSchema(),
-        executableFile = leafGraphQLFile(directory),
-        outputFile = leafIr,
-        upstreamIr = listOf(rootIrOperations),
-        alwaysGenerateTypesMatching = emptySet()
-    )
-
-    val rootIrSchema = ApolloCompiler.buildIrSchema(
-        codegenSchema = codegenSchema,
-        usedFields = leafIrOperations.usedFields.mergeWith(rootIrOperations.usedFields),
-        incomingTypes = emptySet()
-    )
-
-    val rootOperationOutput = ApolloCompiler.buildOperationOutput(
-        rootIrOperations,
-        defaultOperationOutputGenerator,
-        null,
-        MANIFEST_NONE
-    )
-
-    val rootCommonCodegenOptions = CommonCodegenOptions(
-        codegenSchema = codegenSchema,
-        ir = rootIrOperations,
-        irSchema = rootIrSchema,
-        operationOutput = rootOperationOutput,
-        incomingCodegenMetadata = emptyList(),
-        outputDir = rootSourcesDir,
-        packageNameGenerator = PackageNameGenerator.Flat(rootPackageName),
-        useSemanticNaming = defaultUseSemanticNaming,
-        generateFragmentImplementations = defaultGenerateFragmentImplementations,
-        generateResponseFields = defaultGenerateResponseFields,
-        generateQueryDocument = defaultGenerateQueryDocument,
-        generateSchema = defaultGenerateSchema,
-        generatedSchemaName = defaultGeneratedSchemaName,
-        generateMethods = defaultGenerateMethodsKotlin
-    )
-
-    val kotlinCodegenOptions = KotlinCodegenOptions(
-        languageVersion = defaultTargetLanguage,
-        sealedClassesForEnumsMatching = defaultSealedClassesForEnumsMatching,
-        generateAsInternal = defaultGenerateAsInternal,
-        generateFilterNotNull = defaultGenerateFilterNotNull,
-        compilerKotlinHooks = defaultCompilerKotlinHooks,
-        addJvmOverloads = defaultAddJvmOverloads,
-        requiresOptInAnnotation = defaultRequiresOptInAnnotation
-    )
-
-    val codegenMetadata = ApolloCompiler.writeKotlin(
-        commonCodegenOptions = rootCommonCodegenOptions,
-        kotlinCodegenOptions = kotlinCodegenOptions
-    )
-
-    val leafOperationOutput = ApolloCompiler.buildOperationOutput(
-        leafIrOperations,
-        defaultOperationOutputGenerator,
-        null,
-        MANIFEST_NONE
-    )
-    val leafIrSchema = ApolloCompiler.buildIrSchema(
-        codegenSchema = codegenSchema,
-        usedFields = leafIrOperations.usedFields,
-        incomingTypes = codegenMetadata.schemaTypes()
-    )
-
-    val leafCommonCodegenOptions = rootCommonCodegenOptions.copy(
-        ir = leafIrOperations,
-        irSchema = leafIrSchema,
-        incomingCodegenMetadata = listOf(codegenMetadata),
-        operationOutput = leafOperationOutput,
-        outputDir = leafSourcesDir,
-        packageNameGenerator = PackageNameGenerator.Flat(leafPackageName),
-    )
-
-    ApolloCompiler.writeKotlin(
-        commonCodegenOptions = leafCommonCodegenOptions,
-        kotlinCodegenOptions = kotlinCodegenOptions
-    )
+    compileRoot(directory)
   }
 
   @Test

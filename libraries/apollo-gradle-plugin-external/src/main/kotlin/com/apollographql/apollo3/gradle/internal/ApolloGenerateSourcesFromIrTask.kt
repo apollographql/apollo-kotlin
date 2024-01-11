@@ -1,11 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.ir.toIrOperations
-import com.apollographql.apollo3.compiler.toCodegenSchema
-import com.apollographql.apollo3.compiler.toCodegenMetadata
-import com.apollographql.apollo3.compiler.toUsedCoordinates
-import com.apollographql.apollo3.compiler.writeTo
+import com.apollographql.apollo3.compiler.ApolloCompiler
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
@@ -18,9 +13,8 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-@Suppress("UnstableApiUsage") // Because the gradle-api we link against has a lot of symbols still experimental
 @CacheableTask
-abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBase() {
+abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemas: ConfigurableFileCollection
@@ -29,14 +23,14 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBase() {
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val irOperations: RegularFileProperty
 
-  @get:InputFiles
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val upstreamMetadata: ConfigurableFileCollection
-
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   @get:Optional
-  abstract val usedCoordinates: RegularFileProperty
+  abstract val irSchema: RegularFileProperty
+
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val upstreamMetadata: ConfigurableFileCollection
 
   @get:OutputFile
   @get:Optional
@@ -44,27 +38,29 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBase() {
 
   @TaskAction
   fun taskAction() {
+    val codegenSchemaFile = codegenSchemas.findCodegenSchemaFile()
 
-    val codegenSchema = codegenSchemas.files.findCodegenSchema()
-    val irOperations = irOperations.asFile.get().toIrOperations()
-
-    val usedCoordinates = usedCoordinates.orNull?.asFile?.toUsedCoordinates()
-
-    val codegenMetadata = runCodegen(
-        codegenSchema = codegenSchema,
-        irOperations = irOperations,
-        usedCoordinates = usedCoordinates,
-        upstreamMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() }
+    ApolloCompiler.buildSchemaAndOperationSources(
+        codegenSchemaFile = codegenSchemaFile,
+        irOperationsFile = irOperations.get().asFile,
+        irSchemaFile = irSchema.orNull?.asFile,
+        upstreamCodegenMetadataFiles = upstreamMetadata.files,
+        codegenOptionsFile = codegenOptionsFile.get().asFile,
+        packageNameGenerator = packageNameGenerator,
+        packageNameRoots = packageNameRoots,
+        compilerKotlinHooks = compilerKotlinHooks,
+        compilerJavaHooks = compilerJavaHooks,
+        sourcesDir = outputDir.get().asFile,
+        operationManifestFile = operationManifestFile.orNull?.asFile,
+        codegenMetadataFile = metadataOutputFile.orNull?.asFile
     )
-
-    codegenMetadata.writeTo(metadataOutputFile.get().asFile)
   }
 
   companion object {
-    fun Iterable<File>.findCodegenSchema(): CodegenSchema {
+    fun Iterable<File>.findCodegenSchemaFile(): File {
       return firstOrNull {
         it.length() > 0
-      }?.toCodegenSchema() ?: error("Cannot find CodegenSchema in $this")
+      } ?: error("Cannot find CodegenSchema in $this")
     }
   }
 }

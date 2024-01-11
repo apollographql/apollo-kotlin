@@ -2,16 +2,10 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrSchema
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.io.File
-
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
@@ -119,20 +113,9 @@ enum class GeneratedMethod {
    */
   DATA_CLASS,
   ;
+
   @ApolloInternal
   companion object {
-
-    fun defaultsFor(targetLanguage: TargetLanguage): List<GeneratedMethod> {
-      return when(targetLanguage) {
-        TargetLanguage.JAVA -> {
-          defaultGenerateMethodsJava
-        }
-        else -> {
-          defaultGenerateMethodsKotlin
-        }
-      }
-    }
-
     fun fromName(name: String): GeneratedMethod? {
       return when (name) {
         "equalsHashCode" -> EQUALS_HASH_CODE
@@ -143,25 +126,26 @@ enum class GeneratedMethod {
       }
     }
   }
-
 }
 
 @ApolloExperimental
+@Serializable
+class CodegenSchemaOptions(
+    /**
+     * This isn't needed to build the [CodegenSchema] but this ensures targetLanguage is the same
+     * in all modules
+     */
+    val targetLanguage: TargetLanguage,
+    val scalarMapping: Map<String, ScalarInfo> = emptyMap(),
+    val codegenModels: String? = null,
+    val generateDataBuilders: Boolean? = null,
+    val packageNamesFromFilePaths: Boolean? = null,
+    val packageName: String? = null
+)
+
+@ApolloExperimental
+@Serializable
 class IrOptions(
-    /**
-     * The files containing the operations and fragments
-     */
-    val executableFiles: Set<File>,
-
-    /**
-     */
-    val codegenSchema: CodegenSchema,
-
-    /**
-     * The fragments from upstream
-     */
-    val incomingFragments: List<GQLFragmentDefinition>,
-
     /**
      * Whether fields with different shape are disallowed to be merged in disjoint types.
      *
@@ -172,21 +156,20 @@ class IrOptions(
      *
      * Default: true.
      */
-    val fieldsOnDisjointTypesMustMerge: Boolean,
+    val fieldsOnDisjointTypesMustMerge: Boolean? = null,
 
     /**
      * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
      *
      * Default: false
      */
-    val decapitalizeFields: Boolean,
+    val decapitalizeFields: Boolean? = null,
 
-    val flattenModels: Boolean,
+    val flattenModels: Boolean? = null,
 
-    val warnOnDeprecatedUsages: Boolean,
-    val failOnWarnings: Boolean,
-    val logger: ApolloCompiler.Logger,
-    val addTypename: String,
+    val warnOnDeprecatedUsages: Boolean? = null,
+    val failOnWarnings: Boolean? = null,
+    val addTypename: String? = null,
 
     /**
      * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
@@ -196,63 +179,41 @@ class IrOptions(
      *
      * Default: true
      */
-    val generateOptionalOperationVariables: Boolean,
+    val generateOptionalOperationVariables: Boolean? = null,
 
     /**
      * Additional scalar/enum/input types to generate.
      * For input types, this will recursively add all input fields types/enums.
      */
-    val alwaysGenerateTypesMatching: Set<String>,
+    val alwaysGenerateTypesMatching: Set<String>? = null,
 )
 
-@ApolloExperimental
+@Serializable
 data class CommonCodegenOptions(
-    val codegenSchema: CodegenSchema,
-    val ir: IrOperations,
-    val irSchema: IrSchema?,
-    val operationOutput: OperationOutput,
+    val packageName: String? = null,
+    val packageNamesFromFilePaths: Boolean? = null,
 
-    val incomingCodegenMetadata: List<CodegenMetadata>,
+    val useSemanticNaming: Boolean? = null,
 
-    /**
-     * The directory where to write the generated models
-     */
-    val outputDir: File,
-
-    /**
-     * The package name used for operations
-     */
-    val packageNameGenerator: PackageNameGenerator,
-
-    //========== codegen options ============
-    val useSemanticNaming: Boolean,
-
-    //========== on/off flags to switch some codegen off ============
     /**
      * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
      * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
      *
      * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
      */
-    val generateFragmentImplementations: Boolean,
+    val generateFragmentImplementations: Boolean? = null,
 
     /**
      * Which methods to auto generate on models, fragments, operations, and input objects
      */
-    val generateMethods: List<GeneratedMethod>,
-
-    /**
-     * Whether to generate the compiled selections used to read/write from the normalized cache.
-     * Disable this option if you don't use the normalized cache to save some bytecode
-     */
-    val generateResponseFields: Boolean,
+    val generateMethods: List<GeneratedMethod>? = null,
 
     /**
      * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
      * to send the operations to the server.
-     * If performance is critical and you have a way to whitelist/read the document from another place, disable this.
+     * If performance is critical, and you have a way to whitelist/read the document from another place, disable this.
      */
-    val generateQueryDocument: Boolean,
+    val generateQueryDocument: Boolean? = null,
 
     /**
      * Whether to generate the Schema class.
@@ -264,19 +225,27 @@ data class CommonCodegenOptions(
      *
      * Default: false
      */
-    val generateSchema: Boolean,
+    val generateSchema: Boolean? = null,
 
     /**
      * Class name to use when generating the Schema class.
      *
      * Default: "__Schema"
      */
-    val generatedSchemaName: String,
+    val generatedSchemaName: String? = null,
+
+    val operationManifestFormat: String? = null
 )
 
-class KotlinCodegenOptions(
-    val languageVersion: TargetLanguage,
+@Serializable
+class CodegenOptions(
+    val common: CommonCodegenOptions = CommonCodegenOptions(),
+    val java: JavaCodegenOptions = JavaCodegenOptions(),
+    val kotlin: KotlinCodegenOptions = KotlinCodegenOptions(),
+)
 
+@Serializable
+class KotlinCodegenOptions(
     /**
      * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
      *
@@ -285,38 +254,14 @@ class KotlinCodegenOptions(
      *
      * Default: emptyList()
      */
-    val sealedClassesForEnumsMatching: List<String>,
+    val sealedClassesForEnumsMatching: List<String>? = null,
 
-    val generateAsInternal: Boolean,
+    val generateAsInternal: Boolean? = null,
     /**
      * Kotlin native will generate [Any?] for optional types
      * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
      */
-    val generateFilterNotNull: Boolean,
-
-    /**
-     * Hooks to customize the generated Kotlin code.
-     */
-    @ApolloExperimental
-    val compilerKotlinHooks: ApolloCompilerKotlinHooks,
-
-    /**
-     * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
-     * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
-     *
-     * Default: false
-     */
-    val addJvmOverloads: Boolean = false,
-    val requiresOptInAnnotation: String?,
-
-    /**
-     * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
-     * responses into Kotlin classes using [unsafeCast].
-     *
-     * Default: false
-     */
-    @ApolloExperimental
-    val jsExport: Boolean = false,
+    val generateFilterNotNull: Boolean? = null,
 
     /**
      * Whether to generate builders in addition to constructors for operations and input types.
@@ -326,9 +271,28 @@ class KotlinCodegenOptions(
      * Default: false
      */
     @ApolloExperimental
-    val generateInputBuilders: Boolean = false
+    val generateInputBuilders: Boolean? = null,
+
+    /**
+     * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
+     * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
+     *
+     * Default: false
+     */
+    val addJvmOverloads: Boolean? = null,
+    val requiresOptInAnnotation: String? = null,
+
+    /**
+     * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
+     * responses into Kotlin classes using [unsafeCast].
+     *
+     * Default: false
+     */
+    @ApolloExperimental
+    val jsExport: Boolean? = null,
 )
 
+@Serializable
 class JavaCodegenOptions(
     /**
      * Whether to generate builders for java models
@@ -336,7 +300,7 @@ class JavaCodegenOptions(
      * Default value: false
      * Only valid for java models as kotlin has data classes
      */
-    val generateModelBuilders: Boolean,
+    val generateModelBuilders: Boolean? = null,
 
     /**
      * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
@@ -346,7 +310,7 @@ class JavaCodegenOptions(
      *
      * Default: listOf(".*")
      */
-    val classesForEnumsMatching: List<String>,
+    val classesForEnumsMatching: List<String>? = null,
 
     /**
      * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
@@ -354,7 +318,7 @@ class JavaCodegenOptions(
      *
      * Default: false
      */
-    val generatePrimitiveTypes: Boolean,
+    val generatePrimitiveTypes: Boolean? = null,
 
     /**
      * The style to use for fields that are nullable in the Java generated code.
@@ -373,14 +337,7 @@ class JavaCodegenOptions(
      *
      * Default: `none`
      */
-    val nullableFieldStyle: JavaNullable,
-
-
-    /**
-     * Hooks to customize the generated Java code.
-     */
-    @ApolloExperimental
-    val compilerJavaHooks: ApolloCompilerJavaHooks,
+    val nullableFieldStyle: JavaNullable? = null,
 )
 
 /**
@@ -406,45 +363,90 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 @Serializable
-data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer, val userDefined: Boolean = true)
+data class ScalarInfo(
+    val targetName: String,
+    val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
+    val userDefined: Boolean = true,
+)
 
 private val NoOpLogger = object : ApolloCompiler.Logger {
   override fun warning(message: String) {
   }
 }
 
-val defaultAlwaysGenerateTypesMatching = emptySet<String>()
-val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
-val defaultScalarMapping = emptyMap<String, ScalarInfo>()
-val defaultLogger = NoOpLogger
-const val defaultUseSemanticNaming = true
-const val defaultWarnOnDeprecatedUsages = true
-const val defaultFailOnWarnings = false
-const val defaultGenerateAsInternal = false
-const val defaultGenerateFilterNotNull = false
-const val defaultGenerateFragmentImplementations = false
-const val defaultGenerateResponseFields = true
-const val defaultGenerateQueryDocument = true
-val defaultGenerateMethodsKotlin = listOf(GeneratedMethod.DATA_CLASS)
-val defaultGenerateMethodsJava = listOf(GeneratedMethod.EQUALS_HASH_CODE, GeneratedMethod.TO_STRING)
-const val defaultCodegenModels = MODELS_OPERATION_BASED
-const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
-const val defaultRequiresOptInAnnotation = "none"
-const val defaultFlattenModels = true
-val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
-const val defaultGenerateSchema = false
-const val defaultGeneratedSchemaName = "__Schema"
-const val defaultGenerateDataBuilders = false
-const val defaultGenerateModelBuilders = false
-val defaultSealedClassesForEnumsMatching = emptyList<String>()
-val defaultClassesForEnumsMatching = listOf(".*")
-const val defaultGenerateOptionalOperationVariables = true
-const val defaultAddJvmOverloads = false
-const val defaultFieldsOnDisjointTypesMustMerge = true
-const val defaultGeneratePrimitiveTypes = false
-const val defaultJsExport = false
-const val defaultGenerateInputBuilders = false
-val defaultNullableFieldStyle = JavaNullable.NONE
-const val defaultDecapitalizeFields = false
-val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity
-val defaultCompilerJavaHooks = ApolloCompilerJavaHooks.Identity
+internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
+internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
+internal val defaultLogger = NoOpLogger
+internal const val defaultUseSemanticNaming = true
+internal const val defaultWarnOnDeprecatedUsages = true
+internal const val defaultFailOnWarnings = false
+internal const val defaultGenerateAsInternal = false
+internal const val defaultGenerateFilterNotNull = false
+internal const val defaultGenerateFragmentImplementations = false
+internal const val defaultGenerateResponseFields = true
+internal const val defaultGenerateQueryDocument = true
+internal const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
+internal const val defaultRequiresOptInAnnotation = "none"
+internal const val defaultFlattenModels = true
+internal const val defaultGenerateSchema = false
+internal const val defaultGeneratedSchemaName = "__Schema"
+internal const val defaultGenerateDataBuilders = false
+internal const val defaultGenerateModelBuilders = false
+internal val defaultSealedClassesForEnumsMatching = emptyList<String>()
+internal val defaultClassesForEnumsMatching = listOf(".*")
+internal const val defaultGenerateOptionalOperationVariables = true
+internal const val defaultAddJvmOverloads = false
+internal const val defaultFieldsOnDisjointTypesMustMerge = true
+internal const val defaultGeneratePrimitiveTypes = false
+internal const val defaultJsExport = false
+internal const val defaultGenerateInputBuilders = false
+internal val defaultNullableFieldStyle = JavaNullable.NONE
+internal const val defaultDecapitalizeFields = false
+internal val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity
+internal val defaultCompilerJavaHooks = ApolloCompilerJavaHooks.Identity
+internal val defaultOperationManifestFormat = MANIFEST_NONE
+
+internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
+  return when (targetLanguage) {
+    TargetLanguage.JAVA -> {
+      check(codegenModels == null || codegenModels == MODELS_OPERATION_BASED) {
+        "Java codegen does not support codegenModels=${codegenModels}"
+      }
+      MODELS_OPERATION_BASED
+    }
+
+    else -> codegenModels ?: MODELS_OPERATION_BASED
+  }
+}
+
+internal fun generateMethodsJava(generateMethods: List<GeneratedMethod>?): List<GeneratedMethod> {
+  if (generateMethods == null) {
+    return listOf(GeneratedMethod.EQUALS_HASH_CODE, GeneratedMethod.TO_STRING)
+  }
+  check(!generateMethods.contains(GeneratedMethod.DATA_CLASS)) {
+    "Java codegen does not support dataClass as an option for generateMethods"
+  }
+  check(!generateMethods.contains(GeneratedMethod.COPY)) {
+    "Java codegen does not support copy as an option for generateMethods"
+  }
+
+  return generateMethods
+}
+
+internal fun generateMethodsKotlin(generateMethods: List<GeneratedMethod>?): List<GeneratedMethod> {
+  if (generateMethods == null) {
+    return listOf(GeneratedMethod.DATA_CLASS)
+  }
+  if (generateMethods.contains(GeneratedMethod.DATA_CLASS) && generateMethods.size > 1) {
+    error("Apollo: dataClass subsumes all other method types and must be the only option passed to generateMethods")
+  }
+  return generateMethods
+}
+
+
+internal fun flattenModels(codegenModels: String): Boolean {
+  return when (codegenModels) {
+    MODELS_RESPONSE_BASED -> false
+    else -> true
+  }
+}
