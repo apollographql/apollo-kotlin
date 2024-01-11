@@ -56,8 +56,7 @@ fun CodegenOptions.writeTo(file: File) = encodeToJson(file)
 internal fun File.toCodegenSchema(): CodegenSchema = parseFromJson()
 internal fun File.toIrOperations(): IrOperations = parseFromJson<DefaultIrOperations>()
 internal fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
-@ApolloInternal // XXX: make internal
-fun File.toCodegenMetadata(): CodegenMetadata = parseFromJson()
+internal fun File.toCodegenMetadata(): CodegenMetadata = parseFromJson()
 // Public on purpose
 @JvmName("readOperationOutput")
 fun File.toOperationOutput(): OperationOutput = parseFromJson<Map<String, OperationDescriptor>>()

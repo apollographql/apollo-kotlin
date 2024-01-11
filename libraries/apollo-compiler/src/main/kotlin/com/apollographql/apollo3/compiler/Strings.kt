@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import okio.Buffer
-
 /**
  * A variation of [String.capitalize] that:
  * - skips initial underscore, especially found in introspection queries

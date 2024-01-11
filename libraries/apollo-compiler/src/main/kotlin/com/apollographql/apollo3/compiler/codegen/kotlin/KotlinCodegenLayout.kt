@@ -3,9 +3,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInEnum
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInSealedClass
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWordInEnum
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWordInSealedClass
 
 internal class KotlinCodegenLayout(
     allTypes: List<CodegenType>,

@@ -15,8 +15,8 @@ internal class ResolverInfo(
     val entries: List<ResolverEntry>
 )
 
-@ApolloInternal
 @Serializable
+@ApolloInternal
 class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }

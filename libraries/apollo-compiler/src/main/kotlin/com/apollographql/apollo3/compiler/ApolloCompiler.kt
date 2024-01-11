@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.DeprecatedUsage
 import com.apollographql.apollo3.ast.DifferentShape
 import com.apollographql.apollo3.ast.DirectiveRedefinition
@@ -32,6 +31,13 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.internal.addRequiredFields
+import com.apollographql.apollo3.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
+import com.apollographql.apollo3.compiler.internal.checkApolloReservedEnumValueNames
+import com.apollographql.apollo3.compiler.internal.checkApolloTargetNameClashes
+import com.apollographql.apollo3.compiler.internal.checkCapitalizedFields
+import com.apollographql.apollo3.compiler.internal.checkConditionalFragments
+import com.apollographql.apollo3.compiler.internal.checkKeyFields
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
@@ -43,9 +49,7 @@ import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
 import com.squareup.kotlinpoet.FileSpec
 import java.io.File
 
-@ApolloExperimental
 object ApolloCompiler {
-
   interface Logger {
     fun warning(message: String)
   }

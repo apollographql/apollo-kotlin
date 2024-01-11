@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
-import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import kotlinx.serialization.SerialName
@@ -114,7 +113,6 @@ enum class GeneratedMethod {
   DATA_CLASS,
   ;
 
-  @ApolloInternal
   companion object {
     fun fromName(name: String): GeneratedMethod? {
       return when (name) {
@@ -128,7 +126,6 @@ enum class GeneratedMethod {
   }
 }
 
-@ApolloExperimental
 @Serializable
 class CodegenSchemaOptions(
     /**
@@ -143,7 +140,6 @@ class CodegenSchemaOptions(
     val packageName: String? = null
 )
 
-@ApolloExperimental
 @Serializable
 class IrOptions(
     /**

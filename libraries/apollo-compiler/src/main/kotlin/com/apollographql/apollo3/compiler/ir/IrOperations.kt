@@ -2,9 +2,9 @@ package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.compiler.BooleanExpressionSerializer
-import com.apollographql.apollo3.compiler.GQLFragmentDefinitionSerializer
-import com.apollographql.apollo3.compiler.GQLTypeSerializer
+import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
+import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
+import com.apollographql.apollo3.compiler.internal.GQLFragmentDefinitionSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

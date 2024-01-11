@@ -25,12 +25,16 @@ interface PackageNameGenerator {
    */
   val version: String
 
-  class Flat(val packageName: String) : PackageNameGenerator {
-    override fun packageName(filePath: String) = packageName
+  class Flat(private val packageName: String): PackageNameGenerator {
+    override fun packageName(filePath: String): String {
+      return packageName
+    }
+
     override val version: String
-      get() = "Flat-$packageName"
+      get() = error("this should only be called from the Gradle Plugin")
   }
 }
+
 
 /**
  * A helper class to get a package name from a list of root folders

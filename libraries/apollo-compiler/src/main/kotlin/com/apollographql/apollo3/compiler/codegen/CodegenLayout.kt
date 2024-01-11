@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
-import com.apollographql.apollo3.compiler.singularize
+import com.apollographql.apollo3.compiler.internal.singularize
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.

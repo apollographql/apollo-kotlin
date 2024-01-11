@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
@@ -42,6 +43,7 @@ import kotlinx.serialization.Serializable
  * In java `Option` and `Nullable` might be represented using the same `Optional` depending on the settings.
  */
 @Serializable
+@ApolloInternal
 sealed interface IrType {
   /**
    * This type is nullable in Kotlin
@@ -75,19 +77,21 @@ sealed interface IrType {
 }
 
 @Serializable
+@ApolloInternal
 enum class IrCatchTo {
   Null,
   Result,
   NoCatch
 }
 
-fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
-fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
-fun IrType.catchTo(catchTo: IrCatchTo): IrType = copyWith(catchTo = catchTo)
-fun IrType.maybeError(maybeError: Boolean): IrType = copyWith(maybeError = maybeError)
+@ApolloInternal fun IrType.nullable(nullable: Boolean): IrType = copyWith(nullable = nullable)
+@ApolloInternal fun IrType.optional(optional: Boolean): IrType = copyWith(optional = optional)
+internal fun IrType.catchTo(catchTo: IrCatchTo): IrType = copyWith(catchTo = catchTo)
+internal fun IrType.maybeError(maybeError: Boolean): IrType = copyWith(maybeError = maybeError)
 
 @Serializable
 @SerialName("list")
+@ApolloInternal
 data class IrListType(
     val ofType: IrType,
     override val nullable: Boolean = false,
@@ -101,6 +105,7 @@ data class IrListType(
 }
 
 @Serializable
+@ApolloInternal
 sealed interface IrNamedType : IrType {
   override fun rawType() = this
   val name: String
@@ -108,6 +113,7 @@ sealed interface IrNamedType : IrType {
 
 @Serializable
 @SerialName("scalar")
+@ApolloInternal
 data class IrScalarType(
     override val name: String,
     override val nullable: Boolean = false,
@@ -121,6 +127,7 @@ data class IrScalarType(
 
 @Serializable
 @SerialName("input")
+@ApolloInternal
 data class IrInputObjectType(
     override val name: String,
     override val nullable: Boolean = false,
@@ -134,6 +141,7 @@ data class IrInputObjectType(
 
 @Serializable
 @SerialName("enum")
+@ApolloInternal
 data class IrEnumType(
     override val name: String,
     override val nullable: Boolean = false,
@@ -147,6 +155,7 @@ data class IrEnumType(
 
 @Serializable
 @SerialName("object")
+@ApolloInternal
 data class IrObjectType(
     override val name: String,
     override val nullable: Boolean = false,
@@ -179,7 +188,8 @@ data class IrObjectType(
  */
 @Serializable
 @SerialName("model")
-internal data class IrModelType(
+@ApolloInternal
+data class IrModelType(
     val path: String,
     override val nullable: Boolean = false,
     override val optional: Boolean = false,

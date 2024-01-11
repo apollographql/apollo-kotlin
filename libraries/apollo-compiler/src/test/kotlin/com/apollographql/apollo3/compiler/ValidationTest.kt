@@ -6,6 +6,9 @@ import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.serialize
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
+import com.apollographql.apollo3.compiler.internal.checkApolloReservedEnumValueNames
+import com.apollographql.apollo3.compiler.internal.checkApolloTargetNameClashes
+import com.apollographql.apollo3.compiler.internal.checkCapitalizedFields
 import okio.buffer
 import okio.source
 import org.junit.Test

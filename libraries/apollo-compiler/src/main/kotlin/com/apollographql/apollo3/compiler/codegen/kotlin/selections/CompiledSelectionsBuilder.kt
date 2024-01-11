@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.selections
 
-import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols

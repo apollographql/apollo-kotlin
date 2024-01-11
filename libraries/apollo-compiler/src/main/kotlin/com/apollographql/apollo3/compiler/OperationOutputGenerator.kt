@@ -24,7 +24,7 @@ interface OperationOutputGenerator {
    *
    * Two different implementations **must** have different versions.
    *
-   * When using the compiler outside of a Gradle context, [version] is not used, making it the empty string is fine.
+   * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
    */
   val version: String
 
