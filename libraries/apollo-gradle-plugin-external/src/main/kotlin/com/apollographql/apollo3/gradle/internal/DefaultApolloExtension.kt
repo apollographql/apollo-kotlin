@@ -557,21 +557,6 @@ abstract class DefaultApolloExtension(
 
     service.generateApolloMetadata.disallowChanges()
     service.registered = true
-
-    project.afterEvaluate {
-      check(
-          service.packageName.isPresent || service.packageNameGenerator.isPresent || service.packageNamesFromFilePaths
-      ) {
-        """
-            |Apollo: specify 'packageName':
-            |apollo {
-            |  service("service") {
-            |    packageName.set("com.example")
-            |  }
-            |}
-          """.trimMargin()
-      }
-    }
   }
 
   private fun registerSourcesFromIrTask(
@@ -689,6 +674,8 @@ abstract class DefaultApolloExtension(
       task.jsExport.set(service.jsExport)
 
       task.codegenOptions.set(BuildDirLayout.codegenOptions(project, service))
+
+      task.hasPackageNameGenerator = service.packageNameGenerator.isPresent
     }
   }
 

@@ -20,6 +20,7 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -146,9 +147,6 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @get:Optional
   abstract val classesForEnumsMatching: ListProperty<String>
 
-  @get:OutputFile
-  abstract val codegenOptions: RegularFileProperty
-
   /**
    * KotlinCodegenOptions
    */
@@ -180,8 +178,27 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @get:Optional
   abstract val requiresOptInAnnotation: Property<String>
 
+  @get:OutputFile
+  abstract val codegenOptions: RegularFileProperty
+
+  @get:Internal
+  var hasPackageNameGenerator: Boolean = false
+
   @TaskAction
   fun taskAction() {
+    check(
+        packageName.isPresent || hasPackageNameGenerator || packageNamesFromFilePaths.isPresent
+    ) {
+      """
+            |Apollo: specify 'packageName':
+            |apollo {
+            |  service("service") {
+            |    packageName.set("com.example")
+            |  }
+            |}
+          """.trimMargin()
+    }
+
     CodegenSchemaOptions(
         targetLanguage = targetLanguage.get(),
         scalarMapping = scalarMapping(scalarTypeMapping, scalarAdapterMapping),
