@@ -139,14 +139,14 @@ object ApolloCompiler {
         packageNameRoots
     )
 
-
+    val generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     return CodegenSchema(
         schema = schema,
         packageName = packageNameGenerator.packageName(mainSchemaDocument.sourceLocation!!.filePath!!),
         codegenModels = codegenModels,
         scalarMapping = scalarMapping,
         targetLanguage = codegenSchemaOptions.targetLanguage,
-        generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
+        generateDataBuilders = generateDataBuilders
     )
   }
 
@@ -225,14 +225,22 @@ object ApolloCompiler {
     allIssues.addAll(checkApolloInlineFragmentsHaveTypeCondition(definitions))
 
     val flattenModels = options.flattenModels ?: flattenModels(codegenModels)
-    if (!(options.decapitalizeFields ?: defaultDecapitalizeFields)) {
+    val decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields
+    val warnOnDeprecatedUsages = options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
+    val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
+    val fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
+    val addTypename = options.addTypename ?: defaultAddTypename
+    val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
+    val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
+
+    if (!decapitalizeFields) {
       // When flattenModels is true, we still must check capitalized fields inside fragment spreads
       allIssues.addAll(checkCapitalizedFields(definitions, checkFragmentsOnly = flattenModels))
     }
 
     val issueGroup = allIssues.group(
-        options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages,
-        options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge,
+        warnOnDeprecatedUsages,
+        fieldsOnDisjointTypesMustMerge,
     )
 
     issueGroup.errors.checkEmpty()
@@ -241,11 +249,10 @@ object ApolloCompiler {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
-    if ((options.failOnWarnings ?: defaultFailOnWarnings) && issueGroup.warnings.isNotEmpty()) {
+
+    if (failOnWarnings && issueGroup.warnings.isNotEmpty()) {
       throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
     }
-
-    val addTypename = options.addTypename ?: defaultAddTypename
 
     /**
      * Step 3, Modify the AST to add typename and key fields
@@ -282,10 +289,10 @@ object ApolloCompiler {
         fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         codegenModels = codegenModels,
-        generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables,
+        generateOptionalOperationVariables = generateOptionalOperationVariables,
         flattenModels = flattenModels,
-        decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields,
-        alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching,
+        decapitalizeFields = decapitalizeFields,
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         generateDataBuilders = codegenSchema.generateDataBuilders,
         fragmentVariableUsages = validationResult.fragmentVariableUsages
     ).build()
