@@ -243,10 +243,7 @@ class CodegenTest {
         "mutation_create_review_semantic_naming" -> true
         else -> false
       }
-      val generateAsInternal = when (folder.name) {
-        "mutation_create_review", "simple_fragment" -> true
-        else -> false
-      }
+
       val generateDataBuilders = when (folder.name) {
         "mutation_create_review", "simple_fragment", "data_builders" -> true
         else -> false
@@ -319,9 +316,6 @@ class CodegenTest {
         else -> false
       }
 
-
-
-      val compilerKotlinHooks = null
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
       val javaCodegenOptions = if (targetLanguage == JAVA) {
         javaCodegenOptions(folder)
@@ -446,11 +440,17 @@ private fun kotlinCodegenOptions(folder: File): KotlinCodegenOptions {
     else -> "none"
   }
 
+  val generateAsInternal = when (folder.name) {
+    "mutation_create_review", "simple_fragment" -> true
+    else -> false
+  }
+
   return KotlinCodegenOptions(
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       addJvmOverloads = addJvmOverloads,
       requiresOptInAnnotation = requiresOptInAnnotation,
       generateFilterNotNull = true,
       generateInputBuilders = generateInputBuilders,
+      generateAsInternal = generateAsInternal
   )
 }
