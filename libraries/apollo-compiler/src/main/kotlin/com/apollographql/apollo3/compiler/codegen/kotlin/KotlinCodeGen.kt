@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.ApolloCompiler.clearContents
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
@@ -37,21 +38,37 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
+import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
+import com.apollographql.apollo3.compiler.defaultGenerateAsInternal
+import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
+import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.defaultGenerateInputBuilders
+import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
+import com.apollographql.apollo3.compiler.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.defaultJsExport
+import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
+import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
+import com.apollographql.apollo3.compiler.generateMethodsKotlin
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
+import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.ir.toIr
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.apollographql.apollo3.compiler.writeTo
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import java.io.File
 
 internal object KotlinCodeGen {
-
   private fun schemaFileBuilders(
       context: KotlinContext,
       sealedClassesForEnumsMatching: List<String>,
@@ -150,49 +167,57 @@ internal object KotlinCodeGen {
     return fileInfos.map { it.fileSpec }
   }
 
-  /**
-   * @return a ResolverInfo to be used by downstream modules
-   */
-  fun writeOperations(
+  fun writeSchemaAndOperations(
+      codegenSchema: CodegenSchema,
+      irOperations: IrOperations,
+      irSchema: IrSchema?,
+      operationOutput: OperationOutput,
+      upstreamCodegenMetadata: List<CodegenMetadata>,
       commonCodegenOptions: CommonCodegenOptions,
       kotlinCodegenOptions: KotlinCodegenOptions,
-  ): ResolverInfo {
-    val ir = commonCodegenOptions.ir
-    check(ir is DefaultIrOperations)
+      packageNameGenerator: PackageNameGenerator,
+      compilerKotlinHooks: ApolloCompilerKotlinHooks,
+      outputDir: File,
+      codegenMetadataFile: File?,
+  ) {
 
-    val operationOutput = commonCodegenOptions.operationOutput
-    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
-    val generateAsInternal = kotlinCodegenOptions.generateAsInternal
-    val generateMethods = commonCodegenOptions.generateMethods
-    val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull
-    val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
-    val generateQueryDocument = commonCodegenOptions.generateQueryDocument
-    val generatedSchemaName = commonCodegenOptions.generatedSchemaName
-    val generateDataBuilders = ir.generateDataBuilders
-    val flatten = ir.flattenModels
-    val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching
-    val targetLanguageVersion = kotlinCodegenOptions.languageVersion
-    val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
-    val addJvmOverloads = kotlinCodegenOptions.addJvmOverloads
-    val jsExport = kotlinCodegenOptions.jsExport
-    val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation
-    val decapitalizeFields = ir.decapitalizeFields
-    val hooks = kotlinCodegenOptions.compilerKotlinHooks
-    val generateSchema = commonCodegenOptions.generateSchema || generateDataBuilders
-    val outputDir = commonCodegenOptions.outputDir
-    val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders
+    outputDir.clearContents()
+    check(irOperations is DefaultIrOperations)
+
+    val resolverInfos = upstreamCodegenMetadata.map { it.resolverInfo }
+
+    val generateDataBuilders = irOperations.generateDataBuilders
+    val flatten = irOperations.flattenModels
+    val decapitalizeFields = irOperations.decapitalizeFields
+
+    val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
+    val generateMethods = generateMethodsKotlin(commonCodegenOptions.generateMethods)
+    val generateQueryDocument = commonCodegenOptions.generateQueryDocument ?: defaultGenerateQueryDocument
+    val generateSchema = commonCodegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
+    val generatedSchemaName = commonCodegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
+    val useSemanticNaming = commonCodegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
+
+    val addJvmOverloads = kotlinCodegenOptions.addJvmOverloads ?: defaultAddJvmOverloads
+    val generateAsInternal = kotlinCodegenOptions.generateAsInternal ?: defaultGenerateAsInternal
+    val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull ?: defaultGenerateFilterNotNull
+    val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
+    val jsExport = kotlinCodegenOptions.jsExport ?: defaultJsExport
+    val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
+    val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching ?: defaultSealedClassesForEnumsMatching
+
+    val targetLanguageVersion = codegenSchema.targetLanguage
+    val scalarMapping = codegenSchema.scalarMapping
+    val schemaPackageName = codegenSchema.packageName
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, compilerKotlinHooks)
     }
 
-    val irSchema = commonCodegenOptions.irSchema
-
     val layout = KotlinCodegenLayout(
-        allTypes = commonCodegenOptions.codegenSchema.allTypes(),
-        useSemanticNaming = commonCodegenOptions.useSemanticNaming,
-        packageNameGenerator = commonCodegenOptions.packageNameGenerator,
-        schemaPackageName = commonCodegenOptions.codegenSchema.packageName,
+        allTypes = codegenSchema.allTypes(),
+        useSemanticNaming = useSemanticNaming,
+        packageNameGenerator = packageNameGenerator,
+        schemaPackageName = schemaPackageName,
         decapitalizeFields = decapitalizeFields,
     )
 
@@ -205,7 +230,7 @@ internal object KotlinCodeGen {
             next = upstreamResolver,
             scalarMapping = scalarMapping,
             requiresOptInAnnotation = requiresOptInAnnotation,
-            hooks = hooks
+            hooks = compilerKotlinHooks
         ),
         targetLanguageVersion = targetLanguageVersion,
     )
@@ -219,12 +244,12 @@ internal object KotlinCodeGen {
               generateInputBuilders,
               generateSchema,
               generatedSchemaName,
-              commonCodegenOptions.codegenSchema.scalarMapping,
+              scalarMapping,
               irSchema)
       )
     }
 
-    ir.fragments
+    irOperations.fragments
         .forEach { fragment ->
           builders.add(
               FragmentModelsBuilder(
@@ -260,7 +285,7 @@ internal object KotlinCodeGen {
           }
         }
 
-    ir.operations
+    irOperations.operations
         .forEach { operation ->
           if (operation.variables.isNotEmpty()) {
             builders.add(OperationVariablesAdapterBuilder(context, operation))
@@ -284,15 +309,21 @@ internal object KotlinCodeGen {
           )
         }
 
-    buildFileSpecs(builders, generateAsInternal, hooks).forEach {
+    buildFileSpecs(builders, generateAsInternal, compilerKotlinHooks).forEach {
       it.writeTo(outputDir)
     }
 
-    return ResolverInfo(
+    val resolverInfo = ResolverInfo(
         magic = "KotlinCodegen",
         version = APOLLO_VERSION,
         entries = context.resolver.entries()
     )
+
+    if (codegenMetadataFile != null) {
+      CodegenMetadata(
+          resolverInfo
+      ).writeTo(codegenMetadataFile)
+    }
   }
 
   private fun TypeSpec.internal(generateAsInternal: Boolean): TypeSpec {

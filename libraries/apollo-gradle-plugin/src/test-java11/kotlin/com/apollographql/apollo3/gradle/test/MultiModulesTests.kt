@@ -2,13 +2,13 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.compiler.schemaTypes
 import com.apollographql.apollo3.compiler.toCodegenMetadata
-import util.TestUtils
-import util.replaceInText
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Test
+import util.TestUtils
+import util.replaceInText
 import java.io.File
 
 class MultiModulesTests {
@@ -43,11 +43,22 @@ class MultiModulesTests {
   @Test
   fun `duplicate fragments are detected correctly`() {
     TestUtils.withTestProject("multi-modules-duplicates") { dir ->
+      // duplicate fragments in sibling modules are fine
+      TestUtils.executeTaskAndAssertSuccess(":node1:impl:generateApolloSources", dir)
+
+      // Now duplicate the fragment in the root
+      dir.resolve("root/src/main/graphql/com/library/fragment.graphql").writeText("""
+        fragment CatFragment on Cat {
+          mustaches
+        }
+      """.trimIndent())
+
       try {
+        // This should now fail
         TestUtils.executeTask(":node1:impl:generateApolloSources", dir)
-        Assert.fail("the build did not detect duplicate classes")
+        Assert.fail("the build did not detect duplicate fragments")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("duplicate fragments")
+        Truth.assertThat(e.message).contains("is already defined")
       }
     }
   }
@@ -63,12 +74,12 @@ class MultiModulesTests {
       File(dir, "node1/impl/src/main/graphql/com/library/operations.graphql").replaceInText("CatFragment", "CatFragment2")
       val result = TestUtils.executeTask(":node1:impl:jar", dir)
 
-      Truth.assertThat(result.task(":node1:impl:generateServiceApolloIr")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat(result.task(":node1:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node1:impl:generateServiceApolloSourcesFromIr")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node1:impl:compileKotlin")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
 
       // This is recompiled because root:generateServiceApolloSourcesFromIr needs it
-      Truth.assertThat(result.task(":node2:impl:generateServiceApolloIr")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat(result.task(":node2:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
       // But the codegen and compile kotlin are not executed
       Truth.assertThat(result.task(":node2:impl:generateServiceApolloSourcesFromIr")?.outcome).isEqualTo(null)
       Truth.assertThat(result.task(":node2:impl:compileKotlin")?.outcome).isEqualTo(null)

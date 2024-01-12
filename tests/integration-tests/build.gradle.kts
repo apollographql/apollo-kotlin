@@ -22,7 +22,7 @@ kotlin {
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
         implementation(libs.kotlinx.coroutines)
-        implementation(libs.kotlinx.serialization.json.asProvider())
+        implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.coroutines.test)
         implementation(libs.turbine)
       }
@@ -59,11 +59,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 generateFragmentImplementations.set(true)
                 mapScalar("Date", "kotlinx.datetime.LocalDate")
                 if (generateKotlinModels) {
+                  sealedClassesForEnumsMatching.set(listOf("Episode"))
                   mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter")
                 } else {
                   mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter.INSTANCE")
                 }
-                sealedClassesForEnumsMatching.set(listOf("Episode"))
               }
 
               "fullstack" -> {

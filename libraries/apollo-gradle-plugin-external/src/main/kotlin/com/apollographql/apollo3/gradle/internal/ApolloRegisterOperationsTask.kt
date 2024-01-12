@@ -2,8 +2,8 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
-import com.apollographql.apollo3.compiler.operationoutput.toOperationOutput
-import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
+import com.apollographql.apollo3.compiler.toOperationOutput
+import com.apollographql.apollo3.compiler.toPersistedQueryManifest
 import com.apollographql.apollo3.tooling.CannotModifyOperationBody
 import com.apollographql.apollo3.tooling.GraphNotFound
 import com.apollographql.apollo3.tooling.PermissionError

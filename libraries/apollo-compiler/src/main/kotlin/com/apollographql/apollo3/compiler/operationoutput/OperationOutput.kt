@@ -1,14 +1,6 @@
 package com.apollographql.apollo3.compiler.operationoutput
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import kotlinx.serialization.json.okio.encodeToBufferedSink
-import okio.buffer
-import okio.sink
-import okio.source
-import java.io.File
 
 /**
  * [OperationOutput] is a map where the operationId is the key and [OperationDescriptor] the value
@@ -35,17 +27,3 @@ fun OperationOutput.findOperationId(name: String): String {
   return id
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-fun OperationOutput.writeTo(file: File) {
-  file.sink().buffer().use {
-    Json.encodeToBufferedSink<Map<String, OperationDescriptor>>(this, it)
-  }
-
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-fun File.toOperationOutput(): OperationOutput {
-  return source().buffer().use {
-    Json.decodeFromBufferedSource<Map<String, OperationDescriptor>>(it)
-  }
-}

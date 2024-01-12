@@ -12,7 +12,7 @@ object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedFields: Map<String, Set<String>>,
-      incomingTypes: Set<String>
+      alreadyVisitedTypes: Set<String>
   ): IrSchema {
 
     val irEnums = mutableListOf<IrEnum>()
@@ -22,7 +22,7 @@ object IrSchemaBuilder {
     val irInterfaces = mutableListOf<IrInterface>()
     val irObjects = mutableListOf<IrObject>()
 
-    val visitedTypes = incomingTypes.toMutableSet()
+    val visitedTypes = alreadyVisitedTypes.toMutableSet()
     val typesStack = usedFields.keys.toMutableList()
     while (typesStack.isNotEmpty()) {
       val name = typesStack.removeFirst()

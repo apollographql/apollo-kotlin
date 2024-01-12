@@ -18,7 +18,6 @@ dependencies {
   api(libs.poet.java)
 
   implementation(libs.kotlinx.serialization.json)
-  implementation(libs.kotlinx.serialization.json.okio)
 
   testImplementation(libs.kotlin.compiletesting)
   testImplementation(libs.google.testing.compile)

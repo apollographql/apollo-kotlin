@@ -4,15 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import kotlinx.serialization.json.okio.encodeToBufferedSink
-import okio.buffer
-import okio.sink
-import okio.source
-import java.io.File
 
 @Serializable
 data class CodegenMetadata internal constructor(
@@ -29,19 +21,4 @@ fun CodegenMetadata.schemaTypes(): Set<String> {
 @ApolloInternal
 fun CodegenMetadata.resolveSchemaType(name: String): ResolverClassName? {
   return resolverInfo.entries.firstOrNull { it.key.kind == ResolverKeyKind.SchemaType && it.key.id == name }?.className
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-fun CodegenMetadata.writeTo(file: File) {
-  file.sink().buffer().use {
-    Json.encodeToBufferedSink(CodegenMetadata.serializer(), this, it)
-  }
-
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-fun File.toCodegenMetadata(): CodegenMetadata {
-  return source().buffer().use {
-    Json.decodeFromBufferedSource(CodegenMetadata.serializer(), it)
-  }
 }

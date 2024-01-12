@@ -6,16 +6,9 @@ import com.apollographql.apollo3.compiler.BooleanExpressionSerializer
 import com.apollographql.apollo3.compiler.GQLFragmentDefinitionSerializer
 import com.apollographql.apollo3.compiler.GQLTypeSerializer
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import kotlinx.serialization.json.okio.encodeToBufferedSink
-import okio.buffer
-import okio.sink
-import okio.source
-import java.io.File
 
 /**
  * Intermediate representation (IR)
@@ -343,16 +336,4 @@ internal data class IrVariable(
 
 private val json = Json { classDiscriminator = "#class" }
 
-@OptIn(ExperimentalSerializationApi::class)
-fun IrOperations.writeTo(file: File) {
-  file.sink().buffer().use {
-    json.encodeToBufferedSink(this as DefaultIrOperations, it)
-  }
-}
 
-@OptIn(ExperimentalSerializationApi::class)
-fun File.toIrOperations(): IrOperations {
-  return source().buffer().use {
-    json.decodeFromBufferedSource<DefaultIrOperations>(it)
-  }
-}
