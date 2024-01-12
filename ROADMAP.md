@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-12-21**
+**Last updated: 2024-01-11**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -19,11 +19,11 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate GA Date: January 2024 (GA)_
+_Approximate GA Date: February 2024 (GA)_
 
 Our next major release is currently in the beta stage. Expect new beta to be released as we make progress towards a GA release candidate. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  We are hoping to do a GA release after Kotlin 2.0.0 is generally available.
 
-Here's a high-level overview of what to expect:
+Here's a high-level overview of the feature set:
 
 - [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
 - [Java runtime](https://github.com/apollographql/apollo-kotlin/milestone/25)
@@ -39,7 +39,7 @@ Here's a high-level overview of what to expect:
 
 _This is currently available as an experimental feature.  We will release a stable version after getting sufficient user feedback_
 
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release contains an experimental API for use with Compose, please do try it out and give us feedback!
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose, please do try it out and give us feedback!
 
 ## Cache improvements
 

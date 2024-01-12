@@ -22,6 +22,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
    * @param [configure] Optional callback, called when the database connection is being configured, to enable features such as
    *                    write-ahead logging or foreign key support. It should not modify the database except to configure it.
    * @param [useNoBackupDirectory] Sets whether to use a no backup directory or not.
+   * @param [windowSizeBytes] Size of cursor window in bytes, per [android.database.CursorWindow] (Android 28+ only), or null to use the default.
    */
   @JvmOverloads
   constructor(
@@ -30,6 +31,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
       configure: ((SupportSQLiteDatabase) -> Unit)? = null,
       useNoBackupDirectory: Boolean = false,
+      windowSizeBytes: Long? = null,
   ) : this(
       AndroidSqliteDriver(
           getSchema(),
@@ -42,7 +44,8 @@ actual class SqlNormalizedCacheFactory internal constructor(
               configure?.invoke(db)
             }
           },
-          useNoBackupDirectory = useNoBackupDirectory
+          useNoBackupDirectory = useNoBackupDirectory,
+          windowSizeBytes = windowSizeBytes,
       ),
   )
 
