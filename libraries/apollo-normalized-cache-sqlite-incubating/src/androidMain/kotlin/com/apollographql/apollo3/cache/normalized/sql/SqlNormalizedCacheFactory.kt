@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
@@ -19,14 +20,19 @@ actual class SqlNormalizedCacheFactory actual constructor(
   /**
    * @param [name] Name of the database file, or null for an in-memory database (as per Android framework implementation).
    * @param [factory] Factory class to create instances of [SupportSQLiteOpenHelper]
+   * @param [configure] Optional callback, called when the database connection is being configured, to enable features such as
+   *                    write-ahead logging or foreign key support. It should not modify the database except to configure it.
    * @param [useNoBackupDirectory] Sets whether to use a no backup directory or not.
+   * @param [windowSizeBytes] Size of cursor window in bytes, per [android.database.CursorWindow] (Android 28+ only), or null to use the default.
    */
   @JvmOverloads
   constructor(
       context: Context,
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
+      configure: ((SupportSQLiteDatabase) -> Unit)? = null,
       useNoBackupDirectory: Boolean = false,
+      windowSizeBytes: Long? = null,
       withDates: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
@@ -34,7 +40,14 @@ actual class SqlNormalizedCacheFactory actual constructor(
           context.applicationContext,
           name,
           factory,
-          useNoBackupDirectory = useNoBackupDirectory
+          object : AndroidSqliteDriver.Callback(getSchema(withDates)) {
+            override fun onConfigure(db: SupportSQLiteDatabase) {
+              super.onConfigure(db)
+              configure?.invoke(db)
+            }
+          },
+          useNoBackupDirectory = useNoBackupDirectory,
+          windowSizeBytes = windowSizeBytes,
       ),
       withDates
   )
