@@ -8,7 +8,7 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 
-object IrSchemaBuilder {
+internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedFields: Map<String, Set<String>>,

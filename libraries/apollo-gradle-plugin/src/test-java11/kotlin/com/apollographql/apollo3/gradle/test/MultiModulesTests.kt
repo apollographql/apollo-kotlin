@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo3.compiler.schemaTypes
-import com.apollographql.apollo3.compiler.toCodegenMetadata
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -96,9 +94,8 @@ class MultiModulesTests {
       // Date and GeoPoint is generated in the root module
       Assert.assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/Date.kt").exists())
       Assert.assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/GeoPoint.kt").exists())
-      // Leaf metadata doesn't contain anything regarding Date
-      val codegenMetadata = File(dir, "leaf/build/generated/metadata/apollo/service/metadata.json").toCodegenMetadata()
-      Truth.assertThat(codegenMetadata.schemaTypes()).doesNotContain("Date")
+      // Leaf metadata doesn't contain Date
+      Assert.assertTrue(dir.walk().filter { it.isFile && it.name == "Data.kt" }.toList().isEmpty())
     }
   }
 

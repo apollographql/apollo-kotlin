@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
+import com.apollographql.apollo3.compiler.internal.SchemaSerializer
 import kotlinx.serialization.Serializable
 
 /**

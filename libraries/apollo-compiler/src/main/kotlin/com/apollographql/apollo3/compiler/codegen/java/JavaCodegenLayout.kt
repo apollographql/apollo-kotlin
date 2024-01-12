@@ -3,8 +3,8 @@ package com.apollographql.apollo3.compiler.codegen.java
 import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
-import com.apollographql.apollo3.compiler.escapeJavaReservedWord
-import com.apollographql.apollo3.compiler.escapeTypeReservedWord
+import com.apollographql.apollo3.compiler.internal.escapeTypeReservedWord
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 
 internal class JavaCodegenLayout(
     allTypes: List<CodegenType>,

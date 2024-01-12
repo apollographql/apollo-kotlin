@@ -1,6 +1,6 @@
 @file:JvmName("-checkApolloDuplicateTargetNames")
 
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.internal
 
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue

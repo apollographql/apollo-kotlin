@@ -1,8 +1,7 @@
 @file:JvmName("-checkCapitalizedFields")
 
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -13,8 +12,7 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.UpperCaseField
 
-@ApolloInternal
-fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
+internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
   val scope = object : ValidationScope {
     override val issues = mutableListOf<Issue>()
     override val fragmentsByName = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }

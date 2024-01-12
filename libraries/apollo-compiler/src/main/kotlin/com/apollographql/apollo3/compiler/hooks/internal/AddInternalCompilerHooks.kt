@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.hooks.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
 import com.squareup.kotlinpoet.FunSpec
@@ -17,7 +17,7 @@ import com.squareup.kotlinpoet.TypeSpec
  * - to match classes under a specific package, use `"com\\.example\\.subpackage\\..*"`
  * - to match a specific operation, use `"com\\.example\\.MyQuery"`
  */
-@ApolloInternal
+@ApolloExperimental
 class AddInternalCompilerHooks(namePatterns: Set<String>) : DefaultApolloCompilerKotlinHooks() {
   constructor(vararg namePatterns: String) : this(namePatterns.toSet())
 

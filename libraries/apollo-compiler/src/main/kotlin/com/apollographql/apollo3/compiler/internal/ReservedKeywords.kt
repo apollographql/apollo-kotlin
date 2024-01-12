@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.internal
 
 // Reference:
 // https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
@@ -14,10 +14,10 @@ private val TYPE_REGEX = "(?:type)_*".toRegex()
 private val COMPANION_REGEX = "(?:Companion)_*".toRegex()
 private val KOTLIN_ENUM_RESERVED_WORDS_REGEX = "(?:name|ordinal)_*".toRegex()
 
-fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this
+internal fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this
 
 // Does nothing. KotlinPoet will add the backticks
-fun String.escapeKotlinReservedWord() = this
+internal fun String.escapeKotlinReservedWord() = this
 
 internal fun String.escapeTypeReservedWord(): String? {
   return when {
@@ -37,7 +37,7 @@ private fun String.escapeCompanionReservedWord(): String? {
   }
 }
 
-fun String.escapeKotlinReservedWordInEnum(): String {
+internal fun String.escapeKotlinReservedWordInEnum(): String {
   return when {
     // name and ordinal are forbidden because already used in Kotlin
     // See https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
@@ -46,6 +46,6 @@ fun String.escapeKotlinReservedWordInEnum(): String {
   }
 }
 
-fun String.escapeKotlinReservedWordInSealedClass(): String {
+internal fun String.escapeKotlinReservedWordInSealedClass(): String {
   return escapeTypeReservedWord() ?: escapeCompanionReservedWord() ?: escapeKotlinReservedWord()
 }

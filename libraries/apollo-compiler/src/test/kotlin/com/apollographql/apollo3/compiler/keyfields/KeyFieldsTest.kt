@@ -9,8 +9,8 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.addRequiredFields
-import com.apollographql.apollo3.compiler.checkKeyFields
+import com.apollographql.apollo3.compiler.internal.addRequiredFields
+import com.apollographql.apollo3.compiler.internal.checkKeyFields
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertContains

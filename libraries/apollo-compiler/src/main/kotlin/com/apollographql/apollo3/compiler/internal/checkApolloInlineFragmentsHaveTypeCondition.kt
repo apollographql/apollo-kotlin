@@ -1,6 +1,6 @@
 @file:JvmName("-checkApolloInlineFragmentsHaveTypeCondition")
 
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.internal
 
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLField
