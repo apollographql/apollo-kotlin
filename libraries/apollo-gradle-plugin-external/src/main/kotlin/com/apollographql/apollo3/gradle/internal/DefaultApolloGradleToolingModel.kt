@@ -61,4 +61,5 @@ internal data class DefaultServiceTelemetryData(
     override val fieldsOnDisjointTypesMustMerge: Boolean?,
     override val generateApolloMetadata: Boolean?,
     override val usedOptions: Set<String>,
+    override val flattenModelsExplicitly: String?
 ) : ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData, Serializable

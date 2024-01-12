@@ -243,6 +243,7 @@ object ApolloCompiler {
         codegenModels = codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables,
         flattenModels = options.flattenModels,
+        flattenModelsExplicitly = options.flattenModelsExplicitly,
         decapitalizeFields = options.decapitalizeFields,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
         generateDataBuilders = options.codegenSchema.generateDataBuilders,
@@ -363,6 +364,11 @@ object ApolloCompiler {
           "enclosing one.")
     }
 
+    if (ir.flattenModelsExplicitly != "") {
+      error("Java codegen does not support flattening nested models explicitly as it could trigger name clashes when a nested class has " +
+          "the same name as an enclosing one.")
+    }
+
     return CodegenMetadata(
         JavaCodeGen(
             commonCodegenOptions = commonCodegenOptions,
@@ -412,6 +418,7 @@ object ApolloCompiler {
       failOnWarnings: Boolean = defaultFailOnWarnings,
       logger: Logger = defaultLogger,
       flattenModels: Boolean = defaultFlattenModels,
+      flattenModelsExplicitly: String = defaultFlattenModelsExplicitly,
       codegenModels: String = defaultCodegenModels,
       addTypename: String = defaultAddTypename,
       decapitalizeFields: Boolean = defaultDecapitalizeFields,
@@ -469,6 +476,7 @@ object ApolloCompiler {
         failOnWarnings = failOnWarnings,
         logger = logger,
         flattenModels = flattenModels,
+        flattenModelsExplicitly = flattenModelsExplicitly,
         incomingFragments = emptyList(),
         addTypename = addTypename,
         decapitalizeFields = decapitalizeFields,

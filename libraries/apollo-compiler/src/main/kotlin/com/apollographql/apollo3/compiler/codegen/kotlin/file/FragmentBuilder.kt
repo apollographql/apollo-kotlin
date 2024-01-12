@@ -5,6 +5,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
@@ -20,20 +22,21 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class FragmentBuilder(
-    private val context: KotlinContext,
-    private val generateFilterNotNull: Boolean,
-    private val fragment: IrFragmentDefinition,
-    flatten: Boolean,
-    private val addJvmOverloads: Boolean,
-    private val generateDataBuilders: Boolean,
-    private val generateInputBuilders: Boolean,
+  private val context: KotlinContext,
+  private val generateFilterNotNull: Boolean,
+  private val fragment: IrFragmentDefinition,
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
+  private val addJvmOverloads: Boolean,
+  private val generateDataBuilders: Boolean,
+  private val generateInputBuilders: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
   private val simpleName = layout.fragmentName(fragment.name)
 
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
-    fragment.dataModelGroup.maybeFlatten(flatten).flatMap { it.models }.map {
+    fragment.dataModelGroup.maybeFlatten(flatten, flattenModelsExplicitly).flatMap { it.models }.map {
       ModelBuilder(
           context = context,
           model = it,

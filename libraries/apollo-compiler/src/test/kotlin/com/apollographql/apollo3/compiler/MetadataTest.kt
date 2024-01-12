@@ -76,6 +76,7 @@ class MetadataTest {
         fieldsOnDisjointTypesMustMerge = defaultFieldsOnDisjointTypesMustMerge,
         decapitalizeFields = defaultDecapitalizeFields,
         flattenModels = defaultFlattenModels,
+        flattenModelsExplicitly = defaultFlattenModelsExplicitly,
         warnOnDeprecatedUsages = false,
         failOnWarnings = true,
         logger = defaultLogger,

@@ -86,6 +86,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getFailOnWarnings ()Ljava/lang/Boolean;
 	public abstract fun getFieldsOnDisjointTypesMustMerge ()Ljava/lang/Boolean;
 	public abstract fun getFlattenModels ()Ljava/lang/Boolean;
+	public abstract fun getFlattenModelsExplicitly ()Ljava/lang/String;
 	public abstract fun getGenerateApolloMetadata ()Ljava/lang/Boolean;
 	public abstract fun getGenerateAsInternal ()Ljava/lang/Boolean;
 	public abstract fun getGenerateDataBuilders ()Ljava/lang/Boolean;

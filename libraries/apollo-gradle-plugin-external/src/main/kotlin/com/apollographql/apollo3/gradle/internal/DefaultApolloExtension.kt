@@ -94,6 +94,7 @@ abstract class DefaultApolloExtension(
         jsExport = service.jsExport.orNull,
         addTypename = service.addTypename.orNull,
         flattenModels = service.flattenModels.orNull,
+        flattenModelsExplicitly = service.flattenModelsExplicitly.orNull,
         fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge.orNull,
         generateApolloMetadata = service.generateApolloMetadata.orNull,
 
@@ -603,6 +604,7 @@ abstract class DefaultApolloExtension(
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)
       task.flattenModels.set(service.flattenModels())
+      task.flattenModelsExplicitly.set(service.flattenModelsExplicitly())
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
@@ -781,6 +783,7 @@ abstract class DefaultApolloExtension(
       task.codegenModels.set(project.provider { service.codegenModels() })
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(project.provider { service.flattenModels() })
+      task.flattenModelsExplicitly.set(project.provider { service.flattenModelsExplicitly() })
       task.generateDataBuilders.set(service.generateDataBuilders)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)

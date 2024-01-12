@@ -187,6 +187,7 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field defaultFailOnWarnings Z
 	public static final field defaultFieldsOnDisjointTypesMustMerge Z
 	public static final field defaultFlattenModels Z
+	public static final field defaultFlattenModelsExplicitly Ljava/lang/String;
 	public static final field defaultGenerateAsInternal Z
 	public static final field defaultGenerateDataBuilders Z
 	public static final field defaultGenerateFilterNotNull Z
@@ -395,6 +396,29 @@ public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt
 public final class com/apollographql/apollo3/compiler/codegen/java/adapter/AdapterCommonKt {
 	public static final fun singletonAdapterInitializer (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;Z)Lcom/squareup/javapoet/CodeBlock;
 	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedNode$Companion {
+	public final fun buildTree (Ljava/util/List;)Lcom/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedNode;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClasses$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClasses$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClasses;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClasses;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClasses$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/experimental/ExplicitlyRemovedSubClassesKt {
+	public static final fun buildFileFromUserDir (Ljava/lang/String;)Ljava/io/File;
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrCatchTo : java/lang/Enum {

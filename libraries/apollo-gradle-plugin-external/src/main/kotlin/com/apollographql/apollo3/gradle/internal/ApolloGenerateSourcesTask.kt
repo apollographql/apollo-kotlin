@@ -70,6 +70,9 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
   abstract val flattenModels: Property<Boolean>
 
   @get:Input
+  abstract val flattenModelsExplicitly: Property<String>
+
+  @get:Input
   @get:Optional
   abstract val generateDataBuilders: Property<Boolean>
 
@@ -106,6 +109,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBase() {
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
         decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
         flattenModels = flattenModels.get(),
+        flattenModelsExplicitly = flattenModelsExplicitly.get(),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
         logger = logger(),

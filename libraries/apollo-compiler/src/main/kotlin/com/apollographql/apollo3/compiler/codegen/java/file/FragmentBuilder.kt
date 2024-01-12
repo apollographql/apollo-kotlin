@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescripti
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
@@ -19,9 +20,10 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class FragmentBuilder(
-    private val context: JavaContext,
-    private val fragment: IrFragmentDefinition,
-    flatten: Boolean,
+  private val context: JavaContext,
+  private val fragment: IrFragmentDefinition,
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
@@ -30,6 +32,7 @@ internal class FragmentBuilder(
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
     fragment.dataModelGroup.maybeFlatten(
         flatten = flatten,
+        node = flattenModelsExplicitly,
         excludeNames = setOf(simpleName)
     ).flatMap { it.models }.map {
       ModelBuilder(

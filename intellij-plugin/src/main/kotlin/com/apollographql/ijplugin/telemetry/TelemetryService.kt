@@ -246,6 +246,7 @@ private fun ApolloGradleToolingModel.toTelemetryProperties(): Set<TelemetryPrope
       it.jsExport?.let { add(ApolloJsExport(it)) }
       it.addTypename?.let { add(ApolloAddTypename(it)) }
       it.flattenModels?.let { add(ApolloFlattenModels(it)) }
+      it.flattenModelsExplicitly?.let { add(TelemetryProperty.ApolloFlattenModelsExplicitly(it)) }
       it.fieldsOnDisjointTypesMustMerge?.let { add(ApolloFieldsOnDisjointTypesMustMerge(it)) }
       it.generateApolloMetadata?.let { add(ApolloGenerateApolloMetadata(it)) }
       add(ApolloUsedOptions(it.usedOptions.toList()))

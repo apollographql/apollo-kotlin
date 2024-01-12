@@ -1,0 +1,55 @@
+# Query for a name longer than 256 characters
+query MyQueryIsNamedReallyLongOnPurposeBecauseIWantItToBeTooLong(
+    $options: PageQueryOptions
+){
+    postspagearealmostlongenoughtobecomicals(options: $options) {
+        ...UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+}
+
+fragment UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PostIsTheMainTypeButWeNeedToMakeTheNameMuchLarger {
+    __typename
+    id
+    title
+    thisisauserbutwecallitsomethingmuchlarger {
+        __typename
+        id
+        name
+        whereintheworldiscarmensandiegoaddress {
+            __typename
+            city
+            geoisnotagembutageographiclocationinthiscase {
+                __typename
+                lat
+                lng
+            }
+        }
+    }
+}
+
+
+fragment UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PageLimitPairPaginationLinksBecauseIWantItToBeTooLongAsWell {
+    __typename
+    page
+    limit
+}
+
+fragment UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PaginationLinksBecauseIWantItToBeTooLong {
+    __typename
+    pagelimitpairpaginationlinksbecauseiwantittobetoolongaswelllast {
+        ...UnnecessaryFragmentForPageLimitPairWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+}
+
+fragment UnnecessaryFragmentForPostsPageWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong on PostsPageAreAlmostLongEnoughToBeComical {
+    __typename
+    postisthemaintypebutweneedtomakethenamemuchlargerdata {
+        ...UnnecessaryFragmentForPostPageDataWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+    meta {
+        totalCount
+    }
+    paginationlinksbecauseiwantittobetoolonglinks {
+        ...UnnecessaryFragmentForPaginationLinksWithAnExtraBitOfCharactersBecauseIWantItToBeTooLong
+    }
+}

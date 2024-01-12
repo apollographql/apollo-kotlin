@@ -53,6 +53,9 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
   abstract val flattenModels: Property<Boolean>
 
   @get:Input
+  abstract val flattenModelsExplicitly: Property<String>
+
+  @get:Input
   @get:Optional
   abstract val warnOnDeprecatedUsages: Property<Boolean>
 
@@ -82,6 +85,7 @@ abstract class ApolloGenerateIrTask: DefaultTask() {
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
         decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
         flattenModels = flattenModels.get(),
+        flattenModelsExplicitly = flattenModelsExplicitly.get(),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
         logger = logger(),

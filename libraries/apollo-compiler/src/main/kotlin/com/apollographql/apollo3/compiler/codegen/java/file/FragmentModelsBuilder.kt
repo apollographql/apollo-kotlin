@@ -5,16 +5,19 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedNode
+import com.apollographql.apollo3.compiler.codegen.kotlin.experimental.ExplicitlyRemovedSubClasses
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 
 internal class FragmentModelsBuilder(
-    val context: JavaContext,
-    val fragment: IrFragmentDefinition,
-    modelGroup: IrModelGroup,
-    private val addSuperInterface: Boolean,
-    flatten: Boolean,
+  val context: JavaContext,
+  val fragment: IrFragmentDefinition,
+  modelGroup: IrModelGroup,
+  private val addSuperInterface: Boolean,
+  flatten: Boolean,
+  flattenModelsExplicitly: ExplicitlyRemovedNode?,
 ) : JavaClassBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -22,7 +25,7 @@ internal class FragmentModelsBuilder(
   /**
    * Fragments need to be flattened at depth 1 to avoid having all classes polluting the fragments package name
    */
-  private val modelBuilders = modelGroup.maybeFlatten(flatten, 1).flatMap { it.models }
+  private val modelBuilders = modelGroup.maybeFlatten(flatten, flattenModelsExplicitly, 1).flatMap { it.models }
       .map {
         ModelBuilder(
             context = context,

@@ -153,6 +153,7 @@ class CodegenTest {
 
             when {
               file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
+              file.name == "flatten_explicitly" -> listOf(Parameters(file, MODELS_RESPONSE_BASED, true))
               hasFragments -> {
                 @Suppress("DEPRECATION")
                 val list = listOf(
@@ -177,7 +178,7 @@ class CodegenTest {
             buildList {
               addAll(it)
               // add Java if supported
-              if (it.first().folder.name != "big_query") {
+              if (it.first().folder.name != "big_query" && it.first().folder.name != "flatten_explicitly") {
                 add(it.first().copy(generateKotlinModels = false, codegenModels = MODELS_OPERATION_BASED))
               }
             }
@@ -312,6 +313,11 @@ class CodegenTest {
         targetLanguage == JAVA -> true
         else -> false
       }
+      val flattenModelsExplicitly = when {
+        folder.name in listOf("flatten_explicitly",) -> parseFileToString("input.json", folder)
+        targetLanguage == JAVA -> ""
+        else -> ""
+      }
       val scalarMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
@@ -391,6 +397,7 @@ class CodegenTest {
           executableFiles = graphqlFiles,
           outputDir = outputDir,
           flattenModels = flattenModels,
+          flattenModelsExplicitly = flattenModelsExplicitly,
           codegenModels = codegenModels,
           decapitalizeFields = decapitalizeFields,
           operationOutputGenerator = operationOutputGenerator,
@@ -416,6 +423,9 @@ class CodegenTest {
       )
       return outputDir
     }
+
+    private fun parseFileToString(testJsonFileName: String, folder: File): String =
+        File(folder, testJsonFileName).path
 
     private fun GQLNode.hasFragments(): Boolean {
       if (this is GQLInlineFragment || this is GQLFragmentSpread) {

@@ -161,13 +161,14 @@ internal class JavaCodeGen(
                   (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
                   fragment.interfaceModelGroup == null,
                   flatten,
+                  null
               )
           )
 
           builders.add(FragmentSelectionsBuilder(context, fragment))
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
-            builders.add(FragmentDataAdapterBuilder(context, fragment, flatten))
+            builders.add(FragmentDataAdapterBuilder(context, fragment, flatten, null))
           }
 
           if (generateFragmentImplementations) {
@@ -176,6 +177,7 @@ internal class JavaCodeGen(
                     context,
                     fragment,
                     flatten,
+                    null,
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -191,7 +193,7 @@ internal class JavaCodeGen(
           }
 
           builders.add(OperationSelectionsBuilder(context, operation))
-          builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
+          builders.add(OperationResponseAdapterBuilder(context, operation, flatten, null))
 
           builders.add(
               OperationBuilder(
@@ -200,6 +202,7 @@ internal class JavaCodeGen(
                   generateQueryDocument = generateQueryDocument,
                   operation = operation,
                   flatten = flatten,
+                  flattenModelsExplicitly = null,
                   generateDataBuilders = generateDataBuilders
               )
           )
