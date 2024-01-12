@@ -44,7 +44,7 @@ internal class JavaResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
-    private val hooks: ApolloCompilerJavaHooks,
+    private val hooks: List<ApolloCompilerJavaHooks>,
 ) {
 
   private val optionalClassName: ClassName = when (nullableFieldStyle) {
@@ -86,8 +86,9 @@ internal class JavaResolver(
     else -> null
   }
 
-
-  fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
+  fun resolve(key: ResolverKey): ClassName? = hooks.fold(classNames[key] ?: next?.resolve(key)) { acc, hooks ->
+    hooks.overrideResolvedType(key, acc)
+  }
 
   private var classNames = entries.associateBy(
       keySelector = { it.key },

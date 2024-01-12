@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.hooks
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks.FileInfo
 import com.squareup.javapoet.ClassName
@@ -35,14 +34,6 @@ interface ApolloCompilerJavaHooks {
    * To keep the files as-is, return [files].
    */
   fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo>
-
-  /**
-   * The default implementation of [ApolloCompilerJavaHooks] that overrides nothing.
-   */
-  @ApolloInternal
-  object Identity : DefaultApolloCompilerJavaHooks() {
-    override val version: String = "ApolloCompilerJavaHooks.Identity.0"
-  }
 
   @ApolloExperimental
   data class FileInfo(
