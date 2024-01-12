@@ -87,6 +87,13 @@ fun Project.configureJavaAndKotlinCompilers() {
     languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
   }
 
+  /**
+   * We're using a toolchain to ensure build cache can be shared. Many tasks, including compileJava use the
+   * java version as input and using different JDKs will trash the cache.
+   * Note: It's unclear how the java version actually changes the behaviour of a task. We might be able to
+   * remove this in the future if compileJava and others remove it from their inputs.
+   * See https://issuetracker.google.com/issues/283097109
+   */
   @Suppress("UnstableApiUsage")
   project.extensions.getByType(JavaPluginExtension::class.java).apply {
     // Keep in sync with build-logic/build.gradle.kts
@@ -96,9 +103,10 @@ fun Project.configureJavaAndKotlinCompilers() {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
   }
-
   androidExtensionOrNull?.run {
     compileOptions {
+      // Android somewhat does not honor `options.release.set(8)` above. Make sure to target
+      // Java 8 bytecode.
       targetCompatibility = JavaVersion.VERSION_1_8
     }
   }
