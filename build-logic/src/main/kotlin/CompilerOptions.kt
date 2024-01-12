@@ -1,3 +1,5 @@
+import com.android.build.gradle.BaseExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
@@ -70,6 +72,11 @@ val Project.kotlinExtensionOrNull: KotlinProjectExtension?
     return (extensions.findByName("kotlin") as? KotlinProjectExtension)
   }
 
+val Project.androidExtensionOrNull: BaseExtension?
+  get() {
+    return (extensions.findByName("android") as? BaseExtension)
+  }
+
 fun Project.configureJavaAndKotlinCompilers() {
   kotlinExtensionOrNull?.forEachCompilerOptions {
     configure()
@@ -88,6 +95,12 @@ fun Project.configureJavaAndKotlinCompilers() {
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
+  }
+
+  androidExtensionOrNull?.run {
+    compileOptions {
+      targetCompatibility = JavaVersion.VERSION_1_8
+    }
   }
 
   /**
