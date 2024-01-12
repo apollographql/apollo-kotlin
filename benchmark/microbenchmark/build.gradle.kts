@@ -57,6 +57,7 @@ dependencies {
       attributes {
         attribute(relocated, true)
       }
+      isTransitive = false
     }
   }
   implementation(libs.moshi)
