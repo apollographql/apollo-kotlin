@@ -4,8 +4,6 @@ import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
-import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
@@ -787,10 +785,10 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
-    task.compilerKotlinHooks = service.compilerKotlinHooks.orNull?.let { ApolloCompilerKotlinHooksChain(it) }
+    task.compilerKotlinHooks = service.compilerKotlinHooks.orNull
     service.compilerKotlinHooks.disallowChanges()
 
-    task.compilerJavaHooks = service.compilerJavaHooks.orNull?.let { ApolloCompilerJavaHooksChain(it) }
+    task.compilerJavaHooks = service.compilerJavaHooks.orNull
     service.compilerJavaHooks.disallowChanges()
 
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))

@@ -43,9 +43,11 @@ internal class KotlinResolver(
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
-    private val hooks: ApolloCompilerKotlinHooks,
+    private val hooks: List<ApolloCompilerKotlinHooks>,
 ) {
-  fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
+  fun resolve(key: ResolverKey): ClassName? = hooks.fold(classNames[key] ?: next?.resolve(key)) { acc, hooks ->
+    hooks.overrideResolvedType(key, acc)
+  }
 
   private var classNames = entries.associateBy(
       keySelector = { it.key },

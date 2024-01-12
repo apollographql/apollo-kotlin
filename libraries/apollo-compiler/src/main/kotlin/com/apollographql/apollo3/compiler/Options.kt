@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -398,8 +399,8 @@ internal const val defaultJsExport = false
 internal const val defaultGenerateInputBuilders = false
 internal val defaultNullableFieldStyle = JavaNullable.NONE
 internal const val defaultDecapitalizeFields = false
-internal val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity
-internal val defaultCompilerJavaHooks = ApolloCompilerJavaHooks.Identity
+internal val defaultCompilerKotlinHooks = emptyList<ApolloCompilerKotlinHooks>()
+internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
 
 internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
@@ -445,4 +446,17 @@ internal fun flattenModels(codegenModels: String): Boolean {
     MODELS_RESPONSE_BASED -> false
     else -> true
   }
+}
+
+internal fun compilerKotlinHooks(compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?, generateAsInternal: Boolean): List<ApolloCompilerKotlinHooks> {
+  return buildList {
+    addAll(compilerKotlinHooks.orEmpty())
+    if (generateAsInternal) {
+      add(AddInternalCompilerHooks(".*"))
+    }
+  }
+}
+
+internal fun compilerJavaHooks(compilerKotlinHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
+  return compilerKotlinHooks.orEmpty()
 }

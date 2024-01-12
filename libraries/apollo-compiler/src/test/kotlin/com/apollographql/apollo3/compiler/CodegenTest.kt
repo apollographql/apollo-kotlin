@@ -11,8 +11,6 @@ import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_9
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.AfterClass
@@ -245,10 +243,7 @@ class CodegenTest {
         "mutation_create_review_semantic_naming" -> true
         else -> false
       }
-      val generateAsInternal = when (folder.name) {
-        "mutation_create_review", "simple_fragment" -> true
-        else -> false
-      }
+
       val generateDataBuilders = when (folder.name) {
         "mutation_create_review", "simple_fragment", "data_builders" -> true
         else -> false
@@ -321,9 +316,6 @@ class CodegenTest {
         else -> false
       }
 
-
-
-      val compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
       val javaCodegenOptions = if (targetLanguage == JAVA) {
         javaCodegenOptions(folder)
@@ -375,7 +367,7 @@ class CodegenTest {
           outputDir = outputDir,
           operationOutputGenerator = operationOutputGenerator,
           packageNameGenerator = packageNameGenerator,
-          compilerKotlinHooks = if (targetLanguage != JAVA) compilerKotlinHooks else null,
+          compilerKotlinHooks = null
       )
       return outputDir
     }
@@ -448,11 +440,17 @@ private fun kotlinCodegenOptions(folder: File): KotlinCodegenOptions {
     else -> "none"
   }
 
+  val generateAsInternal = when (folder.name) {
+    "mutation_create_review", "simple_fragment" -> true
+    else -> false
+  }
+
   return KotlinCodegenOptions(
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       addJvmOverloads = addJvmOverloads,
       requiresOptInAnnotation = requiresOptInAnnotation,
       generateFilterNotNull = true,
       generateInputBuilders = generateInputBuilders,
+      generateAsInternal = generateAsInternal
   )
 }

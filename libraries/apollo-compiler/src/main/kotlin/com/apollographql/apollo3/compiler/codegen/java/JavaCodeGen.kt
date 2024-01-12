@@ -42,6 +42,7 @@ import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionUnknownMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UtilAssertionsBuilder
+import com.apollographql.apollo3.compiler.compilerJavaHooks
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
@@ -75,7 +76,7 @@ internal object JavaCodeGen {
       commonCodegenOptions: CommonCodegenOptions,
       javaCodegenOptions: JavaCodegenOptions,
       packageNameGenerator: PackageNameGenerator,
-      compilerJavaHooks: ApolloCompilerJavaHooks,
+      compilerJavaHooks: List<ApolloCompilerJavaHooks>,
       outputDir: File,
       codegenMetadataFile: File?,
   ) {
@@ -111,6 +112,8 @@ internal object JavaCodeGen {
 
     val scalarMapping = codegenSchema.scalarMapping
     val schemaPackageName = codegenSchema.packageName
+    @Suppress("NAME_SHADOWING")
+    val compilerJavaHooks = compilerJavaHooks(compilerJavaHooks)
 
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
       JavaResolver(
@@ -270,7 +273,11 @@ internal object JavaCodeGen {
               .build()
           ApolloCompilerJavaHooks.FileInfo(javaFile = javaFile)
         }
-        .let { compilerJavaHooks.postProcessFiles(it) }
+        .let {
+          compilerJavaHooks.fold(it as Collection<ApolloCompilerJavaHooks.FileInfo>) { acc, hooks ->
+            hooks.postProcessFiles(acc)
+          }
+        }
 
     // Write the files to disk
     fileInfos.forEach {

@@ -38,6 +38,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
+import com.apollographql.apollo3.compiler.compilerKotlinHooks
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
@@ -62,10 +63,6 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.apollographql.apollo3.compiler.writeTo
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 internal object KotlinCodeGen {
@@ -120,8 +117,7 @@ internal object KotlinCodeGen {
 
   private fun buildFileSpecs(
       builders: List<CgFileBuilder>,
-      generateAsInternal: Boolean,
-      hooks: ApolloCompilerKotlinHooks,
+      hooks: List<ApolloCompilerKotlinHooks>,
   ): List<FileSpec> {
     /**
      * 1st pass: call prepare on all builders
@@ -147,13 +143,13 @@ internal object KotlinCodeGen {
               """.trimIndent()
           )
 
-          cgFile.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
+          cgFile.typeSpecs.forEach { typeSpec ->
             builder.addType(typeSpec)
           }
-          cgFile.funSpecs.map { funSpec -> funSpec.internal(generateAsInternal) }.forEach { funSpec ->
+          cgFile.funSpecs.forEach { funSpec ->
             builder.addFunction(funSpec)
           }
-          cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
+          cgFile.propertySpecs.forEach { propertySpec ->
             builder.addProperty(propertySpec)
           }
           cgFile.imports.forEach {
@@ -161,7 +157,11 @@ internal object KotlinCodeGen {
           }
           ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build())
         }
-        .let { hooks.postProcessFiles(it) }
+        .let {
+          hooks.fold(it as Collection<ApolloCompilerKotlinHooks.FileInfo>) { acc, hooks ->
+            hooks.postProcessFiles(acc)
+          }
+        }
 
     // Write the files to disk
     return fileInfos.map { it.fileSpec }
@@ -176,7 +176,7 @@ internal object KotlinCodeGen {
       commonCodegenOptions: CommonCodegenOptions,
       kotlinCodegenOptions: KotlinCodegenOptions,
       packageNameGenerator: PackageNameGenerator,
-      compilerKotlinHooks: ApolloCompilerKotlinHooks,
+      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
       outputDir: File,
       codegenMetadataFile: File?,
   ) {
@@ -208,6 +208,8 @@ internal object KotlinCodeGen {
     val targetLanguageVersion = codegenSchema.targetLanguage
     val scalarMapping = codegenSchema.scalarMapping
     val schemaPackageName = codegenSchema.packageName
+    @Suppress("NAME_SHADOWING")
+    val compilerKotlinHooks = compilerKotlinHooks(compilerKotlinHooks, generateAsInternal)
 
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, compilerKotlinHooks)
@@ -309,7 +311,8 @@ internal object KotlinCodeGen {
           )
         }
 
-    buildFileSpecs(builders, generateAsInternal, compilerKotlinHooks).forEach {
+
+    buildFileSpecs(builders, compilerKotlinHooks).forEach {
       it.writeTo(outputDir)
     }
 
@@ -323,30 +326,6 @@ internal object KotlinCodeGen {
       CodegenMetadata(
           resolverInfo
       ).writeTo(codegenMetadataFile)
-    }
-  }
-
-  private fun TypeSpec.internal(generateAsInternal: Boolean): TypeSpec {
-    return if (generateAsInternal) {
-      this.toBuilder().addModifiers(KModifier.INTERNAL).build()
-    } else {
-      this
-    }
-  }
-
-  private fun FunSpec.internal(generateAsInternal: Boolean): FunSpec {
-    return if (generateAsInternal) {
-      this.toBuilder().addModifiers(KModifier.INTERNAL).build()
-    } else {
-      this
-    }
-  }
-
-  private fun PropertySpec.internal(generateAsInternal: Boolean): PropertySpec {
-    return if (generateAsInternal) {
-      this.toBuilder().addModifiers(KModifier.INTERNAL).build()
-    } else {
-      this
     }
   }
 
@@ -371,7 +350,7 @@ internal object KotlinCodeGen {
             next = null,
             scalarMapping = codegenSchema.scalarMapping,
             requiresOptInAnnotation = null,
-            hooks = ApolloCompilerKotlinHooks.Identity
+            hooks = emptyList()
         ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
@@ -398,7 +377,7 @@ internal object KotlinCodeGen {
           builders.add(InputObjectAdapterBuilder(context, irInputObject))
         }
 
-    val fileSpecs = buildFileSpecs(builders, true, ApolloCompilerKotlinHooks.Identity)
+    val fileSpecs = buildFileSpecs(builders, compilerKotlinHooks(null, true))
     return CodegenMetadata(ResolverInfo(
         magic = "KotlinCodegen",
         version = APOLLO_VERSION,
@@ -426,7 +405,7 @@ internal object KotlinCodeGen {
         next = null,
         scalarMapping = codegenSchema.scalarMapping,
         requiresOptInAnnotation = null,
-        hooks = ApolloCompilerKotlinHooks.Identity
+        hooks = emptyList()
     )
     val context = KotlinContext(
         generateMethods = emptyList(),
@@ -437,7 +416,7 @@ internal object KotlinCodeGen {
             next = upstreamResolver,
             scalarMapping = codegenSchema.scalarMapping,
             requiresOptInAnnotation = null,
-            hooks = ApolloCompilerKotlinHooks.Identity
+            hooks = emptyList()
         ),
         targetLanguageVersion = TargetLanguage.KOTLIN_1_9,
     )
@@ -468,7 +447,7 @@ internal object KotlinCodeGen {
         )
     )
 
-    return buildFileSpecs(builders, true, ApolloCompilerKotlinHooks.Identity)
+    return buildFileSpecs(builders, compilerKotlinHooks(null, true))
   }
 }
 
