@@ -52,16 +52,16 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   fun getOperationOutputGeneratorVersion() = operationOutputGenerator?.version ?: ""
 
   @get:Internal
-  var compilerKotlinHooks: ApolloCompilerKotlinHooks? = null
+  var compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null
 
   @Input
-  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks?.version ?: ""
+  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
 
   @get:Internal
-  var compilerJavaHooks: ApolloCompilerJavaHooks? = null
+  var compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null
 
   @Input
-  fun getCompilerJavaHooksVersion() = compilerJavaHooks?.version ?: ""
+  fun getCompilerJavaHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
 
   @get:OutputFile
   @get:Optional
