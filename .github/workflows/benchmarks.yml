@@ -29,7 +29,7 @@ jobs:
           ./gradlew --stop
       - run: |
           # Build the libs
-          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkatooGenerateModuleHtml
+          ./gradlew publishAllPublicationsToPluginTestRepository
       - run: |
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest

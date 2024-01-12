@@ -1,4 +1,3 @@
-
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
@@ -64,19 +63,6 @@ fun Project.configureDokkaCommon(): DokkatooExtension {
   }
 
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
-    /**
-     * Speed up development. When running the Gradle integration tests, we don't need KDoc to be generated
-     */
-    onlyIf {
-      if (gradle.taskGraph.allTasks.any {
-            it.name == "publishAllPublicationsToPluginTestRepository" ||
-                it.name == "publishToMavenLocal"
-          }) {
-        return@onlyIf false
-      }
-      true
-    }
-
     workerMaxHeapSize.set("8g")
   }
 
@@ -114,7 +100,7 @@ fun Project.configureDokkaAggregate() {
   )
 
   val olderVersions = listOf<String>()
-  val kdocVersionTasks = olderVersions.map {version ->
+  val kdocVersionTasks = olderVersions.map { version ->
     val versionString = version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
       isCanBeResolved = true
@@ -287,7 +273,16 @@ private fun Project.configurePublishingInternal() {
           }
 
           create("default", MavenPublication::class.java) {
-            artifact(kdocWithoutOlder)
+            /**
+             * Speed up development. When running those manually, skip generating the kdoc.
+             * If you really need kdoc, use ./gradlew :apollo-kdoc:publishAllPublicationsToPluginTestRepository
+             */
+            if (gradle.startParameter.taskNames.none {
+                  it == "publishAllPublicationsToPluginTestRepository" ||
+                      it == "publishToMavenLocal"
+                }) {
+              artifact(kdocWithoutOlder)
+            }
 
             artifactId = project.name
           }
