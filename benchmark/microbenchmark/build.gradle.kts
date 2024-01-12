@@ -68,10 +68,10 @@ dependencies {
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
+  compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
+    minSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
