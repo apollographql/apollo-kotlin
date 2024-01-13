@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun Project.apolloLibrary(
     javaModuleName: String?,
+    jvmTarget: Int? = null,
     withJs: Boolean = true,
     withLinux: Boolean = true,
     withApple: Boolean = true,
@@ -15,8 +16,8 @@ fun Project.apolloLibrary(
   version = property("VERSION_NAME")!!
 
   commonSetup()
+  configureJavaAndKotlinCompilers(jvmTarget)
 
-  configureJavaAndKotlinCompilers()
   addOptIn(
       "com.apollographql.apollo3.annotations.ApolloExperimental",
       "com.apollographql.apollo3.annotations.ApolloInternal"
@@ -63,7 +64,7 @@ fun Project.apolloTest(
     browserTest: Boolean = false,
 ) {
   commonSetup()
-  configureJavaAndKotlinCompilers()
+  configureJavaAndKotlinCompilers(null)
   addOptIn(
       "com.apollographql.apollo3.annotations.ApolloExperimental",
       "com.apollographql.apollo3.annotations.ApolloInternal",

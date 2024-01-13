@@ -3,9 +3,9 @@
 # Can be as high as IJ supports
 android-plugin = "8.2.1"
 # The version we compile against
-android-plugin-min = "3.4.2"
-# The latest version that has been tested to work
-android-plugin-max = "8.2.0-alpha03"
+android-plugin-min = "8.0.0"
+# The version used by the 'android-plugin-max' test
+android-plugin-max = "8.2.1"
 android-sdkversion-compile = "33"
 android-sdkversion-compilebenchmark = "34"
 android-sdkversion-min = "16"
