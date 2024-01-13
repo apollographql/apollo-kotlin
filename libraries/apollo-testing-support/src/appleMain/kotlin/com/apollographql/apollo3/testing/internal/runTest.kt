@@ -12,6 +12,9 @@ import platform.CoreFoundation.CFRunLoopStop
 import kotlin.coroutines.CoroutineContext
 
 @ApolloInternal
+actual typealias ApolloTestResult = Unit
+
+@ApolloInternal
 @OptIn(DelicateCoroutinesApi::class)
 actual fun runTest(
     skipDelays: Boolean,
