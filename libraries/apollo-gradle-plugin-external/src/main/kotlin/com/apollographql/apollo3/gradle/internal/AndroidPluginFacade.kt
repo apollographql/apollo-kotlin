@@ -2,7 +2,6 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
@@ -34,12 +33,6 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
 
     is AppExtension -> {
       extension.applicationVariants.all { variant ->
-        container.add(variant)
-      }
-    }
-
-    is FeatureExtension -> {
-      extension.featureVariants.all { variant ->
         container.add(variant)
       }
     }

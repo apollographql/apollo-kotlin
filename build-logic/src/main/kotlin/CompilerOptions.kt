@@ -1,3 +1,4 @@
+
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -17,8 +18,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
-fun KotlinCommonCompilerOptions.configure() {
+fun KotlinCommonCompilerOptions.configure(baseJvmTarget: Int, isAndroid: Boolean) {
   freeCompilerArgs.add("-Xexpect-actual-classes")
 
   /**
@@ -35,7 +37,16 @@ fun KotlinCommonCompilerOptions.configure() {
   when (this) {
     is KotlinJvmCompilerOptions -> {
       freeCompilerArgs.add("-Xjvm-default=all")
-      jvmTarget.set(JvmTarget.JVM_1_8)
+      val target = when {
+        isAndroid -> {
+          // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
+          // D8 can dex Java17 bytecode
+          JvmTarget.JVM_17
+        }
+        baseJvmTarget == 8 -> JvmTarget.JVM_1_8
+        else -> JvmTarget.fromTarget(baseJvmTarget.toString())
+      }
+      jvmTarget.set(target)
     }
 
     is KotlinNativeCompilerOptions -> {
@@ -49,19 +60,21 @@ fun KotlinCommonCompilerOptions.configure() {
   }
 }
 
-private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCompilerOptions.() -> Unit) {
+private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCompilerOptions.(isAndroid: Boolean) -> Unit) {
   when (this) {
-    is KotlinJvmProjectExtension -> compilerOptions.block()
-    is KotlinAndroidProjectExtension -> compilerOptions.block()
+    is KotlinJvmProjectExtension -> compilerOptions.block(false)
+    is KotlinAndroidProjectExtension -> compilerOptions.block(true)
     is KotlinMultiplatformExtension -> {
       targets.all {
+        val isAndroid = platformType == KotlinPlatformType.androidJvm
         compilations.all {
           compilerOptions.configure {
-            block()
+            block(isAndroid)
           }
         }
       }
     }
+
     else -> error("Unknown kotlin extension $this")
   }
 }
@@ -77,9 +90,23 @@ val Project.androidExtensionOrNull: BaseExtension?
     return (extensions.findByName("android") as? BaseExtension)
   }
 
-fun Project.configureJavaAndKotlinCompilers() {
+fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
+  @Suppress("NAME_SHADOWING")
+  val jvmTarget = jvmTarget?: 8
+
   kotlinExtensionOrNull?.forEachCompilerOptions {
-    configure()
+    configure(jvmTarget, it)
+  }
+  project.tasks.withType(JavaCompile::class.java).configureEach {
+    // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute
+    options.release.set(jvmTarget)
+  }
+  androidExtensionOrNull?.run {
+    compileOptions {
+      // For Android, latest D8 version support Java 17
+      targetCompatibility = JavaVersion.VERSION_17
+      sourceCompatibility = JavaVersion.VERSION_17
+    }
   }
 
   (kotlinExtensionOrNull as? KotlinMultiplatformExtension)?.sourceSets?.configureEach {
@@ -98,17 +125,6 @@ fun Project.configureJavaAndKotlinCompilers() {
   project.extensions.getByType(JavaPluginExtension::class.java).apply {
     // Keep in sync with build-logic/build.gradle.kts
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-  }
-  project.tasks.withType(JavaCompile::class.java).configureEach {
-    // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-    options.release.set(8)
-  }
-  androidExtensionOrNull?.run {
-    compileOptions {
-      // Android somewhat does not honor `options.release.set(8)` above. Make sure to target
-      // Java 8 bytecode.
-      targetCompatibility = JavaVersion.VERSION_1_8
-    }
   }
 
   /**
