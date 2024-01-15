@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -38,8 +39,6 @@ class DefaultHttpRequestComposer(
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
-      add(HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()))
-      add(HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()))
       if (apolloRequest.operation is Subscription<*>) {
         add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
       } else {
@@ -77,17 +76,11 @@ class DefaultHttpRequestComposer(
   }
 
   companion object {
+    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
-
-    // Note: in addition to this being a generally useful header to send, Apollo
-    // Server's CSRF prevention feature (introduced in AS3.7 and intended to be
-    // the default in AS4) includes this in the set of headers that indicate
-    // that a GET request couldn't have been a non-preflighted simple request
-    // and thus is safe to execute. If this project is changed to not always
-    // send this header, its GET requests may be blocked by Apollo Server with
-    // CSRF prevention enabled. See
-    // https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
-    // for details.
+    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
 
     val HEADER_ACCEPT_NAME = "Accept"

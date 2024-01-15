@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.cache.http.CachingHttpInterceptor.Companion.OPERATION_NAME_HEADER
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
@@ -115,6 +116,7 @@ fun ApolloClient.Builder.httpCache(
               )
               .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
               .addHttpHeader(CachingHttpInterceptor.REQUEST_UUID_HEADER, request.requestUuid.toString())
+              .addHttpHeader(OPERATION_NAME_HEADER, request.operation.name())
               .build()
       )
           .run {
