@@ -72,7 +72,7 @@ configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
+    minSdk = libs.versions.android.sdkversion.benchmark.min.get().toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
