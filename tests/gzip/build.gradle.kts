@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
@@ -27,8 +25,4 @@ apollo {
   service("service") {
     packageName.set("gzip")
   }
-}
-
-tasks.named("compileKotlinJvm").configure {
-  notCompatibleWithConfigurationCache("https://youtrack.jetbrains.com/issue/KT-60311/")
 }
