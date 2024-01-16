@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
  */
 interface ApolloStore {
   /**
-   * Expose the keys of records that have changed.
+   * Exposes the keys of records that have changed.
    */
   val changedKeys: SharedFlow<Set<String>>
 
