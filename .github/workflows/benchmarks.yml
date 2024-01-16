@@ -1,8 +1,8 @@
 name: benchmarks
 
 on:
-  pull_request:
-     branches: [ '*' ]
+#  pull_request:
+#     branches: [ '*' ]
   schedule:
     - cron: '0 3 * * *'
 env:
