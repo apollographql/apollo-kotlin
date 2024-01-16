@@ -37,7 +37,7 @@ interface ApolloStore {
    *
    * @return the operation data
    */
-  suspend fun <D : Operation.Data> readOperation(
+  fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
@@ -55,7 +55,7 @@ interface ApolloStore {
    *
    * @return the fragment data
    */
-  suspend fun <D : Fragment.Data> readFragment(
+  fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -72,7 +72,7 @@ interface ApolloStore {
    * @param publish       whether to publish the changed keys to listeners
    * @return the changed keys
    */
-  suspend fun <D : Operation.Data> writeOperation(
+  fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -91,7 +91,7 @@ interface ApolloStore {
    * @param publish whether to publish the changed keys to listeners
    * @return the changed keys
    */
-  suspend fun <D : Fragment.Data> writeFragment(
+  fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -108,7 +108,7 @@ interface ApolloStore {
    * @param mutationId    mutation unique identifier
    * @return the changed keys
    */
-  suspend fun <D : Operation.Data> writeOptimisticUpdates(
+  fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -122,7 +122,7 @@ interface ApolloStore {
    * @param mutationId mutation unique identifier
    * @return the changed keys
    */
-  suspend fun rollbackOptimisticUpdates(
+  fun rollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean = true,
   ): Set<String>
@@ -143,7 +143,7 @@ interface ApolloStore {
    * @param cascade defines if remove operation is propagated to the referenced entities
    * @return `true` if the record was successfully removed, `false` otherwise
    */
-  suspend fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
+  fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
 
   /**
    * Remove a list of cache records
@@ -153,7 +153,7 @@ interface ApolloStore {
    * @param cacheKeys keys of records to be removed
    * @return the number of records that have been removed
    */
-  suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
+  fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
   fun <D : Operation.Data> normalize(
       operation: Operation<D>,
@@ -164,16 +164,16 @@ interface ApolloStore {
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
-  suspend fun publish(keys: Set<String>)
+  fun publish(keys: Set<String>)
 
   /**
    * Direct access to the cache.
    *
    * @param block a function that can access the cache. The function will be called from a background thread
    */
-  suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
+  fun <R> accessCache(block: (NormalizedCache) -> R): R
 
-  suspend fun dump(): Map<KClass<*>, Map<String, Record>>
+  fun dump(): Map<KClass<*>, Map<String, Record>>
 
   /**
    * releases resources associated with this store.

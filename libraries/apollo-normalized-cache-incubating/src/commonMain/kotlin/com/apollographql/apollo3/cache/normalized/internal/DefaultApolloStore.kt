@@ -53,12 +53,12 @@ internal class DefaultApolloStore(
 
   private val lock = Lock()
 
-  override suspend fun publish(keys: Set<String>) {
+  override fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
     }
 
-    changedKeysEvents.emit(keys)
+    changedKeysEvents.tryEmit(keys)
   }
 
   override fun clearAll(): Boolean {
@@ -68,7 +68,7 @@ internal class DefaultApolloStore(
     return true
   }
 
-  override suspend fun remove(
+  override fun remove(
       cacheKey: CacheKey,
       cascade: Boolean,
   ): Boolean {
@@ -77,7 +77,7 @@ internal class DefaultApolloStore(
     }
   }
 
-  override suspend fun remove(
+  override fun remove(
       cacheKeys: List<CacheKey>,
       cascade: Boolean,
   ): Int {
@@ -105,7 +105,7 @@ internal class DefaultApolloStore(
     )
   }
 
-  override suspend fun <D : Operation.Data> readOperation(
+  override fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
@@ -122,7 +122,7 @@ internal class DefaultApolloStore(
     }.toData(operation.adapter(), customScalarAdapters, variables)
   }
 
-  override suspend fun <D : Fragment.Data> readFragment(
+  override fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       customScalarAdapters: CustomScalarAdapters,
@@ -141,15 +141,14 @@ internal class DefaultApolloStore(
     }.toData(fragment.adapter(), customScalarAdapters, variables)
   }
 
-
-  override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
+  override fun <R> accessCache(block: (NormalizedCache) -> R): R {
     /**
      * We don't know how the cache is going to be used, assume write access
      */
     return lock.write { block(cache) }
   }
 
-  override suspend fun <D : Operation.Data> writeOperation(
+  override fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters,
@@ -165,7 +164,7 @@ internal class DefaultApolloStore(
     ).second
   }
 
-  override suspend fun <D : Fragment.Data> writeFragment(
+  override fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -192,7 +191,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  suspend fun <D : Operation.Data> writeOperationWithRecords(
+  private fun <D : Operation.Data> writeOperationWithRecords(
       operation: Operation<D>,
       operationData: D,
       cacheHeaders: CacheHeaders,
@@ -218,7 +217,7 @@ internal class DefaultApolloStore(
   }
 
 
-  override suspend fun <D : Operation.Data> writeOptimisticUpdates(
+  override fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -252,7 +251,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override suspend fun rollbackOptimisticUpdates(
+  override fun rollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
@@ -273,7 +272,7 @@ internal class DefaultApolloStore(
     }
   }
 
-  override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
+  override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return lock.read {
       cache.dump()
     }
