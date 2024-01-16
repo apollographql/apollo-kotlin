@@ -25,7 +25,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew -p tests ciBuild -i
-          ./gradlew :apollo-kdoc:dokkatooGeneratePublicationHtml
+          ./gradlew :apollo-kdoc:dokkatooGeneratePublicationHtml --no-build-cache
           ./gradlew ciPublishSnapshot
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
