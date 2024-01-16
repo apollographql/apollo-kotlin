@@ -2,8 +2,8 @@ package com.apollographql.apollo3.debugserver.internal.graphql
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.GraphQLAdapter
-import com.apollographql.apollo3.annotations.GraphQLObject
 import com.apollographql.apollo3.annotations.GraphQLName
+import com.apollographql.apollo3.annotations.GraphQLObject
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
@@ -20,7 +20,6 @@ import com.apollographql.apollo3.execution.ExecutableSchema
 import com.apollographql.apollo3.execution.GraphQLRequest
 import com.apollographql.apollo3.execution.GraphQLRequestError
 import com.apollographql.apollo3.execution.parsePostGraphQLRequest
-import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
@@ -86,7 +85,7 @@ internal class GraphQLApolloClient(
 
   fun normalizedCaches(): List<NormalizedCache> {
     val apolloStore = runCatching {  apolloClient.apolloStore }.getOrNull() ?: return emptyList()
-    return runBlocking { apolloStore.dump() }.map {
+    return apolloStore.dump().map {
       NormalizedCache(id, it.key, it.value)
     }
   }

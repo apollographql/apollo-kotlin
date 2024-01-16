@@ -25,10 +25,13 @@ import kotlin.reflect.KClass
 
 /**
  * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo3.cache.normalized.api.NormalizedCache].
+ *
+ * Note that most operations are synchronous and might block if the underlying cache is doing IO - calling them from the main thread
+ * should be avoided.
  */
 interface ApolloStore {
   /**
-   * [changedKeys] will emit changes as they are written
+   * Expose the keys of records that have changed.
    */
   val changedKeys: SharedFlow<Set<String>>
 
@@ -108,6 +111,7 @@ interface ApolloStore {
 
   /**
    * Write operation data to the optimistic store.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
@@ -124,6 +128,7 @@ interface ApolloStore {
 
   /**
    * Rollback operation data optimistic updates.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
    *
    * @param mutationId mutation unique identifier
    * @return the changed keys
@@ -161,6 +166,9 @@ interface ApolloStore {
    */
   fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
+  /**
+   * Normalize [data] to a map of [Record] keyed by [Record.key].
+   */
   fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
@@ -174,15 +182,20 @@ interface ApolloStore {
 
   /**
    * Direct access to the cache.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
    *
-   * @param block a function that can access the cache. The function will be called from a background thread
+   * @param block a function that can access the cache.
    */
   fun <R> accessCache(block: (NormalizedCache) -> R): R
 
+  /**
+   * Dump the content of the store for debugging purposes.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
+   */
   fun dump(): Map<KClass<*>, Map<String, Record>>
 
   /**
-   * releases resources associated with this store.
+   * Release resources associated with this store.
    */
   fun dispose()
 }

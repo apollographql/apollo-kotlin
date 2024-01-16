@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 internal class ApolloCacheInterceptor(
     val store: ApolloStore,
 ) : ApolloInterceptor {
-  private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
+  private fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
       scope.launch {
@@ -56,7 +56,7 @@ internal class ApolloCacheInterceptor(
   /**
    * @param extraKeys extra keys to publish in case there is optimistic data
    */
-  private suspend fun <D : Operation.Data> maybeWriteToCache(
+  private fun <D : Operation.Data> maybeWriteToCache(
       request: ApolloRequest<D>,
       response: ApolloResponse<D>,
       customScalarAdapters: CustomScalarAdapters,
@@ -198,7 +198,7 @@ internal class ApolloCacheInterceptor(
     }
   }
 
-  private suspend fun <D : Query.Data> readFromCache(
+  private fun <D : Query.Data> readFromCache(
       request: ApolloRequest<D>,
       customScalarAdapters: CustomScalarAdapters,
   ): ApolloResponse<D> {
@@ -248,7 +248,7 @@ internal class ApolloCacheInterceptor(
   }
 
 
-  private suspend fun <D : Operation.Data> readFromNetwork(
+  private fun <D : Operation.Data> readFromNetwork(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       customScalarAdapters: CustomScalarAdapters,
