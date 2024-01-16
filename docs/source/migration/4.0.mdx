@@ -373,7 +373,7 @@ import com.example.type.__Schema
 import data.builders.schema.__Schema
 ```
 
-### KotlinLabs directive are now version 0.2
+### KotlinLabs directives are now version 0.2
 
 The embedded [kotlinlabs/0.2](https://specs.apollo.dev/kotlin_labs/v0.2/) directives are now version 0.2.
 
@@ -391,6 +391,15 @@ This is a backward compatible change.
 
 
 ## Cache
+
+### ApolloStore
+
+In Apollo Kotlin 3.x, most `ApolloStore` functions were marked as `suspend` even though they were not actually suspending and perform the work in the thread they are called from.
+In particular, they can be blocking when the underlying cache is doing IO, so calling them from the main thread can lead to ANRs.
+
+In Apollo Kotlin 4.0 this is still the case but the functions are no longer marked as `suspend` to avoid any confusion.
+
+### Configuration order
 
 The normalized cache must be configured before the auto persisted queries, configuring it after will now fail (see https://github.com/apollographql/apollo-kotlin/pull/4709).
 
