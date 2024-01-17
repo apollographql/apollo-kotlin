@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import okio.Buffer
+import okio.utf8Size
 
 /**
  * A serializer that serializes/deserializes a [Record] to a [ByteArray]
@@ -69,7 +70,7 @@ object BlobRecordSerializer {
   }
 
   private fun Buffer.writeString(value: String) {
-    writeInt(value.length)
+    writeInt(value.utf8Size().toInt())
     writeUtf8(value)
   }
   private fun Buffer.readString(): String {
