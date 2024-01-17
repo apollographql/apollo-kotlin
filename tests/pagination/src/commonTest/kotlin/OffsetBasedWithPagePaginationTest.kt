@@ -232,7 +232,7 @@ class OffsetBasedWithPagePaginationTest {
   }
 }
 
-internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
+internal fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
   val hasNextCache = atomic(false)
   apolloStore.accessCache { cache ->
     // First cache is always OptimisticCache
@@ -248,7 +248,7 @@ internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
     val record2 = cache2[key]!!
     assertEquals(record1.key, record2.key)
     assertEquals(record1.fields, record2.fields)
-    assertEquals(record1.date, record2.date)
+    assertEquals(record1.dates, record2.dates)
     assertEquals(record1.metadata, record2.metadata)
   }
 }

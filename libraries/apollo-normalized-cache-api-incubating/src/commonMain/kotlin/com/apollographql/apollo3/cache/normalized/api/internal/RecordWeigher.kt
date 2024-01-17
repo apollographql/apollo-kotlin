@@ -28,7 +28,7 @@ internal object RecordWeigher {
       size += key.utf8Size().toInt() + weighField(value)
     }
     size += weighField(record.metadata)
-    size += weighField(record.date)
+    size += weighField(record.dates)
     return size
   }
 

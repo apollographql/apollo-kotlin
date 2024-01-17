@@ -38,7 +38,7 @@ object BlobRecordSerializer {
     buffer.writeInt(keys.size)
     for (key in keys) {
       buffer.writeString(key)
-      buffer.writeAny(record.date?.get(key))
+      buffer.writeAny(record.dates?.get(key))
       buffer.writeAny(record.fields[key])
     }
 

@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.normalized.sql.internal.blob2.Blob2Queries
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.BlobRecordSerializer
+import com.apollographql.apollo3.cache.normalized.sql.internal.blob2.Blob2Queries
 
 internal class Blob2RecordDatabase(private val blobQueries: Blob2Queries): RecordDatabase {
   override fun select(key: String): Record? {
@@ -58,6 +58,6 @@ internal class Blob2RecordDatabase(private val blobQueries: Blob2Queries): Recor
     /**
      * The
      */
-    return date?.values?.filterNotNull()?.maxOrNull()
+    return dates?.values?.filterNotNull()?.maxOrNull()
   }
 }

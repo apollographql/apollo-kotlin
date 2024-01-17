@@ -12,7 +12,7 @@ object DefaultRecordMerger : RecordMerger {
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
     val changedKeys = mutableSetOf<String>()
     val mergedFields = existing.fields.toMutableMap()
-    val date = existing.date?.toMutableMap() ?: mutableMapOf()
+    val date = existing.dates?.toMutableMap() ?: mutableMapOf()
 
     for ((fieldKey, incomingFieldValue) in incoming.fields) {
       val hasExistingFieldValue = existing.fields.containsKey(fieldKey)
@@ -54,7 +54,7 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
     val changedKeys = mutableSetOf<String>()
     val mergedFields = existing.fields.toMutableMap()
     val mergedMetadata = existing.metadata.toMutableMap()
-    val date = existing.date?.toMutableMap() ?: mutableMapOf()
+    val date = existing.dates?.toMutableMap() ?: mutableMapOf()
 
     for ((fieldKey, incomingFieldValue) in incoming.fields) {
       val hasExistingFieldValue = existing.fields.containsKey(fieldKey)

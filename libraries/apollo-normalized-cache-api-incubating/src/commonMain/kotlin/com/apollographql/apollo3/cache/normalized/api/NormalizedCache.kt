@@ -121,7 +121,7 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
             append("\n")
             indent(level + 1)
             append("dates: ")
-            append(date.prettifyDump(level + 1))
+            append(dates.prettifyDump(level + 1))
             append("\n")
             indent(level)
             append("}")
