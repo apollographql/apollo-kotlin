@@ -61,16 +61,16 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
       val existingFieldValue = existing.fields[fieldKey]
       if (!hasExistingFieldValue) {
         mergedFields[fieldKey] = incomingFieldValue
-        mergedMetadata[fieldKey] = incoming.metadata[fieldKey]!!
+        mergedMetadata[fieldKey] = incoming.metadata[fieldKey].orEmpty()
         changedKeys.add("${existing.key}.$fieldKey")
       } else if (existingFieldValue != incomingFieldValue) {
         val existingFieldInfo = FieldInfo(
             value = existingFieldValue,
-            metadata = existing.metadata[fieldKey]!!,
+            metadata = existing.metadata[fieldKey].orEmpty(),
         )
         val incomingFieldInfo = FieldInfo(
             value = incomingFieldValue,
-            metadata = incoming.metadata[fieldKey]!!,
+            metadata = incoming.metadata[fieldKey].orEmpty(),
         )
 
         val mergeResult = fieldMerger.mergeFields(existing = existingFieldInfo, incoming = incomingFieldInfo)
