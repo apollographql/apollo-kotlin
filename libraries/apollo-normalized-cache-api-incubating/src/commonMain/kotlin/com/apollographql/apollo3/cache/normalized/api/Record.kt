@@ -52,8 +52,7 @@ class Record(
 
   val sizeInBytes: Int
     get() {
-      val datesSize = date?.size?.times(8) ?: 0
-      return calculateBytes(this) + datesSize
+      return calculateBytes(this)
     }
 
   /**
