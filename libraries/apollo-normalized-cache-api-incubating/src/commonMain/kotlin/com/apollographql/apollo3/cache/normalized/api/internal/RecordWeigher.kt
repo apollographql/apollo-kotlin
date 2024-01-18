@@ -2,7 +2,7 @@ package com.apollographql.apollo3.cache.normalized.api.internal
 
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
-import okio.internal.commonAsUtf8ToByteArray
+import okio.utf8Size
 import kotlin.jvm.JvmStatic
 
 internal object RecordWeigher {
@@ -23,17 +23,19 @@ internal object RecordWeigher {
 
   @JvmStatic
   fun calculateBytes(record: Record): Int {
-    var size = SIZE_OF_RECORD_OVERHEAD + record.key.commonAsUtf8ToByteArray().size
+    var size = SIZE_OF_RECORD_OVERHEAD + record.key.utf8Size().toInt()
     for ((key, value) in record.fields) {
-      size += key.commonAsUtf8ToByteArray().size + weighField(value)
+      size += key.utf8Size().toInt() + weighField(value)
     }
+    size += weighField(record.metadata)
+    size += weighField(record.dates)
     return size
   }
 
   private fun weighField(field: Any?): Int {
     return when (field) {
       null -> SIZE_OF_NULL
-      is String -> field.commonAsUtf8ToByteArray().size
+      is String -> field.utf8Size().toInt()
       is Boolean -> SIZE_OF_BOOLEAN
       is Int -> SIZE_OF_INT
       is Long -> SIZE_OF_LONG // Might happen with LongDataAdapter
@@ -43,7 +45,7 @@ internal object RecordWeigher {
       }
 
       is CacheKey -> {
-        SIZE_OF_CACHE_KEY_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
+        SIZE_OF_CACHE_KEY_OVERHEAD + field.key.utf8Size().toInt()
       }
       /**
        * Custom scalars with a json object representation are stored directly in the record
@@ -51,6 +53,7 @@ internal object RecordWeigher {
       is Map<*, *> -> {
         SIZE_OF_MAP_OVERHEAD + field.keys.sumOf { weighField(it) } + field.values.sumOf { weighField(it) }
       }
+
       else -> error("Unknown field type in Record: '$field'")
     }
   }

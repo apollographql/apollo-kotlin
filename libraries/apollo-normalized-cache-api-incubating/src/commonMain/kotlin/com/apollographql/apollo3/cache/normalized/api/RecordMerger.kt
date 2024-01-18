@@ -12,7 +12,7 @@ object DefaultRecordMerger : RecordMerger {
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
     val changedKeys = mutableSetOf<String>()
     val mergedFields = existing.fields.toMutableMap()
-    val date = existing.date?.toMutableMap() ?: mutableMapOf()
+    val date = existing.dates?.toMutableMap() ?: mutableMapOf()
 
     for ((fieldKey, incomingFieldValue) in incoming.fields) {
       val hasExistingFieldValue = existing.fields.containsKey(fieldKey)
@@ -54,23 +54,23 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
     val changedKeys = mutableSetOf<String>()
     val mergedFields = existing.fields.toMutableMap()
     val mergedMetadata = existing.metadata.toMutableMap()
-    val date = existing.date?.toMutableMap() ?: mutableMapOf()
+    val date = existing.dates?.toMutableMap() ?: mutableMapOf()
 
     for ((fieldKey, incomingFieldValue) in incoming.fields) {
       val hasExistingFieldValue = existing.fields.containsKey(fieldKey)
       val existingFieldValue = existing.fields[fieldKey]
       if (!hasExistingFieldValue) {
         mergedFields[fieldKey] = incomingFieldValue
-        mergedMetadata[fieldKey] = incoming.metadata[fieldKey]!!
+        mergedMetadata[fieldKey] = incoming.metadata[fieldKey].orEmpty()
         changedKeys.add("${existing.key}.$fieldKey")
       } else if (existingFieldValue != incomingFieldValue) {
         val existingFieldInfo = FieldInfo(
             value = existingFieldValue,
-            metadata = existing.metadata[fieldKey]!!,
+            metadata = existing.metadata[fieldKey].orEmpty(),
         )
         val incomingFieldInfo = FieldInfo(
             value = incomingFieldValue,
-            metadata = incoming.metadata[fieldKey]!!,
+            metadata = incoming.metadata[fieldKey].orEmpty(),
         )
 
         val mergeResult = fieldMerger.mergeFields(existing = existingFieldInfo, incoming = incomingFieldInfo)

@@ -119,7 +119,7 @@ internal class Normalizer(
   ): CacheKey {
     val fields = buildFields(obj, key, selections, parentType, embeddedFields)
     val fieldValues = fields.mapValues { it.value.fieldValue }
-    val metadata = fields.mapValues { it.value.metadata }
+    val metadata = fields.mapValues { it.value.metadata }.filterValues { it.isNotEmpty() }
     val record = Record(
         key = key,
         fields = fieldValues,

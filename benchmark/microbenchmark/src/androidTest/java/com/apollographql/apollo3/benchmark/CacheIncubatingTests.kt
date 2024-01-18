@@ -59,7 +59,7 @@ class CacheIncubatingTests {
     val cache = if (sql) {
       Utils.dbFile.delete()
       // Pass context explicitly here because androidx.startup fails due to relocation
-      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName).create()
+      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName, withDates = true).create()
     } else {
       MemoryCacheFactory().create()
     }

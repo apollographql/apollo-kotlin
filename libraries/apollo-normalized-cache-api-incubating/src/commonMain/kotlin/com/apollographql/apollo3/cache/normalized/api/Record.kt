@@ -28,7 +28,7 @@ class Record(
 ) : Map<String, Any?> by fields {
 
   @ApolloExperimental
-  var date: Map<String, Long?>? = null
+  var dates: Map<String, Long?>? = null
     private set
 
   /**
@@ -46,14 +46,13 @@ class Record(
       date: Map<String, Long?>,
       metadata: Map<String, Map<String, Any?>>,
   ) : this(key, fields, mutationId) {
-    this.date = date
+    this.dates = date
     this.metadata = metadata
   }
 
   val sizeInBytes: Int
     get() {
-      val datesSize = date?.size?.times(8) ?: 0
-      return calculateBytes(this) + datesSize
+      return calculateBytes(this)
     }
 
   /**
