@@ -27,13 +27,29 @@ kotlin {
 }
 
 apollo {
-  service("pagination") {
-    packageName.set("pagination")
-    sourceFolder.set("pagination")
-    generateDataBuilders.set(true)
-  }
   service("embed") {
     packageName.set("embed")
     sourceFolder.set("embed")
+  }
+
+  service("pagination.offsetBasedWithArray") {
+    packageName.set("pagination.offsetBasedWithArray")
+    sourceFolder.set("pagination/offsetBasedWithArray")
+    generateDataBuilders.set(true)
+  }
+  service("pagination.offsetBasedWithPage") {
+    packageName.set("pagination.offsetBasedWithPage")
+    sourceFolder.set("pagination/offsetBasedWithPage")
+    generateDataBuilders.set(true)
+  }
+  service("pagination.cursorBased") {
+    packageName.set("pagination.cursorBased")
+    sourceFolder.set("pagination/cursorBased")
+    generateDataBuilders.set(true)
+  }
+  service("pagination.connection") {
+    packageName.set("pagination.connection")
+    sourceFolder.set("pagination/connection")
+    generateDataBuilders.set(true)
   }
 }
