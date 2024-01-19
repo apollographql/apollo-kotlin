@@ -13,12 +13,10 @@ import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkIntrospectionQuery
-import com.apollographql.apollo3.tooling.graphql.PreIntrospectionQuery
 import com.apollographql.apollo3.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
 import okio.buffer
@@ -141,12 +139,16 @@ object SchemaDownloader {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
-        endpoint = endpoint,
-        headers = headers,
-        insecure = insecure,
-    )
-    val features = preIntrospectionData.getFeatures()
+    val features = try {
+      SchemaHelper.executePreIntrospectionQuery(
+          endpoint = endpoint,
+          headers = headers,
+          insecure = insecure,
+      ).getFeatures()
+    } catch (e: Exception) {
+      // Some servers (e.g. api.github.com) don't support the pre-introspection query, fallback to the minimal set of features
+      emptySet()
+    }
     val introspectionQuery = getIntrospectionQuery(features)
     return SchemaHelper.executeIntrospectionQuery(
         introspectionQuery = introspectionQuery,
