@@ -15,25 +15,9 @@ class ConfigurationCacheTests {
     val preIntrospectionResponse = """
       {
         "data": {
-          "schema": {
-            "__typename": "__Type",
-            "fields": []
-          },
-          "type": {
-            "__typename": "__Type",
-            "fields": []
-          },
-          "directive": {
-            "__typename": "__Type",
-            "fields": []
-          },
-          "field": {
-            "__typename": "__Type",
-            "fields": []
-          },
-          "inputValue": {
-            "__typename": "__Type",
-            "fields": []
+          "__schema": {
+            "__typename": "__Schema",
+            "types": []
           }
         }
       }
