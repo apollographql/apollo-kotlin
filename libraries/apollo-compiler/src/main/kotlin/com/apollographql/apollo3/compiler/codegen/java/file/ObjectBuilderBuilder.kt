@@ -87,9 +87,9 @@ internal class ObjectBuilderBuilder(
   }
 
   private fun IrMapProperty.toMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(context.layout.propertyName(name))
+    return MethodSpec.methodBuilder(context.layout.escapeReservedWord(context.layout.propertyName(name)))
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.propertyName(name))
+        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.escapeReservedWord(context.layout.propertyName(name)))
         .returns(ClassName.get(packageName, simpleName))
         .apply {
           val adapter = context.resolver.adapterInitializer2(type)
@@ -98,10 +98,10 @@ internal class ObjectBuilderBuilder(
                 "$T.adaptValue($L, $L)",
                 JavaClassNames.ObjectBuilderKt,
                 adapter,
-                context.layout.propertyName(name)
+                context.layout.escapeReservedWord(context.layout.propertyName(name))
             )
           } else {
-            CodeBlock.of("$L", context.layout.propertyName(name))
+            CodeBlock.of("$L", context.layout.escapeReservedWord(context.layout.propertyName(name)))
           }
 
           addStatement(

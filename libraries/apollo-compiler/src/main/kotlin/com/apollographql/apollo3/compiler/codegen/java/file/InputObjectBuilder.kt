@@ -24,7 +24,7 @@ internal class InputObjectBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.schemaTypeName(inputObject.name)
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(
@@ -72,7 +72,7 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.propertyName(it.name))
+        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.escapeReservedWord(context.layout.propertyName(it.name)))
             .maybeAddDescription(it.description)
             .build()
       }
@@ -95,5 +95,5 @@ private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
   } else {
     JavaClassNames.Assertions
   }
-  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", assertionsClassName)
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.escapeReservedWord(context.layout.propertyName(it.graphQlName)) }});\n", assertionsClassName)
 }

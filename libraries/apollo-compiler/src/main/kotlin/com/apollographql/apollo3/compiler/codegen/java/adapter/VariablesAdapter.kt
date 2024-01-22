@@ -62,7 +62,7 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaContext): Cod
 private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(name)
+  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(name))
 
   if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)

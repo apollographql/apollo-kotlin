@@ -26,7 +26,7 @@ internal class InputObjectBuilder(
     val withDefaultArguments: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.schemaTypeName(inputObject.name)
   private val className = ClassName(packageName, simpleName)
 
   override fun build(): CgFile {
@@ -91,7 +91,7 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
               .indent()
               .apply {
                 forEach {
-                  val propertyName = context.layout.propertyName(it.graphQlName)
+                  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(it.graphQlName))
                   add("%L·=·%L", propertyName, propertyName)
                   if (!it.type.nullable && !it.type.optional) {
                     add("·?:·error(\"missing·value·for·$propertyName\")")
@@ -107,5 +107,5 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
 }
 
 private fun List<NamedType>.oneOfInitializerBlock(context: KotlinContext): CodeBlock {
-  return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinSymbols.assertOneOf)
+  return CodeBlock.of("%M(${joinToString { context.layout.escapeReservedWord(context.layout.propertyName(it.graphQlName)) }})\n", KotlinSymbols.assertOneOf)
 }

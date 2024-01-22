@@ -81,7 +81,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): Code
 private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
+  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName))
 
   if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)

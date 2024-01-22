@@ -220,7 +220,7 @@ internal fun concreteBuilderTypeSpec(
 }
 
 private fun IrMapProperty.toPropertySpec(context: KotlinContext): PropertySpec {
-  return PropertySpec.builder(context.layout.propertyName(name), context.resolver.resolveIrType2(type))
+  return PropertySpec.builder(context.layout.escapeReservedWord(context.layout.propertyName(name)), context.resolver.resolveIrType2(type))
       .mutable(true)
       .apply {
         val initializer = context.resolver.adapterInitializer2(type, context.jsExport)

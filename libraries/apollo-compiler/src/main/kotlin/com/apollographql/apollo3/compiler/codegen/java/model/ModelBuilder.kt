@@ -58,7 +58,7 @@ internal class ModelBuilder(
       val irType = context.resolver.resolveIrType(it.info.type)
       FieldSpec.builder(
           irType.withoutAnnotations(),
-          context.layout.propertyName(it.info.responseName),
+          context.layout.escapeReservedWord(context.layout.propertyName(it.info.responseName)),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
@@ -130,7 +130,7 @@ internal class ModelBuilder(
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
           .addCode(fields
-              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.escapeReservedWord(context.layout.propertyName(it.name)), context.layout.escapeReservedWord(context.layout.propertyName(it.name))) }
               .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
               .build()
           )

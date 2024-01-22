@@ -20,7 +20,7 @@ internal class KotlinCodegenLayout(
     useSemanticNaming,
     decapitalizeFields,
 ) {
-  override fun escapeReservedWord(word: String): String = word.escapeKotlinReservedWord()
+  override fun escapeReservedWord(word: String): String = word
 
   /**
    * Enum value name to use when generating enums as sealed classes

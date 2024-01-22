@@ -78,7 +78,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): Co
 private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
+  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName))
 
   if (type.optional) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)

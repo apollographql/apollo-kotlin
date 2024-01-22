@@ -51,7 +51,7 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinContext): C
 private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(name)
+  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(name))
 
   if (type.optional) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)

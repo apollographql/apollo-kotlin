@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -97,15 +98,11 @@ internal abstract class CodegenLayout(
     }
   }
 
-  internal fun inputObjectName(name: String) = schemaTypeName(name)
-
-  // Variables are escaped to avoid a clash with the model name if they are capitalized
-  internal fun variableName(name: String) = if (name == "__typename") name else "_$name"
-  internal fun propertyName(name: String) = escapeReservedWord(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
+  internal fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
 
   // ------------------------ Helpers ---------------------------------
 
-  abstract fun escapeReservedWord(word: String): String
+  open fun escapeReservedWord(word: String): String = word.escapeJavaReservedWord()
 
   companion object {
     internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
