@@ -4,7 +4,6 @@ import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -101,8 +100,6 @@ internal abstract class CodegenLayout(
   internal fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
 
   // ------------------------ Helpers ---------------------------------
-
-  open fun escapeReservedWord(word: String): String = word.escapeJavaReservedWord()
 
   companion object {
     internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

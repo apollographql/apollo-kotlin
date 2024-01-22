@@ -17,6 +17,7 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -81,7 +82,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): Code
 private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName))
+  val propertyName = context.layout.propertyName(graphQlName).escapeJavaReservedWord()
 
   if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)

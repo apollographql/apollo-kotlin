@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
@@ -24,7 +25,7 @@ internal fun NamedType.toParameterSpec(context: JavaContext): ParameterSpec {
   return ParameterSpec
       .builder(
           irType.withoutAnnotations(),
-          context.layout.escapeReservedWord(context.layout.propertyName(graphQlName)),
+          context.layout.propertyName(graphQlName).escapeJavaReservedWord(),
       )
       .addAnnotations(irType.annotations)
       .build()

@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromProp
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -58,7 +59,7 @@ internal class ModelBuilder(
       val irType = context.resolver.resolveIrType(it.info.type)
       FieldSpec.builder(
           irType.withoutAnnotations(),
-          context.layout.escapeReservedWord(context.layout.propertyName(it.info.responseName)),
+          context.layout.propertyName(it.info.responseName).escapeJavaReservedWord(),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
@@ -130,7 +131,7 @@ internal class ModelBuilder(
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
           .addCode(fields
-              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.escapeReservedWord(context.layout.propertyName(it.name)), context.layout.escapeReservedWord(context.layout.propertyName(it.name))) }
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name).escapeJavaReservedWord(), context.layout.propertyName(it.name).escapeJavaReservedWord()) }
               .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
               .build()
           )

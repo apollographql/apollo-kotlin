@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
@@ -273,7 +274,7 @@ internal class OperationBuilder(
     operation.variables
         .map {
           val irType = context.resolver.resolveIrType(it.type)
-          FieldSpec.builder(irType.withoutAnnotations(), context.layout.escapeReservedWord(context.layout.propertyName(it.name)))
+          FieldSpec.builder(irType.withoutAnnotations(), context.layout.propertyName(it.name).escapeJavaReservedWord())
               .addAnnotations(irType.annotations)
               .build()
         }

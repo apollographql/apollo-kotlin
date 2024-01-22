@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalVal
 import com.apollographql.apollo3.compiler.codegen.java.helpers.wrapValueInOptional
 import com.apollographql.apollo3.compiler.codegen.java.isNotEmpty
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -250,7 +251,7 @@ internal fun writeToResponseCodeBlock(model: IrModel, context: JavaContext): Cod
 
 private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(info.responseName))
+  val propertyName = context.layout.propertyName(info.responseName).escapeJavaReservedWord()
 
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
