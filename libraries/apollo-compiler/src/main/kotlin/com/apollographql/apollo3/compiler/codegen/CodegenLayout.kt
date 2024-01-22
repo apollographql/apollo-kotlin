@@ -1,7 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.compiler.CodegenType
+import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.singularize
@@ -17,14 +18,15 @@ import com.apollographql.apollo3.compiler.ir.TypeSet
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal open class CodegenLayout(
-    allTypes: List<CodegenType>,
+    codegenSchema: CodegenSchema,
     private val packageNameGenerator: PackageNameGenerator,
-    protected val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
 ) {
+  private val schemaPackageName = packageNameGenerator.packageName(codegenSchema.filePath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
+    val allTypes = codegenSchema.allTypes()
 
     /**
      * Make it possible to support several types with different cases. Example:

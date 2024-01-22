@@ -178,7 +178,7 @@ class ApolloProcessor(
 
     codegenSchema = CodegenSchema(
         schema = schema,
-        packageName = packageName,
+        filePath = null,
         codegenModels = "operationBased",
         scalarMapping = scalarMapping,
         targetLanguage = TargetLanguage.KOTLIN_1_9,

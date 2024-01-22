@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
@@ -208,7 +207,6 @@ internal object KotlinCodeGen {
 
     val targetLanguageVersion = codegenSchema.targetLanguage
     val scalarMapping = codegenSchema.scalarMapping
-    val schemaPackageName = codegenSchema.packageName
     @Suppress("NAME_SHADOWING")
     val compilerKotlinHooks = compilerKotlinHooks(compilerKotlinHooks, generateAsInternal)
 
@@ -217,10 +215,9 @@ internal object KotlinCodeGen {
     }
 
     val layout = CodegenLayout(
-        allTypes = codegenSchema.allTypes(),
+        codegenSchema = codegenSchema,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
-        schemaPackageName = schemaPackageName,
         decapitalizeFields = decapitalizeFields,
     )
 
@@ -335,10 +332,9 @@ internal object KotlinCodeGen {
       packageName: String,
   ): Pair<CodegenMetadata, List<FileSpec>> {
     val layout = CodegenLayout(
-        allTypes = codegenSchema.allTypes(),
+        codegenSchema = codegenSchema,
         useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),
-        schemaPackageName = codegenSchema.packageName,
         decapitalizeFields = false,
     )
 
@@ -394,10 +390,9 @@ internal object KotlinCodeGen {
       serviceName: String,
   ): List<FileSpec> {
     val layout = CodegenLayout(
-        allTypes = codegenSchema.allTypes(),
+        codegenSchema = codegenSchema,
         useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),
-        schemaPackageName = codegenSchema.packageName,
         decapitalizeFields = false,
     )
 

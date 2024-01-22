@@ -28,7 +28,7 @@ class ConditionalFragmentsTest {
       ApolloCompiler.build(
           executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
-          codegenSchemaOptions = CodegenSchemaOptions(packageName = "", targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_RESPONSE_BASED),
+          codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_RESPONSE_BASED),
           irOptions = IrOptions(flattenModels = false),
           packageNameGenerator = PackageNameGenerator.Flat(""),
           outputDir = File("build/test/conditionalFragmentsTest"),
@@ -43,7 +43,7 @@ class ConditionalFragmentsTest {
     ApolloCompiler.build(
         executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
-        codegenSchemaOptions = CodegenSchemaOptions(packageName = "", targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_OPERATION_BASED),
+        codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_OPERATION_BASED),
         irOptions = IrOptions(flattenModels = false),
         packageNameGenerator = PackageNameGenerator.Flat(""),
         outputDir = File("build/test/conditionalFragmentsTest"),

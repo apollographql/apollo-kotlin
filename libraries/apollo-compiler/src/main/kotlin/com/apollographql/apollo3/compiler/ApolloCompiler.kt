@@ -57,16 +57,12 @@ object ApolloCompiler {
   fun buildCodegenSchema(
       schemaFiles: Set<File>,
       logger: Logger = defaultLogger,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
       codegenSchemaOptionsFile: File,
       codegenSchemaFile: File,
   ) {
     buildCodegenSchema(
         schemaFiles,
         logger,
-        packageNameGenerator,
-        packageNameRoots,
         codegenSchemaOptionsFile.toCodegenSchemaOptions(),
     ).writeTo(codegenSchemaFile)
   }
@@ -74,8 +70,6 @@ object ApolloCompiler {
   private fun buildCodegenSchema(
       schemaFiles: Set<File>,
       logger: Logger = defaultLogger,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
       codegenSchemaOptions: CodegenSchemaOptions,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
@@ -136,17 +130,11 @@ object ApolloCompiler {
     checkScalars(schema, scalarMapping)
 
     val codegenModels = codegenModels(codegenModels = codegenSchemaOptions.codegenModels, codegenSchemaOptions.targetLanguage)
-    @Suppress("NAME_SHADOWING")
-    val packageNameGenerator = packageNameGenerator ?: packageNameGenerator(
-        codegenSchemaOptions.packageName,
-        codegenSchemaOptions.packageNamesFromFilePaths,
-        packageNameRoots
-    )
 
     val generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     return CodegenSchema(
         schema = schema,
-        packageName = packageNameGenerator.packageName(mainSchemaDocument.sourceLocation!!.filePath!!),
+        filePath = mainSchemaDocument.sourceLocation?.filePath,
         codegenModels = codegenModels,
         scalarMapping = scalarMapping,
         targetLanguage = codegenSchemaOptions.targetLanguage,
@@ -564,8 +552,6 @@ object ApolloCompiler {
     val codegenSchema = buildCodegenSchema(
         schemaFiles = schemaFiles,
         logger = logger,
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
         codegenSchemaOptions = codegenSchemaOptions
     )
 

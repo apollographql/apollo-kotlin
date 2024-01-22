@@ -137,8 +137,6 @@ class CodegenSchemaOptions(
     val scalarMapping: Map<String, ScalarInfo> = emptyMap(),
     val codegenModels: String? = null,
     val generateDataBuilders: Boolean? = null,
-    val packageNamesFromFilePaths: Boolean? = null,
-    val packageName: String? = null
 )
 
 @Serializable
