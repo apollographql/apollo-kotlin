@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -11,7 +11,7 @@ import com.squareup.javapoet.TypeSpec
 import com.squareup.javapoet.WildcardTypeName
 import javax.lang.model.element.Modifier
 
-internal class UtilAssertionsBuilder(val context: JavaContext) : JavaClassBuilder {
+internal class UtilAssertionsBuilder(val context: JavaSchemaContext) : JavaClassBuilder {
   override fun prepare() {}
 
   override fun build(): CodegenJavaFile {

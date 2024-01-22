@@ -3,12 +3,17 @@ package com.apollographql.apollo3.compiler.ir
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
-import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
 import com.apollographql.apollo3.compiler.internal.GQLFragmentDefinitionSerializer
+import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+
+interface IrOperations {
+  val fragmentDefinitions: List<GQLFragmentDefinition>
+  val usedFields: Map<String, Set<String>>
+}
 
 /**
  * Intermediate representation (IR)
@@ -36,18 +41,15 @@ internal data class DefaultIrOperations(
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
     val generateDataBuilders: Boolean,
+    val codegenModels: String,
 
     override val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 ) : IrOperations
 
-interface IrOperations {
-  val fragmentDefinitions: List<GQLFragmentDefinition>
-  val usedFields: Map<String, Set<String>>
-}
-
 @Serializable
 internal data class IrOperation(
     val name: String,
+    val id: String,
     val operationType: IrOperationType,
     val typeCondition: String,
     val variables: List<IrVariable>,

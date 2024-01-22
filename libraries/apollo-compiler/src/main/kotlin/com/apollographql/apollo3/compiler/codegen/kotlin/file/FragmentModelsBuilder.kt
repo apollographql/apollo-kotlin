@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.flattenFragmentModels
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 
 internal class FragmentModelsBuilder(
-    val context: KotlinContext,
+    val context: KotlinOperationsContext,
     val fragment: IrFragmentDefinition,
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,

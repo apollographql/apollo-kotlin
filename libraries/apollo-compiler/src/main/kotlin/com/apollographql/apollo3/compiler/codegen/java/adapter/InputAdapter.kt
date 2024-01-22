@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
@@ -26,7 +26,7 @@ import javax.lang.model.element.Modifier
 
 
 internal fun List<NamedType>.inputAdapterTypeSpec(
-    context: JavaContext,
+    context: JavaSchemaContext,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
@@ -56,7 +56,7 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
 
 
 private fun List<NamedType>.writeToResponseMethodSpec(
-    context: JavaContext,
+    context: JavaSchemaContext,
     adaptedTypeName: TypeName,
 ): MethodSpec {
   return MethodSpec.methodBuilder(toJson)
@@ -70,7 +70,7 @@ private fun List<NamedType>.writeToResponseMethodSpec(
       .build()
 }
 
-private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+private fun List<NamedType>.writeToResponseCodeBlock(context: JavaSchemaContext): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
@@ -78,7 +78,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): Code
   return builder.build()
 }
 
-private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+private fun NamedType.writeToResponseCodeBlock(context: JavaSchemaContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)

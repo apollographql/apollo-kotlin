@@ -8,11 +8,12 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.CodegenMetadata
+import com.apollographql.apollo3.compiler.CodegenOptions
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.codegen.CodegenSymbols
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
@@ -41,7 +42,7 @@ import com.google.devtools.ksp.visitor.KSEmptyVisitor
 
 internal class ObjectInfo(
     val className: IrClassName,
-    val classDeclaration: KSClassDeclaration
+    val classDeclaration: KSClassDeclaration,
 )
 
 @OptIn(ApolloInternal::class, ApolloExperimental::class)
@@ -52,7 +53,7 @@ class ApolloProcessor(
     private val serviceName: String,
 ) : SymbolProcessor {
   private lateinit var codegenSchema: CodegenSchema
-  private lateinit var codegenMetadata: CodegenMetadata
+  private lateinit var codegenSymbols: CodegenSymbols
   private var step = 0
   private var objectMapping = mutableMapOf<String, ObjectInfo>()
   private var scalarMapping = mutableMapOf<String, ScalarInfo>()
@@ -178,30 +179,32 @@ class ApolloProcessor(
 
     codegenSchema = CodegenSchema(
         schema = schema,
-        packageName = packageName,
-        codegenModels = "operationBased",
         scalarMapping = scalarMapping,
-        targetLanguage = TargetLanguage.KOTLIN_1_9,
+        packageName = packageName,
         generateDataBuilders = false
     )
 
-    val pair =
-        ApolloCompiler.schemaFileSpecs(
-            codegenSchema = codegenSchema,
-            packageName = packageName,
-        )
+    val output = ApolloCompiler.buildSchemaSources(
+        codegenSchema = codegenSchema,
+        usedCoordinates = null,
+        codegenOptions = CodegenOptions(
+            targetLanguage = TargetLanguage.KOTLIN_1_9,
+            generateAsInternal = true,
+        ),
+        javaOutputTransform = null,
+        kotlinOutputTransform = null
+    )
 
-    val fileSpecs = pair.second
-    codegenMetadata = pair.first
+    codegenSymbols = output.symbols
 
-    fileSpecs.forEach { fileSpec ->
+    output.files.forEach { fileSpec ->
       codeGenerator.createNewFile(
           // XXX: make more incremental
           Dependencies.ALL_FILES,
           packageName = fileSpec.packageName,
           fileName = fileSpec.name,
 
-          ).writer().use {
+          ).use {
         fileSpec.writeTo(it)
       }
     }
@@ -211,9 +214,9 @@ class ApolloProcessor(
 
   private fun generateMainResolver(): List<KSAnnotated> {
 
-    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata, logger)
+    val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenSymbols, logger)
 
-    check (objectMapping.isNotEmpty()) {
+    check(objectMapping.isNotEmpty()) {
       "No @GraphQLObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
     }
 
@@ -250,23 +253,27 @@ class ApolloProcessor(
       )
     }
 
-    val fileSpecs =
-        ApolloCompiler.resolverFileSpecs(
-            codegenSchema = codegenSchema,
-            codegenMetadata = codegenMetadata,
-            irTargetObjects = irTargetObjects,
-            packageName = packageName,
-            serviceName = serviceName
+    val sourceOutput = ApolloCompiler.buildResolverSources(
+        codegenSchema = codegenSchema,
+        codegenSymbols = codegenSymbols,
+        irTargetObjects = irTargetObjects,
+        packageName = packageName,
+        kotlinResolverOptions = CodegenOptions(
+            targetLanguage = TargetLanguage.KOTLIN_1_9,
+            serviceName = serviceName,
+            generateAsInternal = true,
         )
+    )
 
-    fileSpecs.forEach { fileSpec ->
+
+    sourceOutput.files.forEach { fileSpec ->
       codeGenerator.createNewFile(
           // XXX: make more incremental
           Dependencies.ALL_FILES,
           packageName = fileSpec.packageName,
           fileName = fileSpec.name,
 
-          ).writer().use {
+          ).use {
         fileSpec.writeTo(it)
       }
     }
@@ -324,7 +331,7 @@ class ApolloFileVisitor : KSEmptyVisitor<Unit, Unit>() {
       val name = apolloObject.getArgumentValue("name").takeIf { it != "" }
       var graphqlName = classDeclaration.graphqlName()
 
-      check (name == null || graphqlName == null) {
+      check(name == null || graphqlName == null) {
         "@GraphQL is redundant with @GraphQLObject name at ${classDeclaration.location}"
       }
 
@@ -392,7 +399,7 @@ private fun KSAnnotation.getArgumentValue(name: String): String? {
 private fun KSValueParameter.toIrTargetArgument(
     fieldDefinition: GQLFieldDefinition,
     validationScope: ValidationScope,
-    objectName: String
+    objectName: String,
 ): IrTargetArgument {
   if (this.type.resolve().declaration.acClassName() == executionContextClassName) {
     return IrExecutionContextTargetArgument
@@ -420,7 +427,11 @@ private fun KSValueParameter.toIrTargetArgument(
   )
 }
 
-private fun KSPropertyDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+private fun KSPropertyDeclaration.toIrTargetField(
+    validationScope: ValidationScope,
+    typeDefinition: GQLTypeDefinition,
+    isSubscriptionRootField: Boolean,
+): IrTargetField? {
   val targetName = simpleName.asString()
   val graphQLName = graphqlName() ?: targetName
 
@@ -454,7 +465,11 @@ private fun KSPropertyDeclaration.toIrTargetField(validationScope: ValidationSco
   )
 }
 
-private fun KSFunctionDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+private fun KSFunctionDeclaration.toIrTargetField(
+    validationScope: ValidationScope,
+    typeDefinition: GQLTypeDefinition,
+    isSubscriptionRootField: Boolean,
+): IrTargetField? {
   val targetName = simpleName.asString()
 
   if (targetName == "<init>") {

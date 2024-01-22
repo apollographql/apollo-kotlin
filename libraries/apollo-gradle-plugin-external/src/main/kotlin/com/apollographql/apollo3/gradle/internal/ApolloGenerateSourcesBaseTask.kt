@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -15,7 +12,6 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
@@ -34,38 +30,21 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val packageNamesFromFilePaths: Property<Boolean>
+  abstract val rootPackageName: Property<String>
 
   @Internal
   var packageNameRoots: Set<String>? = null
 
-  @Internal
-  var packageNameGenerator: PackageNameGenerator? = null
-
-  @Input
-  fun getPackageNameGeneratorVersion() = packageNameGenerator?.version ?: ""
-
   @get:Internal
   var operationOutputGenerator: OperationOutputGenerator? = null
 
+  @Suppress("DEPRECATION")
   @Input
-  fun getOperationOutputGeneratorVersion() = operationOutputGenerator?.version ?: ""
-
-  @get:Internal
-  var compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null
-
-  @Input
-  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
-
-  @get:Internal
-  var compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null
-
-  @Input
-  fun getCompilerJavaHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
-
-  @get:OutputFile
-  @get:Optional
-  abstract val operationManifestFile: RegularFileProperty
+  fun getOperationOutputGeneratorVersion(): String {
+    return (operationOutputGenerator?.version ?: "").also {
+      println("Version: $it")
+    }
+  }
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty

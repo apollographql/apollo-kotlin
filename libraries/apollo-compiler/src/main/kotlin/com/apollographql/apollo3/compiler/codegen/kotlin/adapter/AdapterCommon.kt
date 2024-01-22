@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
@@ -12,9 +11,11 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
@@ -36,7 +37,7 @@ import com.squareup.kotlinpoet.joinToCode
  */
 internal fun readFromResponseCodeBlock(
     model: IrModel,
-    context: KotlinContext,
+    context: KotlinOperationsContext,
     useTypenameFromArgument: Boolean,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
@@ -169,7 +170,7 @@ internal fun readFromResponseCodeBlock(
         }
         CodeBlock.of(
             "%N·=·%N%L",
-            context.layout.propertyName(property.info.responseName),
+            context.kotlinPropertyName(property.info.responseName),
             context.layout.variableName(property.info.responseName),
             maybeAssertNotNull
         )
@@ -206,13 +207,13 @@ private fun IrType.modelPath(): String {
   }
 }
 
-internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinContext): CodeBlock {
+internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinOperationsContext): CodeBlock {
   return model.properties.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
 }
 
-private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun IrProperty.writeToResponseCodeBlock(context: KotlinOperationsContext): CodeBlock {
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(info.responseName)
+  val propertyName = context.kotlinPropertyName(info.responseName)
 
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport, customScalarAdapters)

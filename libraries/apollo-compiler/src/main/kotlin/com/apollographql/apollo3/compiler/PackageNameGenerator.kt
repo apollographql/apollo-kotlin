@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import java.io.File
 
 /**
@@ -21,17 +22,38 @@ interface PackageNameGenerator {
    *
    * Two different implementations **must** have different versions.
    *
-   * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
+   * When using the compiler outside the Apollo Gradle Plugin context, [version] is not accessed.
    */
+  @Deprecated("Load PackageNameGenerator through plugins")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val version: String
+    get() {
+      error("this should only be called from the Apollo Gradle Plugin")
+    }
 
   class Flat(private val packageName: String): PackageNameGenerator {
     override fun packageName(filePath: String): String {
       return packageName
     }
+  }
+
+  class FilePathAware constructor(
+      private val roots: Set<String>,
+      private val rootPackageName: String = "",
+  ) : PackageNameGenerator {
+
+    override fun packageName(filePath: String): String {
+      val p = try {
+        filePackageName(roots, filePath).removeSuffix(".")
+      } catch (e: Exception) {
+        ""
+      }
+
+      return "$rootPackageName.$p".removePrefix(".")
+    }
 
     override val version: String
-      get() = error("this should only be called from the Gradle Plugin")
+      get() = "FilePathAware-$rootPackageName"
   }
 }
 

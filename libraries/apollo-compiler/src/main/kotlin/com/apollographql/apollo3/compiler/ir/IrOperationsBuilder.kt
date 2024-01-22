@@ -251,6 +251,7 @@ internal class IrOperationsBuilder(
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
         generateDataBuilders = generateDataBuilders,
+        codegenModels = codegenModels
     )
   }
 
@@ -314,7 +315,8 @@ internal class IrOperationsBuilder(
         responseBasedDataModelGroup = responseBasedModelGroup,
         ignoreErrors = directives.any {
           schema.originalDirectiveName(it.name) == Schema.IGNORE_ERRORS
-        }
+        },
+        id = ""
     )
   }
 

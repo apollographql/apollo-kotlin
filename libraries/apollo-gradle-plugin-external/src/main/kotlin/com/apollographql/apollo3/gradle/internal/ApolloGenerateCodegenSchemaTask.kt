@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
+import com.apollographql.apollo3.compiler.writeTo
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -24,36 +24,20 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFiles: ConfigurableFileCollection
 
-  @get:InputFiles
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val upstreamSchemaFiles: ConfigurableFileCollection
-
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemaOptionsFile: RegularFileProperty
 
+  @get:Input
+  @get:Optional
+  abstract val packageName: Property<String>
+
+  @get:Input
+  @get:Optional
+  abstract val rootPackageName: Property<String>
+
   @Internal
   var packageNameRoots: Set<String>? = null
-
-  @Internal
-  var packageNameGenerator: PackageNameGenerator? = null
-
-  @Input
-  fun getPackageNameGeneratorVersion() = packageNameGenerator?.version ?: ""
-
-  /**
-   * Only used for checks
-   */
-  @get:Input
-  @get:Optional
-  abstract val userGenerateKotlinModels: Property<Boolean>
-
-  /**
-   * Only used for checks
-   */
-  @get:Input
-  @get:Optional
-  abstract val userCodegenModels: Property<String>
 
   @get:OutputFile
   @get:Optional
@@ -61,44 +45,13 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    if (upstreamSchemaFiles.files.isNotEmpty()) {
-      val options = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions()
-      /**
-       * We already have a schema
-       */
-      check(schemaFiles.isEmpty) {
-        "Apollo: this module depends on another one that already has a schema. Double check that no schema file is present in this module and/or that schemaFile(s) is not specified in Gradle configuration"
-      }
-      check(options.generateDataBuilders == null) {
-        "Apollo: generateDataBuilders cannot be used because this module depends on another one that has already set generateDataBuilders"
-      }
-      check(options.scalarMapping.isEmpty()) {
-        "Apollo: scalarTypeMapping is not used because this module depends on another one that has already set scalarTypeMapping"
-      }
-      check(!userCodegenModels.isPresent) {
-        "Apollo: codegenModels is not used because this module depends on another one that has already set codegenModels"
-      }
-      check(!userGenerateKotlinModels.isPresent) {
-        "Apollo: generateKotlinModels is not used because this module depends on another one that has already set targetLanguage"
-      }
-
-      /**
-       * Output an empty file
-       */
-      codegenSchemaFile.get().asFile.let {
-        it.delete()
-        it.createNewFile()
-      }
-      return
-    }
+    val packageNameGenerator = packageNameGenerator(packageName, rootPackageName, packageNameRoots!!)
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = schemaFiles.files,
         packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
         logger = logger(),
-        codegenSchemaOptionsFile = codegenSchemaOptionsFile.get().asFile,
-        codegenSchemaFile = codegenSchemaFile.get().asFile,
-    )
+        codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
+    ).writeTo(codegenSchemaFile.get().asFile)
   }
 }

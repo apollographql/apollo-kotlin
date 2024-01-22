@@ -20,7 +20,6 @@ object ModelNames {
   fun generateApolloSourcesFromIr(service: Service) = camelCase("generate", service.name, "ApolloSourcesFromIr")
   fun generateApolloCodegenSchema(service: Service) = camelCase("generate", service.name, "ApolloCodegenSchema")
   fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
-  fun generateApolloIrSchema(service: Service) = camelCase("generate", service.name, "ApolloIrSchema")
   fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
@@ -29,6 +28,7 @@ object ModelNames {
   fun pushApolloSchema() = camelCase("pushApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
   fun convertApolloSchema() = "convertApolloSchema"
+  fun generateOperationManifest(service: Service) = camelCase("download", service.name, "ApolloOperationManifest")
 
   // Configuration names
   fun metadataConfiguration() = "apolloMetadata"
@@ -40,4 +40,5 @@ object ModelNames {
   fun downstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrConsumer")
   fun codegenSchemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaProducer")
   fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
+  fun pluginConfiguration(service: DefaultService) = camelCase("apollo", service.name, "PluginConsumer")
 }

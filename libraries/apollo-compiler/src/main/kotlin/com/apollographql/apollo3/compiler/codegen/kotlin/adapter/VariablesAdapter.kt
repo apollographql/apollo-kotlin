@@ -5,9 +5,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
@@ -16,7 +17,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal fun List<IrVariable>.variablesAdapterTypeSpec(
-    context: KotlinContext,
+    context: KotlinOperationsContext,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
@@ -26,7 +27,7 @@ internal fun List<IrVariable>.variablesAdapterTypeSpec(
 }
 
 private fun List<IrVariable>.serializeVariablesFunSpec(
-    context: KotlinContext,
+    context: KotlinOperationsContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
   return FunSpec.builder(serializeVariables)
@@ -39,7 +40,7 @@ private fun List<IrVariable>.serializeVariablesFunSpec(
       .build()
 }
 
-private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinOperationsContext): CodeBlock {
   val builder = CodeBlock.builder()
 
   forEach {
@@ -48,10 +49,10 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinContext): C
   return builder.build()
 }
 
-private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun IrVariable.writeToResponseCodeBlock(context: KotlinOperationsContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(name)
+  val propertyName = context.kotlinPropertyName(name)
 
   if (type.optional) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)

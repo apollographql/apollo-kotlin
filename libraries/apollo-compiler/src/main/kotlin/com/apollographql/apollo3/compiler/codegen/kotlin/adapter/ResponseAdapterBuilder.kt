@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -12,7 +12,7 @@ internal interface ResponseAdapterBuilder {
 
   companion object {
     fun create(
-        context: KotlinContext,
+        context: KotlinOperationsContext,
         modelGroup: IrModelGroup,
         path: List<String>,
         public: Boolean,

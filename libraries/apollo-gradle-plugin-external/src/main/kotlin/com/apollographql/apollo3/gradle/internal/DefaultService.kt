@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -19,10 +17,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
+  internal val pluginDependencies = mutableListOf<Dependency>()
 
   private val objects = project.objects
   internal var registered = false
-  internal var packageNamesFromFilePaths: Boolean = false
+  internal var rootPackageName: String? = null
 
   init {
     @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -35,8 +34,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       classesForEnumsMatching.convention(null as List<String>?)
       generateMethods.convention(null as List<String>?)
-      compilerJavaHooks.convention(null as List<ApolloCompilerJavaHooks>?)
-      compilerKotlinHooks.convention(null as List<ApolloCompilerKotlinHooks>?)
     } else {
       includes.set(null as List<String>?)
       excludes.set(null as List<String>?)
@@ -44,8 +41,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       sealedClassesForEnumsMatching.set(null as List<String>?)
       classesForEnumsMatching.set(null as List<String>?)
       generateMethods.set(null as List<String>?)
-      compilerJavaHooks.set(null as List<ApolloCompilerJavaHooks>?)
-      compilerKotlinHooks.set(null as List<ApolloCompilerKotlinHooks>?)
     }
   }
 
@@ -157,7 +152,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {
-    packageNamesFromFilePaths = true
+    this.rootPackageName = rootPackageName ?: ""
   }
 
   val scalarTypeMapping = mutableMapOf<String, String>()
@@ -199,6 +194,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun dependsOn(dependencyNotation: Any) {
     upstreamDependencies.add(project.dependencies.create(dependencyNotation))
+  }
+
+  override fun plugin(dependencyNotation: Any) {
+    pluginDependencies.add(project.dependencies.create(dependencyNotation))
   }
 
   override fun isADependencyOf(dependencyNotation: Any) {

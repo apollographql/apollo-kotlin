@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
 import com.apollographql.apollo3.compiler.internal.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -13,7 +13,7 @@ internal val suppressNonExportableType = AnnotationSpec.builder(KotlinSymbols.Su
   .addMember("%S", "NON_EXPORTABLE_TYPE")
   .build()
 
-internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext): TypeSpec.Builder {
+internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinOperationsContext): TypeSpec.Builder {
   return applyIf(context.jsExport) {
     addKdoc("""
       Note that we add [JsExport] to the top-level operation because it cannot be applied to the
@@ -29,7 +29,7 @@ internal fun TypeSpec.Builder.maybeAddJsExport(context: KotlinContext): TypeSpec
  * Fragments need to be flattened at depth 1 to avoid having all classes polluting the fragment's package name
  * For JsExports we cannot have nested interfaces, so we fully flatten, and then prefix with the main model name and __
  */
-internal fun IrModelGroup.flattenFragmentModels(flatten: Boolean, context: KotlinContext, mainModelName: String): List<IrModel> {
+internal fun IrModelGroup.flattenFragmentModels(flatten: Boolean, context: KotlinOperationsContext, mainModelName: String): List<IrModel> {
   val flattenOverride = flatten || context.jsExport
   return maybeFlatten(flattenOverride, if (context.jsExport) 0 else 1).flatMap { it.models }.jsExportNamePrefix(context, mainModelName)
 }
@@ -42,6 +42,6 @@ internal fun IrModelGroup.flattenFragmentModels(flatten: Boolean, context: Kotli
  * @param mainModelName
  * @return
  */
-private fun List<IrModel>.jsExportNamePrefix(context: KotlinContext, mainModelName: String): List<IrModel> {
+private fun List<IrModel>.jsExportNamePrefix(context: KotlinOperationsContext, mainModelName: String): List<IrModel> {
   return map { if (it.modelName != mainModelName && context.jsExport) it.copy(modelName = "${mainModelName}__${it.modelName}") else it }
 }

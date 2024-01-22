@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.operationoutput
 
+import com.apollographql.apollo3.ast.QueryDocumentMinifier
+import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
+import com.apollographql.apollo3.compiler.ir.IrOperations
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,10 +19,10 @@ typealias OperationOutput = Map<String, OperationDescriptor>
 class OperationDescriptor(
     val name: String,
     val source: String,
-    val type: String
+    val type: String,
 )
 
-fun OperationOutput.findOperationId(name: String): String {
+internal fun OperationOutput.findOperationId(name: String): String {
   val id = entries.find { it.value.name == name }?.key
   check(id != null) {
     "cannot find operation ID for '$name', check your operationOutput.json"
@@ -27,3 +30,14 @@ fun OperationOutput.findOperationId(name: String): String {
   return id
 }
 
+
+internal fun IrOperations.toOperationOutput(): OperationOutput {
+  this as DefaultIrOperations
+  return this.operations.associate {
+    it.id to OperationDescriptor(
+        name = it.name,
+        source = QueryDocumentMinifier.minify(it.sourceWithFragments),
+        type = it.operationType.name.lowercase()
+    )
+  }
+}

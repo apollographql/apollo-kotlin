@@ -3,14 +3,14 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
+import com.apollographql.apollo3.compiler.ir.IrModelGroup
 
 internal class FragmentModelsBuilder(
-    val context: JavaContext,
+    val context: JavaOperationsContext,
     val fragment: IrFragmentDefinition,
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,

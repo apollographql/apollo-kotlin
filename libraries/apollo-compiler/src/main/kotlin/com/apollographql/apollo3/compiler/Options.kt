@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -129,16 +126,8 @@ enum class GeneratedMethod {
 
 @Serializable
 class CodegenSchemaOptions(
-    /**
-     * This isn't needed to build the [CodegenSchema] but this ensures targetLanguage is the same
-     * in all modules
-     */
-    val targetLanguage: TargetLanguage,
     val scalarMapping: Map<String, ScalarInfo> = emptyMap(),
-    val codegenModels: String? = null,
     val generateDataBuilders: Boolean? = null,
-    val packageNamesFromFilePaths: Boolean? = null,
-    val packageName: String? = null
 )
 
 @Serializable
@@ -183,159 +172,273 @@ class IrOptions(
      * For input types, this will recursively add all input fields types/enums.
      */
     val alwaysGenerateTypesMatching: Set<String>? = null,
+
+    val codegenModels: String? = null,
 )
 
-@Serializable
-class CommonCodegenOptions(
-    val packageName: String? = null,
-    val packageNamesFromFilePaths: Boolean? = null,
 
-    val useSemanticNaming: Boolean? = null,
+interface CommonCodegenOptions {
+  val targetLanguage: TargetLanguage?
 
-    /**
-     * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
-     * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
-     *
-     * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
-     */
-    val generateFragmentImplementations: Boolean? = null,
+  /**
+   * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
+   *
+   * Default: false
+   */
+  val decapitalizeFields: Boolean?
 
-    /**
-     * Which methods to auto generate on models, fragments, operations, and input objects
-     */
-    val generateMethods: List<GeneratedMethod>? = null,
+  /**
+   * Which methods to auto generate on models, fragments, operations, and input objects
+   */
+  val generateMethods: List<GeneratedMethod>?
+}
 
-    /**
-     * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
-     * to send the operations to the server.
-     * If performance is critical, and you have a way to whitelist/read the document from another place, disable this.
-     */
-    val generateQueryDocument: Boolean? = null,
+interface OperationsCodegenOptions {
+  val useSemanticNaming: Boolean?
 
-    /**
-     * Whether to generate the Schema class.
-     *
-     * The Schema class is a special class that contains a list of all composite types (objects, interfaces, unions).
-     * It can be used to retrieve the list of possible types for a given CompiledType.
-     *
-     * Its name can be configured with [generatedSchemaName].
-     *
-     * Default: false
-     */
-    val generateSchema: Boolean? = null,
+  /**
+   * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
+   * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
+   *
+   * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
+   */
+  val generateFragmentImplementations: Boolean?
 
-    /**
-     * Class name to use when generating the Schema class.
-     *
-     * Default: "__Schema"
-     */
-    val generatedSchemaName: String? = null,
+  /**
+   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
+   * to send the operations to the server.
+   * If performance is critical, and you have a way to whitelist/read the document from another place, disable this.
+   */
+  val generateQueryDocument: Boolean?
+}
 
-    val operationManifestFormat: String? = null
-)
+interface SchemaCodegenOptions {
+   /**
+   * Whether to generate the Schema class.
+   *
+   * The Schema class is a special class that contains a list of all composite types (objects, interfaces, unions).
+   * It can be used to retrieve the list of possible types for a given CompiledType.
+   *
+   * Its name can be configured with [generatedSchemaName].
+   *
+   * Default: false
+   */
+  val generateSchema: Boolean?
+
+  /**
+   * Class name to use when generating the Schema class.
+   *
+   * Default: "__Schema"
+   */
+  val generatedSchemaName: String?
+}
+
+interface KotlinCodegenOptions {
+  val generateAsInternal: Boolean?
+
+  /**
+   * Whether to generate builders in addition to constructors for operations and input types.
+   * Constructors are more concise but require passing an instance of `Optional` always, making them more verbose
+   * for the cases where there are a lot of optional input parameters.
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val generateInputBuilders: Boolean?
+
+  /**
+   * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
+   * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
+   *
+   * Default: false
+   */
+  val addJvmOverloads: Boolean?
+  val requiresOptInAnnotation: String?
+
+  /**
+   * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
+   * responses into Kotlin classes using [unsafeCast].
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val jsExport: Boolean?
+}
+
+interface JavaCodegenOptions {
+  /**
+   * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
+   * `Boolean`) when possible.
+   *
+   * Default: false
+   */
+  val generatePrimitiveTypes: Boolean?
+
+  /**
+   * The style to use for fields that are nullable in the Java generated code.
+   *
+   * Acceptable values:
+   * - `none`: Fields will be generated with the same type whether they are nullable or not
+   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+   * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
+   * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
+   * - `jetbrainsAnnotations`: Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
+   * `org.jetbrains.annotations.NotNull` if not.
+   * - `androidAnnotations`: Fields will be generated with Android's `androidx.annotation.Nullable` annotation if nullable, or
+   * `androidx.annotation.NonNull` if not.
+   * - `jsr305Annotations`: Fields will be generated with JSR 305's `javax.annotation.Nullable` annotation if nullable, or
+   * `javax.annotation.Nonnull` if not.
+   *
+   * Default: `none`
+   */
+  val nullableFieldStyle: JavaNullable?
+}
+
+interface KotlinSchemaCodegenOptions : CommonCodegenOptions, KotlinCodegenOptions, SchemaCodegenOptions {
+  /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   *
+   * Default: emptyList()
+   */
+  val sealedClassesForEnumsMatching: List<String>?
+}
+
+interface KotlinOperationsCodegenOptions: CommonCodegenOptions, KotlinCodegenOptions, OperationsCodegenOptions {
+  /**
+   * Kotlin native will generate [Any?] for optional types
+   * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
+   */
+  val generateFilterNotNull: Boolean?
+}
+
+interface KotlinResolverCodegenOptions: CommonCodegenOptions, KotlinCodegenOptions {
+  val serviceName: String?
+}
+
+interface JavaSchemaCodegenOptions: CommonCodegenOptions, JavaCodegenOptions, SchemaCodegenOptions {
+  /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   *
+   * Default: listOf(".*")
+   */
+  val classesForEnumsMatching: List<String>?
+}
+
+interface JavaOperationsCodegenOptions: CommonCodegenOptions, JavaCodegenOptions, OperationsCodegenOptions {
+  /**
+   * Whether to generate builders for java models
+   *
+   * Default value: false
+   * Only valid for java models as kotlin has data classes
+   */
+  val generateModelBuilders: Boolean?
+}
 
 @Serializable
 class CodegenOptions(
-    val common: CommonCodegenOptions = CommonCodegenOptions(),
-    val java: JavaCodegenOptions = JavaCodegenOptions(),
-    val kotlin: KotlinCodegenOptions = KotlinCodegenOptions(),
-)
+    override val targetLanguage: TargetLanguage? = null,
+    override val generateMethods: List<GeneratedMethod>? = null,
+    override val generateFragmentImplementations: Boolean? = null,
+    override val generateQueryDocument: Boolean? = null,
+    override val useSemanticNaming: Boolean? = null,
+    override val generateSchema: Boolean? = null,
+    override val generatedSchemaName: String? = null,
+    override val sealedClassesForEnumsMatching: List<String>? = null,
+    override val generateAsInternal: Boolean? = null,
+    override val generateFilterNotNull: Boolean? = null,
+    @ApolloExperimental override val generateInputBuilders: Boolean? = null,
+    override val addJvmOverloads: Boolean? = null,
+    override val requiresOptInAnnotation: String? = null,
+    @ApolloExperimental override val jsExport: Boolean? = null,
+    override val generateModelBuilders: Boolean? = null,
+    override val classesForEnumsMatching: List<String>? = null,
+    override val generatePrimitiveTypes: Boolean? = null,
+    override val nullableFieldStyle: JavaNullable? = null,
+    override val decapitalizeFields: Boolean? = null,
+    override val serviceName: String? = null,
+): JavaSchemaCodegenOptions, JavaOperationsCodegenOptions, KotlinSchemaCodegenOptions, KotlinOperationsCodegenOptions, KotlinResolverCodegenOptions
+
+fun CodegenOptions.toSchemaCodegenOptions(): SchemaCodegenOptions {
+  return SchemaCodegenOptionsImpl(
+      targetLanguage = targetLanguage,
+      decapitalizeFields = decapitalizeFields,
+      generateMethods = generateMethods,
+      generateAsInternal = generateAsInternal,
+      generateInputBuilders = generateInputBuilders,
+      addJvmOverloads = addJvmOverloads,
+      requiresOptInAnnotation = requiresOptInAnnotation,
+      jsExport = jsExport,
+      generatePrimitiveTypes = generatePrimitiveTypes,
+      nullableFieldStyle = nullableFieldStyle,
+      classesForEnumsMatching = classesForEnumsMatching,
+      sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+      generatedSchemaName = generatedSchemaName,
+      generateSchema = generateSchema
+  )
+}
+
+fun CodegenOptions.toOperationsCodegenOptions(): OperationsCodegenOptions {
+  return OperationsCodegenOptionsImpl(
+      targetLanguage = targetLanguage,
+      decapitalizeFields = decapitalizeFields,
+      generateMethods = generateMethods,
+      useSemanticNaming = useSemanticNaming,
+      generateFragmentImplementations = generateFragmentImplementations,
+      generateQueryDocument = generateQueryDocument,
+      generateAsInternal = generateAsInternal,
+      generateInputBuilders = generateInputBuilders,
+      addJvmOverloads = addJvmOverloads,
+      requiresOptInAnnotation = requiresOptInAnnotation,
+      jsExport = jsExport,
+      generatePrimitiveTypes = generatePrimitiveTypes,
+      nullableFieldStyle = nullableFieldStyle,
+      generateFilterNotNull = generateFilterNotNull,
+      generateModelBuilders = generateModelBuilders
+  )
+}
 
 @Serializable
-class KotlinCodegenOptions(
-    /**
-     * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
-     *
-     * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
-     * the client was compiled against an older schema that doesn't have knowledge of the new enums.
-     *
-     * Default: emptyList()
-     */
-    val sealedClassesForEnumsMatching: List<String>? = null,
-
-    val generateAsInternal: Boolean? = null,
-    /**
-     * Kotlin native will generate [Any?] for optional types
-     * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
-     */
-    val generateFilterNotNull: Boolean? = null,
-
-    /**
-     * Whether to generate builders in addition to constructors for operations and input types.
-     * Constructors are more concise but require passing an instance of `Optional` always, making them more verbose
-     * for the cases where there are a lot of optional input parameters.
-     *
-     * Default: false
-     */
-    @ApolloExperimental
-    val generateInputBuilders: Boolean? = null,
-
-    /**
-     * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
-     * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
-     *
-     * Default: false
-     */
-    val addJvmOverloads: Boolean? = null,
-    val requiresOptInAnnotation: String? = null,
-
-    /**
-     * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
-     * responses into Kotlin classes using [unsafeCast].
-     *
-     * Default: false
-     */
-    @ApolloExperimental
-    val jsExport: Boolean? = null,
-)
+private class SchemaCodegenOptionsImpl(
+    override val targetLanguage: TargetLanguage?,
+    override val decapitalizeFields: Boolean?,
+    override val generateMethods: List<GeneratedMethod>?,
+    override val generateSchema: Boolean?,
+    override val generatedSchemaName: String?,
+    override val generateAsInternal: Boolean?,
+    @ApolloExperimental override val generateInputBuilders: Boolean?,
+    override val addJvmOverloads: Boolean?,
+    override val requiresOptInAnnotation: String?,
+    @ApolloExperimental override val jsExport: Boolean?,
+    override val generatePrimitiveTypes: Boolean?,
+    override val nullableFieldStyle: JavaNullable?,
+    override val sealedClassesForEnumsMatching: List<String>?,
+    override val classesForEnumsMatching: List<String>?,
+) : JavaSchemaCodegenOptions, KotlinSchemaCodegenOptions
 
 @Serializable
-class JavaCodegenOptions(
-    /**
-     * Whether to generate builders for java models
-     *
-     * Default value: false
-     * Only valid for java models as kotlin has data classes
-     */
-    val generateModelBuilders: Boolean? = null,
-
-    /**
-     * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
-     *
-     * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
-     * the client was compiled against an older schema that doesn't have knowledge of the new enums.
-     *
-     * Default: listOf(".*")
-     */
-    val classesForEnumsMatching: List<String>? = null,
-
-    /**
-     * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
-     * `Boolean`) when possible.
-     *
-     * Default: false
-     */
-    val generatePrimitiveTypes: Boolean? = null,
-
-    /**
-     * The style to use for fields that are nullable in the Java generated code.
-     *
-     * Acceptable values:
-     * - `none`: Fields will be generated with the same type whether they are nullable or not
-     * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
-     * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
-     * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
-     * - `jetbrainsAnnotations`: Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
-     * `org.jetbrains.annotations.NotNull` if not.
-     * - `androidAnnotations`: Fields will be generated with Android's `androidx.annotation.Nullable` annotation if nullable, or
-     * `androidx.annotation.NonNull` if not.
-     * - `jsr305Annotations`: Fields will be generated with JSR 305's `javax.annotation.Nullable` annotation if nullable, or
-     * `javax.annotation.Nonnull` if not.
-     *
-     * Default: `none`
-     */
-    val nullableFieldStyle: JavaNullable? = null,
-)
+private class OperationsCodegenOptionsImpl(
+    override val targetLanguage: TargetLanguage?,
+    override val decapitalizeFields: Boolean?,
+    override val generateMethods: List<GeneratedMethod>?,
+    override val useSemanticNaming: Boolean?,
+    override val generateFragmentImplementations: Boolean?,
+    override val generateQueryDocument: Boolean?,
+    override val generateAsInternal: Boolean?,
+    @ApolloExperimental override val generateInputBuilders: Boolean?,
+    override val addJvmOverloads: Boolean?,
+    override val requiresOptInAnnotation: String?,
+    @ApolloExperimental override val jsExport: Boolean?,
+    override val generatePrimitiveTypes: Boolean?,
+    override val nullableFieldStyle: JavaNullable?,
+    override val generateFilterNotNull: Boolean?,
+    override val generateModelBuilders: Boolean?
+) : JavaOperationsCodegenOptions, KotlinOperationsCodegenOptions
 
 /**
  * Controls how scalar adapters are used in the generated code.
@@ -372,7 +475,7 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 }
 
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
-internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
+internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default
 internal val defaultLogger = NoOpLogger
 internal const val defaultUseSemanticNaming = true
 internal const val defaultWarnOnDeprecatedUsages = true
@@ -399,22 +502,9 @@ internal const val defaultJsExport = false
 internal const val defaultGenerateInputBuilders = false
 internal val defaultNullableFieldStyle = JavaNullable.NONE
 internal const val defaultDecapitalizeFields = false
-internal val defaultCompilerKotlinHooks = emptyList<ApolloCompilerKotlinHooks>()
-internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
-
-internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
-  return when (targetLanguage) {
-    TargetLanguage.JAVA -> {
-      check(codegenModels == null || codegenModels == MODELS_OPERATION_BASED) {
-        "Java codegen does not support codegenModels=${codegenModels}"
-      }
-      MODELS_OPERATION_BASED
-    }
-
-    else -> codegenModels ?: MODELS_OPERATION_BASED
-  }
-}
+internal val defaultCodegenModels = MODELS_OPERATION_BASED
+internal val defaultTargetLanguage = TargetLanguage.KOTLIN_1_9
 
 internal fun generateMethodsJava(generateMethods: List<GeneratedMethod>?): List<GeneratedMethod> {
   if (generateMethods == null) {
@@ -448,15 +538,36 @@ internal fun flattenModels(codegenModels: String): Boolean {
   }
 }
 
-internal fun compilerKotlinHooks(compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?, generateAsInternal: Boolean): List<ApolloCompilerKotlinHooks> {
-  return buildList {
-    addAll(compilerKotlinHooks.orEmpty())
-    if (generateAsInternal) {
-      add(AddInternalCompilerHooks(".*"))
+
+fun CodegenOptions.validate() {
+  if (targetLanguage == TargetLanguage.JAVA) {
+    if (generateAsInternal != null) {
+      error("Apollo: generateAsInternal is not used in Java")
+    }
+    if (generateFilterNotNull != null) {
+      error("Apollo: generateFilterNotNull is not used in Java")
+    }
+    if (addJvmOverloads != null) {
+      error("Apollo: addJvmOverloads is not used in Java")
+    }
+    if (requiresOptInAnnotation != null) {
+      error("Apollo: requiresOptInAnnotation is not used in Java")
+    }
+    if (jsExport != null) {
+      error("Apollo: jsExport is not used in Java")
+    }
+    if (generateInputBuilders != null) {
+      error("Apollo: generateInputBuilders is not used in Java")
+    }
+  } else {
+    if (nullableFieldStyle != null) {
+      error("Apollo: nullableFieldStyle is not used in Kotlin")
+    }
+    if (generateModelBuilders != null) {
+      error("Apollo: generateModelBuilders is not used in Kotlin")
+    }
+    if (generatePrimitiveTypes != null) {
+      error("Apollo: generatePrimitiveTypes is not used in Kotlin")
     }
   }
-}
-
-internal fun compilerJavaHooks(compilerKotlinHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
-  return compilerKotlinHooks.orEmpty()
 }

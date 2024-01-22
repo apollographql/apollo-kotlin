@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 
@@ -24,17 +25,21 @@ interface OperationOutputGenerator {
    *
    * Two different implementations **must** have different versions.
    *
-   * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
+   * When using the compiler outside the Apollo Gradle Plugin context, [version] is not accessed.
    */
+  @Deprecated("Load PackageNameGenerator through plugins")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val version: String
-
-  class Default(private val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      return operationDescriptorList.map {
-        operationIdGenerator.apply(it.source, it.name) to it
-      }.toMap()
+    get() {
+      error("this should only be called from the Apollo Gradle Plugin")
     }
 
-    override val version = operationIdGenerator.version
+
+  object Default : OperationOutputGenerator {
+    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
+      return operationDescriptorList.associateBy {
+        OperationIdGenerator.Sha256.apply(it.source, it.name)
+      }
+    }
   }
 }

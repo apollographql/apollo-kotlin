@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.javapoet.TypeSpec
 
@@ -13,7 +13,7 @@ internal interface ResponseAdapterBuilder {
 
   companion object {
     fun create(
-        context: JavaContext,
+        context: JavaOperationsContext,
         modelGroup: IrModelGroup,
         path: List<String>,
         public: Boolean,

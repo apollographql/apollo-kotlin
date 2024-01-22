@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
@@ -31,7 +32,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext, withDefaultArgume
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = context.layout.propertyName(graphQlName),
+          name = context.kotlinPropertyName(graphQlName),
           type = context.resolver.resolveIrType(type, context.jsExport)
       )
       .maybeAddDescription(description)
@@ -54,7 +55,7 @@ internal fun NamedType.toPropertySpec(context: KotlinContext): PropertySpec {
   return PropertySpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = context.layout.propertyName(graphQlName),
+          name = context.kotlinPropertyName(graphQlName),
           type = context.resolver.resolveIrType(actualType, context.jsExport)
       )
       .mutable(true)
@@ -64,7 +65,7 @@ internal fun NamedType.toPropertySpec(context: KotlinContext): PropertySpec {
 }
 
 internal fun NamedType.toSetterFunSpec(context: KotlinContext): FunSpec {
-  val propertyName = context.layout.propertyName(graphQlName)
+  val propertyName = context.kotlinPropertyName(graphQlName)
   val body = CodeBlock.builder()
   val parameterType: IrType
   if (type.optional) {

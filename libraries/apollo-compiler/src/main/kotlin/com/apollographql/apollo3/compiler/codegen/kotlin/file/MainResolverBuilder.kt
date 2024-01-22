@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolverContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal class MainResolverBuilder(
-    val context: KotlinContext,
+    val context: KotlinResolverContext,
     val serviceName: String,
     val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {

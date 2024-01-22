@@ -6,9 +6,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -290,6 +287,8 @@ interface Service {
    *
    * See also [packageNamesFromFilePaths]
    */
+  @Deprecated("Use Plugin.packageNameGenerator instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val packageNameGenerator: Property<PackageNameGenerator>
 
   /**
@@ -323,7 +322,7 @@ interface Service {
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
    *
-   * To specify which classes to generate as `internal`, [compilerKotlinHooks] with [AddInternalCompilerHooks]
+   * To specify which classes to generate as `internal`, [compilerKotlinHooks] with [addInternal]
    * can be used instead.
    *
    * Default value: false
@@ -697,28 +696,26 @@ interface Service {
   /**
    * Hooks to customize the generated Kotlin code.
    *
-   * See [ApolloCompilerKotlinHooks] for more details.
-   *
    * Only valid when [generateKotlinModels] is `true`
    *
    * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
    * so the KotlinPoet classes are available in the classpath.
    */
-  @ApolloExperimental
-  val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
+  @Deprecated("Use compiler Plugin.kotlinOutputTransform instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val compilerKotlinHooks: ListProperty<Int>
 
   /**
    * Hooks to customize the generated Java code.
-   *
-   * See [ApolloCompilerJavaHooks] for more details.
    *
    * Only valid when [generateKotlinModels] is `false`
    *
    * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
    * so the JavaPoet classes are available in the classpath.
    */
-  @ApolloExperimental
-  val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
+  @Deprecated("Use compiler Plugin.javaOutputTransform instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  val compilerJavaHooks: ListProperty<Int>
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -767,6 +764,8 @@ interface Service {
    */
   fun dependsOn(dependencyNotation: Any)
   fun isADependencyOf(dependencyNotation: Any)
+
+  fun plugin(dependencyNotation: Any)
 
   class OperationOutputConnection(
       /**
@@ -824,7 +823,7 @@ interface Service {
      * Connects the generated sources to the given Kotlin source set.
      * Throws if the Kotlin plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "commonTest"
+     * @param name the name of the source set. For an example, "commonTest"
      */
     fun connectToKotlinSourceSet(name: String)
 
@@ -832,7 +831,7 @@ interface Service {
      * Connects the generated sources to the given Java source set.
      * Throws if the Java plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "test"
+     * @param name the name of the source set. For an example, "test"
      */
     fun connectToJavaSourceSet(name: String)
 
@@ -840,7 +839,7 @@ interface Service {
      * Connects the generated sources to the given Android source set.
      * Throws if the Android plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "main", "test" or "androidTest"
+     * @param name the name of the source set. For an example, "main", "test" or "androidTest"
      * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
     fun connectToAndroidSourceSet(name: String)

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.Builder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
@@ -13,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toPropertySpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toSetterFunSpec
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -20,7 +22,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class InputObjectBuilder(
-    val context: KotlinContext,
+    val context: KotlinSchemaContext,
     val inputObject: IrInputObject,
     val generateInputBuilders: Boolean,
     val withDefaultArguments: Boolean,
@@ -91,7 +93,7 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
               .indent()
               .apply {
                 forEach {
-                  val propertyName = context.layout.propertyName(it.graphQlName)
+                  val propertyName = context.kotlinPropertyName(it.graphQlName)
                   add("%L·=·%L", propertyName, propertyName)
                   if (!it.type.nullable && !it.type.optional) {
                     add("·?:·error(\"missing·value·for·$propertyName\")")
@@ -106,6 +108,6 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
       .build()
 }
 
-private fun List<NamedType>.oneOfInitializerBlock(context: KotlinContext): CodeBlock {
+private fun List<NamedType>.oneOfInitializerBlock(context: KotlinSchemaContext): CodeBlock {
   return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinSymbols.assertOneOf)
 }

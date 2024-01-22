@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.compiler.hooks
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks.FileInfo
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 
 @ApolloExperimental
+@Deprecated("Use Plugin.kotlinOutputTransform", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface ApolloCompilerJavaHooks {
   /**
    * The version of this [ApolloCompilerJavaHooks].
@@ -42,11 +44,5 @@ interface ApolloCompilerJavaHooks {
        */
       val javaFile: JavaFile,
   )
-}
-
-@ApolloExperimental
-abstract class DefaultApolloCompilerJavaHooks : ApolloCompilerJavaHooks {
-  override fun postProcessFiles(files: Collection<FileInfo>) = files
-  override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?) = resolved
 }
 

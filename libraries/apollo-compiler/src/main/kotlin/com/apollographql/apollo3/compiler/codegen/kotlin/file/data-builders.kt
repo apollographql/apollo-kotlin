@@ -8,8 +8,9 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapter
 import com.apollographql.apollo3.compiler.codegen.Identifier.factory
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
@@ -193,7 +194,7 @@ internal fun concreteMapTypeSpec(
 }
 
 internal fun concreteBuilderTypeSpec(
-    context: KotlinContext,
+    context: KotlinSchemaContext,
     packageName: String,
     builderName: String,
     mapName: String,
@@ -219,7 +220,7 @@ internal fun concreteBuilderTypeSpec(
       .build()
 }
 
-private fun IrMapProperty.toPropertySpec(context: KotlinContext): PropertySpec {
+private fun IrMapProperty.toPropertySpec(context: KotlinSchemaContext): PropertySpec {
   return PropertySpec.builder(context.layout.propertyName(name), context.resolver.resolveIrType2(type))
       .mutable(true)
       .apply {

@@ -12,7 +12,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal class ExecutableSchemaBuilderBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinResolverContext,
     private val serviceName: String,
     private val mainResolver: ClassName,
     private val adapterRegistry: MemberName,

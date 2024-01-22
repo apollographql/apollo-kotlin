@@ -3,13 +3,18 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.Plugin
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasJavaPlugin
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import java.io.File
+import java.util.ServiceLoader
 
 internal fun DefaultService.alwaysGenerateTypesMatching(): Set<String> {
   if (alwaysGenerateTypesMatching.isPresent) {
@@ -25,7 +30,6 @@ internal fun DefaultService.alwaysGenerateTypesMatching(): Set<String> {
     return emptySet()
   }
 }
-
 
 internal fun DefaultService.targetLanguage(): TargetLanguage {
   val generateKotlinModels: Boolean
@@ -62,16 +66,6 @@ internal fun DefaultService.targetLanguage(): TargetLanguage {
     TargetLanguage.JAVA
   }
 }
-
-internal fun ApolloGenerateSourcesBaseTask.setPackageNameProperties(service: DefaultService) {
-  packageName.set(service.packageName)
-  packageNamesFromFilePaths.set(service.packageNamesFromFilePaths)
-  if (service.packageNamesFromFilePaths) {
-    packageNameRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
-  }
-  packageNameGenerator = service.packageNameGenerator.orNull
-}
-
 
 /**
  * Resolves the operation manifest and formats.
@@ -152,4 +146,51 @@ internal fun DefaultService.generateFilterNotNull(): Provider<Boolean> {
       project.isKotlinMultiplatform
     }
   }
+}
+
+internal fun packageNameGenerator(
+    packageName: Property<String>,
+    rootPackageName: Property<String>,
+    packageNameRoots: Set<String>,
+): PackageNameGenerator {
+  return when {
+    packageName.isPresent -> PackageNameGenerator.Flat(packageName.get())
+    rootPackageName.isPresent -> PackageNameGenerator.FilePathAware(packageNameRoots, rootPackageName.get())
+    else -> {
+      error(
+          """
+            |Apollo: specify 'packageName':
+            |apollo {
+            |  service("service") {
+            |    packageName.set("com.example")
+            |  }
+            |}
+          """.trimMargin()
+      )
+    }
+  }
+}
+
+
+internal fun defaultCodegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
+  return when (targetLanguage) {
+    TargetLanguage.JAVA -> {
+      check(codegenModels == null || codegenModels == MODELS_OPERATION_BASED) {
+        "Java codegen does not support codegenModels=${codegenModels}"
+      }
+      MODELS_OPERATION_BASED
+    }
+
+    else -> codegenModels ?: MODELS_OPERATION_BASED
+  }
+}
+
+internal fun compilerPlugin(): Plugin? {
+  val plugins = ServiceLoader.load(Plugin::class.java).toList()
+
+  if (plugins.size > 1) {
+    error("Apollo: only a single compiler plugin is allowed")
+  }
+
+  return plugins.singleOrNull()
 }

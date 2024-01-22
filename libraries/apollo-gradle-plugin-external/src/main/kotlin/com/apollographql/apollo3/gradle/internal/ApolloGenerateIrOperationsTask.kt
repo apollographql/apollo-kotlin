@@ -1,6 +1,10 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.toCodegenSchema
+import com.apollographql.apollo3.compiler.toIrOperations
+import com.apollographql.apollo3.compiler.toIrOptions
+import com.apollographql.apollo3.compiler.writeTo
 import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -36,11 +40,11 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
   fun taskAction() {
     ApolloCompiler.buildIrOperations(
         executableFiles = graphqlFiles.files,
-        codegenSchemaFile = codegenSchemaFiles.files.findCodegenSchemaFile(),
-        upstreamIrFiles = upstreamIrFiles.files,
-        irOptionsFile = irOptionsFile.get().asFile,
+        codegenSchema = codegenSchemaFiles.files.findCodegenSchemaFile().toCodegenSchema(),
+        upstreamIrOperations = upstreamIrFiles.files.map { it.toIrOperations() },
+        irOptions = irOptionsFile.get().asFile.toIrOptions(),
         logger = logger(),
-        irOperationsFile = irOperationsFile.get().asFile
-    )
+        operationOutputGenerator = compilerPlugin()?.operationOutputGenerator()
+    ).writeTo(irOperationsFile.get().asFile)
   }
 }

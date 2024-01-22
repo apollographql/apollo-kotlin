@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -78,7 +79,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): Co
 private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
+  val propertyName = context.kotlinPropertyName(graphQlName)
 
   if (type.optional) {
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)

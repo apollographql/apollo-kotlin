@@ -1,8 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromProperties
@@ -10,7 +9,9 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
+import com.apollographql.apollo3.compiler.codegen.kotlinPropertyName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -24,7 +25,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class ModelBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinOperationsContext,
     private val model: IrModel,
     private val superClassName: ClassName?,
     private val path: List<String>,
@@ -62,7 +63,7 @@ internal class ModelBuilder(
   fun IrModel.typeSpec(): TypeSpec {
     val properties = properties.map {
       PropertySpec.builder(
-          context.layout.propertyName(it.info.responseName),
+          context.kotlinPropertyName(it.info.responseName),
           context.resolver.resolveIrType(it.info.type, jsExport = context.jsExport, isInterface = isInterface)
       )
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }

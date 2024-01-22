@@ -11,12 +11,13 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
+import com.apollographql.apollo3.compiler.codegen.javaPropertyName
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
@@ -25,7 +26,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal fun List<IrVariable>.variableAdapterTypeSpec(
-    context: JavaContext,
+    context: JavaOperationsContext,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
@@ -37,7 +38,7 @@ internal fun List<IrVariable>.variableAdapterTypeSpec(
 }
 
 private fun List<IrVariable>.writeToResponseMethodSpec(
-    context: JavaContext,
+    context: JavaOperationsContext,
     adaptedTypeName: TypeName,
 ): MethodSpec {
   return MethodSpec.methodBuilder(serializeVariables)
@@ -51,7 +52,7 @@ private fun List<IrVariable>.writeToResponseMethodSpec(
       .build()
 }
 
-private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaOperationsContext): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
@@ -59,10 +60,10 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaContext): Cod
   return builder.build()
 }
 
-private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+private fun IrVariable.writeToResponseCodeBlock(context: JavaOperationsContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(name)
+  val propertyName = context.javaPropertyName(name)
 
   if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)

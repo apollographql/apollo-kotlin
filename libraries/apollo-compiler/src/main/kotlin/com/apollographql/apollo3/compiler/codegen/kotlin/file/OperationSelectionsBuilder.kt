@@ -2,13 +2,13 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 
 internal class OperationSelectionsBuilder(
-    val context: KotlinContext,
+    val context: KotlinOperationsContext,
     val operation: IrOperation,
 ) : CgFileBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)

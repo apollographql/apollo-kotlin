@@ -12,9 +12,10 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.ScalarInfo
+import com.apollographql.apollo3.compiler.codegen.CodegenSymbols
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
+import com.apollographql.apollo3.compiler.codegen.resolveSchemaType
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -23,7 +24,6 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.nullable
 import com.apollographql.apollo3.compiler.ir.optional
-import com.apollographql.apollo3.compiler.resolveSchemaType
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
@@ -35,7 +35,7 @@ internal class ValidationScope(
     private val objectMapping: Map<String, ObjectInfo>,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val schema: Schema,
-    private val codegenMetadata: CodegenMetadata,
+    private val codegenSymbols: CodegenSymbols,
     private val logger: KSPLogger,
 ) {
   private val possibleTypes = mutableMapOf<IrClassName, MutableSet<String>>()
@@ -91,7 +91,7 @@ internal class ValidationScope(
           }
 
           is GQLInputObjectTypeDefinition -> {
-            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName()
+            val expectedFQDN = codegenSymbols.resolveSchemaType(typeDefinition.name)?.toIrClassName()
                 ?: error("Cannot resolve input ${typeDefinition.name}")
             if (className != expectedFQDN) {
               throw IncompatibleType("Input object type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")
@@ -101,7 +101,7 @@ internal class ValidationScope(
           }
 
           is GQLEnumTypeDefinition -> {
-            val expectedFQDN = codegenMetadata.resolveSchemaType(typeDefinition.name)?.toIrClassName()
+            val expectedFQDN = codegenSymbols.resolveSchemaType(typeDefinition.name)?.toIrClassName()
                 ?: error("Cannot resolve enum ${typeDefinition.name}")
             if (className != expectedFQDN) {
               throw IncompatibleType("Enum type '${typeDefinition.name}' is mapped to '${expectedFQDN} but '${className.asString()} was found at ${ksTypeReference.location}")

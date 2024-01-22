@@ -4,24 +4,123 @@ import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
-import com.apollographql.apollo3.compiler.internal.singularize
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-internal abstract class CodegenLayout(
+internal abstract class SchemaCodegenLayout(
+    allTypes: List<CodegenType>,
+    protected val schemaPackageName: String,
+): CodegenLayout(allTypes) {
+  fun paginationPackageName() = "$schemaPackageName.pagination"
+  internal fun paginationName() = "Pagination"
+
+  fun schemaPackageName() = "$schemaPackageName.schema"
+
+  private val typePackageName = "$schemaPackageName.type"
+  fun typePackageName() = typePackageName
+  fun typeAdapterPackageName() = "$typePackageName.adapter".stripDots()
+
+  fun enumName(name: String) = className(name)
+
+  internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
+  internal fun inputObjectName(name: String) = className(name)
+  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
+
+  internal fun propertyName(name: String) = regularIdentifier(name)
+
+  fun builderName(name: String): String {
+    return "${name.capitalizeFirstLetter()}Builder"
+  }
+
+  fun otherBuilderName(name: String): String {
+    return "Other${name.capitalizeFirstLetter()}Builder"
+  }
+
+  fun mapName(name: String): String {
+    return "${name.capitalizeFirstLetter()}Map"
+  }
+
+  fun otherMapName(name: String): String {
+    return "Other${name.capitalizeFirstLetter()}Map"
+  }
+
+  fun buildFunName(name: String): String {
+    return "build${name.capitalizeFirstLetter()}"
+  }
+
+  fun buildOtherFunName(name: String): String {
+    return "buildOther${name.capitalizeFirstLetter()}"
+  }
+}
+
+internal abstract class ResolverCodegenLayout(
+    allTypes: List<CodegenType>,
+    private val packageName: String
+): CodegenLayout(allTypes) {
+  fun executionPackageName() = "${packageName}.execution"
+}
+
+internal abstract class OperationsCodegenLayout(
     allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
-    protected val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
-    private val decapitalizeFields: Boolean,
+): CodegenLayout(allTypes) {
+  fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
+  fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
+  fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
+  fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
+
+  fun fragmentPackageName(filePath: String) = "${packageNameGenerator.packageName(filePath)}.fragment"
+
+  fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
+  fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
+
+  internal fun fragmentModelsFileName(name: String) = capitalizedIdentifier(name)
+
+  internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
+  internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
+  internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
+
+  internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
+  internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
+  internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
+  internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
+
+  // Variables are escaped to avoid a clash with the model name if they are capitalized
+  internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")
+
+  internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")
+
+
+  internal fun operationName(operation: IrOperation): String {
+    val str = capitalizedIdentifier(operation.name)
+
+    if (!useSemanticNaming) {
+      return str
+    }
+
+    return if (str.endsWith(operation.operationType.name)) {
+      str
+    } else {
+      "$str${operation.operationType.name}"
+    }
+  }
+}
+
+internal abstract class CodegenLayout(
+    allTypes: List<CodegenType>,
 ) {
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
@@ -50,80 +149,16 @@ internal abstract class CodegenLayout(
     }
   }
 
-  private fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
+  protected fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
       ?: error("unknown schema type: $schemaTypeName")
 
-  private val typePackageName = "$schemaPackageName.type"
 
   // ------------------------ FileNames ---------------------------------
 
-  internal fun fragmentModelsFileName(name: String) = capitalizedIdentifier(name)
-
-  // ------------------------ PackageNames ---------------------------------
-
-  fun typePackageName() = typePackageName
-  fun typeAdapterPackageName() = "$typePackageName.adapter".stripDots()
-
-  fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
-  fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
-  fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
-  fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
-
-  fun fragmentPackageName(filePath: String) = "${packageNameGenerator.packageName(filePath)}.fragment"
-
-  fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
-  fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
-
-  fun paginationPackageName() = "$schemaPackageName.pagination"
-
-  fun schemaPackageName() = "$schemaPackageName.schema"
-
-  fun executionPackageName() = "$schemaPackageName.execution"
-
-  private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
   // ------------------------ Names ---------------------------------
 
   internal fun compiledTypeName(name: String) = className(name)
-
-  fun enumName(name: String) = className(name)
-
-  internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
-
-  internal fun operationName(operation: IrOperation): String {
-    val str = capitalizedIdentifier(operation.name)
-
-    if (!useSemanticNaming) {
-      return str
-    }
-
-    return if (str.endsWith(operation.operationType.name)) {
-      str
-    } else {
-      "$str${operation.operationType.name}"
-    }
-  }
-
-  internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
-  internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
-  internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
-
-  internal fun paginationName() = "Pagination"
-
-  internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
-  internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
-  internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
-  internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
-
-  internal fun inputObjectName(name: String) = className(name)
-  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
-
-  // Variables are escaped to avoid a clash with the model name if they are capitalized
-  internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")
-  internal fun propertyName(name: String) = regularIdentifier(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
-
-  internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")
 
   // ------------------------ Helpers ---------------------------------
 
@@ -135,29 +170,6 @@ internal abstract class CodegenLayout(
     return escapeReservedWord(name.capitalizeFirstLetter())
   }
 
-  fun builderName(name: String): String {
-    return "${name.capitalizeFirstLetter()}Builder"
-  }
-
-  fun otherBuilderName(name: String): String {
-    return "Other${name.capitalizeFirstLetter()}Builder"
-  }
-
-  fun mapName(name: String): String {
-    return "${name.capitalizeFirstLetter()}Map"
-  }
-
-  fun otherMapName(name: String): String {
-    return "Other${name.capitalizeFirstLetter()}Map"
-  }
-
-  fun buildFunName(name: String): String {
-    return "build${name.capitalizeFirstLetter()}"
-  }
-
-  fun buildOtherFunName(name: String): String {
-    return "buildOther${name.capitalizeFirstLetter()}"
-  }
 
   companion object {
     internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
@@ -233,3 +245,12 @@ internal abstract class CodegenLayout(
     }
   }
 }
+
+private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
+
+internal interface PropertyNameGenerator {
+  val decapitalizeFields: Boolean
+}
+
+internal fun PropertyNameGenerator.javaPropertyName(name: String) = name.escapeJavaReservedWord().let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
+internal fun PropertyNameGenerator.kotlinPropertyName(name: String) = name.escapeKotlinReservedWord().let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }

@@ -1,15 +1,16 @@
 package com.apollographql.apollo3.compiler.codegen.java.model
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.javaPropertyName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -25,7 +26,7 @@ import javax.lang.model.element.Modifier
  * @param path: the path leading to this model but not including the model name
  */
 internal class ModelBuilder(
-    private val context: JavaContext,
+    private val context: JavaOperationsContext,
     private val model: IrModel,
     private val superClassName: ClassName?,
     private val path: List<String>,
@@ -58,7 +59,7 @@ internal class ModelBuilder(
       val irType = context.resolver.resolveIrType(it.info.type)
       FieldSpec.builder(
           irType.withoutAnnotations(),
-          context.layout.propertyName(it.info.responseName),
+          context.javaPropertyName(it.info.responseName),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
@@ -117,7 +118,7 @@ internal class ModelBuilder(
     }
   }
 
-  private fun TypeSpec.addBuilder(context: JavaContext): TypeSpec {
+  private fun TypeSpec.addBuilder(context: JavaOperationsContext): TypeSpec {
     val fields = fieldSpecs.filter { !it.modifiers.contains(Modifier.STATIC) }
         .filterNot { it.name.startsWith(prefix = "$") }
     if (fields.isEmpty()) {
@@ -130,7 +131,7 @@ internal class ModelBuilder(
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
           .addCode(fields
-              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.javaPropertyName(it.name), context.javaPropertyName(it.name)) }
               .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
               .build()
           )

@@ -14,7 +14,7 @@ object BuildDirLayout {
     ).get().asFile
   }
 
-  internal fun metadata(project: Project, service: Service): Provider<RegularFile> {
+  internal fun codegenSymbols(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/metadata/apollo/${service.name}/metadata.json"
     )

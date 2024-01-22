@@ -27,10 +27,9 @@ import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.codegen.CodegenSymbols
+import com.apollographql.apollo3.compiler.codegen.java.JavaCodegen
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo3.compiler.internal.addRequiredFields
 import com.apollographql.apollo3.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo3.compiler.internal.checkApolloReservedEnumValueNames
@@ -45,8 +44,7 @@ import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.pqm.toPersistedQueryManifest
-import com.squareup.kotlinpoet.FileSpec
+import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import java.io.File
 
 object ApolloCompiler {
@@ -56,27 +54,9 @@ object ApolloCompiler {
 
   fun buildCodegenSchema(
       schemaFiles: Set<File>,
-      logger: Logger = defaultLogger,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
-      codegenSchemaOptionsFile: File,
-      codegenSchemaFile: File,
-  ) {
-    buildCodegenSchema(
-        schemaFiles,
-        logger,
-        packageNameGenerator,
-        packageNameRoots,
-        codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-    ).writeTo(codegenSchemaFile)
-  }
-
-  private fun buildCodegenSchema(
-      schemaFiles: Set<File>,
-      logger: Logger = defaultLogger,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
       codegenSchemaOptions: CodegenSchemaOptions,
+      logger: Logger?,
+      packageNameGenerator: PackageNameGenerator,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
       it.toGQLDocument(allowJson = true)
@@ -125,6 +105,9 @@ object ApolloCompiler {
     val issueGroup = result.issues.group(warnOnDeprecatedUsages = true, fieldsOnDisjointTypesMustMerge = true)
 
     issueGroup.errors.checkEmpty()
+
+    @Suppress("NAME_SHADOWING")
+    val logger = logger ?: defaultLogger
     issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
@@ -135,21 +118,11 @@ object ApolloCompiler {
     val scalarMapping = codegenSchemaOptions.scalarMapping
     checkScalars(schema, scalarMapping)
 
-    val codegenModels = codegenModels(codegenModels = codegenSchemaOptions.codegenModels, codegenSchemaOptions.targetLanguage)
-    @Suppress("NAME_SHADOWING")
-    val packageNameGenerator = packageNameGenerator ?: packageNameGenerator(
-        codegenSchemaOptions.packageName,
-        codegenSchemaOptions.packageNamesFromFilePaths,
-        packageNameRoots
-    )
-
     val generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     return CodegenSchema(
         schema = schema,
         packageName = packageNameGenerator.packageName(mainSchemaDocument.sourceLocation!!.filePath!!),
-        codegenModels = codegenModels,
         scalarMapping = scalarMapping,
-        targetLanguage = codegenSchemaOptions.targetLanguage,
         generateDataBuilders = generateDataBuilders
     )
   }
@@ -178,28 +151,12 @@ object ApolloCompiler {
   }
 
   fun buildIrOperations(
-      codegenSchemaFile: File,
-      executableFiles: Set<File>,
-      upstreamIrFiles: Set<File>,
-      irOptionsFile: File,
-      logger: Logger = defaultLogger,
-      irOperationsFile: File,
-  ) {
-    buildIrOperations(
-        codegenSchemaFile.toCodegenSchema(),
-        executableFiles,
-        upstreamIrFiles.flatMap { it.toIrOperations().fragmentDefinitions },
-        irOptionsFile.toIrOptions(),
-        logger
-    ).writeTo(irOperationsFile)
-  }
-
-  private fun buildIrOperations(
       codegenSchema: CodegenSchema,
       executableFiles: Set<File>,
-      upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
-      options: IrOptions = IrOptions(),
-      logger: Logger = defaultLogger,
+      upstreamIrOperations: List<IrOperations>,
+      operationOutputGenerator: OperationOutputGenerator?,
+      logger: Logger?,
+      irOptions: IrOptions,
   ): IrOperations {
     val schema = codegenSchema.schema
 
@@ -211,6 +168,7 @@ object ApolloCompiler {
     /**
      * Step 2, GraphQL validation
      */
+    val upstreamFragmentDefinitions = upstreamIrOperations.flatMap { it.fragmentDefinitions }
     val validationResult = GQLDocument(
         definitions = definitions + upstreamFragmentDefinitions,
         sourceLocation = null
@@ -219,7 +177,7 @@ object ApolloCompiler {
     val allIssues = mutableListOf<Issue>()
     allIssues.addAll(validationResult.issues)
 
-    val codegenModels = codegenSchema.codegenModels
+    val codegenModels = irOptions.codegenModels ?: defaultCodegenModels
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
       allIssues.addAll(checkConditionalFragments(definitions))
     }
@@ -228,14 +186,14 @@ object ApolloCompiler {
     allIssues.addAll(checkApolloTargetNameClashes(schema))
     allIssues.addAll(checkApolloInlineFragmentsHaveTypeCondition(definitions))
 
-    val flattenModels = options.flattenModels ?: flattenModels(codegenModels)
-    val decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields
-    val warnOnDeprecatedUsages = options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
-    val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
-    val fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
-    val addTypename = options.addTypename ?: defaultAddTypename
-    val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
-    val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
+    val flattenModels = irOptions.flattenModels ?: flattenModels(codegenModels)
+    val decapitalizeFields = irOptions.decapitalizeFields ?: defaultDecapitalizeFields
+    val warnOnDeprecatedUsages = irOptions.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
+    val failOnWarnings = irOptions.failOnWarnings ?: defaultFailOnWarnings
+    val fieldsOnDisjointTypesMustMerge = irOptions.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
+    val addTypename = irOptions.addTypename ?: defaultAddTypename
+    val generateOptionalOperationVariables = irOptions.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
+    val alwaysGenerateTypesMatching = irOptions.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
 
     if (!decapitalizeFields) {
       // When flattenModels is true, we still must check capitalized fields inside fragment spreads
@@ -249,6 +207,7 @@ object ApolloCompiler {
 
     issueGroup.errors.checkEmpty()
 
+    @Suppress("NAME_SHADOWING") val logger = logger ?: defaultLogger
     issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
@@ -287,7 +246,7 @@ object ApolloCompiler {
     /**
      * Build the IR
      */
-    return IrOperationsBuilder(
+    val irOperations = IrOperationsBuilder(
         schema = schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
@@ -299,33 +258,71 @@ object ApolloCompiler {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         generateDataBuilders = codegenSchema.generateDataBuilders,
         fragmentVariableUsages = validationResult.fragmentVariableUsages
-    ).build()
+    ).build() as DefaultIrOperations
+
+    val operationOutput = irOperations.operations.map {
+      OperationDescriptor(
+          name = it.name,
+          source = QueryDocumentMinifier.minify(it.sourceWithFragments),
+          type = it.operationType.name.lowercase()
+      )
+    }.let {
+      (operationOutputGenerator ?: defaultOperationOutputGenerator).generate(it)
+    }
+
+    check(operationOutput.size == irOperations.operations.size) {
+      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${irOperations.operations.size}).
+        |Check that all your IDs are unique.
+      """.trimMargin()
+    }
+
+    return irOperations.copy(
+        operations = irOperations.operations.map {
+          it.copy(id = operationOutput.findOperationId(it.name))
+        }
+    )
   }
 
-  fun buildIrSchema(
-      codegenSchemaFile: File,
-      irOperationsFiles: Set<File>,
-      irSchemaFile: File,
-  ) {
-    buildIrSchema(
-        codegenSchemaFile.toCodegenSchema(),
-        irOperationsFiles.map { it.toIrOperations() },
-    ).writeTo(irSchemaFile)
+  fun buildSchemaSources(
+      codegenSchema: CodegenSchema,
+      usedCoordinates: UsedCoordinates?,
+      codegenOptions: CodegenOptions,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
+  ): SourceOutput {
+    val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
+
+    codegenOptions.validate()
+
+    return if (codegenOptions.targetLanguage == TargetLanguage.JAVA) {
+      JavaCodegen.buildSchema(
+          codegenSchema,
+          irSchema,
+          codegenOptions
+      ).maybeTransform(javaOutputTransform).toSourceOutput()
+    } else {
+       KotlinCodegen.buildSchema(
+          codegenSchema,
+          irSchema,
+          codegenOptions
+      ).maybeTransform(kotlinOutputTransform).toSourceOutput()
+    }
   }
+
+
 
   private fun buildIrSchema(
       codegenSchema: CodegenSchema,
-      irOperations: List<IrOperations>,
+      usedCoordinates: UsedCoordinates?,
   ): IrSchema {
-
-    val usedCoordinates = irOperations.fold(emptyMap<String, Set<String>>()) { acc, irOperations1 ->
-      acc.mergeWith(irOperations1.usedFields)
-    }
+    @Suppress("NAME_SHADOWING")
+    val usedCoordinates = usedCoordinates?.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).associateWith { emptySet() })
+        ?: codegenSchema.schema.typeDefinitions.keys.associateWith { emptySet() }
 
     return IrSchemaBuilder.build(
-        codegenSchema.schema,
-        usedCoordinates.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).associateWith { emptySet() }),
-        emptySet() // We generate everything in the schema module
+        schema = codegenSchema.schema,
+        usedFields = usedCoordinates,
+        alreadyVisitedTypes = emptySet()
     )
   }
 
@@ -347,273 +344,119 @@ object ApolloCompiler {
     }
   }
 
-  internal fun File.clearContents() = apply {
-    deleteRecursively()
-    mkdirs()
+  private fun <T> T.maybeTransform(transform: ((T) -> T)?): T {
+    return transform?.invoke(this) ?: this
   }
 
-  fun buildSchemaAndOperationSources(
-      codegenSchemaFile: File,
-      irOperationsFile: File,
-      irSchemaFile: File? = null,
-      upstreamCodegenMetadataFiles: Set<File>,
-      codegenOptionsFile: File,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null,
-      sourcesDir: File,
-      operationManifestFile: File? = null,
-      codegenMetadataFile: File? = null,
-  ) {
-    buildSchemaAndOperationSources(
-        codegenSchema = codegenSchemaFile.toCodegenSchema(),
-        irOperations = irOperationsFile.toIrOperations(),
-        irSchema = irSchemaFile?.toIrSchema(),
-        upstreamCodegenMetadata = upstreamCodegenMetadataFiles.map { it.toCodegenMetadata() },
-        codegenOptions = codegenOptionsFile.toCodegenOptions(),
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
-        compilerKotlinHooks = compilerKotlinHooks,
-        compilerJavaHooks = compilerJavaHooks,
-        outputDir = sourcesDir,
-        operationManifestFile = operationManifestFile,
-        codegenMetadataFile = codegenMetadataFile
-    )
-  }
-
-  private fun buildSchemaAndOperationSources(
+  fun buildSchemaAndOperationsSourcesFromIr(
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
-      irSchema: IrSchema? = null,
-      upstreamCodegenMetadata: List<CodegenMetadata> = emptyList(),
-      codegenOptions: CodegenOptions = CodegenOptions(),
-      logger: Logger = defaultLogger,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
-      operationOutputGenerator: OperationOutputGenerator? = null,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null,
-      outputDir: File,
-      operationManifestFile: File? = null,
-      codegenMetadataFile: File? = null,
-  ) {
+      upstreamCodegenSymbols: List<CodegenSymbols>,
+      usedCoordinates: UsedCoordinates?,
+      codegenOptions: CodegenOptions,
+      packageNameGenerator: PackageNameGenerator,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
+  ): SourceOutput {
+    var sourceOutput = SourceOutput.Empty
 
-    check(irOperations is DefaultIrOperations)
-    val operationOutput = irOperations.operations.map {
-      OperationDescriptor(
-          name = it.name,
-          source = QueryDocumentMinifier.minify(it.sourceWithFragments),
-          type = it.operationType.name.lowercase()
+    codegenOptions.validate()
+
+    if (upstreamCodegenSymbols.isEmpty()) {
+      sourceOutput += buildSchemaSources(
+          codegenSchema = codegenSchema,
+          usedCoordinates = usedCoordinates?.mergeWith(irOperations.usedFields),
+          codegenOptions = codegenOptions,
+          javaOutputTransform = javaOutputTransform,
+          kotlinOutputTransform = kotlinOutputTransform
       )
-    }.let {
-      (operationOutputGenerator ?: defaultOperationOutputGenerator).generate(it)
     }
 
-    check(operationOutput.size == irOperations.operations.size) {
-      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${irOperations.operations.size}).
-        |Check that all your IDs are unique.
-      """.trimMargin()
-    }
-
-    val operationManifestFormat = codegenOptions.common.operationManifestFormat
-    if ((operationManifestFormat ?: defaultOperationManifestFormat) != MANIFEST_NONE) {
-      check(operationManifestFile != null) {
-        "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
-      }
-      when (operationManifestFormat) {
-        MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
-        MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
-      }
-    }
-
-    @Suppress("NAME_SHADOWING")
-    val packageNameGenerator = packageNameGenerator ?: packageNameGenerator(
-        codegenOptions.common.packageName,
-        codegenOptions.common.packageNamesFromFilePaths,
-        packageNameRoots
-    )
-
-    if (codegenSchema.targetLanguage == TargetLanguage.JAVA) {
-      if (compilerKotlinHooks != null) {
-        logger.warning("Apollo: compilerKotlinHooks is not used in Java")
-      }
-      if (codegenOptions.kotlin.generateAsInternal != null) {
-        logger.warning("Apollo: generateAsInternal is not used in Java")
-      }
-      if (codegenOptions.kotlin.generateFilterNotNull != null) {
-        logger.warning("Apollo: generateFilterNotNull is not used in Java")
-      }
-      if (codegenOptions.kotlin.sealedClassesForEnumsMatching != null) {
-        logger.warning("Apollo: sealedClassesForEnumsMatching is not used in Java")
-      }
-      if (codegenOptions.kotlin.addJvmOverloads != null) {
-        logger.warning("Apollo: addJvmOverloads is not used in Java")
-      }
-      if (codegenOptions.kotlin.requiresOptInAnnotation != null) {
-        logger.warning("Apollo: requiresOptInAnnotation is not used in Java")
-      }
-      if (codegenOptions.kotlin.jsExport != null) {
-        logger.warning("Apollo: jsExport is not used in Java")
-      }
-      if (codegenOptions.kotlin.generateInputBuilders != null) {
-        logger.warning("Apollo: generateInputBuilders is not used in Java")
-      }
-      JavaCodeGen.writeOperations(
+    if (codegenOptions.targetLanguage == TargetLanguage.JAVA) {
+      sourceOutput += JavaCodegen.buildOperations(
           codegenSchema = codegenSchema,
           irOperations = irOperations,
-          irSchema = irSchema,
-          operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata,
-          commonCodegenOptions = codegenOptions.common,
-          javaCodegenOptions = codegenOptions.java,
-          packageNameGenerator = packageNameGenerator,
-          compilerJavaHooks = compilerJavaHooks ?: defaultCompilerJavaHooks,
-          outputDir = outputDir,
-          codegenMetadataFile = codegenMetadataFile
-      )
+          upstreamCodegenSymbols = upstreamCodegenSymbols + sourceOutput.symbols,
+          javaOperationsCodegenOptions = codegenOptions,
+          packageNameGenerator = packageNameGenerator
+      ).maybeTransform(javaOutputTransform).toSourceOutput()
     } else {
-      if (compilerJavaHooks != null) {
-        logger.warning("Apollo: compilerJavaHooks is not used in Kotlin")
-      }
-      if (codegenOptions.java.nullableFieldStyle != null) {
-        logger.warning("Apollo: nullableFieldStyle is not used in Kotlin")
-      }
-      if (codegenOptions.java.generateModelBuilders != null) {
-        logger.warning("Apollo: generateModelBuilders is not used in Kotlin")
-      }
-      if (codegenOptions.java.classesForEnumsMatching != null) {
-        logger.warning("Apollo: classesForEnumsMatching is not used in Kotlin")
-      }
-      if (codegenOptions.java.generatePrimitiveTypes != null) {
-        logger.warning("Apollo: generatePrimitiveTypes is not used in Kotlin")
-      }
-
-      KotlinCodeGen.writeSchemaAndOperations(
+      sourceOutput += KotlinCodegen.buildOperations(
           codegenSchema = codegenSchema,
           irOperations = irOperations,
-          irSchema = irSchema,
-          operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata,
-          commonCodegenOptions = codegenOptions.common,
-          kotlinCodegenOptions = codegenOptions.kotlin,
-          packageNameGenerator = packageNameGenerator,
-          compilerKotlinHooks = compilerKotlinHooks ?: defaultCompilerKotlinHooks,
-          outputDir = outputDir,
-          codegenMetadataFile = codegenMetadataFile
-      )
+          upstreamCodegenSymbols = upstreamCodegenSymbols + sourceOutput.symbols,
+          codegenOptions = codegenOptions,
+          packageNameGenerator = packageNameGenerator
+      ).maybeTransform(kotlinOutputTransform).toSourceOutput()
     }
+
+    return sourceOutput
   }
+
 
   /**
    * Compiles a set of files without serializing the intermediate results
    */
-  fun build(
-      schemaFiles: Set<File>,
-      executableFiles: Set<File>,
-      codegenSchemaOptionsFile: File,
-      irOptionsFile: File,
-      codegenOptionsFile: File,
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
-      operationOutputGenerator: OperationOutputGenerator? = null,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null,
-      logger: Logger = defaultLogger,
-      outputDir: File,
-      operationManifestFile: File? = null,
-      codegenMetadataFile: File? = null,
-  ) {
-    return build(
-        schemaFiles = schemaFiles,
-        executableFiles = executableFiles,
-        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-        irOptions = irOptionsFile.toIrOptions(),
-        codegenOptions = codegenOptionsFile.toCodegenOptions(),
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
-        operationOutputGenerator = operationOutputGenerator,
-        compilerJavaHooks = compilerJavaHooks,
-        compilerKotlinHooks = compilerKotlinHooks,
-        logger = logger,
-        outputDir = outputDir,
-        operationManifestFile = operationManifestFile,
-        codegenMetadataFile = codegenMetadataFile
-    )
-  }
-
-  /**
-   * Compiles a set of files without serializing the intermediate results
-   */
-  fun build(
+  fun buildSchemaAndOperationsSources(
       schemaFiles: Set<File>,
       executableFiles: Set<File>,
       codegenSchemaOptions: CodegenSchemaOptions,
-      irOptions: IrOptions = IrOptions(),
-      codegenOptions: CodegenOptions = CodegenOptions(),
-      packageNameGenerator: PackageNameGenerator? = null,
-      packageNameRoots: Set<String>? = null,
-      operationOutputGenerator: OperationOutputGenerator? = null,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null,
-      logger: Logger = defaultLogger,
-      outputDir: File,
-      operationManifestFile: File? = null,
-      codegenMetadataFile: File? = null,
-  ) {
+      irOptions: IrOptions,
+      codegenOptions: CodegenOptions,
+      packageNameGenerator: PackageNameGenerator,
+      operationOutputGenerator: OperationOutputGenerator?,
+      logger: Logger?,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
+  ): BuildOutput {
+
     val codegenSchema = buildCodegenSchema(
         schemaFiles = schemaFiles,
         logger = logger,
         packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
         codegenSchemaOptions = codegenSchemaOptions
     )
 
     val irOperations = buildIrOperations(
         codegenSchema = codegenSchema,
         executableFiles = executableFiles,
-        upstreamFragmentDefinitions = emptyList(),
-        options = irOptions,
-        logger = logger
+        upstreamIrOperations = emptyList(),
+        irOptions = irOptions,
+        logger = logger,
+        operationOutputGenerator = operationOutputGenerator
     )
 
-    val irSchema = buildIrSchema(
-        codegenSchema = codegenSchema,
-        irOperations = listOf(irOperations),
-    )
-
-    buildSchemaAndOperationSources(
+    val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations,
-        irSchema = irSchema,
-        upstreamCodegenMetadata = emptyList(),
+        usedCoordinates = UsedCoordinates(),
+        upstreamCodegenSymbols = emptyList(),
         codegenOptions = codegenOptions,
         packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
-        operationOutputGenerator = operationOutputGenerator,
-        compilerKotlinHooks = compilerKotlinHooks,
-        compilerJavaHooks = compilerJavaHooks,
-        outputDir = outputDir,
-        operationManifestFile = operationManifestFile,
-        codegenMetadataFile = codegenMetadataFile
+        javaOutputTransform = javaOutputTransform,
+        kotlinOutputTransform = kotlinOutputTransform
+    )
+
+    return BuildOutput(
+        sourceOutput = sourceOutput,
+        irOperations = irOperations
     )
   }
 
-  fun schemaFileSpecs(
+  fun buildResolverSources(
       codegenSchema: CodegenSchema,
-      packageName: String,
-  ): Pair<CodegenMetadata, List<FileSpec>> {
-    return KotlinCodeGen.schemaFileSpecs(codegenSchema, packageName)
-  }
-
-  fun resolverFileSpecs(
-      codegenSchema: CodegenSchema,
-      codegenMetadata: CodegenMetadata,
+      codegenSymbols: CodegenSymbols,
       irTargetObjects: List<IrTargetObject>,
       packageName: String,
-      serviceName: String,
-  ): List<FileSpec> {
-    return KotlinCodeGen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName = packageName, serviceName = serviceName)
+      kotlinResolverOptions: KotlinResolverCodegenOptions,
+  ): SourceOutput {
+    return KotlinCodegen.buildResolver(
+        codegenSchema = codegenSchema,
+        codegenSymbols = codegenSymbols,
+        irTargetObjects = irTargetObjects,
+        options = kotlinResolverOptions,
+        packageName = packageName,
+    ).toSourceOutput()
   }
 }
 

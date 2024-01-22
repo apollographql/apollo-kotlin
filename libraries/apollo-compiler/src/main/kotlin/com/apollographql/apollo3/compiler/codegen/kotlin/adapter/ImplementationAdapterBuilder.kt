@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -23,7 +23,7 @@ import com.squareup.kotlinpoet.joinToCode
  * so that extension functions like `.obj(buffered)` can be used.
  */
 internal class ImplementationAdapterBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinOperationsContext,
     private val model: IrModel,
     private val path: List<String>,
     private val addTypenameArgument: Boolean,

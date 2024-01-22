@@ -2,14 +2,14 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.variablesAdapterTypeSpec
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class OperationVariablesAdapterBuilder(
-    val context: KotlinContext,
+    val context: KotlinOperationsContext,
     val operation: IrOperation,
 ) : CgFileBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.filePath)
