@@ -21,7 +21,7 @@ import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
  */
 internal class CodegenLayout(
     codegenSchema: CodegenSchema,
-    private val packageNameGenerator: PackageNameGenerator,
+    val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
 ) {
@@ -54,13 +54,14 @@ internal class CodegenLayout(
     }
   }
 
-  internal fun schemaTypeName(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
-      ?: error("unknown schema type: $schemaTypeName")
+  fun schemaTypeName(schemaTypeName: String): String {
+    return schemaTypeToClassName[schemaTypeName]
+        ?: error("unknown schema type: $schemaTypeName")
+  }
 
   fun basePackageName() = schemaPackageName
-  fun filePackageName(filePath: String) = packageNameGenerator.packageName(filePath)
 
-  internal fun operationName(operation: IrOperation): String {
+  fun operationName(operation: IrOperation): String {
     val str = operation.name.capitalizeFirstLetter()
 
     if (!useSemanticNaming) {
@@ -74,24 +75,8 @@ internal class CodegenLayout(
     }
   }
 
-  internal fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
+  fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
 }
-
-internal fun CodegenLayout.typeBuilderPackageName() = "${basePackageName()}.type.builder"
-internal fun CodegenLayout.typeAdapterPackageName() = "${basePackageName()}.type.adapter"
-internal fun CodegenLayout.typeUtilPackageName() = "${basePackageName()}.type.util"
-
-internal fun CodegenLayout.paginationPackageName() = "${basePackageName()}.pagination"
-internal fun CodegenLayout.schemaPackageName() = "${basePackageName()}.schema"
-internal fun CodegenLayout.executionPackageName() = "${basePackageName()}.execution"
-
-internal fun CodegenLayout.operationAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.adapter"
-internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.selections"
-
-internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
-internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter"
-internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections"
-
 
 private fun IrType.isList(): Boolean {
   return when (this) {
@@ -132,3 +117,20 @@ internal fun modelName(info: IrFieldInfo): String {
   return upperCamelCaseIgnoringNonLetters(setOf(responseName))
 }
 
+
+internal fun CodegenLayout.typePackageName() = "${basePackageName()}.type"
+internal fun CodegenLayout.typeBuilderPackageName() = "${basePackageName()}.type.builder"
+internal fun CodegenLayout.typeAdapterPackageName() = "${basePackageName()}.type.adapter"
+internal fun CodegenLayout.typeUtilPackageName() = "${basePackageName()}.type.util"
+
+internal fun CodegenLayout.paginationPackageName() = "${basePackageName()}.pagination"
+internal fun CodegenLayout.schemaPackageName() = "${basePackageName()}.schema"
+internal fun CodegenLayout.executionPackageName() = "${basePackageName()}.execution"
+
+internal fun CodegenLayout.filePackageName(filePath: String) = packageNameGenerator.packageName(filePath)
+internal fun CodegenLayout.operationAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.adapter"
+internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.selections"
+
+internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
+internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.adapter"
+internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.selections"

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWordInSealedClass
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
@@ -29,7 +30,7 @@ internal class EnumAsSealedBuilder(
     private val enum: IrEnum,
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = "${layout.basePackageName()}.type"
+  private val packageName = layout.typePackageName()
   private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName

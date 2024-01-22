@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInputObject
@@ -25,7 +26,7 @@ internal class InputObjectBuilder(
     val context: JavaContext,
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
-  private val packageName = "${context.layout.basePackageName()}.type"
+  private val packageName = context.layout.typePackageName()
   private val simpleName = context.layout.schemaTypeName(inputObject.name)
 
   override fun build(): CodegenJavaFile {

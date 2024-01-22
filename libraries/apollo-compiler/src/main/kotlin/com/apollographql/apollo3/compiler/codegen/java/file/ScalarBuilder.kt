@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
@@ -16,7 +17,7 @@ internal class ScalarBuilder(
     private val targetTypeName: String?,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = "${layout.basePackageName()}.type"
+  private val packageName = layout.typePackageName()
   private val simpleName = prefixBuiltinScalarNames(layout.schemaTypeName(scalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {

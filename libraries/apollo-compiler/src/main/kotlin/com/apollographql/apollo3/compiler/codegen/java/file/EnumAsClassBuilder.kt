@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.addGeneratedMethods
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeSuppressDeprecation
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.internal.escapeTypeReservedWord
 import com.apollographql.apollo3.compiler.ir.IrEnum
@@ -29,7 +30,7 @@ internal class EnumAsClassBuilder(
     private val enum: IrEnum,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = "${layout.basePackageName()}.type"
+  private val packageName = layout.typePackageName()
   private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName

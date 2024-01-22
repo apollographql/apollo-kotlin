@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
@@ -15,7 +16,7 @@ internal class CustomScalarAdaptersBuilder(
     private val scalarMapping: Map<String, ScalarInfo>,
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = "${layout.basePackageName()}.type"
+  private val packageName = layout.typePackageName()
   private val simpleName = "__CustomScalarAdapters"
 
   override fun prepare() {

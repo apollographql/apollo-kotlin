@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
+import com.apollographql.apollo3.compiler.codegen.filePackageName
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -95,7 +96,7 @@ internal class OperationBuilder(
             context.generateMethods,
             operation.variables.map { it.toNamedType().toParameterSpec(context) },
             className = context.resolver.resolveOperation(operation.name)
-          )
+        )
         .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
