@@ -4,12 +4,12 @@ import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
-import com.apollographql.apollo3.compiler.internal.singularize
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -114,25 +114,23 @@ internal abstract class CodegenLayout(
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
-  internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
+  internal fun fragmentSelectionsName(name: String) = escapeReservedWord(name) + "Selections"
 
   internal fun inputObjectName(name: String) = className(name)
   internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
-  internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")
-  internal fun propertyName(name: String) = regularIdentifier(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
+  internal fun variableName(name: String) = if (name == "__typename") name else escapeReservedWord("_$name")
+  internal fun propertyName(name: String) = escapeReservedWord(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
 
-  internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")
+  internal fun compiledSelectionsName(name: String) = escapeReservedWord("__$name")
 
   // ------------------------ Helpers ---------------------------------
 
   abstract fun escapeReservedWord(word: String): String
 
-  protected fun regularIdentifier(name: String) = escapeReservedWord(name)
-
   internal fun capitalizedIdentifier(name: String): String {
-    return escapeReservedWord(name.capitalizeFirstLetter())
+    return name.capitalizeFirstLetter()
   }
 
   fun builderName(name: String): String {
