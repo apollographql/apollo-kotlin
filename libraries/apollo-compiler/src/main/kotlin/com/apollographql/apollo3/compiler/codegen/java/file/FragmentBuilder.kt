@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext

@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder
+import com.apollographql.apollo3.compiler.codegen.operationResponseFieldsPackageName
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 

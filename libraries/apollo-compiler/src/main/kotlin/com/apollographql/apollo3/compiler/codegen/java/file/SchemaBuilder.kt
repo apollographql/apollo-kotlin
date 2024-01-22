@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
+import com.apollographql.apollo3.compiler.codegen.schemaPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject

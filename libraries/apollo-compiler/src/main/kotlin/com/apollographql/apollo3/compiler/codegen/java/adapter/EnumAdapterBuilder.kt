@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeAdapterPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -27,7 +28,7 @@ internal class EnumResponseAdapterBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeAdapterPackageName()
-  private val simpleName = layout.enumResponseAdapterName(enum.name)
+  private val simpleName = layout.schemaTypeName(enum.name) + "_ResponseAdapter"
 
   override fun prepare() {
     context.resolver.registerEnumAdapter(
@@ -63,7 +64,7 @@ internal class EnumResponseAdapterBuilder(
         .addCode("$writer.$value($value.rawValue);\n")
         .build()
 
-    return TypeSpec.enumBuilder(layout.enumResponseAdapterName(name))
+    return TypeSpec.enumBuilder(layout.schemaTypeName(name) + "_ResponseAdapter")
         .addModifiers(Modifier.PUBLIC)
         .addEnumConstant("INSTANCE")
         .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))

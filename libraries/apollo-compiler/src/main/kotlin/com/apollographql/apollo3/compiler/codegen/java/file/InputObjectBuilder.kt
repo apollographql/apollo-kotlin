@@ -12,7 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
-import com.apollographql.apollo3.compiler.codegen.utilPackageName
+import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
@@ -93,7 +93,7 @@ internal class InputObjectBuilder(
 private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
   val assertionsClassName: ClassName = if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL) {
     // When using the Guava optionals, use the method generated in the project, as apollo-api doesn't depend on Guava
-    ClassName.get(context.layout.utilPackageName(), "Assertions")
+    ClassName.get(context.layout.typeUtilPackageName(), "Assertions")
   } else {
     JavaClassNames.Assertions
   }

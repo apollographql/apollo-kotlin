@@ -48,7 +48,7 @@ internal class OperationBuilder(
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.operationPackageName(operation.filePath)
+  private val packageName = layout.filePackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {

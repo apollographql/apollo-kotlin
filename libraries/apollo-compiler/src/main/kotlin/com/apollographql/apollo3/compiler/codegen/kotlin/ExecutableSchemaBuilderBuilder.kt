@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.executionPackageName
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.ir.asKotlinPoet
 import com.squareup.kotlinpoet.ClassName
