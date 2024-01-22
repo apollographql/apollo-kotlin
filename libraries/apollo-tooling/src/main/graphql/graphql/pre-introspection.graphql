@@ -1,4 +1,6 @@
 # Pre-introspection query allowing to retrieve the server's supported features.
+# Note: selecting only the relevant types would be more optimized, but we've found it is rejected by api.github.com
+# see https://github.com/apollographql/apollo-kotlin/pull/5547 and https://github.com/orgs/community/discussions/101382
 
 query PreIntrospectionQuery {
   __schema {
