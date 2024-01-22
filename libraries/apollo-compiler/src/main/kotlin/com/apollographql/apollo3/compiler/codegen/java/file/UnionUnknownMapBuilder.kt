@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
@@ -17,7 +18,7 @@ internal class UnionUnknownMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.otherMapName(union.name)
+  private val simpleName = "Other${union.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {
     context.resolver.registerMapType(union.name, ClassName.get(packageName, simpleName))
@@ -35,7 +36,7 @@ internal class UnionUnknownMapBuilder(
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(JavaClassNames.ObjectMap)
-        .addSuperinterface(ClassName.get(packageName, context.layout.mapName(union.name)))
+        .addSuperinterface(ClassName.get(packageName, "${union.name.capitalizeFirstLetter()}Map"))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

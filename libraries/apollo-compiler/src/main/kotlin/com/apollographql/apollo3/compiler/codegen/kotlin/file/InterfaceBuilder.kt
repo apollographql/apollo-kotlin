@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -18,10 +19,10 @@ internal class InterfaceBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(iface.name)
-  private val builderName = layout.builderName(iface.name)
-  private val otherBuilderName = layout.otherBuilderName(iface.name)
-  private val mapName = layout.mapName(iface.name)
-  private val otherMapName = layout.otherMapName(iface.name)
+  private val builderName = "${iface.name.capitalizeFirstLetter()}Builder"
+  private val otherBuilderName = "Other${iface.name.capitalizeFirstLetter()}Builder"
+  private val mapName = "${iface.name.capitalizeFirstLetter()}Map"
+  private val otherMapName = "Other${iface.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))
@@ -61,7 +62,7 @@ internal class InterfaceBuilder(
           if (generateDataBuilders) {
             add(
                 topLevelBuildFunSpec(
-                    layout.buildOtherFunName(iface.name),
+                    "buildOther${iface.name.capitalizeFirstLetter()}",
                     ClassName(packageName, otherBuilderName),
                     ClassName(packageName, otherMapName),
                     requiresTypename = true

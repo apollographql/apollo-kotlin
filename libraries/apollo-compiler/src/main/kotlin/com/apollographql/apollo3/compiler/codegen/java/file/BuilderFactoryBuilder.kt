@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
@@ -78,8 +79,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrObject.toObjectBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.builderName(name))
-    return MethodSpec.methodBuilder(layout.buildFunName(name))
+    val builderClassName = ClassName.get(packageName, "${name.capitalizeFirstLetter()}Builder")
+    return MethodSpec.methodBuilder("build${name.capitalizeFirstLetter()}")
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)
@@ -87,8 +88,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.otherBuilderName(name))
-    return MethodSpec.methodBuilder(layout.buildOtherFunName(name))
+    val builderClassName = ClassName.get(packageName, "Other${name.capitalizeFirstLetter()}Builder")
+    return MethodSpec.methodBuilder("buildOther${name.capitalizeFirstLetter()}")
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)

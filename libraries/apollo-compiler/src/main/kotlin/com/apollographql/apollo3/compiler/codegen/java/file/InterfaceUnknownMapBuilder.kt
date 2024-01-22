@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
@@ -17,7 +18,7 @@ internal class InterfaceUnknownMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.otherMapName(iface.name)
+  private val simpleName = "Other${iface.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {
     context.resolver.registerMapType(iface.name, ClassName.get(packageName, simpleName))
@@ -37,10 +38,10 @@ internal class InterfaceUnknownMapBuilder(
         .superclass(JavaClassNames.ObjectMap)
         .addSuperinterfaces(
             implements.map {
-              ClassName.get(packageName, context.layout.mapName(it))
+              ClassName.get(packageName, "${it.capitalizeFirstLetter()}Map")
             }
         )
-        .addSuperinterface(ClassName.get(packageName, context.layout.mapName(iface.name)))
+        .addSuperinterface(ClassName.get(packageName, "${iface.name.capitalizeFirstLetter()}Map"))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

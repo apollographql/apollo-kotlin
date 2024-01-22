@@ -66,7 +66,6 @@ internal abstract class CodegenLayout(
 
   fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
   fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
-  fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
   fun fragmentPackageName(filePath: String) = "${packageNameGenerator.packageName(filePath)}.fragment"
@@ -105,7 +104,6 @@ internal abstract class CodegenLayout(
   }
 
   internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
   internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
   internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 
@@ -128,30 +126,6 @@ internal abstract class CodegenLayout(
   // ------------------------ Helpers ---------------------------------
 
   abstract fun escapeReservedWord(word: String): String
-
-  fun builderName(name: String): String {
-    return "${name.capitalizeFirstLetter()}Builder"
-  }
-
-  fun otherBuilderName(name: String): String {
-    return "Other${name.capitalizeFirstLetter()}Builder"
-  }
-
-  fun mapName(name: String): String {
-    return "${name.capitalizeFirstLetter()}Map"
-  }
-
-  fun otherMapName(name: String): String {
-    return "Other${name.capitalizeFirstLetter()}Map"
-  }
-
-  fun buildFunName(name: String): String {
-    return "build${name.capitalizeFirstLetter()}"
-  }
-
-  fun buildOtherFunName(name: String): String {
-    return "buildOther${name.capitalizeFirstLetter()}"
-  }
 
   companion object {
     internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

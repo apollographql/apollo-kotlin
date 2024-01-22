@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -18,10 +19,10 @@ internal class UnionBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(union.name)
-  private val builderName = layout.builderName(union.name)
-  private val otherBuilderName = layout.otherBuilderName(union.name)
-  private val mapName = layout.mapName(union.name)
-  private val otherMapName = layout.otherMapName(union.name)
+  private val builderName = "${union.name.capitalizeFirstLetter()}Builder"
+  private val otherBuilderName = "Other${union.name.capitalizeFirstLetter()}Builder"
+  private val mapName = "${union.name.capitalizeFirstLetter()}Map"
+  private val otherMapName = "Other${union.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName(packageName, simpleName))
@@ -61,7 +62,7 @@ internal class UnionBuilder(
           if (generateDataBuilders) {
             add(
                 topLevelBuildFunSpec(
-                    layout.buildOtherFunName(union.name),
+                    "buildOther${union.name.capitalizeFirstLetter()}",
                     ClassName(packageName, otherBuilderName),
                     ClassName(packageName, otherMapName),
                     requiresTypename = true

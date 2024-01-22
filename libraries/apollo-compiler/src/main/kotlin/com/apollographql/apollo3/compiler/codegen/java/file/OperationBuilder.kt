@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
@@ -157,7 +158,7 @@ internal class OperationBuilder(
   private fun buildDataMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.builderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addCode(
@@ -180,7 +181,7 @@ internal class OperationBuilder(
   private fun buildDataOverloadMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.builderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addStatement(
             "return buildData(${Identifier.map}, new $T($T.types))",

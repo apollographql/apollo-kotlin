@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
@@ -25,8 +26,8 @@ internal class ObjectBuilderBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.builderName(obj.name)
-  private val mapClassName = ClassName.get(packageName, layout.mapName(obj.name))
+  private val simpleName = "${obj.name.capitalizeFirstLetter()}Builder"
+  private val mapClassName = ClassName.get(packageName, "${obj.name.capitalizeFirstLetter()}Map")
 
   override fun prepare() {
   }
