@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
@@ -27,7 +28,7 @@ internal class InterfaceBuilderBuilder(
     private val iface: IrInterface,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "Other${iface.name.capitalizeFirstLetter()}Builder"
   private val mapClassName = ClassName.get(packageName, "Other${iface.name.capitalizeFirstLetter()}Map")
 

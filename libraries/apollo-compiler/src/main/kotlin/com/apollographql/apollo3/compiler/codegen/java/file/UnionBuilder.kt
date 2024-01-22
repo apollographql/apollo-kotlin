@@ -15,7 +15,7 @@ internal class UnionBuilder(
     private val union: IrUnion,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = layout.schemaTypeName(union.name)
 
   override fun prepare() {

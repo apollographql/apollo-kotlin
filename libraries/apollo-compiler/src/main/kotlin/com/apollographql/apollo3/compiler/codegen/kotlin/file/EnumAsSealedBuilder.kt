@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWordInSealedClass
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -28,7 +29,7 @@ internal class EnumAsSealedBuilder(
     private val enum: IrEnum,
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName
@@ -77,7 +78,7 @@ internal class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-    return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(targetName))
+    return TypeSpec.objectBuilder(targetName.escapeKotlinReservedWordInSealedClass())
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
         .maybeAddRequiresOptIn(context.resolver, optInFeature)
@@ -159,7 +160,7 @@ internal class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.valueClassName(): ClassName {
-    return ClassName(selfClassName.packageName, selfClassName.simpleName, layout.enumAsSealedClassValueName(targetName))
+    return ClassName(selfClassName.packageName, selfClassName.simpleName, targetName.escapeKotlinReservedWordInSealedClass())
   }
 
   private fun unknownValueClassName(): ClassName {

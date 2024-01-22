@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
@@ -14,7 +15,7 @@ internal class InterfaceMapBuilder(
     private val iface: IrInterface,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "${iface.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {

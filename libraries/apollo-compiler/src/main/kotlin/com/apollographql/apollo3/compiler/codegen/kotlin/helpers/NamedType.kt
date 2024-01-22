@@ -31,7 +31,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext, withDefaultArgume
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName)),
+          name = context.layout.propertyName(graphQlName),
           type = context.resolver.resolveIrType(type, context.jsExport)
       )
       .maybeAddDescription(description)
@@ -54,7 +54,7 @@ internal fun NamedType.toPropertySpec(context: KotlinContext): PropertySpec {
   return PropertySpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName)),
+          name = context.layout.propertyName(graphQlName),
           type = context.resolver.resolveIrType(actualType, context.jsExport)
       )
       .mutable(true)
@@ -64,7 +64,7 @@ internal fun NamedType.toPropertySpec(context: KotlinContext): PropertySpec {
 }
 
 internal fun NamedType.toSetterFunSpec(context: KotlinContext): FunSpec {
-  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(graphQlName))
+  val propertyName = context.layout.propertyName(graphQlName)
   val body = CodeBlock.builder()
   val parameterType: IrType
   if (type.optional) {

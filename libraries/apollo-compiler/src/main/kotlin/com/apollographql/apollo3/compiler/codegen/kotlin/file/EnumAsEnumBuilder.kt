@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
+import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWordInEnum
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -28,7 +29,7 @@ internal class EnumAsEnumBuilder(
     private val withUnknown: Boolean
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName
@@ -62,7 +63,7 @@ internal class EnumAsEnumBuilder(
         .addType(companionTypeSpec())
         .apply {
           values.forEach { value ->
-            addEnumConstant(layout.enumAsEnumValueName(value.targetName), value.enumConstTypeSpec())
+            addEnumConstant(value.targetName.escapeKotlinReservedWordInEnum(), value.enumConstTypeSpec())
           }
           if (withUnknown) {
             addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
@@ -106,7 +107,7 @@ internal class EnumAsEnumBuilder(
                     .indent()
                     .add(
                         values.map {
-                          CodeBlock.of("%N", layout.enumAsEnumValueName(it.targetName))
+                          CodeBlock.of("%N", it.targetName.escapeKotlinReservedWordInEnum())
                         }.joinToCode(",\n")
                     )
                     .unindent()

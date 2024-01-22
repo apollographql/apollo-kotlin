@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.allTypes
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -126,7 +127,7 @@ internal object JavaCodeGen {
       )
     }
 
-    val layout = JavaCodegenLayout(
+    val layout = CodegenLayout(
         allTypes = codegenSchema.allTypes(),
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,

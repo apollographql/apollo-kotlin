@@ -15,7 +15,7 @@ internal class ScalarBuilder(
     private val targetTypeName: String?,
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = prefixBuiltinScalarNames(layout.schemaTypeName(scalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {

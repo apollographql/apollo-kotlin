@@ -62,7 +62,7 @@ internal class ModelBuilder(
   fun IrModel.typeSpec(): TypeSpec {
     val properties = properties.map {
       PropertySpec.builder(
-          context.layout.escapeReservedWord(context.layout.propertyName(it.info.responseName)),
+          context.layout.propertyName(it.info.responseName),
           context.resolver.resolveIrType(it.info.type, jsExport = context.jsExport, isInterface = isInterface)
       )
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }

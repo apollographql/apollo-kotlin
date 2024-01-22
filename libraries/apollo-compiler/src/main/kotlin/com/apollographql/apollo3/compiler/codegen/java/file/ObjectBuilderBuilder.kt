@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -26,7 +27,7 @@ internal class ObjectBuilderBuilder(
     private val obj: IrObject,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "${obj.name.capitalizeFirstLetter()}Builder"
   private val mapClassName = ClassName.get(packageName, "${obj.name.capitalizeFirstLetter()}Map")
 

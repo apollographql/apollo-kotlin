@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.allTypes
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -215,7 +216,7 @@ internal object KotlinCodeGen {
       KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, compilerKotlinHooks)
     }
 
-    val layout = KotlinCodegenLayout(
+    val layout = CodegenLayout(
         allTypes = codegenSchema.allTypes(),
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
@@ -333,7 +334,7 @@ internal object KotlinCodeGen {
       codegenSchema: CodegenSchema,
       packageName: String,
   ): Pair<CodegenMetadata, List<FileSpec>> {
-    val layout = KotlinCodegenLayout(
+    val layout = CodegenLayout(
         allTypes = codegenSchema.allTypes(),
         useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),
@@ -392,7 +393,7 @@ internal object KotlinCodeGen {
       packageName: String,
       serviceName: String,
   ): List<FileSpec> {
-    val layout = KotlinCodegenLayout(
+    val layout = CodegenLayout(
         allTypes = codegenSchema.allTypes(),
         useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),

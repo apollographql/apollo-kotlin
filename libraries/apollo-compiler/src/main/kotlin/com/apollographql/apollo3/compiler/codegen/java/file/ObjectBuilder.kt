@@ -15,7 +15,7 @@ internal class ObjectBuilder(
     private val obj: IrObject,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = layout.schemaTypeName(obj.name)
 
   override fun prepare() {

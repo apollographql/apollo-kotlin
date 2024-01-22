@@ -170,7 +170,7 @@ internal fun readFromResponseCodeBlock(
         }
         CodeBlock.of(
             "%N·=·%N%L",
-            context.layout.escapeReservedWord(context.layout.propertyName(property.info.responseName)),
+            context.layout.propertyName(property.info.responseName),
             property.info.responseName.withUnderscorePrefix(),
             maybeAssertNotNull
         )
@@ -213,7 +213,7 @@ internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinContext): C
 
 private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.escapeReservedWord(context.layout.propertyName(info.responseName))
+  val propertyName = context.layout.propertyName(info.responseName)
 
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport, customScalarAdapters)

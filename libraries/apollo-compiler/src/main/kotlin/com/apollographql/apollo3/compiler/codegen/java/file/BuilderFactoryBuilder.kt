@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrSchemaType
@@ -27,7 +28,7 @@ internal class BuilderFactoryBuilder(
     private val unions: List<IrUnion>,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "BuilderFactory"
 
   override fun prepare() {

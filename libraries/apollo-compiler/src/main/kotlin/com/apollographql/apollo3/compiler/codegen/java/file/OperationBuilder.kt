@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
@@ -159,7 +160,7 @@ internal class OperationBuilder(
   private fun buildDataMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
+        .addParameter(ClassName.get(layout.typeBuilderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addCode(
@@ -182,7 +183,7 @@ internal class OperationBuilder(
   private fun buildDataOverloadMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
+        .addParameter(ClassName.get(layout.typeBuilderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addStatement(
             "return buildData(${Identifier.map}, new $T($T.types))",

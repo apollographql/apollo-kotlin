@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -17,7 +18,7 @@ internal class ObjectMapBuilder(
     private val obj: IrObject,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "${obj.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {

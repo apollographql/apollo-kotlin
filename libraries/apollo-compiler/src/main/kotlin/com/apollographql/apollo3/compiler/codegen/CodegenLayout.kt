@@ -16,7 +16,7 @@ import com.apollographql.apollo3.compiler.ir.TypeSet
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-internal abstract class CodegenLayout(
+internal open class CodegenLayout(
     allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
     protected val schemaPackageName: String,
@@ -53,14 +53,11 @@ internal abstract class CodegenLayout(
   internal fun schemaTypeName(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
       ?: error("unknown schema type: $schemaTypeName")
 
-  private val typePackageName = "$schemaPackageName.type"
-
   // ------------------------ FileNames ---------------------------------
 
   // ------------------------ PackageNames ---------------------------------
 
-  fun typePackageName() = typePackageName
-  fun typeAdapterPackageName() = "$typePackageName.adapter".stripDots()
+  fun typeAdapterPackageName() = "${basePackageName()}.type.adapter".stripDots()
 
   fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
   fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
@@ -71,11 +68,12 @@ internal abstract class CodegenLayout(
   fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
   fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
 
-  fun paginationPackageName() = "$schemaPackageName.pagination"
+  fun paginationPackageName() = "${basePackageName()}.pagination"
 
-  fun schemaPackageName() = "$schemaPackageName.schema"
+  fun basePackageName() = schemaPackageName
+  fun schemaPackageName() = "${basePackageName()}.schema"
 
-  fun executionPackageName() = "$schemaPackageName.execution"
+  fun executionPackageName() = "${basePackageName()}.execution"
 
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
@@ -175,3 +173,6 @@ internal abstract class CodegenLayout(
     }
   }
 }
+
+internal fun CodegenLayout.typeBuilderPackageName() = "${basePackageName()}.type.builder"
+internal fun CodegenLayout.utilPackageName() = "${basePackageName()}.type.util"

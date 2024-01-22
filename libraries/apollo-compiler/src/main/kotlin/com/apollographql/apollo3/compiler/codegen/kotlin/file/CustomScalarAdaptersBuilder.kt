@@ -15,7 +15,7 @@ internal class CustomScalarAdaptersBuilder(
     private val scalarMapping: Map<String, ScalarInfo>,
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = "${layout.basePackageName()}.type"
   private val simpleName = "__CustomScalarAdapters"
 
   override fun prepare() {
