@@ -157,10 +157,11 @@ private constructor(
           if (apolloRequest.enableAutoPersistedQueries != null) {
             enableAutoPersistedQueries(apolloRequest.enableAutoPersistedQueries)
           }
-          if (apolloRequest.canBeBatched != null) {
+          val canBeBatched = apolloRequest.canBeBatched ?: this@ApolloClient.canBeBatched
+          if (canBeBatched != null) {
             // Because batching is handled at the HTTP level, move the information to HTTP headers
             // canBeBatched(apolloRequest.canBeBatched)
-            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
+            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
           }
         }
         .build()
