@@ -11,6 +11,8 @@ import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
+import com.apollographql.apollo3.compiler.uniqueName
+import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -73,80 +75,6 @@ internal class CodegenLayout(
   }
 
   internal fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
-
-  companion object {
-    internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
-      return strings.map {
-        it.capitalizeFirstLetter()
-      }.joinToString("")
-    }
-
-    internal fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
-      return strings.map {
-        it.decapitalizeFirstLetter()
-      }.joinToString("")
-    }
-
-    private fun IrType.isList(): Boolean {
-      return when (this) {
-        is IrListType -> true
-        else -> false
-      }
-    }
-
-    /**
-     * Build a name for a model
-     *
-     * @param info the field info, including responseName and whether this field is of list type. If the field is of
-     * list type, the model name will be singularized
-     * @param typeSet the different type conditions for this model
-     * @param rawTypename the type of the field. Because it is always satisfied, it is not included in the model name
-     * @param isOther whether this is a fallback type
-     */
-    internal fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
-      val responseName = if (info.type.isList()) {
-        info.responseName.singularize()
-      } else {
-        info.responseName
-      }
-      val name = upperCamelCaseIgnoringNonLetters((typeSet - rawTypename).sorted() + responseName)
-
-      return (if (isOther) "Other" else "") + name
-    }
-
-    /**
-     * Build a simple model name. See also [modelName] for a more complex version that can use typeSets and fallback types
-     */
-    internal fun modelName(info: IrFieldInfo): String {
-      val responseName = if (info.type.isList()) {
-        info.responseName.singularize()
-      } else {
-        info.responseName
-      }
-      return upperCamelCaseIgnoringNonLetters(setOf(responseName))
-    }
-
-    /**
-     * On case-insensitive filesystems, we need to make sure two schema types with
-     * different cases like 'Url' and 'URL' are not generated or their files will
-     * overwrite each other.
-     *
-     * For Kotlin, we _could_ just change the file name (and not the class name) but
-     * that only postpones the issue to later on when .class files are generated.
-     *
-     * In order to get predictable results independently of the system, we make the
-     * case-insensitive checks no matter the actual filesystem.
-     */
-    internal fun uniqueName(name: String, usedNames: Set<String>): String {
-      var i = 1
-      var uniqueName = name
-      while (uniqueName.lowercase() in usedNames) {
-        uniqueName = "${name}$i"
-        i++
-      }
-      return uniqueName
-    }
-  }
 }
 
 internal fun CodegenLayout.typeBuilderPackageName() = "${basePackageName()}.type.builder"
@@ -163,3 +91,44 @@ internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) 
 internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
 internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter"
 internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections"
+
+
+private fun IrType.isList(): Boolean {
+  return when (this) {
+    is IrListType -> true
+    else -> false
+  }
+}
+
+/**
+ * Build a name for a model
+ *
+ * @param info the field info, including responseName and whether this field is of list type. If the field is of
+ * list type, the model name will be singularized
+ * @param typeSet the different type conditions for this model
+ * @param rawTypename the type of the field. Because it is always satisfied, it is not included in the model name
+ * @param isOther whether this is a fallback type
+ */
+internal fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
+  val responseName = if (info.type.isList()) {
+    info.responseName.singularize()
+  } else {
+    info.responseName
+  }
+  val name = upperCamelCaseIgnoringNonLetters((typeSet - rawTypename).sorted() + responseName)
+
+  return (if (isOther) "Other" else "") + name
+}
+
+/**
+ * Build a simple model name. See also [modelName] for a more complex version that can use typeSets and fallback types
+ */
+internal fun modelName(info: IrFieldInfo): String {
+  val responseName = if (info.type.isList()) {
+    info.responseName.singularize()
+  } else {
+    info.responseName
+  }
+  return upperCamelCaseIgnoringNonLetters(setOf(responseName))
+}
+

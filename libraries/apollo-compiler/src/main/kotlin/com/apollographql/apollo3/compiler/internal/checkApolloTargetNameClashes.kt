@@ -8,7 +8,7 @@ import com.apollographql.apollo3.ast.ReservedEnumValueName
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.pretty
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
+import com.apollographql.apollo3.compiler.uniqueName
 
 /**
  * Checks that targetNames don't clash with other class name.
@@ -27,7 +27,7 @@ internal fun checkApolloTargetNameClashes(schema: Schema): List<Issue> {
 
   // 1. Collect unique names for types without a targetName
   for ((type, _) in typesWithTargetName.filterValues { it == null }) {
-    val name = CodegenLayout.uniqueName(type.name, usedNames.keys.toSet())
+    val name = uniqueName(type.name, usedNames.keys.toSet())
     usedNames[name.lowercase()] = type
   }
 

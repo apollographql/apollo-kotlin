@@ -40,6 +40,39 @@ fun String.decapitalizeFirstLetter(): String {
   return builder.toString()
 }
 
+internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
+  return strings.map {
+    it.capitalizeFirstLetter()
+  }.joinToString("")
+}
+
+internal fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
+  return strings.map {
+    it.decapitalizeFirstLetter()
+  }.joinToString("")
+}
+
+/**
+ * On case-insensitive filesystems, we need to make sure two schema types with
+ * different cases like 'Url' and 'URL' are not generated or their files will
+ * overwrite each other.
+ *
+ * For Kotlin, we _could_ just change the file name (and not the class name) but
+ * that only postpones the issue to later on when .class files are generated.
+ *
+ * In order to get predictable results independently of the system, we make the
+ * case-insensitive checks no matter the actual filesystem.
+ */
+internal fun uniqueName(name: String, usedNames: Set<String>): String {
+  var i = 1
+  var uniqueName = name
+  while (uniqueName.lowercase() in usedNames) {
+    uniqueName = "${name}$i"
+    i++
+  }
+  return uniqueName
+}
+
 /**
  * when used in function bodies, prefixing with '_' prevents clashing with parent classes
  */
