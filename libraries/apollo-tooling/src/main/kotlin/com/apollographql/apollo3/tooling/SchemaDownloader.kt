@@ -13,7 +13,6 @@ import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSDL
 import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo3.tooling.SchemaHelper.reworkInputValueFragment

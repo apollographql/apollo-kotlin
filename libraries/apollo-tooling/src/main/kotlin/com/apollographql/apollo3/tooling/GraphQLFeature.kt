@@ -52,6 +52,11 @@ enum class GraphQLFeature {
 }
 
 internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
+  val schema = __schema.types.firstOrNull { it.typeFields.name == "__Schema" }
+  val type = __schema.types.firstOrNull { it.typeFields.name == "__Type" }
+  val directive = __schema.types.firstOrNull { it.typeFields.name == "__Directive" }
+  val field = __schema.types.firstOrNull { it.typeFields.name == "__Field" }
+  val inputValue = __schema.types.firstOrNull { it.typeFields.name == "__InputValue" }
   return buildSet {
     if (schema?.typeFields?.fields.orEmpty().any { it.name == "description" }) {
       add(SchemaDescription)
