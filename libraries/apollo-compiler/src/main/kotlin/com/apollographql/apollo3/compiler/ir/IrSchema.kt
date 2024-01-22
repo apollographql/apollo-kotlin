@@ -33,24 +33,17 @@ internal class DefaultIrSchema(
     val irObjects: List<IrObject>,
 
     val connectionTypes: List<String>,
-) : IrSchema {
-  val allTypes: List<IrSchemaType>
-    get() {
-      return (irScalars + irEnums + irInputObjects + irUnions + irInterfaces + irObjects).sortedBy { it.name }
-    }
-}
+) : IrSchema
 
 interface IrSchema
 
 internal sealed interface IrSchemaType {
   val name: String
-  val targetName: String?
 }
 
 @Serializable
 internal data class IrInputObject(
     override val name: String,
-    override val targetName: String?,
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
@@ -60,7 +53,6 @@ internal data class IrInputObject(
 @Serializable
 internal data class IrObject(
     override val name: String,
-    override val targetName: String?,
     val implements: List<String>,
     /**
      * contrary to [implements], [superTypes] also includes unions
@@ -77,7 +69,6 @@ internal data class IrObject(
 @Serializable
 internal data class IrInterface(
     override val name: String,
-    override val targetName: String?,
     val implements: List<String>,
     val keyFields: List<String>,
     val description: String?,
@@ -89,7 +80,6 @@ internal data class IrInterface(
 @Serializable
 internal data class IrUnion(
     override val name: String,
-    override val targetName: String?,
     val members: List<String>,
     val description: String?,
     val deprecationReason: String?,
@@ -98,7 +88,6 @@ internal data class IrUnion(
 @Serializable
 internal data class IrScalar(
     override val name: String,
-    override val targetName: String?,
     val description: String?,
     val deprecationReason: String?,
 ) : IrSchemaType {
@@ -131,7 +120,6 @@ internal data class IrMapProperty(
 @Serializable
 internal data class IrEnum(
     override val name: String,
-    override val targetName: String?,
     val description: String?,
     val values: List<Value>,
 ) : IrSchemaType {
@@ -167,7 +155,6 @@ internal data class IrInputField(
 internal fun GQLEnumTypeDefinition.toIr(schema: Schema): IrEnum {
   return IrEnum(
       name = name,
-      targetName = directives.findTargetName(schema),
       description = description,
       values = enumValues.map { it.toIr(schema) }
   )
@@ -183,10 +170,9 @@ internal fun GQLEnumValueDefinition.toIr(schema: Schema): IrEnum.Value {
   )
 }
 
-internal fun GQLUnionTypeDefinition.toIr(schema: Schema): IrUnion {
+internal fun GQLUnionTypeDefinition.toIr(): IrUnion {
   return IrUnion(
       name = name,
-      targetName = directives.findTargetName(schema),
       members = memberTypes.map { it.name },
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on union definitions
@@ -194,10 +180,9 @@ internal fun GQLUnionTypeDefinition.toIr(schema: Schema): IrUnion {
   )
 }
 
-internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
+internal fun GQLScalarTypeDefinition.toIr(): IrScalar {
   return IrScalar(
       name = name,
-      targetName = directives.findTargetName(schema),
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
       deprecationReason = directives.findDeprecationReason()
@@ -207,7 +192,6 @@ internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
 internal fun GQLInputObjectTypeDefinition.toIr(schema: Schema): IrInputObject {
   return IrInputObject(
       name = name,
-      targetName = directives.findTargetName(schema),
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on input objects definitions
       deprecationReason = directives.findDeprecationReason(),
@@ -224,7 +208,6 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedFields: Map<Str
 
   return IrInterface(
       name = name,
-      targetName = directives.findTargetName(schema),
       implements = implementsInterfaces,
       keyFields = schema.keyFields(name).toList(),
       description = description,
@@ -261,7 +244,6 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedFields: Map<String
 
   return IrObject(
       name = name,
-      targetName = directives.findTargetName(schema),
       implements = implementsInterfaces,
       keyFields = schema.keyFields(name).toList(),
       description = description,
