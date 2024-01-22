@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
@@ -30,7 +31,7 @@ internal class MainResolverBuilder(
     val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {
   private val packageName = context.layout.executionPackageName()
-  private val simpleName = context.layout.capitalizedIdentifier("${serviceName}Resolver")
+  private val simpleName = "${serviceName}Resolver".capitalizeFirstLetter()
 
   val className = ClassName(packageName, simpleName)
 

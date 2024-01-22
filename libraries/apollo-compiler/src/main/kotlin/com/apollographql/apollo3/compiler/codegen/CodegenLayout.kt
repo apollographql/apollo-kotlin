@@ -38,7 +38,7 @@ internal abstract class CodegenLayout(
     // 1. Compute a unique name for types without a targetName
     for (type in allTypes.filter { it.targetName == null }) {
       val uniqueName = uniqueName(type.name, usedNames)
-      val className = capitalizedIdentifier(uniqueName)
+      val className = uniqueName.capitalizeFirstLetter()
 
       usedNames.add(className.lowercase())
       this[type.name] = className
@@ -57,7 +57,7 @@ internal abstract class CodegenLayout(
 
   // ------------------------ FileNames ---------------------------------
 
-  internal fun fragmentModelsFileName(name: String) = capitalizedIdentifier(name)
+  internal fun fragmentModelsFileName(name: String) = name.capitalizeFirstLetter()
 
   // ------------------------ PackageNames ---------------------------------
 
@@ -91,7 +91,7 @@ internal abstract class CodegenLayout(
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
-    val str = capitalizedIdentifier(operation.name)
+    val str = operation.name.capitalizeFirstLetter()
 
     if (!useSemanticNaming) {
       return str
@@ -111,7 +111,7 @@ internal abstract class CodegenLayout(
 
   internal fun paginationName() = "Pagination"
 
-  internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
+  internal fun fragmentName(name: String) = name.capitalizeFirstLetter() + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = escapeReservedWord(name) + "Selections"
@@ -128,10 +128,6 @@ internal abstract class CodegenLayout(
   // ------------------------ Helpers ---------------------------------
 
   abstract fun escapeReservedWord(word: String): String
-
-  internal fun capitalizedIdentifier(name: String): String {
-    return name.capitalizeFirstLetter()
-  }
 
   fun builderName(name: String): String {
     return "${name.capitalizeFirstLetter()}Builder"

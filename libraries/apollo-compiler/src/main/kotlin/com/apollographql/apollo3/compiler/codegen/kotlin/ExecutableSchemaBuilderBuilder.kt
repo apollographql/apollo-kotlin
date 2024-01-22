@@ -18,7 +18,7 @@ internal class ExecutableSchemaBuilderBuilder(
     private val adapterRegistry: MemberName,
     private val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {
-  val simpleName = context.layout.capitalizedIdentifier("${serviceName}ExecutableSchemaBuilder")
+  val simpleName = "${serviceName}ExecutableSchemaBuilder".capitalizeFirstLetter()
   override fun prepare() {
 
   }
