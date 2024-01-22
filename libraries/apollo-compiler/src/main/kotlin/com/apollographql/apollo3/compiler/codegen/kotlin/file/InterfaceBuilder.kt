@@ -18,7 +18,7 @@ internal class InterfaceBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(iface.name)
+  private val simpleName = layout.schemaTypeName(iface.name)
   private val builderName = "${iface.name.capitalizeFirstLetter()}Builder"
   private val otherBuilderName = "Other${iface.name.capitalizeFirstLetter()}Builder"
   private val mapName = "${iface.name.capitalizeFirstLetter()}Map"

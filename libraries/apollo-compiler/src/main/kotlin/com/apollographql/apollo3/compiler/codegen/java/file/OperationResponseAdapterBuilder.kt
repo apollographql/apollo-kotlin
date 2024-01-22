@@ -15,7 +15,7 @@ internal class OperationResponseAdapterBuilder(
     val flatten: Boolean,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
-  private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
+  private val simpleName = context.layout.operationName(operation) + "_ResponseAdapter"
 
   private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

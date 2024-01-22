@@ -12,7 +12,7 @@ internal class FragmentSelectionsBuilder(
     val fragment: IrFragmentDefinition,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentResponseFieldsPackageName(fragment.filePath)
-  private val simpleName = context.layout.fragmentSelectionsName(fragment.name)
+  private val simpleName = "${fragment.name}Selections"
 
   override fun prepare() {
     context.resolver.registerFragmentSelections(

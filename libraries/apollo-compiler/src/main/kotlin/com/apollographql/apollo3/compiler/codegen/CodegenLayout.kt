@@ -50,14 +50,12 @@ internal abstract class CodegenLayout(
     }
   }
 
-  private fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
+  internal fun schemaTypeName(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
       ?: error("unknown schema type: $schemaTypeName")
 
   private val typePackageName = "$schemaPackageName.type"
 
   // ------------------------ FileNames ---------------------------------
-
-  internal fun fragmentModelsFileName(name: String) = name.capitalizeFirstLetter()
 
   // ------------------------ PackageNames ---------------------------------
 
@@ -83,11 +81,7 @@ internal abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(name: String) = className(name)
-
-  fun enumName(name: String) = className(name)
-
-  internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
+  internal fun enumResponseAdapterName(name: String) = schemaTypeName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
     val str = operation.name.capitalizeFirstLetter()
@@ -103,25 +97,11 @@ internal abstract class CodegenLayout(
     }
   }
 
-  internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
-  internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
-
-  internal fun paginationName() = "Pagination"
-
-  internal fun fragmentName(name: String) = name.capitalizeFirstLetter() + "Impl"
-  internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
-  internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
-  internal fun fragmentSelectionsName(name: String) = escapeReservedWord(name) + "Selections"
-
-  internal fun inputObjectName(name: String) = className(name)
-  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
+  internal fun inputObjectName(name: String) = schemaTypeName(name)
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
-  internal fun variableName(name: String) = if (name == "__typename") name else escapeReservedWord("_$name")
+  internal fun variableName(name: String) = if (name == "__typename") name else "_$name"
   internal fun propertyName(name: String) = escapeReservedWord(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
-
-  internal fun compiledSelectionsName(name: String) = escapeReservedWord("__$name")
 
   // ------------------------ Helpers ---------------------------------
 

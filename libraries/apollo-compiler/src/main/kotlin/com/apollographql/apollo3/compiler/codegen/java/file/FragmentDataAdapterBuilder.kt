@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -15,7 +16,7 @@ internal class FragmentDataAdapterBuilder(
     val flatten: Boolean,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
-  private val simpleName = context.layout.fragmentResponseAdapterWrapperName(fragment.name)
+  private val simpleName = fragment.name.capitalizeFirstLetter() + "Impl" + "_ResponseAdapter"
 
   private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
@@ -18,7 +17,7 @@ internal class PaginationBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.paginationPackageName()
-  private val simpleName = layout.paginationName()
+  private val simpleName = "Pagination"
 
   override fun prepare() {
     context.resolver.register(ResolverKeyKind.Pagination, "", ClassName(packageName, simpleName))

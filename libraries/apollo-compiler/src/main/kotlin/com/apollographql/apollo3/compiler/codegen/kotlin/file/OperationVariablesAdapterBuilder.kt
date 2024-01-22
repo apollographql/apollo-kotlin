@@ -13,7 +13,7 @@ internal class OperationVariablesAdapterBuilder(
     val operation: IrOperation,
 ) : CgFileBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.filePath)
-  val simpleName = context.layout.operationVariablesAdapterName(operation)
+  val simpleName = context.layout.operationName(operation) + "_VariablesAdapter"
   override fun prepare() {
     context.resolver.registerOperationVariablesAdapter(
         operation.name,

@@ -16,7 +16,7 @@ internal class InterfaceBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(iface.name)
+  private val simpleName = layout.schemaTypeName(iface.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName.get(packageName, simpleName))

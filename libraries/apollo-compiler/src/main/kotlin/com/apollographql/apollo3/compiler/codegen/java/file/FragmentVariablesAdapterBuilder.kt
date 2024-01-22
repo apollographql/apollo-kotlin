@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -13,7 +14,7 @@ internal class FragmentVariablesAdapterBuilder(
     val fragment: IrFragmentDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
-  private val simpleName = context.layout.fragmentVariablesAdapterName(fragment.name)
+  private val simpleName = fragment.name.capitalizeFirstLetter() + "Impl" + "_VariablesAdapter"
 
   override fun prepare() {
     context.resolver.registerFragmentVariablesAdapter(

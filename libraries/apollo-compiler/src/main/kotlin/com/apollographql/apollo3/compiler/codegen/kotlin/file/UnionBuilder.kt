@@ -18,7 +18,7 @@ internal class UnionBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(union.name)
+  private val simpleName = layout.schemaTypeName(union.name)
   private val builderName = "${union.name.capitalizeFirstLetter()}Builder"
   private val otherBuilderName = "Other${union.name.capitalizeFirstLetter()}Builder"
   private val mapName = "${union.name.capitalizeFirstLetter()}Map"

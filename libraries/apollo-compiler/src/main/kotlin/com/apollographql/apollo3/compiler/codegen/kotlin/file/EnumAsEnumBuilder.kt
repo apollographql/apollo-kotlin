@@ -29,7 +29,7 @@ internal class EnumAsEnumBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(enum.name)
+  private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName
     get() = context.resolver.resolveSchemaType(enum.name)

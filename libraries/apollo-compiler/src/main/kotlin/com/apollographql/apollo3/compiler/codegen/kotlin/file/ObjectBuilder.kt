@@ -19,7 +19,7 @@ internal class ObjectBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(obj.name)
+  private val simpleName = layout.schemaTypeName(obj.name)
   private val builderName = "${obj.name.capitalizeFirstLetter()}Builder"
   private val mapName = "${obj.name.capitalizeFirstLetter()}Map"
 

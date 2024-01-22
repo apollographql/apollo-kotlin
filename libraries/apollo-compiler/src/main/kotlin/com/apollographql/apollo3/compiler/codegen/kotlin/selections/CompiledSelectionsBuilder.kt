@@ -30,7 +30,7 @@ internal class CompiledSelectionsBuilder(
   }
 
   private fun IrSelectionSet.toPropertySpec(): PropertySpec {
-    val propertyName = context.layout.compiledSelectionsName(name)
+    val propertyName = "__$name"
 
     return PropertySpec.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
         .initializer(selections.map { it.codeBlock() }.toListInitializerCodeblock(true))
@@ -66,7 +66,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".arguments(%L)\n", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock(true))
     }
     if (selectionSetName != null) {
-      builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
+      builder.add(".selections(%N)\n", "__$selectionSetName")
     }
     builder.add(".build()")
 
@@ -86,7 +86,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".condition(%L)\n", condition.toCompiledConditionInitializer())
     }
     if (selectionSetName != null) {
-      builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
+      builder.add(".selections(%N)\n", "__$selectionSetName")
     } else {
       check (name != null)
       builder.add(".selections(%T.$root)\n", context.resolver.resolveFragmentSelections(name))

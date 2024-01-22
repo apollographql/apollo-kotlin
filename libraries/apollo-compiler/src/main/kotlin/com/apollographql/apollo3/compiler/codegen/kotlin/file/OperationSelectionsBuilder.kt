@@ -12,7 +12,7 @@ internal class OperationSelectionsBuilder(
     val operation: IrOperation,
 ) : CgFileBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
-  private val simpleName = context.layout.operationSelectionsName(operation)
+  private val simpleName = context.layout.operationName(operation) + "Selections"
 
   override fun prepare() {
     context.resolver.registerOperationSelections(
