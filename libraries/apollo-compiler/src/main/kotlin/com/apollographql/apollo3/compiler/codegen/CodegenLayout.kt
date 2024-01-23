@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
+import com.apollographql.apollo3.compiler.maybeAddSuffix
 import com.apollographql.apollo3.compiler.uniqueName
 import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.withUnderscorePrefix
@@ -22,10 +23,10 @@ import com.apollographql.apollo3.compiler.withUnderscorePrefix
  */
 internal class CodegenLayout(
     codegenSchema: CodegenSchema,
-    val packageNameGenerator: PackageNameGenerator,
+    override val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
-) {
+) : Layout {
   private val schemaPackageName = filePackageName(codegenSchema.filePath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
@@ -55,28 +56,24 @@ internal class CodegenLayout(
     }
   }
 
-  fun schemaTypeName(schemaTypeName: String): String {
+  override fun schemaTypeName(schemaTypeName: String): String {
     return schemaTypeToClassName[schemaTypeName]
         ?: error("unknown schema type: $schemaTypeName")
   }
 
-  fun basePackageName() = schemaPackageName
+  override fun basePackageName() = schemaPackageName
 
-  fun operationName(operation: IrOperation): String {
-    val str = operation.name.capitalizeFirstLetter()
-
-    if (!useSemanticNaming) {
-      return str
-    }
-
-    return if (str.endsWith(operation.operationType.name)) {
-      str
-    } else {
-      "$str${operation.operationType.name}"
+  override fun operationName(name: String, capitalizedOperationType: String): String {
+    return name.capitalizeFirstLetter().let {
+      if (useSemanticNaming) {
+        it.maybeAddSuffix(capitalizedOperationType)
+      } else {
+        it
+      }
     }
   }
 
-  fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
+  override fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
 }
 
 private fun IrType.isList(): Boolean {
@@ -135,6 +132,8 @@ internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) 
 internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
 internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.adapter"
 internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.selections"
+
+internal fun CodegenLayout.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
 
 internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
 internal fun String.inputAdapter(): String = "${this}_InputAdapter"

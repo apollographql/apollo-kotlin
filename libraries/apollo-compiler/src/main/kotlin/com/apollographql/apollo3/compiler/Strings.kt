@@ -74,3 +74,11 @@ internal fun uniqueName(name: String, usedNames: Set<String>): String {
 }
 
 internal fun String.withUnderscorePrefix(): String = if (this == "__typename") this else "_$this"
+
+internal fun String.maybeAddSuffix(suffix: String): String {
+  return if (this.endsWith(suffix)) {
+    this
+  } else {
+    "$this$suffix"
+  }
+}
