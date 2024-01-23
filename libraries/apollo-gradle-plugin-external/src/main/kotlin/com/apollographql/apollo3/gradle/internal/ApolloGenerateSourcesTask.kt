@@ -1,6 +1,10 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.codegen.writeTo
+import com.apollographql.apollo3.compiler.toCodegenOptions
+import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
+import com.apollographql.apollo3.compiler.toIrOptions
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
@@ -26,21 +30,18 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 
   @TaskAction
   fun taskAction() {
-    ApolloCompiler.build(
+    ApolloCompiler.buildSchemaAndOperationSources(
         schemaFiles = schemaFiles.files,
         executableFiles = graphqlFiles.files,
-        codegenSchemaOptionsFile = codegenSchemaOptionsFile.get().asFile,
-        codegenOptionsFile = codegenOptionsFile.get().asFile,
-        irOptionsFile = irOptionsFile.get().asFile,
+        codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
+        codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
+        irOptions = irOptionsFile.get().asFile.toIrOptions(),
         logger = logger(),
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
+        packageNameGenerator = packageNameGenerator(),
         operationOutputGenerator = operationOutputGenerator,
         compilerJavaHooks = compilerJavaHooks,
         compilerKotlinHooks = compilerKotlinHooks,
-        outputDir = outputDir.get().asFile,
-        codegenMetadataFile = null,
         operationManifestFile = operationManifestFile.orNull?.asFile
-    )
+    ).writeTo(outputDir.get().asFile, true, null)
   }
 }

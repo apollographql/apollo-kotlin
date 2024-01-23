@@ -218,8 +218,6 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
     ).writeTo(irOptionsFile.get().asFile)
 
     val common = CommonCodegenOptions(
-        packageName = packageName.orNull,
-        packageNamesFromFilePaths = packageNamesFromFilePaths.orNull,
         useSemanticNaming = useSemanticNaming.orNull,
         generateFragmentImplementations = generateFragmentImplementations.orNull,
         generateMethods = generateMethods.orNull,

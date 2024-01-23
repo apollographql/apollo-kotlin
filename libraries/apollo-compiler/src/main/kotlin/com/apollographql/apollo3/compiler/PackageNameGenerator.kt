@@ -34,6 +34,16 @@ interface PackageNameGenerator {
     override val version: String
       get() = error("this should only be called from the Gradle Plugin")
   }
+
+  class FilePathAware(private val sourceRoots: Set<String>): PackageNameGenerator {
+    override fun packageName(filePath: String): String {
+      return relativeToRoots(sourceRoots, filePath)
+    }
+
+    override val version: String
+      get() = error("this should only be called from the Gradle Plugin")
+
+  }
 }
 
 
@@ -76,27 +86,3 @@ internal fun filePackageName(roots: Set<String>, filePath: String): String {
       .joinToString(".")
 }
 
-internal fun packageNameGenerator(
-    packageName: String?,
-    packageNamesFromFilePaths: Boolean?,
-    packageNameRoots: Set<String>?,
-): PackageNameGenerator {
-  return when {
-    packageName != null -> PackageNameGenerator.Flat(packageName)
-    packageNamesFromFilePaths == true -> {
-      check(packageNameRoots != null) {
-        "packageNameRoots is required to use packageNamesFromFilePaths"
-      }
-      object : PackageNameGenerator {
-        override fun packageName(filePath: String): String {
-          return filePackageName(packageNameRoots, filePath)
-        }
-
-        override val version: String
-          get() = "unused"
-
-      }
-    }
-    else -> error("Apollo: packageName is required")
-  }
-}

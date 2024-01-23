@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.SourceAwareException
+import com.apollographql.apollo3.compiler.codegen.writeTo
 import com.google.common.truth.Truth
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -37,8 +38,8 @@ class MetadataTest {
   private fun compileRoot(directory: String) {
     CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9).writeTo(codegenSchemaOptionsFile)
     IrOptions().writeTo(irOptionsFile)
-    CodegenOptions(common = CommonCodegenOptions(packageName = rootPackageName)).writeTo(rootCodegenOptionsFile)
-    CodegenOptions(common = CommonCodegenOptions(packageName = leafPackageName)).writeTo(leafCodegenOptionsFile)
+    CodegenOptions(common = CommonCodegenOptions()).writeTo(rootCodegenOptionsFile)
+    CodegenOptions(common = CommonCodegenOptions()).writeTo(leafCodegenOptionsFile)
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")),
@@ -47,46 +48,46 @@ class MetadataTest {
     )
 
     ApolloCompiler.buildIrOperations(
-        codegenSchemaFile = codegenSchemaFile,
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(rootGraphQLFile(directory)),
-        upstreamIrFiles = emptySet(),
-        irOptionsFile = irOptionsFile,
-        irOperationsFile = rootIrOperationsFile
-    )
+        upstreamFragmentDefinitions = emptyList(),
+        options = irOptionsFile.toIrOptions(),
+        logger = null
+    ).writeTo(rootIrOperationsFile)
 
     ApolloCompiler.buildIrOperations(
-        codegenSchemaFile = codegenSchemaFile,
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(leafGraphQLFile(directory)),
-        upstreamIrFiles = setOf(rootIrOperationsFile),
-        irOptionsFile = irOptionsFile,
-        irOperationsFile = leafIrOperationsFile
-    )
+        upstreamFragmentDefinitions = rootIrOperationsFile.toIrOperations().fragmentDefinitions,
+        options = irOptionsFile.toIrOptions(),
+        logger = null
+    ).writeTo(leafIrOperationsFile)
 
-    ApolloCompiler.buildIrSchema(
-        codegenSchemaFile = codegenSchemaFile,
-        irOperationsFiles = setOf(rootIrOperationsFile, leafIrOperationsFile),
-        irSchemaFile = rootIrSchemaFile
-    )
+    ApolloCompiler.buildSchemaAndOperationSourcesFromIr(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        irOperations = rootIrOperationsFile.toIrOperations(),
+        upstreamCodegenMetadata = emptyList(),
+        downstreamUsedCoordinates = leafIrOperationsFile.toIrOperations().usedFields,
+        codegenOptions = rootCodegenOptionsFile.toCodegenOptions(),
+        packageNameGenerator = PackageNameGenerator.Flat(rootPackageName),
+        compilerJavaHooks = null,
+        compilerKotlinHooks = null,
+        operationManifestFile = null,
+        operationOutputGenerator = null,
+    ).writeTo(rootSourcesDir, true, rootCodegenMetadata)
 
-    ApolloCompiler.buildSchemaAndOperationSources(
-        codegenSchemaFile = codegenSchemaFile,
-        irOperationsFile = rootIrOperationsFile,
-        irSchemaFile = rootIrSchemaFile,
-        upstreamCodegenMetadataFiles = emptySet(),
-        codegenOptionsFile = rootCodegenOptionsFile,
-        sourcesDir = rootSourcesDir,
-        codegenMetadataFile = rootCodegenMetadata
-    )
-
-    ApolloCompiler.buildSchemaAndOperationSources(
-        codegenSchemaFile = codegenSchemaFile,
-        irOperationsFile = leafIrOperationsFile,
-        irSchemaFile = null,
-        upstreamCodegenMetadataFiles = setOf(rootCodegenMetadata),
-        codegenOptionsFile = leafCodegenOptionsFile,
-        sourcesDir = leafSourcesDir,
-        codegenMetadataFile = null
-    )
+    ApolloCompiler.buildSchemaAndOperationSourcesFromIr(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        irOperations = leafIrOperationsFile.toIrOperations(),
+        upstreamCodegenMetadata = setOf(rootCodegenMetadata).map { it.toCodegenMetadata() },
+        downstreamUsedCoordinates = emptyMap(),
+        codegenOptions = leafCodegenOptionsFile.toCodegenOptions(),
+        packageNameGenerator = PackageNameGenerator.Flat(leafPackageName),
+        compilerJavaHooks = null,
+        compilerKotlinHooks = null,
+        operationManifestFile = null,
+        operationOutputGenerator = null,
+    ).writeTo(leafSourcesDir, true, null)
   }
 
   private fun compile(directory: String) {

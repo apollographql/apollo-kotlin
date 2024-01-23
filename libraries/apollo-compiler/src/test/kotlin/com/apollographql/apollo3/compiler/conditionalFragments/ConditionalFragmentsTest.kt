@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.CodegenOptions
 import com.apollographql.apollo3.compiler.CodegenSchemaOptions
 import com.apollographql.apollo3.compiler.IrOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
@@ -25,13 +26,18 @@ class ConditionalFragmentsTest {
   @Test
   fun `responseBased codegen fails with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
     val throwable = assertFails {
-      ApolloCompiler.build(
+      ApolloCompiler.buildSchemaAndOperationSources(
           executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
           codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_RESPONSE_BASED),
           irOptions = IrOptions(flattenModels = false),
           packageNameGenerator = PackageNameGenerator.Flat(""),
-          outputDir = File("build/test/conditionalFragmentsTest"),
+          codegenOptions = CodegenOptions(),
+          compilerKotlinHooks = null,
+          compilerJavaHooks = null,
+          logger = null,
+          operationManifestFile = null,
+          operationOutputGenerator = null,
       )
     }
 
@@ -40,13 +46,18 @@ class ConditionalFragmentsTest {
 
   @Test
   fun `operationBased codegen succeeds with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
-    ApolloCompiler.build(
+    ApolloCompiler.buildSchemaAndOperationSources(
         executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
         codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_OPERATION_BASED),
         irOptions = IrOptions(flattenModels = false),
         packageNameGenerator = PackageNameGenerator.Flat(""),
-        outputDir = File("build/test/conditionalFragmentsTest"),
+        codegenOptions = CodegenOptions(),
+        compilerKotlinHooks = null,
+        compilerJavaHooks = null,
+        logger = null,
+        operationManifestFile = null,
+        operationOutputGenerator = null,
     )
   }
 }

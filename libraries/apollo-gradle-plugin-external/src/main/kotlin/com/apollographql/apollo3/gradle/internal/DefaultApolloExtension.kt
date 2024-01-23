@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.mergeWith
+import com.apollographql.apollo3.compiler.toIrOperations
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
@@ -25,6 +27,7 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.component.SoftwareComponentFactory
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
@@ -454,25 +457,13 @@ abstract class DefaultApolloExtension(
           irOptionsTaskProvider = optionsTaskProvider,
           upstreamIrFiles = upstreamIrConsumerConfiguration)
 
-      val irSchemaTaskProvider = if (service.isSchemaModule()) {
-        registerIrSchemaTask(
-            project = project,
-            service = service,
-            downstreamIrOperations = downstreamIrConsumerConfiguration,
-            codegenSchemaTaskProvider = codegenSchemaTaskProvider,
-            irOperationsTaskProvider = irOperationsTaskProvider
-        )
-      } else {
-        null
-      }
-
       val sourcesFromIrTaskProvider = registerSourcesFromIrTask(
           project = project,
           service = service,
           schemaConsumerConfiguration = codegenSchemaConsumerConfiguration,
           generateOptionsTaskProvider = optionsTaskProvider,
           codegenSchemaTaskProvider = codegenSchemaTaskProvider,
-          irSchemaTaskProvider = irSchemaTaskProvider,
+          downstreamIrOperations = downstreamIrConsumerConfiguration,
           irOperationsTaskProvider = irOperationsTaskProvider,
           upstreamCodegenMetadata = codegenMetadataConsumerConfiguration
       )
@@ -563,7 +554,7 @@ abstract class DefaultApolloExtension(
       schemaConsumerConfiguration: Configuration,
       codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
       generateOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
-      irSchemaTaskProvider: TaskProvider<ApolloGenerateIrSchemaTask>?,
+      downstreamIrOperations: FileCollection,
       irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
       upstreamCodegenMetadata: Configuration,
   ): TaskProvider<ApolloGenerateSourcesFromIrTask> {
@@ -577,28 +568,14 @@ abstract class DefaultApolloExtension(
       task.codegenSchemas.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
       task.irOperations.set(irOperationsTaskProvider.flatMap { it.irOperationsFile })
       task.upstreamMetadata.from(upstreamCodegenMetadata)
-      if (irSchemaTaskProvider != null) {
-        task.irSchema.set(irSchemaTaskProvider.flatMap { it.irSchemaFile })
-      }
+      task.downstreamUsedCoordinates.set(downstreamIrOperations.elements.map {
+        it.map { it.asFile.toIrOperations() }.fold(emptyMap<String, Set<String>>()) { acc, element ->
+          acc.mergeWith(element.usedFields)
+        }
+      })
+      task.downstreamUsedCoordinates.finalizeValueOnRead()
+
       task.metadataOutputFile.set(BuildDirLayout.metadata(project, service))
-    }
-  }
-
-  private fun registerIrSchemaTask(
-      project: Project,
-      service: DefaultService,
-      downstreamIrOperations: Configuration,
-      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
-      irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
-  ): TaskProvider<ApolloGenerateIrSchemaTask> {
-    return project.tasks.register(ModelNames.generateApolloIrSchema(service), ApolloGenerateIrSchemaTask::class.java) { task ->
-      task.group = TASK_GROUP
-      task.description = "Generate Apollo Used Coordinates for service '${service.name}'"
-
-      task.codegenSchemaFile.set(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
-      task.irSchemaFile.set(BuildDirLayout.usedCoordinates(project, service))
-      task.downStreamIrOperations.from(downstreamIrOperations)
-      task.irOperations.set(irOperationsTaskProvider.flatMap { it.irOperationsFile })
     }
   }
 
