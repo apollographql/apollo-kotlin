@@ -32,7 +32,7 @@ internal class CompiledSelectionsBuilder(
   private fun IrSelectionSet.toPropertySpec(): PropertySpec {
     val propertyName = "__$name"
 
-    return PropertySpec.Companion.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
+    return PropertySpec.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
         .initializer(selections.map { it.codeBlock() }.toListInitializerCodeblock(true))
         .applyIf(!isRoot) {
           addModifiers(KModifier.PRIVATE)

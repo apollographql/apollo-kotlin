@@ -96,7 +96,7 @@ internal class EnumAsEnumBuilder(
   }
 
   private fun IrEnum.knownEntriesPropertySpec(): PropertySpec {
-    return PropertySpec.Companion.builder(Identifier.knownEntries, KotlinSymbols.List.parameterizedBy(selfClassName))
+    return PropertySpec.builder(Identifier.knownEntries, KotlinSymbols.List.parameterizedBy(selfClassName))
         .addKdoc("All [%T] known at compile time", selfClassName)
         .addSuppressions(enum.values.any { it.deprecationReason != null })
         .maybeAddOptIn(context.resolver, enum.values)

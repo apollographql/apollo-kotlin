@@ -86,7 +86,7 @@ internal class MainResolverBuilder(
   }
 
   private fun typenamesPropertySpec(): PropertySpec {
-    return PropertySpec.Companion.builder(
+    return PropertySpec.builder(
         "typenames",
         KotlinSymbols.Map.parameterizedBy(
             ClassName("kotlin.reflect", "KClass").parameterizedBy(STAR),
@@ -109,7 +109,7 @@ internal class MainResolverBuilder(
   }
 
   private fun resolversPropertySpec(): PropertySpec {
-    return PropertySpec.Companion.builder(
+    return PropertySpec.builder(
         "resolvers",
         KotlinSymbols.Map.parameterizedBy(
             KotlinSymbols.String,

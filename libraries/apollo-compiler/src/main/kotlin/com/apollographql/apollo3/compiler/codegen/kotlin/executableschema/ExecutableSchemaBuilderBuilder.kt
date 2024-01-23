@@ -38,7 +38,7 @@ internal class ExecutableSchemaBuilderBuilder(
       irTargetObjects.find { it.operationType == operationType }
     }
 
-    return FunSpec.Companion.builder(simpleName)
+    return FunSpec.builder(simpleName)
         .returns(KotlinSymbols.ExecutableSchemaBuilder)
         .apply {
           addParameter(ParameterSpec.builder("schema", KotlinSymbols.Schema).build())
