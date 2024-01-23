@@ -2,11 +2,13 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
+import com.apollographql.apollo3.compiler.codegen.impl
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -16,7 +18,7 @@ internal class FragmentResponseAdapterBuilder(
     val flatten: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
-  private val simpleName = fragment.name.capitalizeFirstLetter() + "Impl" + "_ResponseAdapter"
+  private val simpleName = fragment.name.capitalizeFirstLetter().impl().responseAdapter()
 
   private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

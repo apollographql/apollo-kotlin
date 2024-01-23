@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.selections.CompiledSelectionsBuilder
+import com.apollographql.apollo3.compiler.codegen.selections
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
 
@@ -13,7 +14,7 @@ internal class FragmentSelectionsBuilder(
     val fragment: IrFragmentDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentResponseFieldsPackageName(fragment.filePath)
-  private val simpleName = "${fragment.name}Selections"
+  private val simpleName = fragment.name.selections()
 
   override fun prepare() {
     context.resolver.registerFragmentSelections(

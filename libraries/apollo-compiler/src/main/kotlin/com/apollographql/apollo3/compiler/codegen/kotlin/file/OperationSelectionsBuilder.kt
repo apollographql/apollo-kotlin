@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.operationResponseFieldsPackageName
+import com.apollographql.apollo3.compiler.codegen.selections
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 
@@ -13,7 +14,7 @@ internal class OperationSelectionsBuilder(
     val operation: IrOperation,
 ) : CgFileBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
-  private val simpleName = context.layout.operationName(operation) + "Selections"
+  private val simpleName = context.layout.operationName(operation).selections()
 
   override fun prepare() {
     context.resolver.registerOperationSelections(

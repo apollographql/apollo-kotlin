@@ -2,10 +2,12 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.fragmentAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.impl
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.variableAdapterTypeSpec
+import com.apollographql.apollo3.compiler.codegen.variablesAdapter
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
@@ -15,7 +17,7 @@ internal class FragmentVariablesAdapterBuilder(
     val fragment: IrFragmentDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
-  private val simpleName = fragment.name.capitalizeFirstLetter() + "Impl" + "_VariablesAdapter"
+  private val simpleName = fragment.name.capitalizeFirstLetter().impl().variablesAdapter()
 
   override fun prepare() {
     context.resolver.registerFragmentVariablesAdapter(

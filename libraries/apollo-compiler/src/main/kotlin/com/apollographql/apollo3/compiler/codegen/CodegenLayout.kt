@@ -134,3 +134,8 @@ internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) 
 internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
 internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.adapter"
 internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.selections"
+
+internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
+internal fun String.variablesAdapter(): String = "${this}_VariablesAdapter"
+internal fun String.impl(): String = "${this}Impl"
+internal fun String.selections(): String = "${this}Selections"
