@@ -11,28 +11,28 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
 
-public class renamedEnum {
+public class RenamedEnum {
   public static EnumType type = new EnumType("ReservedEnum", Arrays.asList("VALUE"));
 
-  public static renamedEnum VALUE = new renamedEnum("VALUE");
+  public static RenamedEnum VALUE = new RenamedEnum("VALUE");
 
   public String rawValue;
 
-  public renamedEnum(String rawValue) {
+  public RenamedEnum(String rawValue) {
     this.rawValue = rawValue;
   }
 
-  public static renamedEnum safeValueOf(String rawValue) {
+  public static RenamedEnum safeValueOf(String rawValue) {
     switch(rawValue) {
-      case "VALUE": return renamedEnum.VALUE;
-      default: return new renamedEnum.UNKNOWN__(rawValue);
+      case "VALUE": return RenamedEnum.VALUE;
+      default: return new RenamedEnum.UNKNOWN__(rawValue);
     }
   }
 
   /**
    * An enum value that wasn't known at compile time.
    */
-  public static class UNKNOWN__ extends renamedEnum {
+  public static class UNKNOWN__ extends RenamedEnum {
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;

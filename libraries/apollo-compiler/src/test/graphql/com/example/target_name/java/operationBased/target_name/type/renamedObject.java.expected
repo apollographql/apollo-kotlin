@@ -7,6 +7,6 @@ package com.example.target_name.type;
 
 import com.apollographql.apollo3.api.ObjectType;
 
-public class renamedObject {
+public class RenamedObject {
   public static ObjectType type = (new ObjectType.Builder("ReservedObject")).build();
 }

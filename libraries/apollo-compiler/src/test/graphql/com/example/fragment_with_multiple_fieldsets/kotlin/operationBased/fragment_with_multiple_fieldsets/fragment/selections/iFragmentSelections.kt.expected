@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_multiple_fieldsets.type.GraphQLString
 import kotlin.collections.List
 
-public object iFragmentSelections {
+public object IFragmentSelections {
   private val __onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldA",

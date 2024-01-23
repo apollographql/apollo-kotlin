@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.nested_named_fragments.fragment.selections.planetFragmentSelections;
+import com.example.nested_named_fragments.fragment.selections.PlanetFragmentSelections;
 import com.example.nested_named_fragments.type.Planet;
 import java.io.IOException;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class PlanetFragmentImpl implements Fragment<PlanetFragment> {
       "data",
       Planet.type
     )
-    .selections(planetFragmentSelections.__root)
+    .selections(PlanetFragmentSelections.__root)
     .build();
   }
 

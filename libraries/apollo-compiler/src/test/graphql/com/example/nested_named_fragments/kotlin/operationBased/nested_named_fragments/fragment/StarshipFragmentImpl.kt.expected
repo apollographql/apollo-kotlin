@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
+import com.example.nested_named_fragments.fragment.selections.StarshipFragmentSelections
 import com.example.nested_named_fragments.type.Starship
 import kotlin.Any
 import kotlin.Boolean
@@ -39,6 +39,6 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragment> {
     name = "data",
     type = Starship.type
   )
-  .selections(selections = starshipFragmentSelections.__root)
+  .selections(selections = StarshipFragmentSelections.__root)
   .build()
 }

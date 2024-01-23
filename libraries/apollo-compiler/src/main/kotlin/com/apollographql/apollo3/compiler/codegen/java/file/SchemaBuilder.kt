@@ -37,9 +37,10 @@ internal class SchemaBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.schemaSubPackageName()
+  private val simpleName = layout.topLevelName(generatedSchemaName)
 
   override fun prepare() {
-    context.resolver.registerSchema(ClassName.get(packageName, generatedSchemaName))
+    context.resolver.registerSchema(ClassName.get(packageName, simpleName))
   }
 
   override fun build(): CodegenJavaFile {
@@ -66,7 +67,7 @@ internal class SchemaBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.classBuilder(generatedSchemaName)
+    return TypeSpec.classBuilder(simpleName)
         .addJavadoc(L, "A Schema object containing all the composite types and a possibleTypes helper function")
         .addModifiers(Modifier.PUBLIC)
         .addField(customScalarAdaptersFieldSpec())

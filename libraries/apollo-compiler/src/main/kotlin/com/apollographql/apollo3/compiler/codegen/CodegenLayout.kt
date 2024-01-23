@@ -25,8 +25,7 @@ internal class CodegenLayout(
     codegenSchema: CodegenSchema,
     private val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
-    private val decapitalizeFields: Boolean,
-    private val prefix: Boolean
+    private val decapitalizeFields: Boolean
 ) : Layout {
   private val schemaPackageName = executableDocumentPackageName(codegenSchema.filePath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
@@ -82,7 +81,7 @@ internal class CodegenLayout(
   }
 
   override fun topLevelName(name: String): String {
-    return "${prefix}${name.capitalizeFirstLetter()}"
+    return name.capitalizeFirstLetter()
   }
 
   override fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name

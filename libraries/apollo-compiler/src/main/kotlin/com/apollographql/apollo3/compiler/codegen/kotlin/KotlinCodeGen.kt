@@ -216,8 +216,8 @@ internal object KotlinCodeGen {
 
     val layout = CodegenLayout(
         codegenSchema = codegenSchema,
-        useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
+        useSemanticNaming = useSemanticNaming,
         decapitalizeFields = decapitalizeFields,
     )
 
@@ -333,8 +333,8 @@ internal object KotlinCodeGen {
   ): Pair<CodegenMetadata, List<FileSpec>> {
     val layout = CodegenLayout(
         codegenSchema = codegenSchema,
-        useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),
+        useSemanticNaming = false,
         decapitalizeFields = false,
     )
 
@@ -391,8 +391,8 @@ internal object KotlinCodeGen {
   ): List<FileSpec> {
     val layout = CodegenLayout(
         codegenSchema = codegenSchema,
-        useSemanticNaming = false,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),
+        useSemanticNaming = false,
         decapitalizeFields = false,
     )
 

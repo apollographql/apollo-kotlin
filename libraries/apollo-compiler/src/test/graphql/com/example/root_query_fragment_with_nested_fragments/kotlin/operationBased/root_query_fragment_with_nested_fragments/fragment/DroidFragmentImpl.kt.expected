@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.root_query_fragment_with_nested_fragments.fragment.selections.droidFragmentSelections
+import com.example.root_query_fragment_with_nested_fragments.fragment.selections.DroidFragmentSelections
 import com.example.root_query_fragment_with_nested_fragments.type.Droid
 import kotlin.Any
 import kotlin.Boolean
@@ -39,6 +39,6 @@ public class DroidFragmentImpl() : Fragment<DroidFragment> {
     name = "data",
     type = Droid.type
   )
-  .selections(selections = droidFragmentSelections.__root)
+  .selections(selections = DroidFragmentSelections.__root)
   .build()
 }

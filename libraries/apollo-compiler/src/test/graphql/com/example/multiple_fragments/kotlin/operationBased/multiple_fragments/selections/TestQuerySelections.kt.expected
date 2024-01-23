@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.multiple_fragments.fragment.selections.aFragmentSelections
+import com.example.multiple_fragments.fragment.selections.AFragmentSelections
 import com.example.multiple_fragments.type.A
 import com.example.multiple_fragments.type.GraphQLString
 import kotlin.collections.List
@@ -23,7 +23,7 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "A",
           possibleTypes = listOf("A")
-        ).selections(aFragmentSelections.__root)
+        ).selections(AFragmentSelections.__root)
         .build()
       )
 

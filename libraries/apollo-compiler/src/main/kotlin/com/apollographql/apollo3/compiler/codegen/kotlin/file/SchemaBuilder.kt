@@ -61,7 +61,7 @@ internal class SchemaBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.objectBuilder(generatedSchemaName)
+    return TypeSpec.objectBuilder(layout.topLevelName(generatedSchemaName))
         .addKdoc("A __Schema object containing all the composite types and a possibleTypes helper function")
         .addProperty(typesPropertySpec())
         .addFunction(possibleTypesFunSpec())

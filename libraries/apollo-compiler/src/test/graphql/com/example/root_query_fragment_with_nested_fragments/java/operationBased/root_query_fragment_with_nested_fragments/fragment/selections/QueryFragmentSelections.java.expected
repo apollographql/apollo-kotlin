@@ -20,12 +20,12 @@ import java.util.List;
 public class QueryFragmentSelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(heroFragmentSelections.__root).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(HeroFragmentSelections.__root).build()
   );
 
   private static List<CompiledSelection> __droid = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(droidFragmentSelections.__root).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidFragmentSelections.__root).build()
   );
 
   private static List<CompiledSelection> __onHuman = Arrays.asList(

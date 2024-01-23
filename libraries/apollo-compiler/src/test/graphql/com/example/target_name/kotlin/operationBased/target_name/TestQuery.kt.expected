@@ -16,17 +16,17 @@ import com.apollographql.apollo3.api.obj
 import com.example.target_name.adapter.TestQuery_ResponseAdapter
 import com.example.target_name.adapter.TestQuery_VariablesAdapter
 import com.example.target_name.selections.TestQuerySelections
-import com.example.target_name.type.renamedEnum
-import com.example.target_name.type.renamedInput
+import com.example.target_name.type.RenamedEnum
+import com.example.target_name.type.RenamedInput
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
 import com.example.target_name.type.Query as CompiledQuery
 
 public data class TestQuery(
-  public val input: Optional<renamedInput?> = Optional.Absent,
+  public val input: Optional<RenamedInput?> = Optional.Absent,
   public val scalar: Optional<Any?> = Optional.Absent,
-  public val `enum`: Optional<renamedEnum?> = Optional.Absent,
+  public val `enum`: Optional<RenamedEnum?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   override val ignoreErrors: Boolean = false
 
@@ -60,7 +60,7 @@ public data class TestQuery(
     public val `interface`: Interface?,
     public val union: Union?,
     public val scalar: Any?,
-    public val `enum`: renamedEnum?,
+    public val `enum`: RenamedEnum?,
   ) : Query.Data {
     public data class Object(
       public val `field`: String?,

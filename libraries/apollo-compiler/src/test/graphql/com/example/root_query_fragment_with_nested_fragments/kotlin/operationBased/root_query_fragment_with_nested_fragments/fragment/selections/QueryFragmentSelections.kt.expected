@@ -25,7 +25,7 @@ public object QueryFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(heroFragmentSelections.__root)
+        ).selections(HeroFragmentSelections.__root)
         .build()
       )
 
@@ -37,7 +37,7 @@ public object QueryFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(droidFragmentSelections.__root)
+        ).selections(DroidFragmentSelections.__root)
         .build()
       )
 

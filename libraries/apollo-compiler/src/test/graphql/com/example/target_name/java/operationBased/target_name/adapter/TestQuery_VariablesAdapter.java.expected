@@ -13,9 +13,9 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
-import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter;
-import com.example.target_name.type.adapter.renamedInput_InputAdapter;
-import com.example.target_name.type.renamedInput;
+import com.example.target_name.type.RenamedInput;
+import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter;
+import com.example.target_name.type.adapter.RenamedInput_InputAdapter;
 import java.io.IOException;
 
 public enum TestQuery_VariablesAdapter {
@@ -25,7 +25,7 @@ public enum TestQuery_VariablesAdapter {
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     if (value.input instanceof Optional.Present) {
       writer.name("input");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<renamedInput>(renamedInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.input);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<RenamedInput>(RenamedInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.input);
     }
     if (value.scalar instanceof Optional.Present) {
       writer.name("scalar");
@@ -33,7 +33,7 @@ public enum TestQuery_VariablesAdapter {
     }
     if (value.enum_ instanceof Optional.Present) {
       writer.name("enum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.enum_);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(RenamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.enum_);
     }
   }
 }

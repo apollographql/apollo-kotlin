@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.operationName
 import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.TypeSpec

@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.multiple_fragments.fragment.selections.fragment2Selections
+import com.example.multiple_fragments.fragment.selections.Fragment2Selections
 import com.example.multiple_fragments.type.ANode
 import kotlin.Any
 import kotlin.Boolean
@@ -38,6 +38,6 @@ public class Fragment2Impl() : Fragment<Fragment2> {
     name = "data",
     type = ANode.type
   )
-  .selections(selections = fragment2Selections.__root)
+  .selections(selections = Fragment2Selections.__root)
   .build()
 }

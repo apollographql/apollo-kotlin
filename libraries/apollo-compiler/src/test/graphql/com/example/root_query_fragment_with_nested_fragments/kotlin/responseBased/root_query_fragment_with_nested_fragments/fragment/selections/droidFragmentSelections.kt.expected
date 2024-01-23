@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.root_query_fragment_with_nested_fragments.type.GraphQLString
 import kotlin.collections.List
 
-public object droidFragmentSelections {
+public object DroidFragmentSelections {
   public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",

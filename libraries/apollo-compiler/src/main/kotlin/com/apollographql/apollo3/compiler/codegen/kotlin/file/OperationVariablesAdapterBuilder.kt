@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.variablesAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.operationName
 import com.apollographql.apollo3.compiler.codegen.variablesAdapter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName

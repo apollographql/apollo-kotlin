@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections;
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterAppearsInSelections;
 import com.example.named_fragment_inside_inline_fragment.type.Character;
 import java.io.IOException;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class CharacterAppearsInImpl implements Fragment<CharacterAppearsIn> {
       "data",
       Character.type
     )
-    .selections(characterAppearsInSelections.__root)
+    .selections(CharacterAppearsInSelections.__root)
     .build();
   }
 
