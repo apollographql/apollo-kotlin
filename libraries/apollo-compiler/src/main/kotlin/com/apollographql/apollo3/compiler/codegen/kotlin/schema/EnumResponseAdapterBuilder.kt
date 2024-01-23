@@ -58,7 +58,7 @@ internal class EnumResponseAdapterBuilder(
         .addCode("${Identifier.writer}.${Identifier.value}(${Identifier.value}.rawValue)")
         .build()
 
-    return TypeSpec.Companion.objectBuilder(layout.schemaTypeName(name).responseAdapter())
+    return TypeSpec.objectBuilder(layout.schemaTypeName(name).responseAdapter())
         .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)

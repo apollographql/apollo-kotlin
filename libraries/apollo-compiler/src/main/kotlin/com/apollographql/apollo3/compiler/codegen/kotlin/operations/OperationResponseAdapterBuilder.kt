@@ -41,7 +41,7 @@ internal class OperationResponseAdapterBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.Companion.objectBuilder(simpleName)
+    return TypeSpec.objectBuilder(simpleName)
         .addTypes(
             responseAdapterBuilders.flatMap { it.build() }
         )

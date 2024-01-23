@@ -78,7 +78,7 @@ internal class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-    return TypeSpec.Companion.objectBuilder(targetName.escapeKotlinReservedWordInSealedClass())
+    return TypeSpec.objectBuilder(targetName.escapeKotlinReservedWordInSealedClass())
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
         .maybeAddRequiresOptIn(context.resolver, optInFeature)

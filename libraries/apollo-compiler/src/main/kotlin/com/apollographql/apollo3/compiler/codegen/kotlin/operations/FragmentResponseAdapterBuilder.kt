@@ -41,7 +41,7 @@ internal class FragmentResponseAdapterBuilder(
   }
 
   private fun IrFragmentDefinition.responseAdapterTypeSpec(): TypeSpec {
-    return TypeSpec.Companion.objectBuilder(simpleName)
+    return TypeSpec.objectBuilder(simpleName)
         .addTypes(
             responseAdapterBuilders.flatMap { it.build() }
         )

@@ -78,7 +78,7 @@ internal class FragmentBuilder(
   private fun IrFragmentDefinition.typeSpec(): TypeSpec {
     val namedTypes = variables.map { it.toNamedType() }
 
-    return TypeSpec.Companion.classBuilder(simpleName)
+    return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
         .makeClassFromParameters(

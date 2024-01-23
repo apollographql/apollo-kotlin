@@ -48,7 +48,7 @@ internal class MainResolverBuilder(
 
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.Companion.objectBuilder(simpleName)
+    return TypeSpec.objectBuilder(simpleName)
         .addSuperinterface(ClassName("com.apollographql.apollo3.execution", "MainResolver"))
         .addProperty(typenamesPropertySpec())
         .addProperty(resolversPropertySpec())
