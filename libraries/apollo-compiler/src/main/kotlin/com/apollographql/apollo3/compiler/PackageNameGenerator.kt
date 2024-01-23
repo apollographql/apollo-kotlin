@@ -37,7 +37,7 @@ interface PackageNameGenerator {
 
   class FilePathAware(private val sourceRoots: Set<String>): PackageNameGenerator {
     override fun packageName(filePath: String): String {
-      return relativeToRoots(sourceRoots, filePath)
+      return filePackageName(sourceRoots, filePath)
     }
 
     override val version: String
