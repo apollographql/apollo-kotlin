@@ -471,7 +471,7 @@ public abstract interface class com/apollographql/apollo3/compiler/codegen/java/
 	public abstract fun prepare ()V
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt {
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodegenKt {
 	public static final fun isNotEmpty (Lcom/squareup/javapoet/CodeBlock;)Z
 	public static final fun joinToCode (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/javapoet/CodeBlock;
 	public static synthetic fun joinToCode$default (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
