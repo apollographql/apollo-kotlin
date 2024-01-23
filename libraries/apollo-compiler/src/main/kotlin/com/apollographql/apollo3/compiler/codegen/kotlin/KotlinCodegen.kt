@@ -142,12 +142,14 @@ private fun buildOutput(
 internal object KotlinCodegen {
   fun buildSchemaSources(
       codegenSchema: CodegenSchema,
+      targetLanguage: TargetLanguage,
       irSchema: IrSchema?,
       commonCodegenOptions: CommonCodegenOptions,
       kotlinCodegenOptions: KotlinCodegenOptions,
       packageNameGenerator: PackageNameGenerator,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
   ): KotlinOutput {
+    check(irSchema is DefaultIrSchema)
 
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val generateMethods = generateMethodsKotlin(commonCodegenOptions.generateMethods)
@@ -165,7 +167,6 @@ internal object KotlinCodegen {
     val addDefaultArgumentForInputObjects = kotlinCodegenOptions.addDefaultArgumentForInputObjects
         ?: defaultAddDefaultArgumentForInputObjects
 
-    val targetLanguage = codegenSchema.targetLanguage
     val scalarMapping = codegenSchema.scalarMapping
 
     return buildOutput(
@@ -174,7 +175,7 @@ internal object KotlinCodegen {
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
         hooks = compilerKotlinHooks,
-        generateAsInternal = generateAsInternal
+        generateAsInternal = generateAsInternal,
     ) { resolver ->
 
       val layout = CodegenLayout(
@@ -192,7 +193,6 @@ internal object KotlinCodegen {
           targetLanguage = targetLanguage,
       )
 
-      check(irSchema is DefaultIrSchema)
       irSchema.irScalars.forEach { irScalar ->
         builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
       }
@@ -226,11 +226,11 @@ internal object KotlinCodegen {
         builders.add(PaginationBuilder(context, irSchema.connectionTypes))
       }
     }
-
   }
 
   fun buildOperationSources(
       codegenSchema: CodegenSchema,
+      targetLanguage: TargetLanguage,
       irOperations: IrOperations,
       operationOutput: OperationOutput,
       upstreamCodegenMetadata: List<CodegenMetadata>,
@@ -256,8 +256,6 @@ internal object KotlinCodegen {
     val generateInputBuilders = kotlinCodegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
     val jsExport = kotlinCodegenOptions.jsExport ?: defaultJsExport
     val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
-
-    val targetLanguage = codegenSchema.targetLanguage
 
     return buildOutput(
         codegenSchema = codegenSchema,

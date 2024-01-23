@@ -31,7 +31,6 @@ internal class DefaultIrSchema(
     val irUnions: List<IrUnion>,
     val irInterfaces: List<IrInterface>,
     val irObjects: List<IrObject>,
-
     val connectionTypes: List<String>,
 ) : IrSchema
 

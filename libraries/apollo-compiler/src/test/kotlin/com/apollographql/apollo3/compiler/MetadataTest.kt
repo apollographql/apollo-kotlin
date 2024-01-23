@@ -36,7 +36,7 @@ class MetadataTest {
 
 
   private fun compileRoot(directory: String) {
-    CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9).writeTo(codegenSchemaOptionsFile)
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
     IrOptions().writeTo(irOptionsFile)
     CodegenOptions(common = CommonCodegenOptions()).writeTo(rootCodegenOptionsFile)
     CodegenOptions(common = CommonCodegenOptions()).writeTo(leafCodegenOptionsFile)

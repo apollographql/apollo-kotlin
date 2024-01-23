@@ -15,7 +15,6 @@ import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.SourceOutput
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
@@ -183,9 +182,7 @@ class ApolloProcessor(
     codegenSchema = CodegenSchema(
         schema = schema,
         filePath = null,
-        codegenModels = "operationBased",
         scalarMapping = scalarMapping,
-        targetLanguage = TargetLanguage.KOTLIN_1_9,
         generateDataBuilders = false
     )
 

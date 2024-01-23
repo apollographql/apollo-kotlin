@@ -251,6 +251,7 @@ internal class IrOperationsBuilder(
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
         generateDataBuilders = generateDataBuilders,
+        codegenModels = codegenModels
     )
   }
 

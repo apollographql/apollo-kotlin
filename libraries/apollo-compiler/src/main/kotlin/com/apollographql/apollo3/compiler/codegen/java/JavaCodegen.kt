@@ -73,7 +73,6 @@ private fun buildOutput(
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
     apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>?,
-    targetLanguage: TargetLanguage,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
 
@@ -121,7 +120,7 @@ private fun buildOutput(
   return JavaOutput(
       fileInfos.map { it.javaFile },
       CodegenMetadata(
-          targetLanguage = targetLanguage,
+          targetLanguage = TargetLanguage.JAVA,
           entries = resolver.entries()
       )
   )
@@ -136,10 +135,7 @@ internal object JavaCodegen {
       packageNameGenerator: PackageNameGenerator,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>,
   ): JavaOutput {
-
-    if (codegenSchema.codegenModels != MODELS_OPERATION_BASED) {
-      error("Java codegen does not support ${codegenSchema.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
-    }
+    check(irSchema is DefaultIrSchema)
 
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val decapitalizeFields = commonCodegenOptions.decapitalizeFields
@@ -162,7 +158,6 @@ internal object JavaCodegen {
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         apolloCompilerJavaHooks = compilerJavaHooks,
-        targetLanguage = codegenSchema.targetLanguage,
     ) { resolver ->
 
       val layout = CodegenLayout(
@@ -180,7 +175,6 @@ internal object JavaCodegen {
           nullableFieldStyle = nullableFieldStyle,
       )
 
-      check(irSchema is DefaultIrSchema)
       irSchema.irScalars.forEach { irScalar ->
         builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
       }
@@ -244,8 +238,8 @@ internal object JavaCodegen {
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
 
-    if (codegenSchema.codegenModels != MODELS_OPERATION_BASED) {
-      error("Java codegen does not support ${codegenSchema.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
+    if (irOperations.codegenModels != MODELS_OPERATION_BASED) {
+      error("Java codegen does not support ${irOperations.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
     }
     if (!irOperations.flattenModels) {
       error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
@@ -271,7 +265,6 @@ internal object JavaCodegen {
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         apolloCompilerJavaHooks = compilerJavaHooks,
-        targetLanguage = codegenSchema.targetLanguage,
     ) { resolver ->
 
       val layout = CodegenLayout(
@@ -360,7 +353,7 @@ fun List<CodeBlock>.joinToCode(separator: String, prefix: String = "", suffix: S
       .build()
 }
 
-fun CodeBlock.isNotEmpty() = isEmpty().not()
+fun CodeBlock.isNotEmpty() = isEmpty.not()
 
 internal const val T = "${'$'}T"
 internal const val L = "${'$'}L"

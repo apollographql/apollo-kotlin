@@ -340,6 +340,7 @@ class CodegenTest {
       }
 
       val commonCodegenOptions = CommonCodegenOptions(
+          targetLanguage = targetLanguage,
           useSemanticNaming = useSemanticNaming,
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
@@ -349,12 +350,11 @@ class CodegenTest {
           schemaFiles = setOf(schemaFile),
           executableFiles = graphqlFiles,
           codegenSchemaOptions = CodegenSchemaOptions(
-              targetLanguage = targetLanguage,
               scalarMapping = scalarMapping,
-              codegenModels = codegenModels,
               generateDataBuilders = generateDataBuilders
           ),
           irOptions = IrOptions(
+              codegenModels = codegenModels,
               flattenModels = flattenModels,
               decapitalizeFields = decapitalizeFields,
           ),

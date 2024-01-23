@@ -129,13 +129,7 @@ enum class GeneratedMethod {
 
 @Serializable
 class CodegenSchemaOptions(
-    /**
-     * This isn't needed to build the [CodegenSchema] but this ensures targetLanguage is the same
-     * in all modules
-     */
-    val targetLanguage: TargetLanguage,
     val scalarMapping: Map<String, ScalarInfo> = emptyMap(),
-    val codegenModels: String? = null,
     val generateDataBuilders: Boolean? = null,
 )
 
@@ -181,10 +175,13 @@ class IrOptions(
      * For input types, this will recursively add all input fields types/enums.
      */
     val alwaysGenerateTypesMatching: Set<String>? = null,
+
+    val codegenModels: String? = null,
 )
 
 @Serializable
 class CommonCodegenOptions(
+    val targetLanguage: TargetLanguage? = null,
     val decapitalizeFields: Boolean? = null,
 
     val useSemanticNaming: Boolean? = null,
@@ -238,8 +235,8 @@ class CodegenOptions(
     val kotlin: KotlinCodegenOptions = KotlinCodegenOptions(),
 )
 
-fun CodegenOptions.validate(targetLanguage: TargetLanguage) {
-  if (targetLanguage == TargetLanguage.JAVA) {
+fun CodegenOptions.validate() {
+  if (common.targetLanguage == TargetLanguage.JAVA) {
     if (kotlin.generateAsInternal != null) {
       error("Apollo: generateAsInternal is not used in Java")
     }
@@ -441,6 +438,8 @@ internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
 internal val defaultAddUnkownForEnums = true
 internal val defaultAddDefaultArgumentForInputObjects = true
+internal val defaultCodegenModels = "operationBased"
+internal val defaultTargetLanguage = TargetLanguage.KOTLIN_1_9
 
 internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
   return when (targetLanguage) {

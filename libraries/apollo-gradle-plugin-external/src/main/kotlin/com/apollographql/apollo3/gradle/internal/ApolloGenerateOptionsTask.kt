@@ -200,13 +200,12 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
     }
 
     CodegenSchemaOptions(
-        targetLanguage = targetLanguage.get(),
         scalarMapping = scalarMapping(scalarTypeMapping, scalarAdapterMapping),
-        codegenModels = codegenModels.orNull,
         generateDataBuilders = generateDataBuilders.orNull,
     ).writeTo(codegenSchemaOptionsFile.get().asFile)
 
     IrOptions(
+        codegenModels = codegenModels.orNull,
         addTypename = addTypename.orNull,
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.orNull,
         decapitalizeFields = decapitalizeFields.orNull,
@@ -218,6 +217,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
     ).writeTo(irOptionsFile.get().asFile)
 
     val common = CommonCodegenOptions(
+        targetLanguage = targetLanguage.get(),
         useSemanticNaming = useSemanticNaming.orNull,
         generateFragmentImplementations = generateFragmentImplementations.orNull,
         generateMethods = generateMethods.orNull,
