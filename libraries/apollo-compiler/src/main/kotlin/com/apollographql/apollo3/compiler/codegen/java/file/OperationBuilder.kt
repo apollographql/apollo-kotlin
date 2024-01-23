@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
@@ -25,10 +24,11 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
@@ -276,7 +276,7 @@ internal class OperationBuilder(
     operation.variables
         .map {
           val irType = context.resolver.resolveIrType(it.type)
-          FieldSpec.builder(irType.withoutAnnotations(), context.layout.propertyName(it.name).escapeJavaReservedWord())
+          FieldSpec.builder(irType.withoutAnnotations(), context.layout.javaPropertyName(it.name))
               .addAnnotations(irType.annotations)
               .build()
         }

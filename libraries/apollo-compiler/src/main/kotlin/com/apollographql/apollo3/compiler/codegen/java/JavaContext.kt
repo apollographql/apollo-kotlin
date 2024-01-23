@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 
 internal class JavaContext(
     val layout: CodegenLayout,
@@ -11,3 +12,5 @@ internal class JavaContext(
     val generateModelBuilders: Boolean,
     val nullableFieldStyle: JavaNullable,
 )
+
+internal fun CodegenLayout.javaPropertyName(name: String) = propertyName(name).escapeJavaReservedWord()

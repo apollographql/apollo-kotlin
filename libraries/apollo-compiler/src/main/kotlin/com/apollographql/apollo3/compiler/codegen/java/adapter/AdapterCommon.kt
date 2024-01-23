@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
@@ -25,8 +24,10 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializer
 import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalValue
 import com.apollographql.apollo3.compiler.codegen.java.helpers.wrapValueInOptional
 import com.apollographql.apollo3.compiler.codegen.java.isNotEmpty
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.codegen.variableName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -34,7 +35,6 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
-import com.apollographql.apollo3.compiler.codegen.variableName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -251,7 +251,7 @@ internal fun writeToResponseCodeBlock(model: IrModel, context: JavaContext): Cod
 
 private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(info.responseName).escapeJavaReservedWord()
+  val propertyName = context.layout.javaPropertyName(info.responseName)
 
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)

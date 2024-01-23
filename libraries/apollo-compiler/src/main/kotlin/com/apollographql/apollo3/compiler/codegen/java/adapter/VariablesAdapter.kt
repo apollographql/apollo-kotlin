@@ -17,7 +17,7 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
@@ -63,7 +63,7 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: JavaContext): Cod
 private fun IrVariable.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(name).escapeJavaReservedWord()
+  val propertyName = context.layout.javaPropertyName(name)
 
   if (type.optional) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)

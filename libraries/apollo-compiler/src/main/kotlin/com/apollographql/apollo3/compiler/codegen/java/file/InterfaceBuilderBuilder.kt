@@ -12,8 +12,8 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.squareup.javapoet.ClassName
@@ -91,9 +91,9 @@ internal class InterfaceBuilderBuilder(
   }
 
   private fun IrMapProperty.toMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(context.layout.propertyName(name).escapeJavaReservedWord())
+    return MethodSpec.methodBuilder(context.layout.javaPropertyName(name))
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.propertyName(name).escapeJavaReservedWord())
+        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.javaPropertyName(name))
         .returns(ClassName.get(packageName, simpleName))
         .apply {
           val adapter = context.resolver.adapterInitializer2(type)
@@ -102,10 +102,10 @@ internal class InterfaceBuilderBuilder(
                 "$T.adaptValue($L, $L)",
                 JavaClassNames.ObjectBuilderKt,
                 adapter,
-                context.layout.propertyName(name).escapeJavaReservedWord()
+                context.layout.javaPropertyName(name)
             )
           } else {
-            CodeBlock.of("$L", context.layout.propertyName(name).escapeJavaReservedWord())
+            CodeBlock.of("$L", context.layout.javaPropertyName(name))
           }
 
           addStatement(

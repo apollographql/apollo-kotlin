@@ -12,9 +12,9 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -75,7 +75,7 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.propertyName(it.name).escapeJavaReservedWord())
+        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.javaPropertyName(it.name))
             .maybeAddDescription(it.description)
             .build()
       }
@@ -98,5 +98,5 @@ private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
   } else {
     JavaClassNames.Assertions
   }
-  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName).escapeJavaReservedWord() }});\n", assertionsClassName)
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.javaPropertyName(it.graphQlName) }});\n", assertionsClassName)
 }
