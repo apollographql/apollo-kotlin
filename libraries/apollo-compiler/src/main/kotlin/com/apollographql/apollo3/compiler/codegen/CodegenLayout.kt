@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.uniqueName
 import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.withUnderscorePrefix
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -140,3 +141,7 @@ internal fun String.inputAdapter(): String = "${this}_InputAdapter"
 internal fun String.variablesAdapter(): String = "${this}_VariablesAdapter"
 internal fun String.impl(): String = "${this}Impl"
 internal fun String.selections(): String = "${this}Selections"
+/**
+ * when used in function bodies, prefixing with '_' prevents clashing with parent classes
+ */
+internal fun String.variableName(): String = this.withUnderscorePrefix()

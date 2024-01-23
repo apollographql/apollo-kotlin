@@ -73,7 +73,4 @@ internal fun uniqueName(name: String, usedNames: Set<String>): String {
   return uniqueName
 }
 
-/**
- * when used in function bodies, prefixing with '_' prevents clashing with parent classes
- */
 internal fun String.withUnderscorePrefix(): String = if (this == "__typename") this else "_$this"

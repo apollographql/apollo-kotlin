@@ -34,7 +34,7 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
-import com.apollographql.apollo3.compiler.withUnderscorePrefix
+import com.apollographql.apollo3.compiler.codegen.variableName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -84,7 +84,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.of(
         "$T $L = $L;",
         resolvedType,
-        property.info.responseName.withUnderscorePrefix(),
+        property.info.responseName.variableName(),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -105,7 +105,7 @@ internal fun readFromResponseCodeBlock(
         .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              val variableName = property.info.responseName.withUnderscorePrefix()
+              val variableName = property.info.responseName.variableName()
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
 
               CodeBlock.of(
@@ -158,7 +158,7 @@ internal fun readFromResponseCodeBlock(
             add(
                 "$T $L = $L;\n",
                 resolvedType,
-                property.info.responseName.withUnderscorePrefix(),
+                property.info.responseName.variableName(),
                 context.absentOptionalInitializer(resolvedType)
             )
             val pathLiteral = if (path.isNotEmpty()) {
@@ -181,7 +181,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "$L = $L;\n",
-                property.info.responseName.withUnderscorePrefix(),
+                property.info.responseName.variableName(),
                 context.wrapValueInOptional(fromJsonCall, resolvedType)
             )
         )
@@ -203,7 +203,7 @@ internal fun readFromResponseCodeBlock(
             CodeBlock.of(
                 "$T.checkFieldNotMissing($L, $S);\n",
                 JavaClassNames.Assertions,
-                property.info.responseName.withUnderscorePrefix(),
+                property.info.responseName.variableName(),
                 property.info.responseName
             )
           }.joinToCode("")
@@ -214,7 +214,7 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(
           visibleProperties.map { property ->
-            CodeBlock.of(L, property.info.responseName.withUnderscorePrefix())
+            CodeBlock.of(L, property.info.responseName.variableName())
           }.joinToCode(separator = ",\n", suffix = "\n")
       )
       .unindent()
