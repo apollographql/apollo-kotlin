@@ -70,15 +70,17 @@ private fun buildOutput(
     upstreamCodegenMetadatas: List<CodegenMetadata>,
     requiresOptInAnnotation: String?,
     targetLanguage: TargetLanguage,
-    hooks: List<ApolloCompilerKotlinHooks>,
+    hooks: List<ApolloCompilerKotlinHooks>?,
+    generateAsInternal: Boolean,
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
-  val upstreamResolver = upstreamCodegenMetadatas.fold(null as KotlinResolver?) { acc, resolverInfo ->
-    KotlinResolver(resolverInfo.entries, acc, codegenSchema.scalarMapping, requiresOptInAnnotation, hooks)
-  }
+
+  @Suppress("NAME_SHADOWING")
+  val hooks = compilerKotlinHooks(hooks, generateAsInternal)
+
   val resolver = KotlinResolver(
-      entries = emptyList(),
-      next = upstreamResolver,
+      entries = upstreamCodegenMetadatas.flatMap { it.entries },
+      next = null,
       scalarMapping = codegenSchema.scalarMapping,
       requiresOptInAnnotation = requiresOptInAnnotation,
       hooks = hooks
@@ -160,19 +162,19 @@ internal object KotlinCodegen {
     val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching ?: defaultSealedClassesForEnumsMatching
     val decapitalizeFields = commonCodegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
     val addUnkownForEnums = kotlinCodegenOptions.addUnknownForEnums ?: defaultAddUnkownForEnums
-    val addDefaultArgumentForInputObjects = kotlinCodegenOptions.addDefaultArgumentForInputObjects ?: defaultAddDefaultArgumentForInputObjects
+    val addDefaultArgumentForInputObjects = kotlinCodegenOptions.addDefaultArgumentForInputObjects
+        ?: defaultAddDefaultArgumentForInputObjects
 
     val targetLanguage = codegenSchema.targetLanguage
     val scalarMapping = codegenSchema.scalarMapping
-    @Suppress("NAME_SHADOWING")
-    val compilerKotlinHooks = compilerKotlinHooks(compilerKotlinHooks, generateAsInternal)
 
     return buildOutput(
         codegenSchema = codegenSchema,
         upstreamCodegenMetadatas = emptyList(),
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
-        hooks = compilerKotlinHooks
+        hooks = compilerKotlinHooks,
+        generateAsInternal = generateAsInternal
     ) { resolver ->
 
       val layout = CodegenLayout(
@@ -224,6 +226,7 @@ internal object KotlinCodegen {
         builders.add(PaginationBuilder(context, irSchema.connectionTypes))
       }
     }
+
   }
 
   fun buildOperationSources(
@@ -234,7 +237,7 @@ internal object KotlinCodegen {
       commonCodegenOptions: CommonCodegenOptions,
       kotlinCodegenOptions: KotlinCodegenOptions,
       packageNameGenerator: PackageNameGenerator,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
+      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
 
@@ -255,15 +258,14 @@ internal object KotlinCodegen {
     val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
 
     val targetLanguage = codegenSchema.targetLanguage
-    @Suppress("NAME_SHADOWING")
-    val compilerKotlinHooks = compilerKotlinHooks(compilerKotlinHooks, generateAsInternal)
 
     return buildOutput(
         codegenSchema = codegenSchema,
         upstreamCodegenMetadatas = upstreamCodegenMetadata,
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
-        hooks = compilerKotlinHooks
+        hooks = compilerKotlinHooks,
+        generateAsInternal = generateAsInternal
     ) { resolver ->
 
       val layout = CodegenLayout(
@@ -356,7 +358,8 @@ internal object KotlinCodegen {
         listOf(codegenMetadata),
         null,
         targetLanguage,
-        compilerKotlinHooks(null, true)
+        null,
+        true,
     ) { resolver ->
       val layout = CodegenLayout(
           codegenSchema = codegenSchema,

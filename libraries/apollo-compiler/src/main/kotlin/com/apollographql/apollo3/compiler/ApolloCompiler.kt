@@ -406,7 +406,7 @@ object ApolloCompiler {
           commonCodegenOptions = codegenOptions.common,
           javaCodegenOptions = codegenOptions.java,
           packageNameGenerator = packageNameGenerator,
-          compilerJavaHooks = compilerJavaHooks ?: defaultCompilerJavaHooks,
+          compilerJavaHooks = compilerJavaHooks,
       ).toSourceOutput()
     } else {
       sourceOutput += KotlinCodegen.buildOperationSources(
@@ -417,7 +417,7 @@ object ApolloCompiler {
           commonCodegenOptions = codegenOptions.common,
           kotlinCodegenOptions = codegenOptions.kotlin,
           packageNameGenerator = packageNameGenerator,
-          compilerKotlinHooks = compilerKotlinHooks ?: defaultCompilerKotlinHooks,
+          compilerKotlinHooks = compilerKotlinHooks,
       ).toSourceOutput()
     }
 

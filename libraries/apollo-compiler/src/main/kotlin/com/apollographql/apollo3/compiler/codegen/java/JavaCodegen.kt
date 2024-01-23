@@ -72,25 +72,17 @@ private fun buildOutput(
     upstreamCodegenMetadata: List<CodegenMetadata>,
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
-    apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>,
+    apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>?,
     targetLanguage: TargetLanguage,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
 
-  val upstreamResolver = upstreamCodegenMetadata.fold(null as JavaResolver?) { acc, resolverInfo ->
-    JavaResolver(
-        entries = resolverInfo.entries,
-        next = acc,
-        scalarMapping = codegenSchema.scalarMapping,
-        generatePrimitiveTypes = generatePrimitiveTypes,
-        nullableFieldStyle = nullableFieldStyle,
-        hooks = apolloCompilerJavaHooks
-    )
-  }
+  @Suppress("NAME_SHADOWING")
+  val apolloCompilerJavaHooks = compilerJavaHooks(apolloCompilerJavaHooks)
 
   val resolver = JavaResolver(
-      entries = emptyList(),
-      next = upstreamResolver,
+      entries = upstreamCodegenMetadata.flatMap { it.entries },
+      next = null,
       scalarMapping = codegenSchema.scalarMapping,
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
@@ -163,9 +155,6 @@ internal object JavaCodegen {
     val nullableFieldStyle = javaCodegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
 
     val scalarMapping = codegenSchema.scalarMapping
-
-    @Suppress("NAME_SHADOWING")
-    val compilerJavaHooks = compilerJavaHooks(compilerJavaHooks)
 
     return buildOutput(
         codegenSchema = codegenSchema,
@@ -251,7 +240,7 @@ internal object JavaCodegen {
       commonCodegenOptions: CommonCodegenOptions,
       javaCodegenOptions: JavaCodegenOptions,
       packageNameGenerator: PackageNameGenerator,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>,
+      compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
 
@@ -275,9 +264,6 @@ internal object JavaCodegen {
     val generateModelBuilders = javaCodegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
     val generatePrimitiveTypes = javaCodegenOptions.generatePrimitiveTypes ?: defaultGeneratePrimitiveTypes
     val nullableFieldStyle = javaCodegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
-
-    @Suppress("NAME_SHADOWING")
-    val compilerJavaHooks = compilerJavaHooks(compilerJavaHooks)
 
     return buildOutput(
         codegenSchema = codegenSchema,
