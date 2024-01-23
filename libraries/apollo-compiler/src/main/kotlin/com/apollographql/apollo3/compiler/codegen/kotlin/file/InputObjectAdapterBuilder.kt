@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.codegen.inputAdapter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -15,7 +16,7 @@ internal class InputObjectAdapterBuilder(
     val inputObject: IrInputObject,
 ) : CgFileBuilder {
   val packageName = context.layout.typeAdapterPackageName()
-  val simpleName = context.layout.schemaTypeName(inputObject.name) + "_InputAdapter"
+  val simpleName = context.layout.schemaTypeName(inputObject.name).inputAdapter()
 
   override fun prepare() {
     context.resolver.registerInputObjectAdapter(

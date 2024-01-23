@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.codegen.inputAdapter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -15,7 +16,7 @@ internal class InputObjectAdapterBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   val packageName = context.layout.typeAdapterPackageName()
-  val simpleName = context.layout.schemaTypeName(inputObject.name) + "_InputAdapter"
+  val simpleName = context.layout.schemaTypeName(inputObject.name).inputAdapter()
 
   override fun prepare() {
     context.resolver.registerInputObjectAdapter(

@@ -136,6 +136,7 @@ internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${fil
 internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.selections"
 
 internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
+internal fun String.inputAdapter(): String = "${this}_InputAdapter"
 internal fun String.variablesAdapter(): String = "${this}_VariablesAdapter"
 internal fun String.impl(): String = "${this}Impl"
 internal fun String.selections(): String = "${this}Selections"
