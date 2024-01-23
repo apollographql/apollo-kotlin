@@ -18,7 +18,7 @@ internal class FragmentResponseAdapterBuilder(
     val flatten: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
-  private val simpleName = fragment.name.capitalizeFirstLetter().impl().responseAdapter()
+  private val simpleName = context.layout.fragmentName(fragment.name).impl().responseAdapter()
 
   private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.schemaPackageName
+import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -28,7 +28,7 @@ internal class SchemaBuilder(
     private val enums: List<IrEnum>
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.schemaPackageName()
+  private val packageName = layout.schemaSubPackageName()
 
   override fun prepare() {
     context.resolver.registerSchema(ClassName(packageName, generatedSchemaName))

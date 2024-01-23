@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
-import com.apollographql.apollo3.compiler.codegen.filePackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgImport
@@ -44,7 +43,7 @@ internal class OperationBuilder(
     val generateInputBuilders: Boolean
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.filePackageName(operation.filePath)
+  private val packageName = layout.executableDocumentPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {

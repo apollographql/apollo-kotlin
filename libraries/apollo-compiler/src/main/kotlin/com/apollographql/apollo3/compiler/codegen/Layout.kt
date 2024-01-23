@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-
 internal interface Layout {
-  val packageNameGenerator: PackageNameGenerator
-  fun schemaTypeName(schemaTypeName: String): String
-  fun basePackageName(): String
+  fun schemaPackageName(): String
+  fun executableDocumentPackageName(filePath: String?): String
+
   fun operationName(name: String, capitalizedOperationType: String): String
+  fun fragmentName(name: String): String
+  fun schemaTypeName(schemaTypeName: String): String
+  fun topLevelName(name: String): String
+
   fun propertyName(name: String): String
 }

@@ -13,7 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.codegen.schemaPackageName
+import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -36,7 +36,7 @@ internal class SchemaBuilder(
     private val enums: List<IrEnum>
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.schemaPackageName()
+  private val packageName = layout.schemaSubPackageName()
 
   override fun prepare() {
     context.resolver.registerSchema(ClassName.get(packageName, generatedSchemaName))

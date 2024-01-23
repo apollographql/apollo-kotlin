@@ -23,11 +23,12 @@ import com.apollographql.apollo3.compiler.withUnderscorePrefix
  */
 internal class CodegenLayout(
     codegenSchema: CodegenSchema,
-    override val packageNameGenerator: PackageNameGenerator,
+    private val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
+    private val prefix: Boolean
 ) : Layout {
-  private val schemaPackageName = filePackageName(codegenSchema.filePath ?: "")
+  private val schemaPackageName = executableDocumentPackageName(codegenSchema.filePath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
     val allTypes = codegenSchema.allTypes()
@@ -56,21 +57,32 @@ internal class CodegenLayout(
     }
   }
 
+  override fun schemaPackageName(): String = schemaPackageName
+
+  override fun executableDocumentPackageName(filePath: String?): String = packageNameGenerator.packageName(filePath ?: "")
+
   override fun schemaTypeName(schemaTypeName: String): String {
-    return schemaTypeToClassName[schemaTypeName]
-        ?: error("unknown schema type: $schemaTypeName")
+    return schemaTypeToClassName[schemaTypeName]?.let {
+      topLevelName(it)
+    } ?: error("unknown schema type: $schemaTypeName")
   }
 
-  override fun basePackageName() = schemaPackageName
-
   override fun operationName(name: String, capitalizedOperationType: String): String {
-    return name.capitalizeFirstLetter().let {
+    return topLevelName(name).let {
       if (useSemanticNaming) {
         it.maybeAddSuffix(capitalizedOperationType)
       } else {
         it
       }
     }
+  }
+
+  override fun fragmentName(name: String): String {
+    return topLevelName(name)
+  }
+
+  override fun topLevelName(name: String): String {
+    return "${prefix}${name.capitalizeFirstLetter()}"
   }
 
   override fun propertyName(name: String) = if (decapitalizeFields) name.decapitalizeFirstLetter() else name
@@ -116,22 +128,21 @@ internal fun modelName(info: IrFieldInfo): String {
 }
 
 
-internal fun CodegenLayout.typePackageName() = "${basePackageName()}.type"
-internal fun CodegenLayout.typeBuilderPackageName() = "${basePackageName()}.type.builder"
-internal fun CodegenLayout.typeAdapterPackageName() = "${basePackageName()}.type.adapter"
-internal fun CodegenLayout.typeUtilPackageName() = "${basePackageName()}.type.util"
+internal fun CodegenLayout.typePackageName() = "${schemaPackageName()}.type"
+internal fun CodegenLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
+internal fun CodegenLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
+internal fun CodegenLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 
-internal fun CodegenLayout.paginationPackageName() = "${basePackageName()}.pagination"
-internal fun CodegenLayout.schemaPackageName() = "${basePackageName()}.schema"
-internal fun CodegenLayout.executionPackageName() = "${basePackageName()}.execution"
+internal fun CodegenLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
+internal fun CodegenLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
+internal fun CodegenLayout.executionPackageName() = "${schemaPackageName()}.execution"
 
-internal fun CodegenLayout.filePackageName(filePath: String) = packageNameGenerator.packageName(filePath)
-internal fun CodegenLayout.operationAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.adapter"
-internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.selections"
+internal fun CodegenLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
+internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
 
-internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${filePackageName(filePath)}.fragment"
-internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.adapter"
-internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${filePackageName(filePath)}.fragment.selections"
+internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment"
+internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
+internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
 
 internal fun CodegenLayout.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
 

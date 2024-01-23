@@ -50,7 +50,7 @@ internal class FragmentModelsBuilder(
   override fun build(): CgFile {
     return CgFile(
         packageName = packageName,
-        fileName = fragment.name.capitalizeFirstLetter(),
+        fileName = context.layout.fragmentName(fragment.name),
         typeSpecs = modelBuilders.map { it.build() }
     )
   }
