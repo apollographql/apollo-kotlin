@@ -441,17 +441,33 @@ internal val defaultAddDefaultArgumentForInputObjects = true
 internal val defaultCodegenModels = "operationBased"
 internal val defaultTargetLanguage = TargetLanguage.KOTLIN_1_9
 
-internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
-  return when (targetLanguage) {
-    TargetLanguage.JAVA -> {
-      check(codegenModels == null || codegenModels == MODELS_OPERATION_BASED) {
-        "Java codegen does not support codegenModels=${codegenModels}"
-      }
-      MODELS_OPERATION_BASED
+internal fun defaultTargetLanguage(targetLanguage: TargetLanguage?, upstreamCodegenMetadata: List<CodegenMetadata>): TargetLanguage {
+  val upstreamTargetLanguage = upstreamCodegenMetadata.map { it.targetLanguage }.distinct().run {
+    check(size <= 1) {
+      "Apollo: inconsistent targetLanguages found: ${this.joinToString(",")}"
     }
-
-    else -> codegenModels ?: MODELS_OPERATION_BASED
+    singleOrNull()
   }
+  if (targetLanguage != null && upstreamTargetLanguage != null && targetLanguage != upstreamTargetLanguage) {
+    error("Apollo: cannot depend on '$upstreamTargetLanguage' targetLanguage (expected: '${targetLanguage}').")
+  }
+
+  return targetLanguage ?: upstreamTargetLanguage ?: defaultTargetLanguage
+}
+
+internal fun defaultCodegenModels(codegenModels: String?, upstreamCodegenModels: List<String>): String {
+  val upstreamCodegenModel = upstreamCodegenModels.distinct().run {
+    check(size <= 1) {
+      "Apollo: inconsistent codegenModels found: ${this.joinToString(",")}"
+    }
+    singleOrNull()
+  }
+
+  if (codegenModels != null && upstreamCodegenModel != null && codegenModels != upstreamCodegenModel) {
+    error("Apollo: cannot depend on '$upstreamCodegenModel' codegenModels (expected: '${codegenModels}').")
+  }
+
+  return codegenModels ?: upstreamCodegenModel ?: defaultCodegenModels
 }
 
 internal fun generateMethodsJava(generateMethods: List<GeneratedMethod>?): List<GeneratedMethod> {

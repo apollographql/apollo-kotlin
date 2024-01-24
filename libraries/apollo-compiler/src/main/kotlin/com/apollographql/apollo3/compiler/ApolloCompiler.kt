@@ -189,18 +189,7 @@ object ApolloCompiler {
     val allIssues = mutableListOf<Issue>()
     allIssues.addAll(validationResult.issues)
 
-    val upstreamCodegenModel = upstreamCodegenModels.distinct().run {
-      check(size <= 1) {
-        "Apollo: inconsistent codegenModels found: ${this.joinToString(",")}"
-      }
-      singleOrNull()
-    }
-
-    if (options.codegenModels != null && upstreamCodegenModel != null && options.codegenModels != upstreamCodegenModel) {
-      error("Apollo: cannot depend on '$upstreamCodegenModel' codegenModels (expected: '${options.codegenModels}').")
-    }
-
-    val codegenModels = options.codegenModels ?: upstreamCodegenModel ?: defaultCodegenModels
+    val codegenModels = defaultCodegenModels(options.codegenModels, upstreamCodegenModels)
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
       allIssues.addAll(checkConditionalFragments(definitions))
     }
@@ -328,7 +317,7 @@ object ApolloCompiler {
   ): SourceOutput {
     val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
 
-    val targetLanguage = codegenOptions.common.targetLanguage ?: defaultTargetLanguage
+    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, emptyList())
     codegenOptions.validate()
 
     return if (targetLanguage == TargetLanguage.JAVA) {
@@ -367,17 +356,7 @@ object ApolloCompiler {
   ): SourceOutput {
     check(irOperations is DefaultIrOperations)
 
-    val upstreamTargetLanguage = upstreamCodegenMetadata.map { it.targetLanguage }.distinct().run {
-      check(size <= 1) {
-        "Apollo: inconsistent targetLanguages found: ${this.joinToString(",")}"
-      }
-      singleOrNull()
-    }
-    if (codegenOptions.common.targetLanguage != null && upstreamTargetLanguage != null && codegenOptions.common.targetLanguage != upstreamTargetLanguage) {
-      error("Apollo: cannot depend on '$upstreamTargetLanguage' targetLanguage (expected: '${codegenOptions.common.targetLanguage}').")
-    }
-
-    val targetLanguage = codegenOptions.common.targetLanguage ?: upstreamTargetLanguage ?: defaultTargetLanguage
+    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, upstreamCodegenMetadata)
     codegenOptions.validate()
 
     val operationOutput = irOperations.operations.map {
