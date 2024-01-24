@@ -78,6 +78,11 @@ private fun buildOutput(
   @Suppress("NAME_SHADOWING")
   val hooks = compilerKotlinHooks(hooks, generateAsInternal)
 
+  upstreamCodegenMetadatas.forEach {
+    check(it.targetLanguage == targetLanguage) {
+      "Apollo: Cannot depend on '${it.targetLanguage}' generated models (expected: '$targetLanguage')."
+    }
+  }
   val resolver = KotlinResolver(
       entries = upstreamCodegenMetadatas.flatMap { it.entries },
       next = null,
@@ -241,7 +246,7 @@ internal object KotlinCodegen {
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
 
-    val generateDataBuilders = irOperations.generateDataBuilders
+    val generateDataBuilders = codegenSchema.generateDataBuilders
     val flatten = irOperations.flattenModels
     val decapitalizeFields = irOperations.decapitalizeFields
 

@@ -50,6 +50,7 @@ class MetadataTest {
     ApolloCompiler.buildIrOperations(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(rootGraphQLFile(directory)),
+        upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         options = irOptionsFile.toIrOptions(),
         logger = null
@@ -58,6 +59,7 @@ class MetadataTest {
     ApolloCompiler.buildIrOperations(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(leafGraphQLFile(directory)),
+        upstreamCodegenModels = rootIrOperationsFile.toIrOperations().codegenModels.let { listOf(it) },
         upstreamFragmentDefinitions = rootIrOperationsFile.toIrOperations().fragmentDefinitions,
         options = irOptionsFile.toIrOptions(),
         logger = null

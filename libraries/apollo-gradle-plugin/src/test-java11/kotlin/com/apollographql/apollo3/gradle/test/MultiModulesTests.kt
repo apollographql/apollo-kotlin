@@ -126,4 +126,14 @@ class MultiModulesTests {
       )
     }
   }
+
+  @Test
+  fun `schema module targetLanguage propagates`() {
+    TestUtils.withTestProject("multi-modules-badconfig") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(
+          ":leaf:build",
+          dir
+      )
+    }
+  }
 }

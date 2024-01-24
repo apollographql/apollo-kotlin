@@ -247,7 +247,7 @@ internal object JavaCodegen {
     }
 
     val flatten = irOperations.flattenModels
-    val generateDataBuilders = irOperations.generateDataBuilders
+    val generateDataBuilders = codegenSchema.generateDataBuilders
     val decapitalizeFields = irOperations.decapitalizeFields
 
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations

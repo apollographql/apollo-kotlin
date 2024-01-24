@@ -166,6 +166,7 @@ object ApolloCompiler {
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
       executableFiles: Set<File>,
+      upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
       logger: Logger?,
@@ -188,7 +189,18 @@ object ApolloCompiler {
     val allIssues = mutableListOf<Issue>()
     allIssues.addAll(validationResult.issues)
 
-    val codegenModels = options.codegenModels ?: defaultCodegenModels
+    val upstreamCodegenModel = upstreamCodegenModels.distinct().run {
+      check(size <= 1) {
+        "Apollo: inconsistent codegenModels found: ${this.joinToString(",")}"
+      }
+      singleOrNull()
+    }
+
+    if (options.codegenModels != null && upstreamCodegenModel != null && options.codegenModels != upstreamCodegenModel) {
+      error("Apollo: cannot depend on '$upstreamCodegenModel' codegenModels (expected: '${options.codegenModels}').")
+    }
+
+    val codegenModels = options.codegenModels ?: upstreamCodegenModel ?: defaultCodegenModels
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
       allIssues.addAll(checkConditionalFragments(definitions))
     }
@@ -266,7 +278,7 @@ object ApolloCompiler {
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        generateDataBuilders = codegenSchema.generateDataBuilders ?: defaultGenerateDataBuilders,
+        generateDataBuilders = codegenSchema.generateDataBuilders,
         fragmentVariableUsages = validationResult.fragmentVariableUsages
     ).build()
   }
@@ -355,7 +367,17 @@ object ApolloCompiler {
   ): SourceOutput {
     check(irOperations is DefaultIrOperations)
 
-    val targetLanguage = codegenOptions.common.targetLanguage ?: defaultTargetLanguage
+    val upstreamTargetLanguage = upstreamCodegenMetadata.map { it.targetLanguage }.distinct().run {
+      check(size <= 1) {
+        "Apollo: inconsistent targetLanguages found: ${this.joinToString(",")}"
+      }
+      singleOrNull()
+    }
+    if (codegenOptions.common.targetLanguage != null && upstreamTargetLanguage != null && codegenOptions.common.targetLanguage != upstreamTargetLanguage) {
+      error("Apollo: cannot depend on '$upstreamTargetLanguage' targetLanguage (expected: '${codegenOptions.common.targetLanguage}').")
+    }
+
+    val targetLanguage = codegenOptions.common.targetLanguage ?: upstreamTargetLanguage ?: defaultTargetLanguage
     codegenOptions.validate()
 
     val operationOutput = irOperations.operations.map {
@@ -450,6 +472,7 @@ object ApolloCompiler {
     val irOperations = buildIrOperations(
         codegenSchema = codegenSchema,
         executableFiles = executableFiles,
+        upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         options = irOptions,
         logger = logger

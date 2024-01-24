@@ -35,8 +35,7 @@ internal data class DefaultIrOperations(
 
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
-    val generateDataBuilders: Boolean,
-    val codegenModels: String,
+    override val codegenModels: String,
 
     override val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 ) : IrOperations
@@ -44,6 +43,7 @@ internal data class DefaultIrOperations(
 interface IrOperations {
   val fragmentDefinitions: List<GQLFragmentDefinition>
   val usedFields: Map<String, Set<String>>
+  val codegenModels: String
 }
 
 @Serializable
