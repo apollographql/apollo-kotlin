@@ -69,5 +69,27 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
+
+  internal fun packageNameGenerator(): PackageNameGenerator {
+    return when {
+      packageNameGenerator != null -> packageNameGenerator!!
+      packageName.isPresent -> PackageNameGenerator.Flat(packageName.get())
+      packageNamesFromFilePaths.orNull == true -> PackageNameGenerator.FilePathAware(packageNameRoots!!)
+      else -> {
+        error(
+            """
+            |Apollo: specify 'packageName':
+            |apollo {
+            |  service("service") {
+            |    packageName.set("com.example")
+            |  }
+            |}
+          """.trimMargin()
+        )
+      }
+    }
+  }
 }
+
+
 

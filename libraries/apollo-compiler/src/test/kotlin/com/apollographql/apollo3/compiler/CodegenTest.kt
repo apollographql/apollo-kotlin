@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_9
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo3.compiler.codegen.writeTo
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.AfterClass
@@ -343,9 +344,8 @@ class CodegenTest {
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
           generateMethods = generateMethods,
-          packageName = packageName
       )
-      ApolloCompiler.build(
+      ApolloCompiler.buildSchemaAndOperationSources(
           schemaFiles = setOf(schemaFile),
           executableFiles = graphqlFiles,
           codegenSchemaOptions = CodegenSchemaOptions(
@@ -363,11 +363,14 @@ class CodegenTest {
               java = javaCodegenOptions,
               kotlin = kotlinCodegenOptions
           ),
-          outputDir = outputDir,
           operationOutputGenerator = operationOutputGenerator,
           packageNameGenerator = packageNameGenerator,
-          compilerKotlinHooks = null
-      )
+          compilerKotlinHooks = null,
+          compilerJavaHooks = null,
+          logger = null,
+          operationManifestFile = null,
+
+      ).writeTo(outputDir, true, null)
       return outputDir
     }
 

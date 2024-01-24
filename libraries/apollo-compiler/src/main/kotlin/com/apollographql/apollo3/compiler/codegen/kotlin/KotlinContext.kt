@@ -9,10 +9,10 @@ internal class KotlinContext(
     val jsExport: Boolean,
     val layout: CodegenLayout,
     val resolver: KotlinResolver,
-    val targetLanguageVersion: TargetLanguage,
+    val targetLanguage: TargetLanguage,
 ) {
   fun isTargetLanguageVersionAtLeast(targetLanguage: TargetLanguage): Boolean {
     // Assumes TargetLanguage.KOTLIN_X_Y values are declared in increasing order
-    return targetLanguageVersion.ordinal >= targetLanguage.ordinal
+    return this.targetLanguage.ordinal >= targetLanguage.ordinal
   }
 }

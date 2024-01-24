@@ -185,8 +185,7 @@ class IrOptions(
 
 @Serializable
 class CommonCodegenOptions(
-    val packageName: String? = null,
-    val packageNamesFromFilePaths: Boolean? = null,
+    val decapitalizeFields: Boolean? = null,
 
     val useSemanticNaming: Boolean? = null,
 
@@ -239,6 +238,44 @@ class CodegenOptions(
     val kotlin: KotlinCodegenOptions = KotlinCodegenOptions(),
 )
 
+fun CodegenOptions.validate(targetLanguage: TargetLanguage) {
+  if (targetLanguage == TargetLanguage.JAVA) {
+    if (kotlin.generateAsInternal != null) {
+      error("Apollo: generateAsInternal is not used in Java")
+    }
+    if (kotlin.generateFilterNotNull != null) {
+      error("Apollo: generateFilterNotNull is not used in Java")
+    }
+    if (kotlin.sealedClassesForEnumsMatching != null) {
+      error("Apollo: sealedClassesForEnumsMatching is not used in Java")
+    }
+    if (kotlin.addJvmOverloads != null) {
+      error("Apollo: addJvmOverloads is not used in Java")
+    }
+    if (kotlin.requiresOptInAnnotation != null) {
+      error("Apollo: requiresOptInAnnotation is not used in Java")
+    }
+    if (kotlin.jsExport != null) {
+      error("Apollo: jsExport is not used in Java")
+    }
+    if (kotlin.generateInputBuilders != null) {
+      error("Apollo: generateInputBuilders is not used in Java")
+    }
+  } else {
+    if (java.nullableFieldStyle != null) {
+      error("Apollo: nullableFieldStyle is not used in Kotlin")
+    }
+    if (java.generateModelBuilders != null) {
+      error("Apollo: generateModelBuilders is not used in Kotlin")
+    }
+    if (java.classesForEnumsMatching != null) {
+      error("Apollo: classesForEnumsMatching is not used in Kotlin")
+    }
+    if (java.generatePrimitiveTypes != null) {
+      error("Apollo: generatePrimitiveTypes is not used in Kotlin")
+    }
+  }
+}
 @Serializable
 class KotlinCodegenOptions(
     /**
@@ -252,6 +289,8 @@ class KotlinCodegenOptions(
     val sealedClassesForEnumsMatching: List<String>? = null,
 
     val generateAsInternal: Boolean? = null,
+    val addUnknownForEnums: Boolean? = null,
+    val addDefaultArgumentForInputObjects: Boolean? = null,
     /**
      * Kotlin native will generate [Any?] for optional types
      * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
@@ -400,6 +439,8 @@ internal const val defaultDecapitalizeFields = false
 internal val defaultCompilerKotlinHooks = emptyList<ApolloCompilerKotlinHooks>()
 internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
+internal val defaultAddUnkownForEnums = true
+internal val defaultAddDefaultArgumentForInputObjects = true
 
 internal fun codegenModels(codegenModels: String?, targetLanguage: TargetLanguage): String {
   return when (targetLanguage) {
@@ -455,6 +496,6 @@ internal fun compilerKotlinHooks(compilerKotlinHooks: List<ApolloCompilerKotlinH
   }
 }
 
-internal fun compilerJavaHooks(compilerKotlinHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
-  return compilerKotlinHooks.orEmpty()
+internal fun compilerJavaHooks(compilerJavaHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
+  return compilerJavaHooks.orEmpty()
 }
