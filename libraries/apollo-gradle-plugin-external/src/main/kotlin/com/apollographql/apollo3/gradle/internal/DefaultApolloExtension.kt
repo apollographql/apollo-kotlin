@@ -691,7 +691,7 @@ abstract class DefaultApolloExtension(
       task.schemaFiles.from(project.provider { service.lazySchemaFiles(project) })
       task.upstreamSchemaFiles.from(schemaConsumerConfiguration)
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile })
-      task.codegenSchemaFile.set(BuildDirLayout.schema(project, service))
+      task.codegenSchemaFile.set(BuildDirLayout.codegenSchema(project, service))
     }
   }
 

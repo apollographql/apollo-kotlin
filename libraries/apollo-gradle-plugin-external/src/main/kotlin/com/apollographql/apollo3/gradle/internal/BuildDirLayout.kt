@@ -49,9 +49,9 @@ object BuildDirLayout {
         "generated/options/apollo/${service.name}/codegenSchemaOptions.json"
     )
   }
-  internal fun schema(project: Project, service: Service): Provider<RegularFile> {
+  internal fun codegenSchema(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
-        "generated/schema/apollo/${service.name}/schema.graphqls"
+        "generated/schema/apollo/${service.name}/codegenSchema.json"
     )
   }
 
