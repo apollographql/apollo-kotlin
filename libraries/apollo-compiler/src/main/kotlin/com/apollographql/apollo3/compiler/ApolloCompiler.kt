@@ -28,7 +28,7 @@ import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.internal.addRequiredFields
@@ -477,7 +477,7 @@ object ApolloCompiler {
         logger.warning("Apollo: generatePrimitiveTypes is not used in Kotlin")
       }
 
-      KotlinCodeGen.writeSchemaAndOperations(
+      KotlinCodegen.writeSchemaAndOperations(
           codegenSchema = codegenSchema,
           irOperations = irOperations,
           irSchema = irSchema,
@@ -589,7 +589,7 @@ object ApolloCompiler {
       codegenSchema: CodegenSchema,
       packageName: String,
   ): Pair<CodegenMetadata, List<FileSpec>> {
-    return KotlinCodeGen.schemaFileSpecs(codegenSchema, packageName)
+    return KotlinCodegen.schemaFileSpecs(codegenSchema, packageName)
   }
 
   fun resolverFileSpecs(
@@ -599,7 +599,7 @@ object ApolloCompiler {
       packageName: String,
       serviceName: String,
   ): List<FileSpec> {
-    return KotlinCodeGen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName = packageName, serviceName = serviceName)
+    return KotlinCodegen.resolverFileSpecs(codegenSchema, codegenMetadata, irTargetObjects, packageName = packageName, serviceName = serviceName)
   }
 }
 
