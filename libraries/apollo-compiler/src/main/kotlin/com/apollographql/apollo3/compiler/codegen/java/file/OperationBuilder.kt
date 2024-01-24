@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.internal.applyIf
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
+import com.apollographql.apollo3.compiler.codegen.filePackageName
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -23,8 +24,11 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
@@ -45,7 +49,7 @@ internal class OperationBuilder(
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.operationPackageName(operation.filePath)
+  private val packageName = layout.filePackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {
@@ -92,7 +96,7 @@ internal class OperationBuilder(
             context.generateMethods,
             operation.variables.map { it.toNamedType().toParameterSpec(context) },
             className = context.resolver.resolveOperation(operation.name)
-          )
+        )
         .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
@@ -157,7 +161,7 @@ internal class OperationBuilder(
   private fun buildDataMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.typeBuilderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addCode(
@@ -180,7 +184,7 @@ internal class OperationBuilder(
   private fun buildDataOverloadMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.typeBuilderPackageName(), "${operation.operationType.typeName.capitalizeFirstLetter()}Map"), Identifier.map)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addStatement(
             "return buildData(${Identifier.map}, new $T($T.types))",
@@ -272,7 +276,7 @@ internal class OperationBuilder(
     operation.variables
         .map {
           val irType = context.resolver.resolveIrType(it.type)
-          FieldSpec.builder(irType.withoutAnnotations(), context.layout.propertyName(it.name))
+          FieldSpec.builder(irType.withoutAnnotations(), context.layout.javaPropertyName(it.name))
               .addAnnotations(irType.annotations)
               .build()
         }

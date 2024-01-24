@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -48,7 +50,7 @@ internal class FragmentModelsBuilder(
   override fun build(): CgFile {
     return CgFile(
         packageName = packageName,
-        fileName = context.layout.fragmentModelsFileName(fragment.name),
+        fileName = fragment.name.capitalizeFirstLetter(),
         typeSpecs = modelBuilders.map { it.build() }
     )
   }

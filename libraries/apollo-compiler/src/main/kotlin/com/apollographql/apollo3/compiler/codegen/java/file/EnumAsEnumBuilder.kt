@@ -13,6 +13,9 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeSuppressDeprecation
+import com.apollographql.apollo3.compiler.codegen.typePackageName
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.internal.escapeTypeReservedWord
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -28,7 +31,7 @@ internal class EnumAsEnumBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(enum.name)
+  private val simpleName = layout.schemaTypeName(enum.name)
 
   private val selfClassName: ClassName
     get() = context.resolver.resolveSchemaType(enum.name)
@@ -67,7 +70,8 @@ internal class EnumAsEnumBuilder(
         )
         .apply {
           values.forEach { value ->
-            addEnumConstant(layout.enumValueName(value.targetName), value.enumConstTypeSpec())
+            addEnumConstant(value.targetName.escapeTypeReservedWord()
+                ?: value.targetName.escapeJavaReservedWord(), value.enumConstTypeSpec())
           }
           addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
 
@@ -84,7 +88,8 @@ internal class EnumAsEnumBuilder(
                         .beginControlFlow("switch ($rawValue)")
                         .apply {
                           values.forEach {
-                            add("case $S: return $T.$L;\n", it.name, selfClassName, layout.enumValueName(it.targetName))
+                            add("case $S: return $T.$L;\n", it.name, selfClassName, it.targetName.escapeTypeReservedWord()
+                                ?: it.targetName.escapeJavaReservedWord())
                           }
                         }
                         .add("default: return $T.${Identifier.UNKNOWN__};\n", selfClassName)

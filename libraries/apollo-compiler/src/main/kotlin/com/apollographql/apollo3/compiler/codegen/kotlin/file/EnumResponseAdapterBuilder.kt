@@ -11,6 +11,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.responseAdapter
+import com.apollographql.apollo3.compiler.codegen.typeAdapterPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -26,7 +28,7 @@ internal class EnumResponseAdapterBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typeAdapterPackageName()
-  private val simpleName = layout.enumResponseAdapterName(enum.name)
+  private val simpleName = layout.schemaTypeName(enum.name).responseAdapter()
 
   override fun prepare() {
     context.resolver.registerEnumAdapter(
@@ -63,7 +65,7 @@ internal class EnumResponseAdapterBuilder(
         .build()
 
     return TypeSpec
-        .objectBuilder(layout.enumResponseAdapterName(name))
+        .objectBuilder(layout.schemaTypeName(name).responseAdapter())
         .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)

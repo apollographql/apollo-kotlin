@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.model
 
-import com.apollographql.apollo3.compiler.internal.applyIf
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
@@ -9,11 +7,14 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
+import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -58,7 +59,7 @@ internal class ModelBuilder(
       val irType = context.resolver.resolveIrType(it.info.type)
       FieldSpec.builder(
           irType.withoutAnnotations(),
-          context.layout.propertyName(it.info.responseName),
+          context.layout.javaPropertyName(it.info.responseName),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
@@ -130,7 +131,7 @@ internal class ModelBuilder(
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
           .addCode(fields
-              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.javaPropertyName(it.name), context.layout.javaPropertyName(it.name)) }
               .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
               .build()
           )

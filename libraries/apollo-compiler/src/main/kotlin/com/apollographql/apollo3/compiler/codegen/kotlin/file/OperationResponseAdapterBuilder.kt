@@ -5,6 +5,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -14,7 +16,7 @@ internal class OperationResponseAdapterBuilder(
     val flatten: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
-  private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
+  private val simpleName = context.layout.operationName(operation).responseAdapter()
 
   private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

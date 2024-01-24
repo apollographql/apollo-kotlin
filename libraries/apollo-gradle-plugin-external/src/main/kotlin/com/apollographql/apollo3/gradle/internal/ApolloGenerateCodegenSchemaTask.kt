@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -11,7 +10,6 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
@@ -31,15 +29,6 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemaOptionsFile: RegularFileProperty
-
-  @Internal
-  var packageNameRoots: Set<String>? = null
-
-  @Internal
-  var packageNameGenerator: PackageNameGenerator? = null
-
-  @Input
-  fun getPackageNameGeneratorVersion() = packageNameGenerator?.version ?: ""
 
   /**
    * Only used for checks
@@ -94,8 +83,6 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = schemaFiles.files,
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
         logger = logger(),
         codegenSchemaOptionsFile = codegenSchemaOptionsFile.get().asFile,
         codegenSchemaFile = codegenSchemaFile.get().asFile,

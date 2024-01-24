@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.executionPackageName
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
 import com.apollographql.apollo3.compiler.ir.asKotlinPoet
 import com.squareup.kotlinpoet.ClassName
@@ -18,7 +19,7 @@ internal class ExecutableSchemaBuilderBuilder(
     private val adapterRegistry: MemberName,
     private val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {
-  val simpleName = context.layout.capitalizedIdentifier("${serviceName}ExecutableSchemaBuilder")
+  val simpleName = "${serviceName}ExecutableSchemaBuilder".capitalizeFirstLetter()
   override fun prepare() {
 
   }

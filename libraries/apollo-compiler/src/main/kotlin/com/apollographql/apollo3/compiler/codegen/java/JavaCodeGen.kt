@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.allTypes
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -111,7 +111,6 @@ internal object JavaCodeGen {
     val nullableFieldStyle = javaCodegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
 
     val scalarMapping = codegenSchema.scalarMapping
-    val schemaPackageName = codegenSchema.packageName
     @Suppress("NAME_SHADOWING")
     val compilerJavaHooks = compilerJavaHooks(compilerJavaHooks)
 
@@ -126,11 +125,10 @@ internal object JavaCodeGen {
       )
     }
 
-    val layout = JavaCodegenLayout(
-        allTypes = codegenSchema.allTypes(),
+    val layout = CodegenLayout(
+        codegenSchema = codegenSchema,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
-        schemaPackageName = schemaPackageName,
         decapitalizeFields = decapitalizeFields,
     )
 

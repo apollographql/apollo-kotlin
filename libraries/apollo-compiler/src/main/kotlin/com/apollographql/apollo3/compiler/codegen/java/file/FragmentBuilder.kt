@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
+import com.apollographql.apollo3.compiler.codegen.impl
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -25,7 +28,7 @@ internal class FragmentBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
-  private val simpleName = layout.fragmentName(fragment.name)
+  private val simpleName = fragment.name.capitalizeFirstLetter().impl()
 
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
     fragment.dataModelGroup.maybeFlatten(

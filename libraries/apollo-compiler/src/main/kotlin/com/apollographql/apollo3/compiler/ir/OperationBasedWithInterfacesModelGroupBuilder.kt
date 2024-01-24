@@ -9,8 +9,8 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.lowerCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWord
 

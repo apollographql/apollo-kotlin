@@ -12,6 +12,9 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromPara
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
+import com.apollographql.apollo3.compiler.codegen.typePackageName
+import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -24,7 +27,7 @@ internal class InputObjectBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.schemaTypeName(inputObject.name)
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(
@@ -72,7 +75,7 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.propertyName(it.name))
+        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.javaPropertyName(it.name))
             .maybeAddDescription(it.description)
             .build()
       }
@@ -91,9 +94,9 @@ internal class InputObjectBuilder(
 private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
   val assertionsClassName: ClassName = if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL) {
     // When using the Guava optionals, use the method generated in the project, as apollo-api doesn't depend on Guava
-    ClassName.get(context.layout.utilPackageName(), "Assertions")
+    ClassName.get(context.layout.typeUtilPackageName(), "Assertions")
   } else {
     JavaClassNames.Assertions
   }
-  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.propertyName(it.graphQlName) }});\n", assertionsClassName)
+  return CodeBlock.of("$T.assertOneOf(${joinToString { context.layout.javaPropertyName(it.graphQlName) }});\n", assertionsClassName)
 }

@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.selections.CompiledSelectionsBuilder
+import com.apollographql.apollo3.compiler.codegen.operationResponseFieldsPackageName
+import com.apollographql.apollo3.compiler.codegen.selections
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.ClassName
 
@@ -12,7 +14,7 @@ internal class OperationSelectionsBuilder(
     val operation: IrOperation,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
-  private val simpleName = context.layout.operationSelectionsName(operation)
+  private val simpleName = context.layout.operationName(operation).selections()
 
   override fun prepare() {
     context.resolver.registerOperationSelections(

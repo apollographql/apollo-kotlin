@@ -11,7 +11,8 @@ interface PackageNameGenerator {
   /**
    * This will be called with
    * - the executable filePath for operations and fragments
-   * - the main schema filePath for everything else
+   * - the main schema filePath for schema types
+   * - the empty string if the schema and/or operations are not read from a [File]
    */
   fun packageName(filePath: String): String
 

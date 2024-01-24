@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
 import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -16,7 +17,7 @@ internal class UtilAssertionsBuilder(val context: JavaContext) : JavaClassBuilde
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(
-        packageName = context.layout.utilPackageName(),
+        packageName = context.layout.typeUtilPackageName(),
         typeSpec = TypeSpec
             .classBuilder("Assertions")
             .addModifiers(Modifier.PUBLIC)

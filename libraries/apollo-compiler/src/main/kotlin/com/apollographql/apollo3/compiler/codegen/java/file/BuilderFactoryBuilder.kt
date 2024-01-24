@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrSchemaType
@@ -26,7 +28,7 @@ internal class BuilderFactoryBuilder(
     private val unions: List<IrUnion>,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
+  private val packageName = layout.typeBuilderPackageName()
   private val simpleName = "BuilderFactory"
 
   override fun prepare() {
@@ -78,8 +80,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrObject.toObjectBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.builderName(name))
-    return MethodSpec.methodBuilder(layout.buildFunName(name))
+    val builderClassName = ClassName.get(packageName, "${name.capitalizeFirstLetter()}Builder")
+    return MethodSpec.methodBuilder("build${name.capitalizeFirstLetter()}")
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)
@@ -87,8 +89,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.otherBuilderName(name))
-    return MethodSpec.methodBuilder(layout.buildOtherFunName(name))
+    val builderClassName = ClassName.get(packageName, "Other${name.capitalizeFirstLetter()}Builder")
+    return MethodSpec.methodBuilder("buildOther${name.capitalizeFirstLetter()}")
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)

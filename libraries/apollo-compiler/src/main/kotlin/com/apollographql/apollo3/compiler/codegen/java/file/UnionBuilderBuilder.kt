@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
@@ -9,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -22,9 +24,9 @@ internal class UnionBuilderBuilder(
     private val union: IrUnion,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
-  private val simpleName = layout.otherBuilderName(union.name)
-  private val mapClassName = ClassName.get(packageName, layout.otherMapName(union.name))
+  private val packageName = layout.typeBuilderPackageName()
+  private val simpleName = "Other${union.name.capitalizeFirstLetter()}Builder"
+  private val mapClassName = ClassName.get(packageName, "Other${union.name.capitalizeFirstLetter()}Map")
 
   override fun prepare() {
   }

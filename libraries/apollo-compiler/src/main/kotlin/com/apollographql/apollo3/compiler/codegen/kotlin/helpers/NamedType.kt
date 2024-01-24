@@ -71,7 +71,7 @@ internal fun NamedType.toSetterFunSpec(context: KotlinContext): FunSpec {
     body.add("this.%L·=·%T(%L)\n", propertyName, KotlinSymbols.Present, propertyName)
     parameterType = type.optional(false)
   } else {
-    body.add("this.%L·=·%L\n", propertyName,propertyName)
+    body.add("this.%L·=·%L\n", propertyName, propertyName)
     parameterType = type
   }
   body.add("return this")

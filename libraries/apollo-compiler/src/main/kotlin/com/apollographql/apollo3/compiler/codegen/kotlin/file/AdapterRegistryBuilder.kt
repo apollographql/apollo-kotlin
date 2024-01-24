@@ -7,6 +7,8 @@ import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.compiler.CodegenSchema
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.executionPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -25,7 +27,7 @@ internal class AdapterRegistryBuilder(
     val codegenSchema: CodegenSchema
 ) : CgFileBuilder {
   private val packageName = context.layout.executionPackageName()
-  private val simpleName = context.layout.capitalizedIdentifier("${serviceName}AdapterRegistry")
+  private val simpleName = "${serviceName}AdapterRegistry".capitalizeFirstLetter()
 
   val memberName = MemberName(packageName, simpleName)
 
@@ -58,10 +60,12 @@ internal class AdapterRegistryBuilder(
             when (it) {
               is GQLObjectTypeDefinition,
               is GQLInterfaceTypeDefinition,
-              is GQLUnionTypeDefinition -> {
+              is GQLUnionTypeDefinition
+              -> {
                 // Those require a context and can't use simple Adapter
                 return@forEach
               }
+
               else -> {
                 val type = when (it) {
                   is GQLEnumTypeDefinition -> IrEnumType(it.name, nullable = true)
@@ -70,7 +74,8 @@ internal class AdapterRegistryBuilder(
                   else -> error("")
                 }
                 add(".add(%S,·%L)\n", it.name, context.resolver.adapterInitializer(type.nullable(false), false, false, ""))
-              } }
+              }
+            }
           }
         }
         .add(".build()\n")

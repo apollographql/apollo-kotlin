@@ -349,7 +349,6 @@ class CodegenTest {
           schemaFiles = setOf(schemaFile),
           executableFiles = graphqlFiles,
           codegenSchemaOptions = CodegenSchemaOptions(
-              packageName = packageName,
               targetLanguage = targetLanguage,
               scalarMapping = scalarMapping,
               codegenModels = codegenModels,

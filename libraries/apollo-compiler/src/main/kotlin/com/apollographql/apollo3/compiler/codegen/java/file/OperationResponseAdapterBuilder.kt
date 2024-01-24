@@ -5,6 +5,8 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -15,7 +17,7 @@ internal class OperationResponseAdapterBuilder(
     val flatten: Boolean,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
-  private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
+  private val simpleName = context.layout.operationName(operation).responseAdapter()
 
   private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(

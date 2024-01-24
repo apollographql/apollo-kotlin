@@ -5,9 +5,9 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterSpec
@@ -25,7 +25,7 @@ internal fun NamedType.toParameterSpec(context: JavaContext): ParameterSpec {
   return ParameterSpec
       .builder(
           irType.withoutAnnotations(),
-          context.layout.propertyName(graphQlName),
+          context.layout.javaPropertyName(graphQlName),
       )
       .addAnnotations(irType.annotations)
       .build()

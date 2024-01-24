@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
@@ -16,7 +17,7 @@ internal class ScalarBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(scalar.name))
+  private val simpleName = prefixBuiltinScalarNames(layout.schemaTypeName(scalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {
     // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).

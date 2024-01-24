@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.variablesAdapterTypeSpec
+import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo3.compiler.codegen.variablesAdapter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
@@ -13,7 +15,7 @@ internal class OperationVariablesAdapterBuilder(
     val operation: IrOperation,
 ) : CgFileBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.filePath)
-  val simpleName = context.layout.operationVariablesAdapterName(operation)
+  val simpleName = context.layout.operationName(operation).variablesAdapter()
   override fun prepare() {
     context.resolver.registerOperationVariablesAdapter(
         operation.name,

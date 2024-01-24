@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
@@ -11,6 +12,8 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
+import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.squareup.javapoet.ClassName
@@ -25,9 +28,9 @@ internal class InterfaceBuilderBuilder(
     private val iface: IrInterface,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.builderPackageName()
-  private val simpleName = layout.otherBuilderName(iface.name)
-  private val mapClassName = ClassName.get(packageName, layout.otherMapName(iface.name))
+  private val packageName = layout.typeBuilderPackageName()
+  private val simpleName = "Other${iface.name.capitalizeFirstLetter()}Builder"
+  private val mapClassName = ClassName.get(packageName, "Other${iface.name.capitalizeFirstLetter()}Map")
 
   override fun prepare() {
   }
@@ -88,9 +91,9 @@ internal class InterfaceBuilderBuilder(
   }
 
   private fun IrMapProperty.toMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(context.layout.propertyName(name))
+    return MethodSpec.methodBuilder(context.layout.javaPropertyName(name))
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.propertyName(name))
+        .addParameter(context.resolver.resolveIrType2(this.type), context.layout.javaPropertyName(name))
         .returns(ClassName.get(packageName, simpleName))
         .apply {
           val adapter = context.resolver.adapterInitializer2(type)
@@ -99,10 +102,10 @@ internal class InterfaceBuilderBuilder(
                 "$T.adaptValue($L, $L)",
                 JavaClassNames.ObjectBuilderKt,
                 adapter,
-                context.layout.propertyName(name)
+                context.layout.javaPropertyName(name)
             )
           } else {
-            CodeBlock.of("$L", context.layout.propertyName(name))
+            CodeBlock.of("$L", context.layout.javaPropertyName(name))
           }
 
           addStatement(

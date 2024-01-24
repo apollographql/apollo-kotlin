@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toPropertySpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toSetterFunSpec
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -26,7 +27,7 @@ internal class InputObjectBuilder(
     val withDefaultArguments: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.schemaTypeName(inputObject.name)
   private val className = ClassName(packageName, simpleName)
 
   override fun build(): CgFile {

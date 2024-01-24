@@ -1,10 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -18,15 +20,15 @@ internal class ObjectBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(obj.name)
-  private val builderName = layout.builderName(obj.name)
-  private val mapName = layout.mapName(obj.name)
+  private val simpleName = layout.schemaTypeName(obj.name)
+  private val builderName = "${obj.name.capitalizeFirstLetter()}Builder"
+  private val mapName = "${obj.name.capitalizeFirstLetter()}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName(packageName, simpleName))
     context.resolver.registerMapType(obj.name, ClassName(packageName, mapName))
     context.resolver.registerBuilderType(obj.name, ClassName(packageName, builderName))
-    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, layout.buildFunName(obj.name)))
+    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, "build${obj.name.capitalizeFirstLetter()}"))
   }
 
   override fun build(): CgFile {
@@ -55,7 +57,7 @@ internal class ObjectBuilder(
 
   private fun IrObject.builderFunSpec(): FunSpec {
     return topLevelBuildFunSpec(
-        layout.buildFunName(name),
+        "build${name.capitalizeFirstLetter()}",
         ClassName(packageName, builderName),
         ClassName(packageName, mapName),
         requiresTypename = false

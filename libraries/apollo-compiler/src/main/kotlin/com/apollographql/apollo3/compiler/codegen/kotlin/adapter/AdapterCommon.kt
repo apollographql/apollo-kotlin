@@ -23,6 +23,7 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
+import com.apollographql.apollo3.compiler.codegen.variableName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -49,7 +50,7 @@ internal fun readFromResponseCodeBlock(
 
     CodeBlock.of(
         "var·%N:·%T·=·%L",
-        context.layout.variableName(property.info.responseName),
+        property.info.responseName.variableName(),
         context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
         variableInitializer
     )
@@ -70,7 +71,7 @@ internal fun readFromResponseCodeBlock(
         .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              val variableName = context.layout.variableName(property.info.responseName)
+              val variableName = property.info.responseName.variableName()
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport, customScalarAdapters)
               CodeBlock.of(
                   "%L·->·%N·=·%L.$fromJson($reader,·${customScalarAdapters})",
@@ -120,7 +121,7 @@ internal fun readFromResponseCodeBlock(
           if (property.condition != BooleanExpression.True) {
             add(
                 "var·%N:·%T·=·null\n",
-                context.layout.variableName(property.info.responseName),
+                property.info.responseName.variableName(),
                 context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
             )
             val typenameLiteral = if (property.requiresTypename) {
@@ -144,7 +145,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
-                context.layout.variableName(property.info.responseName),
+                property.info.responseName.variableName(),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
         )
@@ -170,7 +171,7 @@ internal fun readFromResponseCodeBlock(
         CodeBlock.of(
             "%N·=·%N%L",
             context.layout.propertyName(property.info.responseName),
-            context.layout.variableName(property.info.responseName),
+            property.info.responseName.variableName(),
             maybeAssertNotNull
         )
       }.joinToCode(separator = ",\n", suffix = "\n"))

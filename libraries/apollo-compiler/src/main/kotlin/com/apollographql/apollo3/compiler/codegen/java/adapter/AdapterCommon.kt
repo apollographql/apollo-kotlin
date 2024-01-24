@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
@@ -25,7 +24,10 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializer
 import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalValue
 import com.apollographql.apollo3.compiler.codegen.java.helpers.wrapValueInOptional
 import com.apollographql.apollo3.compiler.codegen.java.isNotEmpty
+import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
+import com.apollographql.apollo3.compiler.codegen.variableName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -82,7 +84,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.of(
         "$T $L = $L;",
         resolvedType,
-        context.layout.variableName(property.info.responseName),
+        property.info.responseName.variableName(),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -103,7 +105,7 @@ internal fun readFromResponseCodeBlock(
         .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
-              val variableName = context.layout.variableName(property.info.responseName)
+              val variableName = property.info.responseName.variableName()
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
 
               CodeBlock.of(
@@ -156,7 +158,7 @@ internal fun readFromResponseCodeBlock(
             add(
                 "$T $L = $L;\n",
                 resolvedType,
-                context.layout.variableName(property.info.responseName),
+                property.info.responseName.variableName(),
                 context.absentOptionalInitializer(resolvedType)
             )
             val pathLiteral = if (path.isNotEmpty()) {
@@ -179,7 +181,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "$L = $L;\n",
-                context.layout.variableName(property.info.responseName),
+                property.info.responseName.variableName(),
                 context.wrapValueInOptional(fromJsonCall, resolvedType)
             )
         )
@@ -201,7 +203,7 @@ internal fun readFromResponseCodeBlock(
             CodeBlock.of(
                 "$T.checkFieldNotMissing($L, $S);\n",
                 JavaClassNames.Assertions,
-                context.layout.variableName(property.info.responseName),
+                property.info.responseName.variableName(),
                 property.info.responseName
             )
           }.joinToCode("")
@@ -212,7 +214,7 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(
           visibleProperties.map { property ->
-            CodeBlock.of(L, context.layout.variableName(property.info.responseName))
+            CodeBlock.of(L, property.info.responseName.variableName())
           }.joinToCode(separator = ",\n", suffix = "\n")
       )
       .unindent()
@@ -249,7 +251,7 @@ internal fun writeToResponseCodeBlock(model: IrModel, context: JavaContext): Cod
 
 private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
   val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(info.responseName)
+  val propertyName = context.layout.javaPropertyName(info.responseName)
 
   if (!isSynthetic) {
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
