@@ -8,8 +8,7 @@ public final class com/apollographql/apollo3/compiler/AdapterInitializer$Compani
 
 public final class com/apollographql/apollo3/compiler/ApolloCompiler {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ApolloCompiler;
-	public final fun buildCodegenSchema (Ljava/util/Set;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Ljava/io/File;Ljava/io/File;)V
-	public static synthetic fun buildCodegenSchema$default (Lcom/apollographql/apollo3/compiler/ApolloCompiler;Ljava/util/Set;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Ljava/io/File;Ljava/io/File;ILjava/lang/Object;)V
+	public final fun buildCodegenSchema (Ljava/util/Set;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;)Lcom/apollographql/apollo3/compiler/CodegenSchema;
 	public final fun buildExecutableSchemaSources (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/CodegenMetadata;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
 	public final fun buildIrOperations (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/util/Set;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/IrOptions;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;)Lcom/apollographql/apollo3/compiler/ir/IrOperations;
 	public final fun buildSchemaAndOperationSources (Ljava/util/Set;Ljava/util/Set;Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo3/compiler/IrOptions;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
