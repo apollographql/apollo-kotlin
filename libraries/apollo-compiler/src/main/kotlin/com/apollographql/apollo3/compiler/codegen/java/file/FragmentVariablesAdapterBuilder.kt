@@ -17,7 +17,7 @@ internal class FragmentVariablesAdapterBuilder(
     val fragment: IrFragmentDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
-  private val simpleName = fragment.name.capitalizeFirstLetter().impl().variablesAdapter()
+  private val simpleName = context.layout.fragmentName(fragment.name).impl().variablesAdapter()
 
   override fun prepare() {
     context.resolver.registerFragmentVariablesAdapter(

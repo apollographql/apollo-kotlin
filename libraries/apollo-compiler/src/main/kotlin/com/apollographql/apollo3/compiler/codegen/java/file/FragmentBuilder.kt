@@ -28,7 +28,7 @@ internal class FragmentBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
-  private val simpleName = fragment.name.capitalizeFirstLetter().impl()
+  private val simpleName = context.layout.fragmentName(fragment.name).impl()
 
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
     fragment.dataModelGroup.maybeFlatten(

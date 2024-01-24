@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.nested_named_fragments.fragment.selections.planetFragmentSelections
+import com.example.nested_named_fragments.fragment.selections.PlanetFragmentSelections
 import com.example.nested_named_fragments.type.Planet
 import kotlin.Any
 import kotlin.Boolean
@@ -39,6 +39,6 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragment> {
     name = "data",
     type = Planet.type
   )
-  .selections(selections = planetFragmentSelections.__root)
+  .selections(selections = PlanetFragmentSelections.__root)
   .build()
 }

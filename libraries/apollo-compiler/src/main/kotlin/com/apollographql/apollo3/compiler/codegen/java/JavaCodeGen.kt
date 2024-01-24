@@ -127,9 +127,9 @@ internal object JavaCodeGen {
 
     val layout = CodegenLayout(
         codegenSchema = codegenSchema,
-        useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
-        decapitalizeFields = decapitalizeFields,
+        useSemanticNaming = useSemanticNaming,
+        decapitalizeFields = decapitalizeFields
     )
 
     val context = JavaContext(

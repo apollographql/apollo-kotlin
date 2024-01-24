@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.selections.CompiledSelectionsBuilder
+import com.apollographql.apollo3.compiler.codegen.operationName
 import com.apollographql.apollo3.compiler.codegen.operationResponseFieldsPackageName
 import com.apollographql.apollo3.compiler.codegen.selections
 import com.apollographql.apollo3.compiler.ir.IrOperation

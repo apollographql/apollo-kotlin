@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections;
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterNameSelections;
 import com.example.named_fragment_inside_inline_fragment.type.Character;
 import java.io.IOException;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class CharacterNameImpl implements Fragment<CharacterName> {
       "data",
       Character.type
     )
-    .selections(characterNameSelections.__root)
+    .selections(CharacterNameSelections.__root)
     .build();
   }
 

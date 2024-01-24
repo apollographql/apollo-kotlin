@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.nested_named_fragments.fragment.selections.pilotFragmentSelections
+import com.example.nested_named_fragments.fragment.selections.PilotFragmentSelections
 import com.example.nested_named_fragments.type.Person
 import kotlin.Any
 import kotlin.Boolean
@@ -40,7 +40,7 @@ public class PilotFragmentImpl() : Fragment<PilotFragmentImpl.Data> {
     name = "data",
     type = Person.type
   )
-  .selections(selections = pilotFragmentSelections.__root)
+  .selections(selections = PilotFragmentSelections.__root)
   .build()
 
   public data class Data(

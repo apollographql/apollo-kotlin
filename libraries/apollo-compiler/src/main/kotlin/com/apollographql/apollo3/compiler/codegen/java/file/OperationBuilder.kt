@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
-import com.apollographql.apollo3.compiler.codegen.filePackageName
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -27,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.operationName
 import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrOperation
@@ -49,7 +49,7 @@ internal class OperationBuilder(
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.filePackageName(operation.filePath)
+  private val packageName = layout.executableDocumentPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {

@@ -13,7 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.codegen.schemaPackageName
+import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -36,10 +36,11 @@ internal class SchemaBuilder(
     private val enums: List<IrEnum>
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.schemaPackageName()
+  private val packageName = layout.schemaSubPackageName()
+  private val simpleName = layout.topLevelName(generatedSchemaName)
 
   override fun prepare() {
-    context.resolver.registerSchema(ClassName.get(packageName, generatedSchemaName))
+    context.resolver.registerSchema(ClassName.get(packageName, simpleName))
   }
 
   override fun build(): CodegenJavaFile {
@@ -66,7 +67,7 @@ internal class SchemaBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.classBuilder(generatedSchemaName)
+    return TypeSpec.classBuilder(simpleName)
         .addJavadoc(L, "A Schema object containing all the composite types and a possibleTypes helper function")
         .addModifiers(Modifier.PUBLIC)
         .addField(customScalarAdaptersFieldSpec())

@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterAppearsInSelections
 import com.example.named_fragment_inside_inline_fragment.type.Character
 import kotlin.Any
 import kotlin.Boolean
@@ -39,6 +39,6 @@ public class CharacterAppearsInImpl() : Fragment<CharacterAppearsIn> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = characterAppearsInSelections.__root)
+  .selections(selections = CharacterAppearsInSelections.__root)
   .build()
 }

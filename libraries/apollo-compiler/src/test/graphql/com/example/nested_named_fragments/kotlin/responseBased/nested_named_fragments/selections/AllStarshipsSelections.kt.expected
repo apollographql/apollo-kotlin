@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
-import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
+import com.example.nested_named_fragments.fragment.selections.StarshipFragmentSelections
 import com.example.nested_named_fragments.type.GraphQLString
 import com.example.nested_named_fragments.type.Starship
 import com.example.nested_named_fragments.type.StarshipsConnection
@@ -27,7 +27,7 @@ public object AllStarshipsSelections {
         CompiledFragment.Builder(
           typeCondition = "Starship",
           possibleTypes = listOf("Starship")
-        ).selections(starshipFragmentSelections.__root)
+        ).selections(StarshipFragmentSelections.__root)
         .build()
       )
 

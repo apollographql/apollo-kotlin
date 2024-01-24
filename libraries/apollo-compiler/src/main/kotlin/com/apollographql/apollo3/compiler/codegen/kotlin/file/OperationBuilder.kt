@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
@@ -9,7 +8,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
-import com.apollographql.apollo3.compiler.codegen.filePackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgImport
@@ -22,6 +20,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.operationName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
@@ -44,7 +44,7 @@ internal class OperationBuilder(
     val generateInputBuilders: Boolean
 ) : CgFileBuilder {
   private val layout = context.layout
-  private val packageName = layout.filePackageName(operation.filePath)
+  private val packageName = layout.executableDocumentPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {

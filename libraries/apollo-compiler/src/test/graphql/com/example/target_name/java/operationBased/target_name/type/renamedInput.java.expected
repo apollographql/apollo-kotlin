@@ -10,7 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
-public class renamedInput {
+public class RenamedInput {
   public final Optional<String> field;
 
   private transient volatile int $hashCode;
@@ -19,7 +19,7 @@ public class renamedInput {
 
   private transient volatile String $toString;
 
-  public renamedInput(Optional<String> field) {
+  public RenamedInput(Optional<String> field) {
     this.field = field;
   }
 
@@ -28,8 +28,8 @@ public class renamedInput {
     if (o == this) {
       return true;
     }
-    if (o instanceof renamedInput) {
-      renamedInput that = (renamedInput) o;
+    if (o instanceof RenamedInput) {
+      RenamedInput that = (RenamedInput) o;
       return ((this.field == null) ? (that.field == null) : this.field.equals(that.field));
     }
     return false;
@@ -50,7 +50,7 @@ public class renamedInput {
   @Override
   public String toString() {
     if ($toString == null) {
-      $toString = "renamedInput{"
+      $toString = "RenamedInput{"
         + "field=" + field
         + "}";
     }
@@ -72,8 +72,8 @@ public class renamedInput {
       return this;
     }
 
-    public renamedInput build() {
-      return new renamedInput(field);
+    public RenamedInput build() {
+      return new RenamedInput(field);
     }
   }
 }

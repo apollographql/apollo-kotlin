@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.adapter.TestQuery_ResponseAdapter;
 import com.example.target_name.adapter.TestQuery_VariablesAdapter;
 import com.example.target_name.selections.TestQuerySelections;
-import com.example.target_name.type.renamedEnum;
-import com.example.target_name.type.renamedInput;
+import com.example.target_name.type.RenamedEnum;
+import com.example.target_name.type.RenamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
@@ -49,11 +49,11 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  public final Optional<renamedInput> input;
+  public final Optional<RenamedInput> input;
 
   public final Optional<java.lang.Object> scalar;
 
-  public final Optional<renamedEnum> enum_;
+  public final Optional<RenamedEnum> enum_;
 
   private transient volatile int $hashCode;
 
@@ -61,8 +61,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<renamedInput> input, Optional<java.lang.Object> scalar,
-      Optional<renamedEnum> enum_) {
+  public TestQuery(Optional<RenamedInput> input, Optional<java.lang.Object> scalar,
+      Optional<RenamedEnum> enum_) {
     this.input = input;
     this.scalar = scalar;
     this.enum_ = enum_;
@@ -156,16 +156,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<renamedInput> input = Optional.absent();
+    private Optional<RenamedInput> input = Optional.absent();
 
     private Optional<java.lang.Object> scalar = Optional.absent();
 
-    private Optional<renamedEnum> enum_ = Optional.absent();
+    private Optional<RenamedEnum> enum_ = Optional.absent();
 
     Builder() {
     }
 
-    public Builder input(renamedInput input) {
+    public Builder input(RenamedInput input) {
       this.input = Optional.present(input);
       return this;
     }
@@ -175,7 +175,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       return this;
     }
 
-    public Builder enum_(renamedEnum enum_) {
+    public Builder enum_(RenamedEnum enum_) {
       this.enum_ = Optional.present(enum_);
       return this;
     }
@@ -194,7 +194,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public java.lang.Object scalar;
 
-    public renamedEnum enum_;
+    public RenamedEnum enum_;
 
     private transient volatile int $hashCode;
 
@@ -203,7 +203,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     private transient volatile String $toString;
 
     public Data(Object object, Interface interface_, Union union, java.lang.Object scalar,
-        renamedEnum enum_) {
+        RenamedEnum enum_) {
       this.object = object;
       this.interface_ = interface_;
       this.union = union;

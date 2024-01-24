@@ -7,7 +7,7 @@ package com.example.target_name.type
 
 import com.apollographql.apollo3.api.ObjectType
 
-public class renamedObject {
+public class RenamedObject {
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "ReservedObject").build()
   }
