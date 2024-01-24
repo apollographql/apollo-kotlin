@@ -9,7 +9,6 @@ internal object ClassNames {
   const val apolloApiPackageName = "com.apollographql.apollo3.api"
   const val apolloAnnotationsPackageName = "com.apollographql.apollo3.annotations"
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
-  const val apolloApiTestPackageName = "$apolloApiPackageName.test"
   private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
 
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
@@ -51,14 +50,8 @@ internal object ClassNames {
   val CompiledFieldBuilder = ResolverClassName(apolloApiPackageName, "CompiledField", "Builder")
   val CompiledFragment = ResolverClassName(apolloApiPackageName, "CompiledFragment")
   val CompiledFragmentBuilder = ResolverClassName(apolloApiPackageName, "CompiledFragment", "Builder")
-  val TestResolver = ResolverClassName(apolloApiTestPackageName, "TestResolver")
-  val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
   val DefaultFakeResolver = ResolverClassName(apolloApiPackageName, "DefaultFakeResolver")
   val FakeResolver = ResolverClassName(apolloApiPackageName, "FakeResolver")
-  val MapJsonReader = ResolverClassName(apolloApiJsonPackageName, "MapJsonReader")
-  val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
-  val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
-  val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
   val JetBrainsNullable = ResolverClassName(jetbrainsAnnotationsPackageName, "Nullable")
   val JetBrainsNonNull = ResolverClassName(jetbrainsAnnotationsPackageName, "NotNull")
   val FieldResult = ResolverClassName(apolloApiPackageName, "FieldResult")
