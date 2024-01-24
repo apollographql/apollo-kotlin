@@ -14,7 +14,7 @@ dependencies {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    generateKotlinModels.set(false)
+    // PLACEHOLDER
     generateApolloMetadata.set(true)
     isADependencyOf(project(":leaf"))
     mapScalar("Date", "java.util.Date")

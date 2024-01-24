@@ -43,9 +43,9 @@ class MetadataTest {
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")),
-        codegenSchemaOptionsFile = codegenSchemaOptionsFile,
-        codegenSchemaFile = codegenSchemaFile
-    )
+        logger = null,
+        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+    ).writeTo(codegenSchemaFile)
 
     ApolloCompiler.buildIrOperations(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),

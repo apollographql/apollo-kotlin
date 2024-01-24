@@ -44,6 +44,12 @@ object BuildDirLayout {
     )
   }
 
+  internal fun otherOptions(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/options/apollo/${service.name}/otherOptions.json"
+    )
+  }
+
   internal fun codegenSchemaOptions(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/options/apollo/${service.name}/codegenSchemaOptions.json"

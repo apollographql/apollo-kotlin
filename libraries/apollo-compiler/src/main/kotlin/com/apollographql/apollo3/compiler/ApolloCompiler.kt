@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaCodegen
 import com.apollographql.apollo3.compiler.codegen.java.toSourceOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo3.compiler.codegen.kotlin.toSourceOutput
+import com.apollographql.apollo3.compiler.codegen.plus
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.internal.addRequiredFields
@@ -57,19 +58,6 @@ object ApolloCompiler {
   }
 
   fun buildCodegenSchema(
-      schemaFiles: Set<File>,
-      logger: Logger = defaultLogger,
-      codegenSchemaOptionsFile: File,
-      codegenSchemaFile: File,
-  ) {
-    buildCodegenSchema(
-        schemaFiles,
-        logger,
-        codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-    ).writeTo(codegenSchemaFile)
-  }
-
-  private fun buildCodegenSchema(
       schemaFiles: Set<File>,
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
@@ -387,9 +375,9 @@ object ApolloCompiler {
     }
 
 
-    var sourceOutput = SourceOutput(emptyList(), CodegenMetadata.Empty)
+    var sourceOutput: SourceOutput? = null
     if (upstreamCodegenMetadata.isEmpty()) {
-      sourceOutput += buildSchemaSources(
+      sourceOutput = sourceOutput plus buildSchemaSources(
           codegenSchema = codegenSchema,
           usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedFields),
           codegenOptions = codegenOptions,
@@ -399,23 +387,23 @@ object ApolloCompiler {
       )
     }
     if (targetLanguage == TargetLanguage.JAVA) {
-      sourceOutput += JavaCodegen.buildOperationsSources(
+      sourceOutput = sourceOutput plus JavaCodegen.buildOperationsSources(
           codegenSchema = codegenSchema,
           irOperations = irOperations,
           operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata + sourceOutput.codegenMetadata,
+          upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           commonCodegenOptions = codegenOptions.common,
           javaCodegenOptions = codegenOptions.java,
           packageNameGenerator = packageNameGenerator,
           compilerJavaHooks = compilerJavaHooks,
       ).toSourceOutput()
     } else {
-      sourceOutput += KotlinCodegen.buildOperationSources(
+      sourceOutput = sourceOutput plus KotlinCodegen.buildOperationSources(
           codegenSchema = codegenSchema,
           targetLanguage = targetLanguage,
           irOperations = irOperations,
           operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata + sourceOutput.codegenMetadata,
+          upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           commonCodegenOptions = codegenOptions.common,
           kotlinCodegenOptions = codegenOptions.kotlin,
           packageNameGenerator = packageNameGenerator,

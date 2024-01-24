@@ -106,7 +106,7 @@ class MultiModulesTests {
         TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
         Assert.fail("the build did not detect scalar mapping registered in leaf module")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("scalarTypeMapping is not used because this module depends on another one that has already set scalarTypeMapping")
+        Truth.assertThat(e.message).contains("custom scalars are not used in non-schema module")
       }
     }
   }
@@ -128,12 +128,54 @@ class MultiModulesTests {
   }
 
   @Test
-  fun `schema module targetLanguage propagates`() {
+  fun `schema targetLanguage propagates`() {
     TestUtils.withTestProject("multi-modules-badconfig") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(
-          ":leaf:build",
-          dir
-      )
+      dir.resolve("root/build.gradle.kts").replacePlaceHolder("generateKotlinModels.set(false)")
+      TestUtils.executeTaskAndAssertSuccess(":leaf:build", dir)
     }
   }
+
+  @Test
+  fun `schema codegenModels propagates`() {
+    TestUtils.withTestProject("multi-modules-badconfig") { dir ->
+      dir.resolve("root/build.gradle.kts").replacePlaceHolder("codegenModels.set(\"responseBased\")")
+      TestUtils.executeTaskAndAssertSuccess(":leaf:build", dir)
+    }
+  }
+
+  @Test
+  fun `bad targetLanguage is detected`() {
+    TestUtils.withTestProject("multi-modules-badconfig") { dir ->
+      dir.resolve("root/build.gradle.kts").replacePlaceHolder("generateKotlinModels.set(true)")
+      dir.resolve("leaf/build.gradle.kts").replacePlaceHolder("generateKotlinModels.set(false)")
+
+      try {
+        TestUtils.executeTask(":leaf:generateServiceApolloOptions", dir)
+        Assert.fail("the build did not detect the bad target language")
+      } catch (e: UnexpectedBuildFailure) {
+        Truth.assertThat(e.message).contains("Check your generateKotlinModels settings")
+      }
+    }
+  }
+
+  @Test
+  fun `bad codegenModels is detected`() {
+    TestUtils.withTestProject("multi-modules-badconfig") { dir ->
+      dir.resolve("root/build.gradle.kts").replacePlaceHolder("codegenModels.set(\"responseBased\")")
+      dir.resolve("leaf/build.gradle.kts").replacePlaceHolder("codegenModels.set(\"operationBased\")")
+
+      try {
+        TestUtils.executeTask(":leaf:generateServiceApolloOptions", dir)
+        Assert.fail("the build did not detect the bad target codegenModels")
+      } catch (e: UnexpectedBuildFailure) {
+        Truth.assertThat(e.message).contains("Check your codegenModels setting")
+      }
+    }
+  }
+}
+
+private fun File.replacePlaceHolder(replacement: String) = replaceInText("// PLACEHOLDER".shr(4), replacement.shr(4))
+
+internal fun String.shr(c: Int): String {
+  return split("\n").map { padStart(c, ' ') }.joinToString("\n")
 }

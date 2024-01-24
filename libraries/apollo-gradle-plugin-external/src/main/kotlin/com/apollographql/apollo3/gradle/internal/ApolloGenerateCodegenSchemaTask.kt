@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
+import com.apollographql.apollo3.compiler.writeTo
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -47,8 +49,7 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = schemaFiles.files,
         logger = logger(),
-        codegenSchemaOptionsFile = codegenSchemaOptionsFile.get().asFile,
-        codegenSchemaFile = codegenSchemaFile.get().asFile,
-    )
+        codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
+    ).writeTo(codegenSchemaFile.get().asFile)
   }
 }
