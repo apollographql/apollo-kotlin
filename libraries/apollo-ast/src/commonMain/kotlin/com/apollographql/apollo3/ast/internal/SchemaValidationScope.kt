@@ -209,6 +209,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
+  mergedScope.validateUnions()
   mergedScope.validateInputObjects()
   mergedScope.validateCatch(mergedSchemaDefinition)
 
@@ -433,9 +434,30 @@ internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSch
 }
 
 private fun ValidationScope.validateInterfaces() {
-  typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
-    if (it.fields.isEmpty()) {
-      registerIssue("Interfaces must specify one or more fields", it.sourceLocation)
+  typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach { i ->
+    if (i.fields.isEmpty()) {
+      registerIssue("Interfaces must specify one or more fields", i.sourceLocation)
+    }
+
+    i.implementsInterfaces.forEach { implementsInterface ->
+      val iface = typeDefinitions[implementsInterface] as? GQLInterfaceTypeDefinition
+      if (iface == null) {
+        registerIssue("Interface '${i.name}' cannot implement non-interface '$implementsInterface'", i.sourceLocation)
+      }
+    }
+
+    i.directives.forEach { directive ->
+      validateDirective(directive, i) {
+        issues.add(it.constContextError())
+      }
+    }
+
+    i.fields.forEach { gqlFieldDefinition ->
+      gqlFieldDefinition.directives.forEach { gqlDirective ->
+        validateDirective(gqlDirective, gqlFieldDefinition) {
+          issues.add(it.constContextError())
+        }
+      }
     }
   }
 }
@@ -464,6 +486,16 @@ private fun ValidationScope.validateObjects() {
         validateDirective(gqlDirective, gqlFieldDefinition) {
           issues.add(it.constContextError())
         }
+      }
+    }
+  }
+}
+
+private fun ValidationScope.validateUnions() {
+  typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach { u ->
+    u.directives.forEach { directive ->
+      validateDirective(directive, u) {
+        issues.add(it.constContextError())
       }
     }
   }

@@ -1,0 +1,44 @@
+OtherValidationIssue (17:35)
+Field 'name' is not a valid key field for type 'Node'
+------------
+OtherValidationIssue (17:87)
+Field 'baz' is not a valid embedded field for type 'Node'
+------------
+OtherValidationIssue (17:56)
+Field 'foo' is not a valid connection field for type 'Node'
+------------
+OtherValidationIssue (17:56)
+Field 'bar' is not a valid connection field for type 'Node'
+------------
+OtherValidationIssue (11:32)
+Field 'name' is not a valid key field for type 'Person'
+------------
+OtherValidationIssue (11:84)
+Field 'baz' is not a valid embedded field for type 'Person'
+------------
+OtherValidationIssue (11:53)
+Field 'foo' is not a valid connection field for type 'Person'
+------------
+OtherValidationIssue (11:53)
+Field 'bar' is not a valid connection field for type 'Person'
+------------
+OtherValidationIssue (24:30)
+Field 'id' is not a valid key field for type 'Foo'
+------------
+OtherValidationIssue (24:30)
+Field 'name' is not a valid key field for type 'Foo'
+------------
+OtherValidationIssue (24:82)
+Field 'id' is not a valid embedded field for type 'Foo'
+------------
+OtherValidationIssue (24:82)
+Field 'baz' is not a valid embedded field for type 'Foo'
+------------
+OtherValidationIssue (24:51)
+Field 'id' is not a valid connection field for type 'Foo'
+------------
+OtherValidationIssue (24:51)
+Field 'foo' is not a valid connection field for type 'Foo'
+------------
+OtherValidationIssue (24:51)
+Field 'bar' is not a valid connection field for type 'Foo'
