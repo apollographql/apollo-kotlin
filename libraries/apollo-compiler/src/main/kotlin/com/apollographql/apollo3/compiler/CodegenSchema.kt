@@ -14,10 +14,8 @@ class CodegenSchema(
     @Serializable(with = SchemaSerializer::class)
     val schema: Schema,
     val filePath: String?,
-    val codegenModels: String,
     val scalarMapping: Map<String, ScalarInfo>,
-    val targetLanguage: TargetLanguage,
-    val generateDataBuilders: Boolean,
+    val generateDataBuilders: Boolean
 )
 
 internal class CodegenType(

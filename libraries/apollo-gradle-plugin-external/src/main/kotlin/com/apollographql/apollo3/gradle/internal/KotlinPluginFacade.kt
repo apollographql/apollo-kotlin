@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
@@ -15,14 +16,14 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * For a non-Kotlin project, this class will never be loaded so that no runtime
  * exception is thrown
  */
-fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLanguage {
+fun getKotlinTargetLanguage(kgpVersion: String, userSpecified: String?): TargetLanguage {
   @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
     "1.5" -> TargetLanguage.KOTLIN_1_5
     "1.9" -> TargetLanguage.KOTLIN_1_9
     null -> {
       // User didn't specify a version: default to the Kotlin plugin version
-      val kotlinPluginVersion = project.getKotlinPluginVersion().split("-")[0]
+      val kotlinPluginVersion = kgpVersion.split("-")[0]
       val versionNumbers = kotlinPluginVersion.split(".").map { it.toInt() }
       val version = KotlinVersion(versionNumbers[0], versionNumbers[1])
       if (version.isAtLeast(1, 9)) {
@@ -34,6 +35,14 @@ fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLan
 
     else -> error("Apollo: languageVersion '$userSpecified' is not supported, Supported values: '1.5', '1.9'")
   }
+}
+
+fun Project.apolloGetKotlinPluginVersion(): String? {
+  if (!project.hasKotlinPlugin()) {
+    return null
+  }
+
+  return project.getKotlinPluginVersion()
 }
 
 internal fun linkSqlite(project: Project) {

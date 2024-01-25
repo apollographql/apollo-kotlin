@@ -1,0 +1,6 @@
+type Query {
+  foo: Int!
+  date: Date
+}
+
+scalar Date

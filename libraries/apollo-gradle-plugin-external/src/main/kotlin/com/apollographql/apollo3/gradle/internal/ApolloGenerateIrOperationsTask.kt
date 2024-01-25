@@ -38,10 +38,12 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
 
   @TaskAction
   fun taskAction() {
+    val irOperations = upstreamIrFiles.files.map { it.toIrOperations() }
     ApolloCompiler.buildIrOperations(
         executableFiles = graphqlFiles.files,
         codegenSchema = codegenSchemaFiles.files.findCodegenSchemaFile().toCodegenSchema(),
-        upstreamFragmentDefinitions = upstreamIrFiles.files.flatMap { it.toIrOperations().fragmentDefinitions },
+        upstreamCodegenModels = irOperations.map { it.codegenModels },
+        upstreamFragmentDefinitions = irOperations.flatMap { it.fragmentDefinitions },
         options = irOptionsFile.get().asFile.toIrOptions(),
         logger = logger(),
     ).writeTo(irOperationsFile.get().asFile)

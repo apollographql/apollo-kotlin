@@ -31,10 +31,6 @@ class CodegenMetadata internal constructor(
         entries = entries + other.entries
     )
   }
-
-  companion object {
-    val Empty = CodegenMetadata(TargetLanguage.JAVA, emptyList())
-  }
 }
 
 private val emptyTargetLanguage = "emptyTargetLanguage"

@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.IrOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.TargetLanguage
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Test
@@ -29,8 +28,8 @@ class ConditionalFragmentsTest {
       ApolloCompiler.buildSchemaAndOperationSources(
           executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
-          codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_RESPONSE_BASED),
-          irOptions = IrOptions(flattenModels = false),
+          codegenSchemaOptions = CodegenSchemaOptions(),
+          irOptions = IrOptions(flattenModels = false, codegenModels = MODELS_RESPONSE_BASED),
           packageNameGenerator = PackageNameGenerator.Flat(""),
           codegenOptions = CodegenOptions(),
           compilerKotlinHooks = null,
@@ -49,8 +48,8 @@ class ConditionalFragmentsTest {
     ApolloCompiler.buildSchemaAndOperationSources(
         executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
-        codegenSchemaOptions = CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9, codegenModels = MODELS_OPERATION_BASED),
-        irOptions = IrOptions(flattenModels = false),
+        codegenSchemaOptions = CodegenSchemaOptions(),
+        irOptions = IrOptions(flattenModels = false, codegenModels = MODELS_OPERATION_BASED),
         packageNameGenerator = PackageNameGenerator.Flat(""),
         codegenOptions = CodegenOptions(),
         compilerKotlinHooks = null,

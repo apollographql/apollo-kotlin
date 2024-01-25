@@ -21,6 +21,7 @@ object TestUtils {
 
   fun <T> withDirectory(testDir: String? = null, block: (File) -> T): T {
     val dest = if (testDir == null) {
+      // Because we run tests in parallel, we need different folders
       File.createTempFile("testProject", "", File(System.getProperty("user.dir")).resolve("build"))
     } else {
       File(System.getProperty("user.dir")).resolve("build/$testDir")

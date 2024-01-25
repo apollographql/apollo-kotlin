@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaCodegen
 import com.apollographql.apollo3.compiler.codegen.java.toSourceOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo3.compiler.codegen.kotlin.toSourceOutput
+import com.apollographql.apollo3.compiler.codegen.plus
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.internal.addRequiredFields
@@ -57,19 +58,6 @@ object ApolloCompiler {
   }
 
   fun buildCodegenSchema(
-      schemaFiles: Set<File>,
-      logger: Logger = defaultLogger,
-      codegenSchemaOptionsFile: File,
-      codegenSchemaFile: File,
-  ) {
-    buildCodegenSchema(
-        schemaFiles,
-        logger,
-        codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-    ).writeTo(codegenSchemaFile)
-  }
-
-  private fun buildCodegenSchema(
       schemaFiles: Set<File>,
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
@@ -131,16 +119,11 @@ object ApolloCompiler {
     val scalarMapping = codegenSchemaOptions.scalarMapping
     checkScalars(schema, scalarMapping)
 
-    val codegenModels = codegenModels(codegenModels = codegenSchemaOptions.codegenModels, codegenSchemaOptions.targetLanguage)
-
-    val generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     return CodegenSchema(
         schema = schema,
         filePath = mainSchemaDocument.sourceLocation?.filePath,
-        codegenModels = codegenModels,
         scalarMapping = scalarMapping,
-        targetLanguage = codegenSchemaOptions.targetLanguage,
-        generateDataBuilders = generateDataBuilders
+        generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     )
   }
 
@@ -171,6 +154,7 @@ object ApolloCompiler {
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
       executableFiles: Set<File>,
+      upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
       logger: Logger?,
@@ -193,7 +177,7 @@ object ApolloCompiler {
     val allIssues = mutableListOf<Issue>()
     allIssues.addAll(validationResult.issues)
 
-    val codegenModels = codegenSchema.codegenModels
+    val codegenModels = defaultCodegenModels(options.codegenModels, upstreamCodegenModels)
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
       allIssues.addAll(checkConditionalFragments(definitions))
     }
@@ -288,7 +272,7 @@ object ApolloCompiler {
     return IrSchemaBuilder.build(
         schema = codegenSchema.schema,
         usedFields = usedCoordinates,
-        alreadyVisitedTypes = emptySet()
+        alreadyVisitedTypes = emptySet(),
     )
   }
 
@@ -321,9 +305,10 @@ object ApolloCompiler {
   ): SourceOutput {
     val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
 
-    codegenOptions.validate(codegenSchema.targetLanguage)
+    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, emptyList())
+    codegenOptions.validate()
 
-    return if (codegenSchema.targetLanguage == TargetLanguage.JAVA) {
+    return if (targetLanguage == TargetLanguage.JAVA) {
       JavaCodegen.buildSchemaSources(
           codegenSchema = codegenSchema,
           irSchema = irSchema,
@@ -335,6 +320,7 @@ object ApolloCompiler {
     } else {
       KotlinCodegen.buildSchemaSources(
           codegenSchema = codegenSchema,
+          targetLanguage = targetLanguage,
           irSchema = irSchema,
           commonCodegenOptions = codegenOptions.common,
           kotlinCodegenOptions = codegenOptions.kotlin,
@@ -356,8 +342,11 @@ object ApolloCompiler {
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       operationManifestFile: File?,
   ): SourceOutput {
-
     check(irOperations is DefaultIrOperations)
+
+    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, upstreamCodegenMetadata)
+    codegenOptions.validate()
+
     val operationOutput = irOperations.operations.map {
       OperationDescriptor(
           name = it.name,
@@ -386,9 +375,9 @@ object ApolloCompiler {
     }
 
 
-    var sourceOutput = SourceOutput(emptyList(), CodegenMetadata.Empty)
+    var sourceOutput: SourceOutput? = null
     if (upstreamCodegenMetadata.isEmpty()) {
-      sourceOutput += buildSchemaSources(
+      sourceOutput = sourceOutput plus buildSchemaSources(
           codegenSchema = codegenSchema,
           usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedFields),
           codegenOptions = codegenOptions,
@@ -397,23 +386,24 @@ object ApolloCompiler {
           compilerJavaHooks = compilerJavaHooks
       )
     }
-    if (codegenSchema.targetLanguage == TargetLanguage.JAVA) {
-      sourceOutput += JavaCodegen.buildOperationsSources(
+    if (targetLanguage == TargetLanguage.JAVA) {
+      sourceOutput = sourceOutput plus JavaCodegen.buildOperationsSources(
           codegenSchema = codegenSchema,
           irOperations = irOperations,
           operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata + sourceOutput.codegenMetadata,
+          upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           commonCodegenOptions = codegenOptions.common,
           javaCodegenOptions = codegenOptions.java,
           packageNameGenerator = packageNameGenerator,
           compilerJavaHooks = compilerJavaHooks,
       ).toSourceOutput()
     } else {
-      sourceOutput += KotlinCodegen.buildOperationSources(
+      sourceOutput = sourceOutput plus KotlinCodegen.buildOperationSources(
           codegenSchema = codegenSchema,
+          targetLanguage = targetLanguage,
           irOperations = irOperations,
           operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata + sourceOutput.codegenMetadata,
+          upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           commonCodegenOptions = codegenOptions.common,
           kotlinCodegenOptions = codegenOptions.kotlin,
           packageNameGenerator = packageNameGenerator,
@@ -449,6 +439,7 @@ object ApolloCompiler {
     val irOperations = buildIrOperations(
         codegenSchema = codegenSchema,
         executableFiles = executableFiles,
+        upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         options = irOptions,
         logger = logger

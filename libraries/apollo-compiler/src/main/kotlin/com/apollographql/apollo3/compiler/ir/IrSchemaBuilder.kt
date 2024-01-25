@@ -12,7 +12,7 @@ internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedFields: Map<String, Set<String>>,
-      alreadyVisitedTypes: Set<String>
+      alreadyVisitedTypes: Set<String>,
   ): IrSchema {
 
     val irEnums = mutableListOf<IrEnum>()
@@ -62,7 +62,7 @@ internal object IrSchemaBuilder {
         irUnions = irUnions,
         irInterfaces = irInterfaces,
         irObjects = irObjects,
-        connectionTypes = schema.connectionTypes.toList()
+        connectionTypes = schema.connectionTypes.toList(),
     )
   }
 }

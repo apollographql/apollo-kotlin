@@ -36,20 +36,21 @@ class MetadataTest {
 
 
   private fun compileRoot(directory: String) {
-    CodegenSchemaOptions(targetLanguage = TargetLanguage.KOTLIN_1_9).writeTo(codegenSchemaOptionsFile)
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
     IrOptions().writeTo(irOptionsFile)
     CodegenOptions(common = CommonCodegenOptions()).writeTo(rootCodegenOptionsFile)
     CodegenOptions(common = CommonCodegenOptions()).writeTo(leafCodegenOptionsFile)
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")),
-        codegenSchemaOptionsFile = codegenSchemaOptionsFile,
-        codegenSchemaFile = codegenSchemaFile
-    )
+        logger = null,
+        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+    ).writeTo(codegenSchemaFile)
 
     ApolloCompiler.buildIrOperations(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(rootGraphQLFile(directory)),
+        upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         options = irOptionsFile.toIrOptions(),
         logger = null
@@ -58,6 +59,7 @@ class MetadataTest {
     ApolloCompiler.buildIrOperations(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(leafGraphQLFile(directory)),
+        upstreamCodegenModels = rootIrOperationsFile.toIrOperations().codegenModels.let { listOf(it) },
         upstreamFragmentDefinitions = rootIrOperationsFile.toIrOperations().fragmentDefinitions,
         options = irOptionsFile.toIrOptions(),
         logger = null

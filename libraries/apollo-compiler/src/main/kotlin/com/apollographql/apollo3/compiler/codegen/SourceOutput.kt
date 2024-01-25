@@ -17,6 +17,14 @@ class SourceOutput(
   }
 }
 
+infix fun SourceOutput?.plus(other: SourceOutput): SourceOutput {
+  if (this == null) {
+    return other
+  }
+
+  return this + other
+}
+
 fun SourceOutput.writeTo(directory: File?, deleteDirectoryFirst: Boolean, codegenSymbolsFile: File?) {
   if (directory != null) {
     if (deleteDirectoryFirst) {
