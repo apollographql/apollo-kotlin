@@ -1,44 +1,44 @@
 OtherValidationIssue (17:35)
-Field 'name' is not a valid key field for type 'Node'
+No such field: 'Node.name'
 ------------
 OtherValidationIssue (17:87)
-Field 'baz' is not a valid embedded field for type 'Node'
+No such field: 'Node.baz'
 ------------
 OtherValidationIssue (17:56)
-Field 'foo' is not a valid connection field for type 'Node'
+No such field: 'Node.foo'
 ------------
 OtherValidationIssue (17:56)
-Field 'bar' is not a valid connection field for type 'Node'
+No such field: 'Node.bar'
 ------------
 OtherValidationIssue (11:32)
-Field 'name' is not a valid key field for type 'Person'
+No such field: 'Person.name'
 ------------
 OtherValidationIssue (11:84)
-Field 'baz' is not a valid embedded field for type 'Person'
+No such field: 'Person.baz'
 ------------
 OtherValidationIssue (11:53)
-Field 'foo' is not a valid connection field for type 'Person'
+No such field: 'Person.foo'
 ------------
 OtherValidationIssue (11:53)
-Field 'bar' is not a valid connection field for type 'Person'
+No such field: 'Person.bar'
 ------------
 OtherValidationIssue (24:30)
-Field 'id' is not a valid key field for type 'Foo'
+No such field: 'Foo.id'
 ------------
 OtherValidationIssue (24:30)
-Field 'name' is not a valid key field for type 'Foo'
+No such field: 'Foo.name'
 ------------
 OtherValidationIssue (24:82)
-Field 'id' is not a valid embedded field for type 'Foo'
+No such field: 'Foo.id'
 ------------
 OtherValidationIssue (24:82)
-Field 'baz' is not a valid embedded field for type 'Foo'
+No such field: 'Foo.baz'
 ------------
 OtherValidationIssue (24:51)
-Field 'id' is not a valid connection field for type 'Foo'
+No such field: 'Foo.id'
 ------------
 OtherValidationIssue (24:51)
-Field 'foo' is not a valid connection field for type 'Foo'
+No such field: 'Foo.foo'
 ------------
 OtherValidationIssue (24:51)
-Field 'bar' is not a valid connection field for type 'Foo'
+No such field: 'Foo.bar'

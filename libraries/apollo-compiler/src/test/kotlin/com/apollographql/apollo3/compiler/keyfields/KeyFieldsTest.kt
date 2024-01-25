@@ -116,8 +116,8 @@ class KeyFieldsTest {
     val (operationDefinitions, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
 
     val issues = GQLDocument(schemaDefinitions, null).validateAsSchema().issues
-    check(issues.any { it.message.contains("Field 'id' is not a valid key field for type 'Animal'") })
-    check(issues.any { it.message.contains("Field 'version' is not a valid key field for type 'Node'") })
-    check(issues.any { it.message.contains("Field 'x' is not a valid key field for type 'Foo'") })
+    check(issues.any { it.message.contains("No such field: 'Animal.id'") })
+    check(issues.any { it.message.contains("No such field: 'Node.version'") })
+    check(issues.any { it.message.contains("No such field: 'Foo.x'") })
   }
 }
