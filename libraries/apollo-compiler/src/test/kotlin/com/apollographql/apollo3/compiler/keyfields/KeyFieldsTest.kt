@@ -4,7 +4,6 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLExecutableDefinition
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
@@ -54,15 +53,6 @@ class KeyFieldsTest {
         .toGQLDocument()
         .toSchema()
     assertEquals(setOf("id"), schema.keyFields("Node"))
-  }
-
-  @Test
-  fun testExtendUnionTypePolicyDirective() {
-    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/extendsSchema.graphqls"
-        .toPath()
-        .toGQLDocument()
-        .toSchema()
-    assertEquals(setOf("x"), schema.keyFields("Foo"))
   }
 
   @Test
@@ -125,15 +115,9 @@ class KeyFieldsTest {
 
     val (operationDefinitions, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
 
-    try {
-      val schema = GQLDocument(schemaDefinitions, null).validateAsSchema().getOrThrow()
-      var operation = (operationDefinitions.single() as GQLOperationDefinition)
-      operation = addRequiredFields(operation, "always", schema, emptyMap())
-      checkKeyFields(operation, schema, emptyMap())
-      fail("An exception was expected")
-    } catch (e: SourceAwareException) {
-      check(e.message!!.contains("Field 'id' is not a valid key field for type 'Animal'"))
-      return
-    }
+    val issues = GQLDocument(schemaDefinitions, null).validateAsSchema().issues
+    check(issues.any { it.message.contains("No such field: 'Animal.id'") })
+    check(issues.any { it.message.contains("No such field: 'Node.version'") })
+    check(issues.any { it.message.contains("No such field: 'Foo.x'") })
   }
 }

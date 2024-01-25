@@ -212,27 +212,22 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective, directiveContext: GQLNode) {
-  val keyFieldsArg = directive.arguments.firstOrNull { it.name == "keyFields" }
-  if (keyFieldsArg == null) {
-    return
-  }
-
   val fieldDefinitions: List<GQLFieldDefinition>
-  val type: String
+  val typeName: String
   when (directiveContext) {
     is GQLInterfaceTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     is GQLObjectTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     is GQLUnionTypeDefinition -> {
       fieldDefinitions = emptyList()
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     else -> {
@@ -241,15 +236,29 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
     }
   }
 
-  (keyFieldsArg.value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach { selection ->
-    if (selection !is GQLField) {
-      registerIssue("Fragments are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
-    } else if (selection.selections.isNotEmpty()) {
-      registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
-    } else {
-      val definition = fieldDefinitions.firstOrNull { it.name == selection.name }
-      if (definition == null) {
-        registerIssue("Field '${selection.name}' is not a valid key field for type '$type'", keyFieldsArg.sourceLocation)
+  validateTypePolicyArgument(directive, "keyFields", typeName, fieldDefinitions)
+  validateTypePolicyArgument(directive, "embeddedFields", typeName, fieldDefinitions)
+  validateTypePolicyArgument(directive, "connectionFields", typeName, fieldDefinitions)
+}
+
+private fun ValidationScope.validateTypePolicyArgument(
+    directive: GQLDirective,
+    argumentName: String,
+    typeName: String,
+    fieldDefinitions: List<GQLFieldDefinition>,
+) {
+  val keyFieldsArg = directive.arguments.firstOrNull { it.name == argumentName }
+  if (keyFieldsArg != null) {
+    (keyFieldsArg.value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach { selection ->
+      if (selection !is GQLField) {
+        registerIssue("Fragments are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+      } else if (selection.selections.isNotEmpty()) {
+        registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+      } else {
+        val definition = fieldDefinitions.firstOrNull { it.name == selection.name }
+        if (definition == null) {
+          registerIssue("No such field: '$typeName.${selection.name}'", keyFieldsArg.sourceLocation)
+        }
       }
     }
   }
