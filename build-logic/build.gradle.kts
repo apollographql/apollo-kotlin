@@ -50,6 +50,7 @@ dependencies {
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }
 
+// Keep in sync with CompilerOptions.kt
 java {
   toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
