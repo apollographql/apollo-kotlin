@@ -56,9 +56,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun usedCoordinates(file: File) = TODO()
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun usedCoordinates(file: String) = TODO()
 
   var introspection: DefaultIntrospection? = null
