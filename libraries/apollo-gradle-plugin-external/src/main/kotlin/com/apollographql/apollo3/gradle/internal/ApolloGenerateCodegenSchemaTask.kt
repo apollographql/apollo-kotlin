@@ -23,6 +23,10 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val fallbackSchemaFiles: ConfigurableFileCollection
+
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val upstreamSchemaFiles: ConfigurableFileCollection
 
   @get:InputFile
@@ -47,7 +51,7 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
     }
 
     ApolloCompiler.buildCodegenSchema(
-        schemaFiles = schemaFiles.files,
+        schemaFiles = schemaFiles.files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles.files,
         logger = logger(),
         codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
     ).writeTo(codegenSchemaFile.get().asFile)
