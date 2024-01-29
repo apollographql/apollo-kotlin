@@ -256,7 +256,7 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
 
     else -> {
       // Should be caught by previous validation steps
-      error("")
+      return
     }
   }
 
