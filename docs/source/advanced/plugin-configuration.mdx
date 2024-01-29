@@ -251,9 +251,9 @@ apollo {
     // Operation files to exclude.
     excludes.add("**/*.graphqls")
 
-    // explicitly set the schema
+    // Explicitly set the schema
     schemaFiles.from("src/main/graphql/schema.graphqls")
-    // you can also merge different files together
+    // Extend your schema locally with type extensions
     schemaFiles.fromFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
 
     // What codegen to use. One of "operationBased", "responseBased"
