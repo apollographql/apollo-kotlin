@@ -258,73 +258,117 @@ internal val linkDefinitionsStr = """
 
 internal val nullabilityDefinitionsStr = """
 ""${'"'}
-Indicates that a field is only null if there is a matching error in the `errors` array.
-In all other cases, the field is non-null.
+Indicates that a position is semantically non null: it is only null if there is a matching error in the `errors` array.
+In all other cases, the position is non-null.
 
-Tools doing code generation may use this information to generate the field as non-null.
-
-This directive can be applied on field definitions:
+Tools doing code generation may use this information to generate the position as non-null if field errors are handled out of band:
 
 ```graphql
 type User {
+    # email is semantically non-null and can be generated as non-null by error-handling clients.
     email: String @semanticNonNull
 }
 ```
 
-It can also be applied on object type extensions for use in client applications that do
-not own the base schema:
-
-```graphql
-extend type User @semanticNonNull(field: "email")
-```
-
-Control over list items is done using the `level` argument:
+The `levels` argument indicates what levels are semantically non null in case of lists:
 
 ```graphql
 type User {
-    # friends is nullable but friends[0] is null only on errors
-    friends: [User] @semanticNonNull(level: 1)
+    # friends is semantically non null
+    friends: [User] @semanticNonNull # same as @semanticNonNull(levels: [0])
+
+    # every friends[k] is semantically non null
+    friends: [User] @semanticNonNull(levels: [1])
+
+    # friends as well as every friends[k] is semantically non null
+    friends: [User] @semanticNonNull(levels: [0, 1])
 }
 ```
 
-The `field` argument is the name of the field if `@semanticNonNull` is applied to an object definition.
-If `@semanticNonNull` is applied to a field definition, `field` must be null.
-
-The `level` argument can be used to indicate what level is semantically non null in case of lists.
-`level` starts at 0 if there is no list. If `level` is null, all levels are semantically non null.
-""${'"'}
-directive @semanticNonNull(field: String = null, level: Int = null) repeatable on FIELD_DEFINITION | OBJECT
+`levels` are zero indexed.
+Passing a negative level or a level greater than the list dimension is an error.
 
 ""${'"'}
-Indicates that the given position stops GraphQL errors to propagate up the tree.
+directive @semanticNonNull(levels: [Int] = [0]) on FIELD_DEFINITION
 
-By default, the first GraphQL error stops the parsing and fails the whole response.
-Using `@catch` recovers from this error and allows the parsing to continue.
-
-`@catch` must also be applied to the schema definition to specify the default to
-use for every field that can return an error (nullable fields).
-
-The `to` argument can be used to choose how to recover from errors. See `CatchTo`
-for more details.
-
-The `level` argument can be used to indicate where to catch in case of lists.
-`level` starts at 0 if there is no list. If `level` is null, all levels catch.
 ""${'"'}
-directive @catch(to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD | SCHEMA
+Indicates that a position is semantically non null: it is only null if there is a matching error in the `errors` array.
+In all other cases, the position is non-null.
+
+`@semanticNonNullField` is the same as `@semanticNonNull` but can be used on type system extensions for services
+that do not own the schema like client services:
+
+```graphql
+# extend the schema to make User.email semantically non-null.
+extend type User @semanticNonNullField(name: "email")
+```
+
+The `levels` argument indicates what levels are semantically non null in case of lists:
+
+```graphql
+# friends is semantically non null
+extend type User @semanticNonNullField(name: "friends")  # same as @semanticNonNullField(name: "friends", levels: [0])
+
+# every friends[k] is semantically non null
+extend type User @semanticNonNullField(name: "friends", levels: [1])
+
+# friends as well as every friends[k] is semantically non null
+extend type User @semanticNonNullField(name: "friends", levels: [0, 1])
+```
+
+`levels` are zero indexed.
+Passing a negative level or a level greater than the list dimension is an error.
+
+See `@semanticNonNull`.
+""${'"'}
+directive @semanticNonNullField(name: String!, levels: [Int] = [0]) repeatable on OBJECT | INTERFACE
+
+""${'"'}
+Indicates how clients should handle errors on a given position.
+
+When used on the schema definition, `@catch` applies to every position that can return an error.
+
+The `levels` argument indicates where to catch errors in case of lists:
+
+```graphql
+{
+    user {
+        # friends catches errors
+        friends @catch { name } # same as @catch(levels: [0])
+
+        # every friends[k] catches errors
+        friends @catch(levels: [0]) { name }
+
+        # friends as well as every friends[k] catches errors
+        friends @catch(levels: [0, 1]) { name }
+    }
+}
+```
+
+`levels` are zero indexed.
+Passing a negative level or a level greater than the list dimension is an error.
+
+See `CatchTo` for more details.
+""${'"'}
+directive @catch(to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD | SCHEMA
 
 enum CatchTo {
     ""${'"'}
-    Map to a result type that can contain either a value or an error.
+    Catch the error and map the position to a result type that can contain either
+    a value or an error.
     ""${'"'}
     RESULT,
     ""${'"'}
-    Map to a nullable type that will be null in the case of error.
-    This does not allow to distinguish between semantic null and error but
+    Catch the error and map the position to a nullable type that will be null
+    in the case of error.
+    This does not allow to distinguish between semantic null and error null but
     can be simpler in some cases.
     ""${'"'}
     NULL,
     ""${'"'}
-    Do not catch and let any exception through
+    Throw the error.
+    Parent positions can recover using `RESULT` or `NULL`.
+    If no parent position recovers, the parsing stops.
     ""${'"'}
     THROW
 }

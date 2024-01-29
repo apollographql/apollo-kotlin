@@ -92,7 +92,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   })
 }
 
-@ApolloInternal const val NULLABILITY_VERSION = "v0.1"
+@ApolloInternal const val NULLABILITY_VERSION = "v0.2"
 
 /**
  * Extra nullability definitions from https://specs.apollo.dev/nullability/<[version]>
