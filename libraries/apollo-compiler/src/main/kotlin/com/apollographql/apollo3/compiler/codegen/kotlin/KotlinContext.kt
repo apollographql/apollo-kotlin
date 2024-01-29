@@ -2,12 +2,12 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
+import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayoutImpl
 
 internal class KotlinContext(
     val generateMethods: List<GeneratedMethod>,
     val jsExport: Boolean,
-    val layout: CodegenLayout,
+    val layout: SchemaAndOperationsLayoutImpl,
     val resolver: KotlinResolver,
     val targetLanguage: TargetLanguage,
 ) {

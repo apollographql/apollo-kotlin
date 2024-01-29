@@ -45,7 +45,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
   fun taskAction() {
     val codegenSchemaFile = codegenSchemas.findCodegenSchemaFile()
 
-    ApolloCompiler.buildSchemaAndOperationSourcesFromIr(
+    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         irOperations = irOperations.get().asFile.toIrOperations(),
         downstreamUsedCoordinates = downstreamUsedCoordinates.get(),
