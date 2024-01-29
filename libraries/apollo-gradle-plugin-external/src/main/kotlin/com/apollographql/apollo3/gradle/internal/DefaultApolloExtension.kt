@@ -657,7 +657,7 @@ abstract class DefaultApolloExtension(
       task.generateKotlinModels.set(service.generateKotlinModels)
       task.languageVersion.set(service.languageVersion)
       task.packageName.set(service.packageName)
-      task.packageNamesFromFilePaths.set(service.packageNamesFromFilePaths)
+      task.rootPackageName.set(service.rootPackageName)
       task.useSemanticNaming.set(service.useSemanticNaming)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateMethods.set(service.generateMethods.map { list ->
@@ -722,7 +722,8 @@ abstract class DefaultApolloExtension(
       if (schemaTaskProvider != null) {
         task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
       }
-      task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
+      task.graphqlFiles.from(service.graphqlSourceDirectorySet)
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamIrFiles.from(upstreamIrFiles)
       task.irOptionsFile.set(irOptionsTaskProvider.flatMap { it.irOptionsFile })
 
@@ -742,6 +743,7 @@ abstract class DefaultApolloExtension(
 
       task.schemaFiles.from(service.schemaFiles(project))
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamSchemaFiles.from(schemaConsumerConfiguration)
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile })
       task.codegenSchemaFile.set(BuildDirLayout.codegenSchema(project, service))
@@ -800,10 +802,8 @@ abstract class DefaultApolloExtension(
       generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
   ) {
-    task.graphqlFiles.from(service.graphqlSourceDirectorySet)
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
-    task.setPackageNameProperties(service)
     service.packageNameGenerator.disallowChanges()
 
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
@@ -830,6 +830,8 @@ abstract class DefaultApolloExtension(
 
       configureBaseCodegenTask(project, task, optionsTaskProvider, service)
 
+      task.graphqlFiles.from(service.graphqlSourceDirectorySet)
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.schemaFiles.from(service.schemaFiles(project))
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.map { it.codegenSchemaOptionsFile.get() })

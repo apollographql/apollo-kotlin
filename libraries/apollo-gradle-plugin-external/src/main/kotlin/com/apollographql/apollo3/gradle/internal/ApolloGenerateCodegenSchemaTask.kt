@@ -9,17 +9,22 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import com.apollographql.apollo3.compiler.InputFile as ApolloInputFile
 
 @CacheableTask
 abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFiles: ConfigurableFileCollection
+
+  @Internal
+  var sourceRoots: Set<String>? = null
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -50,8 +55,13 @@ abstract class ApolloGenerateCodegenSchemaTask : DefaultTask() {
       return
     }
 
+    val normalizedSchemaFiles = (schemaFiles.files.takeIf { it.isNotEmpty() }?: fallbackSchemaFiles.files).map {
+      // this may produce wrong cache results as that computation is not the same as the Gradle normalization
+      ApolloInputFile(it, it.normalizedPath(sourceRoots!!))
+    }
+
     ApolloCompiler.buildCodegenSchema(
-        schemaFiles = schemaFiles.files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles.files,
+        schemaFiles = normalizedSchemaFiles,
         logger = logger(),
         codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
     ).writeTo(codegenSchemaFile.get().asFile)

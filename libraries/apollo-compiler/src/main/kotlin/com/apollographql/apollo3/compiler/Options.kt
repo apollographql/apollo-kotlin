@@ -214,6 +214,17 @@ interface CommonCodegenOpt {
    * The target language to use to generate the sources
    */
   val targetLanguage: TargetLanguage?
+
+  /**
+   * The packageName to use for generated sources. To avoid name clashes, the compiler might use sub packages.
+   */
+  val packageName: String?
+
+  /**
+   * If non-null, get the package names from the normalized file paths and prepend [rootPackageName]
+   */
+  val rootPackageName: String?
+
   /**
    * Whether to decapitalize fields. This is useful if your schema has fields starting with an uppercase as
    * it may create name clashes with models that use PascalCase
@@ -373,6 +384,8 @@ interface OperationsCodegenOptions : JavaOperationsCodegenOptions, KotlinOperati
 @Serializable
 class CodegenOptions(
     override val targetLanguage: TargetLanguage?,
+    override val packageName: String?,
+    override val rootPackageName: String?,
     override val decapitalizeFields: Boolean?,
     override val useSemanticNaming: Boolean?,
     override val generateMethods: List<GeneratedMethod>?,
@@ -393,7 +406,7 @@ class CodegenOptions(
     override val generatePrimitiveTypes: Boolean?,
     override val nullableFieldStyle: JavaNullable?,
     override val generateFragmentImplementations: Boolean?,
-    override val generateQueryDocument: Boolean?
+    override val generateQueryDocument: Boolean?,
 ): SchemaCodegenOptions, OperationsCodegenOptions
 
 fun buildCodegenOptions(
@@ -419,6 +432,8 @@ fun buildCodegenOptions(
     nullableFieldStyle: JavaNullable? = null,
     generateFragmentImplementations: Boolean? = null,
     generateQueryDocument: Boolean? = null,
+    packageName: String? = null,
+    rootPackageName: String? = null,
 ): CodegenOptions = CodegenOptions(
     targetLanguage = targetLanguage,
     decapitalizeFields = decapitalizeFields,
@@ -442,6 +457,8 @@ fun buildCodegenOptions(
     nullableFieldStyle = nullableFieldStyle,
     generateFragmentImplementations = generateFragmentImplementations,
     generateQueryDocument = generateQueryDocument,
+    packageName = packageName,
+    rootPackageName = rootPackageName,
 )
 
 fun CodegenOptions.validate() {

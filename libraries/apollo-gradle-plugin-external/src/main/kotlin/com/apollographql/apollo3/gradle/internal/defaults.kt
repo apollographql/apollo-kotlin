@@ -8,16 +8,6 @@ import org.gradle.api.provider.Provider
 import java.io.File
 
 
-internal fun ApolloGenerateSourcesBaseTask.setPackageNameProperties(service: DefaultService) {
-  packageName.set(service.packageName)
-  packageNamesFromFilePaths.set(service.packageNamesFromFilePaths)
-  if (service.packageNamesFromFilePaths) {
-    packageNameRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
-  }
-  packageNameGenerator = service.packageNameGenerator.orNull
-}
-
-
 /**
  * Resolves the operation manifest and formats.
  */

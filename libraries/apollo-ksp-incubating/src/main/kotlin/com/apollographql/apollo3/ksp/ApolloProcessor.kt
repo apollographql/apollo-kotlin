@@ -180,7 +180,7 @@ class ApolloProcessor(
 
     codegenSchema = CodegenSchema(
         schema = schema,
-        filePath = null,
+        normalizedPath = "",
         scalarMapping = scalarMapping,
         generateDataBuilders = false
     )
