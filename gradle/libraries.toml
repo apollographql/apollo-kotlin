@@ -102,7 +102,7 @@ gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.8" }
 # to avoid leaking the Kotlin stdlib on the classpath
 #
 # Keep in sync with MIN_GRADLE_VERSION
-gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "6.8" }
+gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "8.0" }
 gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-plugin", version = "0.2.8" }
 gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-plugin", version = "1.1.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }

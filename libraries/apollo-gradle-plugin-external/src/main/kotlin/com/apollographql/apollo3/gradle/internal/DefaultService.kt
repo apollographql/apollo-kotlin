@@ -10,7 +10,6 @@ import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
-import org.gradle.util.GradleVersion
 import java.io.File
 import javax.inject.Inject
 
@@ -26,27 +25,16 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   init {
     @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    if (GradleVersion.current() >= GradleVersion.version("6.2")) {
-      // This allows users to call includes.put("Date", "java.util.Date")
-      // see https://github.com/gradle/gradle/issues/7485
-      includes.convention(null as List<String>?)
-      excludes.convention(null as List<String>?)
-      alwaysGenerateTypesMatching.convention(null as List<String>?)
-      sealedClassesForEnumsMatching.convention(null as List<String>?)
-      classesForEnumsMatching.convention(null as List<String>?)
-      generateMethods.convention(null as List<String>?)
-      compilerJavaHooks.convention(null as List<ApolloCompilerJavaHooks>?)
-      compilerKotlinHooks.convention(null as List<ApolloCompilerKotlinHooks>?)
-    } else {
-      includes.set(null as List<String>?)
-      excludes.set(null as List<String>?)
-      alwaysGenerateTypesMatching.set(null as List<String>?)
-      sealedClassesForEnumsMatching.set(null as List<String>?)
-      classesForEnumsMatching.set(null as List<String>?)
-      generateMethods.set(null as List<String>?)
-      compilerJavaHooks.set(null as List<ApolloCompilerJavaHooks>?)
-      compilerKotlinHooks.set(null as List<ApolloCompilerKotlinHooks>?)
-    }
+    // This allows users to call includes.put("Date", "java.util.Date")
+    // see https://github.com/gradle/gradle/issues/7485
+    includes.convention(null as List<String>?)
+    excludes.convention(null as List<String>?)
+    alwaysGenerateTypesMatching.convention(null as List<String>?)
+    sealedClassesForEnumsMatching.convention(null as List<String>?)
+    classesForEnumsMatching.convention(null as List<String>?)
+    generateMethods.convention(null as List<String>?)
+    compilerJavaHooks.convention(null as List<ApolloCompilerJavaHooks>?)
+    compilerKotlinHooks.convention(null as List<ApolloCompilerKotlinHooks>?)
   }
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
@@ -56,9 +44,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun usedCoordinates(file: File) = TODO()
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun usedCoordinates(file: String) = TODO()
 
   var introspection: DefaultIntrospection? = null
