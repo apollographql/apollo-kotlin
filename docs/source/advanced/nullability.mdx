@@ -79,7 +79,7 @@ fun User(user: GetUserQuery.User) {
 To help deal with those issues and make sure your UI code only sees what make sense for your app, Apollo Kotlin offers three tools:
 * [Error aware parsing](#error-aware-parsing)
 * [`@catch`](#handle-errors-and-receive-partial-data-with-catch)
-* [`@semanticNonNull`](#handle-semantic-non-null-with-semanticnonnull)
+* [`@semanticNonNullField`](#handle-semantic-non-null-with-semanticnonnullfield)
 
 These tools change effectively the GraphQL default from "handle every field error" to "opt-in the errors you want to handle".
 
@@ -95,7 +95,7 @@ In order to opt-in error aware parsing, create an `extra.graphqls` file next to 
 # Import the `@catch` directive definition. 
 # When it is imported, parsers generate extra code to deal with errors.
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.1", 
+  url: "https://specs.apollo.dev/nullability/v0.2", 
   import: ["@catch", "CatchTo"]
 )
 ```
@@ -180,14 +180,14 @@ println(response.data?.user?.id) // "42"
 println(response.exception) // null
 ```
 
-For fields of List type, `@catch` applies to all list levels by default. If you need to apply it to a given level, use the `level` argument:
+For fields of List type, `@catch` applies only to the first level. If you need to apply it to a given level, use the `levels` argument:
 
 ```graphql
 query GetUser {
   user {
     # socialLinks fails the operation on error 
     # socialLinks[0], socialLinks[1], socialLinks[2], etc... are mapped to FieldResult classes
-    socialLinks @catch(level: 1)
+    socialLinks @catch(levels: [1])
   }
 }
 ```
@@ -231,25 +231,25 @@ Response:
 println(response.data?.user?.graphQLErrorOrNull?.message) // "Cannot resolve user.name"
 ```
 
-### Handle semantic non-null with `@semanticNonNull`
+### Handle semantic non-null with `@semanticNonNullField`
 
 Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 
 
 But a field like 'User.name' is _semantically non-null_: it should never be `null`, except when something goes really wrong.
 
-In those cases, you can mark a field as "semantic non-null" and the Apollo Kotlin compiler will generate it as non-nullable even though it is nullable in the server schema. To do so, add `@semanticNonNull` to your `extra.graphqls` file:
+In those cases, you can mark a field as "semantic non-null" and the Apollo Kotlin compiler will generate it as non-nullable even though it is nullable in the server schema. To do so, add `@semanticNonNullField` to your `extra.graphqls` file:
 
 ```graphql
 # extra.graphqls
 
 # Import the `@semanticNonNull` directive definition in addition to `@catch` and `CatchTo`. 
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.1", 
-  import: ["@catch", "CatchTo", "@semanticNonNull"]
+  url: "https://specs.apollo.dev/nullability/v0.2", 
+  import: ["@catch", "CatchTo", "@semanticNonNullField"]
 )
 
 # mark User.name as semantic non-null
-extend type User @semanticNonNull(field: "name")
+extend type User @semanticNonNullField(field: "name")
 ```
 
 `name` is now a non-null Kotlin types:
@@ -270,12 +270,12 @@ user.name.valueOrNull // "Luke Skywalker"
 user.name.graphQLErrorOrNull // null
 ```
 
-Similarly to `@catch`, `@semanticNonNull` supports a `level` argument for lists:
+Similarly to `@catch`, `@semanticNonNullField` supports a `levels` argument for lists:
 
 ```graphql
 # User.friends is generated a nullable
 # User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
-extend type User @semanticNonNull(field: "friends", level: 1)
+extend type User @semanticNonNullField(field: "friends", levels: [1])
 ```
 
 ## Migrate progressively with `@ignoreErrors`
@@ -291,12 +291,12 @@ This is used for backward compatibility for clients where this was the default b
 directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 ```
 
-To enable it, import it like `@catch`, `CatchTo` and `@semanticNonNull`:
+To enable it, import it like `@catch`, `CatchTo` and `@semanticNonNullField`:
 
 ```graphql
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.1",
-  import: ["@catch", "CatchTo", "@semanticNonNull", "@ignoreErrors"]
+  url: "https://specs.apollo.dev/nullability/v0.2",
+  import: ["@catch", "CatchTo", "@semanticNonNullField", "@ignoreErrors"]
 )
 ```
 
@@ -306,7 +306,7 @@ Enabling error aware parsing and adding `@ignoreErrors` to all your operations i
 
 Different teams have different needs:
 
-* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNull`.
+* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNullField`.
 * Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices.
   * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
   * Some of them want to opt-in the errors they want to handle and save the code to check every field.
@@ -324,8 +324,8 @@ flowchart TD
     X --> J["Use `@catch(to: RESULT)`\nin your operations\nto get the inline errors\nin your Kotlin code"]
     J --> H("Do you have fields in your schema\nthat are nullable only for error reasons?")
     H --> |no|V
-    H --> |yes|I["import the `@semanticNonNull` directive"]
-    I --> K["Add `@semanticNonNull`\nto appropriate fields in your schema"]
+    H --> |yes|I["import the `@semanticNonNullField` directive"]
+    I --> K["Add `@semanticNonNullField`\nto appropriate fields in your schema"]
     K --> L["Those field are now generated\nas non-null in Kotlin"]
     L --> V["The end 🎉"]
     E --> |no-errors by default| P["Rethrow by default\nextend schema @catch(to: THROW)"]
