@@ -16,11 +16,11 @@ dependencies {
 
 apollo {
   service("1") {
-    sourceFolder.set("1")
+    srcDir("src/main/graphql/1")
     packageName.set("com.example.one")
   }
   service("2") {
-    sourceFolder.set("2")
+    srcDir("src/main/graphql/2")
     packageName.set("com.example.two")
   }
   service("3") {

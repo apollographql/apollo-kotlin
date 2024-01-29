@@ -8,7 +8,7 @@ apollo {
     packageName.set("com.example")
     introspection {
       endpointUrl.set("http://localhost:8001/graphql")
-      schemaFile.set(file("schema.graphqls"))
+      schemaFiles.from(file("schema.graphqls"))
     }
   }
 }

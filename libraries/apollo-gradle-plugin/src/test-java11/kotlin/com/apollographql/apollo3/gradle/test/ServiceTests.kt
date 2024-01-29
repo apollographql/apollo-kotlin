@@ -120,7 +120,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          schemaFile.set(file("${schema.absolutePath}"))
+          schemaFiles.from(file("${schema.absolutePath}"))
           packageName.set("com.example")
         }
       }

@@ -24,11 +24,11 @@ kotlin {
 
 apollo {
   service("mockserver") {
-    sourceFolder.set("mockserver")
+    srcDir("src/commonMain/graphql/mockserver")
     packageName.set("multipart")
   }
   service("router") {
-    sourceFolder.set("router")
+    srcDir("src/commonMain/graphql/router")
     packageName.set("router")
   }
 }

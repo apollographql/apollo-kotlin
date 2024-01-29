@@ -26,7 +26,7 @@ apollo {
         key.set(apiKey)
         graph.set("Apollo-Kotlin-CI-tests")
         graphVariant.set("current")
-        schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        schemaFiles.from(file("src/main/graphql/schema.graphqls"))
       }
 
       operationManifestFormat.set("persistedQueryManifest")

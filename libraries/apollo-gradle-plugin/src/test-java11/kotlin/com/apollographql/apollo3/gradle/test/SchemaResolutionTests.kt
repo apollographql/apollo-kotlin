@@ -52,7 +52,7 @@ class SchemaResolutionTests {
       apollo {
         service("api") {
           packageNamesFromFilePaths()
-          schemaFile.set(file("src/main/graphql/schema.sdl"))
+          schemaFiles.from(file("src/main/graphql/schema.sdl"))
         }
       }
     """.trimIndent()

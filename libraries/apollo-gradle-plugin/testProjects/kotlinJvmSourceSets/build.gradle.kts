@@ -11,6 +11,6 @@ dependencies {
 apollo {
   createAllKotlinSourceSetServices(".", "example") {
     packageNamesFromFilePaths()
-    schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
+    schemaFiles.from(file("src/main/graphql/com/example/schema.sdl"))
   }
 }

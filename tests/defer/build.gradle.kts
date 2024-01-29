@@ -49,12 +49,12 @@ fun configureApollo(generateKotlinModels: Boolean) {
     service("base-$extra") {
       packageName.set("defer")
       this.generateKotlinModels.set(generateKotlinModels)
-      sourceFolder.set("base")
+      srcDir("src/commonMain/graphql/base")
       configureConnection(generateKotlinModels)
     }
     service("supergraph-$extra") {
       packageName.set("supergraph")
-      sourceFolder.set("supergraph")
+      srcDir("src/commonMain/graphql/supergraph")
       this.addTypename.set("ifAbstract")
       this.generateKotlinModels.set(generateKotlinModels)
       configureConnection(generateKotlinModels)

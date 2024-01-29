@@ -54,7 +54,7 @@ object AddIntrospectionBlockQuickFix : LocalQuickFix {
         introspection {
             endpointUrl.set("https://example.com/graphql")
             headers.put("api-key", "1234567890abcdef")
-            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+            schemaFiles.from(file("src/main/graphql/schema.graphqls"))
         }
       """.trimIndent()
     )

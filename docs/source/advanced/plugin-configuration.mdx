@@ -32,7 +32,7 @@ Specify the location of your schema file using the `schemaFile` property:
 ```kotlin
 apollo {
   service("service") {
-    schemaFile.set(file("shared/graphql/schema.graphqls"))
+    schemaFiles.from(file("shared/graphql/schema.graphqls"))
   }
 }
 ```
@@ -172,7 +172,7 @@ apollo {
     introspection {
       endpointUrl.set("https://your.domain/graphql/endpoint")
       // The path is interpreted relative to the current project here, no need to prepend 'app'
-      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+      schemaFiles.from(file("src/main/graphql/com/example/schema.graphqls"))
     }
   }
 }
@@ -194,7 +194,7 @@ apollo {
       key.set(System.getenv("APOLLO_KEY"))
       graph.set(System.geten("APOLLO_GRAPH"))
       // The path is interpreted relative to the current project here, no need to prepend 'app'
-      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+      schemaFiles.from(file("src/main/graphql/com/example/schema.graphqls"))
     }
   }
 }
@@ -252,9 +252,9 @@ apollo {
     excludes.add("**/*.graphqls")
 
     // explicitly set the schema
-    schemaFile.set("src/main/graphql/schema.graphqls")
+    schemaFiles.from("src/main/graphql/schema.graphqls")
     // you can also merge different files together
-    schemaFile.setFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
+    schemaFiles.fromFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
 
     // What codegen to use. One of "operationBased", "responseBased"
     codegenModels.set("operationBased")
@@ -363,13 +363,13 @@ apollo {
     // configure introspection schema download
     introspection {
       endpointUrl.set("https://your.domain/graphql/endpoint")
-      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+      schemaFiles.from(file("src/main/graphql/com/example/schema.graphqls"))
     }
     // configure registry schema download
     registry {
       key.set(System.getenv("APOLLO_KEY"))
       graph.set(System.geten("APOLLO_GRAPH"))
-      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+      schemaFiles.from(file("src/main/graphql/com/example/schema.graphqls"))
     }
 
     // wire the generated models to the "test" source set
