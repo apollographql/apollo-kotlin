@@ -4,14 +4,14 @@ OtherValidationIssue (3:5)
 OtherValidationIssue (4:5)
 `foo` cannot be merged with `foo` (at catch.graphql: (3, 5)): they have different `@catch` directives. Use different aliases on the fields to fetch both if this was intentional.
 ------------
-OtherValidationIssue (8:9)
+OtherValidationIssue (9:9)
 Directive '@catch' cannot be repeated
 ------------
-OtherValidationIssue (8:27)
+OtherValidationIssue (9:27)
 Directive '@catch' cannot be repeated
 ------------
-OtherValidationIssue (12:25)
+OtherValidationIssue (14:25)
 'levels' values must be positive ints
 ------------
-OtherValidationIssue (16:25)
+OtherValidationIssue (19:25)
 Invalid 'levels' value '3' for `@catch` usage: this field has a max list level of 2
