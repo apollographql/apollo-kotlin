@@ -23,4 +23,8 @@ apollo {
     sourceFolder.set("2")
     packageName.set("com.example.two")
   }
+  service("3") {
+    sourceFolder.set("3")
+    packageName.set("com.example.three")
+  }
 }
