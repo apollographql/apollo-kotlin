@@ -294,7 +294,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
             minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
             minimalSchema.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
         )
-        scope.validateDirective(gqlDirective, schemaExtension) {
+        scope.validateDirectives(listOf(gqlDirective), schemaExtension) {
           issues.add(it.constContextError())
         }
         if (scope.issues.isNotEmpty()) {
@@ -446,17 +446,13 @@ private fun ValidationScope.validateInterfaces() {
       }
     }
 
-    i.directives.forEach { directive ->
-      validateDirective(directive, i) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(i.directives, i) {
+      issues.add(it.constContextError())
     }
 
     i.fields.forEach { gqlFieldDefinition ->
-      gqlFieldDefinition.directives.forEach { gqlDirective ->
-        validateDirective(gqlDirective, gqlFieldDefinition) {
-          issues.add(it.constContextError())
-        }
+      validateDirectives(gqlFieldDefinition.directives, gqlFieldDefinition) {
+        issues.add(it.constContextError())
       }
     }
   }
@@ -475,17 +471,13 @@ private fun ValidationScope.validateObjects() {
       }
     }
 
-    o.directives.forEach { directive ->
-      validateDirective(directive, o) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(o.directives, o) {
+      issues.add(it.constContextError())
     }
 
     o.fields.forEach { gqlFieldDefinition ->
-      gqlFieldDefinition.directives.forEach { gqlDirective ->
-        validateDirective(gqlDirective, gqlFieldDefinition) {
-          issues.add(it.constContextError())
-        }
+      validateDirectives(gqlFieldDefinition.directives, gqlFieldDefinition) {
+        issues.add(it.constContextError())
       }
     }
   }
@@ -493,10 +485,8 @@ private fun ValidationScope.validateObjects() {
 
 private fun ValidationScope.validateUnions() {
   typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach { u ->
-    u.directives.forEach { directive ->
-      validateDirective(directive, u) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(u.directives, u) {
+      issues.add(it.constContextError())
     }
   }
 }
@@ -556,10 +546,8 @@ private fun ValidationScope.validateInputObjects() {
       registerIssue("Input object must specify one or more input fields", o.sourceLocation)
     }
 
-    o.directives.forEach { directive ->
-      validateDirective(directive, o) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(o.directives, o) {
+      issues.add(it.constContextError())
     }
 
     val isOneOfInputObject = o.directives.findOneOf()
