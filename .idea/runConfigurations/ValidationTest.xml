@@ -1,10 +1,15 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ValidationTest" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <entry key="testFilter" value=".*catch.*" />
+        </map>
+      </option>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-DupdateTestFixtures=true -DtestFilter=mandatory_arg" />
+      <option name="scriptParameters" value="-DupdateTestFixtures=true" />
       <option name="taskDescriptions">
         <list />
       </option>
@@ -20,6 +25,7 @@
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>true</RunAsTest>
     <method v="2" />
   </configuration>
 </component>

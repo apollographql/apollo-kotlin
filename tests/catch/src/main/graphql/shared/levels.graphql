@@ -1,0 +1,15 @@
+query List1 {
+  list1
+}
+
+query List {
+  list
+}
+
+query ListCatchAll {
+  list1 @catch(levels: [0, 1])
+}
+
+query ListCatch1 {
+  list1 @catch(levels: [1])
+}

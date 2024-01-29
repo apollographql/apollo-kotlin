@@ -1,25 +1,20 @@
+# `foo` cannot be merged with `foo` (at catch.graphql: (4, 5)): they have different `@catch` directives.
 query Query1 {
     foo
     foo @catch(to: THROW)
 }
 
+# Directive '@catch' cannot be repeated
 query Query2 {
     foo @catch(to: THROW) @catch(to: NULL)
 }
 
+# 'levels' values must be positive ints
 query Query3 {
-    foo @catch(level: 1, to: THROW) @catch(level: 1, to: NULL)
+    foo @catch(levels: [-1], to: THROW)
 }
 
+# Invalid 'levels' value '3' for `@catch` usage: this field has a max list level of 2
 query Query4 {
-    foo @catch(level: 1, to: THROW) @catch(to: NULL)
-}
-
-query Query5 {
-    foo @catch(level: 3, to: THROW)
-}
-
-# OK
-query Query6 {
-    foo @catch(level: 1, to: THROW) @catch(level: 2, to: NULL)
+    foo @catch(levels: [3], to: THROW)
 }
