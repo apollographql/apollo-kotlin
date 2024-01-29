@@ -9,12 +9,11 @@ import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenMetadata
-import com.apollographql.apollo3.compiler.CodegenOptions
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
+import com.apollographql.apollo3.compiler.buildCodegenOptions
 import com.apollographql.apollo3.compiler.codegen.SourceOutput
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
@@ -189,12 +188,10 @@ class ApolloProcessor(
     val sourceOutput = ApolloCompiler.buildSchemaSources(
             codegenSchema = codegenSchema,
             usedCoordinates = null,
-            codegenOptions = CodegenOptions(
-                kotlin = KotlinCodegenOptions(
-                    addUnknownForEnums = false,
-                    addDefaultArgumentForInputObjects = false,
-                    generateAsInternal = true
-                )
+            codegenOptions = buildCodegenOptions(
+                addUnknownForEnums = false,
+                addDefaultArgumentForInputObjects = false,
+                generateAsInternal = true
             ),
             packageNameGenerator = PackageNameGenerator.Flat(packageName),
             null,

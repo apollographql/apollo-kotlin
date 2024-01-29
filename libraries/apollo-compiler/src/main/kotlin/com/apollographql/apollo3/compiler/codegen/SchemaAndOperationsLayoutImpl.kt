@@ -21,12 +21,12 @@ import com.apollographql.apollo3.compiler.withUnderscorePrefix
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-internal class CodegenLayout(
+internal class SchemaAndOperationsLayoutImpl(
     codegenSchema: CodegenSchema,
     private val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean
-) : Layout {
+) : SchemaAndOperationsLayout {
   private val schemaPackageName = executableDocumentPackageName(codegenSchema.filePath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
@@ -127,23 +127,23 @@ internal fun modelName(info: IrFieldInfo): String {
 }
 
 
-internal fun CodegenLayout.typePackageName() = "${schemaPackageName()}.type"
-internal fun CodegenLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
-internal fun CodegenLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
-internal fun CodegenLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
+internal fun SchemaAndOperationsLayoutImpl.typePackageName() = "${schemaPackageName()}.type"
+internal fun SchemaAndOperationsLayoutImpl.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
+internal fun SchemaAndOperationsLayoutImpl.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
+internal fun SchemaAndOperationsLayoutImpl.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 
-internal fun CodegenLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
-internal fun CodegenLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
-internal fun CodegenLayout.executionPackageName() = "${schemaPackageName()}.execution"
+internal fun SchemaAndOperationsLayoutImpl.paginationPackageName() = "${schemaPackageName()}.pagination"
+internal fun SchemaAndOperationsLayoutImpl.schemaSubPackageName() = "${schemaPackageName()}.schema"
+internal fun SchemaAndOperationsLayoutImpl.executionPackageName() = "${schemaPackageName()}.execution"
 
-internal fun CodegenLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
-internal fun CodegenLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
+internal fun SchemaAndOperationsLayoutImpl.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
+internal fun SchemaAndOperationsLayoutImpl.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
 
-internal fun CodegenLayout.fragmentPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment"
-internal fun CodegenLayout.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
-internal fun CodegenLayout.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
+internal fun SchemaAndOperationsLayoutImpl.fragmentPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment"
+internal fun SchemaAndOperationsLayoutImpl.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
+internal fun SchemaAndOperationsLayoutImpl.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
 
-internal fun CodegenLayout.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
+internal fun SchemaAndOperationsLayoutImpl.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
 
 internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
 internal fun String.inputAdapter(): String = "${this}_InputAdapter"

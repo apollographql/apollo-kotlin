@@ -1,0 +1,64 @@
+query GetBooksByIds($bookIds: [ID!]!) {
+  viewer {
+    libraries(limit: 1) {
+      books(bookIds: $bookIds) {
+        name
+        year
+      }
+    }
+  }
+}
+
+query GetBooksByIdsPaginated($bookIds: [ID!]!, $after: String) {
+  viewer {
+    libraries(limit: 1) {
+      booksPaginated(bookIds: $bookIds, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          cursor
+          node {
+            name
+            year
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetBooksByIdsPaginatedNoCursors($bookIds: [ID!]!, $after: String) {
+  viewer {
+    libraries(limit: 1) {
+      booksPaginated(bookIds: $bookIds, after: $after) {
+        edges {
+          node {
+            name
+            year
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetBooksByIdsPaginatedNoCursorsWithFragment($bookIds: [ID!]!, $after: String) {
+  viewer {
+    libraries(limit: 1) {
+      booksPaginated(bookIds: $bookIds, after: $after) {
+        edges {
+          ...BookEdge
+        }
+      }
+    }
+  }
+}
+
+fragment BookEdge on BookEdge {
+  node {
+    name
+    year
+  }
+}
