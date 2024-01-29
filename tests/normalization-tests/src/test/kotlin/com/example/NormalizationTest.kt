@@ -28,10 +28,12 @@ import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
 import com.example.three.GetBooksByIdsPaginatedNoCursorsQuery
+import com.example.three.GetBooksByIdsPaginatedNoCursorsWithFragmentQuery
 import com.example.three.GetBooksByIdsPaginatedQuery
 import com.example.three.GetBooksByIdsQuery
 import com.example.three.type.Book
 import com.example.three.type.BookConnection
+import com.example.three.type.BookEdge
 import com.example.two.GetCountryQuery
 import com.example.two.NestedFragmentQuery
 import kotlinx.coroutines.runBlocking
@@ -205,12 +207,10 @@ class NormalizationTest {
 
     // Fetch from network
     apolloClient.query(GetBooksByIdsQuery(listOf("book-1", "book-2"))).fetchPolicy(FetchPolicy.NetworkOnly).execute()
-    println(NormalizedCache.prettifyDump(apolloClient.apolloStore.dump()))
-
 
     // Fetch from the cache
     val fromCache = apolloClient.query(GetBooksByIdsQuery(listOf("book-1"))).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    assertEquals(fromCache.data?.viewer?.libraries?.first()?.books?.first()?.name, "First book")
+    assertEquals("First book", fromCache.data?.viewer?.libraries?.first()?.books?.first()?.name)
 
     apolloClient.close()
     mockserver.close()
@@ -237,9 +237,11 @@ class NormalizationTest {
                       val bookIds = field.argumentValues(variables)["bookIds"] as List<String>
                       return mapOf(
                           "edges" to bookIds.map {
-                            mapOf("node" to CacheKey(Book.type.name, it))
+                            mapOf(
+                                "node" to CacheKey(Book.type.name, it),
+                                "__typename" to BookEdge.type.name,
+                            )
                           },
-                          "__typename" to BookConnection.type.name
                       )
                     }
 
@@ -260,7 +262,6 @@ class NormalizationTest {
                 "__typename": "Library",
                 "id": "library-1",
                 "booksPaginated": {
-                  "__typename": "BookConnection",
                   "pageInfo": {
                     "__typename": "PageInfo",
                     "hasNextPage": false,
@@ -297,12 +298,16 @@ class NormalizationTest {
     """.trimIndent())
 
     // Fetch from network
-    val fromNetwork = apolloClient.query(GetBooksByIdsPaginatedQuery(listOf("book-1", "book-2"))).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+    apolloClient.query(GetBooksByIdsPaginatedQuery(listOf("book-1", "book-2"))).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     println(NormalizedCache.prettifyDump(apolloClient.apolloStore.dump()))
 
     // Fetch from the cache
-    val fromCache = apolloClient.query(GetBooksByIdsPaginatedNoCursorsQuery(listOf("book-1"))).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    assertEquals(fromCache.data?.viewer?.libraries?.first()?.booksPaginated?.edges?.first()?.node?.name, "First book")
+    val fromCache1 = apolloClient.query(GetBooksByIdsPaginatedNoCursorsQuery(listOf("book-1"))).fetchPolicy(FetchPolicy.CacheOnly).execute()
+    assertEquals("First book", fromCache1.data?.viewer?.libraries?.first()?.booksPaginated?.edges?.first()?.node?.name)
+
+    // Fetch from the cache (with fragment)
+    val fromCache2 = apolloClient.query(GetBooksByIdsPaginatedNoCursorsWithFragmentQuery(listOf("book-1"))).fetchPolicy(FetchPolicy.CacheOnly).execute()
+    assertEquals("First book", fromCache2.data?.viewer?.libraries?.first()?.booksPaginated?.edges?.first()?.bookEdge?.node?.name)
 
     apolloClient.close()
     mockserver.close()

@@ -43,3 +43,22 @@ query GetBooksByIdsPaginatedNoCursors($bookIds: [ID!]!, $after: String) {
     }
   }
 }
+
+query GetBooksByIdsPaginatedNoCursorsWithFragment($bookIds: [ID!]!, $after: String) {
+  viewer {
+    libraries(limit: 1) {
+      booksPaginated(bookIds: $bookIds, after: $after) {
+        edges {
+          ...BookEdge
+        }
+      }
+    }
+  }
+}
+
+fragment BookEdge on BookEdge {
+  node {
+    name
+    year
+  }
+}
