@@ -220,7 +220,7 @@ interface CommonCodegenOpt {
    */
   val decapitalizeFields: Boolean?
   /**
-   * Whether to decapitalize fields. This is useful if your schema has fields starting with an uppercase as it may create name clashes
+   * Whether to suffix operation name with 'Query', 'Mutation' or 'Subscription'
    */
   val useSemanticNaming: Boolean?
   /**
