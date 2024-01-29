@@ -35,7 +35,7 @@ class GradleToolingTests {
           srcDir("src/main/graphql/starwars")
           introspection {
             endpointUrl.set("https://example.com")
-            schemaFiles.from(file("schema.graphqls"))
+            schemaFile.set(file("schema.graphqls"))
             headers.set(["header1": "value1"])
           }
         }
