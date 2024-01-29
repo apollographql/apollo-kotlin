@@ -140,7 +140,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = directiveDefinitions[definition.name]
         if (existing != null) {
           if (!existing.semanticEquals(definition)) {
-            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), existing.sourceLocation))
           }
         }
       }
@@ -149,7 +149,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = typeDefinitions[definition.name]
         if (existing != null) {
           if (!existing.semanticEquals(definition)) {
-            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), existing.sourceLocation))
           }
         }
       }
