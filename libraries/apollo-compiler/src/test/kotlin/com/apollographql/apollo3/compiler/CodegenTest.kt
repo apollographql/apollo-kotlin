@@ -19,11 +19,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(TestParameterInjector::class)
-@OptIn(ExperimentalTime::class, ApolloExperimental::class)
+@OptIn(ApolloExperimental::class)
 class CodegenTest {
   private class Measurement(
       val name: String,
@@ -318,16 +317,6 @@ class CodegenTest {
       }
 
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
-      val javaCodegenOptions = if (targetLanguage == JAVA) {
-        javaCodegenOptions(folder)
-      } else {
-        JavaCodegenOptions()
-      }
-      val kotlinCodegenOptions = if (targetLanguage == JAVA) {
-        KotlinCodegenOptions()
-      } else {
-        kotlinCodegenOptions(folder)
-      }
       val generateMethods = when (targetLanguage) {
         JAVA -> null
         else -> {
@@ -339,30 +328,91 @@ class CodegenTest {
         }
       }
 
-      val commonCodegenOptions = CommonCodegenOptions(
+      val nullableFieldStyle = when (folder.name) {
+        "java8annotation" -> JavaNullable.JETBRAINS_ANNOTATIONS
+        "java_apollo_optionals" -> JavaNullable.APOLLO_OPTIONAL
+        "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
+        "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
+        "java_jetbrains_annotations" -> JavaNullable.JETBRAINS_ANNOTATIONS
+        "java_android_annotations" -> JavaNullable.ANDROID_ANNOTATIONS
+        "java_jsr305_annotations" -> JavaNullable.JSR_305_ANNOTATIONS
+        else -> JavaNullable.NONE
+      }
+      val classesForEnumsMatching = when (folder.name) {
+        "enum_field" -> listOf("Gravity")
+        else -> listOf(".*")
+      }
+
+      val generateModelBuilders = when (folder.name) {
+        "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
+        "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
+        -> true
+
+        else -> false
+      }
+
+      val generatePrimitiveTypes = when (folder.name) {
+        "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
+        "java_android_annotations", "java_jsr305_annotations",
+        -> true
+
+        else -> false
+      }
+
+      val sealedClassesForEnumsMatching = when (folder.name) {
+        "enums_as_sealed" -> listOf(".*")
+        else -> emptyList()
+      }
+
+      val generateInputBuilders = folder.name == "input_object_type"
+
+
+      val addJvmOverloads = when (folder.name) {
+        "variable_default_value" -> true
+        else -> defaultAddJvmOverloads
+      }
+
+      val requiresOptInAnnotation = when (folder.name) {
+        "suppressed_warnings" -> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+        else -> "none"
+      }
+
+      val generateAsInternal = when (folder.name) {
+        "mutation_create_review", "simple_fragment" -> true
+        else -> false
+      }
+
+      val codegenOptions = buildCodegenOptions(
           targetLanguage = targetLanguage,
           useSemanticNaming = useSemanticNaming,
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
           generateMethods = generateMethods,
+          nullableFieldStyle = nullableFieldStyle.takeIf { targetLanguage == JAVA },
+          classesForEnumsMatching = classesForEnumsMatching.takeIf { targetLanguage == JAVA },
+          generateModelBuilders = generateModelBuilders.takeIf { targetLanguage == JAVA },
+          generatePrimitiveTypes = generatePrimitiveTypes.takeIf { targetLanguage == JAVA },
+          sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.takeIf { targetLanguage != JAVA },
+          generateInputBuilders = generateInputBuilders.takeIf { targetLanguage != JAVA },
+          addJvmOverloads = addJvmOverloads.takeIf { targetLanguage != JAVA },
+          requiresOptInAnnotation = requiresOptInAnnotation.takeIf { targetLanguage != JAVA },
+          generateAsInternal = generateAsInternal.takeIf { targetLanguage != JAVA },
+          generateFilterNotNull = true.takeIf { targetLanguage != JAVA },
       )
-      ApolloCompiler.buildSchemaAndOperationSources(
+
+      ApolloCompiler.buildSchemaAndOperationsSources(
           schemaFiles = setOf(schemaFile),
           executableFiles = graphqlFiles,
-          codegenSchemaOptions = CodegenSchemaOptions(
+          codegenSchemaOptions = buildCodegenSchemaOptions(
               scalarMapping = scalarMapping,
               generateDataBuilders = generateDataBuilders
           ),
-          irOptions = IrOptions(
+          irOptions = buildIrOptions(
               codegenModels = codegenModels,
               flattenModels = flattenModels,
               decapitalizeFields = decapitalizeFields,
           ),
-          codegenOptions = CodegenOptions(
-              common = commonCodegenOptions,
-              java = javaCodegenOptions,
-              kotlin = kotlinCodegenOptions
-          ),
+          codegenOptions = codegenOptions,
           operationOutputGenerator = operationOutputGenerator,
           packageNameGenerator = packageNameGenerator,
           compilerKotlinHooks = null,
@@ -381,78 +431,4 @@ class CodegenTest {
       return children.any { it.hasFragments() }
     }
   }
-}
-
-private fun javaCodegenOptions(folder: File): JavaCodegenOptions {
-  val nullableFieldStyle = when (folder.name) {
-    "java8annotation" -> JavaNullable.JETBRAINS_ANNOTATIONS
-    "java_apollo_optionals" -> JavaNullable.APOLLO_OPTIONAL
-    "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
-    "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
-    "java_jetbrains_annotations" -> JavaNullable.JETBRAINS_ANNOTATIONS
-    "java_android_annotations" -> JavaNullable.ANDROID_ANNOTATIONS
-    "java_jsr305_annotations" -> JavaNullable.JSR_305_ANNOTATIONS
-    else -> JavaNullable.NONE
-  }
-  val classesForEnumsMatching = when (folder.name) {
-    "enum_field" -> listOf("Gravity")
-    else -> listOf(".*")
-  }
-
-  val generateModelBuilders = when (folder.name) {
-    "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
-    "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
-    -> true
-
-    else -> false
-  }
-
-  val generatePrimitiveTypes = when (folder.name) {
-    "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
-    "java_android_annotations", "java_jsr305_annotations",
-    -> true
-
-    else -> false
-  }
-
-  return JavaCodegenOptions(
-      nullableFieldStyle = nullableFieldStyle,
-      generateModelBuilders = generateModelBuilders,
-      classesForEnumsMatching = classesForEnumsMatching,
-      generatePrimitiveTypes = generatePrimitiveTypes,
-  )
-}
-
-private fun kotlinCodegenOptions(folder: File): KotlinCodegenOptions {
-  val sealedClassesForEnumsMatching = when (folder.name) {
-    "enums_as_sealed" -> listOf(".*")
-    else -> emptyList()
-  }
-
-  val generateInputBuilders = folder.name == "input_object_type"
-
-
-  val addJvmOverloads = when (folder.name) {
-    "variable_default_value" -> true
-    else -> defaultAddJvmOverloads
-  }
-
-  val requiresOptInAnnotation = when (folder.name) {
-    "suppressed_warnings" -> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
-    else -> "none"
-  }
-
-  val generateAsInternal = when (folder.name) {
-    "mutation_create_review", "simple_fragment" -> true
-    else -> false
-  }
-
-  return KotlinCodegenOptions(
-      sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
-      addJvmOverloads = addJvmOverloads,
-      requiresOptInAnnotation = requiresOptInAnnotation,
-      generateFilterNotNull = true,
-      generateInputBuilders = generateInputBuilders,
-      generateAsInternal = generateAsInternal
-  )
 }

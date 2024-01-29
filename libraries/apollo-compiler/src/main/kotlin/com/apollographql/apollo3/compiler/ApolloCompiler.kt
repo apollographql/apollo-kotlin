@@ -305,15 +305,14 @@ object ApolloCompiler {
   ): SourceOutput {
     val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
 
-    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, emptyList())
+    val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, emptyList())
     codegenOptions.validate()
 
     return if (targetLanguage == TargetLanguage.JAVA) {
       JavaCodegen.buildSchemaSources(
           codegenSchema = codegenSchema,
           irSchema = irSchema,
-          commonCodegenOptions = codegenOptions.common,
-          javaCodegenOptions = codegenOptions.java,
+          codegenOptions = codegenOptions,
           packageNameGenerator = packageNameGenerator,
           compilerJavaHooks = compilerJavaHooks ?: defaultCompilerJavaHooks,
       ).toSourceOutput()
@@ -322,20 +321,19 @@ object ApolloCompiler {
           codegenSchema = codegenSchema,
           targetLanguage = targetLanguage,
           irSchema = irSchema,
-          commonCodegenOptions = codegenOptions.common,
-          kotlinCodegenOptions = codegenOptions.kotlin,
+          codegenOptions = codegenOptions,
           packageNameGenerator = packageNameGenerator,
           compilerKotlinHooks = compilerKotlinHooks ?: defaultCompilerKotlinHooks,
       ).toSourceOutput()
     }
   }
 
-  fun buildSchemaAndOperationSourcesFromIr(
+  fun buildSchemaAndOperationsSourcesFromIr(
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
       downstreamUsedCoordinates: UsedCoordinates?,
       upstreamCodegenMetadata: List<CodegenMetadata>,
-      codegenOptions: CodegenOptions = CodegenOptions(),
+      codegenOptions: CodegenOptions,
       packageNameGenerator: PackageNameGenerator,
       operationOutputGenerator: OperationOutputGenerator?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
@@ -344,7 +342,7 @@ object ApolloCompiler {
   ): SourceOutput {
     check(irOperations is DefaultIrOperations)
 
-    val targetLanguage = defaultTargetLanguage(codegenOptions.common.targetLanguage, upstreamCodegenMetadata)
+    val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, upstreamCodegenMetadata)
     codegenOptions.validate()
 
     val operationOutput = irOperations.operations.map {
@@ -363,7 +361,7 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    val operationManifestFormat = codegenOptions.common.operationManifestFormat
+    val operationManifestFormat = codegenOptions.operationManifestFormat
     if ((operationManifestFormat ?: defaultOperationManifestFormat) != MANIFEST_NONE) {
       check(operationManifestFile != null) {
         "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
@@ -392,8 +390,7 @@ object ApolloCompiler {
           irOperations = irOperations,
           operationOutput = operationOutput,
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
-          commonCodegenOptions = codegenOptions.common,
-          javaCodegenOptions = codegenOptions.java,
+          codegenOptions = codegenOptions,
           packageNameGenerator = packageNameGenerator,
           compilerJavaHooks = compilerJavaHooks,
       ).toSourceOutput()
@@ -404,8 +401,7 @@ object ApolloCompiler {
           irOperations = irOperations,
           operationOutput = operationOutput,
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
-          commonCodegenOptions = codegenOptions.common,
-          kotlinCodegenOptions = codegenOptions.kotlin,
+          codegenOptions = codegenOptions,
           packageNameGenerator = packageNameGenerator,
           compilerKotlinHooks = compilerKotlinHooks,
       ).toSourceOutput()
@@ -417,7 +413,7 @@ object ApolloCompiler {
   /**
    * Compiles a set of files without serializing the intermediate results
    */
-  fun buildSchemaAndOperationSources(
+  fun buildSchemaAndOperationsSources(
       schemaFiles: Set<File>,
       executableFiles: Set<File>,
       codegenSchemaOptions: CodegenSchemaOptions,
@@ -445,7 +441,7 @@ object ApolloCompiler {
         logger = logger
     )
 
-    val sourceOutput = buildSchemaAndOperationSourcesFromIr(
+    val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations,
         downstreamUsedCoordinates = emptyMap(),

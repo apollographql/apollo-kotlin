@@ -2,20 +2,16 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.CodegenOptions
 import com.apollographql.apollo3.compiler.CodegenSchemaOptions
-import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.IrOptions
-import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.validate
 import com.apollographql.apollo3.compiler.writeTo
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -260,7 +256,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching
     ).writeTo(irOptionsFile.get().asFile)
 
-    val common = CommonCodegenOptions(
+    CodegenOptions(
         targetLanguage = targetLanguage,
         useSemanticNaming = useSemanticNaming.orNull,
         generateFragmentImplementations = generateFragmentImplementations.orNull,
@@ -268,34 +264,22 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
         generateQueryDocument = generateQueryDocument.orNull,
         generateSchema = generateSchema.orNull,
         generatedSchemaName = generatedSchemaName.orNull,
-        operationManifestFormat = operationManifestFormat.orNull
-    )
-
-    val java = JavaCodegenOptions(
+        operationManifestFormat = operationManifestFormat.orNull,
         nullableFieldStyle = nullableFieldStyle.orNull,
         generateModelBuilders = generateModelBuilders.orNull,
         classesForEnumsMatching = classesForEnumsMatching.orNull,
         generatePrimitiveTypes = generatePrimitiveTypes.orNull,
-    )
-
-    val kotlin = KotlinCodegenOptions(
         generateAsInternal = generateAsInternal.orNull,
         generateFilterNotNull = generateFilterNotNull,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.orNull,
         addJvmOverloads = addJvmOverloads.orNull,
         requiresOptInAnnotation = requiresOptInAnnotation.orNull,
         jsExport = jsExport.orNull,
-        generateInputBuilders = generateInputBuilders.orNull
-    )
-
-    CodegenOptions(
-        common = common,
-        java = java,
-        kotlin = kotlin
-    ).apply {
-      validate()
-      writeTo(codegenOptions.get().asFile)
-    }
+        generateInputBuilders = generateInputBuilders.orNull,
+        decapitalizeFields = decapitalizeFields.orNull,
+        addDefaultArgumentForInputObjects = true,
+        addUnknownForEnums = true
+    ).writeTo(codegenOptions.get().asFile)
 
     OtherOptions(targetLanguage, codegenModels).writeTo(otherOptions.get().asFile)
   }

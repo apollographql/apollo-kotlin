@@ -30,7 +30,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 
   @TaskAction
   fun taskAction() {
-    ApolloCompiler.buildSchemaAndOperationSources(
+    ApolloCompiler.buildSchemaAndOperationsSources(
         schemaFiles = schemaFiles.files,
         executableFiles = graphqlFiles.files,
         codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),

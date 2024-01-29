@@ -16,7 +16,6 @@ class MetadataTest {
   private val irOptionsFile = File(buildDir, "irOptions.json")
   private val rootCodegenOptionsFile = File(buildDir, "root-codegenOptions.json")
   private val leafCodegenOptionsFile = File(buildDir, "leaf-codegenOptions.json")
-  private val rootIrSchemaFile = File(buildDir, "root-ir-schema.json")
   private val rootCodegenMetadata = File(buildDir, "root-codegen-metadata.json")
   private val rootIrOperationsFile = File(buildDir, "root-ir-operations.json")
   private val leafIrOperationsFile = File(buildDir, "leaf-ir-operations.json")
@@ -36,10 +35,12 @@ class MetadataTest {
 
 
   private fun compileRoot(directory: String) {
-    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
-    IrOptions().writeTo(irOptionsFile)
-    CodegenOptions(common = CommonCodegenOptions()).writeTo(rootCodegenOptionsFile)
-    CodegenOptions(common = CommonCodegenOptions()).writeTo(leafCodegenOptionsFile)
+    buildCodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    buildIrOptions().writeTo(irOptionsFile)
+    buildCodegenOptions().apply {
+      writeTo(rootCodegenOptionsFile)
+      writeTo(leafCodegenOptionsFile)
+    }
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")),
@@ -65,7 +66,7 @@ class MetadataTest {
         logger = null
     ).writeTo(leafIrOperationsFile)
 
-    ApolloCompiler.buildSchemaAndOperationSourcesFromIr(
+    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         irOperations = rootIrOperationsFile.toIrOperations(),
         upstreamCodegenMetadata = emptyList(),
@@ -78,7 +79,7 @@ class MetadataTest {
         operationOutputGenerator = null,
     ).writeTo(rootSourcesDir, true, rootCodegenMetadata)
 
-    ApolloCompiler.buildSchemaAndOperationSourcesFromIr(
+    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         irOperations = leafIrOperationsFile.toIrOperations(),
         upstreamCodegenMetadata = setOf(rootCodegenMetadata).map { it.toCodegenMetadata() },
