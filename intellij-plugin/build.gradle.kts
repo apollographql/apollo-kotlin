@@ -234,7 +234,7 @@ apollo {
     schemaFiles.from(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
     introspection {
       endpointUrl.set("http://localhost:12200/")
-      schemaFiles.from(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+      schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
     }
   }
 }
