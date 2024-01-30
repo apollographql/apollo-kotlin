@@ -55,4 +55,22 @@ class ConfigurationCacheTests {
     )
     assert(result.output.contains("Reusing configuration cache."))
   }
+
+  @Test
+  fun schemaCanBeRenamed() = withTestProject("configuration-cache2") { dir ->
+    TestUtils.executeGradle(
+        dir,
+        "--configuration-cache",
+        "generateApolloSources"
+    )
+
+    dir.resolve("src/main/graphql/schema.graphqls")
+        .renameTo(dir.resolve("src/main/graphql/schema2.graphqls"))
+    val result = TestUtils.executeGradle(
+        dir,
+        "--configuration-cache",
+        "generateApolloSources",
+    )
+    assert(result.output.contains("Reusing configuration cache."))
+  }
 }

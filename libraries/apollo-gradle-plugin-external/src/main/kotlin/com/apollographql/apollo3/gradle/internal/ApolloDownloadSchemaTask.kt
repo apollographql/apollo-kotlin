@@ -8,7 +8,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
@@ -50,8 +49,13 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the root project directory")
   abstract val schema: Property<String>
 
-  @get:OutputFile
-  @get:Optional
+  /**
+   * This is not declared as an output as it triggers this Gradle error else:
+   * "Reason: Task ':root:generateServiceApolloCodegenSchema' uses this output of task ':root:downloadServiceApolloSchemaFromIntrospection' without declaring an explicit or implicit dependency."
+   *
+   * Since it's unlikely that users want to download the schema every time, just set it as an internal property.
+   */
+  @get:Internal
   abstract val outputFile: RegularFileProperty
 
   @get:Internal
