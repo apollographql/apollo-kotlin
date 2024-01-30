@@ -54,7 +54,9 @@ import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 internal class IrOperationsBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
+    private val operationNameToNormalizedPath: Map<String, String>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
+    private val fragmentNameToNormalizedPath: Map<String, String>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
@@ -308,7 +310,7 @@ internal class IrOperationsBuilder(
         variables = variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeDefinition.name),
         sourceWithFragments = sourceWithFragments,
-        filePath = sourceLocation!!.filePath!!,
+        normalizedFilePath = operationNameToNormalizedPath.get(name!!) ?: "",
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
         responseBasedDataModelGroup = responseBasedModelGroup,
@@ -343,7 +345,7 @@ internal class IrOperationsBuilder(
     return IrFragmentDefinition(
         name = name,
         description = description,
-        filePath = sourceLocation!!.filePath!!,
+        filePath = fragmentNameToNormalizedPath[name] ?: "",
         typeCondition = typeDefinition.name,
         variables = inferredVariables.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeCondition.name),

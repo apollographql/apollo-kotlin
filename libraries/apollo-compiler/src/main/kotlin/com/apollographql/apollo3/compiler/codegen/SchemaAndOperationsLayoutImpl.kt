@@ -27,7 +27,7 @@ internal class SchemaAndOperationsLayoutImpl(
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean
 ) : SchemaAndOperationsLayout {
-  private val schemaPackageName = executableDocumentPackageName(codegenSchema.filePath ?: "")
+  private val schemaPackageName = executableDocumentPackageName(codegenSchema.normalizedPath ?: "")
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
     val allTypes = codegenSchema.allTypes()

@@ -24,7 +24,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   private val objects = project.objects
   internal var registered = false
-  internal var packageNamesFromFilePaths: Boolean = false
+  internal var rootPackageName: String? = null
 
   init {
     @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -150,7 +150,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {
-    packageNamesFromFilePaths = true
+    this.rootPackageName = rootPackageName ?: ""
   }
 
   val scalarTypeMapping = mutableMapOf<String, String>()

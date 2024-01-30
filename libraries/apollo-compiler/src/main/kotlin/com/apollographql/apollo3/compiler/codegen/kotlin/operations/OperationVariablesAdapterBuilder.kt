@@ -15,7 +15,7 @@ internal class OperationVariablesAdapterBuilder(
     val context: KotlinContext,
     val operation: IrOperation,
 ) : CgFileBuilder {
-  val packageName = context.layout.operationAdapterPackageName(operation.filePath)
+  val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)
   val simpleName = context.layout.operationName(operation).variablesAdapter()
   override fun prepare() {
     context.resolver.registerOperationVariablesAdapter(

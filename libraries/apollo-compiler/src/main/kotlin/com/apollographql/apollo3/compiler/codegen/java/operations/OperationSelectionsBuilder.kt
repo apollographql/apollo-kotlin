@@ -13,7 +13,7 @@ internal class OperationSelectionsBuilder(
     val context: JavaContext,
     val operation: IrOperation,
 ) : JavaClassBuilder {
-  private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
+  private val packageName = context.layout.operationResponseFieldsPackageName(operation.normalizedFilePath)
   private val simpleName = context.layout.operationName(operation).selections()
 
   override fun prepare() {

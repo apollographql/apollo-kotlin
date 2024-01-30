@@ -58,7 +58,7 @@ internal data class IrOperation(
      * the executableDocument sent to the server
      */
     val sourceWithFragments: String,
-    val filePath: String,
+    val normalizedFilePath: String,
     val responseBasedDataModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,

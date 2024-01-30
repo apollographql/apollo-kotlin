@@ -401,8 +401,8 @@ class CodegenTest {
       )
 
       ApolloCompiler.buildSchemaAndOperationsSources(
-          schemaFiles = setOf(schemaFile),
-          executableFiles = graphqlFiles,
+          schemaFiles = setOf(schemaFile).toInputFiles(),
+          executableFiles = graphqlFiles.toInputFiles(),
           codegenSchemaOptions = buildCodegenSchemaOptions(
               scalarMapping = scalarMapping,
               generateDataBuilders = generateDataBuilders

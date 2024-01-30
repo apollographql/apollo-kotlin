@@ -13,7 +13,7 @@ internal class OperationSelectionsBuilder(
     val context: KotlinContext,
     val operation: IrOperation,
 ) : CgFileBuilder {
-  private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
+  private val packageName = context.layout.operationResponseFieldsPackageName(operation.normalizedFilePath)
   private val simpleName = context.layout.operationName(operation).selections()
 
   override fun prepare() {

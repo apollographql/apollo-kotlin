@@ -11,6 +11,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -25,6 +26,9 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val graphqlFiles: ConfigurableFileCollection
 
+  @get:Internal
+  var sourceRoots: Set<String>? = null
+
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val upstreamIrFiles: ConfigurableFileCollection
@@ -38,12 +42,17 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val irOperations = upstreamIrFiles.files.map { it.toIrOperations() }
+    val upstreamIrOperations = upstreamIrFiles.files.map { it.toIrOperations() }
+
+    val normalizedExecutableFiles = graphqlFiles.files.map {
+      com.apollographql.apollo3.compiler.InputFile(it, it.normalizedPath(sourceRoots!!))
+    }
+
     ApolloCompiler.buildIrOperations(
-        executableFiles = graphqlFiles.files,
+        executableFiles = normalizedExecutableFiles,
         codegenSchema = codegenSchemaFiles.files.findCodegenSchemaFile().toCodegenSchema(),
-        upstreamCodegenModels = irOperations.map { it.codegenModels },
-        upstreamFragmentDefinitions = irOperations.flatMap { it.fragmentDefinitions },
+        upstreamCodegenModels = upstreamIrOperations.map { it.codegenModels },
+        upstreamFragmentDefinitions = upstreamIrOperations.flatMap { it.fragmentDefinitions },
         options = irOptionsFile.get().asFile.toIrOptions(),
         logger = logger(),
     ).writeTo(irOperationsFile.get().asFile)

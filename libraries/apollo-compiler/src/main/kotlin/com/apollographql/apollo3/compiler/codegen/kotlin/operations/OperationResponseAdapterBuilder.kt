@@ -16,7 +16,7 @@ internal class OperationResponseAdapterBuilder(
     val operation: IrOperation,
     val flatten: Boolean,
 ) : CgFileBuilder {
-  private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
+  private val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)
   private val simpleName = context.layout.operationName(operation).responseAdapter()
 
   private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten).map {
