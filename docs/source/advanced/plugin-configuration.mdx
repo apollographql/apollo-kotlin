@@ -32,7 +32,7 @@ Specify the location of your schema file using the `schemaFile` property:
 ```kotlin
 apollo {
   service("service") {
-    schemaFile.set(file("shared/graphql/schema.graphqls"))
+    schemaFiles.from(file("shared/graphql/schema.graphqls"))
   }
 }
 ```
@@ -251,10 +251,10 @@ apollo {
     // Operation files to exclude.
     excludes.add("**/*.graphqls")
 
-    // explicitly set the schema
-    schemaFile.set("src/main/graphql/schema.graphqls")
-    // you can also merge different files together
-    schemaFile.setFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
+    // Explicitly set the schema
+    schemaFiles.from("src/main/graphql/schema.graphqls")
+    // Extend your schema locally with type extensions
+    schemaFiles.from("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
 
     // What codegen to use. One of "operationBased", "responseBased"
     codegenModels.set("operationBased")

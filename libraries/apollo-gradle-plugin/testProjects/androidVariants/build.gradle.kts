@@ -37,7 +37,7 @@ java.toolchain {
 apollo {
   createAllAndroidVariantServices(".", "example") {
     // Here we set the same schema file for all variants
-    schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
+    schemaFiles.from(file("src/main/graphql/com/example/schema.sdl"))
     packageName.set("com.example")
   }
 }

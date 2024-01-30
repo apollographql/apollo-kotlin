@@ -16,7 +16,7 @@ dependencies {
 
 apollo {
   service("main") {
-    schemaFile.set(file("../sample-server/src/main/resources/schema.graphqls"))
+    schemaFiles.from(file("../sample-server/src/main/resources/schema.graphqls"))
     srcDir("src/main/graphql/main")
     packageName.set("javatest")
     generateModelBuilders.set(true)

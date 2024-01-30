@@ -20,6 +20,6 @@ val installTask = tasks.register("generateSchema", GenerateSchemaTask::class.jav
 apollo {
   service("service") {
     packageName.set("com.example")
-    schemaFile.set(installTask.flatMap { it.outputFile })
+    schemaFiles.from(installTask.flatMap { it.outputFile })
   }
 }

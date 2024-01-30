@@ -360,7 +360,11 @@ abstract class DefaultApolloExtension(
     services.add(service)
 
     if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+      @Suppress("DEPRECATION")
       val sourceFolder = service.sourceFolder.getOrElse("")
+      if (sourceFolder.isNotEmpty()) {
+        project.logger.lifecycle("Apollo: using 'sourceFolder' is deprecated, please replace with 'srcDir(\"src/${project.mainSourceSet()}/graphql/$sourceFolder\")'")
+      }
       val dir = File(project.projectDir, "src/${project.mainSourceSet()}/graphql/$sourceFolder")
 
       service.graphqlSourceDirectorySet.srcDir(dir)

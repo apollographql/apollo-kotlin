@@ -90,6 +90,6 @@ apollo {
     //generateCompiledField.set(false)
     addTypename.set("always")
     srcDir(generateQueries)
-    schemaFile.set(file("src/main/graphql/api/schema.graphqls"))
+    schemaFiles.from(file("src/main/graphql/api/schema.graphqls"))
   }
 }
