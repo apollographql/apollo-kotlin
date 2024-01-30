@@ -82,3 +82,15 @@ internal fun String.maybeAddSuffix(suffix: String): String {
     "$this$suffix"
   }
 }
+
+
+/**
+ * Return the packageName if this file is in these roots or throw else
+ */
+internal fun String.toPackageName(): String {
+  return split('/')
+      .filter { it.isNotBlank() }
+      .dropLast(1)
+      .joinToString(".")
+}
+

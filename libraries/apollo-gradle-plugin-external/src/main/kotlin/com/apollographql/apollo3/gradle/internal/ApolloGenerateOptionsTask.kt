@@ -109,7 +109,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val packageNamesFromFilePaths: Property<Boolean>
+  abstract val rootPackageName: Property<String>
 
   @get:Input
   @get:Optional
@@ -219,7 +219,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @TaskAction
   fun taskAction() {
     check(
-        packageName.isPresent || hasPackageNameGenerator || packageNamesFromFilePaths.isPresent
+        packageName.isPresent || rootPackageName.isPresent || hasPackageNameGenerator
     ) {
       """
             |Apollo: specify 'packageName':
@@ -278,7 +278,9 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
         generateInputBuilders = generateInputBuilders.orNull,
         decapitalizeFields = decapitalizeFields.orNull,
         addDefaultArgumentForInputObjects = true,
-        addUnknownForEnums = true
+        addUnknownForEnums = true,
+        packageName = packageName.orNull,
+        rootPackageName = rootPackageName.orNull
     ).writeTo(codegenOptions.get().asFile)
 
     OtherOptions(targetLanguage, codegenModels).writeTo(otherOptions.get().asFile)

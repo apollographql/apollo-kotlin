@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 class CodegenSchema(
     @Serializable(with = SchemaSerializer::class)
     val schema: Schema,
-    val filePath: String?,
+    val normalizedPath: String,
     val scalarMapping: Map<String, ScalarInfo>,
     val generateDataBuilders: Boolean
 )

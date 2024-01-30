@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.buildCodegenOptions
 import com.apollographql.apollo3.compiler.buildCodegenSchemaOptions
 import com.apollographql.apollo3.compiler.buildIrOptions
+import com.apollographql.apollo3.compiler.toInputFiles
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Test
@@ -26,8 +27,8 @@ class ConditionalFragmentsTest {
   fun `responseBased codegen fails with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
     val throwable = assertFails {
       ApolloCompiler.buildSchemaAndOperationsSources(
-          executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
-          schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
+          executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")).toInputFiles(),
+          schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
           codegenSchemaOptions = buildCodegenSchemaOptions(),
           irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_RESPONSE_BASED),
           packageNameGenerator = PackageNameGenerator.Flat(""),
@@ -46,8 +47,8 @@ class ConditionalFragmentsTest {
   @Test
   fun `operationBased codegen succeeds with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
     ApolloCompiler.buildSchemaAndOperationsSources(
-        executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
-        schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")),
+        executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")).toInputFiles(),
+        schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
         codegenSchemaOptions = buildCodegenSchemaOptions(),
         irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_OPERATION_BASED),
         packageNameGenerator = PackageNameGenerator.Flat(""),

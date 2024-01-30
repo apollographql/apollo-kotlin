@@ -58,12 +58,12 @@ object ApolloCompiler {
   }
 
   fun buildCodegenSchema(
-      schemaFiles: Set<File>,
+      schemaFiles: List<InputFile>,
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
-      it.toGQLDocument(allowJson = true)
+      it.normalizedPath to it.file.toGQLDocument(allowJson = true)
     }
 
     if (schemaDocuments.isEmpty()) {
@@ -73,14 +73,17 @@ object ApolloCompiler {
     // Locate the mainSchemaDocument. It's the one that contains the operation roots
     val mainSchemaDocuments = mutableListOf<GQLDocument>()
     val otherSchemaDocuments = mutableListOf<GQLDocument>()
+    var mainSchemaNormalizedPath: String? = null
     schemaDocuments.forEach {
+      val document = it.second
       if (
-          it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
-          || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
+          document.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
+          || document.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
       ) {
-        mainSchemaDocuments.add(it)
+        mainSchemaDocuments.add(document)
+        mainSchemaNormalizedPath = it.first
       } else {
-        otherSchemaDocuments.add(it)
+        otherSchemaDocuments.add(document)
       }
     }
 
@@ -88,7 +91,7 @@ object ApolloCompiler {
       error("Multiple schemas found:\n${mainSchemaDocuments.map { it.sourceLocation?.filePath }.joinToString("\n")}\n" +
           "Use different services for different schemas")
     } else if (mainSchemaDocuments.isEmpty()) {
-      error("Schema(s) found:\n${schemaFiles.map { it.absolutePath }.joinToString("\n")}\n" +
+      error("Schema(s) found:\n${schemaFiles.map { it.normalizedPath }.joinToString("\n")}\n" +
           "But none of them contain type definitions.")
     }
     val mainSchemaDocument = mainSchemaDocuments.single()
@@ -121,7 +124,7 @@ object ApolloCompiler {
 
     return CodegenSchema(
         schema = schema,
-        filePath = mainSchemaDocument.sourceLocation?.filePath,
+        normalizedPath = mainSchemaNormalizedPath ?: "",
         scalarMapping = scalarMapping,
         generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     )
@@ -130,18 +133,17 @@ object ApolloCompiler {
   /**
    * Parses the given files. Throws if there are parsing errors
    */
-  private fun Collection<File>.definitions(): List<GQLDefinition> {
+  private fun File.definitions(): List<GQLDefinition> {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
-    map { file ->
-      val parseResult = file.parseAsGQLDocument(options = ParserOptions.Builder().build())
-      if (parseResult.issues.isNotEmpty()) {
-        parseIssues.addAll(parseResult.issues)
-      } else {
-        // We can force cast here because we're guaranteed the parsing step will produce either issues
-        // or a value
-        definitions.addAll(parseResult.value!!.definitions)
-      }
+
+    val parseResult = parseAsGQLDocument(options = ParserOptions.Builder().build())
+    if (parseResult.issues.isNotEmpty()) {
+      parseIssues.addAll(parseResult.issues)
+    } else {
+      // We can force cast here because we're guaranteed the parsing step will produce either issues
+      // or a value
+      definitions.addAll(parseResult.value!!.definitions)
     }
 
     // Parsing issues are fatal
@@ -153,7 +155,7 @@ object ApolloCompiler {
 
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
-      executableFiles: Set<File>,
+      executableFiles: List<InputFile>,
       upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
@@ -161,10 +163,25 @@ object ApolloCompiler {
   ): IrOperations {
     val schema = codegenSchema.schema
 
+    val operationNameToNormalizedPath = mutableMapOf<String, String>()
+    val fragmentNameToNormalizedPath = mutableMapOf<String, String>()
+
     /**
      * Step 1: parse the documents
      */
-    val definitions = executableFiles.definitions()
+    val definitions = mutableListOf<GQLDefinition>()
+    executableFiles.forEach { normalizedFile ->
+      val fileDefinitions = normalizedFile.file.definitions()
+
+      definitions.addAll(fileDefinitions)
+      fileDefinitions.forEach {
+        when (it) {
+          is GQLOperationDefinition -> operationNameToNormalizedPath[it.name ?: ""] = normalizedFile.normalizedPath
+          is GQLFragmentDefinition -> fragmentNameToNormalizedPath[it.name] = normalizedFile.normalizedPath
+          else -> Unit
+        }
+      }
+    }
 
     /**
      * Step 2, GraphQL validation
@@ -248,7 +265,9 @@ object ApolloCompiler {
     return IrOperationsBuilder(
         schema = schema,
         operationDefinitions = operations,
+        operationNameToNormalizedPath = operationNameToNormalizedPath,
         fragmentDefinitions = fragments,
+        fragmentNameToNormalizedPath = fragmentNameToNormalizedPath,
         allFragmentDefinitions = allFragmentDefinitions,
         codegenModels = codegenModels,
         generateOptionalOperationVariables = generateOptionalOperationVariables,
@@ -334,7 +353,7 @@ object ApolloCompiler {
       downstreamUsedCoordinates: UsedCoordinates?,
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: CodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      packageNameGenerator: PackageNameGenerator?,
       operationOutputGenerator: OperationOutputGenerator?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
@@ -372,6 +391,12 @@ object ApolloCompiler {
       }
     }
 
+    val realizedPackageNameGenerator = when {
+      packageNameGenerator != null -> packageNameGenerator
+      codegenOptions.packageName != null -> PackageNameGenerator.Flat(codegenOptions.packageName)
+      codegenOptions.rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(codegenOptions.rootPackageName)
+      else -> error("Apollo: no packageName found")
+    }
 
     var sourceOutput: SourceOutput? = null
     if (upstreamCodegenMetadata.isEmpty()) {
@@ -379,7 +404,7 @@ object ApolloCompiler {
           codegenSchema = codegenSchema,
           usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedFields),
           codegenOptions = codegenOptions,
-          packageNameGenerator = packageNameGenerator,
+          packageNameGenerator = realizedPackageNameGenerator,
           compilerKotlinHooks = compilerKotlinHooks,
           compilerJavaHooks = compilerJavaHooks
       )
@@ -391,7 +416,7 @@ object ApolloCompiler {
           operationOutput = operationOutput,
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           codegenOptions = codegenOptions,
-          packageNameGenerator = packageNameGenerator,
+          packageNameGenerator = realizedPackageNameGenerator,
           compilerJavaHooks = compilerJavaHooks,
       ).toSourceOutput()
     } else {
@@ -402,7 +427,7 @@ object ApolloCompiler {
           operationOutput = operationOutput,
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           codegenOptions = codegenOptions,
-          packageNameGenerator = packageNameGenerator,
+          packageNameGenerator = realizedPackageNameGenerator,
           compilerKotlinHooks = compilerKotlinHooks,
       ).toSourceOutput()
     }
@@ -414,12 +439,12 @@ object ApolloCompiler {
    * Compiles a set of files without serializing the intermediate results
    */
   fun buildSchemaAndOperationsSources(
-      schemaFiles: Set<File>,
-      executableFiles: Set<File>,
+      schemaFiles: List<InputFile>,
+      executableFiles: List<InputFile>,
       codegenSchemaOptions: CodegenSchemaOptions,
       irOptions: IrOptions,
       codegenOptions: CodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      packageNameGenerator: PackageNameGenerator?,
       operationOutputGenerator: OperationOutputGenerator?,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
@@ -520,3 +545,10 @@ internal fun List<Issue>.group(
   return IssueGroup(ignored, warnings, errors)
 }
 
+/**
+ * An input file together with its normalizedPath
+ * normalizedPath is used to compute the package name in some cases
+ */
+class InputFile(val file: File, val normalizedPath: String)
+
+fun Collection<File>.toInputFiles(): List<InputFile> = map { InputFile(it, "") }
