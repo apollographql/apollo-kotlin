@@ -254,7 +254,7 @@ apollo {
     // Explicitly set the schema
     schemaFiles.from("src/main/graphql/schema.graphqls")
     // Extend your schema locally with type extensions
-    schemaFiles.fromFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
+    schemaFiles.from("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
 
     // What codegen to use. One of "operationBased", "responseBased"
     codegenModels.set("operationBased")
