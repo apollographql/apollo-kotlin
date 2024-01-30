@@ -29,27 +29,27 @@ kotlin {
 apollo {
   service("embed") {
     packageName.set("embed")
-    sourceFolder.set("embed")
+    srcDir("src/commonMain/graphql/embed")
   }
 
   service("pagination.offsetBasedWithArray") {
     packageName.set("pagination.offsetBasedWithArray")
-    sourceFolder.set("pagination/offsetBasedWithArray")
+    srcDir("src/commonMain/graphql/pagination/offsetBasedWithArray")
     generateDataBuilders.set(true)
   }
   service("pagination.offsetBasedWithPage") {
     packageName.set("pagination.offsetBasedWithPage")
-    sourceFolder.set("pagination/offsetBasedWithPage")
+    srcDir("src/commonMain/graphql/pagination/offsetBasedWithPage")
     generateDataBuilders.set(true)
   }
   service("pagination.cursorBased") {
     packageName.set("pagination.cursorBased")
-    sourceFolder.set("pagination/cursorBased")
+    srcDir("src/commonMain/graphql/pagination/cursorBased")
     generateDataBuilders.set(true)
   }
   service("pagination.connection") {
     packageName.set("pagination.connection")
-    sourceFolder.set("pagination/connection")
+    srcDir("src/commonMain/graphql/pagination/connection")
     generateDataBuilders.set(true)
   }
 }

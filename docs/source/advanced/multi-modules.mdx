@@ -22,8 +22,8 @@ apollo {
     // enable generation of metadata for use by downstream modules 
     generateApolloMetadata.set(true)
     
-    // If you need to specify the location of your schema
-    schemaFile.set(/*...*/)
+    // If you need to specify the location of your schema files
+    schemaFiles.from(/*...*/)
     
     // define options that must be shared between all modules using this schema
     mapScalar(/*...*/)

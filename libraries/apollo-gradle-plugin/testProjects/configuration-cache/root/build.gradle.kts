@@ -11,7 +11,7 @@ apollo {
 
     introspection {
       this.endpointUrl.set("ENDPOINT")
-      this.schemaFile.set(file("schema.json"))
+      schemaFile.set(file("schema.json"))
     }
   }
 }

@@ -215,7 +215,9 @@ internal fun DefaultService.fallbackFiles(project: Project, block: (Configurable
 internal fun DefaultService.schemaFiles(project: Project): FileCollection {
   val fileCollection = project.files()
 
+  @Suppress("DEPRECATION")
   if (schemaFile.isPresent) {
+    project.logger.lifecycle("Apollo: using 'schemaFile.set()' is deprecated as additional schema files like 'extra.graphqls' might be required. Please use 'schemaFiles.from()' instead.")
     fileCollection.from(schemaFile)
   } else {
     fileCollection.from(schemaFiles)

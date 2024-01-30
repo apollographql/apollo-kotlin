@@ -30,14 +30,14 @@ apollo {
   // https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
   service("graphql") {
     packageName.set("com.apollographql.apollo3.tooling.graphql")
-    sourceFolder.set("graphql")
+    srcDir("src/main/graphql/graphql")
     generateAsInternal.set(true)
   }
 
   // https://studio.apollographql.com/public/apollo-platform/variant/main/home
   service("platform-api-public") {
     packageName.set("com.apollographql.apollo3.tooling.platformapi.public")
-    sourceFolder.set("platform-api/public")
+    srcDir("src/main/graphql/platform-api/public")
     generateAsInternal.set(true)
     mapScalarToKotlinString("GraphQLDocument")
     registry {
@@ -51,7 +51,7 @@ apollo {
   // https://studio-staging.apollographql.com/graph/engine/variant/prod/home
   service("platform-api-internal") {
     packageName.set("com.apollographql.apollo3.tooling.platformapi.internal")
-    sourceFolder.set("platform-api/internal")
+    srcDir("src/main/graphql/platform-api/internal")
     generateAsInternal.set(true)
     introspection {
       endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")

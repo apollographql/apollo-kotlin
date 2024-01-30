@@ -38,7 +38,7 @@ class KotlinDSLTests {
           useSemanticNaming.set(false)
           mapScalar("DateTime", "java.util.Date")
           srcDir("src/main/graphql/com/example")
-          schemaFile.set(file("src/main/graphql/com/example/schema.json"))
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
           packageName.set("com.starwars")
           excludes.set(listOf("*.gql"))
         }

@@ -231,7 +231,7 @@ fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 apollo {
   service("apolloDebug") {
     packageName.set("com.apollographql.apollo3.debug")
-    schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+    schemaFiles.from(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
     introspection {
       endpointUrl.set("http://localhost:12200/")
       schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
