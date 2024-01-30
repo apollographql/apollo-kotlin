@@ -10,6 +10,9 @@ import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.ConfigurableFileTree
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFileProperty
 import java.io.File
 import javax.inject.Inject
 
@@ -199,3 +202,70 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 }
 
+internal fun DefaultService.fallbackFiles(project: Project, block: (ConfigurableFileTree) -> Unit): FileCollection {
+  val fileCollection = project.files()
+
+  graphqlSourceDirectorySet.srcDirs.forEach { directory ->
+    fileCollection.from(project.fileTree(directory, block))
+  }
+
+  return fileCollection
+}
+
+internal fun DefaultService.schemaFiles(project: Project): FileCollection {
+  val fileCollection = project.files()
+
+  if (schemaFile.isPresent) {
+    fileCollection.from(schemaFile)
+  } else {
+    fileCollection.from(schemaFiles)
+  }
+
+  return fileCollection
+}
+
+/**
+ * ConfigurableFileCollections have no way to check for absent vs empty
+ * [schemaFiles] can be empty at configuration time because the task responsible
+ * to create the file did not run yet but still be set (because it will ultimately
+ * create the file)
+ *
+ * The only workaround I found is to pass both to the task and defer the decision
+ * which one to choose to execution time.
+ *
+ * See https://github.com/gradle/gradle/issues/21752
+ */
+internal fun DefaultService.fallbackSchemaFiles(project: Project): FileCollection {
+  return fallbackFiles(project) { configurableFileTree ->
+    configurableFileTree.include(listOf("**/*.graphqls", "**/*.json", "**/*.sdl"))
+  }
+}
+
+/**
+ * Returns a snapshot of the schema files. Some of the schema files might be missing if generated
+ * from another task
+ */
+internal fun DefaultService.schemaFilesSnapshot(project: Project): Set<File> {
+  return schemaFiles(project).files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles(project).files
+}
+
+/**
+ * Tries to guess where the schema file is.
+ * This can fail when:
+ * - there are several schema files.
+ * - the schema file is not written yet (because it needs to be written by another task)
+ */
+internal fun DefaultService.guessSchemaFile(project: Project, schemaFile: RegularFileProperty): File {
+  if (schemaFile.isPresent) {
+    return schemaFile.get().asFile
+  }
+  val candidates = schemaFilesSnapshot(project)
+  check(candidates.isNotEmpty()) {
+    "No schema files found. Specify introspection.schemaFile or registry.schemaFile"
+  }
+  check(candidates.size == 1) {
+    "Multiple schema files found:\n${candidates.joinToString("\n")}\n\nSpecify introspection.schemaFile or registry.schemaFile"
+  }
+
+  return candidates.single()
+}

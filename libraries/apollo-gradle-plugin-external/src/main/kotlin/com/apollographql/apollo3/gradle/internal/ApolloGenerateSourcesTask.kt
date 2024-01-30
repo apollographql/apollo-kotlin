@@ -20,6 +20,10 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFiles: ConfigurableFileCollection
 
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val fallbackSchemaFiles: ConfigurableFileCollection
+
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemaOptionsFile: RegularFileProperty
@@ -31,7 +35,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
   @TaskAction
   fun taskAction() {
     ApolloCompiler.buildSchemaAndOperationsSources(
-        schemaFiles = schemaFiles.files,
+        schemaFiles = schemaFiles.files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles.files,
         executableFiles = graphqlFiles.files,
         codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
         codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
