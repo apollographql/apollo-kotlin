@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
+package com.apollographql.apollo3.compiler.codegen.kotlin.operations.util
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup

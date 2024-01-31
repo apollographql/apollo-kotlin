@@ -7,12 +7,11 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.JavaOperationsCodegenOptions
 import com.apollographql.apollo3.compiler.JavaSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayoutImpl
+import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentDataAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentModelsBuilder
@@ -25,6 +24,7 @@ import com.apollographql.apollo3.compiler.codegen.java.operations.OperationVaria
 import com.apollographql.apollo3.compiler.codegen.java.schema.BuilderFactoryBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.EnumAsClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.EnumAsEnumBuilder
+import com.apollographql.apollo3.compiler.codegen.java.schema.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.InterfaceBuilder
@@ -43,7 +43,6 @@ import com.apollographql.apollo3.compiler.codegen.java.schema.UnionUnknownMapBui
 import com.apollographql.apollo3.compiler.codegen.java.schema.UtilAssertionsBuilder
 import com.apollographql.apollo3.compiler.compilerJavaHooks
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
 import com.apollographql.apollo3.compiler.defaultGeneratePrimitiveTypes
@@ -51,7 +50,6 @@ import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.generateMethodsJava
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
@@ -131,18 +129,16 @@ internal object JavaCodegen {
       codegenSchema: CodegenSchema,
       irSchema: IrSchema?,
       codegenOptions: JavaSchemaCodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      layout: SchemaLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>,
   ): JavaOutput {
     check(irSchema is DefaultIrSchema)
 
     val generateDataBuilders = codegenSchema.generateDataBuilders
-    val decapitalizeFields = codegenOptions.decapitalizeFields
 
     val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
     val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
     val generatedSchemaName = codegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
-    val useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
 
     val classesForEnumsMatching = codegenOptions.classesForEnumsMatching ?: defaultClassesForEnumsMatching
     val generateModelBuilders = codegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
@@ -159,14 +155,7 @@ internal object JavaCodegen {
         apolloCompilerJavaHooks = compilerJavaHooks,
     ) { resolver ->
 
-      val layout = SchemaAndOperationsLayoutImpl(
-          codegenSchema = codegenSchema,
-          packageNameGenerator = packageNameGenerator,
-          useSemanticNaming = useSemanticNaming,
-          decapitalizeFields = decapitalizeFields ?: defaultDecapitalizeFields
-      )
-
-      val context = JavaContext(
+      val context = JavaSchemaContext(
           layout = layout,
           resolver = resolver,
           generateMethods = generateMethodsJava(generateMethods),
@@ -231,7 +220,7 @@ internal object JavaCodegen {
       operationOutput: OperationOutput,
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: JavaOperationsCodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      layout: OperationsLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
@@ -246,12 +235,10 @@ internal object JavaCodegen {
 
     val flatten = irOperations.flattenModels
     val generateDataBuilders = codegenSchema.generateDataBuilders
-    val decapitalizeFields = irOperations.decapitalizeFields
 
     val generateFragmentImplementations = codegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
     val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
     val generateQueryDocument = codegenOptions.generateQueryDocument ?: defaultGenerateQueryDocument
-    val useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
 
     val generateModelBuilders = codegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
     val generatePrimitiveTypes = codegenOptions.generatePrimitiveTypes ?: defaultGeneratePrimitiveTypes
@@ -264,15 +251,7 @@ internal object JavaCodegen {
         nullableFieldStyle = nullableFieldStyle,
         apolloCompilerJavaHooks = compilerJavaHooks,
     ) { resolver ->
-
-      val layout = SchemaAndOperationsLayoutImpl(
-          codegenSchema = codegenSchema,
-          packageNameGenerator = packageNameGenerator,
-          useSemanticNaming = useSemanticNaming,
-          decapitalizeFields = decapitalizeFields
-      )
-
-      val context = JavaContext(
+      val context = JavaOperationsContext(
           layout = layout,
           resolver = resolver,
           generateMethods = generateMethodsJava(generateMethods),

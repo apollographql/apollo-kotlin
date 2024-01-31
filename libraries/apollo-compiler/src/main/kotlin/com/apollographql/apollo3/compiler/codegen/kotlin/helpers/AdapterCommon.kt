@@ -1,6 +1,5 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
+package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
@@ -14,7 +13,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
+import com.apollographql.apollo3.compiler.codegen.variableName
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.BLabel
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
@@ -23,7 +23,6 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.firstElementOfType
-import com.apollographql.apollo3.compiler.codegen.variableName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName

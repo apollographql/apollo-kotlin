@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.obj
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2

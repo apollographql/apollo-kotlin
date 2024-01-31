@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.buildCodegenOptions
 import com.apollographql.apollo3.compiler.codegen.SourceOutput
@@ -191,9 +190,10 @@ class ApolloProcessor(
             codegenOptions = buildCodegenOptions(
                 addUnknownForEnums = false,
                 addDefaultArgumentForInputObjects = false,
-                generateAsInternal = true
+                generateAsInternal = true,
+                packageName = packageName
             ),
-            packageNameGenerator = PackageNameGenerator.Flat(packageName),
+        null,
             null,
             null
         )

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import org.gradle.api.DefaultTask
@@ -20,12 +19,6 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenOptionsFile: RegularFileProperty
-
-  @Internal
-  var packageNameGenerator: PackageNameGenerator? = null
-
-  @Input
-  fun getPackageNameGeneratorVersion() = packageNameGenerator?.version ?: ""
 
   @get:Internal
   var operationOutputGenerator: OperationOutputGenerator? = null

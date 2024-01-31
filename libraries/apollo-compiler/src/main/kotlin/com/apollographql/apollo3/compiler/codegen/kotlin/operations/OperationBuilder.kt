@@ -6,20 +6,20 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgImport
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.builderTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.dataBuilderCtor
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.adapterFunSpec
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.ignoreErrorsPropertySpec
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.maybeAddFilterNotNull
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.rootFieldFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.adapterFunSpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.ignoreErrorsPropertySpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.maybeAddFilterNotNull
+import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.rootFieldFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.serializeVariablesFunSpec
-import com.apollographql.apollo3.compiler.codegen.kotlin.schema.builderTypeSpec
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.operationName
 import com.apollographql.apollo3.compiler.internal.applyIf
@@ -34,7 +34,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class OperationBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinOperationsContext,
     private val generateFilterNotNull: Boolean,
     private val operationId: String,
     private val generateQueryDocument: Boolean,

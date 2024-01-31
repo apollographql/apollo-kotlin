@@ -3,14 +3,14 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.operations
 import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.flattenFragmentModels
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 
 internal class FragmentModelsBuilder(
-    val context: KotlinContext,
+    val context: KotlinOperationsContext,
     val fragment: IrFragmentDefinition,
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,

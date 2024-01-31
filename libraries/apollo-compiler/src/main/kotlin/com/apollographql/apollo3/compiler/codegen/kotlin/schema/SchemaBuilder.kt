@@ -4,7 +4,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class SchemaBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinSchemaContext,
     private val generatedSchemaName: String,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,

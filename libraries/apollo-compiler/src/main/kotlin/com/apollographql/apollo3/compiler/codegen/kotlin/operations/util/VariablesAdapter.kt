@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
+package com.apollographql.apollo3.compiler.codegen.kotlin.operations.util
 
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSerializeStatement
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.squareup.kotlinpoet.AnnotationSpec

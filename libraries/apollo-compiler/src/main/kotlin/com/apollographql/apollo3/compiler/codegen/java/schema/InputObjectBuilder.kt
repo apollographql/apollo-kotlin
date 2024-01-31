@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
@@ -23,7 +23,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class InputObjectBuilder(
-    val context: JavaContext,
+    val context: JavaSchemaContext,
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
@@ -91,7 +91,7 @@ internal class InputObjectBuilder(
   }
 }
 
-private fun List<NamedType>.assertOneOfBlock(context: JavaContext): CodeBlock {
+private fun List<NamedType>.assertOneOfBlock(context: JavaSchemaContext): CodeBlock {
   val assertionsClassName: ClassName = if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL) {
     // When using the Guava optionals, use the method generated in the project, as apollo-api doesn't depend on Guava
     ClassName.get(context.layout.typeUtilPackageName(), "Assertions")

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.java.adapter
+package com.apollographql.apollo3.compiler.codegen.java.operations.util
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
@@ -7,6 +7,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.helpers.readFromResponseCodeBlock
+import com.apollographql.apollo3.compiler.codegen.java.helpers.responseNamesFieldSpec
+import com.apollographql.apollo3.compiler.codegen.java.helpers.toClassName
+import com.apollographql.apollo3.compiler.codegen.java.helpers.writeToResponseCodeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName

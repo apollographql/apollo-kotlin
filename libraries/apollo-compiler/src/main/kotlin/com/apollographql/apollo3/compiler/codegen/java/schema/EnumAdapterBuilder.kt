@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.java.adapter
+package com.apollographql.apollo3.compiler.codegen.java.schema
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.rawValue
@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.codegen.typeAdapterPackageName
@@ -24,7 +24,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class EnumResponseAdapterBuilder(
-    val context: JavaContext,
+    val context: JavaSchemaContext,
     val enum: IrEnum,
 ) : JavaClassBuilder {
   private val layout = context.layout

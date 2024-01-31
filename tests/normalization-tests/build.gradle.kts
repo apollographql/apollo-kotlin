@@ -24,7 +24,7 @@ apollo {
     packageName.set("com.example.two")
   }
   service("3") {
-    sourceFolder.set("3")
+    srcDir("src/main/graphql/3")
     packageName.set("com.example.three")
   }
 }

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.executionPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinExecutableSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.internal.applyIf
@@ -27,7 +27,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal class MainResolverBuilder(
-    val context: KotlinContext,
+    val context: KotlinExecutableSchemaContext,
     val serviceName: String,
     val irTargetObjects: List<IrTargetObject>,
 ) : CgFileBuilder {

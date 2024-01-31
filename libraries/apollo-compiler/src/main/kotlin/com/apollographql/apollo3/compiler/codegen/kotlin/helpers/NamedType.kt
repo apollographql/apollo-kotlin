@@ -1,18 +1,21 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.internal.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.nullable
 import com.apollographql.apollo3.compiler.ir.optional
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeSpec
 
 internal class NamedType(
     val graphQlName: String,
@@ -102,3 +105,40 @@ internal fun IrVariable.toNamedType() = NamedType(
     deprecationReason = null,
     optInFeature = null,
 )
+
+
+internal fun List<NamedType>.builderTypeSpec(context: KotlinContext, returnedClassName: ClassName): TypeSpec {
+  return TypeSpec.classBuilder(Identifier.Builder)
+      .apply {
+        forEach {
+          addProperty(it.toPropertySpec(context))
+          addFunction(it.toSetterFunSpec(context))
+        }
+      }
+      .addFunction(toBuildFunSpec(context, returnedClassName))
+      .build()
+}
+
+private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClassName: ClassName): FunSpec {
+  return FunSpec.builder(Identifier.build)
+      .returns(returnedClassName)
+      .addCode(
+          CodeBlock.builder()
+              .add("return·%T(\n", returnedClassName)
+              .indent()
+              .apply {
+                forEach {
+                  val propertyName = context.layout.propertyName(it.graphQlName)
+                  add("%L·=·%L", propertyName, propertyName)
+                  if (!it.type.nullable && !it.type.optional) {
+                    add("·?:·error(\"missing·value·for·$propertyName\")")
+                  }
+                  add(",\n")
+                }
+              }
+              .unindent()
+              .add(")")
+              .build()
+      )
+      .build()
+}

@@ -3,13 +3,13 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.operations
 import com.apollographql.apollo3.compiler.codegen.fragmentResponseFieldsPackageName
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.selections
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.ClassName
 
 internal class FragmentSelectionsBuilder(
-    val context: KotlinContext,
+    val context: KotlinOperationsContext,
     val fragment: IrFragmentDefinition,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentResponseFieldsPackageName(fragment.filePath)
