@@ -39,7 +39,6 @@ import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-@Suppress("UnstableApiUsage")
 abstract class DefaultApolloExtension(
     private val project: Project,
     private val defaultService: DefaultService,
@@ -96,7 +95,9 @@ abstract class DefaultApolloExtension(
         usedOptions = mutableSetOf<String>().apply {
           if (service.includes.isPresent) add("includes")
           if (service.excludes.isPresent) add("excludes")
+          @Suppress("DEPRECATION")
           if (service.sourceFolder.isPresent) add("excludes")
+          @Suppress("DEPRECATION")
           if (service.schemaFile.isPresent) add("schemaFile")
           if (!service.schemaFiles.isEmpty) add("schemaFiles")
           if (service.scalarAdapterMapping.isNotEmpty()) {
@@ -179,6 +180,7 @@ abstract class DefaultApolloExtension(
     }
 
     project.afterEvaluate {
+      @Suppress("DEPRECATION")
       val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
           || defaultService.schemaFile.isPresent
           || !defaultService.schemaFiles.isEmpty
@@ -595,7 +597,7 @@ abstract class DefaultApolloExtension(
       irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
       upstreamCodegenMetadata: Configuration,
   ): TaskProvider<ApolloGenerateSourcesFromIrTask> {
-    return project.tasks.register(ModelNames.generateApolloSourcesFromIr(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
+    return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
@@ -902,6 +904,7 @@ abstract class DefaultApolloExtension(
       service(name) { service ->
         action.execute(service)
 
+        @Suppress("DEPRECATION")
         check(!service.sourceFolder.isPresent) {
           "Apollo: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
