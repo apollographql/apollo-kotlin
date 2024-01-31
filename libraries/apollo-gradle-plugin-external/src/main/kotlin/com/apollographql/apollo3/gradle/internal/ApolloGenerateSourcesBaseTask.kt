@@ -60,13 +60,13 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
 }
 
 
-fun ApolloGenerateSourcesBaseTask.layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
+fun ApolloGenerateSourcesBaseTask.layout(): ((CodegenSchema) -> SchemaAndOperationsLayout)? {
   return if (packageNameGenerator != null) {
-    val options = codegenOptionsFile.get().asFile.toCodegenOptions()
-    Layout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields ?: defaultDecapitalizeFields)
+    {
+      val options = codegenOptionsFile.get().asFile.toCodegenOptions()
+      Layout(it, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields ?: defaultDecapitalizeFields)
+    }
   } else {
     null
   }
-
-
 }
