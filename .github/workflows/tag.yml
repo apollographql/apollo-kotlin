@@ -10,7 +10,7 @@ env:
 jobs:
   publish-libraries:
     name: Publish libraries
-    runs-on: macos-11
+    runs-on: macos-14
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
