@@ -804,6 +804,7 @@ abstract class DefaultApolloExtension(
   ) {
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
+    task.packageNameGenerator = service.packageNameGenerator.orNull
     service.packageNameGenerator.disallowChanges()
 
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
