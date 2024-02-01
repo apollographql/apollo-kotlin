@@ -3,14 +3,14 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.abstractMapTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteBuilderTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteMapTypeSpec
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeImplementBuilderFactory
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.topLevelBuildFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeImplementBuilderFactory
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.topLevelBuildFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.util.typePropertySpec
 import com.apollographql.apollo3.compiler.codegen.typePackageName
 import com.apollographql.apollo3.compiler.ir.IrUnion
@@ -19,7 +19,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class UnionBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinSchemaContext,
     private val union: IrUnion,
     private val generateDataBuilders: Boolean,
 ) : CgFileBuilder {

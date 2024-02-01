@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.operations
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal class CompiledSelectionsBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinOperationsContext,
 ) {
   fun build(selectionSets: List<IrSelectionSet>, rootName: String): TypeSpec {
     return TypeSpec.objectBuilder(rootName)

@@ -57,7 +57,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
         codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
         irOptions = irOptionsFile.get().asFile.toIrOptions(),
         logger = logger(),
-        packageNameGenerator = packageNameGenerator,
+        layout = null,
         operationOutputGenerator = operationOutputGenerator,
         compilerJavaHooks = compilerJavaHooks,
         compilerKotlinHooks = compilerKotlinHooks,

@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo3.compiler.ir.IrProperty
@@ -53,7 +53,7 @@ internal fun ignoreErrorsPropertySpec(value: Boolean): PropertySpec {
 }
 
 internal fun adapterFunSpec(
-    context: KotlinContext,
+    context: KotlinOperationsContext,
     property: IrProperty,
 ): FunSpec {
   val type = property.info.type
@@ -70,7 +70,7 @@ internal fun adapterFunSpec(
     .build()
 }
 
-internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName): FunSpec {
+internal fun rootFieldFunSpec(context: KotlinOperationsContext, parentType: String, selectionsClassName: ClassName): FunSpec {
   return FunSpec.builder(rootField)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.CompiledField)

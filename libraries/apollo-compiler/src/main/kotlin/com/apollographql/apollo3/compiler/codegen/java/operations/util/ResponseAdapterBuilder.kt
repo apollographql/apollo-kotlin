@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.java.adapter
+package com.apollographql.apollo3.compiler.codegen.java.operations.util
 
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup

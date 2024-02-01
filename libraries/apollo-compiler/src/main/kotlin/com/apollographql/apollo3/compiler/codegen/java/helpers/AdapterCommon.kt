@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.java.adapter
+package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
@@ -17,12 +17,6 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.absentOptionalInitializer
-import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
-import com.apollographql.apollo3.compiler.codegen.java.helpers.testOptionalValuePresence
-import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalValue
-import com.apollographql.apollo3.compiler.codegen.java.helpers.wrapValueInOptional
 import com.apollographql.apollo3.compiler.codegen.java.isNotEmpty
 import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode

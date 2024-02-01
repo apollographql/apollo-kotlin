@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -26,7 +26,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal class EnumAsSealedBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinSchemaContext,
     private val enum: IrEnum,
 ) : CgFileBuilder {
   private val layout = context.layout

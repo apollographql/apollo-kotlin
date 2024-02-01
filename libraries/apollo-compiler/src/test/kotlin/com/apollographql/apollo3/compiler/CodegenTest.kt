@@ -316,7 +316,6 @@ class CodegenTest {
         else -> false
       }
 
-      val packageNameGenerator = PackageNameGenerator.Flat(packageName)
       val generateMethods = when (targetLanguage) {
         JAVA -> null
         else -> {
@@ -385,6 +384,7 @@ class CodegenTest {
       val codegenOptions = buildCodegenOptions(
           targetLanguage = targetLanguage,
           useSemanticNaming = useSemanticNaming,
+          packageName = packageName,
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
           generateMethods = generateMethods,
@@ -398,6 +398,7 @@ class CodegenTest {
           requiresOptInAnnotation = requiresOptInAnnotation.takeIf { targetLanguage != JAVA },
           generateAsInternal = generateAsInternal.takeIf { targetLanguage != JAVA },
           generateFilterNotNull = true.takeIf { targetLanguage != JAVA },
+          decapitalizeFields = decapitalizeFields
       )
 
       ApolloCompiler.buildSchemaAndOperationsSources(
@@ -414,10 +415,10 @@ class CodegenTest {
           ),
           codegenOptions = codegenOptions,
           operationOutputGenerator = operationOutputGenerator,
-          packageNameGenerator = packageNameGenerator,
           compilerKotlinHooks = null,
           compilerJavaHooks = null,
           logger = null,
+          layout = null,
           operationManifestFile = null,
 
       ).writeTo(outputDir, true, null)

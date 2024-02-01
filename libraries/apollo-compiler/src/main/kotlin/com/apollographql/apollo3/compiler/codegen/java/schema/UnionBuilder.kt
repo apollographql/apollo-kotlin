@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java.schema
 
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.typePackageName
@@ -12,7 +12,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class UnionBuilder(
-    private val context: JavaContext,
+    private val context: JavaSchemaContext,
     private val union: IrUnion,
 ) : JavaClassBuilder {
   private val layout = context.layout

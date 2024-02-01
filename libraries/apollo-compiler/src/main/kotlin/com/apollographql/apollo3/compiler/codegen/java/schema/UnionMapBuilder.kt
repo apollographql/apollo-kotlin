@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.schema
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
@@ -11,7 +11,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class UnionMapBuilder(
-    val context: JavaContext,
+    val context: JavaSchemaContext,
     val union: IrUnion,
 ) : JavaClassBuilder {
   private val layout = context.layout

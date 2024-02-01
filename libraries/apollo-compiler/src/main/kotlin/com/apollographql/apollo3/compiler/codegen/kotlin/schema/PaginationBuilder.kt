@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.paginationPackageName
 import com.squareup.kotlinpoet.ClassName
@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class PaginationBuilder(
-    private val context: KotlinContext,
+    private val context: KotlinSchemaContext,
     private val connectionTypes: List<String>,
 ) : CgFileBuilder {
   private val layout = context.layout

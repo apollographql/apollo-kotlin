@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java.operations
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
@@ -22,7 +22,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class CompiledSelectionsBuilder(
-    private val context: JavaContext,
+    private val context: JavaOperationsContext,
 ) {
 
   fun build(selectionSets: List<IrSelectionSet>, rootName: String): TypeSpec {

@@ -5,13 +5,13 @@ import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.KotlinOperationsCodegenOptions
 import com.apollographql.apollo3.compiler.KotlinSchemaCodegenOptions
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayoutImpl
+import com.apollographql.apollo3.compiler.codegen.ExecutableSchemaLayout
+import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.AdapterRegistryBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.ExecutableSchemaBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.MainResolverBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentBuilder
@@ -23,6 +23,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.operations.OperationBui
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.OperationVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.schema.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.EnumResponseAdapterBuilder
@@ -38,7 +39,6 @@ import com.apollographql.apollo3.compiler.compilerKotlinHooks
 import com.apollographql.apollo3.compiler.defaultAddDefaultArgumentForInputObjects
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultAddUnkownForEnums
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
@@ -49,7 +49,6 @@ import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.generateMethodsKotlin
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
@@ -150,7 +149,7 @@ internal object KotlinCodegen {
       targetLanguage: TargetLanguage,
       irSchema: IrSchema?,
       codegenOptions: KotlinSchemaCodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      layout: SchemaLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
   ): KotlinOutput {
     check(irSchema is DefaultIrSchema)
@@ -159,15 +158,13 @@ internal object KotlinCodegen {
     val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
     val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
     val generatedSchemaName = codegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
-    val useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
 
     val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
     val generateInputBuilders = codegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
     val jsExport = codegenOptions.jsExport ?: defaultJsExport
     val requiresOptInAnnotation = codegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
     val sealedClassesForEnumsMatching = codegenOptions.sealedClassesForEnumsMatching ?: defaultSealedClassesForEnumsMatching
-    val decapitalizeFields = codegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
-    val addUnkownForEnums = codegenOptions.addUnknownForEnums ?: defaultAddUnkownForEnums
+    val addUnknownForEnums = codegenOptions.addUnknownForEnums ?: defaultAddUnkownForEnums
     val addDefaultArgumentForInputObjects = codegenOptions.addDefaultArgumentForInputObjects
         ?: defaultAddDefaultArgumentForInputObjects
 
@@ -181,15 +178,7 @@ internal object KotlinCodegen {
         hooks = compilerKotlinHooks,
         generateAsInternal = generateAsInternal,
     ) { resolver ->
-
-      val layout = SchemaAndOperationsLayoutImpl(
-          codegenSchema = codegenSchema,
-          packageNameGenerator = packageNameGenerator,
-          useSemanticNaming = useSemanticNaming,
-          decapitalizeFields = decapitalizeFields,
-      )
-
-      val context = KotlinContext(
+      val context = KotlinSchemaContext(
           generateMethods = generateMethods,
           jsExport = jsExport,
           layout = layout,
@@ -204,7 +193,7 @@ internal object KotlinCodegen {
         if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
           builders.add(EnumAsSealedBuilder(context, irEnum))
         } else {
-          builders.add(EnumAsEnumBuilder(context, irEnum, addUnkownForEnums))
+          builders.add(EnumAsEnumBuilder(context, irEnum, addUnknownForEnums))
         }
         builders.add(EnumResponseAdapterBuilder(context, irEnum))
       }
@@ -239,19 +228,17 @@ internal object KotlinCodegen {
       operationOutput: OperationOutput,
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: KotlinOperationsCodegenOptions,
-      packageNameGenerator: PackageNameGenerator,
+      layout: OperationsLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
 
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val flatten = irOperations.flattenModels
-    val decapitalizeFields = irOperations.decapitalizeFields
 
     val generateFragmentImplementations = codegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
     val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
     val generateQueryDocument = codegenOptions.generateQueryDocument ?: defaultGenerateQueryDocument
-    val useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming
 
     val addJvmOverloads = codegenOptions.addJvmOverloads ?: defaultAddJvmOverloads
     val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
@@ -268,15 +255,7 @@ internal object KotlinCodegen {
         hooks = compilerKotlinHooks,
         generateAsInternal = generateAsInternal
     ) { resolver ->
-
-      val layout = SchemaAndOperationsLayoutImpl(
-          codegenSchema = codegenSchema,
-          packageNameGenerator = packageNameGenerator,
-          useSemanticNaming = useSemanticNaming,
-          decapitalizeFields = decapitalizeFields,
-      )
-
-      val context = KotlinContext(
+      val context = KotlinOperationsContext(
           generateMethods = generateMethods,
           jsExport = jsExport,
           layout = layout,
@@ -350,7 +329,7 @@ internal object KotlinCodegen {
       codegenSchema: CodegenSchema,
       codegenMetadata: CodegenMetadata,
       irTargetObjects: List<IrTargetObject>,
-      packageName: String,
+      layout: ExecutableSchemaLayout,
       serviceName: String,
   ): KotlinOutput {
     val targetLanguage = TargetLanguage.KOTLIN_1_9
@@ -362,14 +341,7 @@ internal object KotlinCodegen {
         null,
         true,
     ) { resolver ->
-      val layout = SchemaAndOperationsLayoutImpl(
-          codegenSchema = codegenSchema,
-          packageNameGenerator = PackageNameGenerator.Flat(packageName),
-          useSemanticNaming = false,
-          decapitalizeFields = false,
-      )
-
-      val context = KotlinContext(
+      val context = KotlinExecutableSchemaContext(
           generateMethods = emptyList(),
           jsExport = false,
           layout = layout,

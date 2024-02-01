@@ -1,7 +1,7 @@
 /*
  * Generates ResponseAdapters for variables
  */
-package com.apollographql.apollo3.compiler.codegen.java.adapter
+package com.apollographql.apollo3.compiler.codegen.java.operations.util
 
 import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
