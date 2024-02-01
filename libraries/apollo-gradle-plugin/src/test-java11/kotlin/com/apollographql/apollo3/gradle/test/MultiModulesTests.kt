@@ -23,7 +23,7 @@ class MultiModulesTests {
     TestUtils.withTestProject("multi-modules-transitive") { dir ->
       val result = TestUtils.executeTask(":leaf:assemble", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:assemble")!!.outcome)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSourcesFromIr")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
     }
   }
 
@@ -34,7 +34,7 @@ class MultiModulesTests {
      */
     TestUtils.withTestProject("multi-modules-diamond") { dir ->
       val result = TestUtils.executeTask(":leaf:jar", dir)
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSourcesFromIr")!!.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
     }
   }
 
@@ -73,17 +73,17 @@ class MultiModulesTests {
       val result = TestUtils.executeTask(":node1:impl:jar", dir)
 
       Truth.assertThat(result.task(":node1:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
-      Truth.assertThat(result.task(":node1:impl:generateServiceApolloSourcesFromIr")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat(result.task(":node1:impl:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node1:impl:compileKotlin")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
 
       // This is recompiled because root:generateServiceApolloSourcesFromIr needs it
       Truth.assertThat(result.task(":node2:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
       // But the codegen and compile kotlin are not executed
-      Truth.assertThat(result.task(":node2:impl:generateServiceApolloSourcesFromIr")?.outcome).isEqualTo(null)
+      Truth.assertThat(result.task(":node2:impl:generateServiceApolloSources")?.outcome).isEqualTo(null)
       Truth.assertThat(result.task(":node2:impl:compileKotlin")?.outcome).isEqualTo(null)
 
       // Because we didn't add any new type, this shouldn't change
-      Truth.assertThat(result.task(":root:generateServiceApolloSourcesFromIr")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
     }
   }
 

@@ -537,7 +537,7 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
 internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
 internal val defaultLogger = NoOpLogger
-internal const val defaultUseSemanticNaming = true
+const val defaultUseSemanticNaming = true
 internal const val defaultWarnOnDeprecatedUsages = true
 internal const val defaultFailOnWarnings = false
 internal const val defaultGenerateAsInternal = false
@@ -561,7 +561,7 @@ internal const val defaultGeneratePrimitiveTypes = false
 internal const val defaultJsExport = false
 internal const val defaultGenerateInputBuilders = false
 internal val defaultNullableFieldStyle = JavaNullable.NONE
-internal const val defaultDecapitalizeFields = false
+const val defaultDecapitalizeFields = false
 internal val defaultCompilerKotlinHooks = emptyList<ApolloCompilerKotlinHooks>()
 internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
@@ -648,6 +648,6 @@ internal fun packageNameGenerator(packageName: String?, rootPackageName: String?
   return when {
     packageName != null -> PackageNameGenerator.Flat(packageName)
     rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
-    else -> error("Apollo: missing 'packageName'")
+    else -> error("Apollo: missing packageName")
   }
 }
