@@ -1,6 +1,9 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.CodegenSchema
+import com.apollographql.apollo3.compiler.LayoutFactory
+import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.writeTo
 import com.apollographql.apollo3.compiler.toCodegenOptions
 import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
@@ -61,7 +64,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
           codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
           irOptions = irOptionsFile.get().asFile.toIrOptions(),
           logger = logger(),
-          layout = layout(),
+          layoutFactory = layout(),
           operationOutputGenerator = operationOutputGenerator,
           compilerJavaHooks = compilerJavaHooks,
           compilerKotlinHooks = compilerKotlinHooks,
@@ -110,7 +113,11 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           irOptions = irOptions.get().asFile.toIrOptions(),
           logger = logger(),
-          layout = { plugin?.layout(it) },
+          layoutFactory = object : LayoutFactory {
+            override fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
+              return plugin?.layout(codegenSchema)
+            }
+          },
           operationOutputGenerator = plugin?.operationOutputGenerator(),
           compilerJavaHooks = null,
           compilerKotlinHooks = null,

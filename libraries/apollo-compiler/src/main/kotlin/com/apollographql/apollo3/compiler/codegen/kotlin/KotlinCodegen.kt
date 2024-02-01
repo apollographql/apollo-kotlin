@@ -4,9 +4,9 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.KotlinOperationsCodegenOptions
-import com.apollographql.apollo3.compiler.KotlinOutputTransform
 import com.apollographql.apollo3.compiler.KotlinSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.ExecutableSchemaLayout
 import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
@@ -72,7 +72,7 @@ private fun buildOutput(
     requiresOptInAnnotation: String?,
     targetLanguage: TargetLanguage,
     hooks: List<ApolloCompilerKotlinHooks>?,
-    kotlinOutputTransform: KotlinOutputTransform?,
+    kotlinOutputTransform: Transform<KotlinOutput>?,
     generateAsInternal: Boolean,
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
@@ -154,7 +154,7 @@ internal object KotlinCodegen {
       codegenOptions: KotlinSchemaCodegenOptions,
       layout: SchemaLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
-      kotlinOutputTransform: KotlinOutputTransform?,
+      kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
     check(irSchema is DefaultIrSchema)
 
@@ -235,7 +235,7 @@ internal object KotlinCodegen {
       codegenOptions: KotlinOperationsCodegenOptions,
       layout: OperationsLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
-      kotlinOutputTransform: KotlinOutputTransform?,
+      kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
 

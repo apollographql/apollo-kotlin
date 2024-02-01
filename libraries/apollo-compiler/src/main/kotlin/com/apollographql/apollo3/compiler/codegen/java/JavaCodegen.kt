@@ -5,10 +5,10 @@ import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.JavaOperationsCodegenOptions
-import com.apollographql.apollo3.compiler.JavaOutputTransform
 import com.apollographql.apollo3.compiler.JavaSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -73,7 +73,7 @@ private fun buildOutput(
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
     apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>?,
-    javaOutputTransform: JavaOutputTransform?,
+    javaOutputTransform: Transform<JavaOutput>?,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
 
@@ -134,7 +134,7 @@ internal object JavaCodegen {
       codegenOptions: JavaSchemaCodegenOptions,
       layout: SchemaLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>,
-      javaOutputTransform: JavaOutputTransform?,
+      javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irSchema is DefaultIrSchema)
 
@@ -227,7 +227,7 @@ internal object JavaCodegen {
       codegenOptions: JavaOperationsCodegenOptions,
       layout: OperationsLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
-      javaOutputTransform: JavaOutputTransform?,
+      javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
 

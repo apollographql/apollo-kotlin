@@ -5,9 +5,9 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.ir.IrOperations
 
-typealias JavaOutputTransform = ((JavaOutput) -> JavaOutput)
-typealias KotlinOutputTransform = ((KotlinOutput) -> KotlinOutput)
-typealias IrOperationsTransform = ((IrOperations) -> IrOperations)
+interface Transform<T> {
+  fun transform(t: T): T
+}
 
 interface Plugin {
   fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
@@ -18,15 +18,15 @@ interface Plugin {
     return null
   }
 
-  fun irOperationsTransform(): IrOperationsTransform? {
+  fun irOperationsTransform(): Transform<IrOperations>? {
     return null
   }
 
-  fun javaOutputTransform(): JavaOutputTransform? {
+  fun javaOutputTransform(): Transform<JavaOutput>? {
     return null
   }
 
-  fun kotlinOutputTransform(): KotlinOutputTransform? {
+  fun kotlinOutputTransform(): Transform<KotlinOutput>? {
     return null
   }
 }

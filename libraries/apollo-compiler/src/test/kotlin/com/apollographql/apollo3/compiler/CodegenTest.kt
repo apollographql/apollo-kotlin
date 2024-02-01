@@ -418,7 +418,7 @@ class CodegenTest {
           compilerKotlinHooks = null,
           compilerJavaHooks = null,
           logger = null,
-          layout = {null},
+          layoutFactory = null,
           operationManifestFile = null,
           irOperationsTransform = null,
           javaOutputTransform = null,

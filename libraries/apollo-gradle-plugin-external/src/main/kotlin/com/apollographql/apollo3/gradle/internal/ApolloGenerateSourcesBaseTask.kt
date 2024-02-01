@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.CodegenSchema
+import com.apollographql.apollo3.compiler.LayoutFactory
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
@@ -69,14 +70,16 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
 }
 
 
-fun ApolloGenerateSourcesBaseTask.layout(): (CodegenSchema) -> SchemaAndOperationsLayout? {
-  return {
-    if (packageNameGenerator == null) {
-      null
-    } else {
-      val options = codegenOptionsFile.get().asFile.toCodegenOptions()
-      SchemaAndOperationsLayout(it, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields
-          ?: defaultDecapitalizeFields)
+fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
+  return object : LayoutFactory {
+    override fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
+      return if (packageNameGenerator == null) {
+        null
+      } else {
+        val options = codegenOptionsFile.get().asFile.toCodegenOptions()
+        SchemaAndOperationsLayout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields
+            ?: defaultDecapitalizeFields)
+      }
     }
   }
 }
