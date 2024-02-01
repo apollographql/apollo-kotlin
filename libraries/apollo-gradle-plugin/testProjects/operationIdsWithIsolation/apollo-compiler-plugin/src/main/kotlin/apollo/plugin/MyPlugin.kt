@@ -14,7 +14,7 @@ class MyPlugin: Plugin {
                 }.toMap()
             }
 
-            override val version: String = error("")
+            override val version: String get() = error("")
         }
     }
 }
