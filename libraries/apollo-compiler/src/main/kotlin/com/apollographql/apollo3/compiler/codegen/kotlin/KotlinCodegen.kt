@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.KotlinOperationsCodegenOptions
+import com.apollographql.apollo3.compiler.KotlinOutputTransform
 import com.apollographql.apollo3.compiler.KotlinSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ExecutableSchemaLayout
@@ -56,6 +57,7 @@ import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.ir.IrTargetObject
+import com.apollographql.apollo3.compiler.maybeTransform
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
@@ -70,6 +72,7 @@ private fun buildOutput(
     requiresOptInAnnotation: String?,
     targetLanguage: TargetLanguage,
     hooks: List<ApolloCompilerKotlinHooks>?,
+    kotlinOutputTransform: KotlinOutputTransform?,
     generateAsInternal: Boolean,
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
@@ -140,7 +143,7 @@ private fun buildOutput(
   return KotlinOutput(
       fileSpecs = fileInfos.map { it.fileSpec },
       codegenMetadata = CodegenMetadata(targetLanguage = targetLanguage, entries = resolver.entries())
-  )
+  ).maybeTransform(kotlinOutputTransform)
 }
 
 internal object KotlinCodegen {
@@ -151,6 +154,7 @@ internal object KotlinCodegen {
       codegenOptions: KotlinSchemaCodegenOptions,
       layout: SchemaLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
+      kotlinOutputTransform: KotlinOutputTransform?,
   ): KotlinOutput {
     check(irSchema is DefaultIrSchema)
 
@@ -176,6 +180,7 @@ internal object KotlinCodegen {
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
         hooks = compilerKotlinHooks,
+        kotlinOutputTransform = kotlinOutputTransform,
         generateAsInternal = generateAsInternal,
     ) { resolver ->
       val context = KotlinSchemaContext(
@@ -230,6 +235,7 @@ internal object KotlinCodegen {
       codegenOptions: KotlinOperationsCodegenOptions,
       layout: OperationsLayout,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
+      kotlinOutputTransform: KotlinOutputTransform?,
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
 
@@ -253,6 +259,7 @@ internal object KotlinCodegen {
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
         hooks = compilerKotlinHooks,
+        kotlinOutputTransform = kotlinOutputTransform,
         generateAsInternal = generateAsInternal
     ) { resolver ->
       val context = KotlinOperationsContext(
@@ -338,6 +345,7 @@ internal object KotlinCodegen {
         listOf(codegenMetadata),
         null,
         targetLanguage,
+        null,
         null,
         true,
     ) { resolver ->

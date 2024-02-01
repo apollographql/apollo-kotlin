@@ -323,6 +323,8 @@ object ApolloCompiler {
       schemaLayout: SchemaLayout?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
   ): SourceOutput {
     val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
 
@@ -343,6 +345,7 @@ object ApolloCompiler {
           codegenOptions = codegenOptions,
           layout = layout,
           compilerJavaHooks = compilerJavaHooks ?: defaultCompilerJavaHooks,
+          javaOutputTransform = javaOutputTransform
       ).toSourceOutput()
     } else {
       KotlinCodegen.buildSchemaSources(
@@ -352,6 +355,7 @@ object ApolloCompiler {
           codegenOptions = codegenOptions,
           layout = layout,
           compilerKotlinHooks = compilerKotlinHooks ?: defaultCompilerKotlinHooks,
+          kotlinOutputTransform = kotlinOutputTransform
       ).toSourceOutput()
     }
   }
@@ -366,9 +370,15 @@ object ApolloCompiler {
       operationOutputGenerator: OperationOutputGenerator?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
+      irOperationsTransform: IrOperationsTransform?,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
       operationManifestFile: File?,
   ): SourceOutput {
     check(irOperations is DefaultIrOperations)
+
+    @Suppress("NAME_SHADOWING")
+    val irOperations = irOperations.maybeTransform(irOperationsTransform) as DefaultIrOperations
 
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, upstreamCodegenMetadata)
     codegenOptions.validate()
@@ -417,7 +427,9 @@ object ApolloCompiler {
           codegenOptions = codegenOptions,
           schemaLayout = layout,
           compilerKotlinHooks = compilerKotlinHooks,
-          compilerJavaHooks = compilerJavaHooks
+          compilerJavaHooks = compilerJavaHooks,
+          javaOutputTransform = javaOutputTransform,
+          kotlinOutputTransform = kotlinOutputTransform,
       )
     }
     if (targetLanguage == TargetLanguage.JAVA) {
@@ -429,6 +441,7 @@ object ApolloCompiler {
           codegenOptions = codegenOptions,
           layout = layout,
           compilerJavaHooks = compilerJavaHooks,
+          javaOutputTransform = javaOutputTransform,
       ).toSourceOutput()
     } else {
       sourceOutput = sourceOutput plus KotlinCodegen.buildOperationSources(
@@ -440,6 +453,7 @@ object ApolloCompiler {
           codegenOptions = codegenOptions,
           layout = layout,
           compilerKotlinHooks = compilerKotlinHooks,
+          kotlinOutputTransform = kotlinOutputTransform
       ).toSourceOutput()
     }
 
@@ -455,10 +469,13 @@ object ApolloCompiler {
       codegenSchemaOptions: CodegenSchemaOptions,
       irOptions: IrOptions,
       codegenOptions: CodegenOptions,
-      layout: ((CodegenSchema) -> SchemaAndOperationsLayout)?,
+      layout: ((CodegenSchema) -> SchemaAndOperationsLayout?),
       operationOutputGenerator: OperationOutputGenerator?,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
+      irOperationsTransform: IrOperationsTransform?,
+      javaOutputTransform: JavaOutputTransform?,
+      kotlinOutputTransform: KotlinOutputTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -483,9 +500,12 @@ object ApolloCompiler {
         downstreamUsedCoordinates = emptyMap(),
         upstreamCodegenMetadata = emptyList(),
         codegenOptions = codegenOptions,
-        layout = layout?.invoke(codegenSchema),
+        layout = layout.invoke(codegenSchema),
         compilerJavaHooks = compilerJavaHooks,
         compilerKotlinHooks = compilerKotlinHooks,
+        irOperationsTransform = irOperationsTransform,
+        javaOutputTransform = javaOutputTransform,
+        kotlinOutputTransform = kotlinOutputTransform,
         operationManifestFile = operationManifestFile,
         operationOutputGenerator = operationOutputGenerator,
     )
@@ -569,3 +589,5 @@ internal fun List<Issue>.group(
 class InputFile(val file: File, val normalizedPath: String)
 
 fun Collection<File>.toInputFiles(): List<InputFile> = map { InputFile(it, "") }
+
+internal fun <T> T.maybeTransform(transform: ((T) -> T)?) = transform?.invoke(this) ?: this

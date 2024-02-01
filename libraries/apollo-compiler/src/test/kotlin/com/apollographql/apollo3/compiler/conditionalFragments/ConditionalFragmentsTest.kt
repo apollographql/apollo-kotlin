@@ -34,9 +34,12 @@ class ConditionalFragmentsTest {
           compilerKotlinHooks = null,
           compilerJavaHooks = null,
           logger = null,
-          layout = null,
+          layout = {null},
           operationManifestFile = null,
           operationOutputGenerator = null,
+          irOperationsTransform = null,
+          javaOutputTransform = null,
+          kotlinOutputTransform = null,
       )
     }
 
@@ -54,9 +57,12 @@ class ConditionalFragmentsTest {
         compilerKotlinHooks = null,
         compilerJavaHooks = null,
         logger = null,
-        layout = null,
+        layout = {null},
         operationManifestFile = null,
         operationOutputGenerator = null,
+        irOperationsTransform = null,
+        javaOutputTransform = null,
+        kotlinOutputTransform = null,
     )
   }
 }

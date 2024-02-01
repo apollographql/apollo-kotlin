@@ -11,9 +11,9 @@ public final class com/apollographql/apollo3/compiler/ApolloCompiler {
 	public final fun buildCodegenSchema (Ljava/util/List;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;)Lcom/apollographql/apollo3/compiler/CodegenSchema;
 	public final fun buildExecutableSchemaSources (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/CodegenMetadata;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
 	public final fun buildIrOperations (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/IrOptions;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;)Lcom/apollographql/apollo3/compiler/ir/IrOperations;
-	public final fun buildSchemaAndOperationsSources (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo3/compiler/IrOptions;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
-	public final fun buildSchemaAndOperationsSourcesFromIr (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/util/Map;Ljava/util/List;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;Ljava/util/List;Ljava/util/List;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
-	public final fun buildSchemaSources (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/util/Map;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lcom/apollographql/apollo3/compiler/codegen/SchemaLayout;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
+	public final fun buildSchemaAndOperationsSources (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo3/compiler/IrOptions;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
+	public final fun buildSchemaAndOperationsSourcesFromIr (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/util/Map;Ljava/util/List;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
+	public final fun buildSchemaSources (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/util/Map;Lcom/apollographql/apollo3/compiler/CodegenOptions;Lcom/apollographql/apollo3/compiler/codegen/SchemaLayout;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/compiler/codegen/SourceOutput;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/ApolloCompiler$Logger {
@@ -350,6 +350,14 @@ public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Norma
 	public fun <init> (Ljava/lang/String;)V
 	public fun getVersion ()Ljava/lang/String;
 	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/Plugin {
+	public fun irOperationsTransform ()Lkotlin/jvm/functions/Function1;
+	public fun javaOutputTransform ()Lkotlin/jvm/functions/Function1;
+	public fun kotlinOutputTransform ()Lkotlin/jvm/functions/Function1;
+	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
+	public fun operationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;
 }
 
 public final class com/apollographql/apollo3/compiler/RuntimeAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {

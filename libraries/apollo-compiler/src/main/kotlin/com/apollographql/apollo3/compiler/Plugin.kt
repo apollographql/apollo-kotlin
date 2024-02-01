@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.codegen.Layout
+import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.ir.IrOperations
@@ -10,11 +10,7 @@ typealias KotlinOutputTransform = ((KotlinOutput) -> KotlinOutput)
 typealias IrOperationsTransform = ((IrOperations) -> IrOperations)
 
 interface Plugin {
-  fun codegenLayout(codegenSchema: CodegenSchema): Layout? {
-    return null
-  }
-
-  fun logger(): ApolloCompiler.Logger? {
+  fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
     return null
   }
 
