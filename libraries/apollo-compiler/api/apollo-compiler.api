@@ -428,6 +428,7 @@ public abstract interface class com/apollographql/apollo3/compiler/codegen/Execu
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/LayoutImplKt {
+	public static final fun SchemaAndOperationsLayout (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/PackageNameGenerator;ZZ)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/codegen/OperationsLayout : com/apollographql/apollo3/compiler/codegen/CommonLayout {
@@ -448,6 +449,28 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName$
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverEntry {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)V
+	public final fun getClassName ()Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
+	public final fun getKey ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverEntry$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverEntry$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
