@@ -51,7 +51,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
         downstreamUsedCoordinates = downstreamUsedCoordinates.get(),
         upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
         codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
-        layout = null,
+        layout = layout()?.invoke(codegenSchemaFile.toCodegenSchema()),
         compilerKotlinHooks = compilerKotlinHooks,
         compilerJavaHooks = compilerJavaHooks,
         operationManifestFile = operationManifestFile.orNull?.asFile,
