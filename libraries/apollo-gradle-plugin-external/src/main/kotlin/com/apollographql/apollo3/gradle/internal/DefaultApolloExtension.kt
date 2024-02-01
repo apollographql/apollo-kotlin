@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -397,6 +398,7 @@ abstract class DefaultApolloExtension(
       it.isCanBeResolved = true
     }
 
+    pluginConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
     service.pluginDependencies.forEach {
       pluginConfiguration.dependencies.add(it)
     }

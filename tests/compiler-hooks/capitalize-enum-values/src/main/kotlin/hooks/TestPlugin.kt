@@ -1,0 +1,60 @@
+package hooks
+
+import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.TypeSpec
+
+class TestPlugin : Plugin {
+  override fun kotlinOutputTransform(): ((KotlinOutput) -> KotlinOutput) {
+    return ::transform
+  }
+
+  private fun transform(source: KotlinOutput): KotlinOutput {
+    return KotlinOutput(
+        fileSpecs = source.fileSpecs.map {
+          it.toBuilder()
+              .apply {
+                members.replaceAll { member ->
+                  if (member is TypeSpec && member.isEnum) {
+                    member.toBuilder()
+                        .apply {
+                          val capitalizedEnumConstants = enumConstants.mapKeys { (key, _) ->
+                            key.uppercase()
+                          }
+                          enumConstants.clear()
+                          enumConstants.putAll(capitalizedEnumConstants)
+
+                          // knownValues is in the companion object
+                          typeSpecs.replaceAll { typeSpec ->
+                            typeSpec.toBuilder()
+                                .apply {
+                                  propertySpecs.replaceAll { propertySpec ->
+                                    if (propertySpec.name == "knownEntries") {
+                                      propertySpec.toBuilder()
+                                          .getter(FunSpec.getterBuilder()
+                                              .addStatement("return listOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                                              .build()
+                                          )
+                                          .build()
+                                    } else {
+                                      propertySpec
+                                    }
+                                  }
+                                }
+                                .build()
+                          }
+                        }
+                        .build()
+                  } else {
+                    member
+                  }
+                }
+              }
+              .build()
+        },
+        codegenMetadata = source.codegenMetadata
+    )
+  }
+
+}

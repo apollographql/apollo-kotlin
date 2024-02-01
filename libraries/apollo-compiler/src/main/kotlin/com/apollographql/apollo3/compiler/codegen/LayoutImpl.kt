@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.allTypes
@@ -156,8 +155,7 @@ internal fun String.selections(): String = "${this}Selections"
  */
 internal fun String.variableName(): String = this.withUnderscorePrefix()
 
-@ApolloInternal
-fun Layout(
+fun SchemaAndOperationsLayout(
     codegenSchema: CodegenSchema,
     packageNameGenerator: PackageNameGenerator,
     useSemanticNaming: Boolean,

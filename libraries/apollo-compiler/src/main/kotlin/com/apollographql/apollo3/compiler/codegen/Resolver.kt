@@ -47,7 +47,7 @@ enum class ResolverKeyKind {
 }
 
 @Serializable
-internal class ResolverEntry(
+class ResolverEntry(
     val key: ResolverKey,
     val className: ResolverClassName
 )

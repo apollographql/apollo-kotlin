@@ -3,7 +3,6 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.codegen.Layout
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
@@ -76,7 +75,7 @@ fun ApolloGenerateSourcesBaseTask.layout(): (CodegenSchema) -> SchemaAndOperatio
       null
     } else {
       val options = codegenOptionsFile.get().asFile.toCodegenOptions()
-      Layout(it, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields
+      SchemaAndOperationsLayout(it, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields
           ?: defaultDecapitalizeFields)
     }
   }
