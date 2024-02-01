@@ -37,10 +37,8 @@ class MetadataTest {
   private fun compileRoot(directory: String) {
     buildCodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
     buildIrOptions().writeTo(irOptionsFile)
-    buildCodegenOptions().apply {
-      writeTo(rootCodegenOptionsFile)
-      writeTo(leafCodegenOptionsFile)
-    }
+    buildCodegenOptions(packageName = rootPackageName).writeTo(rootCodegenOptionsFile)
+    buildCodegenOptions(packageName = leafPackageName).writeTo(leafCodegenOptionsFile)
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
@@ -72,7 +70,7 @@ class MetadataTest {
         upstreamCodegenMetadata = emptyList(),
         downstreamUsedCoordinates = leafIrOperationsFile.toIrOperations().usedFields,
         codegenOptions = rootCodegenOptionsFile.toCodegenOptions(),
-        packageNameGenerator = PackageNameGenerator.Flat(rootPackageName),
+        layout = null,
         compilerJavaHooks = null,
         compilerKotlinHooks = null,
         operationManifestFile = null,
@@ -85,7 +83,7 @@ class MetadataTest {
         upstreamCodegenMetadata = setOf(rootCodegenMetadata).map { it.toCodegenMetadata() },
         downstreamUsedCoordinates = emptyMap(),
         codegenOptions = leafCodegenOptionsFile.toCodegenOptions(),
-        packageNameGenerator = PackageNameGenerator.Flat(leafPackageName),
+        layout = null,
         compilerJavaHooks = null,
         compilerKotlinHooks = null,
         operationManifestFile = null,

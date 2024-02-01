@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.JavaResolver
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
@@ -69,7 +69,7 @@ internal fun adapterMethodSpec(
       .build()
 }
 
-internal fun rootFieldMethodSpec(context: JavaContext, parentType: String, selectionsClassName: ClassName): MethodSpec {
+internal fun rootFieldMethodSpec(context: JavaOperationsContext, parentType: String, selectionsClassName: ClassName): MethodSpec {
   return MethodSpec.methodBuilder(rootField)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)

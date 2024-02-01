@@ -643,3 +643,11 @@ internal fun compilerKotlinHooks(compilerKotlinHooks: List<ApolloCompilerKotlinH
 internal fun compilerJavaHooks(compilerJavaHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
   return compilerJavaHooks.orEmpty()
 }
+
+internal fun packageNameGenerator(packageName: String?, rootPackageName: String?): PackageNameGenerator {
+  return when {
+    packageName != null -> PackageNameGenerator.Flat(packageName)
+    rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
+    else -> error("Apollo: missing 'packageName'")
+  }
+}

@@ -1,6 +1,5 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
+package com.apollographql.apollo3.compiler.codegen.kotlin.operations.util
 
-import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
@@ -10,6 +9,9 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.from
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.typenameFromReaderCodeBlock
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock

@@ -21,13 +21,13 @@ import com.apollographql.apollo3.compiler.withUnderscorePrefix
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-internal class SchemaAndOperationsLayoutImpl(
+internal class LayoutImpl(
     codegenSchema: CodegenSchema,
     private val packageNameGenerator: PackageNameGenerator,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean
-) : SchemaAndOperationsLayout {
-  private val schemaPackageName = executableDocumentPackageName(codegenSchema.normalizedPath ?: "")
+) : SchemaAndOperationsLayout, ExecutableSchemaLayout {
+  private val schemaPackageName = executableDocumentPackageName(codegenSchema.normalizedPath)
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
     val allTypes = codegenSchema.allTypes()
@@ -127,23 +127,23 @@ internal fun modelName(info: IrFieldInfo): String {
 }
 
 
-internal fun SchemaAndOperationsLayoutImpl.typePackageName() = "${schemaPackageName()}.type"
-internal fun SchemaAndOperationsLayoutImpl.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
-internal fun SchemaAndOperationsLayoutImpl.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
-internal fun SchemaAndOperationsLayoutImpl.typeUtilPackageName() = "${schemaPackageName()}.type.util"
+internal fun SchemaLayout.typePackageName() = "${schemaPackageName()}.type"
+internal fun SchemaLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
+internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
+internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 
-internal fun SchemaAndOperationsLayoutImpl.paginationPackageName() = "${schemaPackageName()}.pagination"
-internal fun SchemaAndOperationsLayoutImpl.schemaSubPackageName() = "${schemaPackageName()}.schema"
-internal fun SchemaAndOperationsLayoutImpl.executionPackageName() = "${schemaPackageName()}.execution"
+internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
+internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
+internal fun ExecutableSchemaLayout.executionPackageName() = "${schemaPackageName()}.execution"
 
-internal fun SchemaAndOperationsLayoutImpl.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
-internal fun SchemaAndOperationsLayoutImpl.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
+internal fun OperationsLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
+internal fun OperationsLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
 
-internal fun SchemaAndOperationsLayoutImpl.fragmentPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment"
-internal fun SchemaAndOperationsLayoutImpl.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
-internal fun SchemaAndOperationsLayoutImpl.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
+internal fun OperationsLayout.fragmentPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment"
+internal fun OperationsLayout.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
+internal fun OperationsLayout.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
 
-internal fun SchemaAndOperationsLayoutImpl.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
+internal fun OperationsLayout.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
 
 internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
 internal fun String.inputAdapter(): String = "${this}_InputAdapter"

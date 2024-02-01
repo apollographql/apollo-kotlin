@@ -1,12 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen.java.operations
 
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
+import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.java.helpers.toClassName
 import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.applyIf
@@ -26,7 +26,7 @@ import javax.lang.model.element.Modifier
  * @param path: the path leading to this model but not including the model name
  */
 internal class ModelBuilder(
-    private val context: JavaContext,
+    private val context: JavaOperationsContext,
     private val model: IrModel,
     private val superClassName: ClassName?,
     private val path: List<String>,
@@ -118,7 +118,7 @@ internal class ModelBuilder(
     }
   }
 
-  private fun TypeSpec.addBuilder(context: JavaContext): TypeSpec {
+  private fun TypeSpec.addBuilder(context: JavaOperationsContext): TypeSpec {
     val fields = fieldSpecs.filter { !it.modifiers.contains(Modifier.STATIC) }
         .filterNot { it.name.startsWith(prefix = "$") }
     if (fields.isEmpty()) {

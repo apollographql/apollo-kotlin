@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.conditionalFragments
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.buildCodegenOptions
 import com.apollographql.apollo3.compiler.buildCodegenSchemaOptions
 import com.apollographql.apollo3.compiler.buildIrOptions
@@ -31,11 +30,11 @@ class ConditionalFragmentsTest {
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
           codegenSchemaOptions = buildCodegenSchemaOptions(),
           irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_RESPONSE_BASED),
-          packageNameGenerator = PackageNameGenerator.Flat(""),
-          codegenOptions = buildCodegenOptions(),
+          codegenOptions = buildCodegenOptions(packageName = ""),
           compilerKotlinHooks = null,
           compilerJavaHooks = null,
           logger = null,
+          layout = null,
           operationManifestFile = null,
           operationOutputGenerator = null,
       )
@@ -51,11 +50,11 @@ class ConditionalFragmentsTest {
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
         codegenSchemaOptions = buildCodegenSchemaOptions(),
         irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_OPERATION_BASED),
-        packageNameGenerator = PackageNameGenerator.Flat(""),
-        codegenOptions = buildCodegenOptions(),
+        codegenOptions = buildCodegenOptions(packageName = ""),
         compilerKotlinHooks = null,
         compilerJavaHooks = null,
         logger = null,
+        layout = null,
         operationManifestFile = null,
         operationOutputGenerator = null,
     )

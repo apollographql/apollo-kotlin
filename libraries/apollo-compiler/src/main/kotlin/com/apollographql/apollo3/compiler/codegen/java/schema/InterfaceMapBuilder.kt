@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.schema
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.squareup.javapoet.ClassName
@@ -11,7 +11,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class InterfaceMapBuilder(
-    private val context: JavaContext,
+    private val context: JavaSchemaContext,
     private val iface: IrInterface,
 ) : JavaClassBuilder {
   private val layout = context.layout

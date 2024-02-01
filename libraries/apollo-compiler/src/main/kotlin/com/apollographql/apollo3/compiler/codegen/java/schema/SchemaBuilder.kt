@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.types
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
@@ -27,7 +27,7 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class SchemaBuilder(
-    private val context: JavaContext,
+    private val context: JavaSchemaContext,
     private val generatedSchemaName: String,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val objects: List<IrObject>,
