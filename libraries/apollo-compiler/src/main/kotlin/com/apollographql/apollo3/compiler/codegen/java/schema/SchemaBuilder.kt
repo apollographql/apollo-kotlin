@@ -28,7 +28,6 @@ import javax.lang.model.element.Modifier
 
 internal class SchemaBuilder(
     private val context: JavaSchemaContext,
-    private val generatedSchemaName: String,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
@@ -37,7 +36,7 @@ internal class SchemaBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.schemaSubPackageName()
-  private val simpleName = layout.topLevelName(generatedSchemaName)
+  private val simpleName = layout.schemaName()
 
   override fun prepare() {
     context.resolver.registerSchema(ClassName.get(packageName, simpleName))

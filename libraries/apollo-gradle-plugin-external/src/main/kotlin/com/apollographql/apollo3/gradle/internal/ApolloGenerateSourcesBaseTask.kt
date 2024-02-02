@@ -75,7 +75,7 @@ fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
         null
       } else {
         val options = codegenOptionsFile.get().asFile.toCodegenOptions()
-        SchemaAndOperationsLayout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming, options.decapitalizeFields)
+        SchemaAndOperationsLayout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming, options.decapitalizeFields, options.generatedSchemaName)
       }
     }
   }

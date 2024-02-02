@@ -13,38 +13,39 @@ class TestPlugin : Plugin {
         packageName = "hooks.prefixnames.kotlin",
         rootPackageName = null,
         useSemanticNaming = null,
-        decapitalizeFields = null
+        decapitalizeFields = null,
+        generatedSchemaName = null
     )
 
-    return object : SchemaAndOperationsLayout {
-      override fun schemaPackageName(): String {
-        return delegate.schemaPackageName()
-      }
-
+    return object : SchemaAndOperationsLayout by delegate {
+      
       override fun schemaTypeName(schemaTypeName: String): String {
-        return topLevelName(delegate.schemaTypeName(schemaTypeName))
+        return delegate.schemaTypeName(schemaTypeName).prefixed()
       }
 
-      override fun topLevelName(name: String): String {
-        return "${prefix}${name}"
+      override fun schemaName(): String {
+        return delegate.schemaName().prefixed()
       }
 
-      override fun propertyName(name: String): String {
-        return delegate.propertyName(name)
+      override fun assertionsName(): String {
+        return delegate.assertionsName().prefixed()
       }
 
-      override fun executableDocumentPackageName(filePath: String?): String {
-        return delegate.executableDocumentPackageName(filePath)
+      override fun paginationName(): String {
+        return delegate.paginationName().prefixed()
       }
 
       override fun operationName(name: String, capitalizedOperationType: String): String {
-        return topLevelName(delegate.operationName(name, capitalizedOperationType))
+        return delegate.operationName(name, capitalizedOperationType).prefixed()
       }
 
       override fun fragmentName(name: String): String {
-        return topLevelName(delegate.fragmentName(name))
+        return delegate.fragmentName(name).prefixed()
       }
 
+      private fun String.prefixed(): String {
+        return "${prefix}${this}"
+      }
     }
   }
 }

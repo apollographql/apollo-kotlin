@@ -328,8 +328,6 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED_WITH_INTERFACES Ljava/lang/String;
 	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
-	public static final field defaultDecapitalizeFields Z
-	public static final field defaultUseSemanticNaming Z
 	public static final fun buildCodegenOptions (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo3/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/CodegenOptions;
 	public static synthetic fun buildCodegenOptions$default (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo3/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CodegenOptions;
 	public static final fun buildCodegenSchemaOptions (Ljava/util/Map;Ljava/lang/Boolean;)Lcom/apollographql/apollo3/compiler/CodegenSchemaOptions;
@@ -428,15 +426,15 @@ public final class com/apollographql/apollo3/compiler/VersionKt {
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/codegen/CommonLayout {
+	public abstract fun className (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun propertyName (Ljava/lang/String;)Ljava/lang/String;
-	public abstract fun topLevelName (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/codegen/ExecutableSchemaLayout : com/apollographql/apollo3/compiler/codegen/SchemaLayout {
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/LayoutImplKt {
-	public static final fun SchemaAndOperationsLayout (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lcom/apollographql/apollo3/compiler/PackageNameGenerator;ZZ)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
+	public static final fun SchemaAndOperationsLayout (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/codegen/OperationsLayout : com/apollographql/apollo3/compiler/codegen/CommonLayout {
@@ -537,6 +535,9 @@ public abstract interface class com/apollographql/apollo3/compiler/codegen/Schem
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/codegen/SchemaLayout : com/apollographql/apollo3/compiler/codegen/CommonLayout {
+	public abstract fun assertionsName ()Ljava/lang/String;
+	public abstract fun paginationName ()Ljava/lang/String;
+	public abstract fun schemaName ()Ljava/lang/String;
 	public abstract fun schemaPackageName ()Ljava/lang/String;
 	public abstract fun schemaTypeName (Ljava/lang/String;)Ljava/lang/String;
 }

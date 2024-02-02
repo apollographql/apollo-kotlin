@@ -333,11 +333,13 @@ object ApolloCompiler {
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, emptyList())
     codegenOptions.validate()
 
-    val layout = schemaLayout ?: LayoutImpl(
+    val layout = schemaLayout ?: SchemaAndOperationsLayout(
         codegenSchema = codegenSchema,
-        packageNameGenerator = packageNameGenerator(codegenOptions.packageName, codegenOptions.rootPackageName),
-        useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming,
-        decapitalizeFields = codegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
+        packageName = codegenOptions.packageName,
+        rootPackageName = codegenOptions.rootPackageName,
+        useSemanticNaming = codegenOptions.useSemanticNaming ,
+        decapitalizeFields = codegenOptions.decapitalizeFields,
+        generatedSchemaName = codegenOptions.generatedSchemaName,
     )
 
     return if (targetLanguage == TargetLanguage.JAVA) {
@@ -414,11 +416,13 @@ object ApolloCompiler {
 
 
     @Suppress("NAME_SHADOWING")
-    val layout = layout ?: LayoutImpl(
+    val layout = layout ?: SchemaAndOperationsLayout(
         codegenSchema = codegenSchema,
-        packageNameGenerator = packageNameGenerator(codegenOptions.packageName, codegenOptions.rootPackageName),
-        useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming,
-        decapitalizeFields = codegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
+        packageName = codegenOptions.packageName,
+        rootPackageName = codegenOptions.rootPackageName,
+        useSemanticNaming = codegenOptions.useSemanticNaming,
+        decapitalizeFields = codegenOptions.decapitalizeFields,
+        generatedSchemaName = codegenOptions.generatedSchemaName,
     )
 
     var sourceOutput: SourceOutput? = null
@@ -523,11 +527,13 @@ object ApolloCompiler {
       serviceName: String,
   ): SourceOutput {
     val layout = LayoutImpl(
-        codegenSchema,
-        PackageNameGenerator.Flat(packageName),
-        false,
-        false
+        codegenSchema = codegenSchema,
+        packageNameGenerator = PackageNameGenerator.Flat(packageName),
+        useSemanticNaming = null,
+        decapitalizeFields = null,
+        generatedSchemaName = null,
     )
+
     return KotlinCodegen.buildExecutableSchema(
         codegenSchema = codegenSchema,
         codegenMetadata = codegenMetadata,

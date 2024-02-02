@@ -161,7 +161,6 @@ internal object KotlinCodegen {
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
     val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
-    val generatedSchemaName = codegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
 
     val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
     val generateInputBuilders = codegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
@@ -216,7 +215,7 @@ internal object KotlinCodegen {
         builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-        builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
         builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
       }
 

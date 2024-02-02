@@ -142,7 +142,6 @@ internal object JavaCodegen {
 
     val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
     val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
-    val generatedSchemaName = codegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
 
     val classesForEnumsMatching = codegenOptions.classesForEnumsMatching ?: defaultClassesForEnumsMatching
     val generateModelBuilders = codegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
@@ -211,7 +210,7 @@ internal object JavaCodegen {
         }
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-        builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(SchemaBuilder(context, scalarMapping, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
       }
       if (generateDataBuilders) {
         builders.add(BuilderFactoryBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions))

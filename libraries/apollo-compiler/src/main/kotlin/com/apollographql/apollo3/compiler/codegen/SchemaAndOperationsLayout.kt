@@ -1,13 +1,16 @@
 package com.apollographql.apollo3.compiler.codegen
 
 interface CommonLayout {
-  fun topLevelName(name: String): String
+  fun className(name: String): String
   fun propertyName(name: String): String
 }
 
 interface SchemaLayout : CommonLayout {
   fun schemaPackageName(): String
   fun schemaTypeName(schemaTypeName: String): String
+  fun schemaName(): String
+  fun assertionsName(): String
+  fun paginationName(): String
 }
 
 interface OperationsLayout: CommonLayout {
