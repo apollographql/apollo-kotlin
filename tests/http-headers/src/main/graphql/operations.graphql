@@ -1,0 +1,7 @@
+query GetRandom {
+  random
+}
+
+mutation Upload($upload: Upload) {
+  upload(upload: $upload)
+}

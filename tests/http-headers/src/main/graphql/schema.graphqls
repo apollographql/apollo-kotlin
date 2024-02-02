@@ -1,0 +1,9 @@
+type Query {
+  random: Int!
+}
+
+type Mutation {
+  upload(upload: Upload): String
+}
+
+scalar Upload
