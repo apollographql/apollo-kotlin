@@ -24,6 +24,14 @@ public final class com/apollographql/apollo3/compiler/ApolloCompilerKt {
 	public static final fun toInputFiles (Ljava/util/Collection;)Ljava/util/List;
 }
 
+public final class com/apollographql/apollo3/compiler/CodegenMetadata {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/CodegenMetadata$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;)V
+	public final fun getEntries ()Ljava/util/List;
+	public final fun getTargetLanguage ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public final fun plus (Lcom/apollographql/apollo3/compiler/CodegenMetadata;)Lcom/apollographql/apollo3/compiler/CodegenMetadata;
+}
+
 public final class com/apollographql/apollo3/compiler/CodegenMetadata$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/CodegenMetadata$$serializer;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -439,6 +447,14 @@ public abstract interface class com/apollographql/apollo3/compiler/codegen/Opera
 	public abstract fun executableDocumentPackageName (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun fragmentName (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun operationName (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleNames ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
