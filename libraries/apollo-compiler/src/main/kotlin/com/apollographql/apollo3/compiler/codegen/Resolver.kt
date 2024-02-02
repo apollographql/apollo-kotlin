@@ -1,19 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
 
-/**
- * Additional resolver data generated alongside the models and adapters.
- * This data maps a GraphQL identifier (such as a typename or model path) to its target class.
- * This allows children modules to reference classes generated in parents (and know when to skip generating them).
- */
 @Serializable
-internal class ResolverInfo(
-)
-
-@Serializable
-@ApolloInternal
 class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }

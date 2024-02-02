@@ -53,7 +53,6 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   abstract fun getWorkerExecutor(): WorkerExecutor
 }
 
-
 fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
   return object : LayoutFactory {
     override fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {

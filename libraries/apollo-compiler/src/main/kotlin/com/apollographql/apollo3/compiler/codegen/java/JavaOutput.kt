@@ -7,6 +7,10 @@ import com.squareup.javapoet.JavaFile
 import java.io.OutputStream
 
 
+/**
+ * Output of the Java code generation. It's a list of [javapoet](https://github.com/square/javapoet) [JavaFile]
+ * together with some metadata that maps the Java files to their GraphQL origin.
+ */
 class JavaOutput(
     val javaFiles: List<JavaFile>,
     val codegenMetadata: CodegenMetadata,

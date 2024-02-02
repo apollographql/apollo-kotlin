@@ -213,7 +213,13 @@ interface CommonCodegenOpt {
   val targetLanguage: TargetLanguage?
 
   /**
-   * The packageName to use for generated sources. To avoid name clashes, the compiler might use sub packages.
+   * The package name for generated classes. Operations use the package name directly. Other
+   * classes like fragments and schema types use sub-packages to avoid name clashes:
+   *
+   * - $packageName/SomeQuery.kt
+   * - $packageName/fragment/SomeFragment.kt
+   * - $packageName/type/CustomScalar.kt
+   * - etc...
    */
   val packageName: String?
 
@@ -223,18 +229,85 @@ interface CommonCodegenOpt {
   val rootPackageName: String?
 
   /**
-   * Whether to decapitalize fields. This is useful if your schema has fields starting with an uppercase as
+   * Whether to decapitalize fields  (for instance `FooBar` -> `fooBar`). This is useful if your schema has fields starting with an uppercase as
    * it may create name clashes with models that use PascalCase
+   *
+   * Default: false
    */
   val decapitalizeFields: Boolean?
   /**
-   * Whether to suffix operation name with 'Query', 'Mutation' or 'Subscription'
+   * When true, the operation class names are suffixed with their operation type like ('Query', 'Mutation' ot 'Subscription').
+   * For an example, `query getDroid { ... }` GraphQL query generates the 'GetDroidQuery' class.
+   *
+   * Default value: true
    */
   val useSemanticNaming: Boolean?
   /**
-   * Which methods to auto generate on models, fragments, operations, and input objects
+   * Specifies which methods will be auto generated on operations, models, fragments and input objects.
+   *
+   * Pass a list of the following:
+   *
+   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
+   * - "toString" generates a method that will print a pretty string representing the data in the class
+   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+   * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
+   * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
+   *
+   * Default for kotlin: `listOf("data")`
+   * Default for Java: `listOf("equalsHashCode", "toString")`
    */
   val generateMethods: List<GeneratedMethod>?
+
+  /**
+   * The format to output for the operation manifest. Valid values are:
+   *
+   * - "operationOutput": a manifest that matches the format used by [OperationOutputGenerator]
+   * - "persistedQueryManifest": a manifest format for an upcoming GraphOS feature
+   * - nothing (Default): by default no manifest is generated
+   *
+   * "operationOutput" uses a JSON format like so:
+   * ```json
+   * {
+   *   "3f8a446ab7672c1efad3735b6fa86caaeefe7ec47f87fca9b84e71e0d93e6bea": {
+   *     "name": "DroidDetails",
+   *     "source": "query DroidDetails { species(id: \"c3BlY2llczoy\") { id name filmConnection { edges { node { id title } } } } }"
+   *   },
+   *   "e772cb55495ad5becc0c804ca3de7d5a5f31f145552bc33529f025d6cb0a8ce6": {
+   *     "name": "AllFilms",
+   *     "source": "query AllFilms { allFilms(first: 100) { totalCount films { title releaseDate } } }"
+   *   }
+   * }
+   * ```
+   *
+   * "persistedQueryManifest" uses a format compatible with an upcoming GraphQL feature like so:
+   * ```json
+   * {
+   *   "format": "apollo-persisted-query-manifest",
+   *   "version": 1,
+   *   "operations": [
+   *     {
+   *       "id": "dc67510fb4289672bea757e862d6b00e83db5d3cbbcfb15260601b6f29bb2b8f",
+   *       "body": "query UniversalQuery { __typename }",
+   *       "name": "UniversalQuery",
+   *       "type": "query"
+   *     },
+   *     {
+   *       "id": "f11e4dcb28788af2e41689bb366472084aa1aa1e1ba633c3d605279cff08ed59",
+   *       "body": "query FragmentedQuery { post { ...PostFragment } }  fragment PostFragment on Post { id title }",
+   *       "name": "FragmentedQuery",
+   *       "type": "query"
+   *     },
+   *     {
+   *       "id": "04649073787db6f24b495d49e5e87526734335a002edbd6e06e7315e302af5ac",
+   *       "body": "mutation SetNameMutation($name: String!) { setName($name) }",
+   *       "name": "SetNameMutation",
+   *       "type": "mutation"
+   *     }
+   *   ]
+   * }
+   * ```
+   *
+   */
   val operationManifestFormat: String?
 }
 
@@ -261,15 +334,25 @@ interface SchemaCodegenOpt {
 interface OperationsCodegenOpt {
   /**
    * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
-   * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
    *
-   * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
+   * When using `responseBased` codegen, [generateFragmentImplementations] also generates classes for every fragment
+   * interface.
+   *
+   * Most of the time, fragment implementations are not needed because you can access fragments and read all
+   * data from your queries.
+   * Fragment implementations are needed if you want to build fragments outside an operation. For an example
+   * to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
+   *
+   * Default: false
    */
   val generateFragmentImplementations: Boolean?
+
   /**
-   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
+   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default, this is true as it is needed
    * to send the operations to the server.
-   * If performance is critical, and you have a way to whitelist/read the document from another place, disable this.
+   * If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.
+   *
+   * Default: true
    */
   val generateQueryDocument: Boolean?
 }
@@ -279,7 +362,6 @@ interface JavaCodegenOpt {
    * Whether to generate builders for java models
    *
    * Default value: false
-   * Only valid for java models as kotlin has data classes
    */
   val generateModelBuilders: Boolean?
 
@@ -332,12 +414,25 @@ interface KotlinCodegenOpt {
    */
   val sealedClassesForEnumsMatching: List<String>?
 
+  /**
+   * Whether to generate Kotlin models with `internal` visibility modifier.
+   *
+   * Default value: false
+   */
   val generateAsInternal: Boolean?
+
+  /**
+   * Whether to add the unknown value for enums. Unknown is used for clients when a new enum is added on the server but is not always useful
+   * on servers
+   */
   val addUnknownForEnums: Boolean?
+  /**
+   * Whether to add default arguments for input objects.
+   */
   val addDefaultArgumentForInputObjects: Boolean?
   /**
-   * Kotlin native will generate [Any?] for optional types
-   * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
+   * Kotlin native generates [Any?] for optional types
+   * Setting generateFilterNotNull generates extra `filterNotNull` functions that help keep the type information.
    */
   val generateFilterNotNull: Boolean?
 
@@ -358,6 +453,19 @@ interface KotlinCodegenOpt {
    * Default: false
    */
   val addJvmOverloads: Boolean?
+
+  /**
+   * The annotation to use for `@requiresOptIn` fields/inputFields/enumValues
+   *
+   * This API is itself experimental and may change without advance notice
+   *
+   * You can pass the special value "none" to disable adding an annotation.
+   * If you're using a custom annotation, it must be able to target:
+   * - AnnotationTarget.PROPERTY
+   * - AnnotationTarget.CLASS
+   *
+   * Default: "none"
+   */
   val requiresOptInAnnotation: String?
 
   /**
