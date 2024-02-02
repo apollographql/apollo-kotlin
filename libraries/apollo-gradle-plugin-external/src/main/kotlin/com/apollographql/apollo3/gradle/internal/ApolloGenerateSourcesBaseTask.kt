@@ -5,8 +5,6 @@ import com.apollographql.apollo3.compiler.LayoutFactory
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.toCodegenOptions
@@ -77,8 +75,7 @@ fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
         null
       } else {
         val options = codegenOptionsFile.get().asFile.toCodegenOptions()
-        SchemaAndOperationsLayout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields
-            ?: defaultDecapitalizeFields)
+        SchemaAndOperationsLayout(codegenSchema, packageNameGenerator!!, options.useSemanticNaming, options.decapitalizeFields)
       }
     }
   }

@@ -1,17 +1,20 @@
 package hooks
 
 import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Plugin
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 
 class TestPlugin : Plugin {
   private val prefix: String = "GQL"
 
   override fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout {
-    val delegate = SchemaAndOperationsLayout(codegenSchema, PackageNameGenerator.Flat("hooks.prefixnames.kotlin"), defaultUseSemanticNaming, defaultDecapitalizeFields)
+    val delegate = SchemaAndOperationsLayout(
+        codegenSchema = codegenSchema,
+        packageName = "hooks.prefixnames.kotlin",
+        rootPackageName = null,
+        useSemanticNaming = null,
+        decapitalizeFields = null
+    )
 
     return object : SchemaAndOperationsLayout {
       override fun schemaPackageName(): String {

@@ -1,10 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -157,7 +160,26 @@ internal fun String.variableName(): String = this.withUnderscorePrefix()
 
 fun SchemaAndOperationsLayout(
     codegenSchema: CodegenSchema,
+    packageName: String?,
+    rootPackageName: String?,
+    useSemanticNaming: Boolean?,
+    decapitalizeFields: Boolean?
+): SchemaAndOperationsLayout {
+  val packageNameGenerator = when {
+    packageName != null -> PackageNameGenerator.Flat(packageName)
+    rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
+    else -> error("One of packageName or rootPackageName is required")
+  }
+  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming ?: defaultUseSemanticNaming, decapitalizeFields ?: defaultDecapitalizeFields)
+}
+
+@ApolloInternal
+fun SchemaAndOperationsLayout(
+    codegenSchema: CodegenSchema,
     packageNameGenerator: PackageNameGenerator,
-    useSemanticNaming: Boolean,
-    decapitalizeFields: Boolean
-): SchemaAndOperationsLayout = LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields)
+    useSemanticNaming: Boolean?,
+    decapitalizeFields: Boolean?
+): SchemaAndOperationsLayout {
+  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming ?: defaultUseSemanticNaming, decapitalizeFields ?: defaultDecapitalizeFields)
+}
+
