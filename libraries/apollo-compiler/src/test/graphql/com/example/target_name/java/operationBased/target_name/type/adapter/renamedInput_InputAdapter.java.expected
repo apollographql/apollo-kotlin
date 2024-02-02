@@ -12,23 +12,23 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.target_name.type.renamedInput;
+import com.example.target_name.type.RenamedInput;
 import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum renamedInput_InputAdapter implements Adapter<renamedInput> {
+public enum RenamedInput_InputAdapter implements Adapter<RenamedInput> {
   INSTANCE;
 
   @Override
-  public renamedInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public RenamedInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
       IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      renamedInput value) throws IOException {
+      RenamedInput value) throws IOException {
     if (value.field instanceof Optional.Present) {
       writer.name("field");
       new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.field);

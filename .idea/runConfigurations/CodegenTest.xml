@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="testFilter" value=".*tlin.*fragment_with_inline_fragment.*" />
+          <entry key="testFilter" value=".*java.*fragment_with_inline_fragment.*" />
           <entry key="updateTestFixtures" value="true" />
         </map>
       </option>

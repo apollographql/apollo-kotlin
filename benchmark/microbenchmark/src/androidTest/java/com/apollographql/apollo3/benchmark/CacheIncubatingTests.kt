@@ -57,11 +57,11 @@ class CacheIncubatingTests {
 
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, sql: Boolean, check: (D) -> Unit) {
     val cache = if (sql) {
-      MemoryCacheFactory().create()
-    } else {
       Utils.dbFile.delete()
       // Pass context explicitly here because androidx.startup fails due to relocation
-      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName).create()
+      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName, withDates = true).create()
+    } else {
+      MemoryCacheFactory().create()
     }
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
 

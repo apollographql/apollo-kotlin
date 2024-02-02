@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_inside_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
-public object characterNameSelections {
+public object CharacterNameSelections {
   public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",

@@ -34,7 +34,7 @@ import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
-import com.apollographql.apollo3.ast.findCatches
+import com.apollographql.apollo3.ast.findCatch
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
@@ -54,7 +54,9 @@ import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 internal class IrOperationsBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
+    private val operationNameToNormalizedPath: Map<String, String>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
+    private val fragmentNameToNormalizedPath: Map<String, String>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
@@ -88,7 +90,7 @@ internal class IrOperationsBuilder(
     else -> error("codegenModels='$codegenModels' is not supported")
   }
 
-  private val defaultCatch = schema.schemaDefinition?.directives?.findCatches(schema)?.singleOrNull()
+  private val defaultCatchTo = schema.schemaDefinition?.directives?.findCatch(schema)?.to
 
   fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
@@ -250,7 +252,7 @@ internal class IrOperationsBuilder(
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
-        generateDataBuilders = generateDataBuilders,
+        codegenModels = codegenModels
     )
   }
 
@@ -308,7 +310,7 @@ internal class IrOperationsBuilder(
         variables = variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeDefinition.name),
         sourceWithFragments = sourceWithFragments,
-        filePath = sourceLocation!!.filePath!!,
+        normalizedFilePath = operationNameToNormalizedPath.get(name!!) ?: "",
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
         responseBasedDataModelGroup = responseBasedModelGroup,
@@ -343,7 +345,7 @@ internal class IrOperationsBuilder(
     return IrFragmentDefinition(
         name = name,
         description = description,
-        filePath = sourceLocation!!.filePath!!,
+        filePath = fragmentNameToNormalizedPath[name] ?: "",
         typeCondition = typeDefinition.name,
         variables = inferredVariables.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeCondition.name),
@@ -483,8 +485,8 @@ internal class IrOperationsBuilder(
       val type: GQLType,
       val deprecationReason: String?,
       val optInFeature: String?,
-      val semanticNonNulls: List<Int?>,
-      val catches: List<Catch>,
+      val semanticNonNulls: List<Int>,
+      val catch: Catch?,
       val forceOptional: Boolean,
 
       /**
@@ -520,14 +522,14 @@ internal class IrOperationsBuilder(
 
       if (parentTypeDefinition.isFieldNonNull(gqlField.name, schema)) {
         check(semanticNonNulls.isEmpty()) {
-          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
+          "${gqlField.sourceLocation}: bad '@nonnull' directive: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
         semanticNonNulls = listOf(0)
       }
 
       if (gqlField.directives.findNonnull(schema)) {
         check(semanticNonNulls.isEmpty()) {
-          "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
+          "${gqlField.sourceLocation}: bad '@nonnull' directive: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
         }
         semanticNonNulls = listOf(0)
       }
@@ -544,7 +546,7 @@ internal class IrOperationsBuilder(
           semanticNonNulls = semanticNonNulls,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catches = gqlField.directives.findCatches(schema)
+          catch = gqlField.directives.findCatch(schema)
       )
     }.groupBy {
       it.responseName
@@ -625,7 +627,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catches, defaultCatch, 0)
+          .catch(first.catch, defaultCatchTo, 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -675,8 +677,8 @@ internal class IrOperationsBuilder(
   }
 
   companion object {
-    private fun IrType.semanticNonNull(semanticNonNullLevels: List<Int?>, level: Int): IrType {
-      val isNonNull = semanticNonNullLevels.any { it == null || it == level }
+    private fun IrType.semanticNonNull(semanticNonNullLevels: List<Int>, level: Int): IrType {
+      val isNonNull = semanticNonNullLevels.any { it == level }
 
       return when (this) {
         is IrNamedType -> this
@@ -690,19 +692,23 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun IrType.catch(catchLevels: List<Catch>, defaultCatch: Catch?, level: Int): IrType {
-      var catchLevel = catchLevels.firstOrNull { it.level == null || it.level == level }
+    private fun IrType.catch(catch: Catch?, defaultCatchTo: CatchTo?, level: Int): IrType {
       var type = when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.catch(catchLevels, defaultCatch, level + 1))
+        is IrListType -> copy(ofType = ofType.catch(catch, defaultCatchTo, level + 1))
       }
 
-      if (catchLevel == null && type.maybeError) {
-        catchLevel = defaultCatch
+      val catchTo = if (catch != null) {
+        catch.to.takeIf { catch.levels.contains(level) } ?: defaultCatchTo
+      } else if (type.maybeError) {
+        defaultCatchTo
+      } else {
+        null
       }
-      if (catchLevel != null) {
-        type = type.catchTo(catchLevel.to.toIr())
-        if (catchLevel.to == CatchTo.NULL) {
+
+      if (catchTo != null) {
+        type = type.catchTo(catchTo.toIr())
+        if (catchTo == CatchTo.NULL) {
           type = type.nullable(true)
         }
       }

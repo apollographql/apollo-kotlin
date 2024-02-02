@@ -14,13 +14,13 @@ import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.atomicfu.atomic
-import pagination.type.buildUser
-import pagination.type.buildUserPage
+import pagination.offsetBasedWithPage.UsersQuery
+import pagination.offsetBasedWithPage.type.buildUser
+import pagination.offsetBasedWithPage.type.buildUserPage
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 
 class OffsetBasedWithPagePaginationTest {
   @Test
@@ -54,9 +54,9 @@ class OffsetBasedWithPagePaginationTest {
     apolloStore.clearAll()
 
     // First page
-    val query1 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(42), limit = Optional.Present(2))
-    val data1 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query1 = UsersQuery(offset = Optional.Present(42), limit = Optional.Present(2))
+    val data1 = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "42" },
             buildUser { id = "43" },
@@ -69,9 +69,9 @@ class OffsetBasedWithPagePaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query2 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(2))
-    val data2 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query2 = UsersQuery(offset = Optional.Present(44), limit = Optional.Present(2))
+    val data2 = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "44" },
             buildUser { id = "45" },
@@ -80,8 +80,8 @@ class OffsetBasedWithPagePaginationTest {
     }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    var expectedData = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "42" },
             buildUser { id = "43" },
@@ -94,9 +94,9 @@ class OffsetBasedWithPagePaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page in the middle
-    val query3 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(3))
-    val data3 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query3 = UsersQuery(offset = Optional.Present(44), limit = Optional.Present(3))
+    val data3 = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "44" },
             buildUser { id = "45" },
@@ -106,8 +106,8 @@ class OffsetBasedWithPagePaginationTest {
     }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    expectedData = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "42" },
             buildUser { id = "43" },
@@ -121,9 +121,9 @@ class OffsetBasedWithPagePaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page before
-    val query4 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(40), limit = Optional.Present(2))
-    val data4 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query4 = UsersQuery(offset = Optional.Present(40), limit = Optional.Present(2))
+    val data4 = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "40" },
             buildUser { id = "41" },
@@ -132,8 +132,8 @@ class OffsetBasedWithPagePaginationTest {
     }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    expectedData = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "40" },
             buildUser { id = "41" },
@@ -149,9 +149,9 @@ class OffsetBasedWithPagePaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
-    val query5 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(50), limit = Optional.Present(2))
-    val data5 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query5 = UsersQuery(offset = Optional.Present(50), limit = Optional.Present(2))
+    val data5 = UsersQuery.Data {
+      users = buildUserPage {
         users = listOf(
             buildUser { id = "50" },
             buildUser { id = "51" },
@@ -164,9 +164,9 @@ class OffsetBasedWithPagePaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Empty page (should keep previous result)
-    val query6 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(52), limit = Optional.Present(2))
-    val data6 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = buildUserPage {
+    val query6 = UsersQuery(offset = Optional.Present(52), limit = Optional.Present(2))
+    val data6 = UsersQuery.Data {
+      users = buildUserPage {
         users = emptyList()
       }
     }
@@ -232,7 +232,7 @@ class OffsetBasedWithPagePaginationTest {
   }
 }
 
-internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
+internal fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
   val hasNextCache = atomic(false)
   apolloStore.accessCache { cache ->
     // First cache is always OptimisticCache
@@ -248,7 +248,7 @@ internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
     val record2 = cache2[key]!!
     assertEquals(record1.key, record2.key)
     assertEquals(record1.fields, record2.fields)
-    assertEquals(record1.date, record2.date)
+    assertEquals(record1.dates, record2.dates)
     assertEquals(record1.metadata, record2.metadata)
   }
 }

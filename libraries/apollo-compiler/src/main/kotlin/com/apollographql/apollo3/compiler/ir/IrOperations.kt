@@ -3,8 +3,8 @@ package com.apollographql.apollo3.compiler.ir
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
-import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
 import com.apollographql.apollo3.compiler.internal.GQLFragmentDefinitionSerializer
+import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -35,7 +35,7 @@ internal data class DefaultIrOperations(
 
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
-    val generateDataBuilders: Boolean,
+    override val codegenModels: String,
 
     override val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 ) : IrOperations
@@ -43,6 +43,7 @@ internal data class DefaultIrOperations(
 interface IrOperations {
   val fragmentDefinitions: List<GQLFragmentDefinition>
   val usedFields: Map<String, Set<String>>
+  val codegenModels: String
 }
 
 @Serializable
@@ -57,7 +58,7 @@ internal data class IrOperation(
      * the executableDocument sent to the server
      */
     val sourceWithFragments: String,
-    val filePath: String,
+    val normalizedFilePath: String,
     val responseBasedDataModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,

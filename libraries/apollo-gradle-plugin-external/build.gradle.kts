@@ -2,10 +2,12 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
+  id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 apolloLibrary(
-  javaModuleName = "com.apollographql.apollo3.gradle"
+    javaModuleName = "com.apollographql.apollo3.gradle",
+    jvmTarget = 11 // AGP requires 11
 )
 
 dependencies {

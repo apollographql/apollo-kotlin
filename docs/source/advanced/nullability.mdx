@@ -192,6 +192,45 @@ query GetUser {
 }
 ```
 
+For fields of composite type, `@catch` catches any nested error:
+
+```graphql
+query GetUser {
+  # catch errors on user and any nested field 
+  user @catch(to: RESULT) {
+    name 
+    avatarUrl
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "user": {
+      "id": "1001",
+      "name": null,
+      "avatarUrl": "https://example.com/pic.png"
+    }
+  },
+  "errors": [
+    {
+      "message": "Cannot resolve user.name",
+      "path": ["user", "name"]
+    }
+  ]
+}
+```
+
+`data.user` is a `FieldResult<User>`:
+
+```kotlin
+// user is a FieldResult<User> that contains the name error
+println(response.data?.user?.graphQLErrorOrNull?.message) // "Cannot resolve user.name"
+```
+
 ### Handle semantic non-null with `@semanticNonNull`
 
 Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 

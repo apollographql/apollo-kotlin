@@ -10,9 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal class ResolverInfo(
-    val magic: String,
-    val version: String,
-    val entries: List<ResolverEntry>
 )
 
 @Serializable

@@ -19,10 +19,10 @@ import com.example.nested_named_fragments.type.StarshipPilotsEdge;
 import java.util.Arrays;
 import java.util.List;
 
-public class starshipFragmentSelections {
+public class StarshipFragmentSelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Person", Arrays.asList("Person")).selections(pilotFragmentSelections.__root).build()
+    new CompiledFragment.Builder("Person", Arrays.asList("Person")).selections(PilotFragmentSelections.__root).build()
   );
 
   private static List<CompiledSelection> __edges = Arrays.asList(

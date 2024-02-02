@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections
+import com.example.not_all_combinations_are_needed.fragment.selections.BFragmentSelections
 import com.example.not_all_combinations_are_needed.type.B
 import kotlin.Any
 import kotlin.Boolean
@@ -39,7 +39,7 @@ public class BFragmentImpl() : Fragment<BFragmentImpl.Data> {
     name = "data",
     type = B.type
   )
-  .selections(selections = bFragmentSelections.__root)
+  .selections(selections = BFragmentSelections.__root)
   .build()
 
   public data class Data(

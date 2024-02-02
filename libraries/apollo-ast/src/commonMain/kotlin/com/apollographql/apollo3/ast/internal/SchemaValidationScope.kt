@@ -140,7 +140,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = directiveDefinitions[definition.name]
         if (existing != null) {
           if (!existing.semanticEquals(definition)) {
-            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), existing.sourceLocation))
           }
         }
       }
@@ -149,7 +149,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = typeDefinitions[definition.name]
         if (existing != null) {
           if (!existing.semanticEquals(definition)) {
-            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), definition.sourceLocation))
+            issues.add(IncompatibleDefinition(definition.name, definition.toSemanticSdl(), existing.sourceLocation))
           }
         }
       }
@@ -209,6 +209,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
+  mergedScope.validateUnions()
   mergedScope.validateInputObjects()
   mergedScope.validateCatch(mergedSchemaDefinition)
 
@@ -293,7 +294,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
             minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
             minimalSchema.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
         )
-        scope.validateDirective(gqlDirective, schemaExtension) {
+        scope.validateDirectives(listOf(gqlDirective), schemaExtension) {
           issues.add(it.constContextError())
         }
         if (scope.issues.isNotEmpty()) {
@@ -433,9 +434,26 @@ internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSch
 }
 
 private fun ValidationScope.validateInterfaces() {
-  typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
-    if (it.fields.isEmpty()) {
-      registerIssue("Interfaces must specify one or more fields", it.sourceLocation)
+  typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach { i ->
+    if (i.fields.isEmpty()) {
+      registerIssue("Interfaces must specify one or more fields", i.sourceLocation)
+    }
+
+    i.implementsInterfaces.forEach { implementsInterface ->
+      val iface = typeDefinitions[implementsInterface] as? GQLInterfaceTypeDefinition
+      if (iface == null) {
+        registerIssue("Interface '${i.name}' cannot implement non-interface '$implementsInterface'", i.sourceLocation)
+      }
+    }
+
+    validateDirectives(i.directives, i) {
+      issues.add(it.constContextError())
+    }
+
+    i.fields.forEach { gqlFieldDefinition ->
+      validateDirectives(gqlFieldDefinition.directives, gqlFieldDefinition) {
+        issues.add(it.constContextError())
+      }
     }
   }
 }
@@ -453,18 +471,22 @@ private fun ValidationScope.validateObjects() {
       }
     }
 
-    o.directives.forEach { directive ->
-      validateDirective(directive, o) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(o.directives, o) {
+      issues.add(it.constContextError())
     }
 
     o.fields.forEach { gqlFieldDefinition ->
-      gqlFieldDefinition.directives.forEach { gqlDirective ->
-        validateDirective(gqlDirective, gqlFieldDefinition) {
-          issues.add(it.constContextError())
-        }
+      validateDirectives(gqlFieldDefinition.directives, gqlFieldDefinition) {
+        issues.add(it.constContextError())
       }
+    }
+  }
+}
+
+private fun ValidationScope.validateUnions() {
+  typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach { u ->
+    validateDirectives(u.directives, u) {
+      issues.add(it.constContextError())
     }
   }
 }
@@ -524,10 +546,8 @@ private fun ValidationScope.validateInputObjects() {
       registerIssue("Input object must specify one or more input fields", o.sourceLocation)
     }
 
-    o.directives.forEach { directive ->
-      validateDirective(directive, o) {
-        issues.add(it.constContextError())
-      }
+    validateDirectives(o.directives, o) {
+      issues.add(it.constContextError())
     }
 
     val isOneOfInputObject = o.directives.findOneOf()

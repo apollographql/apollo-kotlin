@@ -1,17 +1,20 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.codegen.Layout
+import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
+import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.toCodegenOptions
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -20,26 +23,11 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
 abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
-  @get:InputFiles
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val graphqlFiles: ConfigurableFileCollection
-
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenOptionsFile: RegularFileProperty
 
-  @get:Input
-  @get:Optional
-  abstract val packageName: Property<String>
-
-  @get:Input
-  @get:Optional
-  abstract val packageNamesFromFilePaths: Property<Boolean>
-
-  @Internal
-  var packageNameRoots: Set<String>? = null
-
-  @Internal
+  @get:Internal
   var packageNameGenerator: PackageNameGenerator? = null
 
   @Input
@@ -71,3 +59,14 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   abstract val outputDir: DirectoryProperty
 }
 
+
+fun ApolloGenerateSourcesBaseTask.layout(): ((CodegenSchema) -> SchemaAndOperationsLayout)? {
+  return if (packageNameGenerator != null) {
+    {
+      val options = codegenOptionsFile.get().asFile.toCodegenOptions()
+      Layout(it, packageNameGenerator!!, options.useSemanticNaming ?: defaultUseSemanticNaming, options.decapitalizeFields ?: defaultDecapitalizeFields)
+    }
+  } else {
+    null
+  }
+}

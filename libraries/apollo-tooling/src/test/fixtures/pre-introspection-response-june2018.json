@@ -1,147 +1,157 @@
 {
   "data": {
-    "schema": {
-      "__typename": "__Type",
-      "fields": [
+    "__schema": {
+      "__typename": "__Schema",
+      "types": [
         {
-          "name": "types",
-          "args": []
-        },
-        {
-          "name": "queryType",
-          "args": []
-        },
-        {
-          "name": "mutationType",
-          "args": []
-        },
-        {
-          "name": "subscriptionType",
-          "args": []
-        },
-        {
-          "name": "directives",
-          "args": []
-        }
-      ]
-    },
-    "type": {
-      "__typename": "__Type",
-      "fields": [
-        {
-          "name": "kind",
-          "args": []
-        },
-        {
-          "name": "name",
-          "args": []
-        },
-        {
-          "name": "description",
-          "args": []
-        },
-        {
-          "name": "fields",
-          "args": [
+          "__typename": "__Type",
+          "name": "__Schema",
+          "fields": [
             {
-              "name": "includeDeprecated"
+              "name": "types",
+              "args": []
+            },
+            {
+              "name": "queryType",
+              "args": []
+            },
+            {
+              "name": "mutationType",
+              "args": []
+            },
+            {
+              "name": "subscriptionType",
+              "args": []
+            },
+            {
+              "name": "directives",
+              "args": []
             }
           ]
         },
         {
-          "name": "interfaces",
-          "args": []
-        },
-        {
-          "name": "possibleTypes",
-          "args": []
-        },
-        {
-          "name": "enumValues",
-          "args": [
+          "__typename": "__Type",
+          "name": "__Type",
+          "fields": [
             {
-              "name": "includeDeprecated"
+              "name": "kind",
+              "args": []
+            },
+            {
+              "name": "name",
+              "args": []
+            },
+            {
+              "name": "description",
+              "args": []
+            },
+            {
+              "name": "fields",
+              "args": [
+                {
+                  "name": "includeDeprecated"
+                }
+              ]
+            },
+            {
+              "name": "interfaces",
+              "args": []
+            },
+            {
+              "name": "possibleTypes",
+              "args": []
+            },
+            {
+              "name": "enumValues",
+              "args": [
+                {
+                  "name": "includeDeprecated"
+                }
+              ]
+            },
+            {
+              "name": "inputFields",
+              "args": []
+            },
+            {
+              "name": "ofType",
+              "args": []
             }
           ]
         },
         {
-          "name": "inputFields",
-          "args": []
+          "__typename": "__Type",
+          "name": "__Directive",
+          "fields": [
+            {
+              "name": "name",
+              "args": []
+            },
+            {
+              "name": "description",
+              "args": []
+            },
+            {
+              "name": "locations",
+              "args": []
+            },
+            {
+              "name": "args",
+              "args": []
+            }
+          ]
         },
         {
-          "name": "ofType",
-          "args": []
-        }
-      ]
-    },
-    "directive": {
-      "__typename": "__Type",
-      "fields": [
-        {
-          "name": "name",
-          "args": []
+          "__typename": "__Type",
+          "name": "__Field",
+          "fields": [
+            {
+              "name": "name",
+              "args": []
+            },
+            {
+              "name": "description",
+              "args": []
+            },
+            {
+              "name": "args",
+              "args": []
+            },
+            {
+              "name": "type",
+              "args": []
+            },
+            {
+              "name": "isDeprecated",
+              "args": []
+            },
+            {
+              "name": "deprecationReason",
+              "args": []
+            }
+          ]
         },
         {
-          "name": "description",
-          "args": []
-        },
-        {
-          "name": "locations",
-          "args": []
-        },
-        {
-          "name": "args",
-          "args": []
-        }
-      ]
-    },
-    "field": {
-      "__typename": "__Type",
-      "fields": [
-        {
-          "name": "name",
-          "args": []
-        },
-        {
-          "name": "description",
-          "args": []
-        },
-        {
-          "name": "args",
-          "args": []
-        },
-        {
-          "name": "type",
-          "args": []
-        },
-        {
-          "name": "isDeprecated",
-          "args": []
-        },
-        {
-          "name": "deprecationReason",
-          "args": []
-        }
-      ]
-    },
-    "inputValue": {
-      "__typename": "__Type",
-      "fields": [
-        {
-          "name": "name",
-          "args": []
-        },
-        {
-          "name": "description",
-          "args": []
-        },
-        {
-          "name": "type",
-          "args": []
-        },
-        {
-          "name": "defaultValue",
-          "args": []
+          "__typename": "__Type",
+          "name": "__InputValue",
+          "fields": [
+            {
+              "name": "name",
+              "args": []
+            },
+            {
+              "name": "description",
+              "args": []
+            },
+            {
+              "name": "type",
+              "args": []
+            },
+            {
+              "name": "defaultValue",
+              "args": []
+            }
+          ]
         }
       ]
     }

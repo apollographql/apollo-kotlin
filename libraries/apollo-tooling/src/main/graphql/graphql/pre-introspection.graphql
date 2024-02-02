@@ -1,14 +1,17 @@
 # Pre-introspection query allowing to retrieve the server's supported features.
+# Note: selecting only the relevant types would be more optimized, but we've found it is rejected by api.github.com
+# see https://github.com/apollographql/apollo-kotlin/pull/5547 and https://github.com/orgs/community/discussions/101382
 
 query PreIntrospectionQuery {
-  schema: __type(name: "__Schema") { ...TypeFields }
-  type: __type(name: "__Type") { ...TypeFields }
-  directive: __type(name: "__Directive") { ...TypeFields }
-  field: __type(name: "__Field") { ...TypeFields }
-  inputValue: __type(name: "__InputValue") { ...TypeFields }
+  __schema {
+    types {
+      ...TypeFields
+    }
+  }
 }
 
 fragment TypeFields on __Type {
+  name
   fields {
     name
     args {

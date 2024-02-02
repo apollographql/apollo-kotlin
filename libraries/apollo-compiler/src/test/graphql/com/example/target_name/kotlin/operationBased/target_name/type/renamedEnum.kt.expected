@@ -11,7 +11,7 @@ import kotlin.Deprecated
 import kotlin.String
 import kotlin.collections.List
 
-public enum class renamedEnum(
+public enum class RenamedEnum(
   public val rawValue: String,
 ) {
   VALUE("VALUE"),
@@ -25,22 +25,22 @@ public enum class renamedEnum(
     public val type: EnumType = EnumType("ReservedEnum", listOf("VALUE"))
 
     /**
-     * All [renamedEnum] known at compile time
+     * All [RenamedEnum] known at compile time
      */
-    public val knownEntries: List<renamedEnum>
+    public val knownEntries: List<RenamedEnum>
       get() = listOf(
         VALUE)
 
     /**
-     * Returns all [renamedEnum] known at compile time
+     * Returns all [RenamedEnum] known at compile time
      */
     @Deprecated(
       message = "Use knownEntries instead",
       replaceWith = ReplaceWith("this.knownEntries"),
     )
-    public fun knownValues(): Array<renamedEnum> = knownEntries.toTypedArray()
+    public fun knownValues(): Array<RenamedEnum> = knownEntries.toTypedArray()
 
-    public fun safeValueOf(rawValue: String): renamedEnum =
+    public fun safeValueOf(rawValue: String): RenamedEnum =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

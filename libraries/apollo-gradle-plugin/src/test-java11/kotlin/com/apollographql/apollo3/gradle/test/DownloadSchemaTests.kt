@@ -13,7 +13,6 @@ import okhttp3.tls.HeldCertificate
 import okio.Buffer
 import okio.buffer
 import okio.source
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
@@ -37,25 +36,9 @@ class DownloadSchemaTests {
   private val preIntrospectionResponse = """
   {
     "data": {
-      "schema": {
-        "__typename": "__Type",
-        "fields": []
-      },
-      "type": {
-        "__typename": "__Type",
-        "fields": []
-      },
-      "directive": {
-        "__typename": "__Type",
-        "fields": []
-      },
-      "field": {
-        "__typename": "__Type",
-        "fields": []
-      },
-      "inputValue": {
-        "__typename": "__Type",
-        "fields": []
+      "__schema": {
+        "__typename": "__Schema",
+        "types": []
       }
     }
   }

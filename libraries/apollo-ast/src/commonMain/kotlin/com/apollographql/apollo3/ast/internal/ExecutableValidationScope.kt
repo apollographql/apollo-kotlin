@@ -1,8 +1,56 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.AnonymousOperation
+import com.apollographql.apollo3.ast.Catch
+import com.apollographql.apollo3.ast.DeprecatedUsage
+import com.apollographql.apollo3.ast.DifferentShape
+import com.apollographql.apollo3.ast.ExecutableValidationResult
+import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.OtherValidationIssue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.UnusedFragment
+import com.apollographql.apollo3.ast.UnusedVariable
+import com.apollographql.apollo3.ast.VariableUsage
+import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.findCatch
+import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.getArgumentValueOrDefault
 import com.apollographql.apollo3.ast.internal.validation.validateDeferLabels
+import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.rawType
+import com.apollographql.apollo3.ast.responseName
+import com.apollographql.apollo3.ast.rootTypeDefinition
+import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 
 
 @OptIn(ApolloInternal::class)
@@ -30,9 +78,11 @@ internal class ExecutableValidationScope(
    */
   private val variableUsages = mutableListOf<VariableUsage>()
 
-  private fun GQLFragmentDefinition.detectCycles(globallyVisitedFragments: MutableSet<String>,
-                                                 locallyVisitedFragments: MutableSet<String>,
-                                                 path: List<String>) {
+  private fun GQLFragmentDefinition.detectCycles(
+      globallyVisitedFragments: MutableSet<String>,
+      locallyVisitedFragments: MutableSet<String>,
+      path: List<String>,
+  ) {
     if (globallyVisitedFragments.contains(name)) {
       return
     }
@@ -45,15 +95,21 @@ internal class ExecutableValidationScope(
     selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path)
   }
 
-  private fun List<GQLSelection>.detectCycles(globallyVisitedFragments: MutableSet<String>, locallyVisitedFragments: MutableSet<String>, path: List<String>) {
+  private fun List<GQLSelection>.detectCycles(
+      globallyVisitedFragments: MutableSet<String>,
+      locallyVisitedFragments: MutableSet<String>,
+      path: List<String>,
+  ) {
     forEach {
       when (it) {
         is GQLField -> {
           it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + it.responseName())
         }
+
         is GQLInlineFragment -> {
           it.selections.detectCycles(globallyVisitedFragments, locallyVisitedFragments, path + "__on${it.typeCondition?.name ?: ""}")
         }
+
         is GQLFragmentSpread -> {
           val fragment = fragmentDefinitions.get(it.name)
           if (fragment != null) {
@@ -103,8 +159,8 @@ internal class ExecutableValidationScope(
     (this.fragmentDefinitions.keys - usedFragments).forEach {
       issues.add(
           UnusedFragment(
-            message = "Fragment '$it' is not used",
-            sourceLocation = fragmentDefinitions[it]?.sourceLocation,
+              message = "Fragment '$it' is not used",
+              sourceLocation = fragmentDefinitions[it]?.sourceLocation,
           )
       )
     }
@@ -171,86 +227,70 @@ internal class ExecutableValidationScope(
       }
     }
 
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
+    validateDirectives(directives, this) {
+      variableUsages.add(it)
     }
     if (hasCatch) {
       validateCatches(fieldDefinition)
     }
   }
 
-  private class CatchUsage(val level: Int?, val catchTo: String, val sourceLocation: SourceLocation?)
-
   private fun GQLType.maxDimension(): Int {
     var dimension = 0
     var type = this
     while (true) {
-      when(type) {
+      when (type) {
         is GQLListType -> {
           dimension++
           type = type.type
         }
+
         is GQLNonNullType -> {
           type = type.type
         }
+
         else -> return dimension
       }
     }
   }
+
   private fun GQLField.validateCatches(fieldDefinition: GQLFieldDefinition) {
-    val levelToCatch = directives.filter {
+    val catches = directives.filter {
       schema.originalDirectiveName(it.name) == Schema.CATCH
-    }.mapNotNull {
-      val to = it.getArgument("to", schema) as? GQLEnumValue
-      if (to == null) {
-        // caught by other validation rules
-        return@mapNotNull null
-      }
-      val levelInt = when(val levelValue = it.getArgument("level", schema)) {
-        is GQLNullValue -> null
-        is GQLIntValue -> levelValue.value.toIntOrNull() ?: error("`@catch` level too big: ${levelValue.value}")
-        else -> return@mapNotNull  null
-      }
-
-      if (levelInt != null) {
-        val maxDimension = fieldDefinition.type.maxDimension()
-        if (levelInt > maxDimension) {
-          registerIssue(
-              message = "Invalid 'level' value '$levelInt' for `@catch` usage: this type has a max list level of $maxDimension",
-              sourceLocation = it.sourceLocation
-          )
-          return@mapNotNull  null
-        }
-      }
-      CatchUsage(levelInt, to.value, it.sourceLocation)
-    }.groupBy {
-      it.level
-    }.mapNotNull {
-      val sameLevel = it.value.distinct()
-      if (sameLevel.size > 1) {
-        registerIssue(
-            message = "Conflicting `@catch` usages for level '${it.key}': a given list level must have a single CatchTo value",
-            sourceLocation = it.value.first().sourceLocation
-        )
-        return@mapNotNull null
-      }
-
-      it.value.single()
-    }.associateBy {
-      it.level
     }
 
-    val default = levelToCatch[null]?.catchTo
-    levelToCatch.filter {
-      it.key != null
-    }.forEach {
-      if (default != null && it.value.catchTo != default) {
-        registerIssue(
-            message = "Conflicting `@catch` usages for level '${it.key}': this level conflicts with the default 'null' level",
-            sourceLocation = it.value.sourceLocation
-        )
+    if (catches.size > 1) {
+      // "caught" (ahah) by other validation rules
+      return
+    }
+
+    val catch = catches.singleOrNull()
+    if (catch == null) {
+      return
+    }
+
+    val levels = catch.getArgumentValueOrDefault("levels", schema)
+    val maxDimension = fieldDefinition.type.maxDimension()
+    if (levels is GQLListValue) {
+      levels.values.forEach {
+        if (it is GQLIntValue) {
+          val asInt = it.value.toIntOrNull()
+          if (asInt == null) {
+            registerIssue("Invalid value: '${it.value}'", it.sourceLocation)
+            return@forEach
+          }
+          if (asInt > maxDimension) {
+            registerIssue(
+                message = "Invalid 'levels' value '$asInt' for `@catch` usage: this field has a max list level of $maxDimension",
+                sourceLocation = it.sourceLocation
+            )
+          } else if (asInt < 0) {
+            registerIssue(
+                message = "'levels' values must be positive ints",
+                sourceLocation = it.sourceLocation
+            )
+          }
+        }
       }
     }
   }
@@ -276,10 +316,8 @@ internal class ExecutableValidationScope(
 
     selections.validate(inlineFragmentTypeDefinition)
 
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
+    validateDirectives(directives, this) {
+      variableUsages.add(it)
     }
   }
 
@@ -308,10 +346,8 @@ internal class ExecutableValidationScope(
       return
     }
 
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
+    validateDirectives(directives, this) {
+      variableUsages.add(it)
     }
   }
 
@@ -358,10 +394,8 @@ internal class ExecutableValidationScope(
 
     selections.validate(rootTypeDefinition)
 
-    directives.forEach {
-      validateDirective(it, directiveContext) {
-        variableUsages.add(it)
-      }
+    validateDirectives(directives, directiveContext) {
+      variableUsages.add(it)
     }
   }
 
@@ -394,10 +428,8 @@ internal class ExecutableValidationScope(
         ))
       }
     }
-    directives.forEach {
-      validateDirective(it, this) {
-        variableUsages.add(it)
-      }
+    validateDirectives(directives, this) {
+      variableUsages.add(it)
     }
   }
 
@@ -412,6 +444,7 @@ internal class ExecutableValidationScope(
           is GQLField -> {
             stack.add(it.selections)
           }
+
           is GQLFragmentSpread -> {
             if (!collectedFragments.contains(it.name)) {
               fragmentDefinitions.get(it.name)?.also {
@@ -420,6 +453,7 @@ internal class ExecutableValidationScope(
               }
             }
           }
+
           is GQLInlineFragment -> {
             stack.add(it.selections)
           }
@@ -478,7 +512,7 @@ internal class ExecutableValidationScope(
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different types")
       return
     }
-    if (hasCatch && !areCatchesEqual(fieldA.directives.findCatches(schema), fieldB.directives.findCatches(schema))) {
+    if (hasCatch && !areCatchesEqual(fieldA.directives.findCatch(schema), fieldB.directives.findCatch(schema))) {
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different `@catch` directives")
       return
     }
@@ -530,8 +564,8 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun areCatchesEqual(catchesA: List<Catch>, catchesB: List<Catch>): Boolean {
-    return catchesA.toSet() == catchesB.toSet()
+  private fun areCatchesEqual(catchA: Catch?, catchesB: Catch?): Boolean {
+    return catchA == catchesB
   }
 
   private fun areArgumentsEqual(argumentsA: List<GQLArgument>, argumentsB: List<GQLArgument>): Boolean {
@@ -576,15 +610,15 @@ internal class ExecutableValidationScope(
   private fun addShapeFieldMergingIssue(fieldA: GQLField, fieldB: GQLField) {
     issues.add(
         DifferentShape(
-          message = buildMessage(fieldA, fieldB,"they have different shapes"),
-          sourceLocation = fieldA.sourceLocation,
+            message = buildMessage(fieldA, fieldB, "they have different shapes"),
+            sourceLocation = fieldA.sourceLocation,
         )
     )
     // Also add the symmetrical error
     issues.add(
         DifferentShape(
-          message = buildMessage(fieldB, fieldA,"they have different shapes"),
-          sourceLocation = fieldB.sourceLocation,
+            message = buildMessage(fieldB, fieldA, "they have different shapes"),
+            sourceLocation = fieldB.sourceLocation,
         )
     )
   }

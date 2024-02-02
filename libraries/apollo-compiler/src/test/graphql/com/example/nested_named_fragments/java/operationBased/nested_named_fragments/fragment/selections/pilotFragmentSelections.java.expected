@@ -14,10 +14,10 @@ import com.example.nested_named_fragments.type.Planet;
 import java.util.Arrays;
 import java.util.List;
 
-public class pilotFragmentSelections {
+public class PilotFragmentSelections {
   private static List<CompiledSelection> __homeworld = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Planet", Arrays.asList("Planet")).selections(planetFragmentSelections.__root).build()
+    new CompiledFragment.Builder("Planet", Arrays.asList("Planet")).selections(PlanetFragmentSelections.__root).build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

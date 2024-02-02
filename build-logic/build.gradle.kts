@@ -56,10 +56,10 @@ java {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-  options.release.set(11)
+  options.release.set(17)
 }
 tasks.withType(KotlinJvmCompile::class.java).configureEach {
-  kotlinOptions.jvmTarget = "11"
+  kotlinOptions.jvmTarget = "17"
 }
 
 gradlePlugin {

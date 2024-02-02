@@ -124,6 +124,8 @@ public class ApolloClient implements Closeable {
     }
     if (apolloRequest.getCanBeBatched() != null) {
       requestBuilder.addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.getCanBeBatched().toString());
+    } else if (canBeBatched != null)  {
+      requestBuilder.addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString());
     }
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);

@@ -1,0 +1,10 @@
+type Query {
+  users(offset: Int = 0, limit: Int = 10): [User!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  admin: Boolean
+}

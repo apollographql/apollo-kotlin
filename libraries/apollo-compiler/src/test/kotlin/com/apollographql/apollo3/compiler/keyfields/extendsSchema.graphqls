@@ -15,13 +15,3 @@ type Bar {
 }
 
 extend type Bar implements Node
-
-union Foo = A | B
-type A {
-  x: String!
-}
-type B {
-  x: String!
-}
-
-extend union Foo @typePolicy(keyFields: "x")

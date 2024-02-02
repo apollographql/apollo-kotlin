@@ -8,6 +8,20 @@ type Animal @typePolicy(keyFields: "id") {
   species: String!
 }
 
+interface Node @typePolicy(keyFields: "id version") {
+  id: ID!
+}
+
+union Foo = A | B
+type A {
+  x: String!
+}
+type B {
+  x: String!
+}
+
+extend union Foo @typePolicy(keyFields: "x")
+
 
 query GetAnimal {
   animal {

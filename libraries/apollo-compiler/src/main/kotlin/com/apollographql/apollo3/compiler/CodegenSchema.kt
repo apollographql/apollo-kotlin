@@ -13,11 +13,9 @@ import kotlinx.serialization.Serializable
 class CodegenSchema(
     @Serializable(with = SchemaSerializer::class)
     val schema: Schema,
-    val packageName: String,
-    val codegenModels: String,
+    val normalizedPath: String,
     val scalarMapping: Map<String, ScalarInfo>,
-    val targetLanguage: TargetLanguage,
-    val generateDataBuilders: Boolean,
+    val generateDataBuilders: Boolean
 )
 
 internal class CodegenType(

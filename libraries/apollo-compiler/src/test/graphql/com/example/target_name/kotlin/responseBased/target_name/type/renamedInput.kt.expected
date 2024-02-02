@@ -8,6 +8,6 @@ package com.example.target_name.type
 import com.apollographql.apollo3.api.Optional
 import kotlin.String
 
-public data class renamedInput(
+public data class RenamedInput(
   public val `field`: Optional<String?> = Optional.Absent,
 )

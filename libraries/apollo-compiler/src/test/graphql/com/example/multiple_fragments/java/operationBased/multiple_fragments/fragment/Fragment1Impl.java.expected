@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.multiple_fragments.fragment.selections.fragment1Selections;
+import com.example.multiple_fragments.fragment.selections.Fragment1Selections;
 import com.example.multiple_fragments.type.ANode;
 import java.io.IOException;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class Fragment1Impl implements Fragment<Fragment1> {
       "data",
       ANode.type
     )
-    .selections(fragment1Selections.__root)
+    .selections(Fragment1Selections.__root)
     .build();
   }
 

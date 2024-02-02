@@ -1,0 +1,29 @@
+type Query {
+  users(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+
+type PageInfo {
+  startCursor: String!
+  endCursor: String!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+type UserPage {
+  users: [User!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  admin: Boolean
+}

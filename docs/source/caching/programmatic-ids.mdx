@@ -74,9 +74,9 @@ val cacheKeyResolver = object: CacheKeyResolver() {
     // Even though we call leafType() here, we're guaranteed that the type is a composite type and not a list
     val typename = field.type.leafType().name
 
-    // resolveArgument returns the runtime value of the "id" argument
+    // argumentValue returns the runtime value of the "id" argument
     // from either the variables or as a literal value
-    val id = field.resolveArgument("id", variables)
+    val id = field.argumentValue("id", variables).getOrNull()
 
     if (id is String) {
       // This field has an id argument, so we can use it to compute a cache ID
@@ -127,9 +127,9 @@ override fun listOfCacheKeysForField(field: CompiledField, variables: Executable
   // Note that the field *can* be a list type here
   val typename = field.type.leafType().name
 
-  // resolveArgument returns the runtime value of the "id" argument
+  // argumentValue returns the runtime value of the "id" argument
   // from either the variables or as a literal value
-  val ids = field.resolveArgument("ids", variables)
+  val ids = field.argumentValue("ids", variables).getOrNull()
 
   if (ids is List<*>) {
     // This field has an id argument, so we can use it to compute a cache key

@@ -18,8 +18,8 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
-import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter;
-import com.example.target_name.type.renamedEnum;
+import com.example.target_name.type.RenamedEnum;
+import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
@@ -39,7 +39,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.Interface _interface = null;
       TestQuery.Union _union = null;
       java.lang.Object _scalar = null;
-      renamedEnum _enum = null;
+      RenamedEnum _enum = null;
 
       loop:
       while(true) {
@@ -48,7 +48,7 @@ public class TestQuery_ResponseAdapter {
           case 1: _interface = new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           case 2: _union = new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           case 3: _scalar = Adapters.NullableAnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 4: _enum = new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 4: _enum = new NullableAdapter<>(RenamedEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -78,7 +78,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar);
 
       writer.name("enum");
-      new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
+      new NullableAdapter<>(RenamedEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
     }
   }
 

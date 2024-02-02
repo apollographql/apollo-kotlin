@@ -88,11 +88,35 @@ internal class DefaultValidationScope(
   override val issues = issues ?: mutableListOf()
 }
 
+private fun ValidationScope.validateDirectiveInternal(
+    directive: GQLDirective,
+    directiveLocation: GQLDirectiveLocation,
+    directiveDefinition: GQLDirectiveDefinition,
+    registerVariableUsage: (VariableUsage) -> Unit,
+) {
+  if (directiveLocation !in directiveDefinition.locations) {
+    registerIssue(
+        message = "Directive '${directive.name}' cannot be applied on '$directiveLocation'",
+        sourceLocation = directive.sourceLocation
+    )
+
+    return
+  }
+
+  validateArguments(
+      directive.arguments,
+      directive.sourceLocation,
+      directiveDefinition.arguments,
+      "directive '${directiveDefinition.name}'",
+      registerVariableUsage
+  )
+}
+
 /**
  * @param directiveContext the node representing the location where this directive is applied
  */
-internal fun ValidationScope.validateDirective(
-    directive: GQLDirective,
+internal fun ValidationScope.validateDirectives(
+    directives: List<GQLDirective>,
     directiveContext: GQLNode,
     registerVariableUsage: (VariableUsage) -> Unit,
 ) {
@@ -124,53 +148,53 @@ internal fun ValidationScope.validateDirective(
     else -> error("Cannot determine directive location for $directiveContext")
 
   }
-  val directiveDefinition = directiveDefinitions[directive.name]
 
-  if (directiveDefinition == null) {
-    when (val originalName = originalDirectiveName(directive.name)) {
-      Schema.ONE_OF,
-      Schema.CATCH,
-      Schema.SEMANTIC_NON_NULL,
-      Schema.IGNORE_ERRORS,
-      -> {
-        // Require full schemas to allow the usage of newest directives
-        // See https://github.com/apollographql/apollo-kotlin/issues/2673
-        issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
+  val pairs = directives.mapNotNull { directive ->
+    val directiveDefinition = directiveDefinitions[directive.name]
+    if (directiveDefinition == null) {
+      when (val originalName = originalDirectiveName(directive.name)) {
+        Schema.ONE_OF,
+        Schema.CATCH,
+        Schema.SEMANTIC_NON_NULL,
+        Schema.IGNORE_ERRORS,
+        -> {
+          // Require full schemas to allow the usage of newest directives
+          // See https://github.com/apollographql/apollo-kotlin/issues/2673
+          issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
+        }
+
+        else -> {
+          issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
+        }
       }
 
-      else -> {
-        issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
-      }
+      return@mapNotNull null
     }
 
-    return
+    directive to directiveDefinition
   }
 
-  if (directiveLocation !in directiveDefinition.locations) {
-    registerIssue(
-        message = "Directive '${directive.name}' cannot be applied on '$directiveLocation'",
-        sourceLocation = directive.sourceLocation
-    )
+  pairs.forEach {
+    validateDirectiveInternal(it.first, directiveLocation, it.second, registerVariableUsage)
 
-    return
+    /**
+     * Apollo specific validation
+     */
+    if (originalDirectiveName(it.first.name) == Schema.NONNULL) {
+      extraValidateNonNullDirective(it.first, directiveContext)
+    }
+    if (originalDirectiveName(it.first.name) == TYPE_POLICY) {
+      extraValidateTypePolicyDirective(it.first, directiveContext)
+    }
   }
 
-  validateArguments(
-      directive.arguments,
-      directive.sourceLocation,
-      directiveDefinition.arguments,
-      "directive '${directiveDefinition.name}'",
-      registerVariableUsage
-  )
-
-  /**
-   * Apollo specific validation
-   */
-  if (originalDirectiveName(directive.name) == Schema.NONNULL) {
-    extraValidateNonNullDirective(directive, directiveContext)
-  }
-  if (originalDirectiveName(directive.name) == TYPE_POLICY) {
-    extraValidateTypePolicyDirective(directive, directiveContext)
+  pairs.groupBy { it.first.name }.values.filter { it.size > 1 }.forEach { listOfPairs ->
+    val definition = listOfPairs.first().second
+    if (!definition.repeatable) {
+      listOfPairs.forEach {
+        issues.add(OtherValidationIssue("Directive '@${it.first.name}' cannot be repeated", it.first.sourceLocation))
+      }
+    }
   }
 }
 
@@ -212,44 +236,53 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective, directiveContext: GQLNode) {
-  val keyFieldsArg = directive.arguments.firstOrNull { it.name == "keyFields" }
-  if (keyFieldsArg == null) {
-    return
-  }
-
   val fieldDefinitions: List<GQLFieldDefinition>
-  val type: String
+  val typeName: String
   when (directiveContext) {
     is GQLInterfaceTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     is GQLObjectTypeDefinition -> {
       fieldDefinitions = directiveContext.fields
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     is GQLUnionTypeDefinition -> {
       fieldDefinitions = emptyList()
-      type = directiveContext.name
+      typeName = directiveContext.name
     }
 
     else -> {
       // Should be caught by previous validation steps
-      error("")
+      return
     }
   }
 
-  (keyFieldsArg.value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach { selection ->
-    if (selection !is GQLField) {
-      registerIssue("Fragments are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
-    } else if (selection.selections.isNotEmpty()) {
-      registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
-    } else {
-      val definition = fieldDefinitions.firstOrNull { it.name == selection.name }
-      if (definition == null) {
-        registerIssue("Field '${selection.name}' is not a valid key field for type '$type'", keyFieldsArg.sourceLocation)
+  validateTypePolicyArgument(directive, "keyFields", typeName, fieldDefinitions)
+  validateTypePolicyArgument(directive, "embeddedFields", typeName, fieldDefinitions)
+  validateTypePolicyArgument(directive, "connectionFields", typeName, fieldDefinitions)
+}
+
+private fun ValidationScope.validateTypePolicyArgument(
+    directive: GQLDirective,
+    argumentName: String,
+    typeName: String,
+    fieldDefinitions: List<GQLFieldDefinition>,
+) {
+  val keyFieldsArg = directive.arguments.firstOrNull { it.name == argumentName }
+  if (keyFieldsArg != null) {
+    (keyFieldsArg.value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach { selection ->
+      if (selection !is GQLField) {
+        registerIssue("Fragments are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+      } else if (selection.selections.isNotEmpty()) {
+        registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", keyFieldsArg.sourceLocation)
+      } else {
+        val definition = fieldDefinitions.firstOrNull { it.name == selection.name }
+        if (definition == null) {
+          registerIssue("No such field: '$typeName.${selection.name}'", keyFieldsArg.sourceLocation)
+        }
       }
     }
   }

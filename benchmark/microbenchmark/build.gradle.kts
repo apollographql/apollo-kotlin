@@ -72,7 +72,7 @@ configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
+    minSdk = libs.versions.android.sdkversion.benchmark.min.get().toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
@@ -93,16 +93,16 @@ java {
 
 configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
   service("benchmark") {
-    sourceFolder.set("benchmark")
+    srcDir("src/main/graphql/benchmark")
     packageName.set("com.apollographql.apollo3.benchmark")
   }
   service("calendar-response") {
-    sourceFolder.set("calendar")
+    srcDir("src/main/graphql/calendar")
     codegenModels.set("responseBased")
     packageName.set("com.apollographql.apollo3.calendar.response")
   }
   service("calendar-operation") {
-    sourceFolder.set("calendar")
+    srcDir("src/main/graphql/calendar")
     codegenModels.set("operationBased")
     packageName.set("com.apollographql.apollo3.calendar.operation")
   }

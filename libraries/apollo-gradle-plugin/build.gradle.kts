@@ -6,7 +6,8 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = null
+    javaModuleName = null,
+    jvmTarget = 11 // AGP requires 11
 )
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated

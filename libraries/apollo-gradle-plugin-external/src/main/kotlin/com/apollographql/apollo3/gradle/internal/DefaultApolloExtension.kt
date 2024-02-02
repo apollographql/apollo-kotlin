@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.mergeWith
+import com.apollographql.apollo3.compiler.toIrOperations
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
@@ -12,6 +14,7 @@ import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.SchemaConnection
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
+import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
@@ -25,7 +28,7 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.component.SoftwareComponentFactory
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
@@ -36,7 +39,6 @@ import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-@Suppress("UnstableApiUsage")
 abstract class DefaultApolloExtension(
     private val project: Project,
     private val defaultService: DefaultService,
@@ -53,7 +55,7 @@ abstract class DefaultApolloExtension(
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
         name = service.name,
-        schemaFiles = service.lazySchemaFiles(project),
+        schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
         upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
@@ -93,7 +95,9 @@ abstract class DefaultApolloExtension(
         usedOptions = mutableSetOf<String>().apply {
           if (service.includes.isPresent) add("includes")
           if (service.excludes.isPresent) add("excludes")
+          @Suppress("DEPRECATION")
           if (service.sourceFolder.isPresent) add("excludes")
+          @Suppress("DEPRECATION")
           if (service.schemaFile.isPresent) add("schemaFile")
           if (!service.schemaFiles.isEmpty) add("schemaFiles")
           if (service.scalarAdapterMapping.isNotEmpty()) {
@@ -176,6 +180,7 @@ abstract class DefaultApolloExtension(
     }
 
     project.afterEvaluate {
+      @Suppress("DEPRECATION")
       val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
           || defaultService.schemaFile.isPresent
           || !defaultService.schemaFiles.isEmpty
@@ -220,12 +225,11 @@ abstract class DefaultApolloExtension(
   private fun checkApolloMetadataIsEmpty() {
     check(apolloMetadataConfiguration.dependencies.isEmpty()) {
       val projectLines = apolloMetadataConfiguration.dependencies.map {
-        if (it is ProjectDependency) {
-          "project(\"${it.dependencyProject.path}\")"
-        } else if (it is ExternalModuleDependency) {
-          "\"group:artifact:version\""
-        } else {
-          "project(\":foo\")"
+        when (it) {
+          is ProjectDependency -> "project(\"${it.dependencyProject.path}\")"
+          is ExternalModuleDependency -> "\"group:artifact:version\""
+          else -> "project(\":foo\")"
+
         }
       }.joinToString("\n") { "    dependsOn($it)" }
 
@@ -358,8 +362,12 @@ abstract class DefaultApolloExtension(
     services.add(service)
 
     if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+      @Suppress("DEPRECATION")
       val sourceFolder = service.sourceFolder.getOrElse("")
-      val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
+      if (sourceFolder.isNotEmpty()) {
+        project.logger.lifecycle("Apollo: using 'sourceFolder' is deprecated, please replace with 'srcDir(\"src/${project.mainSourceSet()}/graphql/$sourceFolder\")'")
+      }
+      val dir = File(project.projectDir, "src/${project.mainSourceSet()}/graphql/$sourceFolder")
 
       service.graphqlSourceDirectorySet.srcDir(dir)
     }
@@ -368,7 +376,23 @@ abstract class DefaultApolloExtension(
 
     val sourcesBaseTaskProvider: TaskProvider<*>
 
-    val optionsTaskProvider = registerOptionsTask(project, service)
+    val otherOptionsConsumerConfiguration = createConfiguration(
+        name = ModelNames.otherOptionsConsumerConfiguration(service),
+        isCanBeConsumed = false,
+        extendsFrom = null,
+        usage = USAGE_APOLLO_OTHER_OPTIONS,
+        serviceName = service.name,
+    )
+
+    val otherOptionsProducerConfiguration = createConfiguration(
+        name = ModelNames.otherOptionsProducerConfiguration(service),
+        isCanBeConsumed = true,
+        extendsFrom = otherOptionsConsumerConfiguration,
+        usage = USAGE_APOLLO_OTHER_OPTIONS,
+        serviceName = service.name,
+    )
+
+    val optionsTaskProvider = registerOptionsTask(project, service, otherOptionsConsumerConfiguration)
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service)
     } else {
@@ -439,12 +463,23 @@ abstract class DefaultApolloExtension(
       /**
        * Tasks
        */
-      val codegenSchemaTaskProvider = registerCodegenSchemaTask(
-          project = project,
-          service = service,
-          optionsTaskProvider = optionsTaskProvider,
-          schemaConsumerConfiguration = codegenSchemaConsumerConfiguration
-      )
+      val codegenSchemaTaskProvider = if (service.isSchemaModule()) {
+        registerCodegenSchemaTask(
+            project = project,
+            service = service,
+            optionsTaskProvider = optionsTaskProvider,
+            schemaConsumerConfiguration = codegenSchemaConsumerConfiguration
+        )
+      } else {
+        check(service.scalarTypeMapping.isEmpty()) {
+          "Apollo: custom scalars are not used in non-schema module. Add custom scalars to your schema module."
+        }
+        check(!service.generateDataBuilders.isPresent) {
+          "Apollo: generateDataBuilders is not used in non-schema module. Add generateDataBuilders to your schema module."
+        }
+
+        null
+      }
 
       val irOperationsTaskProvider = registerIrOperationsTask(
           project = project,
@@ -454,25 +489,13 @@ abstract class DefaultApolloExtension(
           irOptionsTaskProvider = optionsTaskProvider,
           upstreamIrFiles = upstreamIrConsumerConfiguration)
 
-      val irSchemaTaskProvider = if (service.isSchemaModule()) {
-        registerIrSchemaTask(
-            project = project,
-            service = service,
-            downstreamIrOperations = downstreamIrConsumerConfiguration,
-            codegenSchemaTaskProvider = codegenSchemaTaskProvider,
-            irOperationsTaskProvider = irOperationsTaskProvider
-        )
-      } else {
-        null
-      }
-
       val sourcesFromIrTaskProvider = registerSourcesFromIrTask(
           project = project,
           service = service,
           schemaConsumerConfiguration = codegenSchemaConsumerConfiguration,
           generateOptionsTaskProvider = optionsTaskProvider,
           codegenSchemaTaskProvider = codegenSchemaTaskProvider,
-          irSchemaTaskProvider = irSchemaTaskProvider,
+          downstreamIrOperations = downstreamIrConsumerConfiguration,
           irOperationsTaskProvider = irOperationsTaskProvider,
           upstreamCodegenMetadata = codegenMetadataConsumerConfiguration
       )
@@ -480,25 +503,32 @@ abstract class DefaultApolloExtension(
       sourcesBaseTaskProvider = sourcesFromIrTaskProvider
 
       project.artifacts {
-        it.add(codegenSchemaProducerConfiguration.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
-          it.classifier = "apollo-codegen-schema-${service.name}"
+        if (codegenSchemaTaskProvider != null) {
+          it.add(codegenSchemaProducerConfiguration.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
+            it.classifier = "codegen-schema-${service.name}"
+          }
+          it.add(otherOptionsProducerConfiguration.name, optionsTaskProvider.flatMap { it.otherOptions }) {
+            it.classifier = "other-options-${service.name}"
+          }
         }
         it.add(upstreamIrProducerConfiguration.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
-          it.classifier = "apollo-ir-${service.name}"
+          it.classifier = "ir-${service.name}"
         }
         it.add(downstreamIrProducerConfiguration.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
-          it.classifier = "apollo-ir-${service.name}"
+          it.classifier = "ir-${service.name}"
         }
         it.add(codegenMetadataProducerConfiguration.name, sourcesFromIrTaskProvider.flatMap { it.metadataOutputFile }) {
-          it.classifier = "apollo-codegen-metadata-${service.name}"
+          it.classifier = "codegen-metadata-${service.name}"
         }
       }
 
       adhocComponentWithVariants.addVariantsFromConfiguration(codegenMetadataProducerConfiguration) {}
       adhocComponentWithVariants.addVariantsFromConfiguration(upstreamIrProducerConfiguration) {}
       adhocComponentWithVariants.addVariantsFromConfiguration(codegenSchemaProducerConfiguration) {}
+      adhocComponentWithVariants.addVariantsFromConfiguration(otherOptionsProducerConfiguration) {}
 
       service.upstreamDependencies.forEach {
+        otherOptionsConsumerConfiguration.dependencies.add(it)
         codegenSchemaConsumerConfiguration.dependencies.add(it)
         upstreamIrConsumerConfiguration.dependencies.add(it)
         codegenMetadataConsumerConfiguration.dependencies.add(it)
@@ -561,50 +591,39 @@ abstract class DefaultApolloExtension(
       project: Project,
       service: DefaultService,
       schemaConsumerConfiguration: Configuration,
-      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
+      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
       generateOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
-      irSchemaTaskProvider: TaskProvider<ApolloGenerateIrSchemaTask>?,
+      downstreamIrOperations: FileCollection,
       irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
       upstreamCodegenMetadata: Configuration,
   ): TaskProvider<ApolloGenerateSourcesFromIrTask> {
-    return project.tasks.register(ModelNames.generateApolloSourcesFromIr(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
+    return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
       configureBaseCodegenTask(project, task, generateOptionsTaskProvider, service)
 
       task.codegenSchemas.from(schemaConsumerConfiguration)
-      task.codegenSchemas.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
+      if (codegenSchemaTaskProvider != null) {
+        task.codegenSchemas.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
+      }
       task.irOperations.set(irOperationsTaskProvider.flatMap { it.irOperationsFile })
       task.upstreamMetadata.from(upstreamCodegenMetadata)
-      if (irSchemaTaskProvider != null) {
-        task.irSchema.set(irSchemaTaskProvider.flatMap { it.irSchemaFile })
-      }
+      task.downstreamUsedCoordinates.set(downstreamIrOperations.elements.map {
+        it.map { it.asFile.toIrOperations() }.fold(emptyMap<String, Set<String>>()) { acc, element ->
+          acc.mergeWith(element.usedFields)
+        }
+      })
+      task.downstreamUsedCoordinates.finalizeValueOnRead()
+
       task.metadataOutputFile.set(BuildDirLayout.metadata(project, service))
-    }
-  }
-
-  private fun registerIrSchemaTask(
-      project: Project,
-      service: DefaultService,
-      downstreamIrOperations: Configuration,
-      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
-      irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
-  ): TaskProvider<ApolloGenerateIrSchemaTask> {
-    return project.tasks.register(ModelNames.generateApolloIrSchema(service), ApolloGenerateIrSchemaTask::class.java) { task ->
-      task.group = TASK_GROUP
-      task.description = "Generate Apollo Used Coordinates for service '${service.name}'"
-
-      task.codegenSchemaFile.set(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
-      task.irSchemaFile.set(BuildDirLayout.usedCoordinates(project, service))
-      task.downStreamIrOperations.from(downstreamIrOperations)
-      task.irOperations.set(irOperationsTaskProvider.flatMap { it.irOperationsFile })
     }
   }
 
   private fun registerOptionsTask(
       project: Project,
       service: DefaultService,
+      upstreamOtherOptions: FileCollection,
   ): TaskProvider<ApolloGenerateOptionsTask> {
     return project.tasks.register(ModelNames.generateApolloOptions(service), ApolloGenerateOptionsTask::class.java) { task ->
       task.group = TASK_GROUP
@@ -613,10 +632,8 @@ abstract class DefaultApolloExtension(
       /**
        * CodegenSchemaOptions
        */
-      task.targetLanguage.set(service.targetLanguage())
       task.scalarTypeMapping.set(service.scalarTypeMapping)
       task.scalarAdapterMapping.set(service.scalarAdapterMapping)
-      task.codegenModels.set(service.codegenModels)
       task.generateDataBuilders.set(service.generateDataBuilders)
 
       task.codegenSchemaOptionsFile.set(BuildDirLayout.codegenSchemaOptions(project, service))
@@ -624,6 +641,7 @@ abstract class DefaultApolloExtension(
       /**
        * IrOptions
        */
+      task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.decapitalizeFields.set(service.decapitalizeFields)
@@ -631,15 +649,17 @@ abstract class DefaultApolloExtension(
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
-      task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching())
+      task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
 
       task.irOptionsFile.set(BuildDirLayout.irOptions(project, service))
 
       /**
        * CommonCodegenOptions
        */
+      task.generateKotlinModels.set(service.generateKotlinModels)
+      task.languageVersion.set(service.languageVersion)
       task.packageName.set(service.packageName)
-      task.packageNamesFromFilePaths.set(service.packageNamesFromFilePaths)
+      task.rootPackageName.set(service.rootPackageName)
       task.useSemanticNaming.set(service.useSemanticNaming)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateMethods.set(service.generateMethods.map { list ->
@@ -665,13 +685,24 @@ abstract class DefaultApolloExtension(
        */
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateAsInternal.set(service.generateAsInternal)
-      task.generateFilterNotNull.set(service.generateFilterNotNull())
       task.generateInputBuilders.set(service.generateInputBuilders)
       task.addJvmOverloads.set(service.addJvmOverloads)
       task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)
       task.jsExport.set(service.jsExport)
 
       task.codegenOptions.set(BuildDirLayout.codegenOptions(project, service))
+
+      /**
+       * Gradle model
+       */
+      task.upstreamOtherOptions.from(upstreamOtherOptions)
+      task.isJavaPluginApplied = project.hasJavaPlugin()
+      task.kgpVersion = project.apolloGetKotlinPluginVersion()
+      task.isKmp = project.isKotlinMultiplatform
+      task.isMultiModule = service.isMultiModule()
+      task.hasDownstreamDependencies = service.downstreamDependencies.isNotEmpty()
+
+      task.otherOptions.set(BuildDirLayout.otherOptions(project, service))
 
       task.hasPackageNameGenerator = service.packageNameGenerator.isPresent
     }
@@ -681,7 +712,7 @@ abstract class DefaultApolloExtension(
       project: Project,
       service: DefaultService,
       schemaConsumerConfiguration: Configuration,
-      schemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
+      schemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
       irOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       upstreamIrFiles: Configuration,
   ): TaskProvider<ApolloGenerateIrOperationsTask> {
@@ -690,8 +721,11 @@ abstract class DefaultApolloExtension(
       task.description = "Generate Apollo IR operations for service '${service.name}'"
 
       task.codegenSchemaFiles.from(schemaConsumerConfiguration)
-      task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
-      task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
+      if (schemaTaskProvider != null) {
+        task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
+      }
+      task.graphqlFiles.from(service.graphqlSourceDirectorySet)
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamIrFiles.from(upstreamIrFiles)
       task.irOptionsFile.set(irOptionsTaskProvider.flatMap { it.irOptionsFile })
 
@@ -709,18 +743,12 @@ abstract class DefaultApolloExtension(
       task.group = TASK_GROUP
       task.description = "Generate Apollo schema for service '${service.name}'"
 
-      // This has to be lazy in case the schema is not written yet during configuration
-      // See the `graphql files can be generated by another task` test
-      task.schemaFiles.from(project.provider { service.lazySchemaFiles(project) })
+      task.schemaFiles.from(service.schemaFiles(project))
+      task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamSchemaFiles.from(schemaConsumerConfiguration)
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile })
-      if (service.packageNamesFromFilePaths) {
-        task.packageNameRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
-      }
-      task.packageNameGenerator = service.packageNameGenerator.orNull
-      task.userGenerateKotlinModels.set(service.generateKotlinModels)
-      task.userCodegenModels.set(service.codegenModels)
-      task.codegenSchemaFile.set(BuildDirLayout.schema(project, service))
+      task.codegenSchemaFile.set(BuildDirLayout.codegenSchema(project, service))
     }
   }
 
@@ -776,10 +804,9 @@ abstract class DefaultApolloExtension(
       generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
   ) {
-    task.graphqlFiles.from(service.graphqlSourceDirectorySet)
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
-    task.setPackageNameProperties(service)
+    task.packageNameGenerator = service.packageNameGenerator.orNull
     service.packageNameGenerator.disallowChanges()
 
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
@@ -806,35 +833,13 @@ abstract class DefaultApolloExtension(
 
       configureBaseCodegenTask(project, task, optionsTaskProvider, service)
 
-      // This has to be lazy in case the schema is not written yet during configuration
-      // See the `graphql files can be generated by another task` test
-      task.schemaFiles.from(project.provider { service.lazySchemaFiles(project) })
+      task.graphqlFiles.from(service.graphqlSourceDirectorySet)
+      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
+      task.schemaFiles.from(service.schemaFiles(project))
+      task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.map { it.codegenSchemaOptionsFile.get() })
       task.irOptionsFile.set(optionsTaskProvider.map { it.irOptionsFile.get() })
     }
-  }
-
-  /**
-   * XXX: this returns an absolute path, which might be an issue for the build cache.
-   * I don't think this is much of an issue because tasks like ApolloDownloadSchemaTask don't have any
-   * outputs and are therefore never up-to-date so the build cache will not help much.
-   *
-   * If that ever becomes an issue, making the path relative to the project root might be a good idea.
-   */
-  private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): File {
-    if (schemaFile.isPresent) {
-      return schemaFile.get().asFile
-    }
-
-    val candidates = service.lazySchemaFiles(project)
-    check(candidates.isNotEmpty()) {
-      "No schema files found. Specify introspection.schemaFile or registry.schemaFile"
-    }
-    check(candidates.size == 1) {
-      "Multiple schema files found:\n${candidates.joinToString("\n")}\n\nSpecify introspection.schemaFile or registry.schemaFile"
-    }
-
-    return candidates.single()
   }
 
   private fun registerDownloadSchemaTasks(service: DefaultService) {
@@ -846,7 +851,7 @@ abstract class DefaultApolloExtension(
       taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.outputFile.set(lazySchemaFileForDownload(service, introspection.schemaFile))
+        task.outputFile.set(service.guessSchemaFile(project, introspection.schemaFile))
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
       }
@@ -857,7 +862,7 @@ abstract class DefaultApolloExtension(
       taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.outputFile.set(lazySchemaFileForDownload(service, registry.schemaFile))
+        task.outputFile.set(service.guessSchemaFile(project, registry.schemaFile))
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)
@@ -899,6 +904,7 @@ abstract class DefaultApolloExtension(
       service(name) { service ->
         action.execute(service)
 
+        @Suppress("DEPRECATION")
         check(!service.sourceFolder.isPresent) {
           "Apollo: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
@@ -934,6 +940,7 @@ abstract class DefaultApolloExtension(
     private const val USAGE_APOLLO_UPSTREAM_IR = "apollo-upstream-ir"
     private const val USAGE_APOLLO_DOWNSTREAM_IR = "apollo-downstream-ir"
     private const val USAGE_APOLLO_CODEGEN_SCHEMA = "apollo-codegen-schema"
+    private const val USAGE_APOLLO_OTHER_OPTIONS = "apollo-other-options"
 
     private fun getDeps(configurations: ConfigurationContainer): List<String> {
       return configurations.flatMap { configuration ->
@@ -957,38 +964,6 @@ abstract class DefaultApolloExtension(
     // Don't use `graphqlSourceDirectorySet.isEmpty` here, it doesn't work for some reason
     private val SourceDirectorySet.isReallyEmpty
       get() = sourceDirectories.isEmpty
-
-    private fun mainSourceSet(project: Project): String {
-      return when (project.extensions.findByName("kotlin")) {
-        is KotlinMultiplatformExtension -> "commonMain"
-        else -> "main"
-      }
-    }
-
-    /**
-     * May return an empty set
-     */
-    fun DefaultService.lazySchemaFiles(project: Project): Set<File> {
-      val files = if (schemaFile.isPresent) {
-        check(schemaFiles.isEmpty) {
-          "Specifying both schemaFile and schemaFiles is an error"
-        }
-        project.files(schemaFile)
-      } else {
-        schemaFiles
-      }
-
-      if (!files.isEmpty) {
-        return files.files
-      }
-
-      return graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-        srcDir.walkTopDown().filter {
-          it.extension in listOf("json", "sdl", "graphqls")
-              && !it.name.startsWith("used") // Avoid detecting the used coordinates as a schema
-        }.toList()
-      }.toSet()
-    }
 
     internal fun Project.hasJavaPlugin() = project.extensions.findByName("java") != null
     internal fun Project.hasKotlinPlugin() = project.extensions.findByName("kotlin") != null

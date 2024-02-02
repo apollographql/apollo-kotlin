@@ -66,7 +66,8 @@
       "Mocking HTTP responses": "/testing/mocking-http-responses",
       "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
       "Data builders": "/testing/data-builders",
-      "UI Tests": "/testing/ui-tests"
+      "UI Tests": "/testing/ui-tests",
+      "Apollo Debug Server": "/testing/apollo-debug-server"
     },
     "Advanced": {
       "Uploading files": "/advanced/upload",

@@ -1,8 +1,8 @@
 name: benchmarks
 
 on:
-  #  pull_request:
-  #    branches: [ '*' ]
+#  pull_request:
+#     branches: [ '*' ]
   schedule:
     - cron: '0 3 * * *'
 env:
@@ -10,15 +10,15 @@ env:
 
 jobs:
   benchmarks:
-    runs-on: macos-11
+    runs-on: macos-14
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
-      - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 #v4.0.0
         with:
           distribution: 'temurin'
           java-version: 17
-      - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+      - uses: gradle/gradle-build-action@42452daeb5b454a76f686a8e4de8234afd7b1f44 #v2.12.0
         with:
           gradle-home-cache-cleanup: true
       - run: |
@@ -35,23 +35,12 @@ jobs:
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
       # Step can be removed if/when gcloud is added to the macos image - See https://github.com/actions/virtual-environments/issues/4639
       - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@d51b5346f85640ec2aa2fa057354d2b82c2fcbce #v1.0.1
-      - name: microbenchmarks
-        uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
-        with:
-          google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
-
-          app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
-          test_apk: 'benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk'
-          device_model: 'redfin,locale=en,orientation=portrait'
-          directories_to_pull: '/sdcard/Download'
-          environment_variables: 'clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true'
-
-          dd_api_key: ${{ secrets.DD_API_KEY }}
-          dd_metric_prefix: 'apollo.kotlin'
-          dd_dashboard_url: 'https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa'
-
-          github_token: ${{ github.token }}
+        uses: google-github-actions/setup-gcloud@98ddc00a17442e89a24bbf282954a3b65ce6d200 #v2.1.0
+      - run: ./scripts/run-benchmarks.main.kts
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
       - name: nativebenchmarks
         run: |
           # Run the native benchmarks

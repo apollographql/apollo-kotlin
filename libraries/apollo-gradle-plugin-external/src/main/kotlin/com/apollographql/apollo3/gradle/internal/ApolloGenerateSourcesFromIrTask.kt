@@ -1,9 +1,16 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.codegen.writeTo
+import com.apollographql.apollo3.compiler.toCodegenMetadata
+import com.apollographql.apollo3.compiler.toCodegenOptions
+import com.apollographql.apollo3.compiler.toCodegenSchema
+import com.apollographql.apollo3.compiler.toIrOperations
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
@@ -23,10 +30,8 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val irOperations: RegularFileProperty
 
-  @get:InputFile
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  @get:Optional
-  abstract val irSchema: RegularFileProperty
+  @get:Input
+  abstract val downstreamUsedCoordinates: MapProperty<String, Set<String>>
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -40,20 +45,18 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
   fun taskAction() {
     val codegenSchemaFile = codegenSchemas.findCodegenSchemaFile()
 
-    ApolloCompiler.buildSchemaAndOperationSources(
-        codegenSchemaFile = codegenSchemaFile,
-        irOperationsFile = irOperations.get().asFile,
-        irSchemaFile = irSchema.orNull?.asFile,
-        upstreamCodegenMetadataFiles = upstreamMetadata.files,
-        codegenOptionsFile = codegenOptionsFile.get().asFile,
-        packageNameGenerator = packageNameGenerator,
-        packageNameRoots = packageNameRoots,
+    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        irOperations = irOperations.get().asFile.toIrOperations(),
+        downstreamUsedCoordinates = downstreamUsedCoordinates.get(),
+        upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
+        codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
+        layout = layout()?.invoke(codegenSchemaFile.toCodegenSchema()),
         compilerKotlinHooks = compilerKotlinHooks,
         compilerJavaHooks = compilerJavaHooks,
-        sourcesDir = outputDir.get().asFile,
         operationManifestFile = operationManifestFile.orNull?.asFile,
-        codegenMetadataFile = metadataOutputFile.orNull?.asFile
-    )
+        operationOutputGenerator = operationOutputGenerator
+    ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
   }
 
   companion object {

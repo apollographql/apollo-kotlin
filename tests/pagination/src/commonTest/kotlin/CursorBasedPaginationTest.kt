@@ -17,9 +17,10 @@ import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
-import pagination.type.buildUser
-import pagination.type.buildUserConnection
-import pagination.type.buildUserEdge
+import pagination.cursorBased.UsersQuery
+import pagination.cursorBased.type.buildUser
+import pagination.cursorBased.type.buildUserConnection
+import pagination.cursorBased.type.buildUserEdge
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -56,9 +57,9 @@ class CursorBasedPaginationTest {
     apolloStore.clearAll()
 
     // First page
-    val query1 = UsersCursorBasedQuery(first = Optional.Present(2))
-    val data1 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query1 = UsersQuery(first = Optional.Present(2))
+    val data1 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -81,9 +82,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query2 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
-    val data2 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
+    val data2 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -102,8 +103,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    var expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -136,9 +137,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query3 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
-    val data3 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
+    val data3 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -157,8 +158,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -203,9 +204,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page before
-    val query4 = UsersCursorBasedQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
-    val data4 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query4 = UsersQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
+    val data4 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -224,8 +225,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -282,9 +283,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
-    val query5 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
-    val data5 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query5 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
+    val data5 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx50"
@@ -307,9 +308,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Empty page (should keep previous result)
-    val query6 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
-    val data6 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query6 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
+    val data6 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = emptyList()
       }
     }
@@ -333,9 +334,9 @@ class CursorBasedPaginationTest {
         .build()
 
     // First page
-    val query1 = UsersCursorBasedQuery(first = Optional.Present(2))
-    val data1 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query1 = UsersQuery(first = Optional.Present(2))
+    val data1 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -360,9 +361,9 @@ class CursorBasedPaginationTest {
 
 
     // Page after
-    val query2 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
-    val data2 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
+    val data2 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -387,9 +388,9 @@ class CursorBasedPaginationTest {
 
 
     // Page after
-    val query3 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
-    val data3 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
+    val data3 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -409,8 +410,8 @@ class CursorBasedPaginationTest {
     apolloClient.enqueueTestResponse(query3, data3)
     resultData = apolloClient.query(query3).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList().map { it.data }
     // Cache: data1 merged with data2
-    val data1MergedWith2 = UsersCursorBasedQuery.Data {
-      usersCursorBased = buildUserConnection {
+    val data1MergedWith2 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"

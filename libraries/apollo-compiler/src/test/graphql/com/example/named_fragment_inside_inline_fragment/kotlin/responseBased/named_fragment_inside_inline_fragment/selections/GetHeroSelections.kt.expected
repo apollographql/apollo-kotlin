@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterAppearsInSelections
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterNameSelections
 import com.example.named_fragment_inside_inline_fragment.type.Character
 import com.example.named_fragment_inside_inline_fragment.type.GraphQLString
 import kotlin.collections.List
@@ -25,12 +25,12 @@ public object GetHeroSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(characterNameSelections.__root)
+        ).selections(CharacterNameSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(characterAppearsInSelections.__root)
+        ).selections(CharacterAppearsInSelections.__root)
         .build()
       )
 

@@ -2,35 +2,46 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.CodegenOptions
 import com.apollographql.apollo3.compiler.CodegenSchemaOptions
-import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.IrOptions
-import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.KotlinCodegenOptions
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
+import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.writeTo
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 abstract class ApolloGenerateOptionsTask : DefaultTask() {
   /**
    * CodegenSchemaOptions
    */
   @get:Input
-  abstract val targetLanguage: Property<TargetLanguage>
+  @get:Optional
+  abstract val generateKotlinModels: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val languageVersion: Property<String>
 
   @get:Input
   @get:Optional
@@ -98,7 +109,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val packageNamesFromFilePaths: Property<Boolean>
+  abstract val rootPackageName: Property<String>
 
   @get:Input
   @get:Optional
@@ -160,10 +171,6 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateFilterNotNull: Property<Boolean>
-
-  @get:Input
-  @get:Optional
   abstract val generateInputBuilders: Property<Boolean>
 
   @get:Input
@@ -181,13 +188,38 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @get:OutputFile
   abstract val codegenOptions: RegularFileProperty
 
+  /**
+   * Gradle model
+   */
+  @get:InputFiles
+  abstract val upstreamOtherOptions: ConfigurableFileCollection
+
+  @get:Input
+  abstract var isJavaPluginApplied: Boolean
+
+  @get:Input
+  @get:Optional
+  abstract var kgpVersion: String?
+
+  @get:Input
+  abstract var isKmp: Boolean
+
+  @get:Input
+  abstract var isMultiModule: Boolean
+
+  @get:Input
+  abstract var hasDownstreamDependencies: Boolean
+
   @get:Internal
   var hasPackageNameGenerator: Boolean = false
+
+  @get:OutputFile
+  abstract val otherOptions: RegularFileProperty
 
   @TaskAction
   fun taskAction() {
     check(
-        packageName.isPresent || hasPackageNameGenerator || packageNamesFromFilePaths.isPresent
+        packageName.isPresent || rootPackageName.isPresent || hasPackageNameGenerator
     ) {
       """
             |Apollo: specify 'packageName':
@@ -199,16 +231,21 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
           """.trimMargin()
     }
 
+    val upstreamOtherOptions = upstreamOtherOptions.firstOrNull()?.toOtherOptions()
+    val upstreamTargetLanguage = upstreamOtherOptions?.targetLanguage
+    val targetLanguage = targetLanguage(generateKotlinModels.orNull, languageVersion.orNull, isJavaPluginApplied, kgpVersion, upstreamTargetLanguage)
+    val generateFilterNotNull = generateFilterNotNull(targetLanguage, isKmp)
+    val alwaysGenerateTypesMatching = alwaysGenerateTypesMatching(alwaysGenerateTypesMatching.orNull, isMultiModule, hasDownstreamDependencies)
+    val upstreamCodegenModels = upstreamOtherOptions?.codegenModels
+    val codegenModels = codegenModels(codegenModels.orNull, upstreamCodegenModels)
+
     CodegenSchemaOptions(
-        targetLanguage = targetLanguage.get(),
         scalarMapping = scalarMapping(scalarTypeMapping, scalarAdapterMapping),
-        codegenModels = codegenModels.orNull,
         generateDataBuilders = generateDataBuilders.orNull,
-        packageName = packageName.orNull,
-        packageNamesFromFilePaths = packageNamesFromFilePaths.orNull
     ).writeTo(codegenSchemaOptionsFile.get().asFile)
 
     IrOptions(
+        codegenModels = codegenModels,
         addTypename = addTypename.orNull,
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.orNull,
         decapitalizeFields = decapitalizeFields.orNull,
@@ -216,45 +253,107 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.orNull,
         failOnWarnings = failOnWarnings.orNull,
         generateOptionalOperationVariables = generateOptionalOperationVariables.orNull,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.orNull
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching
     ).writeTo(irOptionsFile.get().asFile)
 
-    val common = CommonCodegenOptions(
-        packageName = packageName.orNull,
-        packageNamesFromFilePaths = packageNamesFromFilePaths.orNull,
+    CodegenOptions(
+        targetLanguage = targetLanguage,
         useSemanticNaming = useSemanticNaming.orNull,
         generateFragmentImplementations = generateFragmentImplementations.orNull,
         generateMethods = generateMethods.orNull,
         generateQueryDocument = generateQueryDocument.orNull,
         generateSchema = generateSchema.orNull,
         generatedSchemaName = generatedSchemaName.orNull,
-        operationManifestFormat = operationManifestFormat.orNull
-    )
-
-    val java = JavaCodegenOptions(
+        operationManifestFormat = operationManifestFormat.orNull,
         nullableFieldStyle = nullableFieldStyle.orNull,
         generateModelBuilders = generateModelBuilders.orNull,
         classesForEnumsMatching = classesForEnumsMatching.orNull,
         generatePrimitiveTypes = generatePrimitiveTypes.orNull,
-    )
-
-    val kotlin = KotlinCodegenOptions(
         generateAsInternal = generateAsInternal.orNull,
-        generateFilterNotNull = generateFilterNotNull.orNull,
+        generateFilterNotNull = generateFilterNotNull,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.orNull,
         addJvmOverloads = addJvmOverloads.orNull,
         requiresOptInAnnotation = requiresOptInAnnotation.orNull,
         jsExport = jsExport.orNull,
-        generateInputBuilders = generateInputBuilders.orNull
-    )
-
-    CodegenOptions(
-        common = common,
-        java = java,
-        kotlin = kotlin
+        generateInputBuilders = generateInputBuilders.orNull,
+        decapitalizeFields = decapitalizeFields.orNull,
+        addDefaultArgumentForInputObjects = true,
+        addUnknownForEnums = true,
+        packageName = packageName.orNull,
+        rootPackageName = rootPackageName.orNull
     ).writeTo(codegenOptions.get().asFile)
+
+    OtherOptions(targetLanguage, codegenModels).writeTo(otherOptions.get().asFile)
+  }
+
+  private fun codegenModels(codegenModels: String?, upstreamCodegenModels: String?): String {
+    if (codegenModels != null) {
+      setOf(MODELS_OPERATION_BASED, MODELS_RESPONSE_BASED, MODELS_OPERATION_BASED_WITH_INTERFACES).apply {
+        check(contains(codegenModels)) {
+          "Apollo: unknown codegenModels '$codegenModels'. Valid values: $this"
+        }
+      }
+
+      check(upstreamCodegenModels == null || codegenModels == upstreamCodegenModels) {
+        "Apollo: Expected '$upstreamCodegenModels', got '$codegenModels'. Check your codegenModels setting."
+      }
+      return codegenModels
+    }
+    if (upstreamCodegenModels != null) {
+      return upstreamCodegenModels
+    }
+
+    return MODELS_OPERATION_BASED
   }
 }
+
+private fun targetLanguage(generateKotlinModels: Boolean?,
+                           languageVersion: String?,
+                           javaPluginApplied: Boolean,
+                           kgpVersion: String?,
+                           upstreamTargetLanguage: TargetLanguage?): TargetLanguage {
+    return when {
+      generateKotlinModels != null -> {
+        if (generateKotlinModels) {
+          check(kgpVersion != null) {
+            "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
+          }
+          val targetLanguage = getKotlinTargetLanguage(kgpVersion, languageVersion)
+
+          check(upstreamTargetLanguage == null || targetLanguage == upstreamTargetLanguage) {
+            "Apollo: Expected '$upstreamTargetLanguage', got '$targetLanguage'. Check your generateKotlinModels and languageVersion settings."
+          }
+          targetLanguage
+        } else {
+          check(javaPluginApplied) {
+            "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
+          }
+
+          check(upstreamTargetLanguage == null || TargetLanguage.JAVA == upstreamTargetLanguage) {
+            "Apollo: Expected '$upstreamTargetLanguage', got '${TargetLanguage.JAVA}'. Check your generateKotlinModels settings."
+          }
+
+          TargetLanguage.JAVA
+        }
+      }
+
+      upstreamTargetLanguage != null -> {
+        upstreamTargetLanguage
+      }
+      kgpVersion != null -> {
+        getKotlinTargetLanguage(kgpVersion, languageVersion)
+      }
+
+      javaPluginApplied -> {
+        TargetLanguage.JAVA
+      }
+      else -> {
+        error("Apollo: No Java or Kotlin plugin found")
+      }
+    }
+}
+
+
 
 private fun scalarMapping(
     scalarTypeMapping: MapProperty<String, String>,
@@ -264,4 +363,41 @@ private fun scalarMapping(
     val adapterInitializerExpression = scalarAdapterMapping.getOrElse(emptyMap())[graphQLName]
     ScalarInfo(targetName, if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression))
   }
+}
+
+private fun generateFilterNotNull(targetLanguage: TargetLanguage, isKmp: Boolean): Boolean? {
+  return if (targetLanguage == TargetLanguage.JAVA) {
+    null
+  } else {
+    isKmp
+  }
+}
+
+private fun alwaysGenerateTypesMatching(alwaysGenerateTypesMatching: Set<String>?, isMultiModule: Boolean, hasDownstreamDependencies: Boolean): Set<String> {
+  if (alwaysGenerateTypesMatching != null) {
+    // The user specified something, use this
+    return alwaysGenerateTypesMatching
+  }
+
+  if (isMultiModule && !hasDownstreamDependencies) {
+    // No downstream dependency, generate everything because we don't know what types are going to be used downstream
+    return setOf(".*")
+  } else {
+    // get the used coordinates from the downstream dependencies
+    return emptySet()
+  }
+}
+
+@Serializable
+internal class OtherOptions(
+    val targetLanguage: TargetLanguage,
+    val codegenModels: String
+)
+
+internal fun OtherOptions.writeTo(file: File) {
+  file.writeText(Json.encodeToString(this))
+}
+
+internal fun File.toOtherOptions(): OtherOptions {
+  return Json.decodeFromString(readText())
 }

@@ -1,0 +1,24 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.2/", import: ["@typePolicy"])
+
+type Query {
+  x: Int
+}
+
+type Person {
+  id: ID!
+}
+
+extend type Person @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")
+
+interface Node {
+  id: ID!
+}
+
+extend interface Node @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")
+
+
+union Foo = A | B
+type A { a: String }
+type B { b: String }
+
+extend union Foo @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")

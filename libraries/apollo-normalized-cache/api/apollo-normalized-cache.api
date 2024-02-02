@@ -1,27 +1,27 @@
 public abstract interface class com/apollographql/apollo3/cache/normalized/ApolloStore {
-	public abstract fun accessCache (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun accessCache (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public abstract fun clearAll ()Z
 	public abstract fun dispose ()V
-	public abstract fun dump (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun dump ()Ljava/util/Map;
 	public abstract fun getChangedKeys ()Lkotlinx/coroutines/flow/SharedFlow;
 	public abstract fun normalize (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/util/Map;
-	public abstract fun publish (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun readFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun readFragment$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun readOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun readOperation$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun remove (Ljava/util/List;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun remove$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun remove$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Ljava/util/List;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun rollbackOptimisticUpdates (Ljava/util/UUID;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun rollbackOptimisticUpdates$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Ljava/util/UUID;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun writeFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun writeFragment$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun writeOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun writeOperation$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun writeOptimisticUpdates (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun writeOptimisticUpdates$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun publish (Ljava/util/Set;)V
+	public abstract fun readFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/api/Fragment$Data;
+	public static synthetic fun readFragment$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Fragment$Data;
+	public abstract fun readOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public static synthetic fun readOperation$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public abstract fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Z)Z
+	public abstract fun remove (Ljava/util/List;Z)I
+	public static synthetic fun remove$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;ZILjava/lang/Object;)Z
+	public static synthetic fun remove$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Ljava/util/List;ZILjava/lang/Object;)I
+	public abstract fun rollbackOptimisticUpdates (Ljava/util/UUID;Z)Ljava/util/Set;
+	public static synthetic fun rollbackOptimisticUpdates$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Ljava/util/UUID;ZILjava/lang/Object;)Ljava/util/Set;
+	public abstract fun writeFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Z)Ljava/util/Set;
+	public static synthetic fun writeFragment$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZILjava/lang/Object;)Ljava/util/Set;
+	public abstract fun writeOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Z)Ljava/util/Set;
+	public static synthetic fun writeOperation$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;ZILjava/lang/Object;)Ljava/util/Set;
+	public abstract fun writeOptimisticUpdates (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)Ljava/util/Set;
+	public static synthetic fun writeOptimisticUpdates$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZILjava/lang/Object;)Ljava/util/Set;
 }
 
 public final class com/apollographql/apollo3/cache/normalized/ApolloStoreKt {

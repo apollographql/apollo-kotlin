@@ -16,17 +16,14 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Option(option = "schema", description = "The schema to push as SDL")
   abstract val schema: Property<String>
 
-  @get:Optional
   @get:Input
   @get:Option(option = "key", description = "The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
   abstract val key: Property<String>
 
-  @get:Optional
   @get:Input
   @get:Option(option = "graph", description = "The identifier of the Apollo graph used to download the schema.")
   abstract val graph: Property<String>
 
-  @get:Optional
   @get:Input
   @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
   abstract val graphVariant: Property<String>
@@ -41,21 +38,14 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Option(option = "revision", description = "The revision name. Can be omitted if the graph is a legacy monograph, must be provided otherwise.")
   abstract val revision: Property<String>
 
-
   @get:Input
   abstract var projectRootDir: String
 
-  private fun Property<String>.orProperty(name: String) = orElse(project.provider {
-    (project.findProperty("com.apollographql.apollo3.$name") as? String)?.also {
-      logger.lifecycle("Using the com.apollographql.apollo3.$name property is deprecated. Use --$name instead.")
-    }
-  }).orNull
-
   @TaskAction
   fun taskAction() {
-    val key = key.orProperty("key")
-    var graph = graph.orProperty("graph")
-    val graphVariant = graphVariant.orProperty("graph-variant")
+    val key = key.get()
+    var graph = graph.get()
+    val graphVariant = graphVariant.get()
     val schema = schema.orNull
     val subgraph = subgraph.orNull
     val revision = revision.orNull

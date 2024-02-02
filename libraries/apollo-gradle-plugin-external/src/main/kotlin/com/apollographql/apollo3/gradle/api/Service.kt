@@ -49,10 +49,12 @@ interface Service {
 
   /**
    * Where to look for GraphQL sources.
-   * The plugin will look in "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.
+   * The plugin searches "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.
    *
-   * For more control, see also [srcDir]
+   * For more control, see [srcDir]
    */
+  @Deprecated("Replace with srcDir(\"src/[main|commonMain]/graphql/\$sourceFolder\")")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val sourceFolder: Property<String>
 
   /**
@@ -62,23 +64,34 @@ interface Service {
    *
    * @param directory the directory where the .graphql operation files are
    * [directory] is evaluated as in [Project.file](https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html#file-java.lang.Object-)
-   * Valid value include path Strings, File and RegularFileProperty
-   *
    */
   fun srcDir(directory: Any)
 
   /**
-   * A shorthand property that will be used if [schemaFiles] is empty
+   * The location of the schema file.
+   *
+   * Because clients may extend the schema with client extensions in separate files, this is deprecated
+   * in favor of [schemaFiles].
    */
+  @Deprecated("Replace with schemaFiles.from()")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val schemaFile: RegularFileProperty
 
   /**
-   * The schema files as either a ".json" introspection schema or a ".sdl|.graphqls" SDL schema. You might come across schemas named "schema.graphql",
-   * these are SDL schemas most of the time that need to be renamed to "schema.graphqls" to be recognized properly.
+   * The schema files in either ".json" introspection schemas or ".sdl|.graphqls" SDL schemas.
    *
-   * The compiler accepts multiple schema files in order to add extensions to specify key fields and other schema extensions.
+   * Most of the time, [schemaFiles] contains a main schema and an optional separate file for client extensions.
+   * You may set any number of files and the compiler will merge them. The merge order is:
+   * - main schema file first (the main schema file is the file that contains the schema definition or the Query type)
+   * - lexicographic order of the filename for other schema files
    *
-   * By default, the plugin collects all "schema.[json|sdl|graphqls]" file in the source roots
+   * If not set or empty, the plugin collects all "schema.[json|sdl|graphqls]" files in the [srcDir] roots.
+   *
+   * Example:
+   *
+   * ```kotlin
+   * schemaFiles.from("src/main/graphql/schema.graphqls", "src/main/graphql/extra.graphqls")
+   * ```
    */
   val schemaFiles: ConfigurableFileCollection
 
@@ -507,13 +520,6 @@ interface Service {
    * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
    */
   val outputDir: DirectoryProperty
-
-  /**
-   * The directory where the test builders will be written.
-   * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
-   */
-  @Deprecated("test builders are not used anymore", level = DeprecationLevel.ERROR)
-  val testDir: DirectoryProperty
   
   /**
    * Whether to generate the operationOutput.json

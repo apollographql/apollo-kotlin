@@ -21,6 +21,7 @@ object TestUtils {
 
   fun <T> withDirectory(testDir: String? = null, block: (File) -> T): T {
     val dest = if (testDir == null) {
+      // Tests are run in parallel, make sure 2 tests do not clobber themselves
       File.createTempFile("testProject", "", File(System.getProperty("user.dir")).resolve("build"))
     } else {
       File(System.getProperty("user.dir")).resolve("build/$testDir")
@@ -34,12 +35,9 @@ object TestUtils {
       |
     """.trimMargin())
 
-    return try {
-      block(dest)
-    } finally {
-      // Comment this line if you want to keep the directory around during development
-      dest.deleteRecursively()
-    }
+    // dest is kept around for debug purposes. All test directories are removed
+    // with the `cleanStaleTestProject` tasks before the next run
+    return block(dest)
   }
 
   fun withProject(

@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.example.root_query_fragment_with_nested_fragments.fragment.selections.droidFragmentSelections;
+import com.example.root_query_fragment_with_nested_fragments.fragment.selections.DroidFragmentSelections;
 import com.example.root_query_fragment_with_nested_fragments.type.Droid;
 import java.io.IOException;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class DroidFragmentImpl implements Fragment<DroidFragment> {
       "data",
       Droid.type
     )
-    .selections(droidFragmentSelections.__root)
+    .selections(DroidFragmentSelections.__root)
     .build();
   }
 

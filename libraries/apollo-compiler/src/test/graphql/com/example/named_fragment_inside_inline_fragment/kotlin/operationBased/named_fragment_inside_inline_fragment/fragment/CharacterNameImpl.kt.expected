@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.CharacterNameSelections
 import com.example.named_fragment_inside_inline_fragment.type.Character
 import kotlin.Any
 import kotlin.Boolean
@@ -39,6 +39,6 @@ public class CharacterNameImpl() : Fragment<CharacterName> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = characterNameSelections.__root)
+  .selections(selections = CharacterNameSelections.__root)
   .build()
 }

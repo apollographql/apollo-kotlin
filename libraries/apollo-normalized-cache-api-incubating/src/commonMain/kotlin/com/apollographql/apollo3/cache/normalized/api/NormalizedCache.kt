@@ -104,38 +104,68 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
   companion object {
 
     @JvmStatic
-    fun prettifyDump(dump: Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>) = buildString {
-      for ((key, value) in dump) {
-        append(key.simpleName)
-            .append(" {")
-        for ((key1, value1) in value) {
-          append("\n  \"")
-              .append(key1)
-              .append("\" : {")
-          for ((key2, value2) in value1.fields) {
-            append("\n    \"")
-                .append(key2)
-                .append("\" : ")
-            when (value2) {
-              is CacheKey -> {
-                append(value2)
-              }
-              is List<*> -> {
-                append("[")
-                for (item in value2) {
-                  append("\n      ")
-                      .append(item)
-                }
-                append("\n    ]")
-              }
-              else -> append(value2)
-            }
+    fun prettifyDump(dump: Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>): String = dump.prettifyDump()
+
+    private fun Any?.prettifyDump(level: Int = 0): String {
+      return buildString {
+        when (this@prettifyDump) {
+          is Record -> {
+            append("{\n")
+            indent(level + 1)
+            append("fields: ")
+            append(fields.prettifyDump(level + 1))
+            append("\n")
+            indent(level + 1)
+            append("metadata: ")
+            append(metadata.prettifyDump(level + 1))
+            append("\n")
+            indent(level + 1)
+            append("dates: ")
+            append(dates.prettifyDump(level + 1))
+            append("\n")
+            indent(level)
+            append("}")
           }
-          append("\n  }\n")
+
+          is List<*> -> {
+            append("[")
+            if (this@prettifyDump.isNotEmpty()) {
+              append("\n")
+              for (value in this@prettifyDump) {
+                indent(level + 1)
+                append(value.prettifyDump(level + 1))
+                append("\n")
+              }
+              indent(level)
+            }
+            append("]")
+          }
+
+          is Map<*, *> -> {
+            append("{")
+            if (this@prettifyDump.isNotEmpty()) {
+              append("\n")
+              for ((key, value) in this@prettifyDump) {
+                indent(level + 1)
+                append(when (key) {
+                  is KClass<*> -> key.simpleName
+                  else -> key
+                })
+                append(": ")
+                append(value.prettifyDump(level + 1))
+                append("\n")
+              }
+              indent(level)
+            }
+            append("}")
+          }
+
+          else -> append(this@prettifyDump)
         }
-        append("}\n")
       }
     }
+
+    private fun StringBuilder.indent(level: Int) = append("  ".repeat(level))
 
     /**
      * A tentative to approximate the Sqlite LIKE operator with Regexes
@@ -154,6 +184,7 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
                 else -> error("Invalid escape in pattern: $pattern")
               }
             }
+
             cur == '\\' -> pendingEscape = true
             cur == '%' -> append(".*")
             cur == '_' -> append(".")

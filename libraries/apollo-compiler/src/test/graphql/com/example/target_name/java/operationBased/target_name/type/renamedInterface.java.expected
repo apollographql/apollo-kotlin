@@ -7,6 +7,6 @@ package com.example.target_name.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
 
-public class renamedInterface {
+public class RenamedInterface {
   public static InterfaceType type = (new InterfaceType.Builder("ReservedInterface")).build();
 }

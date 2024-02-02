@@ -11,6 +11,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.exception.CacheMissException
+import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
@@ -59,6 +60,7 @@ internal class CacheBatchReader(
         is CompiledField -> {
           state.fields.add(compiledSelection)
         }
+
         is CompiledFragment -> {
           if ((typename in compiledSelection.possibleTypes || compiledSelection.typeCondition == parentType) && !compiledSelection.shouldSkip(state.variables.valueMap)) {
             collect(compiledSelection.selections, parentType, typename, state)
@@ -143,17 +145,35 @@ internal class CacheBatchReader(
             )
         )
       }
+
       is List<*> -> {
         forEachIndexed { index, value ->
           value.registerCacheKeys(path + index, selections, parentType)
         }
       }
+
+      is Map<*, *> -> {
+        @Suppress("UNCHECKED_CAST")
+        this as Map<String, @JvmSuppressWildcards Any?>
+        val collectedFields = collectAndMergeSameDirectives(selections, parentType, variables, get("__typename") as? String)
+        collectedFields.mapNotNull {
+          if (it.shouldSkip(variables.valueMap)) {
+            return@mapNotNull null
+          }
+
+          val value = cacheResolver.resolveField(it, variables, this, "")
+          value.registerCacheKeys(path + it.responseName, it.selections, it.type.rawType().name)
+
+          it.responseName to value
+        }.toMap()
+      }
+
     }
   }
 
   private data class CacheBatchReaderData(
       private val data: Map<List<Any>, Map<String, Any?>>,
-  ): CacheData {
+  ) : CacheData {
     @Suppress("UNCHECKED_CAST")
     override fun toMap(): Map<String, Any?> {
       return data[emptyList()].replaceCacheKeys(emptyList()) as Map<String, Any?>
@@ -164,17 +184,20 @@ internal class CacheBatchReader(
         is CacheKey -> {
           data[path].replaceCacheKeys(path)
         }
+
         is List<*> -> {
           mapIndexed { index, src ->
             src.replaceCacheKeys(path + index)
           }
         }
+
         is Map<*, *> -> {
           // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
           mapValues {
             it.value.replaceCacheKeys(path + (it.key as String))
           }
         }
+
         else -> {
           // Scalar value
           this

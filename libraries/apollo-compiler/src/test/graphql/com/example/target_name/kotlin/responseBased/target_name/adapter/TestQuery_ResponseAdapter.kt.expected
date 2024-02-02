@@ -17,8 +17,8 @@ import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.target_name.TestQuery
-import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
-import com.example.target_name.type.renamedEnum
+import com.example.target_name.type.RenamedEnum
+import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -35,7 +35,7 @@ public object TestQuery_ResponseAdapter {
       var _interface: TestQuery.Data.Interface? = null
       var _union: TestQuery.Data.Union? = null
       var _scalar: Any? = null
-      var _enum: renamedEnum? = null
+      var _enum: RenamedEnum? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -43,7 +43,7 @@ public object TestQuery_ResponseAdapter {
           1 -> _interface = Interface.obj().nullable().fromJson(reader, customScalarAdapters)
           2 -> _union = Union.obj().nullable().fromJson(reader, customScalarAdapters)
           3 -> _scalar = NullableAnyAdapter.fromJson(reader, customScalarAdapters)
-          4 -> _enum = renamedEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          4 -> _enum = RenamedEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -75,7 +75,7 @@ public object TestQuery_ResponseAdapter {
       NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar)
 
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
+      RenamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
     }
 
     private object Object : Adapter<TestQuery.Data.Object> {

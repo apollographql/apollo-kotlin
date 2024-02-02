@@ -12,7 +12,8 @@ import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.buildCodegenOptions
+import com.apollographql.apollo3.compiler.codegen.SourceOutput
 import com.apollographql.apollo3.compiler.ir.IrClassName
 import com.apollographql.apollo3.compiler.ir.IrExecutionContextTargetArgument
 import com.apollographql.apollo3.compiler.ir.IrGraphqlTargetArgument
@@ -178,33 +179,27 @@ class ApolloProcessor(
 
     codegenSchema = CodegenSchema(
         schema = schema,
-        packageName = packageName,
-        codegenModels = "operationBased",
+        normalizedPath = "",
         scalarMapping = scalarMapping,
-        targetLanguage = TargetLanguage.KOTLIN_1_9,
         generateDataBuilders = false
     )
 
-    val pair =
-        ApolloCompiler.schemaFileSpecs(
+    val sourceOutput = ApolloCompiler.buildSchemaSources(
             codegenSchema = codegenSchema,
-            packageName = packageName,
+            usedCoordinates = null,
+            codegenOptions = buildCodegenOptions(
+                addUnknownForEnums = false,
+                addDefaultArgumentForInputObjects = false,
+                generateAsInternal = true,
+                packageName = packageName
+            ),
+        null,
+            null,
+            null
         )
 
-    val fileSpecs = pair.second
-    codegenMetadata = pair.first
-
-    fileSpecs.forEach { fileSpec ->
-      codeGenerator.createNewFile(
-          // XXX: make more incremental
-          Dependencies.ALL_FILES,
-          packageName = fileSpec.packageName,
-          fileName = fileSpec.name,
-
-          ).writer().use {
-        fileSpec.writeTo(it)
-      }
-    }
+    codegenMetadata = sourceOutput.codegenMetadata
+    sourceOutput.writeTo(codeGenerator)
 
     return objectMapping.values.map { it.classDeclaration }
   }
@@ -250,28 +245,29 @@ class ApolloProcessor(
       )
     }
 
-    val fileSpecs =
-        ApolloCompiler.resolverFileSpecs(
+    ApolloCompiler.buildExecutableSchemaSources(
             codegenSchema = codegenSchema,
             codegenMetadata = codegenMetadata,
             irTargetObjects = irTargetObjects,
             packageName = packageName,
             serviceName = serviceName
-        )
-
-    fileSpecs.forEach { fileSpec ->
-      codeGenerator.createNewFile(
-          // XXX: make more incremental
-          Dependencies.ALL_FILES,
-          packageName = fileSpec.packageName,
-          fileName = fileSpec.name,
-
-          ).writer().use {
-        fileSpec.writeTo(it)
-      }
-    }
+        ).writeTo(codeGenerator)
 
     return emptyList()
+  }
+}
+
+private fun SourceOutput.writeTo(codeGenerator: CodeGenerator) {
+  files.forEach { sourceFile ->
+    codeGenerator.createNewFile(
+        // XXX: make more incremental
+        Dependencies.ALL_FILES,
+        packageName = sourceFile.packageName,
+        fileName = sourceFile.name,
+
+        ).use {
+      sourceFile.writeTo(it)
+    }
   }
 }
 

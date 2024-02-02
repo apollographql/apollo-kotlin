@@ -17,10 +17,8 @@ object ModelNames {
   // Task names
   fun generateApolloSources() = "generateApolloSources"
   fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
-  fun generateApolloSourcesFromIr(service: Service) = camelCase("generate", service.name, "ApolloSourcesFromIr")
   fun generateApolloCodegenSchema(service: Service) = camelCase("generate", service.name, "ApolloCodegenSchema")
   fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
-  fun generateApolloIrSchema(service: Service) = camelCase("generate", service.name, "ApolloIrSchema")
   fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
@@ -40,4 +38,6 @@ object ModelNames {
   fun downstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrConsumer")
   fun codegenSchemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaProducer")
   fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
+  fun otherOptionsProducerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsProducer")
+  fun otherOptionsConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsConsumer")
 }

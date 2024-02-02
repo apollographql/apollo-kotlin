@@ -10,10 +10,11 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
-import pagination.pagination.Pagination
-import pagination.type.buildUser
-import pagination.type.buildUserConnection2
-import pagination.type.buildUserEdge
+import pagination.connection.UsersQuery
+import pagination.connection.pagination.Pagination
+import pagination.connection.type.buildUser
+import pagination.connection.type.buildUserConnection
+import pagination.connection.type.buildUserEdge
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -49,9 +50,9 @@ class TypePolicyConnectionFieldsTest {
     apolloStore.clearAll()
 
     // First page
-    val query1 = WithTypePolicyDirectiveQuery(first = Optional.Present(2))
-    val data1 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query1 = UsersQuery(first = Optional.Present(2))
+    val data1 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -74,9 +75,9 @@ class TypePolicyConnectionFieldsTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query2 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
-    val data2 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
+    val data2 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -95,8 +96,8 @@ class TypePolicyConnectionFieldsTest {
     }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    var expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -129,9 +130,9 @@ class TypePolicyConnectionFieldsTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query3 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
-    val data3 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
+    val data3 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -150,8 +151,8 @@ class TypePolicyConnectionFieldsTest {
     }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -196,9 +197,9 @@ class TypePolicyConnectionFieldsTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page before
-    val query4 = WithTypePolicyDirectiveQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
-    val data4 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query4 = UsersQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
+    val data4 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -217,8 +218,8 @@ class TypePolicyConnectionFieldsTest {
     }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    expectedData = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -275,9 +276,9 @@ class TypePolicyConnectionFieldsTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
-    val query5 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
-    val data5 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query5 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
+    val data5 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = listOf(
             buildUserEdge {
               cursor = "xx50"
@@ -300,9 +301,9 @@ class TypePolicyConnectionFieldsTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Empty page (should keep previous result)
-    val query6 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
-    val data6 = WithTypePolicyDirectiveQuery.Data {
-      usersCursorBased2 = buildUserConnection2 {
+    val query6 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
+    val data6 = UsersQuery.Data {
+      users = buildUserConnection {
         edges = emptyList()
       }
     }

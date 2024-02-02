@@ -3,74 +3,9 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
-import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasJavaPlugin
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 import java.io.File
-
-internal fun DefaultService.alwaysGenerateTypesMatching(): Set<String> {
-  if (alwaysGenerateTypesMatching.isPresent) {
-    // The user specified something, use this!
-    return alwaysGenerateTypesMatching.get()
-  }
-
-  if (isMultiModule() && downstreamDependencies.isEmpty()) {
-    // No downstream dependency, generate everything because we don't know what types are going to be used downstream
-    return setOf(".*")
-  } else {
-    // get the used coordinates from the downstream dependencies
-    return emptySet()
-  }
-}
-
-
-internal fun DefaultService.targetLanguage(): TargetLanguage {
-  val generateKotlinModels: Boolean
-  when {
-    this.generateKotlinModels.isPresent -> {
-      generateKotlinModels = this.generateKotlinModels.get()
-      if (generateKotlinModels) {
-        check(project.hasKotlinPlugin()) {
-          "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
-        }
-      } else {
-        check(project.hasJavaPlugin()) {
-          "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
-        }
-      }
-    }
-
-    project.hasKotlinPlugin() -> {
-      generateKotlinModels = true
-    }
-
-    project.hasJavaPlugin() -> {
-      generateKotlinModels = false
-    }
-
-    else -> {
-      error("Apollo: No Java or Kotlin plugin found")
-    }
-  }
-
-  return if (generateKotlinModels) {
-    getKotlinTargetLanguage(project, this.languageVersion.orNull)
-  } else {
-    TargetLanguage.JAVA
-  }
-}
-
-internal fun ApolloGenerateSourcesBaseTask.setPackageNameProperties(service: DefaultService) {
-  packageName.set(service.packageName)
-  packageNamesFromFilePaths.set(service.packageNamesFromFilePaths)
-  if (service.packageNamesFromFilePaths) {
-    packageNameRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
-  }
-  packageNameGenerator = service.packageNameGenerator.orNull
-}
 
 
 /**
@@ -144,12 +79,3 @@ internal fun DefaultService.operationManifestFormat(): Provider<String> {
   }
 }
 
-internal fun DefaultService.generateFilterNotNull(): Provider<Boolean> {
-  return project.provider {
-    if (targetLanguage() == TargetLanguage.JAVA) {
-      null
-    } else {
-      project.isKotlinMultiplatform
-    }
-  }
-}

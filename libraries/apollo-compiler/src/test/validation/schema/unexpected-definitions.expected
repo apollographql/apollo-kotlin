@@ -1,10 +1,10 @@
-IncompatibleDefinition (39:1)
-Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, level: Int = null) repeatable on FIELD|SCHEMA'.
+IncompatibleDefinition (2:1)
+Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD|SCHEMA'.
 ------------
-IncompatibleDefinition (56:1)
+IncompatibleDefinition (3:1)
 Unexpected 'CatchTo' definition. Expecting 'enum CatchTo { RESULT NULL THROW }'.
 ------------
-IncompatibleDefinition (73:1)
+IncompatibleDefinition (1:1)
 Unexpected 'ignoreErrors' definition. Expecting 'directive @ignoreErrors on QUERY|MUTATION|SUBSCRIPTION'.
 ------------
 OtherValidationIssue (null:null)

@@ -2,12 +2,13 @@ package com.apollographql.apollo3.testing.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
 @ApolloInternal
-@OptIn(ExperimentalCoroutinesApi::class)
+actual typealias ApolloTestResult = Unit
+
+@ApolloInternal
 actual fun runTest(
     skipDelays: Boolean,
     context: CoroutineContext,

@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.example.multiple_fragments.type.GraphQLString
 import kotlin.collections.List
 
-public object fragment2Selections {
+public object Fragment2Selections {
   public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "field2",

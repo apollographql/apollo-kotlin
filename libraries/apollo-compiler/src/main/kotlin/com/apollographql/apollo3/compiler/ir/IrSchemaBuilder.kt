@@ -12,7 +12,7 @@ internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedFields: Map<String, Set<String>>,
-      alreadyVisitedTypes: Set<String>
+      alreadyVisitedTypes: Set<String>,
   ): IrSchema {
 
     val irEnums = mutableListOf<IrEnum>()
@@ -35,7 +35,7 @@ internal object IrSchemaBuilder {
 
       when {
         typeDefinition is GQLScalarTypeDefinition -> {
-          irScalars.add(typeDefinition.toIr(schema))
+          irScalars.add(typeDefinition.toIr())
         }
         typeDefinition is GQLEnumTypeDefinition -> {
           irEnums.add(typeDefinition.toIr(schema))
@@ -44,7 +44,7 @@ internal object IrSchemaBuilder {
           irInputObjects.add(typeDefinition.toIr(schema))
         }
         typeDefinition is GQLUnionTypeDefinition -> {
-          irUnions.add(typeDefinition.toIr(schema))
+          irUnions.add(typeDefinition.toIr())
         }
         typeDefinition is GQLInterfaceTypeDefinition -> {
           irInterfaces.add(typeDefinition.toIr(schema, usedFields))
@@ -62,7 +62,7 @@ internal object IrSchemaBuilder {
         irUnions = irUnions,
         irInterfaces = irInterfaces,
         irObjects = irObjects,
-        connectionTypes = schema.connectionTypes.toList()
+        connectionTypes = schema.connectionTypes.toList(),
     )
   }
 }

@@ -11,7 +11,8 @@ interface PackageNameGenerator {
   /**
    * This will be called with
    * - the executable filePath for operations and fragments
-   * - the main schema filePath for everything else
+   * - the main schema filePath for schema types
+   * - the empty string if the schema and/or operations are not read from a [File]
    */
   fun packageName(filePath: String): String
 
@@ -33,69 +34,13 @@ interface PackageNameGenerator {
     override val version: String
       get() = error("this should only be called from the Gradle Plugin")
   }
-}
 
-
-/**
- * A helper class to get a package name from a list of root folders
- *
- * Given:
- * - a list of root folders like "src/main/graphql/", "src/debug/graphql/", etc...
- * - an absolute file path like "/User/lee/projects/app/src/main/graphql/com/example/Query.graphql
- * will return "com.example"
- */
-private fun relativeToRoots(roots: Set<String>, filePath: String): String {
-  val file = File(File(filePath).absolutePath).normalize()
-  roots.map { File(it).normalize() }.forEach { sourceDir ->
-    try {
-      val relative = file.toRelativeString(sourceDir)
-      if (relative.startsWith(".."))
-        return@forEach
-
-      return relative
-    } catch (e: IllegalArgumentException) {
-
+  class NormalizedPathAware(private val rootPackageName: String?): PackageNameGenerator {
+    override fun packageName(filePath: String): String {
+      return "${rootPackageName}.${filePath.toPackageName()}".removePrefix(".")
     }
-  }
-  // Be robust if the file is not found.
-  // This is for compatibility reasons mainly.
-  return ""
-}
 
-/**
- * Return the packageName if this file is in these roots or throw else
- */
-internal fun filePackageName(roots: Set<String>, filePath: String): String {
-  val relative = relativeToRoots(roots, filePath)
-
-  return relative
-      .split(File.separator)
-      .filter { it.isNotBlank() }
-      .dropLast(1)
-      .joinToString(".")
-}
-
-internal fun packageNameGenerator(
-    packageName: String?,
-    packageNamesFromFilePaths: Boolean?,
-    packageNameRoots: Set<String>?,
-): PackageNameGenerator {
-  return when {
-    packageName != null -> PackageNameGenerator.Flat(packageName)
-    packageNamesFromFilePaths == true -> {
-      check(packageNameRoots != null) {
-        "packageNameRoots is required to use packageNamesFromFilePaths"
-      }
-      object : PackageNameGenerator {
-        override fun packageName(filePath: String): String {
-          return filePackageName(packageNameRoots, filePath)
-        }
-
-        override val version: String
-          get() = "unused"
-
-      }
-    }
-    else -> error("Apollo: packageName is required")
+    override val version: String
+      get() = error("this should only be called from the Gradle Plugin")
   }
 }

@@ -149,6 +149,32 @@ class QueryBatchingTest {
   }
 
   @Test
+  fun apolloClientDefaultIsHonored() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString("""{"data":{"launch":{"id":"83"}}}""")
+    mockServer.enqueueString("""{"data":{"launch":{"id":"84"}}}""")
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .httpBatching(batchIntervalMillis = 10, maxBatchSize = 10, enableByDefault = false)
+        // Opt out by default
+        .canBeBatched(false)
+        .build()
+
+    val result1 = async {
+      apolloClient.query(GetLaunchQuery()).execute()
+    }
+    val result2 = async {
+      delay(50)
+      apolloClient.query(GetLaunch2Query()).execute()
+    }
+    assertEquals("83", result1.await().dataOrThrow().launch?.id)
+    assertEquals("84", result2.await().dataOrThrow().launch?.id)
+
+    // 2 requests are made
+    mockServer.awaitRequest()
+    mockServer.awaitRequest()
+  }
+
+  @Test
   fun queriesCanBeOptInOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
     val response = """
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]

@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
+import com.apollographql.apollo3.compiler.codegen.java.helpers.singletonAdapterInitializer
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
@@ -390,6 +390,7 @@ internal class JavaResolver(
   }
 
   fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
+  fun resolveMapType(name: String): ClassName = resolveAndAssert(ResolverKeyKind.MapType, name)
 
   private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
     return when (type) {

@@ -58,13 +58,7 @@ internal object KotlinSymbols {
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toKotlinPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toKotlinPoetClassName()
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
-  val TestResolver = ClassNames.TestResolver.toKotlinPoetClassName()
-  val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
   val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toKotlinPoetClassName()
-  val MapJsonReader = ClassNames.MapJsonReader.toKotlinPoetClassName()
-  val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
-  val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
-  val MandatoryTypenameProperty = ClassNames.MandatoryTypenameProperty.toKotlinPoetClassName()
   val Builder = ClassName("", "Builder")
 
   /**

@@ -165,7 +165,7 @@ tasks.test.configure {
 
 // See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
 tasks.register("updatePluginsXml") {
-  val filePath = "snapshots/plugins.xml"
+  val pluginsXmlFile = file("snapshots/plugins.xml")
   val pluginId = properties("pluginId")
   val pluginName = properties("pluginName")
   val version = project.version.toString()
@@ -176,10 +176,10 @@ tasks.register("updatePluginsXml") {
   inputs.property("version", version)
   inputs.property("pluginSinceBuild", pluginSinceBuild)
   inputs.property("pluginUntilBuild", pluginUntilBuild)
-  outputs.file(filePath)
+  outputs.file(pluginsXmlFile)
   outputs.cacheIf { true }
   doLast {
-    file(filePath).writeText(
+    pluginsXmlFile.writeText(
         """
         <plugins>
           <plugin
@@ -231,7 +231,7 @@ fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 apollo {
   service("apolloDebug") {
     packageName.set("com.apollographql.apollo3.debug")
-    schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+    schemaFiles.from(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
     introspection {
       endpointUrl.set("http://localhost:12200/")
       schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
