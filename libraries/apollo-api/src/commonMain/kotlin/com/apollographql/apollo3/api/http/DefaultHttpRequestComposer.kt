@@ -57,15 +57,23 @@ class DefaultHttpRequestComposer(
         HttpRequest.Builder(
             method = HttpMethod.Get,
             url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
-        )
+        ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
+        val body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query)
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-        ).body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
+        ).body(body)
+            .let {
+              if (body.contentType.startsWith("multipart/form-data")) {
+                it.addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
+              } else {
+                it
+              }
+            }
       }
     }
 
@@ -82,6 +90,14 @@ class DefaultHttpRequestComposer(
     @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
+
+    // Note: Apollo Server's CSRF prevention feature (introduced in AS3.7 and intended to be
+    // the default in AS4) includes this in the set of headers that indicate
+    // that a GET request couldn't have been a non-preflighted simple request
+    // and thus is safe to execute.
+    // See https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
+    // for details.
+    internal val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
 
     val HEADER_ACCEPT_NAME = "Accept"
 
@@ -226,8 +242,8 @@ class DefaultHttpRequestComposer(
         )
       }
 
-      if (uploads.isEmpty()) {
-        return object : HttpBody {
+      return if (uploads.isEmpty()) {
+        object : HttpBody {
           override val contentType = "application/json"
           override val contentLength = operationByteString.size.toLong()
 
@@ -236,7 +252,7 @@ class DefaultHttpRequestComposer(
           }
         }
       } else {
-        return UploadsHttpBody(uploads, operationByteString)
+        UploadsHttpBody(uploads, operationByteString)
       }
     }
 
