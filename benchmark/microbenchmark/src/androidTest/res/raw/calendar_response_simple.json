@@ -1,0 +1,112 @@
+{
+  "data": {
+    "items": {
+      "edges": [
+        {
+          "id": "a3997cde-a335-4752-b5fe-6cb625066c30",
+          "node": {
+            "__typename": "Item",
+            "id": "a3997cde-a335-4752-b5fe-6cb625066c30",
+            "title": "Holiday - Tom Cruise",
+            "type": {
+              "id": "Event",
+              "node": {
+                "__typename": "ItemType",
+                "id": "Event",
+                "name": "Event",
+                "defaultCategory": {
+                  "id": "General",
+                  "node": {
+                    "__typename": "Category",
+                    "id": "General",
+                    "name": "General",
+                    "icon": {
+                      "id": "General",
+                      "node": {
+                        "__typename": "Icon",
+                        "id": "General",
+                        "name": "General"
+                      }
+                    },
+                    "primaryColor": "Gray400",
+                    "secondaryColor": "Gray200"
+                  }
+                },
+                "defaultIcon": {
+                  "id": "Calendar",
+                  "node": {
+                    "__typename": "Icon",
+                    "id": "Calendar",
+                    "name": "Calendar"
+                  }
+                }
+              }
+            },
+            "icon": {
+              "id": "Beach",
+              "node": {
+                "__typename": "Icon",
+                "id": "Beach",
+                "name": "Beach"
+              }
+            },
+            "category": {
+              "id": "Work",
+              "node": {
+                "__typename": "Category",
+                "id": "Work",
+                "name": "Work",
+                "icon": {
+                  "id": "Suitcase",
+                  "node": {
+                    "__typename": "Icon",
+                    "id": "Suitcase",
+                    "name": "Suitcase"
+                  }
+                },
+                "primaryColor": "BlueMedium",
+                "secondaryColor": "BlueBright"
+              }
+            },
+            "start": {
+              "__typename": "DateTimeInfo",
+              "date": "2022-05-02",
+              "dateTime": null,
+              "timeZone": null
+            },
+            "end": {
+              "__typename": "DateTimeInfo",
+              "date": "2022-05-03",
+              "dateTime": null,
+              "timeZone": null
+            },
+            "series": null,
+            "calendar": {
+              "id": "7eac2ed6-24f6-4fbc-ab30-80effff39ae9",
+              "node": {
+                "__typename": "Calendar",
+                "id": "7eac2ed6-24f6-4fbc-ab30-80effff39ae9",
+                "name": "Team Holidays",
+                "canCreate": false,
+                "provider": {
+                  "node": {
+                    "__typename": "CalendarProvider",
+                    "id": "cc8e4c28-f178-11ec-8ea0-0242ac120002",
+                    "type": "google",
+                    "displayName": "Google",
+                    "username": "someone@somewhere.com"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "pageInfo": {
+        "__typename": "PageInfo",
+        "endCursor": "c4d77372-135a-4cfe-8370-81e37d81347b",
+        "hasNextPage": true
+      }
+    }
+  }
+}
