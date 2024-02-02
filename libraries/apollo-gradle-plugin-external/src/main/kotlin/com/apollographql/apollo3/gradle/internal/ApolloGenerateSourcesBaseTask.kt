@@ -5,8 +5,6 @@ import com.apollographql.apollo3.compiler.LayoutFactory
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.toCodegenOptions
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -41,18 +39,6 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   @Input
   fun getOperationOutputGeneratorVersion() = operationOutputGenerator?.version ?: ""
 
-  @get:Internal
-  var compilerKotlinHooks: List<ApolloCompilerKotlinHooks>? = null
-
-  @Input
-  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
-
-  @get:Internal
-  var compilerJavaHooks: List<ApolloCompilerJavaHooks>? = null
-
-  @Input
-  fun getCompilerJavaHooksVersion() = compilerKotlinHooks.orEmpty().map { it.version }.joinToString()
-
   @get:OutputFile
   @get:Optional
   abstract val operationManifestFile: RegularFileProperty
@@ -82,18 +68,12 @@ fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
 }
 
 fun ApolloGenerateSourcesBaseTask.requiresBuildscriptClasspath(): Boolean {
-  if (packageNameGenerator != null || operationOutputGenerator != null || compilerJavaHooks != null || compilerKotlinHooks != null) {
+  if (packageNameGenerator != null || operationOutputGenerator != null) {
     if (packageNameGenerator != null) {
       logger.lifecycle("Apollo: packageNameGenerator is deprecated, use Apollo compiler plugins instead")
     }
     if (operationOutputGenerator != null) {
       logger.lifecycle("Apollo: operationOutputGenerator is deprecated, use Apollo compiler plugins instead")
-    }
-    if (compilerJavaHooks != null) {
-      logger.lifecycle("Apollo: compilerJavaHooks is deprecated, use Apollo compiler plugins instead")
-    }
-    if (compilerKotlinHooks != null) {
-      logger.lifecycle("Apollo: compilerKotlinHooks is deprecated, use Apollo compiler plugins instead")
     }
 
     return true

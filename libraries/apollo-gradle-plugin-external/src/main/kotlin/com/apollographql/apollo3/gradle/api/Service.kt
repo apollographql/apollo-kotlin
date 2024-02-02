@@ -6,9 +6,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -335,9 +332,6 @@ interface Service {
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
-   *
-   * To specify which classes to generate as `internal`, [compilerKotlinHooks] with [AddInternalCompilerHooks]
-   * can be used instead.
    *
    * Default value: false
    */
@@ -699,32 +693,6 @@ interface Service {
    * Default: false
    */
   val decapitalizeFields: Property<Boolean>
-
-  /**
-   * Hooks to customize the generated Kotlin code.
-   *
-   * See [ApolloCompilerKotlinHooks] for more details.
-   *
-   * Only valid when [generateKotlinModels] is `true`
-   *
-   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
-   * so the KotlinPoet classes are available in the classpath.
-   */
-  @ApolloExperimental
-  val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
-
-  /**
-   * Hooks to customize the generated Java code.
-   *
-   * See [ApolloCompilerJavaHooks] for more details.
-   *
-   * Only valid when [generateKotlinModels] is `false`
-   *
-   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
-   * so the JavaPoet classes are available in the classpath.
-   */
-  @ApolloExperimental
-  val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)

@@ -42,17 +42,14 @@ import com.apollographql.apollo3.compiler.codegen.java.schema.UnionBuilderBuilde
 import com.apollographql.apollo3.compiler.codegen.java.schema.UnionMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.UnionUnknownMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.schema.UtilAssertionsBuilder
-import com.apollographql.apollo3.compiler.compilerJavaHooks
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
 import com.apollographql.apollo3.compiler.defaultGeneratePrimitiveTypes
 import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.defaultGenerateSchema
-import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.generateMethodsJava
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
@@ -72,28 +69,22 @@ private fun buildOutput(
     upstreamCodegenMetadata: List<CodegenMetadata>,
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
-    apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>?,
     javaOutputTransform: Transform<JavaOutput>?,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
-
-  @Suppress("NAME_SHADOWING")
-  val apolloCompilerJavaHooks = compilerJavaHooks(apolloCompilerJavaHooks)
-
   val resolver = JavaResolver(
       entries = upstreamCodegenMetadata.flatMap { it.entries },
       next = null,
       scalarMapping = codegenSchema.scalarMapping,
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
-      hooks = apolloCompilerJavaHooks
   )
 
   val outputBuilder = OutputBuilder()
   outputBuilder.block(resolver)
 
   outputBuilder.builders.forEach { it.prepare() }
-  val fileInfos = outputBuilder.builders
+  val javaFiles = outputBuilder.builders
       .map {
         val codegenJavaFile = it.build()
 
@@ -110,16 +101,10 @@ private fun buildOutput(
               """.trimIndent()
 
         ).build()
-      }.map {
-        ApolloCompilerJavaHooks.FileInfo(javaFile = it)
-      }.let {
-        apolloCompilerJavaHooks.fold(it as Collection<ApolloCompilerJavaHooks.FileInfo>) { acc, hooks ->
-          hooks.postProcessFiles(acc)
-        }
       }
 
   return JavaOutput(
-      fileInfos.map { it.javaFile },
+      javaFiles,
       CodegenMetadata(
           targetLanguage = TargetLanguage.JAVA,
           entries = resolver.entries()
@@ -133,7 +118,6 @@ internal object JavaCodegen {
       irSchema: IrSchema,
       codegenOptions: JavaSchemaCodegenOptions,
       layout: SchemaLayout,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>,
       javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irSchema is DefaultIrSchema)
@@ -155,7 +139,6 @@ internal object JavaCodegen {
         upstreamCodegenMetadata = emptyList(),
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
-        apolloCompilerJavaHooks = compilerJavaHooks,
         javaOutputTransform = javaOutputTransform
     ) { resolver ->
 
@@ -225,7 +208,6 @@ internal object JavaCodegen {
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: JavaOperationsCodegenOptions,
       layout: OperationsLayout,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
@@ -254,7 +236,6 @@ internal object JavaCodegen {
         upstreamCodegenMetadata = upstreamCodegenMetadata,
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
-        apolloCompilerJavaHooks = compilerJavaHooks,
         javaOutputTransform = javaOutputTransform,
     ) { resolver ->
       val context = JavaOperationsContext(

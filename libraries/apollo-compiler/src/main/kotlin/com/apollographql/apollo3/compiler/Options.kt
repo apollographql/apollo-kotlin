@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -562,8 +559,6 @@ internal const val defaultJsExport = false
 internal const val defaultGenerateInputBuilders = false
 internal val defaultNullableFieldStyle = JavaNullable.NONE
 internal const val defaultDecapitalizeFields = false
-internal val defaultCompilerKotlinHooks = emptyList<ApolloCompilerKotlinHooks>()
-internal val defaultCompilerJavaHooks = emptyList<ApolloCompilerJavaHooks>()
 internal val defaultOperationManifestFormat = MANIFEST_NONE
 internal val defaultAddUnkownForEnums = true
 internal val defaultAddDefaultArgumentForInputObjects = true
@@ -628,26 +623,5 @@ internal fun flattenModels(codegenModels: String): Boolean {
   return when (codegenModels) {
     MODELS_RESPONSE_BASED -> false
     else -> true
-  }
-}
-
-internal fun compilerKotlinHooks(compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?, generateAsInternal: Boolean): List<ApolloCompilerKotlinHooks> {
-  return buildList {
-    addAll(compilerKotlinHooks.orEmpty())
-    if (generateAsInternal) {
-      add(AddInternalCompilerHooks(".*"))
-    }
-  }
-}
-
-internal fun compilerJavaHooks(compilerJavaHooks: List<ApolloCompilerJavaHooks>?): List<ApolloCompilerJavaHooks> {
-  return compilerJavaHooks.orEmpty()
-}
-
-internal fun packageNameGenerator(packageName: String?, rootPackageName: String?): PackageNameGenerator {
-  return when {
-    packageName != null -> PackageNameGenerator.Flat(packageName)
-    rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
-    else -> error("Apollo: missing packageName")
   }
 }
