@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 import kotlinx.atomicfu.locks.ReentrantLock
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
-internal actual class Lock {
+actual class Lock {
   private val lock: ReentrantLock = reentrantLock()
 
   actual fun <T> read(block: () -> T): T {

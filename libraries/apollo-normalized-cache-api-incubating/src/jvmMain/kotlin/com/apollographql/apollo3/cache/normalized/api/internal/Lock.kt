@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-internal actual class Lock {
+actual class Lock {
   private val lock = ReentrantReadWriteLock()
 
   actual fun <T> read(block: () -> T): T {

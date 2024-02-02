@@ -16,35 +16,48 @@ import kotlin.reflect.KClass
 class SqlNormalizedCache internal constructor(
     private val recordDatabase: RecordDatabase,
 ) : NormalizedCache() {
+  private fun <T> maybeTransaction(condition: Boolean, block: () -> T): T {
+    return if (condition) {
+      recordDatabase.transaction {
+        block()
+      }
+    } else {
+      block()
+    }
+  }
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    val record = try {
-      recordDatabase.select(key)
-    } catch (e: Exception) {
-      // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to read a record from the database", e))
-      null
-    }
-    if (record != null) {
-      if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-        recordDatabase.delete(key)
+    val evictAfterRead = cacheHeaders.hasHeader(EVICT_AFTER_READ)
+    return maybeTransaction(evictAfterRead) {
+      try {
+        recordDatabase.select(key)
+      } catch (e: Exception) {
+        // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
+        apolloExceptionHandler(Exception("Unable to read a record from the database", e))
+        null
+      }?.also {
+        if (evictAfterRead) {
+          recordDatabase.delete(key)
+        }
       }
-      return record
-    }
-    return nextCache?.loadRecord(key, cacheHeaders)
+    } ?: nextCache?.loadRecord(key, cacheHeaders)
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val records = try {
-      internalGetRecords(keys)
-    } catch (e: Exception) {
-      // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to read records from the database", e))
-      emptyList()
-    }
-    if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-      records.forEach { record ->
-        recordDatabase.delete(record.key)
+    val evictAfterRead = cacheHeaders.hasHeader(EVICT_AFTER_READ)
+    val records = maybeTransaction(evictAfterRead) {
+      try {
+        internalGetRecords(keys)
+      } catch (e: Exception) {
+        // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
+        apolloExceptionHandler(Exception("Unable to read records from the database", e))
+        emptyList()
+      }.also {
+        if (evictAfterRead) {
+          it.forEach { record ->
+            recordDatabase.delete(record.key)
+          }
+        }
       }
     }
     val missRecordKeys = keys - records.map { it.key }.toSet()

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.cache.normalized.api.internal.CacheLock
+import com.apollographql.apollo3.cache.normalized.api.internal.Lock
 import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray
@@ -21,24 +21,16 @@ class MemoryCache(
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCache() {
-  /**
-   * A lock that is only used during read accesses on the JVM because
-   * reads also write in order to:
-   * - maintain the LRU order
-   * - update the memory cache from the downstream caches
-   *
-   * write accesses are already locked by a higher level ReadWrite lock
-   */
-  private val lock = CacheLock()
+  private val lock = Lock()
 
   private val lruCache = LruCache<String, CacheEntry>(maxSize = maxSizeBytes) { key, cacheEntry ->
     key.commonAsUtf8ToByteArray().size + (cacheEntry?.sizeInBytes ?: 0)
   }
 
   val size: Int
-    get() = lruCache.size()
+    get() = lock.read { lruCache.size() }
 
-  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lock.lock {
+  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lock.write {
     val cacheEntry = lruCache[key]?.also { cacheEntry ->
       if (cacheEntry.isExpired || cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
         lruCache.remove(key)
@@ -58,12 +50,14 @@ class MemoryCache(
   }
 
   override fun clearAll() {
-    lruCache.clear()
+    lock.write {
+      lruCache.clear()
+    }
     nextCache?.clearAll()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    val cacheEntry = lruCache.remove(cacheKey.key)
+    val cacheEntry = lock.write { lruCache.remove(cacheKey.key) }
 
     if (cascade && cacheEntry != null) {
       for (cacheReference in cacheEntry.record.referencedFields()) {
@@ -75,7 +69,7 @@ class MemoryCache(
     return cacheEntry != null || chainRemoved
   }
 
-  override fun remove(pattern: String): Int {
+  override fun remove(pattern: String): Int = lock.write {
     val regex = patternToRegex(pattern)
     var total = 0
     val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
@@ -87,7 +81,7 @@ class MemoryCache(
     }
 
     val chainRemoved = nextCache?.remove(pattern) ?: 0
-    return total + chainRemoved
+    total + chainRemoved
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
@@ -103,21 +97,22 @@ class MemoryCache(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-
-    val oldRecord = loadRecord(record.key, cacheHeaders)
-    val changedKeys = if (oldRecord == null) {
-      lruCache[record.key] = CacheEntry(
-          record = record,
-          expireAfterMillis = expireAfterMillis
-      )
-      record.fieldKeys()
-    } else {
-      val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
-      lruCache[record.key] = CacheEntry(
-          record = mergedRecord,
-          expireAfterMillis = expireAfterMillis
-      )
-      changedKeys
+    val changedKeys = lock.write {
+      val oldRecord = loadRecord(record.key, cacheHeaders)
+      if (oldRecord == null) {
+        lruCache[record.key] = CacheEntry(
+            record = record,
+            expireAfterMillis = expireAfterMillis
+        )
+        record.fieldKeys()
+      } else {
+        val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
+        lruCache[record.key] = CacheEntry(
+            record = mergedRecord,
+            expireAfterMillis = expireAfterMillis
+        )
+        changedKeys
+      }
     }
 
     return changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
@@ -128,17 +123,17 @@ class MemoryCache(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return records.flatMap { record -> merge(record, cacheHeaders, recordMerger) }.toSet()
+    return lock.write { records.flatMap { record -> merge(record, cacheHeaders, recordMerger) } }.toSet()
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return mapOf(
-        this::class to lruCache.dump().mapValues { (_, entry) -> entry.record }
+        this::class to lock.read { lruCache.dump() }.mapValues { (_, entry) -> entry.record }
     ) + nextCache?.dump().orEmpty()
   }
 
   internal fun clearCurrentCache() {
-    lruCache.clear()
+    lock.write { lruCache.clear() }
   }
 
   private class CacheEntry(
