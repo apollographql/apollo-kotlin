@@ -1,0 +1,88 @@
+---
+title: Apollo compiler plugins
+---
+
+The Apollo compiler supports [a wide range of options](../advanced/plugin-configuration). For the cases where these options are not enough, you can use an Apollo compiler plugins to modify the behaviour of the compiler. 
+
+Apollo compiler plugins allow to:
+
+* Change the layout of the generated sources (name of the classes, package names, capitalization rules).
+* Change the ids of operation for persisted queries.
+* Transform the JavaPoet/KotlinPoet models.
+* Transform the Apollo IR.
+
+# Implementing a compiler plugin
+
+In this example we will implement a plugin that uses custom [persisted queries](../advanced/persisted-queries) ids registered on your backend. 
+
+Create a new `apollo-compiler-plugin` Gradle module and add `apollo-compiler` as a dependency to the module `build.gradle[.kts]` file:
+
+```kotlin
+// apollo-compiler-plugin/build.gradle.kts
+plugins {
+  id("org.jetbrains.jvm")
+}
+
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-compiler:4.0.0-beta.4")  
+}
+```
+
+Next create your plugin in a `src/main/kotlin/mypackage/MyPlugin` file:
+
+```kotlin
+package mypackage
+
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationId
+
+class MyPlugin: Plugin {
+  override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
+    // This assumes the returned ids are in the same order as the descriptors
+    return registerOperations().withIndex().map { OperationId(it.value, descriptors[it.index].name) }
+  }
+
+  /**
+   * Send operations to a remote server and return the server persisted ids 
+   */
+  fun registerOperations(descriptors: List<OperationDescriptor>): List<String> {
+    // ...
+  }
+}
+```
+
+Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) using a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.Plugin`. This file contains the fully qualified name of your plugin: 
+
+```
+mypackage.MyPlugin
+```
+
+> [!NOTE]  
+> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services`. This is how `ServiceLoader` looks up `Plugins` at runtime.
+
+# Adding a plugin to the Apollo compiler classpath
+
+Use the `plugin()` Gradle option to add the plugin to the Apollo compiler classpath:
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+  id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo3")
+}
+
+apollo {
+  service("service") {
+    packageName.set("com.example")
+    
+    // Add your plugin to the Apollo compiler classpath
+    plugin(project(":apollo-compiler-plugin")) // highlight-line
+  }
+}
+```
+
+# Other examples
+
+For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins)
