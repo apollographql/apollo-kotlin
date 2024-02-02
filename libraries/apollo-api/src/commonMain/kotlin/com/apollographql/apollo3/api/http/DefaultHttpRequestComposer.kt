@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -38,8 +39,6 @@ class DefaultHttpRequestComposer(
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
-      add(HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()))
-      add(HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()))
       if (apolloRequest.operation is Subscription<*>) {
         add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
       } else {
@@ -58,15 +57,23 @@ class DefaultHttpRequestComposer(
         HttpRequest.Builder(
             method = HttpMethod.Get,
             url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
-        )
+        ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
+        val body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query)
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-        ).body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
+        ).body(body)
+            .let {
+              if (body.contentType.startsWith("multipart/form-data")) {
+                it.addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
+              } else {
+                it
+              }
+            }
       }
     }
 
@@ -77,26 +84,28 @@ class DefaultHttpRequestComposer(
   }
 
   companion object {
+    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
+    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+    val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
 
-    // Note: in addition to this being a generally useful header to send, Apollo
-    // Server's CSRF prevention feature (introduced in AS3.7 and intended to be
+    // Note: Apollo Server's CSRF prevention feature (introduced in AS3.7 and intended to be
     // the default in AS4) includes this in the set of headers that indicate
     // that a GET request couldn't have been a non-preflighted simple request
-    // and thus is safe to execute. If this project is changed to not always
-    // send this header, its GET requests may be blocked by Apollo Server with
-    // CSRF prevention enabled. See
-    // https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
+    // and thus is safe to execute.
+    // See https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
     // for details.
-    val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
+    internal val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
 
     val HEADER_ACCEPT_NAME = "Accept"
 
     // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
     // can recognize early client implementations and potentially reply in a compatible way.
     // This should be removed in later versions.
-    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed; deferSpec=20220824, application/json"
-    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed; boundary=\"graphql\"; subscriptionSpec=1.0, application/json"
+    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/json"
+    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
@@ -233,8 +242,8 @@ class DefaultHttpRequestComposer(
         )
       }
 
-      if (uploads.isEmpty()) {
-        return object : HttpBody {
+      return if (uploads.isEmpty()) {
+        object : HttpBody {
           override val contentType = "application/json"
           override val contentLength = operationByteString.size.toLong()
 
@@ -243,7 +252,7 @@ class DefaultHttpRequestComposer(
           }
         }
       } else {
-        return UploadsHttpBody(uploads, operationByteString)
+        UploadsHttpBody(uploads, operationByteString)
       }
     }
 
