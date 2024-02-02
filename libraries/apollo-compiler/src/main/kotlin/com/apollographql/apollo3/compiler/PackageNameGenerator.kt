@@ -25,22 +25,17 @@ interface PackageNameGenerator {
    * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
    */
   val version: String
+    get() = error("Use Apollo compiler plugins instead of passing packageNameGenerator from your Gradle classpath")
 
   class Flat(private val packageName: String): PackageNameGenerator {
     override fun packageName(filePath: String): String {
       return packageName
     }
-
-    override val version: String
-      get() = error("this should only be called from the Gradle Plugin")
   }
 
   class NormalizedPathAware(private val rootPackageName: String?): PackageNameGenerator {
     override fun packageName(filePath: String): String {
       return "${rootPackageName}.${filePath.toPackageName()}".removePrefix(".")
     }
-
-    override val version: String
-      get() = error("this should only be called from the Gradle Plugin")
   }
 }
