@@ -11,9 +11,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @ApolloInternal
-class CodegenMetadata internal constructor(
+class CodegenMetadata(
     val targetLanguage: TargetLanguage,
-    internal val entries: List<ResolverEntry>
+    val entries: List<ResolverEntry>
 
 ) {
   operator fun plus(other: CodegenMetadata): CodegenMetadata {
@@ -32,8 +32,6 @@ class CodegenMetadata internal constructor(
     )
   }
 }
-
-private val emptyTargetLanguage = "emptyTargetLanguage"
 
 @ApolloInternal
 fun CodegenMetadata.resolveSchemaType(name: String): ResolverClassName? {

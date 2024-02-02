@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -392,9 +393,19 @@ abstract class DefaultApolloExtension(
         serviceName = service.name,
     )
 
+    val pluginConfiguration = project.configurations.create(ModelNames.pluginConfiguration(service)) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = true
+    }
+
+    pluginConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
+    service.pluginDependencies.forEach {
+      pluginConfiguration.dependencies.add(it)
+    }
+
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptionsConsumerConfiguration)
     if (!service.isMultiModule()) {
-      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service)
+      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, pluginConfiguration)
     } else {
       val codegenSchemaConsumerConfiguration = createConfiguration(
           name = ModelNames.codegenSchemaConsumerConfiguration(service),
@@ -497,7 +508,8 @@ abstract class DefaultApolloExtension(
           codegenSchemaTaskProvider = codegenSchemaTaskProvider,
           downstreamIrOperations = downstreamIrConsumerConfiguration,
           irOperationsTaskProvider = irOperationsTaskProvider,
-          upstreamCodegenMetadata = codegenMetadataConsumerConfiguration
+          upstreamCodegenMetadata = codegenMetadataConsumerConfiguration,
+          classpath = pluginConfiguration,
       )
 
       sourcesBaseTaskProvider = sourcesFromIrTaskProvider
@@ -596,12 +608,13 @@ abstract class DefaultApolloExtension(
       downstreamIrOperations: FileCollection,
       irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
       upstreamCodegenMetadata: Configuration,
+      classpath: FileCollection,
   ): TaskProvider<ApolloGenerateSourcesFromIrTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
-      configureBaseCodegenTask(project, task, generateOptionsTaskProvider, service)
+      configureBaseCodegenTask(project, task, generateOptionsTaskProvider, service, classpath)
 
       task.codegenSchemas.from(schemaConsumerConfiguration)
       if (codegenSchemaTaskProvider != null) {
@@ -803,6 +816,7 @@ abstract class DefaultApolloExtension(
       task: ApolloGenerateSourcesBaseTask,
       generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
+      classpath: FileCollection,
   ) {
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
@@ -815,6 +829,7 @@ abstract class DefaultApolloExtension(
     task.compilerKotlinHooks = service.compilerKotlinHooks.orNull
     service.compilerKotlinHooks.disallowChanges()
 
+    task.classpath.from(classpath)
     task.compilerJavaHooks = service.compilerJavaHooks.orNull
     service.compilerJavaHooks.disallowChanges()
 
@@ -826,12 +841,13 @@ abstract class DefaultApolloExtension(
       project: Project,
       optionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
+      classpath: FileCollection,
   ): TaskProvider<ApolloGenerateSourcesTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
-      configureBaseCodegenTask(project, task, optionsTaskProvider, service)
+      configureBaseCodegenTask(project, task, optionsTaskProvider, service, classpath)
 
       task.graphqlFiles.from(service.graphqlSourceDirectorySet)
       task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()

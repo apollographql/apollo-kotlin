@@ -8,6 +8,7 @@ import com.apollographql.apollo3.compiler.JavaOperationsCodegenOptions
 import com.apollographql.apollo3.compiler.JavaSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -56,6 +57,7 @@ import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
+import com.apollographql.apollo3.compiler.maybeTransform
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.javapoet.CodeBlock
@@ -71,6 +73,7 @@ private fun buildOutput(
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
     apolloCompilerJavaHooks: List<ApolloCompilerJavaHooks>?,
+    javaOutputTransform: Transform<JavaOutput>?,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
 
@@ -121,16 +124,17 @@ private fun buildOutput(
           targetLanguage = TargetLanguage.JAVA,
           entries = resolver.entries()
       )
-  )
+  ).maybeTransform(javaOutputTransform)
 }
 
 internal object JavaCodegen {
   fun buildSchemaSources(
       codegenSchema: CodegenSchema,
-      irSchema: IrSchema?,
+      irSchema: IrSchema,
       codegenOptions: JavaSchemaCodegenOptions,
       layout: SchemaLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>,
+      javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irSchema is DefaultIrSchema)
 
@@ -153,6 +157,7 @@ internal object JavaCodegen {
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         apolloCompilerJavaHooks = compilerJavaHooks,
+        javaOutputTransform = javaOutputTransform
     ) { resolver ->
 
       val context = JavaSchemaContext(
@@ -222,6 +227,7 @@ internal object JavaCodegen {
       codegenOptions: JavaOperationsCodegenOptions,
       layout: OperationsLayout,
       compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
+      javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
     check(irOperations is DefaultIrOperations)
 
@@ -250,6 +256,7 @@ internal object JavaCodegen {
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         apolloCompilerJavaHooks = compilerJavaHooks,
+        javaOutputTransform = javaOutputTransform,
     ) { resolver ->
       val context = JavaOperationsContext(
           layout = layout,

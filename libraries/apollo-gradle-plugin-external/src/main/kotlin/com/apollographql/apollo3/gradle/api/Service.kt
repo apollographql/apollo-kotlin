@@ -880,4 +880,6 @@ interface Service {
      */
     val task: TaskProvider<out Task>
   }
+
+  fun plugin(dependencyNotation: Any)
 }

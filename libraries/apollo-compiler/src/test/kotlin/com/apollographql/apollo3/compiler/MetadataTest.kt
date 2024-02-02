@@ -75,6 +75,9 @@ class MetadataTest {
         compilerKotlinHooks = null,
         operationManifestFile = null,
         operationOutputGenerator = null,
+        irOperationsTransform = null,
+        javaOutputTransform = null,
+        kotlinOutputTransform = null,
     ).writeTo(rootSourcesDir, true, rootCodegenMetadata)
 
     ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
@@ -88,6 +91,9 @@ class MetadataTest {
         compilerKotlinHooks = null,
         operationManifestFile = null,
         operationOutputGenerator = null,
+        irOperationsTransform = null,
+        javaOutputTransform = null,
+        kotlinOutputTransform = null,
     ).writeTo(leafSourcesDir, true, null)
   }
 
