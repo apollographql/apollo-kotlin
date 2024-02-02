@@ -149,6 +149,23 @@ Because of the number of different options in 3.x and the complexity of error ha
 
 ### HTTP headers
 
+`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
+
+```kotlin
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .addInterceptor(object : ApolloInterceptor {
+          override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+            return chain.proceed(request.newBuilder()
+                .addHttpHeader("X-APOLLO-OPERATION-NAME", request.operation.name())
+                .addHttpHeader("X-APOLLO-OPERATION-ID", request.operation.id())
+                .build()
+            )
+          }
+        })
+        .build()
+```
+
 In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
 ```kotlin
