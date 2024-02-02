@@ -1,6 +1,7 @@
 package hooks
 
 import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
@@ -9,27 +10,27 @@ import com.squareup.kotlinpoet.TypeSpec
 class TestPlugin : Plugin {
   private val interfaceName = "hooks.typenameinterface.HasTypeName"
 
-  override fun kotlinOutputTransform(): ((KotlinOutput) -> KotlinOutput) {
-    return ::transform
-  }
-
-  private fun transform(source: KotlinOutput): KotlinOutput {
-    return KotlinOutput(
-        fileSpecs = source.fileSpecs.map {
-          it.toBuilder()
-              .apply {
-                members.replaceAll { member ->
-                  if (member is TypeSpec) {
-                    member.addSuperInterfaceOnType()
-                  } else {
-                    member
+  override fun kotlinOutputTransform(): Transform<KotlinOutput> {
+    return object : Transform<KotlinOutput> {
+      override fun transform(input: KotlinOutput): KotlinOutput {
+        return KotlinOutput(
+            fileSpecs = input.fileSpecs.map {
+              it.toBuilder()
+                  .apply {
+                    members.replaceAll { member ->
+                      if (member is TypeSpec) {
+                        member.addSuperInterfaceOnType()
+                      } else {
+                        member
+                      }
+                    }
                   }
-                }
-              }
-              .build()
-        },
-        codegenMetadata = source.codegenMetadata
-    )
+                  .build()
+            },
+            codegenMetadata = input.codegenMetadata
+        )
+      }
+    }
   }
 
   private fun TypeSpec.addSuperInterfaceOnType(): TypeSpec {

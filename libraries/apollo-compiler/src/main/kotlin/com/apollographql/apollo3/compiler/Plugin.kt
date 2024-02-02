@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.ir.IrOperations
 
 interface Transform<T> {
-  fun transform(t: T): T
+  fun transform(input: T): T
 }
 
 interface Plugin {

@@ -1,18 +1,17 @@
 package hooks
 
 import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 class TestPlugin : Plugin {
-  override fun kotlinOutputTransform(): ((KotlinOutput) -> KotlinOutput) {
-    return ::transform
-  }
-
-  private fun transform(source: KotlinOutput): KotlinOutput {
-    return KotlinOutput(
-        fileSpecs = source.fileSpecs.map {
+  override fun kotlinOutputTransform(): Transform<KotlinOutput> {
+    return object : Transform<KotlinOutput> {
+      override fun transform(input: KotlinOutput): KotlinOutput {
+        return KotlinOutput(
+            fileSpecs = input.fileSpecs.map {
           it.toBuilder()
               .apply {
                 members.replaceAll { member ->
@@ -53,8 +52,11 @@ class TestPlugin : Plugin {
               }
               .build()
         },
-        codegenMetadata = source.codegenMetadata
-    )
+        codegenMetadata = input.codegenMetadata
+        )
+      }
+
+    }
   }
 
 }
