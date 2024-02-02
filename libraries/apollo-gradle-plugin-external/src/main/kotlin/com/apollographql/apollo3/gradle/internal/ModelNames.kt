@@ -40,4 +40,5 @@ object ModelNames {
   fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
   fun otherOptionsProducerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsProducer")
   fun otherOptionsConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsConsumer")
-}
+  fun pluginConfiguration(service: DefaultService) = camelCase("apollo", service.name, "PluginConsumer")
+ }

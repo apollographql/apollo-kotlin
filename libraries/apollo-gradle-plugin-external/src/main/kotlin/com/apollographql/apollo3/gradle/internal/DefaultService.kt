@@ -21,6 +21,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
+  internal val pluginDependencies = mutableListOf<Dependency>()
 
   private val objects = project.objects
   internal var registered = false
@@ -200,6 +201,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal fun isMultiModule(): Boolean = generateApolloMetadata.getOrElse(false) || downstreamDependencies.isNotEmpty() || upstreamDependencies.isNotEmpty()
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
+
+  override fun plugin(dependencyNotation: Any) {
+    pluginDependencies.add(project.dependencies.create(dependencyNotation))
+  }
 }
 
 internal fun DefaultService.fallbackFiles(project: Project, block: (ConfigurableFileTree) -> Unit): FileCollection {

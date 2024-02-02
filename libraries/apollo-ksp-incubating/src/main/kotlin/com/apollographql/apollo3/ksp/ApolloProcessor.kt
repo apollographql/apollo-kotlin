@@ -42,7 +42,7 @@ import com.google.devtools.ksp.visitor.KSEmptyVisitor
 
 internal class ObjectInfo(
     val className: IrClassName,
-    val classDeclaration: KSClassDeclaration
+    val classDeclaration: KSClassDeclaration,
 )
 
 @OptIn(ApolloInternal::class, ApolloExperimental::class)
@@ -185,18 +185,20 @@ class ApolloProcessor(
     )
 
     val sourceOutput = ApolloCompiler.buildSchemaSources(
-            codegenSchema = codegenSchema,
-            usedCoordinates = null,
-            codegenOptions = buildCodegenOptions(
-                addUnknownForEnums = false,
-                addDefaultArgumentForInputObjects = false,
-                generateAsInternal = true,
-                packageName = packageName
-            ),
+        codegenSchema = codegenSchema,
+        usedCoordinates = null,
+        codegenOptions = buildCodegenOptions(
+            addUnknownForEnums = false,
+            addDefaultArgumentForInputObjects = false,
+            generateAsInternal = true,
+            packageName = packageName
+        ),
         null,
-            null,
-            null
-        )
+        null,
+        null,
+        null,
+        null,
+    )
 
     codegenMetadata = sourceOutput.codegenMetadata
     sourceOutput.writeTo(codeGenerator)
@@ -208,7 +210,7 @@ class ApolloProcessor(
 
     val validationScope = ValidationScope(objectMapping, scalarMapping, schema, codegenMetadata, logger)
 
-    check (objectMapping.isNotEmpty()) {
+    check(objectMapping.isNotEmpty()) {
       "No @GraphQLObject found. If this error comes from a compilation where you don't want to generate code, use `ksp.allow.all.target.configuration=false`"
     }
 
@@ -246,12 +248,12 @@ class ApolloProcessor(
     }
 
     ApolloCompiler.buildExecutableSchemaSources(
-            codegenSchema = codegenSchema,
-            codegenMetadata = codegenMetadata,
-            irTargetObjects = irTargetObjects,
-            packageName = packageName,
-            serviceName = serviceName
-        ).writeTo(codeGenerator)
+        codegenSchema = codegenSchema,
+        codegenMetadata = codegenMetadata,
+        irTargetObjects = irTargetObjects,
+        packageName = packageName,
+        serviceName = serviceName
+    ).writeTo(codeGenerator)
 
     return emptyList()
   }
@@ -320,7 +322,7 @@ class ApolloFileVisitor : KSEmptyVisitor<Unit, Unit>() {
       val name = apolloObject.getArgumentValue("name").takeIf { it != "" }
       var graphqlName = classDeclaration.graphqlName()
 
-      check (name == null || graphqlName == null) {
+      check(name == null || graphqlName == null) {
         "@GraphQL is redundant with @GraphQLObject name at ${classDeclaration.location}"
       }
 
@@ -388,7 +390,7 @@ private fun KSAnnotation.getArgumentValue(name: String): String? {
 private fun KSValueParameter.toIrTargetArgument(
     fieldDefinition: GQLFieldDefinition,
     validationScope: ValidationScope,
-    objectName: String
+    objectName: String,
 ): IrTargetArgument {
   if (this.type.resolve().declaration.acClassName() == executionContextClassName) {
     return IrExecutionContextTargetArgument
@@ -416,7 +418,11 @@ private fun KSValueParameter.toIrTargetArgument(
   )
 }
 
-private fun KSPropertyDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+private fun KSPropertyDeclaration.toIrTargetField(
+    validationScope: ValidationScope,
+    typeDefinition: GQLTypeDefinition,
+    isSubscriptionRootField: Boolean,
+): IrTargetField? {
   val targetName = simpleName.asString()
   val graphQLName = graphqlName() ?: targetName
 
@@ -450,7 +456,11 @@ private fun KSPropertyDeclaration.toIrTargetField(validationScope: ValidationSco
   )
 }
 
-private fun KSFunctionDeclaration.toIrTargetField(validationScope: ValidationScope, typeDefinition: GQLTypeDefinition, isSubscriptionRootField: Boolean): IrTargetField? {
+private fun KSFunctionDeclaration.toIrTargetField(
+    validationScope: ValidationScope,
+    typeDefinition: GQLTypeDefinition,
+    isSubscriptionRootField: Boolean,
+): IrTargetField? {
   val targetName = simpleName.asString()
 
   if (targetName == "<init>") {
