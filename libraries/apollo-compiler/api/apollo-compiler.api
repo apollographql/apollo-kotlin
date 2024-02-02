@@ -300,7 +300,7 @@ public final class com/apollographql/apollo3/compiler/OperationIdGenerator$Sha25
 
 public abstract interface class com/apollographql/apollo3/compiler/OperationOutputGenerator {
 	public abstract fun generate (Ljava/util/Collection;)Ljava/util/Map;
-	public abstract fun getVersion ()Ljava/lang/String;
+	public fun getVersion ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$Default : com/apollographql/apollo3/compiler/OperationOutputGenerator {
@@ -338,19 +338,17 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/PackageNameGenerator {
-	public abstract fun getVersion ()Ljava/lang/String;
+	public fun getVersion ()Ljava/lang/String;
 	public abstract fun packageName (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Flat : com/apollographql/apollo3/compiler/PackageNameGenerator {
 	public fun <init> (Ljava/lang/String;)V
-	public fun getVersion ()Ljava/lang/String;
 	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/PackageNameGenerator$NormalizedPathAware : com/apollographql/apollo3/compiler/PackageNameGenerator {
 	public fun <init> (Ljava/lang/String;)V
-	public fun getVersion ()Ljava/lang/String;
 	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
 }
 
