@@ -19,18 +19,11 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Increment snapshot version
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          ./scripts/increment-ij-plugin-snapshot.main.kts
-        env:
-          IJ_PLUGIN_SNAPSHOT: true
-          GH_TOKEN: ${{ github.token }}
-
       - name: Publish snapshot to Repsy
-        run: ./gradlew --no-build-cache :intellij-plugin:publishAllPublicationsToRepsyIjPluginSnapshots
+        run: ./gradlew --no-build-cache :intellij-plugin:publishPlugin
         env:
           IJ_PLUGIN_SNAPSHOT: true
-          IJ_PLUGIN_REPSY_USERNAME: ${{ secrets.IJ_PLUGIN_REPSY_USERNAME }}
-          IJ_PLUGIN_REPSY_PASSWORD: ${{ secrets.IJ_PLUGIN_REPSY_PASSWORD }}
+          PUBLISH_TOKEN: ${{ secrets.IJ_PLUGIN_PUBLISH_TOKEN }}
+          CERTIFICATE_CHAIN: ${{ secrets.IJ_PLUGIN_CERTIFICATE_CHAIN }}
+          PRIVATE_KEY: ${{ secrets.IJ_PLUGIN_PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.IJ_PLUGIN_PRIVATE_KEY_PASSWORD }}

@@ -3,13 +3,14 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
 
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij")
-  id("maven-publish")
   alias(libs.plugins.apollo.published)
 }
 
@@ -24,8 +25,8 @@ repositories {
 
 group = properties("pluginGroup")
 
-// Use the global version defined in the root project + snapshot suffix if from the CI
-version = properties("VERSION_NAME") + if (isSnapshotBuild()) ".${properties("snapshotVersion")}" else ""
+// Use the global version defined in the root project + dedicated suffix if building a snapshot from the CI
+version = properties("VERSION_NAME") + if (isSnapshotBuild()) ".${SimpleDateFormat("YYYY-MM-dd").format(Date())}" else ""
 
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
@@ -124,9 +125,10 @@ tasks {
 
   publishPlugin {
     token.set(System.getenv("PUBLISH_TOKEN"))
-    // Uncomment to release to the preview channel.
-    // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
-    // channels.set(listOf("preview"))
+    if (isSnapshotBuild()) {
+      // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
+      channels.set(listOf("snapshots"))
+    }
   }
 
   // Log tests
@@ -161,58 +163,6 @@ tasks.test.configure {
   // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
   // Use a relative path to make build caching work
   systemProperty("idea.home.path", mockJdkRoot.relativeTo(project.projectDir).path)
-}
-
-// See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
-tasks.register("updatePluginsXml") {
-  val pluginsXmlFile = file("snapshots/plugins.xml")
-  val pluginId = properties("pluginId")
-  val pluginName = properties("pluginName")
-  val version = project.version.toString()
-  val pluginSinceBuild = properties("pluginSinceBuild")
-  val pluginUntilBuild = properties("pluginUntilBuild")
-  inputs.property("pluginId", pluginId)
-  inputs.property("pluginName", pluginName)
-  inputs.property("version", version)
-  inputs.property("pluginSinceBuild", pluginSinceBuild)
-  inputs.property("pluginUntilBuild", pluginUntilBuild)
-  outputs.file(pluginsXmlFile)
-  outputs.cacheIf { true }
-  doLast {
-    pluginsXmlFile.writeText(
-        """
-        <plugins>
-          <plugin
-              id="$pluginId"
-              url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
-              version="$version">
-            <idea-version since-build="$pluginSinceBuild" until-build="$pluginUntilBuild"/>
-            <name>Apollo GraphQL (Weekly Snapshots)</name>
-          </plugin>
-        </plugins>
-        """.trimIndent()
-    )
-  }
-}
-
-publishing {
-  repositories {
-    maven {
-      name = "repsyIjPluginSnapshots"
-      url = uri("https://repo.repsy.io/mvn/bod/apollo-intellij-plugin/")
-      credentials {
-        username = System.getenv("IJ_PLUGIN_REPSY_USERNAME")
-        password = System.getenv("IJ_PLUGIN_REPSY_PASSWORD")
-      }
-    }
-  }
-
-  publications {
-    create<MavenPublication>("default") {
-      artifactId = properties("pluginName")
-      artifact(tasks.named("buildPlugin"))
-    }
-  }
 }
 
 dependencies {
