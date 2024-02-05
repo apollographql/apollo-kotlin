@@ -211,9 +211,9 @@ auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN` for most 
 auto-generated methods, and/or you are worried about the size of the generated code, you can configure the Apollo compiler to generate none
 or a subset of the data class methods. To do this, set `generateMethods` to a list of the methods you need. The available methods are:
 
-- "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
-- "toString" generates a method that will print a pretty string representing the data in the class
-- "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+- "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties.
+- "toString" generates a method that will print a pretty string representing the data in the class.
+- "copy" (Kotlin only) generates a method that will copy the class with named parameters and default values.
 - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
 which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
 

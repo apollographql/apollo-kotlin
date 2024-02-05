@@ -451,11 +451,11 @@ interface Service {
   /**
    * Specifies which methods will be auto generated on operations, models, fragments and input objects.
    *
-   * Pass a list of any of the following:
+   * Pass a list of the following:
    *
-   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
-   * - "toString" generates a method that will print a pretty string representing the data in the class
-   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties.
+   * - "toString" generates a method that will print a pretty string representing the data in the class.
+   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters and default values.
    * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
    * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
    *
