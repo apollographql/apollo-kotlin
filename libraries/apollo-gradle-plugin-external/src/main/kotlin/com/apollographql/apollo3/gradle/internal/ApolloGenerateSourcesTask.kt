@@ -116,7 +116,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
               return plugin?.layout(codegenSchema)
             }
           },
-          operationOutputGenerator = plugin?.operationOutputGenerator(),
+          operationOutputGenerator = plugin?.toOperationOutputGenerator(),
           irOperationsTransform = plugin?.irOperationsTransform(),
           javaOutputTransform = plugin?.javaOutputTransform(),
           kotlinOutputTransform = plugin?.kotlinOutputTransform(),

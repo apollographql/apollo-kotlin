@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationId
 
 /**
  * Entry point for customizing the behaviour of the Apollo Compiler besides the
@@ -21,7 +23,7 @@ interface Plugin {
   /**
    * @return the [OperationOutputGenerator] or null to use the default [OperationOutputGenerator]
    */
-  fun operationOutputGenerator(): OperationOutputGenerator? {
+  fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
     return null
   }
 
