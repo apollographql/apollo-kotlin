@@ -26,7 +26,12 @@ repositories {
 group = properties("pluginGroup")
 
 // Use the global version defined in the root project + dedicated suffix if building a snapshot from the CI
-version = properties("VERSION_NAME") + if (isSnapshotBuild()) ".${SimpleDateFormat("YYYY-MM-dd").format(Date())}" else ""
+version = properties("VERSION_NAME") + getSnapshotVersionSuffix()
+
+fun getSnapshotVersionSuffix(): String {
+  if (!isSnapshotBuild()) return ""
+  return ".${SimpleDateFormat("YYYY-MM-dd").format(Date())}." + System.getenv("GITHUB_SHA").take(7)
+}
 
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
