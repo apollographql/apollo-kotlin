@@ -2,7 +2,7 @@
 title: Apollo compiler plugins
 ---
 
-The Apollo compiler supports [a wide range of options](../advanced/plugin-configuration). For the cases where these options are not enough, you can use an Apollo compiler plugins to modify the behaviour of the compiler. 
+The Apollo compiler supports [a wide range of options](../advanced/plugin-configuration). For the cases where these options are not enough, you can use Apollo compiler plugins to modify the behaviour of the compiler. 
 
 Apollo compiler plugins allow to:
 
@@ -15,7 +15,9 @@ Apollo compiler plugins allow to:
 
 In this example we will implement a plugin that uses custom [persisted queries](../advanced/persisted-queries) ids registered on your backend. 
 
-Create a new `apollo-compiler-plugin` Gradle module and add `apollo-compiler` as a dependency to the module `build.gradle[.kts]` file:
+The Apollo compiler use the [ServiceLoader API](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) to load plugins at runtime. Plugins need to be implemented in a separate module that is added to the classpath.
+
+To start, create a new module Gradle module and add `apollo-compiler` as a dependency to the module `build.gradle[.kts]` file. In this example, we'll use `apollo-compiler-plugin` for the module name:
 
 ```kotlin
 // apollo-compiler-plugin/build.gradle.kts
@@ -24,6 +26,7 @@ plugins {
 }
 
 dependencies {
+  // Add apollo-compiler as a dependency
   implementation("com.apollographql.apollo3:apollo-compiler:4.0.0-beta.4")  
 }
 ```
@@ -60,11 +63,11 @@ mypackage.MyPlugin
 ```
 
 > [!NOTE]  
-> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services`. This is how `ServiceLoader` looks up `Plugins` at runtime.
+> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
 
 # Adding a plugin to the Apollo compiler classpath
 
-Use the `plugin()` Gradle option to add the plugin to the Apollo compiler classpath:
+Use the `Service.plugin()` Gradle method to add the plugin to the Apollo compiler classpath:
 
 ```kotlin
 // app/build.gradle.kts
@@ -85,4 +88,4 @@ apollo {
 
 # Other examples
 
-For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins)
+For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins).
