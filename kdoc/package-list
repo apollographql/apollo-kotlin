@@ -34,8 +34,7 @@ com.apollographql.apollo3.compiler.codegen
 com.apollographql.apollo3.compiler.codegen.java
 com.apollographql.apollo3.compiler.codegen.java.helpers
 com.apollographql.apollo3.compiler.codegen.kotlin
-com.apollographql.apollo3.compiler.hooks
-com.apollographql.apollo3.compiler.hooks.internal
+com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 com.apollographql.apollo3.compiler.ir
 com.apollographql.apollo3.compiler.operationoutput
 com.apollographql.apollo3.compiler.pqm
