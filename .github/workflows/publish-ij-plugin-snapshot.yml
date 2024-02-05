@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Publish snapshot to Repsy
+      - name: Publish snapshot to Jetbrains snapshots
         run: ./gradlew --no-build-cache :intellij-plugin:publishPlugin
         env:
           IJ_PLUGIN_SNAPSHOT: true
