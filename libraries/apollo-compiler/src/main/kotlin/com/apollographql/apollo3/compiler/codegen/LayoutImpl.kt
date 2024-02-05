@@ -1,10 +1,14 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
+import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.internal.singularize
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -24,10 +28,15 @@ import com.apollographql.apollo3.compiler.withUnderscorePrefix
 internal class LayoutImpl(
     codegenSchema: CodegenSchema,
     private val packageNameGenerator: PackageNameGenerator,
-    private val useSemanticNaming: Boolean,
-    private val decapitalizeFields: Boolean
+    useSemanticNaming: Boolean?,
+    decapitalizeFields: Boolean?,
+    generatedSchemaName: String?
 ) : SchemaAndOperationsLayout, ExecutableSchemaLayout {
   private val schemaPackageName = executableDocumentPackageName(codegenSchema.normalizedPath)
+  private val useSemanticNaming: Boolean = useSemanticNaming ?: defaultUseSemanticNaming
+  private val decapitalizeFields: Boolean = decapitalizeFields ?: defaultDecapitalizeFields
+  private val generatedSchemaName: String = generatedSchemaName ?: defaultGeneratedSchemaName
+
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val usedNames = mutableSetOf<String>()
     val allTypes = codegenSchema.allTypes()
@@ -62,12 +71,24 @@ internal class LayoutImpl(
 
   override fun schemaTypeName(schemaTypeName: String): String {
     return schemaTypeToClassName[schemaTypeName]?.let {
-      topLevelName(it)
+      className(it)
     } ?: error("unknown schema type: $schemaTypeName")
   }
 
+  override fun schemaName(): String {
+    return generatedSchemaName
+  }
+
+  override fun assertionsName(): String {
+    return "Assertions"
+  }
+
+  override fun paginationName(): String {
+    return "Pagination"
+  }
+
   override fun operationName(name: String, capitalizedOperationType: String): String {
-    return topLevelName(name).let {
+    return className(name).let {
       if (useSemanticNaming) {
         it.maybeAddSuffix(capitalizedOperationType)
       } else {
@@ -77,10 +98,10 @@ internal class LayoutImpl(
   }
 
   override fun fragmentName(name: String): String {
-    return topLevelName(name)
+    return className(name)
   }
 
-  override fun topLevelName(name: String): String {
+  override fun className(name: String): String {
     return name.capitalizeFirstLetter()
   }
 
@@ -157,7 +178,28 @@ internal fun String.variableName(): String = this.withUnderscorePrefix()
 
 fun SchemaAndOperationsLayout(
     codegenSchema: CodegenSchema,
+    packageName: String?,
+    rootPackageName: String?,
+    useSemanticNaming: Boolean?,
+    decapitalizeFields: Boolean?,
+    generatedSchemaName: String?,
+): SchemaAndOperationsLayout {
+  val packageNameGenerator = when {
+    packageName != null -> PackageNameGenerator.Flat(packageName)
+    rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
+    else -> error("One of packageName or rootPackageName is required")
+  }
+  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields, generatedSchemaName)
+}
+
+@ApolloInternal
+fun SchemaAndOperationsLayout(
+    codegenSchema: CodegenSchema,
     packageNameGenerator: PackageNameGenerator,
-    useSemanticNaming: Boolean,
-    decapitalizeFields: Boolean
-): SchemaAndOperationsLayout = LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields)
+    useSemanticNaming: Boolean?,
+    decapitalizeFields: Boolean?,
+    generatedSchemaName: String?,
+): SchemaAndOperationsLayout {
+  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields, generatedSchemaName )
+}
+

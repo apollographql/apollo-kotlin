@@ -19,7 +19,7 @@ internal class UtilAssertionsBuilder(val context: JavaSchemaContext) : JavaClass
     return CodegenJavaFile(
         packageName = context.layout.typeUtilPackageName(),
         typeSpec = TypeSpec
-            .classBuilder(context.layout.topLevelName("Assertions"))
+            .classBuilder(context.layout.assertionsName())
             .addModifiers(Modifier.PUBLIC)
             .addMethod(
                 MethodSpec.methodBuilder("assertOneOf")

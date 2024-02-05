@@ -7,10 +7,10 @@ import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import kotlinx.serialization.Serializable
 
 /**
- * resolver info used by the codegen to lookup already existing ClassNames
+ * [CodegenMetadata] contains information about what target classes were generated for each GraphQL types
+ * so that downstream modules can reuse them.
  */
 @Serializable
-@ApolloInternal
 class CodegenMetadata(
     val targetLanguage: TargetLanguage,
     val entries: List<ResolverEntry>

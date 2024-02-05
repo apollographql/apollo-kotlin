@@ -66,8 +66,6 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
           logger = logger(),
           layoutFactory = layout(),
           operationOutputGenerator = operationOutputGenerator,
-          compilerJavaHooks = compilerJavaHooks,
-          compilerKotlinHooks = compilerKotlinHooks,
           irOperationsTransform = null,
           javaOutputTransform = null,
           kotlinOutputTransform = null,
@@ -119,8 +117,6 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
             }
           },
           operationOutputGenerator = plugin?.operationOutputGenerator(),
-          compilerJavaHooks = null,
-          compilerKotlinHooks = null,
           irOperationsTransform = plugin?.irOperationsTransform(),
           javaOutputTransform = plugin?.javaOutputTransform(),
           kotlinOutputTransform = plugin?.kotlinOutputTransform(),

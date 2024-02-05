@@ -1,47 +1,51 @@
 package hooks
 
 import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Plugin
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
 
 class TestPlugin : Plugin {
   private val prefix: String = "GQL"
 
   override fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout {
-    val delegate = SchemaAndOperationsLayout(codegenSchema, PackageNameGenerator.Flat("hooks.prefixnames.kotlin"), defaultUseSemanticNaming, defaultDecapitalizeFields)
+    val delegate = SchemaAndOperationsLayout(
+        codegenSchema = codegenSchema,
+        packageName = "hooks.prefixnames.kotlin",
+        rootPackageName = null,
+        useSemanticNaming = null,
+        decapitalizeFields = null,
+        generatedSchemaName = null
+    )
 
-    return object : SchemaAndOperationsLayout {
-      override fun schemaPackageName(): String {
-        return delegate.schemaPackageName()
-      }
-
+    return object : SchemaAndOperationsLayout by delegate {
+      
       override fun schemaTypeName(schemaTypeName: String): String {
-        return topLevelName(delegate.schemaTypeName(schemaTypeName))
+        return delegate.schemaTypeName(schemaTypeName).prefixed()
       }
 
-      override fun topLevelName(name: String): String {
-        return "${prefix}${name}"
+      override fun schemaName(): String {
+        return delegate.schemaName().prefixed()
       }
 
-      override fun propertyName(name: String): String {
-        return delegate.propertyName(name)
+      override fun assertionsName(): String {
+        return delegate.assertionsName().prefixed()
       }
 
-      override fun executableDocumentPackageName(filePath: String?): String {
-        return delegate.executableDocumentPackageName(filePath)
+      override fun paginationName(): String {
+        return delegate.paginationName().prefixed()
       }
 
       override fun operationName(name: String, capitalizedOperationType: String): String {
-        return topLevelName(delegate.operationName(name, capitalizedOperationType))
+        return delegate.operationName(name, capitalizedOperationType).prefixed()
       }
 
       override fun fragmentName(name: String): String {
-        return topLevelName(delegate.fragmentName(name))
+        return delegate.fragmentName(name).prefixed()
       }
 
+      private fun String.prefixed(): String {
+        return "${prefix}${this}"
+      }
     }
   }
 }

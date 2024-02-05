@@ -116,8 +116,6 @@ abstract class DefaultApolloExtension(
           if (service.classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
           if (service.outputDir.isPresent) add("outputDir")
           if (service.alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
-          if (service.compilerKotlinHooks.isPresent) add("compilerKotlinHooks")
-          if (service.compilerJavaHooks.isPresent) add("compilerJavaHooks")
           if (service.introspection != null) add("introspection")
           if (service.registry != null) add("registry")
           if (service.upstreamDependencies.isNotEmpty()) add("dependsOn")
@@ -826,12 +824,7 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
-    task.compilerKotlinHooks = service.compilerKotlinHooks.orNull
-    service.compilerKotlinHooks.disallowChanges()
-
     task.classpath.from(classpath)
-    task.compilerJavaHooks = service.compilerJavaHooks.orNull
-    service.compilerJavaHooks.disallowChanges()
 
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
     task.operationManifestFile.set(service.operationManifestFile())

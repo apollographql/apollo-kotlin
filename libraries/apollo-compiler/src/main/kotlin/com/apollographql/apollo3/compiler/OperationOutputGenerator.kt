@@ -27,6 +27,7 @@ interface OperationOutputGenerator {
    * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
    */
   val version: String
+    get() = error("Use Apollo compiler plugins instead of passing operationOutputGenerator from your Gradle classpath")
 
   class Default(private val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {

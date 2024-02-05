@@ -13,8 +13,6 @@ class MyPlugin: Plugin {
                     "${it.name}CustomId" to it
                 }.toMap()
             }
-
-            override val version: String get() = error("")
         }
     }
 }

@@ -415,8 +415,6 @@ class CodegenTest {
           ),
           codegenOptions = codegenOptions,
           operationOutputGenerator = operationOutputGenerator,
-          compilerKotlinHooks = null,
-          compilerJavaHooks = null,
           logger = null,
           layoutFactory = null,
           operationManifestFile = null,

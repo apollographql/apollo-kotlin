@@ -6,9 +6,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -274,25 +271,21 @@ interface Service {
   val operationOutputGenerator: Property<OperationOutputGenerator>
 
   /**
-   * When true, the generated classes names will end with 'Query' or 'Mutation'.
-   * If you write `query droid { ... }`, the generated class will be named 'DroidQuery'.
+   * When true, the operation class names are suffixed with their operation type like ('Query', 'Mutation' ot 'Subscription').
+   * For an example, `query getDroid { ... }` GraphQL query generates the 'GetDroidQuery' class.
    *
    * Default value: true
    */
   val useSemanticNaming: Property<Boolean>
 
   /**
-   * The package name of the models. The compiler will generate classes in
+   * The package name for generated classes. Operations use the package name directly. Other
+   * classes like fragments and schema types use sub-packages to avoid name clashes:
    *
    * - $packageName/SomeQuery.kt
    * - $packageName/fragment/SomeFragment.kt
    * - $packageName/type/CustomScalar.kt
-   * - $packageName/type/SomeInputObject.kt
-   * - $packageName/type/SomeEnum.kt
-   *
-   * Default value: ""
-   *
-   * See also [packageNamesFromFilePaths]
+   * - etc...
    */
   val packageName: Property<String>
 
@@ -301,7 +294,7 @@ interface Service {
    *
    * See [PackageNameGenerator] for more details
    *
-   * See also [packageNamesFromFilePaths]
+   * @see [packageName]
    */
   val packageNameGenerator: Property<PackageNameGenerator>
 
@@ -329,6 +322,8 @@ interface Service {
    * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
    * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
    *
+   * Only valid if [generateKotlinModels] is true.
+   *
    * Default value: false
    */
   val addJvmOverloads: Property<Boolean>
@@ -336,8 +331,7 @@ interface Service {
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
    *
-   * To specify which classes to generate as `internal`, [compilerKotlinHooks] with [AddInternalCompilerHooks]
-   * can be used instead.
+   * Only valid when [generateKotlinModels] is true.
    *
    * Default value: false
    */
@@ -356,6 +350,8 @@ interface Service {
   /**
    * Whether to add the [JsExport] annotation to generated models. This is useful to be able to cast JSON parsed
    * responses into Kotlin classes using [unsafeCast].
+   *
+   * Only valid if [generateKotlinModels] is true.
    *
    * This is currently experimental and this API might change in the future.
    *
@@ -383,12 +379,17 @@ interface Service {
   val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
-   * Whether to generate default implementation classes for GraphQL fragments.
-   * Default value is `false`, means only interfaces are generated.
+   * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
    *
-   * Most of the time, fragment implementations are not needed because you can easily access fragments interfaces and read all
-   * data from your queries. They are needed if you want to be able to build fragments outside an operation. For an exemple
+   * When using `responseBased` codegen, [generateFragmentImplementations] also generates classes for every fragment
+   * interface.
+   *
+   * Most of the time, fragment implementations are not needed because you can access fragments and read all
+   * data from your queries.
+   * Fragment implementations are needed if you want to build fragments outside an operation. For an example
    * to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
+   *
+   * Default: false
    */
   val generateFragmentImplementations: Property<Boolean>
 
@@ -410,13 +411,21 @@ interface Service {
   val languageVersion: Property<String>
 
   /**
-   * Whether to write the query document in models
+   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default, this is true as it is needed
+   * to send the operations to the server.
+   * If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.
+   *
+   * Default: true
    */
   val generateQueryDocument: Property<Boolean>
 
   /**
-   * Whether to generate the Schema class. The Schema class lists all composite
-   * types in order to access __typename and/or possibleTypes.
+   * Whether to generate the Schema class.
+   *
+   * The Schema class is a special class that contains a list of all composite types (objects, interfaces, unions).
+   * It can be used to retrieve the list of possible types for a given CompiledType.
+   *
+   * Its name can be configured with [generatedSchemaName].
    *
    * Default: false
    */
@@ -442,11 +451,11 @@ interface Service {
   /**
    * Specifies which methods will be auto generated on operations, models, fragments and input objects.
    *
-   * Pass a list of any of the following:
+   * Pass a list of the following:
    *
-   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties
-   * - "toString" generates a method that will print a pretty string representing the data in the class
-   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters for
+   * - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties.
+   * - "toString" generates a method that will print a pretty string representing the data in the class.
+   * - "copy" (Kotlin only) generates a method that will copy the class with named parameters and default values.
    * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
    * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
    *
@@ -463,9 +472,11 @@ interface Service {
   val generateDataBuilders: Property<Boolean>
 
   /**
-   * Whether to generate response model builders for Java.
+   * Whether to generate builders for java models
    *
-   * Default: false
+   * Only valid when [generateKotlinModels] is `false`.
+   *
+   * Default value: false
    */
   @ApolloExperimental
   val generateModelBuilders: Property<Boolean>
@@ -616,10 +627,10 @@ interface Service {
   /**
    * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
    *
+   * Only valid when [generateKotlinModels] is `false`.
+   *
    * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
-   *
-   * Only valid when [generateKotlinModels] is `false`
    *
    * Default: listOf(".*")
    */
@@ -627,6 +638,8 @@ interface Service {
 
   /**
    * The annotation to use for `@requiresOptIn` fields/inputFields/enumValues
+   *
+   * Only valid if [generateKotlinModels] is true.
    *
    * This API is itself experimental and may change without advance notice
    *
@@ -656,7 +669,7 @@ interface Service {
    * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
    * `Boolean`) when possible.
    *
-   * Only valid when [generateKotlinModels] is `false`
+   * Only valid when [generateKotlinModels] is `false`.
    *
    * Default: false
    */
@@ -666,6 +679,8 @@ interface Service {
    * Whether to generate builders in addition to constructors for operations and input types.
    * Constructors are more concise but require passing an instance of `Optional` always, making them more verbose
    * for the cases where there are a lot of optional input parameters.
+   *
+   * Only valid if [generateKotlinModels] is true
    *
    * Default: false
    */
@@ -694,37 +709,12 @@ interface Service {
   val nullableFieldStyle: Property<String>
 
   /**
-   * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
+   * Whether to decapitalize fields  (for instance `FooBar` -> `fooBar`). This is useful if your schema has fields starting with an uppercase as
+   * it may create name clashes with models that use PascalCase
    *
    * Default: false
    */
   val decapitalizeFields: Property<Boolean>
-
-  /**
-   * Hooks to customize the generated Kotlin code.
-   *
-   * See [ApolloCompilerKotlinHooks] for more details.
-   *
-   * Only valid when [generateKotlinModels] is `true`
-   *
-   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
-   * so the KotlinPoet classes are available in the classpath.
-   */
-  @ApolloExperimental
-  val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
-
-  /**
-   * Hooks to customize the generated Java code.
-   *
-   * See [ApolloCompilerJavaHooks] for more details.
-   *
-   * Only valid when [generateKotlinModels] is `false`
-   *
-   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
-   * so the JavaPoet classes are available in the classpath.
-   */
-  @ApolloExperimental
-  val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)

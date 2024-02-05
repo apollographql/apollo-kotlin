@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -37,8 +35,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     sealedClassesForEnumsMatching.convention(null as List<String>?)
     classesForEnumsMatching.convention(null as List<String>?)
     generateMethods.convention(null as List<String>?)
-    compilerJavaHooks.convention(null as List<ApolloCompilerJavaHooks>?)
-    compilerKotlinHooks.convention(null as List<ApolloCompilerKotlinHooks>?)
   }
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")

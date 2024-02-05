@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.AdapterRegistryBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.ExecutableSchemaBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.MainResolverBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addInternal
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentResponseAdapterBuilder
@@ -36,7 +37,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.schema.PaginationBuilde
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.UnionBuilder
-import com.apollographql.apollo3.compiler.compilerKotlinHooks
 import com.apollographql.apollo3.compiler.defaultAddDefaultArgumentForInputObjects
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultAddUnkownForEnums
@@ -46,12 +46,10 @@ import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.defaultGenerateInputBuilders
 import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.defaultGenerateSchema
-import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.generateMethodsKotlin
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
@@ -71,14 +69,10 @@ private fun buildOutput(
     upstreamCodegenMetadatas: List<CodegenMetadata>,
     requiresOptInAnnotation: String?,
     targetLanguage: TargetLanguage,
-    hooks: List<ApolloCompilerKotlinHooks>?,
     kotlinOutputTransform: Transform<KotlinOutput>?,
     generateAsInternal: Boolean,
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
-
-  @Suppress("NAME_SHADOWING")
-  val hooks = compilerKotlinHooks(hooks, generateAsInternal)
 
   upstreamCodegenMetadatas.forEach {
     check(it.targetLanguage == targetLanguage) {
@@ -90,7 +84,6 @@ private fun buildOutput(
       next = null,
       scalarMapping = codegenSchema.scalarMapping,
       requiresOptInAnnotation = requiresOptInAnnotation,
-      hooks = hooks
   )
 
   val outputBuilder = OutputBuilder()
@@ -103,9 +96,9 @@ private fun buildOutput(
   outputBuilder.builders.forEach { it.prepare() }
 
   /**
-   * 2nd pass: build the [CgFile]s and go through hooks
+   * 2nd pass: build the [CgFile]s
    */
-  val fileInfos = outputBuilder.builders
+  val fileSpecs = outputBuilder.builders
       .map {
         val cgFile = it.build()
         val builder = FileSpec.builder(
@@ -133,15 +126,13 @@ private fun buildOutput(
         cgFile.imports.forEach {
           builder.addAliasedImport(it.className, it.alias)
         }
-        ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build())
-      }
-      .let {
-        hooks.fold(it as Collection<ApolloCompilerKotlinHooks.FileInfo>) { acc, hooks ->
-          hooks.postProcessFiles(acc)
+        if (generateAsInternal) {
+          builder.addInternal(listOf(".*"))
         }
+        builder.build()
       }
   return KotlinOutput(
-      fileSpecs = fileInfos.map { it.fileSpec },
+      fileSpecs = fileSpecs,
       codegenMetadata = CodegenMetadata(targetLanguage = targetLanguage, entries = resolver.entries())
   ).maybeTransform(kotlinOutputTransform)
 }
@@ -153,7 +144,6 @@ internal object KotlinCodegen {
       irSchema: IrSchema?,
       codegenOptions: KotlinSchemaCodegenOptions,
       layout: SchemaLayout,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
     check(irSchema is DefaultIrSchema)
@@ -161,7 +151,6 @@ internal object KotlinCodegen {
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
     val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
-    val generatedSchemaName = codegenOptions.generatedSchemaName ?: defaultGeneratedSchemaName
 
     val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
     val generateInputBuilders = codegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
@@ -179,7 +168,6 @@ internal object KotlinCodegen {
         upstreamCodegenMetadatas = emptyList(),
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
-        hooks = compilerKotlinHooks,
         kotlinOutputTransform = kotlinOutputTransform,
         generateAsInternal = generateAsInternal,
     ) { resolver ->
@@ -216,7 +204,7 @@ internal object KotlinCodegen {
         builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-        builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
         builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
       }
 
@@ -234,7 +222,6 @@ internal object KotlinCodegen {
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: KotlinOperationsCodegenOptions,
       layout: OperationsLayout,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
     check(irOperations is DefaultIrOperations)
@@ -258,7 +245,6 @@ internal object KotlinCodegen {
         upstreamCodegenMetadatas = upstreamCodegenMetadata,
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
-        hooks = compilerKotlinHooks,
         kotlinOutputTransform = kotlinOutputTransform,
         generateAsInternal = generateAsInternal
     ) { resolver ->
@@ -345,7 +331,6 @@ internal object KotlinCodegen {
         listOf(codegenMetadata),
         null,
         targetLanguage,
-        null,
         null,
         true,
     ) { resolver ->

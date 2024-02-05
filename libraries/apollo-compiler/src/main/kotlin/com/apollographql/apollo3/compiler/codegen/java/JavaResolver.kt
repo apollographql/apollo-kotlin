@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.helpers.singletonAdapterInitializer
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
@@ -44,7 +43,6 @@ internal class JavaResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
-    private val hooks: List<ApolloCompilerJavaHooks>,
 ) {
 
   private val optionalClassName: ClassName = when (nullableFieldStyle) {
@@ -86,8 +84,8 @@ internal class JavaResolver(
     else -> null
   }
 
-  fun resolve(key: ResolverKey): ClassName? = hooks.fold(classNames[key] ?: next?.resolve(key)) { acc, hooks ->
-    hooks.overrideResolvedType(key, acc)
+  fun resolve(key: ResolverKey): ClassName? {
+    return classNames[key] ?: next?.resolve(key)
   }
 
   private var classNames = entries.associateBy(

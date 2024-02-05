@@ -21,7 +21,6 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal class SchemaBuilder(
     private val context: KotlinSchemaContext,
-    private val generatedSchemaName: String,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
@@ -29,15 +28,16 @@ internal class SchemaBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.schemaSubPackageName()
+  private val simpleName = layout.schemaName()
 
   override fun prepare() {
-    context.resolver.registerSchema(ClassName(packageName, generatedSchemaName))
+    context.resolver.registerSchema(ClassName(packageName, simpleName))
   }
 
   override fun build(): CgFile {
     return CgFile(
         packageName = packageName,
-        fileName = generatedSchemaName,
+        fileName = simpleName,
         typeSpecs = listOf(typeSpec())
     )
   }
@@ -61,7 +61,7 @@ internal class SchemaBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.objectBuilder(layout.topLevelName(generatedSchemaName))
+    return TypeSpec.objectBuilder(simpleName)
         .addKdoc("A __Schema object containing all the composite types and a possibleTypes helper function")
         .addProperty(typesPropertySpec())
         .addFunction(possibleTypesFunSpec())

@@ -196,8 +196,6 @@ class ApolloProcessor(
         null,
         null,
         null,
-        null,
-        null,
     )
 
     codegenMetadata = sourceOutput.codegenMetadata

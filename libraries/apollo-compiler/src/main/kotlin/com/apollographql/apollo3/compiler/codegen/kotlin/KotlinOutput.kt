@@ -6,6 +6,10 @@ import com.apollographql.apollo3.compiler.codegen.SourceOutput
 import com.squareup.kotlinpoet.FileSpec
 import java.io.OutputStream
 
+/**
+ * Output of the Kotlin code generation. It's a list of [kotlinpoet](https://square.github.io/kotlinpoet/) [FileSpec]
+ * together with some metadata that maps the Kotlin files to their GraphQL origin.
+ */
 class KotlinOutput(
     val fileSpecs: List<FileSpec>,
     val codegenMetadata: CodegenMetadata,
