@@ -22,7 +22,7 @@ apollo {
         val name = it.name.replace("-", "")
         service(name) {
           packageName.set("hooks.$name")
-          plugin(project(":compiler-hooks-${it.name}"))
+          plugin(project(":compiler-plugins-${it.name}"))
           languageVersion.set("1.5")
           if (name == "gettersandsetters") {
             generateKotlinModels.set(false)
