@@ -18,7 +18,7 @@ internal class PaginationBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.paginationPackageName()
-  private val simpleName = layout.topLevelName("Pagination")
+  private val simpleName = layout.paginationName()
 
   override fun prepare() {
     context.resolver.register(ResolverKeyKind.Pagination, "", ClassName(packageName, simpleName))

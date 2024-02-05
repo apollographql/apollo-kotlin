@@ -38,8 +38,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.toSourceOutput
 import com.apollographql.apollo3.compiler.codegen.plus
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.internal.addRequiredFields
 import com.apollographql.apollo3.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo3.compiler.internal.checkApolloReservedEnumValueNames
@@ -323,8 +321,6 @@ object ApolloCompiler {
       usedCoordinates: UsedCoordinates?,
       codegenOptions: CodegenOptions,
       schemaLayout: SchemaLayout?,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): SourceOutput {
@@ -333,11 +329,13 @@ object ApolloCompiler {
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, emptyList())
     codegenOptions.validate()
 
-    val layout = schemaLayout ?: LayoutImpl(
+    val layout = schemaLayout ?: SchemaAndOperationsLayout(
         codegenSchema = codegenSchema,
-        packageNameGenerator = packageNameGenerator(codegenOptions.packageName, codegenOptions.rootPackageName),
-        useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming,
-        decapitalizeFields = codegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
+        packageName = codegenOptions.packageName,
+        rootPackageName = codegenOptions.rootPackageName,
+        useSemanticNaming = codegenOptions.useSemanticNaming ,
+        decapitalizeFields = codegenOptions.decapitalizeFields,
+        generatedSchemaName = codegenOptions.generatedSchemaName,
     )
 
     return if (targetLanguage == TargetLanguage.JAVA) {
@@ -346,7 +344,6 @@ object ApolloCompiler {
           irSchema = irSchema,
           codegenOptions = codegenOptions,
           layout = layout,
-          compilerJavaHooks = compilerJavaHooks ?: defaultCompilerJavaHooks,
           javaOutputTransform = javaOutputTransform
       ).toSourceOutput()
     } else {
@@ -356,7 +353,6 @@ object ApolloCompiler {
           irSchema = irSchema,
           codegenOptions = codegenOptions,
           layout = layout,
-          compilerKotlinHooks = compilerKotlinHooks ?: defaultCompilerKotlinHooks,
           kotlinOutputTransform = kotlinOutputTransform
       ).toSourceOutput()
     }
@@ -370,8 +366,6 @@ object ApolloCompiler {
       codegenOptions: CodegenOptions,
       layout: SchemaAndOperationsLayout?,
       operationOutputGenerator: OperationOutputGenerator?,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -414,11 +408,13 @@ object ApolloCompiler {
 
 
     @Suppress("NAME_SHADOWING")
-    val layout = layout ?: LayoutImpl(
+    val layout = layout ?: SchemaAndOperationsLayout(
         codegenSchema = codegenSchema,
-        packageNameGenerator = packageNameGenerator(codegenOptions.packageName, codegenOptions.rootPackageName),
-        useSemanticNaming = codegenOptions.useSemanticNaming ?: defaultUseSemanticNaming,
-        decapitalizeFields = codegenOptions.decapitalizeFields ?: defaultDecapitalizeFields
+        packageName = codegenOptions.packageName,
+        rootPackageName = codegenOptions.rootPackageName,
+        useSemanticNaming = codegenOptions.useSemanticNaming,
+        decapitalizeFields = codegenOptions.decapitalizeFields,
+        generatedSchemaName = codegenOptions.generatedSchemaName,
     )
 
     var sourceOutput: SourceOutput? = null
@@ -428,8 +424,6 @@ object ApolloCompiler {
           usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedFields),
           codegenOptions = codegenOptions,
           schemaLayout = layout,
-          compilerKotlinHooks = compilerKotlinHooks,
-          compilerJavaHooks = compilerJavaHooks,
           javaOutputTransform = javaOutputTransform,
           kotlinOutputTransform = kotlinOutputTransform,
       )
@@ -442,7 +436,6 @@ object ApolloCompiler {
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           codegenOptions = codegenOptions,
           layout = layout,
-          compilerJavaHooks = compilerJavaHooks,
           javaOutputTransform = javaOutputTransform,
       ).toSourceOutput()
     } else {
@@ -454,7 +447,6 @@ object ApolloCompiler {
           upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           codegenOptions = codegenOptions,
           layout = layout,
-          compilerKotlinHooks = compilerKotlinHooks,
           kotlinOutputTransform = kotlinOutputTransform
       ).toSourceOutput()
     }
@@ -473,8 +465,6 @@ object ApolloCompiler {
       codegenOptions: CodegenOptions,
       layoutFactory: LayoutFactory?,
       operationOutputGenerator: OperationOutputGenerator?,
-      compilerJavaHooks: List<ApolloCompilerJavaHooks>?,
-      compilerKotlinHooks: List<ApolloCompilerKotlinHooks>?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -503,8 +493,6 @@ object ApolloCompiler {
         upstreamCodegenMetadata = emptyList(),
         codegenOptions = codegenOptions,
         layout = layoutFactory?.create(codegenSchema),
-        compilerJavaHooks = compilerJavaHooks,
-        compilerKotlinHooks = compilerKotlinHooks,
         irOperationsTransform = irOperationsTransform,
         javaOutputTransform = javaOutputTransform,
         kotlinOutputTransform = kotlinOutputTransform,
@@ -523,11 +511,13 @@ object ApolloCompiler {
       serviceName: String,
   ): SourceOutput {
     val layout = LayoutImpl(
-        codegenSchema,
-        PackageNameGenerator.Flat(packageName),
-        false,
-        false
+        codegenSchema = codegenSchema,
+        packageNameGenerator = PackageNameGenerator.Flat(packageName),
+        useSemanticNaming = null,
+        decapitalizeFields = null,
+        generatedSchemaName = null,
     )
+
     return KotlinCodegen.buildExecutableSchema(
         codegenSchema = codegenSchema,
         codegenMetadata = codegenMetadata,

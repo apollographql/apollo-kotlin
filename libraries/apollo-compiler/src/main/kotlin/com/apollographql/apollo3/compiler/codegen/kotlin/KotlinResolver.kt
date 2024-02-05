@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.obj
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrCatchTo
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
@@ -43,10 +42,9 @@ internal class KotlinResolver(
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
-    private val hooks: List<ApolloCompilerKotlinHooks>,
 ) {
-  fun resolve(key: ResolverKey): ClassName? = hooks.fold(classNames[key] ?: next?.resolve(key)) { acc, hooks ->
-    hooks.overrideResolvedType(key, acc)
+  fun resolve(key: ResolverKey): ClassName?  {
+    return classNames[key] ?: next?.resolve(key)
   }
 
   private var classNames = entries.associateBy(
@@ -74,7 +72,7 @@ internal class KotlinResolver(
 
   internal fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
-  private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit {
+  private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName) {
     check(memberName.enclosingClassName == null) {
       "enclosingClassName is not supported"
     }
