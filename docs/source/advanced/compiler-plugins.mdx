@@ -62,8 +62,7 @@ Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/
 mypackage.MyPlugin
 ```
 
-> [!NOTE]  
-> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
+> Note: the name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
 
 # Adding a plugin to the Apollo compiler classpath
 
@@ -86,6 +85,10 @@ apollo {
 }
 ```
 
-# Other examples
+The plugin code will now be invoked the next time the compiler is invoked.
+
+# Other references
+
+For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [Plugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-plugin/index.html)
 
 For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins).
