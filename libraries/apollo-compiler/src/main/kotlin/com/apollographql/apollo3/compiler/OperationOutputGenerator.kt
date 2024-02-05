@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 
@@ -10,6 +11,9 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
  *
  * If you don't need batch compute, use [OperationOutputGenerator.Default]
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use Apollo compiler plugins instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface OperationOutputGenerator {
   /**
    * Generate

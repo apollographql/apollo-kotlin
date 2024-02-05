@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import java.io.File
 
 /**
@@ -7,6 +8,8 @@ import java.io.File
  * - executable files containing operations and fragments
  * - schema files containing type definitions or introspection json
  */
+@Deprecated("Use Apollo compiler plugins instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface PackageNameGenerator {
   /**
    * This will be called with
