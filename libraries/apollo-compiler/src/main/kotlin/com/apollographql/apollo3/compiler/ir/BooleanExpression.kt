@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.reflect.KClass
 
 /**
@@ -8,20 +9,24 @@ import kotlin.reflect.KClass
  * @param T the type of the variable elements. This allows representing BooleanExpression that only contain variables and
  * other that may also contain possibleTypes
  */
-internal sealed class BooleanExpression<out T : Any> {
+@ApolloExperimental
+sealed class BooleanExpression<out T : Any> {
   /**
    * This is not super well defined but works well enough for our simple use cases
    */
   abstract fun simplify(): BooleanExpression<T>
 
+  @ApolloExperimental
   object True : BooleanExpression<Nothing>() {
     override fun simplify() = this
   }
 
+  @ApolloExperimental
   object False : BooleanExpression<Nothing>() {
     override fun simplify() = this
   }
 
+  @ApolloExperimental
   data class Not<out T : Any>(val operand: BooleanExpression<T>) : BooleanExpression<T>() {
     override fun simplify() = when (this.operand) {
       is True -> False
@@ -30,6 +35,7 @@ internal sealed class BooleanExpression<out T : Any> {
     }
   }
 
+  @ApolloExperimental
   data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
     constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
@@ -56,6 +62,7 @@ internal sealed class BooleanExpression<out T : Any> {
     override fun toString() = operands.joinToString(" | ")
   }
 
+  @ApolloExperimental
   data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
     constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
@@ -80,6 +87,7 @@ internal sealed class BooleanExpression<out T : Any> {
         }
   }
 
+  @ApolloExperimental
   data class Element<out T : Any>(
       val value: T,
   ) : BooleanExpression<T>() {
@@ -94,22 +102,26 @@ internal fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = 
 /**
  * A generic term in a [BooleanExpression]
  */
-internal sealed class BTerm
+@ApolloExperimental
+sealed class BTerm
 
 /**
  * A term that comes from @include/@skip or @defer directives and that needs to be matched against operation variables
  */
-internal data class BVariable(val name: String) : BTerm()
+@ApolloExperimental
+data class BVariable(val name: String) : BTerm()
 
 /**
  * A term that comes from @defer directives and that needs to be matched against label and current JSON path
  */
-internal data class BLabel(val label: String?) : BTerm()
+@ApolloExperimental
+data class BLabel(val label: String?) : BTerm()
 
 /**
  * A term that comes from a fragment type condition and that needs to be matched against __typename
  */
-internal data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
+@ApolloExperimental
+data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
   constructor(vararg types: String) : this(types.toSet())
 }
 

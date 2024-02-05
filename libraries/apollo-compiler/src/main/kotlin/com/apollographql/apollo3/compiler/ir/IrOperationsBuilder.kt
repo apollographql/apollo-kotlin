@@ -245,7 +245,7 @@ internal class IrOperationsBuilder(
       }
     }
 
-    return DefaultIrOperations(
+    return IrOperations(
         operations = operations,
         fragments = fragments,
         usedFields = usedFields,
@@ -296,10 +296,6 @@ internal class IrOperationsBuilder(
         operationName = name!!
     )
 
-    val responseBasedModelGroup = when (codegenModels) {
-      MODELS_RESPONSE_BASED -> dataModelGroup
-      else -> null
-    }
     // Add the root type to use from the selections
     usedFields.putType(typeDefinition.name)
     return IrOperation(
@@ -313,7 +309,6 @@ internal class IrOperationsBuilder(
         normalizedFilePath = operationNameToNormalizedPath.get(name!!) ?: "",
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
-        responseBasedDataModelGroup = responseBasedModelGroup,
         ignoreErrors = directives.any {
           schema.originalDirectiveName(it.name) == Schema.IGNORE_ERRORS
         }

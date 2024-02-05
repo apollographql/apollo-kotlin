@@ -1,32 +1,42 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal sealed class IrValue
+@ApolloExperimental
+sealed class IrValue
 @Serializable
 @SerialName("int")
-internal data class IrIntValue(val value: String) : IrValue()
+@ApolloExperimental
+data class IrIntValue(val value: String) : IrValue()
 @Serializable
 @SerialName("float")
-internal data class IrFloatValue(val value: String) : IrValue()
+@ApolloExperimental
+data class IrFloatValue(val value: String) : IrValue()
 @Serializable
 @SerialName("string")
-internal data class IrStringValue(val value: String) : IrValue()
+@ApolloExperimental
+data class IrStringValue(val value: String) : IrValue()
 @Serializable
 @SerialName("boolean")
-internal data class IrBooleanValue(val value: Boolean) : IrValue()
+@ApolloExperimental
+data class IrBooleanValue(val value: Boolean) : IrValue()
 @Serializable
 @SerialName("enum")
-internal data class IrEnumValue(val value: String) : IrValue()
+@ApolloExperimental
+data class IrEnumValue(val value: String) : IrValue()
 @Serializable
 @SerialName("null")
-internal object IrNullValue : IrValue()
+@ApolloExperimental
+object IrNullValue : IrValue()
 @Serializable
 @SerialName("object")
-internal data class IrObjectValue(val fields: List<Field>) : IrValue() {
+@ApolloExperimental
+data class IrObjectValue(val fields: List<Field>) : IrValue() {
   @Serializable
+  @ApolloExperimental
   data class Field(val name: String, val value: IrValue)
 }
 @Serializable

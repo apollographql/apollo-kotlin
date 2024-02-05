@@ -50,7 +50,6 @@ import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.generateMethodsJava
-import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
@@ -210,8 +209,6 @@ internal object JavaCodegen {
       layout: OperationsLayout,
       javaOutputTransform: Transform<JavaOutput>?,
   ): JavaOutput {
-    check(irOperations is DefaultIrOperations)
-
     if (irOperations.codegenModels != MODELS_OPERATION_BASED) {
       error("Java codegen does not support ${irOperations.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
     }
