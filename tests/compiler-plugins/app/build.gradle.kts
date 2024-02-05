@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
 
@@ -18,16 +20,23 @@ apollo {
   project.projectDir.resolve("..")
       .listFiles()!!
       .filter { it.isDirectory && it.resolve("build.gradle.kts").exists() && it.name != "app" }
-      .forEach {
-        val name = it.name.replace("-", "")
+      .forEach { dir ->
+        val name = dir.name.replace("-", "")
         service(name) {
           packageName.set("hooks.$name")
-          plugin(project(":compiler-plugins-${it.name}"))
+          plugin(project(":compiler-plugins-${dir.name}"))
           languageVersion.set("1.5")
-          if (name == "gettersandsetters") {
-            generateKotlinModels.set(false)
-            outputDirConnection {
-              this.connectToJavaSourceSet("main")
+
+          when (name) {
+            "gettersandsetters" -> {
+              generateKotlinModels.set(false)
+              outputDirConnection {
+                this.connectToJavaSourceSet("main")
+              }
+            }
+            "customflatten" -> {
+              codegenModels.set(MODELS_RESPONSE_BASED)
+              srcDir(dir.resolve("src/main/graphql"))
             }
           }
         }
