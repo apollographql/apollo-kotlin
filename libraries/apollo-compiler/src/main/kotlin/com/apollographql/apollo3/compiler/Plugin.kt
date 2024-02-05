@@ -21,7 +21,9 @@ interface Plugin {
   }
 
   /**
-   * @return the [OperationOutputGenerator] or null to use the default [OperationOutputGenerator]
+   * Computes operation ids for persisted queries.
+   *
+   * @return a list of [OperationId] matching an operation name to its id or null to use the SHA256 default
    */
   fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
     return null
