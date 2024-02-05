@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+# Version "Next"
+
+_2024-xx-xx_
+
+## 👷‍ All changes
+- [IJ plugin] The repository to use for the weekly snapshots has changed. You can now use `https://go.apollo.dev/ij-plugin-snapshots` to get the latest weekly snapshots. (#5600)
+
+
 # Version 4.0.0-beta.4
 
 _2023-12-12_
