@@ -37,7 +37,7 @@ fun runCommand(vararg args: String): String {
 }
 
 fun mergeAndWait(branchName: String) {
-  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto", "--delete-branch")
+  runCommand("gh", "pr", "merge", branchName, "--squash", "--admin", "--delete-branch")
   println("Waiting for the PR to be merged...")
   while (true) {
     val state = runCommand("gh", "pr", "view", branchName, "--json", "state", "--jq", ".state")
