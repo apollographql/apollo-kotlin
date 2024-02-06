@@ -44,7 +44,7 @@ The plugin is published every Sunday in a specific **snapshots** repository. To 
 configured:
 
 <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>⚙</kbd>️ > <kbd>Manage Plugin
-Repositories</kbd> > <kbd>+</kbd> > <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>
+Repositories</kbd> > <kbd>+</kbd> > <kbd>https://go.apollo.dev/ij-plugin-snapshots</kbd>
 
 <img src="assets/instructions-1-manage-repositories.png" width="600" />
 
