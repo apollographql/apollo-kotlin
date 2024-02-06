@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
@@ -32,6 +33,7 @@ interface Plugin {
   /**
    * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
    */
+  @ApolloExperimental
   fun irOperationsTransform(): Transform<IrOperations>? {
     return null
   }
