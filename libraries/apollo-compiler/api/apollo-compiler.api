@@ -361,7 +361,6 @@ public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Norma
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/Plugin {
-	public fun irOperationsTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun javaOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun kotlinOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
