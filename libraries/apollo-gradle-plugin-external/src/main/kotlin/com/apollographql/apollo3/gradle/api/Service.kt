@@ -766,10 +766,35 @@ interface Service {
   fun operationManifestConnection(action: Action<in OperationManifestConnection>)
 
   /**
-   * Adds a given dependency for the codegen
+   * Adds a dependency for the codegen. Use this when some types/fragments are generated
+   * in upstream modules.
    */
   fun dependsOn(dependencyNotation: Any)
+
+  /**
+   * Counterpoint of [dependsOn]. [isADependencyOf] allows a schema module to discover
+   * used types in downstream modules automatically without having to specify [alwaysGenerateTypesMatching].
+   *
+   * This works by setting a dependency on the IR in downstream modules.
+   * Because the IR task and the codegen task are separate this does not create a cycle.
+   *
+   * @see [alwaysGenerateTypesMatching]
+   */
   fun isADependencyOf(dependencyNotation: Any)
+
+  /**
+   * Same as [dependsOn] but tries to do automatic cross-project configuration.
+   * This is highly experimental and probably not compatible with most Gradle best practices.
+   *
+   * Use at your own risks!
+   *
+   * @param bidirectional if true and if [dependencyNotation] is a project dependency,
+   * this version of [dependsOn] also calls [isADependencyOf] automatically by using
+   * cross-project configuration. This is experimental and probably not project isolation compatible.
+   *
+   */
+  @ApolloExperimental
+  fun dependsOn(dependencyNotation: Any, bidirectional: Boolean)
 
   class OperationOutputConnection(
       /**

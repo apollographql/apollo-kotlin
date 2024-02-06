@@ -7,6 +7,7 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
+  testImplementation(libs.kotlin.test)
 }
 
 apollo {

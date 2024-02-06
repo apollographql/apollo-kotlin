@@ -54,6 +54,7 @@ abstract class DefaultApolloExtension(
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
   private val apolloMetadataConfiguration: Configuration
+  private val pendingDownstreamDependencies: MutableMap<String, List<String>> = mutableMapOf()
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
@@ -64,6 +65,19 @@ abstract class DefaultApolloExtension(
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
     )
+  }
+
+  internal fun registerDownstreamProject(serviceName: String, projectPath: String) {
+    val existingService = services.firstOrNull {
+      it.name == serviceName
+    }
+    if (existingService != null) {
+      existingService.isADependencyOf(project.rootProject.project(projectPath))
+    } else {
+      pendingDownstreamDependencies.compute(serviceName) { _, oldValue ->
+        oldValue.orEmpty() + projectPath
+      }
+    }
   }
 
   internal fun getServiceTelemetryData(): List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData> = services.map { service ->
@@ -544,6 +558,13 @@ abstract class DefaultApolloExtension(
         codegenSchemaConsumerConfiguration.dependencies.add(it)
         upstreamIrConsumerConfiguration.dependencies.add(it)
         codegenMetadataConsumerConfiguration.dependencies.add(it)
+      }
+
+      val pending = pendingDownstreamDependencies.get(name)
+      if (pending != null) {
+        pending.forEach {
+          service.isADependencyOf(project.project(it))
+        }
       }
       service.downstreamDependencies.forEach {
         downstreamIrConsumerConfiguration.dependencies.add(it)
