@@ -365,7 +365,7 @@ object ApolloCompiler {
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: CodegenOptions,
       layout: SchemaAndOperationsLayout?,
-      operationOutputGenerator: OperationOutputGenerator?,
+      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -464,7 +464,7 @@ object ApolloCompiler {
       irOptions: IrOptions,
       codegenOptions: CodegenOptions,
       layoutFactory: LayoutFactory?,
-      operationOutputGenerator: OperationOutputGenerator?,
+      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -510,6 +510,7 @@ object ApolloCompiler {
       packageName: String,
       serviceName: String,
   ): SourceOutput {
+    @Suppress("DEPRECATION")
     val layout = LayoutImpl(
         codegenSchema = codegenSchema,
         packageNameGenerator = PackageNameGenerator.Flat(packageName),

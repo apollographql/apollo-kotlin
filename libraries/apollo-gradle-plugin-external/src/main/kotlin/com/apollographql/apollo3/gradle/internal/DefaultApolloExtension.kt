@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION

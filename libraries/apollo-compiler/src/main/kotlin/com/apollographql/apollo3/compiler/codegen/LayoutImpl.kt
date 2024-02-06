@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.annotations.ApolloInternal

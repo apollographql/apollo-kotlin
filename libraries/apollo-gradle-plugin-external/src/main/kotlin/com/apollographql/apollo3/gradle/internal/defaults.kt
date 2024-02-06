@@ -1,8 +1,16 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.MANIFEST_NONE
 import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
+import com.apollographql.apollo3.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationId
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 import java.io.File
@@ -79,3 +87,17 @@ internal fun DefaultService.operationManifestFormat(): Provider<String> {
   }
 }
 
+internal fun Plugin.toOperationOutputGenerator(): OperationOutputGenerator {
+  return object : OperationOutputGenerator {
+    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
+      var operationIds = operationIds(operationDescriptorList.toList())
+      if (operationIds == null) {
+        operationIds = operationDescriptorList.map { OperationId(OperationIdGenerator.Sha256.apply(it.source, it.name), it.name) }
+      }
+      return operationDescriptorList.associateBy { descriptor ->
+        val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
+        operationId.id
+      }
+    }
+  }
+}

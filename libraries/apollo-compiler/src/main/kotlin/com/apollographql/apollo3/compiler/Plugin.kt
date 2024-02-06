@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationId
 
 /**
  * Entry point for customizing the behaviour of the Apollo Compiler besides the
@@ -19,9 +21,11 @@ interface Plugin {
   }
 
   /**
-   * @return the [OperationOutputGenerator] or null to use the default [OperationOutputGenerator]
+   * Computes operation ids for persisted queries.
+   *
+   * @return a list of [OperationId] matching an operation name to its id or null to use the SHA256 default
    */
-  fun operationOutputGenerator(): OperationOutputGenerator? {
+  fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
     return null
   }
 

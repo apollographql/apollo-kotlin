@@ -365,7 +365,7 @@ public abstract interface class com/apollographql/apollo3/compiler/Plugin {
 	public fun javaOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun kotlinOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
-	public fun operationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator;
+	public fun operationIds (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/compiler/RuntimeAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
@@ -759,8 +759,10 @@ public final class com/apollographql/apollo3/compiler/operationoutput/OperationD
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/apollographql/apollo3/compiler/operationoutput/OperationOutputKt {
-	public static final fun findOperationId (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+public final class com/apollographql/apollo3/compiler/operationoutput/OperationId {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/pqm/PersistedQueryManifest {

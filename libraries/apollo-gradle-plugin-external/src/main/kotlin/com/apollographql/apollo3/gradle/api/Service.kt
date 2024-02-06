@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
@@ -268,6 +270,9 @@ interface Service {
    *
    * Default value: [OperationIdGenerator.Sha256]
    */
+  @Suppress("DEPRECATION")
+  @Deprecated("Use Apollo compiler plugins instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val operationOutputGenerator: Property<OperationOutputGenerator>
 
   /**
@@ -296,6 +301,8 @@ interface Service {
    *
    * @see [packageName]
    */
+  @Deprecated("Use Apollo compiler plugins instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val packageNameGenerator: Property<PackageNameGenerator>
 
   /**
