@@ -52,21 +52,23 @@ class MemoryCache(
   override fun clearAll() {
     lock.write {
       lruCache.clear()
+      nextCache?.clearAll()
     }
-    nextCache?.clearAll()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    val cacheEntry = lock.write { lruCache.remove(cacheKey.key) }
+    return lock.write {
+      val cacheEntry = lruCache.remove(cacheKey.key)
 
-    if (cascade && cacheEntry != null) {
-      for (cacheReference in cacheEntry.record.referencedFields()) {
-        remove(CacheKey(cacheReference.key), true)
+      if (cascade && cacheEntry != null) {
+        for (cacheReference in cacheEntry.record.referencedFields()) {
+          remove(CacheKey(cacheReference.key), true)
+        }
       }
-    }
 
-    val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
-    return cacheEntry != null || chainRemoved
+      val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
+      cacheEntry != null || chainRemoved
+    }
   }
 
   override fun remove(pattern: String): Int = lock.write {
@@ -97,9 +99,9 @@ class MemoryCache(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    val changedKeys = lock.write {
+    return lock.write {
       val oldRecord = loadRecord(record.key, cacheHeaders)
-      if (oldRecord == null) {
+      val changedKeys = if (oldRecord == null) {
         lruCache[record.key] = CacheEntry(
             record = record,
             expireAfterMillis = expireAfterMillis
@@ -113,9 +115,8 @@ class MemoryCache(
         )
         changedKeys
       }
+      changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
     }
-
-    return changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
   }
 
   @ApolloExperimental
@@ -127,9 +128,9 @@ class MemoryCache(
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return mapOf(
-        this::class to lock.read { lruCache.dump() }.mapValues { (_, entry) -> entry.record }
-    ) + nextCache?.dump().orEmpty()
+    return lock.read {
+      mapOf(this::class to lruCache.dump().mapValues { (_, entry) -> entry.record }) + nextCache?.dump().orEmpty()
+    }
   }
 
   internal fun clearCurrentCache() {
