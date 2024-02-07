@@ -50,7 +50,6 @@ import com.apollographql.apollo3.compiler.defaultJsExport
 import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.generateMethodsKotlin
-import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
@@ -224,8 +223,6 @@ internal object KotlinCodegen {
       layout: OperationsLayout,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
-    check(irOperations is DefaultIrOperations)
-
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val flatten = irOperations.flattenModels
 

@@ -45,7 +45,6 @@ import com.apollographql.apollo3.compiler.internal.checkApolloTargetNameClashes
 import com.apollographql.apollo3.compiler.internal.checkCapitalizedFields
 import com.apollographql.apollo3.compiler.internal.checkConditionalFragments
 import com.apollographql.apollo3.compiler.internal.checkKeyFields
-import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo3.compiler.ir.IrSchema
@@ -371,10 +370,8 @@ object ApolloCompiler {
       kotlinOutputTransform: Transform<KotlinOutput>?,
       operationManifestFile: File?,
   ): SourceOutput {
-    check(irOperations is DefaultIrOperations)
-
     @Suppress("NAME_SHADOWING")
-    val irOperations = irOperations.maybeTransform(irOperationsTransform) as DefaultIrOperations
+    val irOperations = irOperations.maybeTransform(irOperationsTransform)
 
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, upstreamCodegenMetadata)
     codegenOptions.validate()

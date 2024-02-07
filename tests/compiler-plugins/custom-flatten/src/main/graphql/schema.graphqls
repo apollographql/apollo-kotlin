@@ -1,0 +1,35 @@
+type Query {
+  a: A
+}
+
+type A {
+  b: B
+}
+
+type B {
+  c: C
+}
+
+type C {
+  d: D
+}
+
+type D {
+  e: E
+}
+
+type E {
+  f: F
+}
+
+type F {
+  g: G
+}
+
+type G {
+  h: H
+}
+
+type H {
+  foo: Int
+}

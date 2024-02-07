@@ -361,7 +361,6 @@ public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Norma
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/Plugin {
-	public fun irOperationsTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun javaOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun kotlinOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
 	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
@@ -622,6 +621,40 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Add
 	public static final fun addInternal (Lcom/squareup/kotlinpoet/FileSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/FileSpec$Builder;
 }
 
+public final class com/apollographql/apollo3/compiler/ir/IrAccessor$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrArgument$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrArgument$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrArgument;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrArgument;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrArgument$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrBooleanValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrBooleanValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrCatchTo$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
@@ -641,6 +674,96 @@ public final class com/apollographql/apollo3/compiler/ir/IrEnumType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/ir/IrEnumValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrEnumValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrEnumValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrEnumValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrEnumValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrField$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrField$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrField;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrField;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrField$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFieldInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFieldInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFloatValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrFloatValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrFloatValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrFloatValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFloatValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFragment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrFragment$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrFragment;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrFragment;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFragment$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFragmentDefinition$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrFragmentDefinition$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrFragmentDefinition;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrFragmentDefinition;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFragmentDefinition$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType$$serializer;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -656,6 +779,21 @@ public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType$Compa
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/ir/IrIntValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrIntValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrIntValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrIntValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrIntValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrListType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrListType$$serializer;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -668,6 +806,51 @@ public final class com/apollographql/apollo3/compiler/ir/IrListType$$serializer 
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrListType$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrListTypeRef$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrListTypeRef$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrListTypeRef;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrListTypeRef;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrListTypeRef$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrModel$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrModel;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrModel;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModel$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModelGroup$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrModelGroup$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModelGroup$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -690,6 +873,36 @@ public final class com/apollographql/apollo3/compiler/ir/IrNamedType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/apollographql/apollo3/compiler/ir/IrNamedTypeRef$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrNamedTypeRef$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrNamedTypeRef;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrNamedTypeRef;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNamedTypeRef$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNonNullTypeRef$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrNonNullTypeRef$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullTypeRef;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrNonNullTypeRef;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNonNullTypeRef$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrObjectType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrObjectType$$serializer;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -705,10 +918,128 @@ public final class com/apollographql/apollo3/compiler/ir/IrObjectType$Companion 
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public abstract interface class com/apollographql/apollo3/compiler/ir/IrOperations {
-	public abstract fun getCodegenModels ()Ljava/lang/String;
-	public abstract fun getFragmentDefinitions ()Ljava/util/List;
-	public abstract fun getUsedFields ()Ljava/util/Map;
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrObjectValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue$Field$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue$Field$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperation$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOperation$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOperation;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperation$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Mutation$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Mutation$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Mutation;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Mutation;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Mutation$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Query$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Query$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Query;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Query;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Query$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Subscription$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Subscription$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Subscription;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOperationType$Subscription;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType$Subscription$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperations$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrOperations$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrOperations;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrOperations;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperations$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrProperty$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrProperty$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrProperty;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrProperty$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrScalarType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -729,11 +1060,72 @@ public final class com/apollographql/apollo3/compiler/ir/IrScalarType$Companion 
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrSchema {
 }
 
+public abstract interface class com/apollographql/apollo3/compiler/ir/IrSelection {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/ir/IrSelection$Companion;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrSelection$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrSelectionSet$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrSelectionSet$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrSelectionSet;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrSelectionSet;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrSelectionSet$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrStringValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrStringValue$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrStringValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrStringValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrStringValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrTypeKt {
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrTypeRef$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrValue$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrVariable$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrVariable$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ir/IrVariable;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ir/IrVariable;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrVariable$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {

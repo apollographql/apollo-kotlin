@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
@@ -57,7 +56,7 @@ fun CodegenOptions.writeTo(file: File) = encodeToJson(file)
 @JvmName("readCodegenSchema")
 fun File.toCodegenSchema(): CodegenSchema = parseFromJson()
 @JvmName("readIrOperations")
-fun File.toIrOperations(): IrOperations = parseFromJson<DefaultIrOperations>()
+fun File.toIrOperations(): IrOperations = parseFromJson<IrOperations>()
 @JvmName("readIrSchema")
 fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
 @JvmName("readCodegenMetadata")
@@ -73,7 +72,7 @@ fun File.toPersistedQueryManifest(): PersistedQueryManifest = parseFromJson()
 @JvmName("writeCodegenSchema")
 fun CodegenSchema.writeTo(file: File) = encodeToJson(file)
 @JvmName("writeIrOperations")
-fun IrOperations.writeTo(file: File) = (this as DefaultIrOperations).encodeToJson(file)
+fun IrOperations.writeTo(file: File) = this.encodeToJson(file)
 @JvmName("writeIrSchema")
 fun IrSchema.writeTo(file: File) = (this as DefaultIrSchema).encodeToJson(file)
 @JvmName("writeCodegenMetadata")

@@ -1,0 +1,21 @@
+query GetA {
+  a {
+    b {
+      c {
+        d {
+          e {
+            # this model is nested and doesn't name clash
+            a: f {
+              # this model is flattened and should clash
+              a: g {
+                h {
+                  foo
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

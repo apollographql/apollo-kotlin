@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
@@ -28,26 +29,22 @@ import kotlinx.serialization.json.Json
  * found in the IR are as found in the GraphQL documents
  */
 @Serializable
-internal data class DefaultIrOperations(
+@ApolloExperimental
+data class IrOperations(
     val operations: List<IrOperation>,
     val fragments: List<IrFragmentDefinition>,
-    override val usedFields: Map<String, Set<String>>,
+    val usedFields: Map<String, Set<String>>,
 
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
-    override val codegenModels: String,
+    val codegenModels: String,
 
-    override val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
-) : IrOperations
-
-interface IrOperations {
-  val fragmentDefinitions: List<GQLFragmentDefinition>
-  val usedFields: Map<String, Set<String>>
-  val codegenModels: String
-}
+    val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
+)
 
 @Serializable
-internal data class IrOperation(
+@ApolloExperimental
+data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
     val typeCondition: String,
@@ -59,14 +56,14 @@ internal data class IrOperation(
      */
     val sourceWithFragments: String,
     val normalizedFilePath: String,
-    val responseBasedDataModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
     val ignoreErrors: Boolean,
 )
 
 @Serializable
-internal data class IrSelectionSet(
+@ApolloExperimental
+data class IrSelectionSet(
     /**
      * a name for this [IrSelectionSet]. This name is unique across all [IrSelectionSet] for a given operation/fragment definition
      */
@@ -79,11 +76,12 @@ internal data class IrSelectionSet(
 )
 
 @Serializable
-internal sealed interface IrSelection
+sealed interface IrSelection
 
 @Serializable
 @SerialName("field")
-internal data class IrField(
+@ApolloExperimental
+data class IrField(
     val name: String,
     val alias: String?,
     val type: IrTypeRef,
@@ -94,7 +92,8 @@ internal data class IrField(
 ) : IrSelection
 
 @Serializable
-internal data class IrArgument(
+@ApolloExperimental
+data class IrArgument(
     val name: String,
     /**
      * The value for this argument. May be null if the argument is absent
@@ -105,20 +104,25 @@ internal data class IrArgument(
 )
 
 @Serializable
-internal sealed interface IrTypeRef
+@ApolloExperimental
+sealed interface IrTypeRef
 @Serializable
 @SerialName("nonnull")
-internal data class IrNonNullTypeRef(val ofType: IrTypeRef) : IrTypeRef
+@ApolloExperimental
+data class IrNonNullTypeRef(val ofType: IrTypeRef) : IrTypeRef
 @Serializable
 @SerialName("list")
-internal data class IrListTypeRef(val ofType: IrTypeRef) : IrTypeRef
+@ApolloExperimental
+data class IrListTypeRef(val ofType: IrTypeRef) : IrTypeRef
 @Serializable
 @SerialName("named")
-internal data class IrNamedTypeRef(val name: String) : IrTypeRef
+@ApolloExperimental
+data class IrNamedTypeRef(val name: String) : IrTypeRef
 
 @Serializable
 @SerialName("fragment")
-internal data class IrFragment(
+@ApolloExperimental
+data class IrFragment(
     val typeCondition: String,
     val possibleTypes: List<String>,
     @Serializable(with = BooleanExpressionSerializer::class)
@@ -135,7 +139,8 @@ internal data class IrFragment(
 ) : IrSelection
 
 @Serializable
-internal data class IrFragmentDefinition(
+@ApolloExperimental
+data class IrFragmentDefinition(
     val name: String,
     val description: String?,
     val filePath: String,
@@ -158,7 +163,8 @@ internal data class IrFragmentDefinition(
 )
 
 @Serializable
-internal sealed interface IrOperationType {
+@ApolloExperimental
+sealed interface IrOperationType {
   val typeName: String
 
   val name: String
@@ -172,12 +178,15 @@ internal sealed interface IrOperationType {
 
   @Serializable
   @SerialName("query")
+  @ApolloExperimental
   class Query(override val typeName: String) : IrOperationType
   @Serializable
   @SerialName("mutation")
+  @ApolloExperimental
   class Mutation(override val typeName: String) : IrOperationType
   @Serializable
   @SerialName("subscription")
+  @ApolloExperimental
   class Subscription(override val typeName: String) : IrOperationType
 }
 
@@ -193,7 +202,8 @@ internal sealed interface IrOperationType {
  * TODO: maybe merge this with [IrProperty]
  */
 @Serializable
-internal data class IrFieldInfo(
+@ApolloExperimental
+data class IrFieldInfo(
     /**
      * The responseName of this field (or synthetic name)
      */
@@ -237,7 +247,8 @@ internal data class IrFieldInfo(
 )
 
 @Serializable
-internal sealed class IrAccessor {
+@ApolloExperimental
+sealed class IrAccessor {
   abstract val returnedModelId: String
 }
 
@@ -261,7 +272,8 @@ internal data class IrSubtypeAccessor(
  * Monomorphic fields will always be represented by a class while polymorphic fields will involve interfaces
  */
 @Serializable
-internal data class IrModel(
+@ApolloExperimental
+data class IrModel(
     val modelName: String,
     /**
      * The path to this field. See [IrModelType] for more details
@@ -297,7 +309,8 @@ internal data class IrModel(
  * @param requiresBuffering true if this property contains synthetic properties and needs to be buffered
  */
 @Serializable
-internal data class IrProperty(
+@ApolloExperimental
+data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
     @Serializable(with = BooleanExpressionSerializer::class)
@@ -320,13 +333,15 @@ internal data class IrProperty(
 }
 
 @Serializable
-internal data class IrModelGroup(
+@ApolloExperimental
+data class IrModelGroup(
     val baseModelId: String,
     val models: List<IrModel>,
 )
 
 @Serializable
-internal data class IrVariable(
+@ApolloExperimental
+data class IrVariable(
     val name: String,
     val type: IrType,
     /**
