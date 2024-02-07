@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -188,7 +190,26 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo3.api.Upload", "com.apollographql.apollo3.api.UploadAdapter")
 
   override fun dependsOn(dependencyNotation: Any) {
+    dependsOn(dependencyNotation, false)
+  }
+
+  override fun dependsOn(dependencyNotation: Any, bidirectional: Boolean) {
     upstreamDependencies.add(project.dependencies.create(dependencyNotation))
+    if (bidirectional) {
+      val upstreamProject = when (dependencyNotation) {
+        is ProjectDependency -> project.rootProject.project(dependencyNotation.dependencyProject.path)
+        is Project -> dependencyNotation
+        else -> error("dependsOn(dependencyNotation, true) requires a Project or ProjectDependency")
+      }
+
+      upstreamProject.plugins.withId("com.apollographql.apollo3") {
+        val apolloExtension = (upstreamProject.extensions.findByType(ApolloExtension::class.java) as? DefaultApolloExtension)
+        check(apolloExtension != null) {
+          "Cannot find 'apollo' extension in upstream project ${upstreamProject.name} (registered: ${upstreamProject.extensions})"
+        }
+        apolloExtension.registerDownstreamProject(name, project.path)
+      }
+    }
   }
 
   override fun isADependencyOf(dependencyNotation: Any) {

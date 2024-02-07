@@ -1,5 +1,15 @@
 type Query {
   long: Long!
+  a: A
+  b: B
+}
+
+type A {
+  foo: Int
+}
+
+type B {
+  foo: Int
 }
 
 scalar Long

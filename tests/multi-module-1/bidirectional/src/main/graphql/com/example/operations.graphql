@@ -1,0 +1,6 @@
+query GetA {
+  a {
+    foo
+  }
+
+}
