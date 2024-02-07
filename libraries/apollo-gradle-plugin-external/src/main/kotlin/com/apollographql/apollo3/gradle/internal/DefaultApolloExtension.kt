@@ -712,8 +712,8 @@ abstract class DefaultApolloExtension(
       task.isJavaPluginApplied = project.hasJavaPlugin()
       task.kgpVersion = project.apolloGetKotlinPluginVersion()
       task.isKmp = project.isKotlinMultiplatform
-      task.isMultiModule = service.isMultiModule()
-      task.hasDownstreamDependencies = service.downstreamDependencies.isNotEmpty()
+      // If there is no downstream dependency, generate everything because we don't know what types are going to be used downstream
+      task.generateAllTypes = service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty()
 
       task.otherOptions.set(BuildDirLayout.otherOptions(project, service))
 

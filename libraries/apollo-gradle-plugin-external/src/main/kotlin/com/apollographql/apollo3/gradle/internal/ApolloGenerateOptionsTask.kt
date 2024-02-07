@@ -205,10 +205,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   abstract var isKmp: Boolean
 
   @get:Input
-  abstract var isMultiModule: Boolean
-
-  @get:Input
-  abstract var hasDownstreamDependencies: Boolean
+  abstract var generateAllTypes: Boolean
 
   @get:Internal
   var hasPackageNameGenerator: Boolean = false
@@ -235,7 +232,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
     val upstreamTargetLanguage = upstreamOtherOptions?.targetLanguage
     val targetLanguage = targetLanguage(generateKotlinModels.orNull, languageVersion.orNull, isJavaPluginApplied, kgpVersion, upstreamTargetLanguage)
     val generateFilterNotNull = generateFilterNotNull(targetLanguage, isKmp)
-    val alwaysGenerateTypesMatching = alwaysGenerateTypesMatching(alwaysGenerateTypesMatching.orNull, isMultiModule, hasDownstreamDependencies)
+    val alwaysGenerateTypesMatching = alwaysGenerateTypesMatching(alwaysGenerateTypesMatching.orNull, generateAllTypes)
     val upstreamCodegenModels = upstreamOtherOptions?.codegenModels
     val codegenModels = codegenModels(codegenModels.orNull, upstreamCodegenModels)
 
@@ -362,29 +359,6 @@ private fun scalarMapping(
   return scalarTypeMapping.getOrElse(emptyMap()).mapValues { (graphQLName, targetName) ->
     val adapterInitializerExpression = scalarAdapterMapping.getOrElse(emptyMap())[graphQLName]
     ScalarInfo(targetName, if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression))
-  }
-}
-
-private fun generateFilterNotNull(targetLanguage: TargetLanguage, isKmp: Boolean): Boolean? {
-  return if (targetLanguage == TargetLanguage.JAVA) {
-    null
-  } else {
-    isKmp
-  }
-}
-
-private fun alwaysGenerateTypesMatching(alwaysGenerateTypesMatching: Set<String>?, isMultiModule: Boolean, hasDownstreamDependencies: Boolean): Set<String> {
-  if (alwaysGenerateTypesMatching != null) {
-    // The user specified something, use this
-    return alwaysGenerateTypesMatching
-  }
-
-  if (isMultiModule && !hasDownstreamDependencies) {
-    // No downstream dependency, generate everything because we don't know what types are going to be used downstream
-    return setOf(".*")
-  } else {
-    // get the used coordinates from the downstream dependencies
-    return emptySet()
   }
 }
 

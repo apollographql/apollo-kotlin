@@ -8,6 +8,7 @@ import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationId
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
@@ -99,5 +100,27 @@ internal fun Plugin.toOperationOutputGenerator(): OperationOutputGenerator {
         operationId.id
       }
     }
+  }
+}
+
+internal fun generateFilterNotNull(targetLanguage: TargetLanguage, isKmp: Boolean): Boolean? {
+  return if (targetLanguage == TargetLanguage.JAVA) {
+    null
+  } else {
+    isKmp
+  }
+}
+
+internal fun alwaysGenerateTypesMatching(alwaysGenerateTypesMatching: Set<String>?, generateAllTypes: Boolean): Set<String> {
+  if (alwaysGenerateTypesMatching != null) {
+    // The user specified something, use this
+    return alwaysGenerateTypesMatching
+  }
+
+  if (generateAllTypes) {
+    return setOf(".*")
+  } else {
+    // get the used coordinates from the downstream dependencies
+    return emptySet()
   }
 }
