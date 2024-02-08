@@ -3,7 +3,9 @@ title: Migrating to Apollo Kotlin 4.0
 description: From 3.x
 ---
 
-> Note: as version 4 is currently under development, this page is a work in progress.
+<Note>
+Version 4 is currently under development and this page itself is a work in progress.
+</Note>
 
 Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
 
@@ -416,10 +418,38 @@ The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes ar
 It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
 
 
-## Removed RxJava artifacts
+## Using RxJava artifacts is now an error
 
-* Use `toFlow().asFlowable()` and [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3)
+The `apollo-rx2-support` and `apollo-rx3-support` artifacts are very thin wrappers around [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3) and will be removed in a future version. 
 
+In Apollo Kotlin 4, use `kotlinx-coroutines-rx${version}` instead. Replace the artifact in your build script:
+
+```kotlin
+dependencies {
+  // Replace
+  implementation("com.apollographql.apollo3:apollo-rx2-support:$version")
+  
+  // With
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$version")
+}
+
+```
+
+In your code, use `asFLowable()`:
+
+```kotlin
+// Replace
+apolloClient.query().rxFlowable()
+
+// With
+apolloClient.query().toFlow().asFlowable()
+
+// Replace
+apolloClient.query().rxSingle()
+
+// With
+apolloClient.query().toFlow().asFlowable().firstOrError()
+```
 
 ## Example of a migration
 
