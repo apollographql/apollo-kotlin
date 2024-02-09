@@ -65,6 +65,8 @@ dependencies {
 
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
+  androidTestImplementation("com.apollographql.apollo3:apollo-mockserver")
+  androidTestImplementation("com.apollographql.apollo3:apollo-testing-support")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
