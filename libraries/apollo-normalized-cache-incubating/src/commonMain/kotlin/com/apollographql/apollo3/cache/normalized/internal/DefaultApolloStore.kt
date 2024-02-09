@@ -51,8 +51,6 @@ internal class DefaultApolloStore(
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
   }
 
-  private val lock = Lock()
-
   override fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
@@ -62,9 +60,7 @@ internal class DefaultApolloStore(
   }
 
   override fun clearAll(): Boolean {
-    lock.write {
-      cache.clearAll()
-    }
+    cache.clearAll()
     return true
   }
 
@@ -72,24 +68,20 @@ internal class DefaultApolloStore(
       cacheKey: CacheKey,
       cascade: Boolean,
   ): Boolean {
-    return lock.write {
-      cache.remove(cacheKey, cascade)
-    }
+    return cache.remove(cacheKey, cascade)
   }
 
   override fun remove(
       cacheKeys: List<CacheKey>,
       cascade: Boolean,
   ): Int {
-    return lock.write {
-      var count = 0
-      for (cacheKey in cacheKeys) {
-        if (cache.remove(cacheKey, cascade = cascade)) {
-          count++
-        }
+    var count = 0
+    for (cacheKey in cacheKeys) {
+      if (cache.remove(cacheKey, cascade = cascade)) {
+        count++
       }
-      count
     }
+    return count
   }
 
   override fun <D : Operation.Data> normalize(
@@ -111,15 +103,13 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
   ): D {
     val variables = operation.variables(customScalarAdapters, true)
-    return lock.read {
-      operation.readDataFromCachePrivate(
-          cache = cache,
-          cacheResolver = cacheResolver,
-          cacheHeaders = cacheHeaders,
-          cacheKey = CacheKey.rootKey(),
-          variables = variables
-      )
-    }.toData(operation.adapter(), customScalarAdapters, variables)
+    return operation.readDataFromCachePrivate(
+        cache = cache,
+        cacheResolver = cacheResolver,
+        cacheHeaders = cacheHeaders,
+        cacheKey = CacheKey.rootKey(),
+        variables = variables
+    ).toData(operation.adapter(), customScalarAdapters, variables)
   }
 
   override fun <D : Fragment.Data> readFragment(
@@ -130,22 +120,17 @@ internal class DefaultApolloStore(
   ): D {
     val variables = fragment.variables(customScalarAdapters, true)
 
-    return lock.read {
-      fragment.readDataFromCachePrivate(
-          cache = cache,
-          cacheResolver = cacheResolver,
-          cacheHeaders = cacheHeaders,
-          cacheKey = cacheKey,
-          variables = variables,
-      )
-    }.toData(fragment.adapter(), customScalarAdapters, variables)
+    return fragment.readDataFromCachePrivate(
+        cache = cache,
+        cacheResolver = cacheResolver,
+        cacheHeaders = cacheHeaders,
+        cacheKey = cacheKey,
+        variables = variables,
+    ).toData(fragment.adapter(), customScalarAdapters, variables)
   }
 
   override fun <R> accessCache(block: (NormalizedCache) -> R): R {
-    /**
-     * We don't know how the cache is going to be used, assume write access
-     */
-    return lock.write { block(cache) }
+    return block(cache)
   }
 
   override fun <D : Operation.Data> writeOperation(
@@ -180,10 +165,7 @@ internal class DefaultApolloStore(
         rootKey = cacheKey.key
     ).values
 
-    val changedKeys = lock.write {
-      cache.merge(records, cacheHeaders, recordMerger)
-    }
-
+    val changedKeys = cache.merge(records, cacheHeaders, recordMerger)
     if (publish) {
       publish(changedKeys)
     }
@@ -205,10 +187,7 @@ internal class DefaultApolloStore(
         metadataGenerator = metadataGenerator,
     ).values.toSet()
 
-    val changedKeys = lock.write {
-      cache.merge(records, cacheHeaders, recordMerger)
-    }
-
+    val changedKeys = cache.merge(records, cacheHeaders, recordMerger)
     if (publish) {
       publish(changedKeys)
     }
@@ -237,13 +216,10 @@ internal class DefaultApolloStore(
       )
     }
 
-    val changedKeys = lock.write {
-      /**
-       * TODO: should we forward the cache headers to the optimistic store?
-       */
-      cache.addOptimisticUpdates(records)
-    }
-
+    /**
+     * TODO: should we forward the cache headers to the optimistic store?
+     */
+    val changedKeys = cache.addOptimisticUpdates(records)
     if (publish) {
       publish(changedKeys)
     }
@@ -255,10 +231,7 @@ internal class DefaultApolloStore(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = lock.write {
-      cache.removeOptimisticUpdates(mutationId)
-    }
-
+    val changedKeys = cache.removeOptimisticUpdates(mutationId)
     if (publish) {
       publish(changedKeys)
     }
@@ -267,15 +240,11 @@ internal class DefaultApolloStore(
   }
 
   fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return lock.write {
-      cache.merge(record, cacheHeaders, recordMerger)
-    }
+    return cache.merge(record, cacheHeaders, recordMerger)
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return lock.read {
-      cache.dump()
-    }
+    return cache.dump()
   }
 
   override fun dispose() {}

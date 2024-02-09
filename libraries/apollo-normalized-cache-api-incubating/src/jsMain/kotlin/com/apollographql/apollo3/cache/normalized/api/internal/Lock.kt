@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
-internal actual class Lock {
+actual class Lock {
   actual fun <T> read(block: () -> T): T {
     return block()
   }

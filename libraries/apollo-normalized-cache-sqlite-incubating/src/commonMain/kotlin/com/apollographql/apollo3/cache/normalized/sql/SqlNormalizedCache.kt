@@ -9,6 +9,7 @@ import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
+import com.apollographql.apollo3.cache.normalized.api.internal.Lock
 import com.apollographql.apollo3.cache.normalized.sql.internal.RecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
@@ -17,66 +18,101 @@ class SqlNormalizedCache internal constructor(
     private val recordDatabase: RecordDatabase,
 ) : NormalizedCache() {
 
-  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    val record = try {
-      recordDatabase.select(key)
-    } catch (e: Exception) {
-      // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to read a record from the database", e))
-      null
-    }
-    if (record != null) {
-      if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-        recordDatabase.delete(key)
+  // A lock is only needed if there is a nextCache
+  private val lock = nextCache?.let { Lock() }
+
+  private fun <T> lockWrite(block: () -> T): T {
+    return lock?.write { block() } ?: block()
+  }
+
+  private fun <T> lockRead(block: () -> T): T {
+    return lock?.read { block() } ?: block()
+  }
+
+  private fun <T> maybeTransaction(condition: Boolean, block: () -> T): T {
+    return if (condition) {
+      recordDatabase.transaction {
+        block()
       }
-      return record
+    } else {
+      block()
     }
-    return nextCache?.loadRecord(key, cacheHeaders)
+  }
+
+  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    val evictAfterRead = cacheHeaders.hasHeader(EVICT_AFTER_READ)
+    return lockWrite {
+      maybeTransaction(evictAfterRead) {
+        try {
+          recordDatabase.select(key)
+        } catch (e: Exception) {
+          // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
+          apolloExceptionHandler(Exception("Unable to read a record from the database", e))
+          null
+        }?.also {
+          if (evictAfterRead) {
+            recordDatabase.delete(key)
+          }
+        }
+      } ?: nextCache?.loadRecord(key, cacheHeaders)
+    }
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val records = try {
-      internalGetRecords(keys)
-    } catch (e: Exception) {
-      // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to read records from the database", e))
-      emptyList()
-    }
-    if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-      records.forEach { record ->
-        recordDatabase.delete(record.key)
+    val evictAfterRead = cacheHeaders.hasHeader(EVICT_AFTER_READ)
+    return lockWrite {
+      val records = maybeTransaction(evictAfterRead) {
+        try {
+          internalGetRecords(keys)
+        } catch (e: Exception) {
+          // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
+          apolloExceptionHandler(Exception("Unable to read records from the database", e))
+          emptyList()
+        }.also {
+          if (evictAfterRead) {
+            it.forEach { record ->
+              recordDatabase.delete(record.key)
+            }
+          }
+        }
       }
+      val missRecordKeys = keys - records.map { it.key }.toSet()
+      val missRecords = missRecordKeys.ifEmpty { null }?.let { nextCache?.loadRecords(it, cacheHeaders) }.orEmpty()
+      records + missRecords
     }
-    val missRecordKeys = keys - records.map { it.key }.toSet()
-    val missRecords = missRecordKeys.ifEmpty { null }?.let { nextCache?.loadRecords(it, cacheHeaders) }.orEmpty()
-    return records + missRecords
   }
 
   override fun clearAll() {
-    nextCache?.clearAll()
-    recordDatabase.deleteAll()
+    lockWrite {
+      nextCache?.clearAll()
+      recordDatabase.deleteAll()
+    }
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    val selfRemoved = recordDatabase.transaction {
-      internalDeleteRecord(
-          key = cacheKey.key,
-          cascade = cascade,
-      )
+    return lockWrite {
+      val selfRemoved = recordDatabase.transaction {
+        internalDeleteRecord(
+            key = cacheKey.key,
+            cascade = cascade,
+        )
+      }
+      val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
+      selfRemoved || chainRemoved
     }
-    val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
-    return selfRemoved || chainRemoved
   }
 
   override fun remove(pattern: String): Int {
-    var selfRemoved = 0
-    recordDatabase.transaction {
-      recordDatabase.deleteMatching(pattern)
-      selfRemoved = recordDatabase.changes().toInt()
-    }
-    val chainRemoved = nextCache?.remove(pattern) ?: 0
+    return lockWrite {
+      var selfRemoved = 0
+      recordDatabase.transaction {
+        recordDatabase.deleteMatching(pattern)
+        selfRemoved = recordDatabase.changes().toInt()
+      }
+      val chainRemoved = nextCache?.remove(pattern) ?: 0
 
-    return selfRemoved + chainRemoved
+      selfRemoved + chainRemoved
+    }
   }
 
   private fun CacheHeaders.date(): Long? {
@@ -96,12 +132,14 @@ class SqlNormalizedCache internal constructor(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return try {
-      internalUpdateRecord(record = record, recordMerger = recordMerger, date = cacheHeaders.date()) + nextCache?.merge(record, cacheHeaders).orEmpty()
-    } catch (e: Exception) {
-      // Unable to merge the record in the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to merge a record from the database", e))
-      emptySet()
+    return lockWrite {
+      try {
+        internalUpdateRecord(record = record, recordMerger = recordMerger, date = cacheHeaders.date())
+      } catch (e: Exception) {
+        // Unable to merge the record in the database, it is possibly corrupted - treat this as a cache miss
+        apolloExceptionHandler(Exception("Unable to merge a record from the database", e))
+        emptySet()
+      } + nextCache?.merge(record, cacheHeaders).orEmpty()
     }
   }
 
@@ -110,19 +148,21 @@ class SqlNormalizedCache internal constructor(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return try {
-      internalUpdateRecords(records = records, recordMerger = recordMerger, date = cacheHeaders.date()) + nextCache?.merge(records, cacheHeaders).orEmpty()
-    } catch (e: Exception) {
-      // Unable to merge the records in the database, it is possibly corrupted - treat this as a cache miss
-      apolloExceptionHandler(Exception("Unable to merge records from the database", e))
-      emptySet()
+    return lockWrite {
+      try {
+        internalUpdateRecords(records = records, recordMerger = recordMerger, date = cacheHeaders.date())
+      } catch (e: Exception) {
+        // Unable to merge the records in the database, it is possibly corrupted - treat this as a cache miss
+        apolloExceptionHandler(Exception("Unable to merge records from the database", e))
+        emptySet()
+      } + nextCache?.merge(records, cacheHeaders).orEmpty()
     }
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return mapOf(
-        this@SqlNormalizedCache::class to recordDatabase.selectAll().associateBy { it.key }
-    ) + nextCache?.dump().orEmpty()
+    return lockRead {
+      mapOf(this::class to recordDatabase.selectAll().associateBy { it.key }) + nextCache?.dump().orEmpty()
+    }
   }
 
   /**

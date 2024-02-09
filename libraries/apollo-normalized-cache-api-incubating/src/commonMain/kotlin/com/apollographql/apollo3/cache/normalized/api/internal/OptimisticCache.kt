@@ -14,115 +14,130 @@ import kotlin.reflect.KClass
 
 @ApolloInternal
 class OptimisticCache : NormalizedCache() {
+  private val lock = Lock()
   private val recordJournals = mutableMapOf<String, RecordJournal>()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    return try {
-      val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
-      nonOptimisticRecord.mergeJournalRecord(key)
-    } catch (ignore: Exception) {
-      null
+    return lock.read {
+      try {
+        val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
+        nonOptimisticRecord.mergeJournalRecord(key)
+      } catch (ignore: Exception) {
+        null
+      }
     }
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val nonOptimisticRecords = nextCache?.loadRecords(keys, cacheHeaders)?.associateBy { it.key } ?: emptyMap()
-    return keys.mapNotNull { key ->
-      nonOptimisticRecords[key].mergeJournalRecord(key)
+    return lock.read {
+      val nonOptimisticRecords = nextCache?.loadRecords(keys, cacheHeaders)?.associateBy { it.key } ?: emptyMap()
+      keys.mapNotNull { key ->
+        nonOptimisticRecords[key].mergeJournalRecord(key)
+      }
     }
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return nextCache?.merge(record, cacheHeaders) ?: emptySet()
+    return lock.write { nextCache?.merge(record, cacheHeaders) } ?: emptySet()
   }
 
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return nextCache?.merge(records, cacheHeaders) ?: emptySet()
+    return lock.write { nextCache?.merge(records, cacheHeaders) } ?: emptySet()
   }
 
   @ApolloExperimental
   override fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
-    return nextCache?.merge(record, cacheHeaders, recordMerger) ?: emptySet()
+    return lock.write { nextCache?.merge(record, cacheHeaders, recordMerger) } ?: emptySet()
   }
 
   @ApolloExperimental
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
-    return nextCache?.merge(records, cacheHeaders, recordMerger) ?: emptySet()
+    return lock.write { nextCache?.merge(records, cacheHeaders, recordMerger) } ?: emptySet()
   }
 
   override fun clearAll() {
-    recordJournals.clear()
-    nextCache?.clearAll()
+    lock.write {
+      recordJournals.clear()
+      nextCache?.clearAll()
+    }
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
+    return lock.write {
+      var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
 
-    val recordJournal = recordJournals[cacheKey.key]
-    if (recordJournal != null) {
-      recordJournals.remove(cacheKey.key)
-      result = true
-      if (cascade) {
-        for (cacheReference in recordJournal.current.referencedFields()) {
-          result = result && remove(CacheKey(cacheReference.key), true)
+      val recordJournal = recordJournals[cacheKey.key]
+      if (recordJournal != null) {
+        recordJournals.remove(cacheKey.key)
+        result = true
+        if (cascade) {
+          for (cacheReference in recordJournal.current.referencedFields()) {
+            result = result && remove(CacheKey(cacheReference.key), true)
+          }
         }
       }
+      result
     }
-    return result
   }
 
   override fun remove(pattern: String): Int {
     val regex = patternToRegex(pattern)
     var total = 0
-    val iterator = recordJournals.iterator()
-    while(iterator.hasNext()) {
-      val entry = iterator.next()
-      if (regex.matches(entry.key)) {
-        iterator.remove()
-        total++
+    return lock.write {
+      val iterator = recordJournals.iterator()
+      while (iterator.hasNext()) {
+        val entry = iterator.next()
+        if (regex.matches(entry.key)) {
+          iterator.remove()
+          total++
+        }
       }
-    }
 
-    val chainRemoved = nextCache?.remove(pattern) ?: 0
-    return total + chainRemoved
+      val chainRemoved = nextCache?.remove(pattern) ?: 0
+      total + chainRemoved
+    }
   }
 
   fun addOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
-    return recordSet.flatMap {
-      addOptimisticUpdate(it)
+    return lock.write {
+      recordSet.flatMap {
+        addOptimisticUpdate(it)
+      }
     }.toSet()
   }
 
   fun addOptimisticUpdate(record: Record): Set<String> {
-    val journal = recordJournals[record.key]
-    return if (journal == null) {
-      recordJournals[record.key] = RecordJournal(record)
-      record.fieldKeys()
-    } else {
-      journal.addPatch(record)
+    return lock.write {
+      val journal = recordJournals[record.key]
+      if (journal == null) {
+        recordJournals[record.key] = RecordJournal(record)
+        record.fieldKeys()
+      } else {
+        journal.addPatch(record)
+      }
     }
   }
 
   fun removeOptimisticUpdates(mutationId: Uuid): Set<String> {
-    val changedCacheKeys = mutableSetOf<String>()
-
-    val iterator = recordJournals.iterator()
-    while(iterator.hasNext()) {
-      val entry = iterator.next()
-      val result = entry.value.removePatch(mutationId)
-      changedCacheKeys.addAll(result.changedKeys)
-      if (result.isEmpty) {
-        iterator.remove()
+    return lock.write {
+      val changedCacheKeys = mutableSetOf<String>()
+      val iterator = recordJournals.iterator()
+      while (iterator.hasNext()) {
+        val entry = iterator.next()
+        val result = entry.value.removePatch(mutationId)
+        changedCacheKeys.addAll(result.changedKeys)
+        if (result.isEmpty) {
+          iterator.remove()
+        }
       }
+      changedCacheKeys
     }
-
-    return changedCacheKeys
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return mapOf(
-        this::class to recordJournals.mapValues { (_, journal) -> journal.current }
-    ) + nextCache?.dump().orEmpty()
+    return lock.read {
+      mapOf(this::class to recordJournals.mapValues { (_, journal) -> journal.current }) + nextCache?.dump().orEmpty()
+    }
   }
 
   private fun Record?.mergeJournalRecord(key: String): Record? {
@@ -136,7 +151,7 @@ class OptimisticCache : NormalizedCache() {
 
   private class RemovalResult(
       val changedKeys: Set<String>,
-      val isEmpty: Boolean
+      val isEmpty: Boolean,
   )
 
   private class RecordJournal(record: Record) {
