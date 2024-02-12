@@ -7,6 +7,7 @@ import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
+import org.gradle.api.attributes.Usage
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
@@ -54,10 +55,10 @@ fun Project.configureDokkaCommon(): DokkatooExtension {
     pluginsConfiguration.getByName("html") {
       this as DokkaHtmlPluginParameters
       customStyleSheets.from(
-          listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+        listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
       )
       customAssets.from(
-          listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+        listOf("apollo.svg").map { rootProject.file("dokka/$it") }
       )
     }
   }
@@ -68,6 +69,14 @@ fun Project.configureDokkaCommon(): DokkatooExtension {
 
   dokkatoo.dokkatooSourceSets.configureEach {
     includes.from("README.md")
+  }
+
+  configurations.configureEach {
+    if (name.lowercase().contains("dokkatooHtmlPublicationPluginClasspathApiOnlyConsumable".lowercase())) {
+      attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "poison"))
+      }
+    }
   }
 
   return dokkatoo
@@ -87,16 +96,10 @@ fun Project.configureDokka() {
 fun Project.configureDokkaAggregate() {
   val dokkatoo = configureDokkaCommon()
   dependencies.add(
-      "dokkatooPluginHtml",
-      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
-      }
-  )
-  dependencies.add(
-      "dokkatooPluginHtml",
-      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
-      }
+    "dokkatooPluginHtml",
+    dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+      "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
+    }
   )
 
   val olderVersions = listOf<String>()
@@ -153,14 +156,14 @@ private fun Project.getOssStagingUrl(): String {
   }
   val baseUrl = "https://s01.oss.sonatype.org/service/local/"
   val client = NexusStagingClient(
-      baseUrl = baseUrl,
-      username = System.getenv("SONATYPE_NEXUS_USERNAME"),
-      password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
+    baseUrl = baseUrl,
+    username = System.getenv("SONATYPE_NEXUS_USERNAME"),
+    password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
   )
   val repositoryId = runBlocking {
     client.createRepository(
-        profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
-        description = "apollo-kotlin $version"
+      profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
+      description = "apollo-kotlin $version"
     )
   }
   return "${baseUrl}staging/deployByRepositoryId/${repositoryId}/".also {
@@ -174,14 +177,14 @@ private fun Project.configurePublishingInternal() {
 
     // Inspired by https://github.com/adamko-dev/dokkatoo/blob/4b5ac135add99ebc9ca7c5d51057b27071b24897/buildSrc/src/main/kotlin/buildsrc/conventions/kotlin-gradle-plugin.gradle.kts#L14-L29
     from(
-        resources.text.fromString(
-            """
+      resources.text.fromString(
+        """
       This Javadoc JAR is intentionally empty.
       
       For documentation, see the sources JAR or https://www.apollographql.com/docs/kotlin/kdoc/index.html
       
     """.trimIndent()
-        )
+      )
     ) {
       rename { "readme.txt" }
     }
@@ -278,9 +281,9 @@ private fun Project.configurePublishingInternal() {
              * If you really need kdoc, use ./gradlew :apollo-kdoc:publishAllPublicationsToPluginTestRepository
              */
             if (gradle.startParameter.taskNames.none {
-                  it == "publishAllPublicationsToPluginTestRepository" ||
-                      it == "publishToMavenLocal"
-                }) {
+                it == "publishAllPublicationsToPluginTestRepository" ||
+                    it == "publishToMavenLocal"
+              }) {
               artifact(kdocWithoutOlder)
             }
 

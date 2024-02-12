@@ -11,11 +11,11 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.debugserver",
-    withLinux = false,
-    withApple = false,
-    withJs = false,
-    withWasm = false
+  javaModuleName = "com.apollographql.apollo3.debugserver",
+  withLinux = false,
+  withApple = false,
+  withJs = false,
+  withWasm = false
 )
 
 kotlin {
@@ -92,12 +92,12 @@ fun configureKsp() {
   dependencies {
     add("kspCommonMainMetadata", project(":apollo-ksp-incubating"))
     add(
-        "kspCommonMainMetadata",
-        apollo.apolloKspProcessor(
-            schema = file(path = "src/androidMain/resources/schema.graphqls"),
-            service = "apolloDebugServer",
-            packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
-        )
+      "kspCommonMainMetadata",
+      apollo.apolloKspProcessor(
+        schema = file(path = "src/androidMain/resources/schema.graphqls"),
+        service = "apolloDebugServer",
+        packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
+      )
     )
   }
   tasks.withType<KotlinCompile>().configureEach {
@@ -132,3 +132,5 @@ dependencies {
     to.attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
   }
 }
+
+
