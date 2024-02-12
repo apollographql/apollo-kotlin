@@ -1,4 +1,3 @@
-
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
@@ -281,9 +280,9 @@ private fun Project.configurePublishingInternal() {
              * If you really need kdoc, use ./gradlew :apollo-kdoc:publishAllPublicationsToPluginTestRepository
              */
             if (gradle.startParameter.taskNames.none {
-                it == "publishAllPublicationsToPluginTestRepository" ||
-                    it == "publishToMavenLocal"
-              }) {
+                  it == "publishAllPublicationsToPluginTestRepository" ||
+                      it == "publishToMavenLocal"
+                }) {
               artifact(kdocWithoutOlder)
             }
 
