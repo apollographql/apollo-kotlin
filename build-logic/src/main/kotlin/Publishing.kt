@@ -1,3 +1,4 @@
+
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import dev.adamko.dokkatoo.DokkatooExtension
@@ -55,22 +56,23 @@ fun Project.configureDokkaCommon(): DokkatooExtension {
     pluginsConfiguration.getByName("html") {
       this as DokkaHtmlPluginParameters
       customStyleSheets.from(
-        listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+          listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
       )
       customAssets.from(
-        listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+          listOf("apollo.svg").map { rootProject.file("dokka/$it") }
       )
     }
   }
 
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
-    workerMaxHeapSize.set("8g")
+    workerIsolation.set(dokkatoo.ClassLoaderIsolation())
   }
 
   dokkatoo.dokkatooSourceSets.configureEach {
     includes.from("README.md")
   }
 
+  // Workaround for https://github.com/adamko-dev/dokkatoo/issues/165
   configurations.configureEach {
     if (name.lowercase().contains("dokkatooHtmlPublicationPluginClasspathApiOnlyConsumable".lowercase())) {
       attributes {
@@ -96,10 +98,10 @@ fun Project.configureDokka() {
 fun Project.configureDokkaAggregate() {
   val dokkatoo = configureDokkaCommon()
   dependencies.add(
-    "dokkatooPluginHtml",
-    dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-      "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
-    }
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
+      }
   )
 
   val olderVersions = listOf<String>()
@@ -154,14 +156,14 @@ private fun Project.getOssStagingUrl(): String {
   }
   val baseUrl = "https://s01.oss.sonatype.org/service/local/"
   val client = NexusStagingClient(
-    baseUrl = baseUrl,
-    username = System.getenv("SONATYPE_NEXUS_USERNAME"),
-    password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
+      baseUrl = baseUrl,
+      username = System.getenv("SONATYPE_NEXUS_USERNAME"),
+      password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
   )
   val repositoryId = runBlocking {
     client.createRepository(
-      profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
-      description = "apollo-kotlin $version"
+        profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
+        description = "apollo-kotlin $version"
     )
   }
   return "${baseUrl}staging/deployByRepositoryId/${repositoryId}/".also {
@@ -175,14 +177,14 @@ private fun Project.configurePublishingInternal() {
 
     // Inspired by https://github.com/adamko-dev/dokkatoo/blob/4b5ac135add99ebc9ca7c5d51057b27071b24897/buildSrc/src/main/kotlin/buildsrc/conventions/kotlin-gradle-plugin.gradle.kts#L14-L29
     from(
-      resources.text.fromString(
-        """
+        resources.text.fromString(
+            """
       This Javadoc JAR is intentionally empty.
       
       For documentation, see the sources JAR or https://www.apollographql.com/docs/kotlin/kdoc/index.html
       
     """.trimIndent()
-      )
+        )
     ) {
       rename { "readme.txt" }
     }

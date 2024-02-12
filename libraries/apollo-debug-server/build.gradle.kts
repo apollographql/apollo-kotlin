@@ -132,5 +132,3 @@ dependencies {
     to.attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
   }
 }
-
-
