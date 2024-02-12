@@ -88,8 +88,12 @@ com.apollographql.apollo3.runtime.java.network.http
 com.apollographql.apollo3.runtime.java.network.http.internal
 com.apollographql.apollo3.runtime.java.network.ws
 com.apollographql.apollo3.runtime.java.network.ws.protocol
+module:apollo-rx2-support
+com.apollographql.apollo3.rx2
 module:apollo-rx2-support-java
 com.apollographql.apollo3.rx2.java
+module:apollo-rx3-support
+com.apollographql.apollo3.rx3
 module:apollo-rx3-support-java
 com.apollographql.apollo3.rx3.java
 module:apollo-testing-support
