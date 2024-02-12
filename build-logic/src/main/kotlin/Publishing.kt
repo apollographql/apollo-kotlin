@@ -132,8 +132,6 @@ fun Project.configureDokkaAggregate() {
     this as DokkaVersioningPluginParameters
     val currentVersion = findProperty("VERSION_NAME") as String
     version.set(currentVersion)
-    // Workaround for https://github.com/adamko-dev/dokkatoo/pull/135
-    versionsOrdering.set((olderVersions + currentVersion).reversed())
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
