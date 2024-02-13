@@ -1,0 +1,5 @@
+extend schema @catch(to: RESULT)
+
+extend type Query
+@catchField(name: "nullable", to: RESULT)
+@catchField(name: "list", to: RESULT, levels: [1])

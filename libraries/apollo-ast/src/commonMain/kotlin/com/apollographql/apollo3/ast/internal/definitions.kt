@@ -350,7 +350,22 @@ Passing a negative level or a level greater than the list dimension is an error.
 
 See `CatchTo` for more details.
 ""${'"'}
-directive @catch(to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD | SCHEMA
+directive @catch(to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD | FIELD_DEFINITION | SCHEMA
+
+""${'"'}
+Indicates how clients should handle errors on a given position.
+
+`@catchField` is the same as `@catch` but can be used on type system extensions for services
+that do not own the schema like client services:
+
+```graphql
+# extend the schema to catch User.email to `RESULT`.
+extend type User @catchField(name: "email", to: RESULT)
+```
+
+See `@catch`.
+""${'"'}
+directive @catchField(to: CatchTo! = RESULT, levels: [Int] = [0]) repeatable on INTERFACE | OBJECT
 
 enum CatchTo {
     ""${'"'}

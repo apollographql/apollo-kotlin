@@ -83,7 +83,7 @@ enum class CatchTo {
 }
 
 @ApolloInternal
-data class Catch(val to: CatchTo, val levels: List<Int>)
+data class Catch(val to: CatchTo, val levels: List<Int>?)
 
 private fun GQLDirectiveDefinition.getArgumentDefaultValue(argName: String): GQLValue? {
   return arguments.firstOrNull { it.name == argName }?.defaultValue
@@ -91,9 +91,9 @@ private fun GQLDirectiveDefinition.getArgumentDefaultValue(argName: String): GQL
 
 @ApolloInternal
 fun GQLDirective.getArgumentValueOrDefault(argName: String, schema: Schema): GQLValue? {
-  val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name)!!
   val argument = arguments.firstOrNull { it.name == argName }
   if (argument == null) {
+    val directiveDefinition: GQLDirectiveDefinition = schema.directiveDefinitions.get(name)!!
     return directiveDefinition.getArgumentDefaultValue(argName)
   }
   return argument.value
@@ -148,7 +148,7 @@ private fun GQLValue?.toCatchTo(): CatchTo {
 }
 
 @ApolloInternal
-fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
+private fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
   return filter {
     schema.originalDirectiveName(it.name) == Schema.CATCH
   }.map {
@@ -160,24 +160,26 @@ fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
 }
 
 @ApolloInternal
+fun GQLField.findCatch(fieldDefinition: GQLFieldDefinition, schema: Schema): Catch? {
+  var catch = directives.findCatch(schema)
+  if (catch != null) {
+    return catch
+  }
+
+  catch = fieldDefinition.directives.findCatch(schema)
+  if (catch != null) {
+    return catch
+  }
+
+  return schema.schemaDefinition?.directives?.findCatch(schema)?.copy(levels = null)
+}
+
+@ApolloInternal
 fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int> {
   val semanticNonNulls = directives.filter {
     schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL
   }
 
-  val semanticNonNull = semanticNonNulls.singleOrNull()
-  if (semanticNonNull == null) {
-    return emptyList()
-  }
-  return semanticNonNull.getArgumentValueOrDefault("levels", schema)!!.toListOfInt()
-}
-
-@ApolloInternal
-fun GQLTypeDefinition.findSemanticNonNulls(fieldName: String, schema: Schema): List<Int> {
-  val semanticNonNulls = directives.filter {
-    schema.originalDirectiveName(it.name) == Schema.SEMANTIC_NON_NULL_FIELD
-        &&  it.getArgumentValueOrDefault("name", schema)?.toStringOrNull() == fieldName
-  }
   val semanticNonNull = semanticNonNulls.singleOrNull()
   if (semanticNonNull == null) {
     return emptyList()

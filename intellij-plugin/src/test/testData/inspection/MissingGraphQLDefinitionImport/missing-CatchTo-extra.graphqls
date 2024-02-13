@@ -1,5 +1,5 @@
 extend schema
 @link(
-  url: "https://specs.apollo.dev/nullability/v0.2",
+  url: "https://specs.apollo.dev/nullability/v0.3",
   import: ["@catch"]
 )

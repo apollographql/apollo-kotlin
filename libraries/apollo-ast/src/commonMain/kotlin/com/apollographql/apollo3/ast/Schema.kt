@@ -210,6 +210,8 @@ class Schema internal constructor(
     @ApolloExperimental
     const val CATCH = "catch"
     @ApolloExperimental
+    const val CATCH_FIELD = "catchField"
+    @ApolloExperimental
     const val SEMANTIC_NON_NULL = "semanticNonNull"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL_FIELD = "semanticNonNullField"

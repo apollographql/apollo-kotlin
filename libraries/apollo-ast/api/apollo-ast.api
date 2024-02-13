@@ -931,6 +931,7 @@ public final class com/apollographql/apollo3/ast/ReservedEnumValueName : com/apo
 
 public final class com/apollographql/apollo3/ast/Schema {
 	public static final field CATCH Ljava/lang/String;
+	public static final field CATCH_FIELD Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/ast/Schema$Companion;
 	public static final field FIELD_POLICY Ljava/lang/String;
 	public static final field FIELD_POLICY_FOR_FIELD Ljava/lang/String;

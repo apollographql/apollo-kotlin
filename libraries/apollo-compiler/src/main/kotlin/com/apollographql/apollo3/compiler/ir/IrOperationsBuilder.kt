@@ -90,8 +90,6 @@ internal class IrOperationsBuilder(
     else -> error("codegenModels='$codegenModels' is not supported")
   }
 
-  private val defaultCatchTo = schema.schemaDefinition?.directives?.findCatch(schema)?.to
-
   fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = fragmentDefinitions.map { it.toIr() }
@@ -506,15 +504,6 @@ internal class IrOperationsBuilder(
 
       var semanticNonNulls = fieldDefinition.findSemanticNonNulls(schema)
 
-      parentTypeDefinition.findSemanticNonNulls(gqlField.name, schema).let {
-        if (it.isNotEmpty()) {
-          check(semanticNonNulls.isEmpty()) {
-            "${gqlField.sourceLocation}: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
-          }
-          semanticNonNulls = it
-        }
-      }
-
       if (parentTypeDefinition.isFieldNonNull(gqlField.name, schema)) {
         check(semanticNonNulls.isEmpty()) {
           "${gqlField.sourceLocation}: bad '@nonnull' directive: field '${gqlField.responseName()}' already has nullability annotations (@nonnull, @semanticNonNull) in the schema."
@@ -541,7 +530,7 @@ internal class IrOperationsBuilder(
           semanticNonNulls = semanticNonNulls,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catch = gqlField.directives.findCatch(schema)
+          catch = gqlField.findCatch(fieldDefinition, schema)
       )
     }.groupBy {
       it.responseName
@@ -622,7 +611,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catch, defaultCatchTo, 0)
+          .catch(first.catch, 0)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -687,16 +676,14 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun IrType.catch(catch: Catch?, defaultCatchTo: CatchTo?, level: Int): IrType {
+    private fun IrType.catch(catch: Catch?, level: Int): IrType {
       var type = when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.catch(catch, defaultCatchTo, level + 1))
+        is IrListType -> copy(ofType = ofType.catch(catch, level + 1))
       }
 
       val catchTo = if (catch != null) {
-        catch.to.takeIf { catch.levels.contains(level) } ?: defaultCatchTo
-      } else if (type.maybeError) {
-        defaultCatchTo
+        catch.to.takeIf { catch.levels == null || catch.levels!!.contains(level) }
       } else {
         null
       }
