@@ -7,6 +7,7 @@ import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
+import org.gradle.api.attributes.Usage
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
@@ -63,11 +64,20 @@ fun Project.configureDokkaCommon(): DokkatooExtension {
   }
 
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
-    workerMaxHeapSize.set("8g")
+    workerIsolation.set(dokkatoo.ClassLoaderIsolation())
   }
 
   dokkatoo.dokkatooSourceSets.configureEach {
     includes.from("README.md")
+  }
+
+  // Workaround for https://github.com/adamko-dev/dokkatoo/issues/165
+  configurations.configureEach {
+    if (name.lowercase().contains("dokkatooHtmlPublicationPluginClasspathApiOnlyConsumable".lowercase())) {
+      attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "poison"))
+      }
+    }
   }
 
   return dokkatoo
@@ -86,12 +96,6 @@ fun Project.configureDokka() {
 
 fun Project.configureDokkaAggregate() {
   val dokkatoo = configureDokkaCommon()
-  dependencies.add(
-      "dokkatooPluginHtml",
-      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
-        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
-      }
-  )
   dependencies.add(
       "dokkatooPluginHtml",
       dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
@@ -129,8 +133,6 @@ fun Project.configureDokkaAggregate() {
     this as DokkaVersioningPluginParameters
     val currentVersion = findProperty("VERSION_NAME") as String
     version.set(currentVersion)
-    // Workaround for https://github.com/adamko-dev/dokkatoo/pull/135
-    versionsOrdering.set((olderVersions + currentVersion).reversed())
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
