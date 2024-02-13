@@ -22,6 +22,7 @@
       <option name="CONTINUATION_INDENT_IN_ARGUMENT_LISTS" value="true" />
       <option name="CONTINUATION_INDENT_FOR_CHAINED_CALLS" value="true" />
       <option name="CONTINUATION_INDENT_IN_IF_CONDITIONS" value="true" />
+      <option name="CONTINUATION_INDENT_IN_ELVIS" value="true" />
       <option name="ALLOW_TRAILING_COMMA" value="true" />
     </JetCodeStyleSettings>
     <Properties>
@@ -68,7 +69,10 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
+<<<<<<< HEAD
       <option name="CALL_PARAMETERS_WRAP" value="0" />
+=======
+>>>>>>> faa0804773 (add more multipart tests)
       <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

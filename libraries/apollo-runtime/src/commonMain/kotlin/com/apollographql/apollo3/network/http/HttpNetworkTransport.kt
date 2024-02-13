@@ -26,6 +26,7 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -108,7 +109,7 @@ private constructor(
           cause = throwable
       )
     }
-    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation,)
+    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation)
         .exception(apolloException)
         .isLast(true)
         .build()
@@ -221,6 +222,14 @@ private constructor(
                   deferredFragmentIdentifiers = deferredFragmentIds
               ).newBuilder().isLast(isLast).build()
             }
+          }
+        }.catch { throwable ->
+          if (throwable is ApolloException) {
+            emit(
+                ApolloResponse.Builder(operation = operation, requestUuid = uuid4())
+                    .exception(throwable)
+                    .build()
+            )
           }
         }
   }
