@@ -81,7 +81,8 @@ if (relocateJar) {
     configurations.named("testImplementation").configure {
       extendsFrom(shadeConfiguration)
     }
-    replaceOutgoingJar(shadowedJar)
+
+    replaceOutgoingJar2(shadowedJar)
   }
 } else {
   configurations.named("implementation").configure {
@@ -89,6 +90,22 @@ if (relocateJar) {
   }
 }
 
+fun replaceOutgoingJar2(newJar: Any) {
+  project.configurations.configureEach {
+    outgoing {
+      val removed = artifacts.removeIf {
+        it.name == "apollo-gradle-plugin" && it.type == "jar" && it.classifier.isNullOrEmpty()
+      }
+      if (removed) {
+
+        artifact(newJar) {
+          // Pom and maven consumers do not like the `-all` or `-shadowed` classifiers
+          classifier = ""
+        }
+      }
+    }
+  }
+}
 
 gradlePlugin {
   website.set("https://github.com/apollographql/apollo-kotlin")
