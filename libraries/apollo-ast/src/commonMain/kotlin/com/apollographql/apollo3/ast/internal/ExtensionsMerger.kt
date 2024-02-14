@@ -341,12 +341,7 @@ private fun ExtensionsMerger.mergeFields(
       }
 
       if (!newFieldDefinition.type.isCompatibleWith(existingFieldDefinition.type)) {
-        issues.add(
-            OtherValidationIssue(
-                "Cannot merge field directives`${newFieldDefinition.name}`: its type is not compatible with the original type`",
-                newFieldDefinition.sourceLocation
-            )
-        )
+        issues.add(OtherValidationIssue("Cannot merge field directives`${newFieldDefinition.name}`: its type is not compatible with the original type`", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
