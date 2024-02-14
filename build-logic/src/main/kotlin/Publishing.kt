@@ -99,6 +99,12 @@ fun Project.configureDokkaAggregate() {
   dependencies.add(
       "dokkatooPluginHtml",
       dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
+        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
+      }
+  )
+  dependencies.add(
+      "dokkatooPluginHtml",
+      dokkatoo.versions.jetbrainsDokka.map { dokkaVersion ->
         "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
       }
   )
