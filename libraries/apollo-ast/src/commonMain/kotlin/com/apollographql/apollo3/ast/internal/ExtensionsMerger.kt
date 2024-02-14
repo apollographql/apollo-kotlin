@@ -57,54 +57,13 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, in
       when (definition) {
         is GQLTypeSystemExtension -> {
           when (definition) {
-            is GQLSchemaExtension -> mergeTypedDefinition(
-                GQLSchemaDefinition::class,
-                newDefinitions,
-                definition,
-                "schema"
-            ) { mergeSchema(it, definition) }
-
-            is GQLScalarTypeExtension -> mergeNamedDefinition(
-                GQLScalarTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "scalar"
-            ) { mergeScalar(it, definition) }
-
-            is GQLInterfaceTypeExtension -> mergeNamedDefinition(
-                GQLInterfaceTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "interface"
-            ) { mergeInterface(it, definition) }
-
-            is GQLObjectTypeExtension -> mergeNamedDefinition(
-                GQLObjectTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "object"
-            ) { mergeObject(it, definition) }
-
-            is GQLInputObjectTypeExtension -> mergeNamedDefinition(
-                GQLInputObjectTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "input"
-            ) { mergeInputObject(it, definition) }
-
-            is GQLEnumTypeExtension -> mergeNamedDefinition(
-                GQLEnumTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "enum"
-            ) { mergeEnum(it, definition) }
-
-            is GQLUnionTypeExtension -> mergeNamedDefinition(
-                GQLUnionTypeDefinition::class,
-                newDefinitions,
-                definition,
-                "union"
-            ) { mergeUnion(it, definition) }
+            is GQLSchemaExtension -> mergeTypedDefinition(GQLSchemaDefinition::class, newDefinitions, definition, "schema") { mergeSchema(it, definition) }
+            is GQLScalarTypeExtension -> mergeNamedDefinition(GQLScalarTypeDefinition::class, newDefinitions, definition, "scalar") { mergeScalar(it, definition) }
+            is GQLInterfaceTypeExtension -> mergeNamedDefinition(GQLInterfaceTypeDefinition::class, newDefinitions, definition, "interface") { mergeInterface(it, definition) }
+            is GQLObjectTypeExtension -> mergeNamedDefinition(GQLObjectTypeDefinition::class, newDefinitions, definition, "object") { mergeObject(it, definition) }
+            is GQLInputObjectTypeExtension -> mergeNamedDefinition(GQLInputObjectTypeDefinition::class, newDefinitions, definition, "input") { mergeInputObject(it, definition) }
+            is GQLEnumTypeExtension -> mergeNamedDefinition(GQLEnumTypeDefinition::class, newDefinitions, definition, "enum") { mergeEnum(it, definition) }
+            is GQLUnionTypeExtension -> mergeNamedDefinition(GQLUnionTypeDefinition::class, newDefinitions, definition, "union") { mergeUnion(it, definition) }
           }
         }
 
@@ -357,7 +316,7 @@ private fun ExtensionsMerger.mergeUniqueInterfacesOrThrow(
 private fun ExtensionsMerger.mergeFields(
     list: List<GQLFieldDefinition>,
     others: List<GQLFieldDefinition>,
-    extraDirectives: Map<String, List<GQLDirective>> = emptyMap()
+    extraDirectives: Map<String, List<GQLDirective>> = emptyMap(),
 ): List<GQLFieldDefinition> {
 
   val result = list.toMutableList()
@@ -414,7 +373,7 @@ private fun ExtensionsMerger.mergeFields(
   }
 
   return result.map {
-    it.copy(directives = mergeDirectives(it.directives,  extraDirectives.get(it.name).orEmpty()))
+    it.copy(directives = mergeDirectives(it.directives, extraDirectives.get(it.name).orEmpty()))
   }
 }
 
