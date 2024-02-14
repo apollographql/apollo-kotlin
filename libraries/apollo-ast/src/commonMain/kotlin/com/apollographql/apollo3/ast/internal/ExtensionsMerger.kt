@@ -210,10 +210,7 @@ private fun ExtensionsMerger.mergeSchema(
 ): GQLSchemaDefinition = with(schemaDefinition) {
   return copy(
       directives = mergeDirectives(directives, extension.directives),
-      rootOperationTypeDefinitions = mergeUniquesOrThrow(
-          rootOperationTypeDefinitions,
-          extension.operationTypeDefinitions
-      ) { it.operationType }
+      rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypeDefinitions) { it.operationType }
   )
 }
 
@@ -329,32 +326,17 @@ private fun ExtensionsMerger.mergeFields(
     } else {
       val existingFieldDefinition = result[index]
       if (!mergeOptions.allowFieldNullabilityModification) {
-        issues.add(
-            OtherValidationIssue(
-                "There is already a field definition named `${newFieldDefinition.name}` for this type",
-                newFieldDefinition.sourceLocation
-            )
-        )
+        issues.add(OtherValidationIssue("There is already a field definition named `${newFieldDefinition.name}` for this type", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
       if (!areEqual(newFieldDefinition.arguments, existingFieldDefinition.arguments)) {
-        issues.add(
-            OtherValidationIssue(
-                "Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition",
-                newFieldDefinition.sourceLocation
-            )
-        )
+        issues.add(OtherValidationIssue("Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
       if (newFieldDefinition.directives.isNotEmpty()) {
-        issues.add(
-            OtherValidationIssue(
-                "Cannot add directives to existing field definition `${newFieldDefinition.name}`",
-                newFieldDefinition.sourceLocation
-            )
-        )
+        issues.add(OtherValidationIssue("Cannot add directives to existing field definition `${newFieldDefinition.name}`", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
