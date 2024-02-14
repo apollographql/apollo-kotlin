@@ -9,6 +9,8 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.benchmark.Utils.checkOperationBased
+import com.apollographql.apollo3.benchmark.Utils.checkResponseBased
 import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo3.benchmark.Utils.registerCacheSize
 import com.apollographql.apollo3.benchmark.Utils.resource
@@ -17,6 +19,7 @@ import com.apollographql.apollo3.benchmark.test.R
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.incubating.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.incubating.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.incubating.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.incubating.api.ReadOnlyNormalizedCache
@@ -95,7 +98,7 @@ class CacheIncubatingTests {
     ) as Map<String, Record>
 
     runBlocking {
-      cache.merge(records.values.toList(), CacheHeaders.NONE)
+      cache.merge(records.values.toList(), CacheHeaders.NONE, DefaultRecordMerger)
     }
 
     if (sql) {
@@ -138,7 +141,7 @@ class CacheIncubatingTests {
         threadPool.submit {
           // Let each thread execute a few writes/reads
           repeat(WORK_LOAD) {
-            cache.merge(records.values.toList(), CacheHeaders.NONE)
+            cache.merge(records.values.toList(), CacheHeaders.NONE, DefaultRecordMerger)
 
             val data2 = readDataFromCacheMethod.invoke(
                 null,

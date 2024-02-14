@@ -3,6 +3,7 @@ package com.apollographql.apollo3.cache.normalized.api
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.internal.Lock
 import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
+import com.apollographql.apollo3.cache.normalized.api.internal.patternToRegex
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
@@ -17,9 +18,10 @@ import kotlin.reflect.KClass
  * (there is no any sort of GC that runs in the background).
  */
 class MemoryCache(
+    private val nextCache: NormalizedCache? = null,
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
-) : NormalizedCache() {
+) : NormalizedCache {
   // A lock is only needed if there is a nextCache
   private val lock = nextCache?.let { Lock() }
 
@@ -91,14 +93,6 @@ class MemoryCache(
     total + chainRemoved
   }
 
-  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return merge(record, cacheHeaders, DefaultRecordMerger)
-  }
-
-  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return merge(records, cacheHeaders, DefaultRecordMerger)
-  }
-
   @ApolloExperimental
   override fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
@@ -128,7 +122,9 @@ class MemoryCache(
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return lockRead {
-      mapOf(this::class to lruCache.dump().mapValues { (_, record) -> record }) + nextCache?.dump().orEmpty()
+      mapOf(OptimisticNormalizedCache::class to recordJournals.mapValues { (_, journal) -> journal.current }) +
+          mapOf(this::class to lruCache.asMap().mapValues { (_, record) -> record }) +
+          nextCache?.dump().orEmpty()
     }
   }
 
@@ -142,8 +138,16 @@ class MemoryCacheFactory @JvmOverloads constructor(
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCacheFactory() {
 
+  private var nextCacheFactory: NormalizedCacheFactory? = null
+
+  fun chain(factory: NormalizedCacheFactory): MemoryCacheFactory {
+    nextCacheFactory = factory
+    return this
+  }
+
   override fun create(): MemoryCache {
     return MemoryCache(
+        nextCache = nextCacheFactory?.create(),
         maxSizeBytes = maxSizeBytes,
         expireAfterMillis = expireAfterMillis,
     )

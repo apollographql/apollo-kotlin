@@ -51,7 +51,7 @@ class ExpirationTest {
 
     client.apolloStore.accessCache {
       // store records in the past
-      it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 15))
+      it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 15), DefaultRecordMerger)
     }
 
     val e = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().exception as CacheMissException
@@ -65,7 +65,7 @@ class ExpirationTest {
 
     client.apolloStore.accessCache {
       // update records to be in the present
-      it.merge(records, cacheHeaders(currentTimeMillis() / 1000))
+      it.merge(records, cacheHeaders(currentTimeMillis() / 1000), DefaultRecordMerger)
     }
 
     val response2 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
