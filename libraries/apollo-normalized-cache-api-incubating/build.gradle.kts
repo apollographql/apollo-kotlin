@@ -20,5 +20,17 @@ kotlin {
         }
       }
     }
+
+    findByName("jvmMain")?.apply {
+      dependencies {
+        implementation(libs.guava.jre)
+      }
+    }
+
+    findByName("commonTest")?.apply {
+      dependencies {
+        implementation(project(":apollo-testing-support"))
+      }
+    }
   }
 }
