@@ -1,11 +1,11 @@
+
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
-import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
 internal val allAppleTargets = setOf(
     "macosX64",
@@ -103,6 +103,7 @@ fun Project.configureMpp(
       }
     }
     if (withWasm) {
+      @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
         nodejs()
       }
