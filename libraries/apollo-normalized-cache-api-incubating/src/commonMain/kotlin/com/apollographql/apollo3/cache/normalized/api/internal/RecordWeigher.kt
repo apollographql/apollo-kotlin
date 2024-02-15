@@ -2,7 +2,6 @@ package com.apollographql.apollo3.cache.normalized.api.internal
 
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
-import okio.utf8Size
 import kotlin.jvm.JvmStatic
 
 internal object RecordWeigher {
@@ -23,9 +22,9 @@ internal object RecordWeigher {
 
   @JvmStatic
   fun calculateBytes(record: Record): Int {
-    var size = SIZE_OF_RECORD_OVERHEAD + record.key.utf8Size().toInt()
-    for ((key, value) in record.fields) {
-      size += key.utf8Size().toInt() + weighField(value)
+    var size = SIZE_OF_RECORD_OVERHEAD + record.key.length
+    for ((key, _) in record.fields) {
+      size += key.length
     }
     size += weighField(record.metadata)
     size += weighField(record.dates)
@@ -35,7 +34,7 @@ internal object RecordWeigher {
   private fun weighField(field: Any?): Int {
     return when (field) {
       null -> SIZE_OF_NULL
-      is String -> field.utf8Size().toInt()
+      is String -> field.length
       is Boolean -> SIZE_OF_BOOLEAN
       is Int -> SIZE_OF_INT
       is Long -> SIZE_OF_LONG // Might happen with LongDataAdapter
@@ -45,7 +44,7 @@ internal object RecordWeigher {
       }
 
       is CacheKey -> {
-        SIZE_OF_CACHE_KEY_OVERHEAD + field.key.utf8Size().toInt()
+        SIZE_OF_CACHE_KEY_OVERHEAD + field.key.length
       }
       /**
        * Custom scalars with a json object representation are stored directly in the record
