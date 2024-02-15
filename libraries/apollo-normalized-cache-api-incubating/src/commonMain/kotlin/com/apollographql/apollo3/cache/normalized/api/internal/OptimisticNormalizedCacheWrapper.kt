@@ -61,7 +61,7 @@ class OptimisticNormalizedCacheWrapper(private val wrapped: NormalizedCache) : O
         result = true
         if (cascade) {
           for (cacheReference in recordJournal.current.referencedFields()) {
-            result = result && remove(CacheKey(cacheReference.key), true)
+            result = result || remove(CacheKey(cacheReference.key), true)
           }
         }
       }

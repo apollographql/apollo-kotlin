@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.cache.normalized.api.internal.ConcurrentMap
 import com.apollographql.apollo3.cache.normalized.api.internal.Lock
 import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
+import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.internal.patternToRegex
-import okio.internal.commonAsUtf8ToByteArray
+import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmOverloads
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
@@ -21,9 +23,11 @@ class MemoryCache(
     private val nextCache: NormalizedCache? = null,
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
-) : NormalizedCache {
+) : OptimisticNormalizedCache {
   // A lock is only needed if there is a nextCache
   private val lock = nextCache?.let { Lock() }
+
+  private val recordJournals = ConcurrentMap<String, RecordJournal>()
 
   private fun <T> lockWrite(block: () -> T): T {
     return lock?.write { block() } ?: block()
@@ -34,7 +38,7 @@ class MemoryCache(
   }
 
   private val lruCache = LruCache<String, Record>(maxSize = maxSizeBytes, expireAfterMillis = expireAfterMillis) { key, record ->
-    key.commonAsUtf8ToByteArray().size + record.sizeInBytes
+    key.length + record.sizeInBytes
   }
 
   val size: Int
@@ -50,7 +54,7 @@ class MemoryCache(
     record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
       lruCache[key] = nextCachedRecord
     }
-  }
+  }.mergeJournalRecord(key)
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     return keys.mapNotNull { key -> loadRecord(key, cacheHeaders) }
@@ -61,6 +65,7 @@ class MemoryCache(
       lruCache.clear()
       nextCache?.clearAll()
     }
+    recordJournals.clear()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
@@ -74,26 +79,41 @@ class MemoryCache(
       }
 
       val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
-      record != null || chainRemoved
+      val journalRemoved = removeFromJournal(cacheKey, cascade)
+      record != null || chainRemoved || journalRemoved
     }
   }
 
-  override fun remove(pattern: String): Int = lockWrite {
-    val regex = patternToRegex(pattern)
-    var total = 0
-    val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
-    keys.forEach {
-      if (regex.matches(it)) {
-        lruCache.remove(it)
-        total++
+  private fun removeFromJournal(cacheKey: CacheKey, cascade: Boolean): Boolean {
+    val recordJournal = recordJournals[cacheKey.key]
+    if (recordJournal != null) {
+      recordJournals.remove(cacheKey.key)
+      if (cascade) {
+        for (cacheReference in recordJournal.current.referencedFields()) {
+          removeFromJournal(CacheKey(cacheReference.key), true)
+        }
       }
     }
-
-    val chainRemoved = nextCache?.remove(pattern) ?: 0
-    total + chainRemoved
+    return recordJournal != null
   }
 
-  @ApolloExperimental
+  override fun remove(pattern: String): Int {
+    val regex = patternToRegex(pattern)
+    return lockWrite {
+      var total = 0
+      val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
+      keys.forEach {
+        if (regex.matches(it)) {
+          lruCache.remove(it)
+          total++
+        }
+      }
+
+      val chainRemoved = nextCache?.remove(pattern) ?: 0
+      total + chainRemoved
+    }
+  }
+
   override fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
@@ -112,7 +132,6 @@ class MemoryCache(
     }
   }
 
-  @ApolloExperimental
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
@@ -122,14 +141,121 @@ class MemoryCache(
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return lockRead {
-      mapOf(OptimisticNormalizedCache::class to recordJournals.mapValues { (_, journal) -> journal.current }) +
+      mapOf(this::class to recordJournals.mapValues { (_, journal) -> journal.current }) +
           mapOf(this::class to lruCache.asMap().mapValues { (_, record) -> record }) +
           nextCache?.dump().orEmpty()
     }
   }
 
   internal fun clearCurrentCache() {
-    lockWrite { lruCache.clear() }
+    lruCache.clear()
+    recordJournals.clear()
+  }
+
+  override fun addOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
+    return recordSet.flatMap {
+      addOptimisticUpdate(it)
+    }.toSet()
+  }
+
+  override fun addOptimisticUpdate(record: Record): Set<String> {
+    val journal = recordJournals[record.key]
+    return if (journal == null) {
+      recordJournals[record.key] = RecordJournal(record)
+      record.fieldKeys()
+    } else {
+      journal.addPatch(record)
+    }
+  }
+
+  override fun removeOptimisticUpdates(mutationId: Uuid): Set<String> {
+    val changedCacheKeys = mutableSetOf<String>()
+    val keys = HashSet(recordJournals.keys) // local copy to avoid concurrent modification
+    keys.forEach {
+      val recordJournal = recordJournals[it] ?: return@forEach
+      val result = recordJournal.removePatch(mutationId)
+      changedCacheKeys.addAll(result.changedKeys)
+      if (result.isEmpty) {
+        recordJournals.remove(it)
+      }
+    }
+    return changedCacheKeys
+  }
+
+  private fun Record?.mergeJournalRecord(key: String): Record? {
+    val journal = recordJournals[key]
+    return if (journal != null) {
+      this?.mergeWith(journal.current)?.first ?: journal.current
+    } else {
+      this
+    }
+  }
+
+  private class RemovalResult(
+      val changedKeys: Set<String>,
+      val isEmpty: Boolean,
+  )
+
+  private class RecordJournal(record: Record) {
+    /**
+     * The latest value of the record made by applying all the patches.
+     */
+    var current: Record = record
+
+    /**
+     * A list of chronological patches applied to the record.
+     */
+    private val patches = mutableListOf(record)
+
+    /**
+     * Adds a new patch on top of all the previous ones.
+     */
+    fun addPatch(record: Record): Set<String> {
+      val (mergedRecord, changedKeys) = current.mergeWith(record)
+      current = mergedRecord
+      patches.add(record)
+      return changedKeys
+    }
+
+    /**
+     * Lookup record by mutation id, if it's found removes it from the history and
+     * computes the new current record.
+     */
+    fun removePatch(mutationId: Uuid): RemovalResult {
+      val recordIndex = patches.indexOfFirst { mutationId == it.mutationId }
+      if (recordIndex == -1) {
+        // The mutation did not impact this Record
+        return RemovalResult(emptySet(), false)
+      }
+
+      if (patches.size == 1) {
+        // The mutation impacted this Record and it was the only one in the history
+        return RemovalResult(current.fieldKeys(), true)
+      }
+
+      /**
+       * There are multiple patches, go over them and compute the new current value
+       * Remember the oldRecord so that we can compute the changed keys
+       */
+      val oldRecord = current
+
+      patches.removeAt(recordIndex).key
+
+      var cur: Record? = null
+      val start = max(0, recordIndex - 1)
+      for (i in start until patches.size) {
+        val record = patches[i]
+        if (cur == null) {
+          cur = record
+        } else {
+          val (mergedRecord, _) = cur.mergeWith(record)
+          cur = mergedRecord
+        }
+      }
+      current = cur!!
+
+      return RemovalResult(Record.changedKeys(oldRecord, current), false)
+    }
   }
 }
 
