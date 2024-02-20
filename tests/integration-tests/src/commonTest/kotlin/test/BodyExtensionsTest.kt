@@ -2,16 +2,16 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.ByteStringHttpBody
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
-import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.integration.fullstack.LaunchDetailsQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
@@ -24,51 +24,49 @@ import kotlin.test.assertEquals
 class WithExtensionsHttpRequestComposer(private val serverUrl: String) : HttpRequestComposer {
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
 
-    return HttpRequest.Builder(HttpMethod.Post, serverUrl)
+    val request = HttpRequest.Builder(HttpMethod.Post, serverUrl)
         .body(
-            ByteStringHttpBody(
-                "application/json",
-                buildJsonByteString {
-                  writeObject {
-                    name("query")
-                    value(apolloRequest.operation.document())
-                    name("operationName")
-                    value(apolloRequest.operation.name())
-                    name("extensions")
-                    value("extension value")
-                  }
-                }
-            )
+            DefaultHttpRequestComposer.buildPostBody(
+                apolloRequest.operation,
+                apolloRequest.executionContext[CustomScalarAdapters]!!,
+                apolloRequest.operation.document(),
+            ) {
+              name("extensions")
+              writeObject {
+                name("key")
+                value("value")
+              }
+            }
         )
         .build()
+
+    return request
   }
 }
 
 class BodyExtensionsTest {
+  @Suppress("UNCHECKED_CAST")
   @Test
   fun bodyExtensions() = runTest {
     val mockServer = MockServer()
-    val serverUrl = mockServer.url()
 
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport.Builder()
-                .httpRequestComposer(WithExtensionsHttpRequestComposer(serverUrl))
+                .httpRequestComposer(WithExtensionsHttpRequestComposer(mockServer.url()))
                 .build()
         )
         .build()
 
     mockServer.enqueueString(statusCode = 500)
-    kotlin.runCatching {
-      apolloClient.query(HeroNameQuery())
-          .execute()
-    }
+    apolloClient.query(LaunchDetailsQuery("42")).execute()
 
     val request = mockServer.awaitRequest()
 
     @Suppress("UNCHECKED_CAST")
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
-    assertEquals(asMap["extensions"], "extension value")
+    assertEquals((asMap["extensions"] as Map<String, Any>).get("key"), "value")
+    assertEquals((asMap["variables"] as Map<String, Any>).get("id"), "42")
 
     apolloClient.close()
     mockServer.close()

@@ -20,6 +20,7 @@
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="50" />
       <option name="CONTINUATION_INDENT_IN_PARAMETER_LISTS" value="true" />
       <option name="CONTINUATION_INDENT_IN_ARGUMENT_LISTS" value="true" />
+      <option name="CONTINUATION_INDENT_FOR_CHAINED_CALLS" value="true" />
       <option name="CONTINUATION_INDENT_IN_IF_CONDITIONS" value="true" />
       <option name="ALLOW_TRAILING_COMMA" value="true" />
     </JetCodeStyleSettings>
