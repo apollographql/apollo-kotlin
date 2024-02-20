@@ -87,6 +87,7 @@ class DefaultHttpRequestComposer(
     @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
+
     @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
@@ -123,8 +124,8 @@ class DefaultHttpRequestComposer(
         writer: JsonWriter,
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
-        sendApqExtensions: Boolean,
         query: String?,
+        extensionsWriter: (JsonWriter.() -> Unit),
     ): Map<String, Upload> {
       val uploads: Map<String, Upload>
       writer.writeObject {
@@ -143,19 +144,37 @@ class DefaultHttpRequestComposer(
           value(query)
         }
 
+        extensionsWriter()
+      }
+
+      return uploads
+    }
+
+    private fun <D : Operation.Data> composePostParams(
+        writer: JsonWriter,
+        operation: Operation<D>,
+        customScalarAdapters: CustomScalarAdapters,
+        sendApqExtensions: Boolean,
+        query: String?,
+    ): Map<String, Upload> {
+      return composePostParams(
+          writer, operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), sendApqExtensions)
+      )
+    }
+
+    private fun apqExtensionsWriter(id: String, sendApqExtensions: Boolean): JsonWriter.() -> Unit {
+      return {
         if (sendApqExtensions) {
           name("extensions")
           writeObject {
             name("persistedQuery")
             writeObject {
               name("version").value(1)
-              name("sha256Hash").value(operation.id())
+              name("sha256Hash").value(id)
             }
           }
         }
       }
-
-      return uploads
     }
 
     /**
@@ -224,11 +243,22 @@ class DefaultHttpRequestComposer(
       }
     }
 
+    @Deprecated("Use buildPostBody(operation, customScalarADapters, query, extensionsWriter) instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         query: String?,
+    ): HttpBody {
+      return buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), autoPersistQueries))
+    }
+
+    fun <D : Operation.Data> buildPostBody(
+        operation: Operation<D>,
+        customScalarAdapters: CustomScalarAdapters,
+        query: String?,
+        extensionsWriter: JsonWriter.() -> Unit,
     ): HttpBody {
       val uploads: Map<String, Upload>
 
@@ -237,8 +267,8 @@ class DefaultHttpRequestComposer(
             this,
             operation,
             customScalarAdapters,
-            autoPersistQueries,
-            query
+            query,
+            extensionsWriter,
         )
       }
 
