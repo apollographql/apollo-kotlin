@@ -957,6 +957,7 @@ public final class com/apollographql/apollo3/api/http/DefaultHttpRequestComposer
 public final class com/apollographql/apollo3/api/http/DefaultHttpRequestComposer$Companion {
 	public final fun appendQueryParameters (Ljava/lang/String;Ljava/util/Map;)Ljava/lang/String;
 	public final fun buildParamsMap (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZZ)Lokio/ByteString;
+	public final fun buildPostBody (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/api/http/HttpBody;
 	public final fun buildPostBody (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZLjava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpBody;
 	public final fun composePayload (Lcom/apollographql/apollo3/api/ApolloRequest;)Ljava/util/Map;
 }
