@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -111,8 +112,8 @@ class DefaultHttpRequestComposer(
         writer: JsonWriter,
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
-        sendApqExtensions: Boolean,
         query: String?,
+        extensionsWriter: (JsonWriter.() -> Unit),
     ): Map<String, Upload> {
       val uploads: Map<String, Upload>
       writer.writeObject {
@@ -131,19 +132,37 @@ class DefaultHttpRequestComposer(
           value(query)
         }
 
+        extensionsWriter()
+      }
+
+      return uploads
+    }
+
+    private fun <D : Operation.Data> composePostParams(
+      writer: JsonWriter,
+      operation: Operation<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      sendApqExtensions: Boolean,
+      query: String?,
+    ): Map<String, Upload> {
+      return composePostParams(
+        writer, operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), sendApqExtensions)
+      )
+    }
+
+    private fun apqExtensionsWriter(id: String, sendApqExtensions: Boolean): JsonWriter.() -> Unit {
+      return {
         if (sendApqExtensions) {
           name("extensions")
           writeObject {
             name("persistedQuery")
             writeObject {
               name("version").value(1)
-              name("sha256Hash").value(operation.id())
+              name("sha256Hash").value(id)
             }
           }
         }
       }
-
-      return uploads
     }
 
     /**
@@ -212,11 +231,22 @@ class DefaultHttpRequestComposer(
       }
     }
 
+    @Deprecated("Use buildPostBody(operation, customScalarADapters, query, extensionsWriter) instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_3)
+    fun <D : Operation.Data> buildPostBody(
+      operation: Operation<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      autoPersistQueries: Boolean,
+      query: String?,
+    ): HttpBody {
+      return buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), autoPersistQueries))
+    }
+
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
-        autoPersistQueries: Boolean,
         query: String?,
+        extensionsWriter: JsonWriter.() -> Unit,
     ): HttpBody {
       val uploads: Map<String, Upload>
 
@@ -225,8 +255,8 @@ class DefaultHttpRequestComposer(
             this,
             operation,
             customScalarAdapters,
-            autoPersistQueries,
-            query
+            query,
+            extensionsWriter
         )
       }
 
