@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenSchema
+import com.apollographql.apollo3.compiler.InputFile
 import com.apollographql.apollo3.compiler.LayoutFactory
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.writeTo
@@ -10,16 +11,15 @@ import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
 import com.apollographql.apollo3.compiler.toIrOptions
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
-import com.apollographql.apollo3.compiler.InputFile as ApolloInputFile
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
@@ -29,14 +29,11 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val graphqlFiles: ConfigurableFileCollection
-
-  @Internal
-  var sourceRoots: Set<String>? = null
+  abstract val fallbackSchemaFiles: ConfigurableFileCollection
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val fallbackSchemaFiles: ConfigurableFileCollection
+  abstract val graphqlFiles: ConfigurableFileCollection
 
   @get:org.gradle.api.tasks.InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -49,17 +46,12 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
   @TaskAction
   fun taskAction() {
     if (requiresBuildscriptClasspath()) {
-      val normalizedSchemaFiles = (schemaFiles.files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles.files).map {
-        // this may produce wrong cache results as that computation is not the same as the Gradle normalization
-        ApolloInputFile(it, it.normalizedPath(sourceRoots!!))
-      }
-      val normalizedExecutableFiles = graphqlFiles.files.map {
-        ApolloInputFile(it, it.normalizedPath(sourceRoots!!))
-      }
+      val schemaInputFiles = (schemaFiles.takeIf { it.files.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
+      val executableInputFiles = graphqlFiles.toInputFiles()
 
       ApolloCompiler.buildSchemaAndOperationsSources(
-          schemaFiles = normalizedSchemaFiles,
-          executableFiles = normalizedExecutableFiles,
+          schemaFiles = schemaInputFiles,
+          executableFiles = executableInputFiles,
           codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
           codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
           irOptions = irOptionsFile.get().asFile.toIrOptions(),
@@ -80,7 +72,6 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
         it.graphqlFiles.from(graphqlFiles.files)
         it.schemaFiles.from(schemaFiles)
         it.fallbackSchemaFiles.from(fallbackSchemaFiles)
-        it.sourceRoots = sourceRoots!!
         it.codegenSchemaOptions.set(codegenSchemaOptionsFile)
         it.irOptions.set(irOptionsFile)
         it.codegenOptions.set(codegenOptionsFile)
@@ -94,19 +85,13 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
   override fun execute() {
     with(parameters) {
-      val normalizedSchemaFiles = (schemaFiles.files.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles.files).map {
-        // this may produce wrong cache results as that computation is not the same as the Gradle normalization
-        ApolloInputFile(it, it.normalizedPath(sourceRoots))
-      }
-      val normalizedExecutableFiles = graphqlFiles.files.map {
-        ApolloInputFile(it, it.normalizedPath(sourceRoots))
-      }
-
+      val schemaInputFiles = (schemaFiles.takeIf { it.files.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
+      val executableInputFiles = graphqlFiles.toInputFiles()
       val plugin = apolloCompilerPlugin()
 
       ApolloCompiler.buildSchemaAndOperationsSources(
-          schemaFiles = normalizedSchemaFiles,
-          executableFiles = normalizedExecutableFiles,
+          schemaFiles = schemaInputFiles,
+          executableFiles = executableInputFiles,
           codegenSchemaOptions = codegenSchemaOptions.get().asFile.toCodegenSchemaOptions(),
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           irOptions = irOptions.get().asFile.toIrOptions(),
@@ -138,3 +123,15 @@ private interface GenerateSourcesParameters : WorkParameters {
   val outputDir: DirectoryProperty
 }
 
+
+fun FileCollection.toInputFiles(): List<InputFile> {
+  val inputFiles = mutableListOf<InputFile>()
+
+  asFileTree.visit {
+    if (it.file.isFile) {
+      inputFiles.add(InputFile(it.file, it.path))
+    }
+  }
+
+  return inputFiles
+}
