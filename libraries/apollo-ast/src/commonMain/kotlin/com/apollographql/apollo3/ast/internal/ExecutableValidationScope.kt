@@ -501,8 +501,10 @@ internal class ExecutableValidationScope(
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 
-    val typeA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)?.type
-    val typeB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)?.type
+    val fieldDefinitionA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)
+    val fieldDefinitionB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)
+    val typeA = fieldDefinitionA?.type
+    val typeB = fieldDefinitionB?.type
     if (typeA == null || typeB == null) {
       // will be caught by other validation rules
       return
@@ -512,7 +514,7 @@ internal class ExecutableValidationScope(
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different types")
       return
     }
-    if (hasCatch && !areCatchesEqual(fieldA.directives.findCatch(schema), fieldB.directives.findCatch(schema))) {
+    if (hasCatch && !areCatchesEqual(fieldA.findCatch(fieldDefinitionA, schema), fieldB.findCatch(fieldDefinitionB, schema))) {
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different `@catch` directives")
       return
     }

@@ -4,11 +4,11 @@ Reports usages of types and directives that are not imported or imported implici
 <p>
     Before being referenced, directives and types supported by Apollo Kotlin must be imported by your schema using the <code>@link</code> directive<br>.
     For instance, to use the <code>@semanticNonNull</code> directive, import it from the
-    <a href="https://specs.apollo.dev/nullability/v0.2"><code>nullability</code></a> definitions:
+    <a href="https://specs.apollo.dev/nullability/v0.3"><code>nullability</code></a> definitions:
 <pre>
         extend schema
         @link(
-          url: "https://specs.apollo.dev/nullability/v0.2",
+          url: "https://specs.apollo.dev/nullability/v0.3",
           import: ["@semanticNonNull"]
         )
     </pre>

@@ -29,4 +29,9 @@ apollo {
     srcDir("src/main/graphql/result")
     packageName.set("result")
   }
+  service("extensions") {
+    srcDir("src/main/graphql/shared")
+    srcDir("src/main/graphql/extensions")
+    packageName.set("extensions")
+  }
 }

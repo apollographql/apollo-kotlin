@@ -1,5 +1,5 @@
 IncompatibleDefinition (2:1)
-Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD|SCHEMA'.
+Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD|FIELD_DEFINITION|SCHEMA'.
 ------------
 IncompatibleDefinition (3:1)
 Unexpected 'CatchTo' definition. Expecting 'enum CatchTo { RESULT NULL THROW }'.

@@ -24,6 +24,7 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeExtension
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
@@ -31,6 +32,7 @@ import com.apollographql.apollo3.ast.GQLUnionTypeExtension
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.MergeOptions
 import com.apollographql.apollo3.ast.OtherValidationIssue
+import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.toUtf8
 import kotlin.reflect.KClass
@@ -131,9 +133,10 @@ private fun ExtensionsMerger.mergeObject(
     objectTypeDefinition: GQLObjectTypeDefinition,
     extension: GQLObjectTypeExtension,
 ): GQLObjectTypeDefinition = with(objectTypeDefinition) {
+  val mergedDirectives = mergeObjectOrInterfaceDirectives(directives, extension.directives)
   return copy(
-      directives = mergeDirectives(directives, extension.directives),
-      fields = mergeFields(fields, extension.fields),
+      fields = mergeFields(fields, extension.fields, mergedDirectives.fieldDirectives),
+      directives = mergedDirectives.directives,
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
@@ -142,9 +145,10 @@ private fun ExtensionsMerger.mergeInterface(
     interfaceTypeDefinition: GQLInterfaceTypeDefinition,
     extension: GQLInterfaceTypeExtension,
 ): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
+  val mergedDirectives = mergeObjectOrInterfaceDirectives(directives, extension.directives)
   return copy(
-      fields = mergeFields(fields, extension.fields),
-      directives = mergeDirectives(directives, extension.directives),
+      fields = mergeFields(fields, extension.fields, mergedDirectives.fieldDirectives),
+      directives = mergedDirectives.directives,
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
@@ -210,17 +214,60 @@ private fun ExtensionsMerger.mergeSchema(
   )
 }
 
+private class MergedDirectives(
+    val directives: List<GQLDirective>,
+    val fieldDirectives: Map<String, List<GQLDirective>>,
+)
+
+private fun ExtensionsMerger.mergeObjectOrInterfaceDirectives(
+    list: List<GQLDirective>,
+    other: List<GQLDirective>,
+): MergedDirectives {
+  val fieldDirectives = mutableListOf<Pair<String, GQLDirective>>()
+
+  val directives = mergeDirectives(list, other) {
+    if (it.name == Schema.CATCH_FIELD) {
+      fieldDirectives.add((it.arguments.first { it.name == "name" }.value as GQLStringValue).value to GQLDirective(
+          name = Schema.CATCH,
+          arguments = it.arguments.filter { it.name != "name" }
+      ))
+      false
+    } else if (it.name == Schema.SEMANTIC_NON_NULL_FIELD) {
+      fieldDirectives.add((it.arguments.first { it.name == "name" }.value as GQLStringValue).value to GQLDirective(
+          name = Schema.SEMANTIC_NON_NULL,
+          arguments = it.arguments.filter { it.name != "name" }
+      ))
+      false
+    } else {
+      true
+    }
+  }
+
+  return MergedDirectives(
+      directives,
+      fieldDirectives.groupBy(
+          keySelector = { it.first },
+          valueTransform = { it.second }
+      )
+  )
+}
+
 /**
- * Merge both list of directive
+ * Merge both lists of directives
  */
 private fun ExtensionsMerger.mergeDirectives(
     list: List<GQLDirective>,
     other: List<GQLDirective>,
+    filter: (GQLDirective) -> Boolean = { true },
 ): List<GQLDirective> {
   val result = mutableListOf<GQLDirective>()
 
   result.addAll(list)
   for (directiveToAdd in other) {
+    if (!filter(directiveToAdd)) {
+      continue
+    }
+
     if (result.any { it.name == directiveToAdd.name }) {
       // duplicated directive, get the definition to see if we can
       val definition = directiveDefinitions[directiveToAdd.name]
@@ -238,6 +285,7 @@ private fun ExtensionsMerger.mergeDirectives(
 
   return result
 }
+
 
 private inline fun <reified T> ExtensionsMerger.mergeUniquesOrThrow(
     list: List<T>,
@@ -265,6 +313,7 @@ private fun ExtensionsMerger.mergeUniqueInterfacesOrThrow(
 private fun ExtensionsMerger.mergeFields(
     list: List<GQLFieldDefinition>,
     others: List<GQLFieldDefinition>,
+    extraDirectives: Map<String, List<GQLDirective>> = emptyMap(),
 ): List<GQLFieldDefinition> {
 
   val result = list.toMutableList()
@@ -300,7 +349,9 @@ private fun ExtensionsMerger.mergeFields(
     }
   }
 
-  return result
+  return result.map {
+    it.copy(directives = mergeDirectives(it.directives, extraDirectives.get(it.name).orEmpty()))
+  }
 }
 
 private fun GQLType.isCompatibleWith(other: GQLType): Boolean {
@@ -322,6 +373,7 @@ private fun GQLType.isCompatibleWith(other: GQLType): Boolean {
         false
       }
     }
+
     is GQLNamedType -> {
       if (b !is GQLNamedType) {
         false
@@ -329,6 +381,7 @@ private fun GQLType.isCompatibleWith(other: GQLType): Boolean {
         b.name == a.name
       }
     }
+
     is GQLNonNullType -> {
       error("")
     }
