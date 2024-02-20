@@ -7,6 +7,7 @@ _2024-xx-xx_
 
 ## 👷‍ All changes
 - [IJ plugin] The repository to use for the weekly snapshots has changed. You can now use `https://go.apollo.dev/ij-plugin-snapshots` to get the latest weekly snapshots. (#5600)
+- [nullability] The version of the supported nullability directives was bumped from 0.1 to 0.3 (See [apollographql/specs#42](https://github.com/apollographql/specs/pull/42) and [apollographql/specs#48](https://github.com/apollographql/specs/pull/48))
 
 
 # Version 4.0.0-beta.4

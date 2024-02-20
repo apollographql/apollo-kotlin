@@ -62,7 +62,8 @@ Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/
 mypackage.MyPlugin
 ```
 
-> Note: the name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
+> [!NOTE]  
+> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
 
 # Adding a plugin to the Apollo compiler classpath
 
