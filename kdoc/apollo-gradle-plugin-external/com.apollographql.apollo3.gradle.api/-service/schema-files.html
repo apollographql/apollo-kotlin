@@ -43,13 +43,13 @@
             <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
             <div class="library-name">
 <a class="library-name--link" href="../../../index.html">
-                            apollo-kdoc
+                            apollo-kotlin
                     </a>            </div>
-            <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo3.gradle.api/-service/schema-files.html&quot;}">4.0.0-beta.5-SNAPSHOT</dokka-template-command>            </div>
+            <div class="library-version">3.8.3-SNAPSHOT
+            </div>
         </div>
         <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external/main">jvm</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">jvm</button>
         </div>
     </div>
     <div class="navigation-controls">
@@ -62,12 +62,12 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.api/Service/schemaFiles/#/PointingToDeclaration//1812556619">
+<div class="main-content" data-page-type="member" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.api/Service/schemaFiles/#/PointingToDeclaration//1222267165">
   <div class="breadcrumbs"><a href="../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.gradle.api</a><span class="delimiter">/</span><a href="index.html">Service</a><span class="delimiter">/</span><span class="current">schemaFiles</span></div>
   <div class="cover ">
     <h1 class="cover"><span>schema</span><wbr><span><span>Files</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="schema-files.html">schemaFiles</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/ConfigurableFileCollection///PointingToDeclaration/">ConfigurableFileCollection</span></div><p class="paragraph">The schema files in either ".json" introspection schemas or ".sdl|.graphqls" SDL schemas.</p><p class="paragraph">Most of the time, <a href="schema-files.html">schemaFiles</a> contains a main schema and an optional separate file for client extensions. You may set any number of files and the compiler will merge them. The merge order is:</p><ul><li><p class="paragraph">main schema file first (the main schema file is the file that contains the schema definition or the Query type)</p></li><li><p class="paragraph">lexicographic order of the filename for other schema files</p></li></ul><p class="paragraph">If not set or empty, the plugin collects all "schema.json|sdl|graphqls" files in the <a href="src-dir.html">srcDir</a> roots.</p><p class="paragraph">Example:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">schemaFiles.from("src/main/graphql/schema.graphqls", "src/main/graphql/extra.graphqls")</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="schema-files.html">schemaFiles</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/ConfigurableFileCollection///PointingToDeclaration/">ConfigurableFileCollection</span></div><p class="paragraph">The schema files as either a ".json" introspection schema or a ".sdl|.graphqls" SDL schema. You might come across schemas named "schema.graphql", these are SDL schemas most of the time that need to be renamed to "schema.graphqls" to be recognized properly.</p><p class="paragraph">The compiler accepts multiple schema files in order to add extensions to specify key fields and other schema extensions.</p><p class="paragraph">By default, the plugin collects all "schema.json|sdl|graphqls" file in the source roots</p></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
