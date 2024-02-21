@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import okio.FileSystem
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -72,10 +73,15 @@ fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient.Builder {
-  val cachingHttpInterceptor = CachingHttpInterceptor(
-      directory = directory,
-      maxSize = maxSize,
-  )
+  return httpCache(DiskLruHttpCache(FileSystem.SYSTEM, directory, maxSize))
+}
+
+@JvmName("configureApolloClientBuilder")
+fun ApolloClient.Builder.httpCache(
+    apolloHttpCache: ApolloHttpCache,
+): ApolloClient.Builder {
+  val cachingHttpInterceptor = CachingHttpInterceptor(apolloHttpCache)
+
   val apolloRequestToCacheKey = mutableMapOf<String, String>()
   return addHttpInterceptor(object : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {

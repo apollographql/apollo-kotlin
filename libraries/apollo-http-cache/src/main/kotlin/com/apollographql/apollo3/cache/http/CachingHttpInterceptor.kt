@@ -17,7 +17,7 @@ import java.io.File
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
-class CachingHttpInterceptor(
+class CachingHttpInterceptor internal constructor(
     private val lruHttpCache: ApolloHttpCache
 ) : HttpInterceptor {
 
