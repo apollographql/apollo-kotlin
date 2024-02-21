@@ -23,7 +23,7 @@ dependencies {
   implementation(libs.kotlinx.serialization.json)
 }
 dependencies {
-  lintChecks("androidx.lint:lint-gradle:1.0.0-alpha01")
+  lintChecks(libs.androidx.lint.rules)
 }
 
 gradlePlugin {
