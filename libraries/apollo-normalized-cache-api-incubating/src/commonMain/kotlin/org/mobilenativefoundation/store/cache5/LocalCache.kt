@@ -1379,6 +1379,29 @@ internal class LocalCache<K : Any, V : Any>(builder: CacheBuilder<K, V>) {
             }*/
         }
 
+        fun activeEntries(): Map<K, V> {
+            if (count.value != 0) { // read-volatile
+                reentrantLock.lock()
+                try {
+                    return buildMap {
+                        val table = table.value
+                        for (i in 0 until table.size) {
+                            var e = table[i]
+                            while (e != null) {
+                                if (e.valueReference!!.isActive) {
+                                    put(e.key, e.valueReference!!.get()!!)
+                                }
+                                e = e.next
+                            }
+                        }
+                    }
+                } finally {
+                    reentrantLock.unlock()
+                }
+            }
+            return emptyMap()
+        }
+
         init {
             threshold = initialCapacity * 3 / 4 // 0.75
             if (!map.customWeigher && threshold.toLong() == maxSegmentWeight) {
@@ -1660,6 +1683,14 @@ internal class LocalCache<K : Any, V : Any>(builder: CacheBuilder<K, V>) {
         return segmentFor(hash).remove(key, hash)
     }
 
+    fun getAllPresent(): Map<K, V> {
+        return buildMap {
+            for (segment in segments) {
+                segment?.let { putAll(it.activeEntries()) }
+            }
+        }
+    }
+
     // Serialization Support
     internal class LocalManualCache<K : Any, V : Any> private constructor(private val localCache: LocalCache<K, V>) :
         Cache<K, V> {
@@ -1683,7 +1714,11 @@ internal class LocalCache<K : Any, V : Any>(builder: CacheBuilder<K, V>) {
         }
 
         override fun getAllPresent(keys: List<*>): Map<K, V> {
-            TODO("Not yet implemented")
+            return localCache.getAllPresent().filterKeys { it in keys }
+        }
+
+        override fun getAllPresent(): Map<K, V> {
+            return localCache.getAllPresent()
         }
 
         override fun invalidateAll(keys: List<K>) {
