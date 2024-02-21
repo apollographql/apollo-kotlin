@@ -69,7 +69,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
       }
 
       workQueue.submit(GenerateSources::class.java) {
-        it.graphqlFiles.from(graphqlFiles.files)
+        it.graphqlFiles.from(graphqlFiles)
         it.schemaFiles.from(schemaFiles)
         it.fallbackSchemaFiles.from(fallbackSchemaFiles)
         it.codegenSchemaOptions.set(codegenSchemaOptionsFile)
@@ -115,7 +115,6 @@ private interface GenerateSourcesParameters : WorkParameters {
   val graphqlFiles: ConfigurableFileCollection
   val schemaFiles: ConfigurableFileCollection
   val fallbackSchemaFiles: ConfigurableFileCollection
-  var sourceRoots: Set<String>
   val codegenSchemaOptions: RegularFileProperty
   val codegenOptions: RegularFileProperty
   val irOptions: RegularFileProperty
