@@ -13,7 +13,7 @@ kotlin {
       dependencies {
         api(project(":apollo-ast"))
         api(project(":apollo-api"))
-        implementation(libs.atomicfu)
+        implementation(libs.atomicfu.library)
         implementation(libs.kotlinx.coroutines)
       }
     }

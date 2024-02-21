@@ -17,6 +17,7 @@ androidx-sqlite = "2.3.1"
 apollo = "4.0.0-beta.5-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-beta.3"
+atomicfu = "0.23.1"
 cache = "2.0.2"
 # See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 compose-compiler = "1.5.11-dev-k2.0.0-Beta4-21f5e479a96"
@@ -89,7 +90,9 @@ apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-te
 apollo-testingsupport-published = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo-published" }
 apollo-tooling = { group = "com.apollographql.apollo3", name = "apollo-tooling", version.ref = "apollo" }
 assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version = "0.23.1" }
+atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
+atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
+
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "3.5.2" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }

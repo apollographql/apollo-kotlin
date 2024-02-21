@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit
+import org.mobilenativefoundation.store.cache5.CacheBuilder
+import kotlin.time.Duration.Companion.milliseconds
 
 internal actual fun <Key : Any, Value : Any> LruCache(
     maxSize: Int,
@@ -14,17 +14,16 @@ private class JvmLruCache<Key : Any, Value : Any>(
     expireAfterMillis: Long,
     private val weigher: Weigher<Key, Value>,
 ) : LruCache<Key, Value> {
-  private val cache = CacheBuilder.newBuilder()
+  private val cache = CacheBuilder<Key, Value>()
       .apply {
         if (maxSize != Int.MAX_VALUE) {
-          weigher(weigher)
-          maximumWeight(maxSize.toLong())
+          weigher(maxSize.toLong(), this@JvmLruCache.weigher)
         }
         if (expireAfterMillis >= 0) {
-          expireAfterAccess(expireAfterMillis, TimeUnit.MILLISECONDS)
+          expireAfterAccess(expireAfterMillis.milliseconds)
         }
       }
-      .build<Key, Value>()
+      .build()
 
   override fun get(key: Key): Value? {
     return cache.getIfPresent(key)
@@ -41,11 +40,12 @@ private class JvmLruCache<Key : Any, Value : Any>(
   }
 
   override fun remove(keys: Collection<Key>) {
-    cache.invalidateAll(keys)
+    cache.invalidateAll(keys.toList())
   }
 
   override fun keys(): Set<Key> {
-    return cache.asMap().keys
+    // TODO
+    return emptySet()
   }
 
   override fun clear() {
@@ -53,10 +53,12 @@ private class JvmLruCache<Key : Any, Value : Any>(
   }
 
   override fun size(): Int {
-    return cache.asMap().entries.sumOf { weigher(it.key, it.value) }
+    // TODO
+    return -1
   }
 
   override fun dump(): Map<Key, Value> {
-    return cache.asMap()
+    // TODO
+    return emptyMap()
   }
 }
