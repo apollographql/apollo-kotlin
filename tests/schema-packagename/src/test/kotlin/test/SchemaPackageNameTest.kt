@@ -6,5 +6,6 @@ class SchemaPackageNameTest {
   @Test
   fun userOnUserNameError() {
     println(com.example.type.Foo)
+    println(com.example.GetFooQuery)
   }
 }
