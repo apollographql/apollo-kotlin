@@ -150,10 +150,9 @@ class ResolveInfo(
           null
         } else {
           val adapter = adapters.adapterFor<Any>(type.name)
-          if (adapter != null) {
-            adapter.fromJson(MapJsonReader(this), CustomScalarAdapters.Empty)
-          } else {
-            this
+          when {
+            adapter != null -> adapter.fromJson(MapJsonReader(this), CustomScalarAdapters.Empty)
+            else -> this
           }
         }
       }
@@ -165,8 +164,8 @@ internal fun GQLValue.toJson(variables: Map<String, Any?>?): Any? {
   return when (this) {
     is GQLBooleanValue -> value
     is GQLEnumValue -> value
-    is GQLFloatValue -> value
-    is GQLIntValue -> value
+    is GQLFloatValue -> value.toDouble()
+    is GQLIntValue -> value.toInt()
     is GQLListValue -> this.values.map {
       it.toJson(variables)
     }
