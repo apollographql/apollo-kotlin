@@ -42,7 +42,7 @@ class MemoryCache(
   }
 
   val size: Int
-    get() = lockRead { lruCache.size() }
+    get() = lockRead { lruCache.weight() }
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lockRead {
     val record = lruCache[key]?.also {
@@ -101,7 +101,7 @@ class MemoryCache(
     val regex = patternToRegex(pattern)
     return lockWrite {
       var total = 0
-      val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
+      val keys = HashSet(lruCache.asMap().keys) // local copy to avoid concurrent modification
       keys.forEach {
         if (regex.matches(it)) {
           lruCache.remove(it)

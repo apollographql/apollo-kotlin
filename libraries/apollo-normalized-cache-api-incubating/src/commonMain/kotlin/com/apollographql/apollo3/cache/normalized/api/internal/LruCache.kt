@@ -1,23 +1,49 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-internal interface LruCache<Key: Any, Value: Any> {
-  operator fun get(key: Key): Value?
+import org.mobilenativefoundation.store.cache5.CacheBuilder
+import kotlin.time.Duration.Companion.milliseconds
 
-  operator fun set(key: Key, value: Value)
+internal class LruCache<Key : Any, Value : Any>(
+    maxSize: Int,
+    expireAfterMillis: Long,
+    private val weigher: Weigher<Key, Value>,
+) {
+  private val cache = CacheBuilder<Key, Value>()
+      .apply {
+        if (maxSize != Int.MAX_VALUE) {
+          weigher(maxSize.toLong(), this@LruCache.weigher)
+        }
+        if (expireAfterMillis >= 0) {
+          expireAfterAccess(expireAfterMillis.milliseconds)
+        }
+      }
+      .build()
 
-  fun remove(key: Key): Value?
+  operator fun get(key: Key): Value? {
+    return cache.getIfPresent(key)
+  }
 
-  fun keys(): Set<Key>
+  operator fun set(key: Key, value: Value) {
+    cache.put(key, value)
+  }
 
-  fun remove(keys: Collection<Key>)
+  fun remove(key: Key): Value? {
+    val value = cache.getIfPresent(key)
+    cache.invalidate(key)
+    return value
+  }
 
-  fun clear()
+  fun clear() {
+    cache.invalidateAll()
+  }
 
-  fun size(): Int
+  fun weight(): Int {
+    return cache.getAllPresent().entries.sumOf { weigher(it.key, it.value) }
+  }
 
-  fun dump(): Map<Key, Value>
+  fun asMap(): Map<Key, Value> {
+    return cache.getAllPresent()
+  }
 }
 
 internal typealias Weigher<Key, Value> = (Key, Value) -> Int
-
-internal expect fun <Key:Any, Value:Any> LruCache(maxSize: Int, expireAfterMillis: Long, weigher: Weigher<Key, Value>): LruCache<Key, Value>

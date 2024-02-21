@@ -11,13 +11,13 @@ class LruCacheTest {
   fun emptyCache() {
     val cache = LruCache<String, String>(10, -1) { _, _ -> 1 }
 
-    assertEquals(0, cache.size())
+    assertEquals(0, cache.weight())
     assertEquals(null, cache["key"])
     assertEquals(null, cache.remove("key"))
-    assertEquals(mapOf(), cache.dump())
+    assertEquals(mapOf(), cache.asMap())
 
     cache.clear()
-    assertEquals(0, cache.size())
+    assertEquals(0, cache.weight())
   }
 
   @Test
@@ -34,8 +34,8 @@ class LruCacheTest {
       cache[key] = value
     }
 
-    assertEquals(3, cache.size())
-    assertEquals(expectedEntries, cache.dump())
+    assertEquals(3, cache.weight())
+    assertEquals(expectedEntries, cache.asMap())
   }
 
   @Test
@@ -54,8 +54,8 @@ class LruCacheTest {
     assertEquals("value1", cache.remove("key1"))
     assertEquals("value3", cache.remove("key3"))
 
-    assertEquals(1, cache.size())
-    assertEquals(mapOf("key2" to "value2"), cache.dump())
+    assertEquals(1, cache.weight())
+    assertEquals(mapOf("key2" to "value2"), cache.asMap())
   }
 
   @Test
@@ -72,8 +72,8 @@ class LruCacheTest {
 
     cache.clear()
 
-    assertEquals(0, cache.size())
-    assertEquals(mapOf(), cache.dump())
+    assertEquals(0, cache.weight())
+    assertEquals(mapOf(), cache.asMap())
   }
 
   @Test
@@ -88,13 +88,13 @@ class LruCacheTest {
       cache[key] = value
     }
 
-    assertEquals(2, cache.size())
+    assertEquals(2, cache.weight())
     assertEquals(
         mapOf(
             "key2" to "value2",
             "key3" to "value3"
         ),
-        cache.dump()
+        cache.asMap()
     )
   }
 
@@ -112,7 +112,7 @@ class LruCacheTest {
       cache[key] = value
     }
 
-    assertEquals(30, cache.size())
+    assertEquals(30, cache.weight())
   }
 
   @Test
@@ -132,7 +132,7 @@ class LruCacheTest {
     cache.remove("key2")
     cache.remove("key3")
 
-    assertEquals(10, cache.size())
+    assertEquals(10, cache.weight())
   }
 
   @Test
@@ -149,12 +149,12 @@ class LruCacheTest {
       cache[key] = value
     }
 
-    assertEquals(10, cache.size())
+    assertEquals(10, cache.weight())
     assertEquals(
         mapOf(
             "key3" to "value3"
         ),
-        cache.dump()
+        cache.asMap()
     )
   }
 
@@ -179,7 +179,7 @@ class LruCacheTest {
             "key3" to "value3",
             "key1" to "value1",
         ),
-        cache.dump()
+        cache.asMap()
     )
   }
 
@@ -201,7 +201,7 @@ class LruCacheTest {
             "key2" to "value2",
             "key3" to "value3"
         ),
-        cache.dump()
+        cache.asMap()
     )
 
     delay(200)
@@ -211,7 +211,7 @@ class LruCacheTest {
         mapOf(
             "key4" to "value4"
         ),
-        cache.dump()
+        cache.asMap()
     )
   }
 }
