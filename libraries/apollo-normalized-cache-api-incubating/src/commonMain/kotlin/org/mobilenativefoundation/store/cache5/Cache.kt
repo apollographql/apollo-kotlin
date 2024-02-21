@@ -22,6 +22,11 @@ interface Cache<Key : Any, Value : Any> {
     fun getAllPresent(keys: List<*>): Map<Key, Value>
 
     /**
+     * @return Map of the [Value] associated with each [Key] in the cache.
+     */
+    fun getAllPresent(): Map<Key, Value>
+
+    /**
      * Associates [value] with [key].
      * If the cache previously contained a value associated with [key], the old value is replaced by [value].
      * Prefer [getOrPut] when using the conventional "If cached, then return. Otherwise create, cache, and then return" pattern.

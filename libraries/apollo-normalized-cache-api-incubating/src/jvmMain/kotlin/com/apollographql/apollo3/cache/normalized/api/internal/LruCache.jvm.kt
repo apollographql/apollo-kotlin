@@ -44,8 +44,7 @@ private class JvmLruCache<Key : Any, Value : Any>(
   }
 
   override fun keys(): Set<Key> {
-    // TODO
-    return emptySet()
+    return cache.asMap().keys
   }
 
   override fun clear() {
@@ -53,12 +52,10 @@ private class JvmLruCache<Key : Any, Value : Any>(
   }
 
   override fun size(): Int {
-    // TODO
-    return -1
+    return cache.asMap().entries.sumOf { weigher(it.key, it.value) }
   }
 
   override fun dump(): Map<Key, Value> {
-    // TODO
-    return emptyMap()
+    return cache.asMap()
   }
 }
