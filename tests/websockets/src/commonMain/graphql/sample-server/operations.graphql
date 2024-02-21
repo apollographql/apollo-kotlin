@@ -29,3 +29,7 @@ subscription CloseSocketSubscription {
 subscription GraphqlAccessError($after: Int!) {
   graphqlAccessError(after: $after)
 }
+
+query GetMessages {
+  receivedMessages
+}

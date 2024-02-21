@@ -1,6 +1,7 @@
 type Query {
   random: Int!
   time: Int!
+  receivedMessages: [String!]!
 }
 
 type Mutation {
@@ -23,3 +24,4 @@ type Subscription {
 
   time: Int!
 }
+

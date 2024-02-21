@@ -1237,6 +1237,11 @@ public final class com/apollographql/apollo3/exception/ApolloParseException : co
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public final class com/apollographql/apollo3/exception/ApolloRetryException : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (JLjava/lang/Throwable;)V
+	public final fun getAttempt ()J
+}
+
 public final class com/apollographql/apollo3/exception/ApolloWebSocketClosedException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (ILjava/lang/String;Ljava/lang/Throwable;)V
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

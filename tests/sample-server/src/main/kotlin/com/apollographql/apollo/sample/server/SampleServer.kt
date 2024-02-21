@@ -97,19 +97,41 @@ class SandboxHandler : HttpHandler {
   }
 }
 
+class ActiveWebSocket(val websocket: Websocket, val messages: MutableList<String>)
+
+interface MessageList {
+  fun add(message: String)
+}
+
 class WebSocketRegistry : ExecutionContext.Element {
-  private val activeSockets = mutableListOf<Websocket>()
+  private val activeSockets = mutableListOf<ActiveWebSocket>()
   private val lock = reentrantLock()
 
-  fun rememberWebSocket(ws: Websocket) {
-    lock.withLock {
-      activeSockets.add(ws)
+  fun getAllMessages(): List<String> {
+    return lock.withLock {
+      activeSockets.flatMap { it.messages }
+    }
+  }
+
+  fun rememberWebSocket(ws: Websocket): MessageList {
+    val aw = lock.withLock {
+      ActiveWebSocket(ws, mutableListOf()).also {
+        activeSockets.add(it)
+      }
+    }
+
+    return object : MessageList {
+      override fun add(message: String) {
+        lock.withLock {
+          aw.messages.add(message)
+        }
+      }
     }
   }
 
   fun forgetWebSocket(ws: Websocket) {
     lock.withLock {
-      activeSockets.remove(ws)
+      activeSockets.removeIf { it.websocket === ws }
     }
   }
 
@@ -117,7 +139,7 @@ class WebSocketRegistry : ExecutionContext.Element {
     return lock.withLock {
       var count = 0
       activeSockets.toList().forEach {
-        it.close(WsStatus(1011, "closed"))
+        it.websocket.close(WsStatus(1011, "closed"))
         count++
       }
       count
@@ -129,7 +151,7 @@ class WebSocketRegistry : ExecutionContext.Element {
   companion object Key : ExecutionContext.Key<WebSocketRegistry>
 }
 
-class CurrentWebSocket(val ws: Websocket): ExecutionContext.Element {
+class CurrentWebSocket(val ws: Websocket) : ExecutionContext.Element {
 
   override val key: ExecutionContext.Key<CurrentWebSocket> = Key
 
@@ -142,7 +164,7 @@ fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry
 
   return { _: Request ->
     WsResponse { ws: Websocket ->
-      webSocketRegistry.rememberWebSocket(ws)
+      val messageList = webSocketRegistry.rememberWebSocket(ws)
 
       val connectionInitHandler: ConnectionInitHandler = { connectionParams: Any? ->
         @Suppress("UNCHECKED_CAST")
@@ -182,7 +204,10 @@ fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry
       )
 
       ws.onMessage {
-        handler.handleMessage(WebSocketTextMessage(it.body.payload.array().decodeToString()))
+        it.body.payload.array().decodeToString().let {
+          handler.handleMessage(WebSocketTextMessage(it))
+          messageList.add(it)
+        }
       }
       ws.onClose {
         handler.close()
