@@ -16,7 +16,6 @@ import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
-import java.io.File
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 
@@ -26,13 +25,13 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
   val extension = project.androidExtensionOrThrow
   when (extension) {
     is LibraryExtension -> {
-      extension.libraryVariants.all { variant ->
+      extension.libraryVariants.configureEach { variant ->
         container.add(variant)
       }
     }
 
     is AppExtension -> {
-      extension.applicationVariants.all { variant ->
+      extension.applicationVariants.configureEach { variant ->
         container.add(variant)
       }
     }
@@ -42,10 +41,10 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
 
   @Suppress("USELESS_IS_CHECK", "KotlinRedundantDiagnosticSuppress")
   if (extension is TestedExtension) {
-    extension.testVariants.all { variant ->
+    extension.testVariants.configureEach { variant ->
       container.add(variant)
     }
-    extension.unitTestVariants.all { variant ->
+    extension.unitTestVariants.configureEach { variant ->
       container.add(variant)
     }
   }
@@ -63,17 +62,10 @@ fun connectToAndroidSourceSet(
     kotlinSourceSet.srcDir(outputDir)
   }
 
-  project.getVariants().all {
+  project.getVariants().configureEach {
     if (it.sourceSets.any { it.name == sourceSetName }) {
       if (kotlinSourceSet == null) {
-        try {
-          // AGP 7.0.0+: do things lazily
-          it.javaClass.getMethod("registerJavaGeneratingTask", TaskProvider::class.java, Array<File>::class.java)
-              .invoke(it, taskProvider, arrayOf(outputDir.get().asFile))
-        } catch (e: Exception) {
-          // Older AGP: do things eagerly
-          it.registerJavaGeneratingTask(taskProvider.get(), outputDir.get().asFile)
-        }
+        it.registerJavaGeneratingTask(taskProvider, outputDir.get().asFile)
       } else {
         // The kotlinSourceSet carries task dependencies, calling srcDir() above is enough
         // to setup task dependencies
@@ -155,7 +147,7 @@ fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<
 
 fun connectToAllAndroidVariants(project: Project, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   if (lazyRegisterJavaGeneratingTask != null) {
-    project.getVariants().all {
+    project.getVariants().configureEach {
       lazyRegisterJavaGeneratingTask.invoke(it, taskProvider, listOf(outputDir.get().asFile))
     }
   } else {
