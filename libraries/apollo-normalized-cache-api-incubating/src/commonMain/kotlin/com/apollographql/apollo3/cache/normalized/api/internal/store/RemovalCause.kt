@@ -1,4 +1,4 @@
-package org.mobilenativefoundation.store.cache5
+package com.apollographql.apollo3.cache.normalized.api.internal.store
 
 /**
  * The reason why a cached entry was removed.

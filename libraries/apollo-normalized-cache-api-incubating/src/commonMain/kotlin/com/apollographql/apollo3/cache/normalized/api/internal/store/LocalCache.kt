@@ -16,7 +16,7 @@
  * KMP conversion
  * Copyright (C) 2022 André Claßen
  */
-package org.mobilenativefoundation.store.cache5
+package com.apollographql.apollo3.cache.normalized.api.internal.store
 
 import kotlinx.atomicfu.AtomicArray
 import kotlinx.atomicfu.AtomicRef

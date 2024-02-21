@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import org.mobilenativefoundation.store.cache5.CacheBuilder
+import com.apollographql.apollo3.cache.normalized.api.internal.store.CacheBuilder
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class LruCache<Key : Any, Value : Any>(
