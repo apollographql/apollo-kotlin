@@ -67,8 +67,7 @@ class MemoryCacheTest {
 
     val lruCache = createCache(
         // all records won't fit as there is timestamp that stored with each record
-        // On JVM, the eviction by size is not an exact science
-        maxSizeBytes = if (platform() == Platform.Jvm) 300 else 100
+        maxSizeBytes = 600
     )
 
     val records = listOf(testRecord1, testRecord2, testRecord3)
@@ -88,7 +87,7 @@ class MemoryCacheTest {
     val testRecord3 = createTestRecord("3")
 
     val lruCache = createCache(
-        maxSizeBytes = 519
+        maxSizeBytes = 800
     )
 
     val records = listOf(testRecord1, testRecord2, testRecord3)

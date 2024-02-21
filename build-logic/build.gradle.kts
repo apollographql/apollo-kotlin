@@ -43,6 +43,7 @@ dependencies {
   // builds but this seems just overkill for now
   runtimeOnly(libs.kotlin.allopen)
   runtimeOnly(libs.kotlinx.serialization.plugin)
+  runtimeOnly(libs.atomicfu.plugin)
 
   runtimeOnly(libs.sqldelight.plugin)
   runtimeOnly(libs.gradle.publish.plugin)

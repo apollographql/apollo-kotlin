@@ -13,7 +13,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
-        implementation(libs.atomicfu) // https://github.com/Kotlin/kotlinx.coroutines/issues/3968
+        implementation(libs.atomicfu.library) // https://github.com/Kotlin/kotlinx.coroutines/issues/3968
         api(libs.okio)
         api(libs.uuid)
         api(libs.kotlinx.coroutines)
