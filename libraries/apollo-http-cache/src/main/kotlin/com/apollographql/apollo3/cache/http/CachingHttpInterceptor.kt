@@ -18,11 +18,14 @@ import java.time.Instant
 import java.time.format.DateTimeParseException
 
 class CachingHttpInterceptor(
-    directory: File,
-    maxSize: Long,
-    fileSystem: FileSystem = FileSystem.SYSTEM,
+    private val lruHttpCache: ApolloHttpCache
 ) : HttpInterceptor {
-  private val lruHttpCache = DiskLruHttpCache(fileSystem, directory, maxSize)
+
+  constructor(
+      directory: File,
+      maxSize: Long,
+      fileSystem: FileSystem = FileSystem.SYSTEM,
+  ): this(DiskLruHttpCache(fileSystem, directory, maxSize))
 
   val cache: ApolloHttpCache = lruHttpCache
 
