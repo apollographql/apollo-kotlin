@@ -46,6 +46,7 @@ public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache$Compani
 }
 
 public final class com/apollographql/apollo3/cache/http/HttpCache {
+	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/http/ApolloHttpCache;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Ljava/io/File;J)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun getHttpCache (Lcom/apollographql/apollo3/ApolloClient;)Lcom/apollographql/apollo3/cache/http/ApolloHttpCache;
 	public static final fun httpDoNotStore (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
