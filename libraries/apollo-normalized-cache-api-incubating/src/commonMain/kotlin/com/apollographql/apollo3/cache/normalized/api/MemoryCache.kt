@@ -141,7 +141,7 @@ class MemoryCache(
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return lockRead {
-      mapOf(this::class to recordJournals.mapValues { (_, journal) -> journal.current }) +
+      mapOf(OptimisticNormalizedCache::class to recordJournals.mapValues { (_, journal) -> journal.current }) +
           mapOf(this::class to lruCache.asMap().mapValues { (_, record) -> record }) +
           nextCache?.dump().orEmpty()
     }
