@@ -1,0 +1,667 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>NamedTypeContext</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../../images/apollo.svg">
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            apollo-kotlin
+                    </a>            </div>
+            <div class="library-version">3.8.3-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-ast:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo3.generated.antlr/GraphQLParser.NamedTypeContext///PointingToDeclaration//520587716">
+  <div class="breadcrumbs"><a href="../../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.generated.antlr</a><span class="delimiter">/</span><a href="../index.html">GraphQLParser</a><span class="delimiter">/</span><span class="current">NamedTypeContext</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Named</span><wbr><span>Type</span><wbr><span><span>Context</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">NamedTypeContext</a> : <span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-2059958181%2FConstructors%2F520587716" anchor-label="NamedTypeContext" id="-2059958181%2FConstructors%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-named-type-context.html"><span>Named</span><wbr><span>Type</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2059958181%2FConstructors%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parent<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span><span class="token punctuation">, </span></span><span class="parameter ">invokingState<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1494333863%2FProperties%2F520587716" anchor-label="children" id="1494333863%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1494333863%2FProperties%2F520587716"><span><span>children</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1494333863%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#1494333863%2FProperties%2F520587716">children</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTree///PointingToDeclaration/">ParseTree</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1081985976%2FProperties%2F520587716" anchor-label="EMPTY" id="-1081985976%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-1081985976%2FProperties%2F520587716"><span><span>EMPTY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1081985976%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-name-context/index.html#-1081985976%2FProperties%2F520587716">EMPTY</a><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="147543141%2FProperties%2F520587716" anchor-label="exception" id="147543141%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#147543141%2FProperties%2F520587716"><span><span>exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="147543141%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#147543141%2FProperties%2F520587716">exception</a><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RecognitionException///PointingToDeclaration/">RecognitionException</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2104385031%2FProperties%2F520587716" anchor-label="invokingState" id="-2104385031%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2104385031%2FProperties%2F520587716"><span>invoking</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2104385031%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#-2104385031%2FProperties%2F520587716">invokingState</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1320423483%2FProperties%2F520587716" anchor-label="parent" id="1320423483%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1320423483%2FProperties%2F520587716"><span><span>parent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1320423483%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#1320423483%2FProperties%2F520587716">parent</a><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1545425102%2FProperties%2F520587716" anchor-label="start" id="-1545425102%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-1545425102%2FProperties%2F520587716"><span><span>start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1545425102%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#-1545425102%2FProperties%2F520587716">start</a><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Token///PointingToDeclaration/">Token</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2079574652%2FProperties%2F520587716" anchor-label="stop" id="-2079574652%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2079574652%2FProperties%2F520587716"><span><span>stop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2079574652%2FProperties%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-name-context/index.html#-2079574652%2FProperties%2F520587716">stop</a><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Token///PointingToDeclaration/">Token</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1224092599%2FFunctions%2F520587716" anchor-label="accept" id="-1224092599%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-1224092599%2FFunctions%2F520587716"><span><span>accept</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1224092599%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-name-context/index.html#-1224092599%2FFunctions%2F520587716">T</a><span class="token operator">&gt; </span><a href="../-name-context/index.html#-1224092599%2FFunctions%2F520587716"><span class="token function">accept</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">visitor<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTreeVisitor///PointingToDeclaration/">ParseTreeVisitor</span><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-name-context/index.html#-1224092599%2FFunctions%2F520587716">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-name-context/index.html#-1224092599%2FFunctions%2F520587716">T</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1230525611%2FFunctions%2F520587716" anchor-label="addAnyChild" id="1230525611%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1230525611%2FFunctions%2F520587716"><span>add</span><wbr><span>Any</span><wbr><span><span>Child</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1230525611%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-name-context/index.html#1230525611%2FFunctions%2F520587716">T</a><span class="token operator"> : </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTree///PointingToDeclaration/">ParseTree</span><span class="token operator">?</span><span class="token operator">&gt; </span><a href="../-name-context/index.html#1230525611%2FFunctions%2F520587716"><span class="token function">addAnyChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><a href="../-name-context/index.html#1230525611%2FFunctions%2F520587716">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-name-context/index.html#1230525611%2FFunctions%2F520587716">T</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1483122527%2FFunctions%2F520587716" anchor-label="addChild" id="1483122527%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1788416147%2FFunctions%2F520587716"><span>add</span><wbr><span><span>Child</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1483122527%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1788416147%2FFunctions%2F520587716"><span class="token function">addChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ruleInvocation<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1159546456%2FFunctions%2F520587716"><span class="token function">addChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/TerminalNode///PointingToDeclaration/">TerminalNode</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/TerminalNode///PointingToDeclaration/">TerminalNode</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="92209968%2FFunctions%2F520587716" anchor-label="addErrorNode" id="92209968%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#92209968%2FFunctions%2F520587716"><span>add</span><wbr><span>Error</span><wbr><span><span>Node</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="92209968%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#92209968%2FFunctions%2F520587716"><span class="token function">addErrorNode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">errorNode<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ErrorNode///PointingToDeclaration/">ErrorNode</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ErrorNode///PointingToDeclaration/">ErrorNode</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-946529010%2FFunctions%2F520587716" anchor-label="copyFrom" id="-946529010%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-946529010%2FFunctions%2F520587716"><span>copy</span><wbr><span><span>From</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-946529010%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-946529010%2FFunctions%2F520587716"><span class="token function">copyFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ctx<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="333925234%2FFunctions%2F520587716" anchor-label="depth" id="333925234%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#333925234%2FFunctions%2F520587716"><span><span>depth</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="333925234%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#333925234%2FFunctions%2F520587716"><span class="token function">depth</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="374940968%2FFunctions%2F520587716" anchor-label="enterRule" id="374940968%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enter-rule.html"><span>enter</span><wbr><span><span>Rule</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="374940968%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="enter-rule.html"><span class="token function">enterRule</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listener<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTreeListener///PointingToDeclaration/">ParseTreeListener</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="809761232%2FFunctions%2F520587716" anchor-label="exitRule" id="809761232%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="exit-rule.html"><span>exit</span><wbr><span><span>Rule</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="809761232%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="exit-rule.html"><span class="token function">exitRule</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listener<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTreeListener///PointingToDeclaration/">ParseTreeListener</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1572319351%2FFunctions%2F520587716" anchor-label="getAltNumber" id="-1572319351%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-1572319351%2FFunctions%2F520587716"><span>get</span><wbr><span>Alt</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1572319351%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-1572319351%2FFunctions%2F520587716"><span class="token function">getAltNumber</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-780519930%2FFunctions%2F520587716" anchor-label="getChild" id="-780519930%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1723621075%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Child</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-780519930%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1723621075%2FFunctions%2F520587716"><span class="token function">getChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">i<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTree///PointingToDeclaration/">ParseTree</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-name-context/index.html#938276746%2FFunctions%2F520587716">T</a><span class="token operator"> : </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTree///PointingToDeclaration/">ParseTree</span><span class="token operator">?</span><span class="token operator">&gt; </span><a href="../-name-context/index.html#938276746%2FFunctions%2F520587716"><span class="token function">getChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ctxType<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-name-context/index.html#938276746%2FFunctions%2F520587716">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">i<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-name-context/index.html#938276746%2FFunctions%2F520587716">T</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1085819703%2FFunctions%2F520587716"><span class="token function">getChild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/Tree///PointingToDeclaration/">Tree</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="571734315%2FFunctions%2F520587716" anchor-label="getChildCount" id="571734315%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#571734315%2FFunctions%2F520587716"><span>get</span><wbr><span>Child</span><wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="571734315%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#571734315%2FFunctions%2F520587716"><span class="token function">getChildCount</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-986913740%2FFunctions%2F520587716" anchor-label="getParent" id="-986913740%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#837330484%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Parent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-986913740%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#837330484%2FFunctions%2F520587716"><span class="token function">getParent</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1907908917%2FFunctions%2F520587716"><span class="token function">getParent</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1944277201%2FFunctions%2F520587716"><span class="token function">getParent</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/ParseTree///PointingToDeclaration/">ParseTree</span></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-1040426088%2FFunctions%2F520587716"><span class="token function">getParent</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/Tree///PointingToDeclaration/">Tree</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1127251083%2FFunctions%2F520587716" anchor-label="getPayload" id="1127251083%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-592984243%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Payload</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1127251083%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-592984243%2FFunctions%2F520587716"><span class="token function">getPayload</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-1797056182%2FFunctions%2F520587716"><span class="token function">getPayload</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-408147377%2FFunctions%2F520587716" anchor-label="getRuleContext" id="-408147377%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1994260019%2FFunctions%2F520587716"><span>get</span><wbr><span>Rule</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-408147377%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-name-context/index.html#1994260019%2FFunctions%2F520587716">T</a><span class="token operator"> : </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span><span class="token operator">?</span><span class="token operator">&gt; </span><a href="../-name-context/index.html#1994260019%2FFunctions%2F520587716"><span class="token function">getRuleContext</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ctxType<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-name-context/index.html#1994260019%2FFunctions%2F520587716">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">i<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-name-context/index.html#1994260019%2FFunctions%2F520587716">T</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-2113309080%2FFunctions%2F520587716"><span class="token function">getRuleContext</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2110034828%2FFunctions%2F520587716" anchor-label="getRuleContexts" id="-2110034828%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2110034828%2FFunctions%2F520587716"><span>get</span><wbr><span>Rule</span><wbr><span><span>Contexts</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2110034828%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-name-context/index.html#-2110034828%2FFunctions%2F520587716">T</a><span class="token operator"> : </span><span data-unresolved-link="org.antlr.v4.runtime/ParserRuleContext///PointingToDeclaration/">ParserRuleContext</span><span class="token operator">?</span><span class="token operator">&gt; </span><a href="../-name-context/index.html#-2110034828%2FFunctions%2F520587716"><span class="token function">getRuleContexts</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ctxType<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-name-context/index.html#-2110034828%2FFunctions%2F520587716">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-name-context/index.html#-2110034828%2FFunctions%2F520587716">T</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-223529444%2FFunctions%2F520587716" anchor-label="getRuleIndex" id="-223529444%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-rule-index.html"><span>get</span><wbr><span>Rule</span><wbr><span><span>Index</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-223529444%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-rule-index.html"><span class="token function">getRuleIndex</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-548641634%2FFunctions%2F520587716" anchor-label="getSourceInterval" id="-548641634%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-548641634%2FFunctions%2F520587716"><span>get</span><wbr><span>Source</span><wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-548641634%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-548641634%2FFunctions%2F520587716"><span class="token function">getSourceInterval</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.misc/Interval///PointingToDeclaration/">Interval</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="408312218%2FFunctions%2F520587716" anchor-label="getStart" id="408312218%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#408312218%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="408312218%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#408312218%2FFunctions%2F520587716"><span class="token function">getStart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Token///PointingToDeclaration/">Token</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1724227100%2FFunctions%2F520587716" anchor-label="getStop" id="1724227100%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1724227100%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Stop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1724227100%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1724227100%2FFunctions%2F520587716"><span class="token function">getStop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Token///PointingToDeclaration/">Token</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="568950418%2FFunctions%2F520587716" anchor-label="getText" id="568950418%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#568950418%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="568950418%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#568950418%2FFunctions%2F520587716"><span class="token function">getText</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2011859900%2FFunctions%2F520587716" anchor-label="getToken" id="-2011859900%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2011859900%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Token</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2011859900%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-2011859900%2FFunctions%2F520587716"><span class="token function">getToken</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ttype<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">i<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime.tree/TerminalNode///PointingToDeclaration/">TerminalNode</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1407783727%2FFunctions%2F520587716" anchor-label="getTokens" id="1407783727%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1407783727%2FFunctions%2F520587716"><span>get</span><wbr><span><span>Tokens</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1407783727%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1407783727%2FFunctions%2F520587716"><span class="token function">getTokens</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ttype<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="org.antlr.v4.runtime.tree/TerminalNode///PointingToDeclaration/">TerminalNode</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1122734606%2FFunctions%2F520587716" anchor-label="isEmpty" id="-1122734606%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-1122734606%2FFunctions%2F520587716"><span>is</span><wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1122734606%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-1122734606%2FFunctions%2F520587716"><span class="token function">isEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1444081009%2FFunctions%2F520587716" anchor-label="name" id="1444081009%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1444081009%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="name.html"><span class="token function">name</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-name-context/index.html">GraphQLParser.NameContext</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2099160366%2FFunctions%2F520587716" anchor-label="removeLastChild" id="-2099160366%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2099160366%2FFunctions%2F520587716"><span>remove</span><wbr><span>Last</span><wbr><span><span>Child</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2099160366%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-2099160366%2FFunctions%2F520587716"><span class="token function">removeLastChild</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2115960002%2FFunctions%2F520587716" anchor-label="setAltNumber" id="-2115960002%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#-2115960002%2FFunctions%2F520587716"><span>set</span><wbr><span>Alt</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2115960002%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#-2115960002%2FFunctions%2F520587716"><span class="token function">setAltNumber</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">altNumber<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1546570001%2FFunctions%2F520587716" anchor-label="setParent" id="1546570001%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1546570001%2FFunctions%2F520587716"><span>set</span><wbr><span><span>Parent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1546570001%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1546570001%2FFunctions%2F520587716"><span class="token function">setParent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parent<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/RuleContext///PointingToDeclaration/">RuleContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="328935484%2FFunctions%2F520587716" anchor-label="toInfoString" id="328935484%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#328935484%2FFunctions%2F520587716"><span>to</span><wbr><span>Info</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="328935484%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#328935484%2FFunctions%2F520587716"><span class="token function">toInfoString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">recognizer<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Parser///PointingToDeclaration/">Parser</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="549784249%2FFunctions%2F520587716" anchor-label="toString" id="549784249%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#549784249%2FFunctions%2F520587716"><span>to</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="549784249%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#549784249%2FFunctions%2F520587716"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1780528237%2FFunctions%2F520587716" anchor-label="toStringTree" id="1780528237%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-name-context/index.html#1780528237%2FFunctions%2F520587716"><span>to</span><wbr><span>String</span><wbr><span><span>Tree</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1780528237%2FFunctions%2F520587716"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-name-context/index.html#1780528237%2FFunctions%2F520587716"><span class="token function">toStringTree</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">recog<span class="token operator">: </span><span data-unresolved-link="org.antlr.v4.runtime/Parser///PointingToDeclaration/">Parser</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
