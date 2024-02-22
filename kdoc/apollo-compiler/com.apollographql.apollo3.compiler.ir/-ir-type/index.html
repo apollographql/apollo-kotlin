@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>IrType</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo3.compiler.ir/-ir-type/index.html&quot;}">4.0.0-beta.5-SNAPSHOT</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-compiler::com.apollographql.apollo3.compiler.ir/IrType///PointingToDeclaration//431625483">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.compiler.ir</a><span class="delimiter">/</span><span class="current">IrType</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Ir</span><wbr><span><span>Type</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">interface </span><a href="index.html">IrType</a></div><p class="paragraph">The IR representation of an input or output field</p><p class="paragraph"><strong>Allowed</strong></p><ul><li><p class="paragraph"><code class="lang-kotlin">T</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Nullable&lt;T&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Option&lt;T&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Option&lt;Nullable&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Result&lt;T&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Result&lt;Nullable&lt;T&gt;&gt;</code></p></li><li><p class="paragraph">All <code class="lang-kotlin">List</code> variations of the above</p></li></ul><p class="paragraph"><strong>Disallowed</strong></p><ul><li><p class="paragraph"><code class="lang-kotlin">Nullable&lt;Option&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Nullable&lt;Result&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Nullable&lt;Nullable&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Option&lt;Option&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Option&lt;Result&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Result&lt;Option&lt;T&gt;&gt;</code></p></li><li><p class="paragraph"><code class="lang-kotlin">Result&lt;Result&lt;T&gt;&gt;</code></p></li><li><p class="paragraph">etc...</p></li></ul><p class="paragraph">We need both <code class="lang-kotlin">Option</code> and <code class="lang-kotlin">Nullable</code> to distinguish <code class="lang-kotlin">?</code> vs <code class="lang-kotlin">Option</code> in Kotlin (see this <a href="https://arrow-kt.io/learn/typed-errors/nullable-and-option/">Arrow article</a>). In java <code class="lang-kotlin">Option</code> and <code class="lang-kotlin">Nullable</code> might be represented using the same <code class="lang-kotlin">Optional</code> depending on the settings.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-list-type/index.html">IrListType</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-named-type/index.html">IrNamedType</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-842853231%2FProperties%2F431625483" anchor-label="catchTo" id="-842853231%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="catch-to.html"><span>catch</span><wbr><span><span>To</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-842853231%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="catch-to.html">catchTo</a><span class="token operator">: </span><a href="../-ir-catch-to/index.html">IrCatchTo</a></div><div class="brief "><p class="paragraph">reading this type must catch exceptions during parsing</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="737038931%2FProperties%2F431625483" anchor-label="maybeError" id="737038931%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="maybe-error.html"><span>maybe</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="737038931%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="maybe-error.html">maybeError</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">This type may be an error true if the type is nullable in the server schema. Used to generate error aware adapters</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-147200494%2FProperties%2F431625483" anchor-label="nullable" id="-147200494%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="nullable.html"><span><span>nullable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-147200494%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="nullable.html">nullable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">This type is nullable in Kotlin</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1811872013%2FProperties%2F431625483" anchor-label="optional" id="-1811872013%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="optional.html"><span><span>optional</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1811872013%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="optional.html">optional</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">This type is optional in Kotlin</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1511117164%2FFunctions%2F431625483" anchor-label="copyWith" id="-1511117164%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="copy-with.html"><span>copy</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1511117164%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="copy-with.html"><span class="token function">copyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">maybeError<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this.maybeError<span class="token punctuation">, </span></span><span class="parameter ">nullable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this.nullable<span class="token punctuation">, </span></span><span class="parameter ">optional<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this.optional<span class="token punctuation">, </span></span><span class="parameter ">catchTo<span class="token operator">: </span><a href="../-ir-catch-to/index.html">IrCatchTo</a><span class="token operator"> = </span>this.catchTo</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">IrType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-702515304%2FFunctions%2F431625483" anchor-label="nullable" id="-702515304%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../nullable.html"><span><span>nullable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-702515304%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IrType</a><span class="token punctuation">.</span><a href="../nullable.html"><span class="token function">nullable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">nullable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">IrType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="92835129%2FFunctions%2F431625483" anchor-label="optional" id="92835129%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../optional.html"><span><span>optional</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="92835129%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IrType</a><span class="token punctuation">.</span><a href="../optional.html"><span class="token function">optional</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">optional<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">IrType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1892645595%2FFunctions%2F431625483" anchor-label="rawType" id="-1892645595%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="raw-type.html"><span>raw</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1892645595%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="raw-type.html"><span class="token function">rawType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ir-named-type/index.html">IrNamedType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

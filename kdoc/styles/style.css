@@ -24,7 +24,7 @@
     --default-white: #fff;
     --background-color: var(--default-white);
     --dark-mode-and-search-icon-color: var(--default-white);
-    --color-dark: #27282c;
+    --color-dark: #13222A;
     --default-font-family: JetBrains Sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,Roboto, Oxygen, Ubuntu,Cantarell, Droid Sans, Helvetica Neue, Arial, sans-serif;
     --default-monospace-font-family: JetBrains Mono, SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
     --default-font-size: 15px;
@@ -210,8 +210,8 @@ td:first-child {
 
 /* ---dark theme --- */
 .theme-dark {
-    --background-color: #27282c;
-    --color-dark: #3d3d41;
+    --background-color: #13222A;
+    --color-dark: #0B1418;
     --default-font-color: hsla(0, 0%, 100%, 0.8);
     --border-color: hsla(0, 0%, 100%, 0.2);
     --code-background: hsla(0, 0%, 100%, 0.05);

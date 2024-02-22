@@ -43,13 +43,13 @@
             <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
             <div class="library-name">
 <a class="library-name--link" href="../../../index.html">
-                            apollo-kotlin
+                            apollo-kdoc
                     </a>            </div>
-            <div class="library-version">3.8.3-SNAPSHOT
-            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo3.ast.introspection/-introspection-schema/index.html&quot;}">4.0.0-beta.5-SNAPSHOT</dokka-template-command>            </div>
         </div>
         <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-ast:dokkaHtmlPartial/main">jvm</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-ast/commonMain">common</button>
         </div>
     </div>
     <div class="navigation-controls">
@@ -62,130 +62,43 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo3.ast.introspection/IntrospectionSchema///PointingToDeclaration//520587716">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo3.ast.introspection/IntrospectionSchema///PointingToDeclaration//-1528585073">
   <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.ast.introspection</a><span class="delimiter">/</span><span class="current">IntrospectionSchema</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Introspection</span><wbr><span><span>Schema</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>__schema<span class="token operator">: </span><a href="-schema/index.html">IntrospectionSchema.Schema</a></span></span><span class="token punctuation">)</span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">IntrospectionSchema</a></div><p class="paragraph">Because there are different versions of GraphQL in the wild and because users may use different introspection queries it tries to be as lenient as possible.</p><p class="paragraph">Probable user error (incomplete introspection query):</p><ul><li><p class="paragraph">missing description defaults to null</p></li><li><p class="paragraph">missing directive argument definitions default to empty</p></li><li><p class="paragraph">missing directives default to empty</p></li><li><p class="paragraph">missing defaultValue defaults to null</p></li><li><p class="paragraph">missing isDeprecated (for fields) defaults to false</p></li><li><p class="paragraph">missing mutationType/subscriptionType</p></li></ul><p class="paragraph">Old schemas</p><ul><li><p class="paragraph">missing isRepeatable defaults to false</p></li><li><p class="paragraph">missing isDeprecated (for input value) defaults to false</p></li></ul><p class="paragraph">Very old schemas</p><ul><li><p class="paragraph">missing directive locations skip the directive definition</p></li></ul></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="105715394%2FConstructors%2F520587716" anchor-label="IntrospectionSchema" id="105715394%2FConstructors%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-introspection-schema.html"><span>Introspection</span><wbr><span><span>Schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="105715394%2FConstructors%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">__schema<span class="token operator">: </span><a href="-schema/index.html">IntrospectionSchema.Schema</a></span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="-262351053%2FClasslikes%2F520587716" anchor-label="Schema" id="-262351053%2FClasslikes%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-schema/index.html"><span><span>Schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-262351053%2FClasslikes%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-schema/index.html">Schema</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>queryType<span class="token operator">: </span><a href="-schema/-query-type/index.html">IntrospectionSchema.Schema.QueryType</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>mutationType<span class="token operator">: </span><a href="-schema/-mutation-type/index.html">IntrospectionSchema.Schema.MutationType</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>subscriptionType<span class="token operator">: </span><a href="-schema/-subscription-type/index.html">IntrospectionSchema.Schema.SubscriptionType</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>types<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-schema/-type/index.html">IntrospectionSchema.Schema.Type</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>directives<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-schema/-directive/index.html">IntrospectionSchema.Schema.Directive</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="1147276382%2FProperties%2F520587716" anchor-label="__schema" id="1147276382%2FProperties%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="__schema.html"><span><span>__schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1147276382%2FProperties%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="__schema.html">__schema</a><span class="token operator">: </span><a href="-schema/index.html">IntrospectionSchema.Schema</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="EXTENSION_FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1371402586%2FFunctions%2F520587716" anchor-label="normalize" id="1371402586%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+        <div class="table"><a data-name="1371402586%2FFunctions%2F-1528585073" anchor-label="normalize" id="1371402586%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../normalize.html"><span><span>normalize</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1371402586%2FFunctions%2F520587716"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1371402586%2FFunctions%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../normalize.html"><span class="token function">normalize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">IntrospectionSchema</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../normalize.html"><span class="token function">normalize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">IntrospectionSchema</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1049947118%2FFunctions%2F520587716" anchor-label="toGQLDocument" id="1049947118%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
+<a data-name="-897180721%2FFunctions%2F-1528585073" anchor-label="toGQLDocument" id="-897180721%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../to-g-q-l-document.html"><span>to</span><wbr><span><span>GQLDocument</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1049947118%2FFunctions%2F520587716"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-897180721%2FFunctions%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../to-g-q-l-document.html"><span class="token function">toGQLDocument</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">filePath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo3.ast/-g-q-l-document/index.html">GQLDocument</a></div><div class="brief "><p class="paragraph">Parses the <a href="index.html">IntrospectionSchema</a> into a <a href="../../com.apollographql.apollo3.ast/-g-q-l-document/index.html">GQLDocument</a></p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="1593524212%2FFunctions%2F520587716" anchor-label="toJson" id="1593524212%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../to-json.html"><span>to</span><wbr><span><span>Json</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1593524212%2FFunctions%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../to-json.html"><span class="token function">toJson</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../to-json.html"><span class="token function">toJson</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1908567919%2FFunctions%2F520587716" anchor-label="toSchema" id="-1908567919%2FFunctions%2F520587716" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast:dokkaHtmlPartial/main" data-filterable-set=":apollo-ast:dokkaHtmlPartial/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="../to-schema.html"><span>to</span><wbr><span><span>Schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1908567919%2FFunctions%2F520587716"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../to-schema.html"><span class="token function">toSchema</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo3.ast/-schema/index.html">Schema</a></div><div class="brief "><p class="paragraph">Transforms the <a href="index.html">IntrospectionSchema</a> into a <a href="../../com.apollographql.apollo3.ast/-schema/index.html">Schema</a> that contains builtin definitions</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">IntrospectionSchema</a><span class="token punctuation">.</span><a href="../to-g-q-l-document.html"><span class="token function">toGQLDocument</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo3.ast/-g-q-l-document/index.html">GQLDocument</a></div><div class="brief "><p class="paragraph">Parses the <a href="../../../apollo-ast/com.apollographql.apollo3.ast.introspection/-r-schema/index.html">RSchema</a> into a <a href="../../com.apollographql.apollo3.ast/-g-q-l-document/index.html">GQLDocument</a></p></div></div></div>
                 </div>
               </div>
             </div>
