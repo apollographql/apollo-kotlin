@@ -23,10 +23,11 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
+        #--no-configuration-cache for https://youtrack.jetbrains.com/issue/KT-65879
         run: |
           ./gradlew -p tests ciBuild -i
           ./gradlew :apollo-kdoc:dokkatooGeneratePublicationHtml --no-build-cache
-          ./gradlew ciPublishSnapshot
+          ./gradlew ciPublishSnapshot --no-configuration-cache
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
