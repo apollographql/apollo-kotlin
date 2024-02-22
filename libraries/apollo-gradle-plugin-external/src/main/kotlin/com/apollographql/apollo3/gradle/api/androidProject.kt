@@ -14,18 +14,18 @@ import org.gradle.api.Project
 
 object AndroidProject {
   fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (BaseVariant) -> Unit) {
-    project.applicationVariants?.all {
+    project.applicationVariants?.configureEach {
       block(it)
     }
-    project.libraryVariants?.all {
+    project.libraryVariants?.configureEach {
       block(it)
     }
 
     if (withTestVariants) {
-      project.testVariants?.all {
+      project.testVariants?.configureEach {
         block(it)
       }
-      project.unitTestVariants?.all {
+      project.unitTestVariants?.configureEach {
         block(it)
       }
     }

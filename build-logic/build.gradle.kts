@@ -33,6 +33,7 @@ dependencies {
   implementation(libs.poet.kotlin)
   implementation(libs.intellij.plugin)
   implementation(libs.intellij.changelog)
+  implementation(libs.androidx.lint.gradle.plugin)
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin

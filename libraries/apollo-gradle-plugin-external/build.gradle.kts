@@ -3,6 +3,7 @@ plugins {
   id("java-gradle-plugin")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
   id("org.jetbrains.kotlin.plugin.serialization")
+  id("com.android.lint")
 }
 
 apolloLibrary(
@@ -20,6 +21,9 @@ dependencies {
   implementation(project(":apollo-ast"))
   implementation(libs.asm)
   implementation(libs.kotlinx.serialization.json)
+}
+dependencies {
+  lintChecks(libs.androidx.lint.rules)
 }
 
 gradlePlugin {
