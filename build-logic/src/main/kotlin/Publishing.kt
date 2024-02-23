@@ -121,12 +121,12 @@ fun Project.configureDokkaAggregate() {
     }
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
-      from(configuration.map { zipTree(it) })
+      from(configuration.elements.map { it.map { zipTree(it) } })
       into(layout.buildDirectory.dir("kdoc-versions/$version"))
     }
   }
 
-  val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
+  val downloadKDocVersions = tasks.register("downloadKDocVersions") {
     dependsOn(kdocVersionTasks)
     outputs.dir(layout.buildDirectory.dir("kdoc-versions/"))
     doLast {
