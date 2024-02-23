@@ -1,4 +1,7 @@
 /*
+ * Taken from the Mobile Native Foundation Store project.
+ * https://github.com/MobileNativeFoundation/Store/commit/e25e3c130187d9294ad5b998136b0498bd91d88f
+ *
  * Copyright (C) 2009 The Guava Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
