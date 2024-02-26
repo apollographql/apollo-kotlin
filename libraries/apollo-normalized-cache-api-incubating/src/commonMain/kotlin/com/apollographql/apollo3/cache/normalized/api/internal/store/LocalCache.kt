@@ -19,6 +19,9 @@
  * KMP conversion
  * Copyright (C) 2022 André Claßen
  */
+
+@file:Suppress("UNUSED_PARAMETER")
+
 package com.apollographql.apollo3.cache.normalized.api.internal.store
 
 import kotlinx.atomicfu.AtomicArray
