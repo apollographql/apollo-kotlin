@@ -1,3 +1,4 @@
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
@@ -7,6 +8,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 fun properties(key: String) = project.findProperty(key).toString()
+
+fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
+
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -47,25 +51,15 @@ kotlin {
 // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellijPlatform {
   pluginConfiguration {
-    name = properties("pluginName")
-  }
-}
-
-tasks {
-  withType<KotlinCompile> {
-    kotlinOptions {
-      freeCompilerArgs = listOf("-Xcontext-receivers")
+    id.set(properties("pluginId"))
+    name.set(properties("pluginName"))
+    version.set(project.version.toString())
+    ideaVersion {
+      sinceBuild = properties("pluginSinceBuild")
+      untilBuild = properties("pluginUntilBuild")
     }
-  }
-
-  patchPluginXml {
-    pluginId.set(properties("pluginId"))
-    pluginVersion.set(project.version.toString())
-    sinceBuild.set(properties("pluginSinceBuild"))
-    untilBuild.set(properties("pluginUntilBuild"))
-
-    // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-    pluginDescription.set(
+    // Extract the <!-- Plugin description --> section from README.md and provide it to the plugin's manifest
+    description.set(
         projectDir.resolve("README.md").readText().lines().run {
           val start = "<!-- Plugin description -->"
           val end = "<!-- Plugin description end -->"
@@ -76,7 +70,6 @@ tasks {
           subList(indexOf(start) + 1, indexOf(end))
         }.joinToString("\n").run { markdownToHTML(this) }
     )
-
     changeNotes.set(
         if (isSnapshotBuild()) {
           "Weekly snapshot builds contain the latest changes from the <code>main</code> branch."
@@ -84,6 +77,28 @@ tasks {
           "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/v${project.version}\">release notes</a>."
         }
     )
+  }
+
+  signing {
+    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+    privateKey.set(System.getenv("PRIVATE_KEY"))
+    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+  }
+
+  publishing {
+    token.set(System.getenv("PUBLISH_TOKEN"))
+    if (isSnapshotBuild()) {
+      // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
+      channels.set(listOf("snapshots"))
+    }
+  }
+}
+
+tasks {
+  withType<KotlinCompile> {
+    kotlinOptions {
+      freeCompilerArgs = listOf("-Xcontext-receivers")
+    }
   }
 
   runIde {
@@ -102,20 +117,6 @@ tasks {
 
     // Uncomment to disable internal mode - see https://plugins.jetbrains.com/docs/intellij/enabling-internal.html
     // systemProperty("idea.is.internal", "false")
-  }
-
-  signPlugin {
-    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-    privateKey.set(System.getenv("PRIVATE_KEY"))
-    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-  }
-
-  publishPlugin {
-    token.set(System.getenv("PUBLISH_TOKEN"))
-    if (isSnapshotBuild()) {
-      // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
-      channels.set(listOf("snapshots"))
-    }
   }
 
   // Log tests
@@ -167,8 +168,6 @@ dependencies {
   runtimeOnly(libs.slf4j)
   testImplementation(libs.google.testparameterinjector)
 }
-
-fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 
 apollo {
   service("apolloDebug") {
