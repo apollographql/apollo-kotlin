@@ -297,11 +297,41 @@ mapScalarToKotlinLong("MyLong")
 
 ```
 
+### schemaFile is deprecated
+
+Because there might be several schema files, `schemaFile` is deprecated. Instead use `schemaFiles`:
+
+```kotlin
+    // replace
+    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
+
+    // with
+    schemaFiles.from("src/main/graphql/com/example/schema.graphqls")
+```
+
+If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to use a [Gradle FileTree](https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html) to carry the appropriate normalized path. 
+
+```kotlin
+    packageNameFromFilePaths()
+
+    // replace
+    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
+
+    // with
+    schemaFiles.from(fileTree("src/main/graphql/").apply {
+      include("com/example/schema.graphqls")
+    })
+```
+
+> [!Note]
+> Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent. 
+
 ### Misc
 
 * Publishing is no longer configured automatically.
 * Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"`
 * useSchemaPackageNameForFragments is removed
+
 
 ## Apollo Compiler
 
