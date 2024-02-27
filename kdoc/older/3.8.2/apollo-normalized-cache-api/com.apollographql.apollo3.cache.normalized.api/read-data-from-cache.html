@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>readDataFromCache</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<link href="../../images/apollo.svg">
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>3.8.2
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="apollo-normalized-cache-api::com.apollographql.apollo3.cache.normalized.api//readDataFromCache/com.apollographql.apollo3.api.Executable[TypeParam(bounds=[com.apollographql.apollo3.api.Executable.Data])]#com.apollographql.apollo3.api.CustomScalarAdapters#com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache#com.apollographql.apollo3.cache.normalized.api.CacheResolver#com.apollographql.apollo3.cache.normalized.api.CacheHeaders/PointingToDeclaration//-1364598002">
+  <div class="breadcrumbs"><a href="../index.html">apollo-normalized-cache-api</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3.cache.normalized.api</a><span class="delimiter">/</span><a href="read-data-from-cache.html">readDataFromCache</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>read</span><wbr><span>Data</span><wbr><span>From</span><wbr><span><span>Cache</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-data-from-cache.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-executable/-data/index.html">Executable.Data</a><span class="token operator">&gt; </span><a href="../../apollo-api/com.apollographql.apollo3.api/-executable/index.html">Executable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-data-from-cache.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="read-data-from-cache.html"><span class="token function">readDataFromCache</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;customScalarAdapters<span class="token operator">: </span><a href="../../apollo-api/com.apollographql.apollo3.api/-custom-scalar-adapters/index.html">CustomScalarAdapters</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cache<span class="token operator">: </span><a href="-read-only-normalized-cache/index.html">ReadOnlyNormalizedCache</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheResolver<span class="token operator">: </span><a href="-cache-resolver/index.html">CacheResolver</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheHeaders<span class="token operator">: </span><a href="-cache-headers/index.html">CacheHeaders</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="read-data-from-cache.html">D</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-data-from-cache.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-fragment/-data/index.html">Fragment.Data</a><span class="token operator">&gt; </span><a href="../../apollo-api/com.apollographql.apollo3.api/-fragment/index.html">Fragment</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-data-from-cache.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="read-data-from-cache.html"><span class="token function">readDataFromCache</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheKey<span class="token operator">: </span><a href="-cache-key/index.html">CacheKey</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;customScalarAdapters<span class="token operator">: </span><a href="../../apollo-api/com.apollographql.apollo3.api/-custom-scalar-adapters/index.html">CustomScalarAdapters</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cache<span class="token operator">: </span><a href="-read-only-normalized-cache/index.html">ReadOnlyNormalizedCache</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheResolver<span class="token operator">: </span><a href="-cache-resolver/index.html">CacheResolver</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheHeaders<span class="token operator">: </span><a href="-cache-headers/index.html">CacheHeaders</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="read-data-from-cache.html">D</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+

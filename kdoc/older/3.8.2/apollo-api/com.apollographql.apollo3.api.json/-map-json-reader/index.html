@@ -1,0 +1,474 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MapJsonReader</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>3.8.2
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-api:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="apollo-api::com.apollographql.apollo3.api.json/MapJsonReader///PointingToDeclaration//301449719">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-api</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.api.json</a><span class="delimiter">/</span><a href="index.html">MapJsonReader</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Map</span><wbr><span>Json</span><wbr><span><span>Reader</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">MapJsonReader</a>&nbsp;<span><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>root<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">pathRoot<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span> : <a href="../-json-reader/index.html">JsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="../-json-reader/index.html">JsonReader</a> that reads data from a regular Map</p><p class="paragraph">Map values should be any of:</p><ul><li><p class="paragraph">String</p></li><li><p class="paragraph">Int</p></li><li><p class="paragraph">Double</p></li><li><p class="paragraph">Long</p></li><li><p class="paragraph">JsonNumber</p></li><li><p class="paragraph">null</p></li><li><p class="paragraph">Map where values are any of these values recursively</p></li><li><p class="paragraph">List where values are any of these values recursively</p></li></ul><p class="paragraph">Anything else is undefined</p><p class="paragraph">To read from a <span data-unresolved-link="okio/BufferedSource///PointingToDeclaration/">okio.BufferedSource</span>, see also <a href="../-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a></p></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Parameters">
+          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>root</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the root <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a> to read from</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>path</span><wbr><span><span>Root</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the path root to be prefixed to the returned path when calling <a href="get-path.html">getPath</a>. Useful for <a href="-companion/buffer.html">buffer</a>.</p></div></div></div></div></div></div></div></div>        </div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="1587453352%2FConstructors%2F301449719" anchor-label="MapJsonReader" id="1587453352%2FConstructors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-map-json-reader.html"><span>Map</span><wbr><span>Json</span><wbr><span><span>Reader</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1587453352%2FConstructors%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation">JvmOverloads</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="-map-json-reader.html"><span class="token function">MapJsonReader</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">pathRoot<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="-1289858028%2FClasslikes%2F301449719" anchor-label="Companion" id="-1289858028%2FClasslikes%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1289858028%2FClasslikes%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="240685437%2FFunctions%2F301449719" anchor-label="beginArray" id="240685437%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="begin-array.html"><span>begin</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="240685437%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="begin-array.html"><span class="token function">beginArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1045702011%2FFunctions%2F301449719" anchor-label="beginObject" id="-1045702011%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="begin-object.html"><span>begin</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1045702011%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="begin-object.html"><span class="token function">beginObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the beginning of a new object.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1498469333%2FFunctions%2F301449719" anchor-label="close" id="1498469333%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="close.html"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1498469333%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="327465519%2FFunctions%2F301449719" anchor-label="endArray" id="327465519%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="end-array.html"><span>end</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="327465519%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="end-array.html"><span class="token function">endArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the end of the current array.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1644480531%2FFunctions%2F301449719" anchor-label="endObject" id="1644480531%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="end-object.html"><span>end</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1644480531%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="end-object.html"><span class="token function">endObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the end of the current object.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1096617618%2FFunctions%2F301449719" anchor-label="getPath" id="1096617618%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-path.html"><span>get</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1096617618%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-path.html"><span class="token function">getPath</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the current path of the JSON being read, as a List. The elements can either be Strings (names) or Integers (array indices).</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-514457920%2FFunctions%2F301449719" anchor-label="hasNext" id="-514457920%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="has-next.html"><span>has</span><wbr><span><span>Next</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-514457920%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="has-next.html"><span class="token function">hasNext</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns true if the current array or object has another element.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1099165000%2FFunctions%2F301449719" anchor-label="nextBoolean" id="-1099165000%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-boolean.html"><span>next</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1099165000%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-boolean.html"><span class="token function">nextBoolean</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.BOOLEAN value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2028063095%2FFunctions%2F301449719" anchor-label="nextDouble" id="-2028063095%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-double.html"><span>next</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2028063095%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-double.html"><span class="token function">nextDouble</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.NUMBER value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-145854895%2FFunctions%2F301449719" anchor-label="nextInt" id="-145854895%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-int.html"><span>next</span><wbr><span><span>Int</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-145854895%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-int.html"><span class="token function">nextInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.NUMBER value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1317334398%2FFunctions%2F301449719" anchor-label="nextLong" id="1317334398%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-long.html"><span>next</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1317334398%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-long.html"><span class="token function">nextLong</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.NUMBER value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="951228495%2FFunctions%2F301449719" anchor-label="nextName" id="951228495%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-name.html"><span>next</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="951228495%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-name.html"><span class="token function">nextName</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the next token Token.NAME, and consumes it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-593010477%2FFunctions%2F301449719" anchor-label="nextNull" id="-593010477%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-null.html"><span>next</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-593010477%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-null.html"><span class="token function">nextNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is a literal null. Returns null.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1735086575%2FFunctions%2F301449719" anchor-label="nextNumber" id="-1735086575%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-number.html"><span>next</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1735086575%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-number.html"><span class="token function">nextNumber</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-json-number/index.html">JsonNumber</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.NUMBER value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1413323337%2FFunctions%2F301449719" anchor-label="nextString" id="1413323337%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-string.html"><span>next</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1413323337%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-string.html"><span class="token function">nextString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the Token.STRING value of the next token, consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-893489585%2FFunctions%2F301449719" anchor-label="nextValue" id="-893489585%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="next-value.html"><span>next</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-893489585%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="next-value.html"><span class="token function">nextValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-583019086%2FFunctions%2F301449719" anchor-label="peek" id="-583019086%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="peek.html"><span><span>peek</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-583019086%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="peek.html"><span class="token function">peek</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-json-reader/-token/index.html">JsonReader.Token</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the type of the next token without consuming it.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="763521618%2FFunctions%2F301449719" anchor-label="rewind" id="763521618%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="rewind.html"><span><span>rewind</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="763521618%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="rewind.html"><span class="token function">rewind</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Rewinds to the beginning of the current object.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="49814064%2FFunctions%2F301449719" anchor-label="selectName" id="49814064%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="select-name.html"><span>select</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="49814064%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="select-name.html"><span class="token function">selectName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">names<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An optimized way to retrieve the nextName when the candidates and their order is known. <a href="select-name.html">selectName</a> maintains the current index in the list and saves having to string compare <a href="next-name.html">nextName</a> to every candidate.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1594569765%2FFunctions%2F301449719" anchor-label="skipValue" id="-1594569765%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="skip-value.html"><span>skip</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1594569765%2FFunctions%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="skip-value.html"><span class="token function">skipValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Skips the next value recursively. If it is an object or array, all nested elements are skipped.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-438797301%2FProperties%2F301449719" anchor-label="root" id="-438797301%2FProperties%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="root.html"><span><span>root</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-438797301%2FProperties%2F301449719"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-api:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><a data-name="-438797301%2FProperties%2F301449719" anchor-label="root" id="-438797301%2FProperties%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="root.html">root</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+

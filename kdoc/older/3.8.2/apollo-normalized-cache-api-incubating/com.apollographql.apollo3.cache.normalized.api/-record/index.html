@@ -1,0 +1,372 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Record</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>3.8.2
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="apollo-normalized-cache-api-incubating::com.apollographql.apollo3.cache.normalized.api/Record///PointingToDeclaration//-310638535">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-normalized-cache-api-incubating</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.cache.normalized.api</a><span class="delimiter">/</span><a href="index.html">Record</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Record</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Record</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>fields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>mutationId<span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If a field is a GraphQL Object a <a href="../-cache-key/index.html">CacheKey</a> will be stored instead.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="1652888561%2FConstructors%2F-310638535" anchor-label="Record" id="1652888561%2FConstructors%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-record.html"><span><span>Record</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1652888561%2FConstructors%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-record.html"><span class="token function">Record</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;fields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;mutationId<span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;date<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;metadata<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1313467101%2FConstructors%2F-310638535" anchor-label="Record" id="1313467101%2FConstructors%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-record.html"><span><span>Record</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1313467101%2FConstructors%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-record.html"><span class="token function">Record</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;fields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;mutationId<span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="1973003341%2FClasslikes%2F-310638535" anchor-label="Companion" id="1973003341%2FClasslikes%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1973003341%2FClasslikes%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="182506349%2FFunctions%2F-310638535" anchor-label="containsKey" id="182506349%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#182506349%2FFunctions%2F-310638535"><span>contains</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="182506349%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#182506349%2FFunctions%2F-310638535"><span class="token function">containsKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2000296189%2FFunctions%2F-310638535" anchor-label="containsValue" id="2000296189%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#2000296189%2FFunctions%2F-310638535"><span>contains</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2000296189%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#2000296189%2FFunctions%2F-310638535"><span class="token function">containsValue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1094522696%2FFunctions%2F-310638535" anchor-label="fieldKeys" id="-1094522696%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="field-keys.html"><span>field</span><wbr><span><span>Keys</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1094522696%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="field-keys.html"><span class="token function">fieldKeys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns a set of all field keys. A field key incorporates any GraphQL arguments in addition to the field name.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1885167485%2FFunctions%2F-310638535" anchor-label="get" id="-1885167485%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1885167485%2FFunctions%2F-310638535"><span><span>get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1885167485%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="index.html#-1885167485%2FFunctions%2F-310638535"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1708477740%2FFunctions%2F-310638535" anchor-label="isEmpty" id="-1708477740%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1708477740%2FFunctions%2F-310638535"><span>is</span><wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1708477740%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1708477740%2FFunctions%2F-310638535"><span class="token function">isEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="482640661%2FFunctions%2F-310638535" anchor-label="mergeWith" id="482640661%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="merge-with.html"><span>merge</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="482640661%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="merge-with.html"><span class="token function">mergeWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">newRecord<span class="token operator">: </span><a href="index.html">Record</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">Record</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns a merge result record and a set of field keys which have changed, or were added. A field key incorporates any GraphQL arguments in addition to the field name.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1711927810%2FFunctions%2F-310638535" anchor-label="referencedFields" id="1711927810%2FFunctions%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="referenced-fields.html"><span>referenced</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1711927810%2FFunctions%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="referenced-fields.html"><span class="token function">referencedFields</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-cache-key/index.html">CacheKey</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns the list of referenced cache fields</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-1287341338%2FProperties%2F-310638535" anchor-label="date" id="-1287341338%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="date.html"><span><span>date</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1287341338%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-1287341338%2FProperties%2F-310638535" anchor-label="date" id="-1287341338%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="date.html">date</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="43098407%2FProperties%2F-310638535" anchor-label="entries" id="43098407%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#43098407%2FProperties%2F-310638535"><span><span>entries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="43098407%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="43098407%2FProperties%2F-310638535" anchor-label="entries" id="43098407%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#43098407%2FProperties%2F-310638535">entries</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html">Map.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1645857669%2FProperties%2F-310638535" anchor-label="fields" id="-1645857669%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="fields.html"><span><span>fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1645857669%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-1645857669%2FProperties%2F-310638535" anchor-label="fields" id="-1645857669%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="fields.html">fields</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1645857669%2FProperties%2F-310638535" anchor-label="fields" id="-1645857669%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><p class="paragraph">a list of fields. Values can be</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-76400569%2FProperties%2F-310638535" anchor-label="key" id="-76400569%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="key.html"><span><span>key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-76400569%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-76400569%2FProperties%2F-310638535" anchor-label="key" id="-76400569%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="key.html">key</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-915758449%2FProperties%2F-310638535" anchor-label="keys" id="-915758449%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-915758449%2FProperties%2F-310638535"><span><span>keys</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-915758449%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-915758449%2FProperties%2F-310638535" anchor-label="keys" id="-915758449%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#-915758449%2FProperties%2F-310638535">keys</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="340004613%2FProperties%2F-310638535" anchor-label="metadata" id="340004613%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="metadata.html"><span><span>metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="340004613%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="340004613%2FProperties%2F-310638535" anchor-label="metadata" id="340004613%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="metadata.html">metadata</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="340004613%2FProperties%2F-310638535" anchor-label="metadata" id="340004613%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><p class="paragraph">Arbitrary metadata that can be attached to each field.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-841701264%2FProperties%2F-310638535" anchor-label="mutationId" id="-841701264%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="mutation-id.html"><span>mutation</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-841701264%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-841701264%2FProperties%2F-310638535" anchor-label="mutationId" id="-841701264%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="mutation-id.html">mutationId</a><span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-157521630%2FProperties%2F-310638535" anchor-label="size" id="-157521630%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-157521630%2FProperties%2F-310638535"><span><span>size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-157521630%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="-157521630%2FProperties%2F-310638535" anchor-label="size" id="-157521630%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#-157521630%2FProperties%2F-310638535">size</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1954450785%2FProperties%2F-310638535" anchor-label="sizeInBytes" id="1954450785%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="size-in-bytes.html"><span>size</span><wbr><span>In</span><wbr><span><span>Bytes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1954450785%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="1954450785%2FProperties%2F-310638535" anchor-label="sizeInBytes" id="1954450785%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="size-in-bytes.html">sizeInBytes</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1310951841%2FProperties%2F-310638535" anchor-label="values" id="1310951841%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1310951841%2FProperties%2F-310638535"><span><span>values</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1310951841%2FProperties%2F-310638535"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><a data-name="1310951841%2FProperties%2F-310638535" anchor-label="values" id="1310951841%2FProperties%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#1310951841%2FProperties%2F-310638535">values</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+

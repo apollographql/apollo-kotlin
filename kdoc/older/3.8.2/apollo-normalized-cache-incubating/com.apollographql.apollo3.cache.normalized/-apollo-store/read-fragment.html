@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>readFragment</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>3.8.2
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="apollo-normalized-cache-incubating::com.apollographql.apollo3.cache.normalized/ApolloStore/readFragment/#com.apollographql.apollo3.api.Fragment[TypeParam(bounds=[com.apollographql.apollo3.api.Fragment.Data])]#com.apollographql.apollo3.cache.normalized.api.CacheKey#com.apollographql.apollo3.api.CustomScalarAdapters#com.apollographql.apollo3.cache.normalized.api.CacheHeaders/PointingToDeclaration//-352706836">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-normalized-cache-incubating</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.cache.normalized</a><span class="delimiter">/</span><a href="index.html">ApolloStore</a><span class="delimiter">/</span><a href="read-fragment.html">readFragment</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>read</span><wbr><span><span>Fragment</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-fragment.html">D</a><span class="token operator"> : </span><a href="../../../apollo-api/com.apollographql.apollo3.api/-fragment/-data/index.html">Fragment.Data</a><span class="token operator">&gt; </span><a href="read-fragment.html"><span class="token function">readFragment</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;fragment<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo3.api/-fragment/index.html">Fragment</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="read-fragment.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheKey<span class="token operator">: </span><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-cache-key/index.html">CacheKey</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;customScalarAdapters<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo3.api/-custom-scalar-adapters/index.html">CustomScalarAdapters</a><span class="token operator"> = </span>CustomScalarAdapters.Empty<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;cacheHeaders<span class="token operator">: </span><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-cache-headers/index.html">CacheHeaders</a><span class="token operator"> = </span>CacheHeaders.NONE</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="read-fragment.html">D</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Read a GraphQL fragment from the store. This is a synchronous operation that might block if the underlying cache is doing IO</p><h4 class="">Return</h4><p class="paragraph">the fragment data</p><h2 class="">Parameters</h2><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>fragment</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">to be read</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>cache</span><wbr><span><span>Key</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph"><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-cache-key/index.html">CacheKey</a> to be used to find cache record for the fragment</p></div></div></div></div></div></div></div><h2 class="">Throws</h2><div class="table"><div class="table-row" data-filterable-current=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../apollo-api/com.apollographql.apollo3.exception/-cache-miss-exception/index.html"><span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3.</span><wbr><span>exception.</span><wbr><span>Cache</span><wbr><span>Miss</span><wbr><span><span>Exception</span></span></a></div></span></div><div><div class="title"><p class="paragraph">on cache miss</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-incubating:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../apollo-api/com.apollographql.apollo3.exception/-apollo-exception/index.html"><span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3.</span><wbr><span>exception.</span><wbr><span>Apollo</span><wbr><span><span>Exception</span></span></a></div></span></div><div><div class="title"><p class="paragraph">on other cache read errors</p></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+

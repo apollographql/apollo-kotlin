@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Built-By: apollographql
+Build-Jdk: 17.0.6 (JetBrains s.r.o. 17.0.6+10-b829.5)
+Created-By: Gradle 7.6
+Implementation-Title: Apollo KDoc
+Implementation-Version: 3.8.2
+

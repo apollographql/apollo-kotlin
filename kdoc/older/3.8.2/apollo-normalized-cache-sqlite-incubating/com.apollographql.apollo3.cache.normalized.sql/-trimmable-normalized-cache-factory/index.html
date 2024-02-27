@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>TrimmableNormalizedCacheFactory</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>3.8.2
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="apollo-normalized-cache-sqlite-incubating::com.apollographql.apollo3.cache.normalized.sql/TrimmableNormalizedCacheFactory///PointingToDeclaration//1491456691">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-normalized-cache-sqlite-incubating</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.cache.normalized.sql</a><span class="delimiter">/</span><a href="index.html">TrimmableNormalizedCacheFactory</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Trimmable</span><wbr><span>Normalized</span><wbr><span>Cache</span><wbr><span><span>Factory</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation">ApolloExperimental</span></a></div></div><span class="token keyword">class </span><a href="index.html">TrimmableNormalizedCacheFactory</a> : <a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Experimental database that supports trimming at startup</p><p class="paragraph">There are no backward compatibilities, DO NOT ship in a production app</p></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Parameters">
+          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>url</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Database connection URL in the form of <code class="lang-kotlin">jdbc:sqlite:path</code> where <code class="lang-kotlin">path</code> is either blank</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>max</span><wbr><span><span>Size</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">if the size of the database is bigger than <a href="../../../apollo-normalized-cache-sqlite/com.apollographql.apollo3.cache.normalized.sql/-trimmable-normalized-cache-factory/max-size.html">maxSize</a> (in bytes), it will be trimmed</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>trim</span><wbr><span><span>Factor</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the amount of trimming to do</p></div></div></div></div></div></div></div></div>        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="713554488%2FFunctions%2F1491456691" anchor-label="chain" id="713554488%2FFunctions%2F1491456691" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-sql-normalized-cache-factory/index.html#713554488%2FFunctions%2F1491456691"><span><span>chain</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="713554488%2FFunctions%2F1491456691"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-sql-normalized-cache-factory/index.html#713554488%2FFunctions%2F1491456691"><span class="token function">chain</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">factory<span class="token operator">: </span><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1661691125%2FFunctions%2F1491456691" anchor-label="create" id="1661691125%2FFunctions%2F1491456691" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="create.html"><span><span>create</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1661691125%2FFunctions%2F1491456691"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create.html"><span class="token function">create</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-normalized-cache-sqlite/com.apollographql.apollo3.cache.normalized.sql/-sql-normalized-cache/index.html">SqlNormalizedCache</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="299894931%2FFunctions%2F1491456691" anchor-label="createChain" id="299894931%2FFunctions%2F1491456691" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-sql-normalized-cache-factory/index.html#299894931%2FFunctions%2F1491456691"><span>create</span><wbr><span><span>Chain</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="299894931%2FFunctions%2F1491456691"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite-incubating:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-sql-normalized-cache-factory/index.html#299894931%2FFunctions%2F1491456691"><span class="token function">createChain</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache/index.html">NormalizedCache</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+
