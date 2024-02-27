@@ -48,58 +48,6 @@ kotlin {
   }
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellijPlatform {
-  pluginConfiguration {
-    id.set(properties("pluginId"))
-    name.set(properties("pluginName"))
-    version.set(project.version.toString())
-    ideaVersion {
-      sinceBuild = properties("pluginSinceBuild")
-      untilBuild = properties("pluginUntilBuild")
-    }
-    // Extract the <!-- Plugin description --> section from README.md and provide it to the plugin's manifest
-    description.set(
-        projectDir.resolve("README.md").readText().lines().run {
-          val start = "<!-- Plugin description -->"
-          val end = "<!-- Plugin description end -->"
-
-          if (!containsAll(listOf(start, end))) {
-            throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
-          }
-          subList(indexOf(start) + 1, indexOf(end))
-        }.joinToString("\n").run { markdownToHTML(this) }
-    )
-    changeNotes.set(
-        if (isSnapshotBuild()) {
-          "Weekly snapshot builds contain the latest changes from the <code>main</code> branch."
-        } else {
-          "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/v${project.version}\">release notes</a>."
-        }
-    )
-  }
-
-  signing {
-    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-    privateKey.set(System.getenv("PRIVATE_KEY"))
-    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-  }
-
-  publishing {
-    token.set(System.getenv("PUBLISH_TOKEN"))
-    if (isSnapshotBuild()) {
-      // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
-      channels.set(listOf("snapshots"))
-    }
-  }
-
-  verifyPlugin {
-    ides {
-      recommended()
-    }
-  }
-}
-
 tasks {
   withType<KotlinCompile> {
     kotlinOptions {
@@ -191,5 +139,57 @@ apollo {
 tasks.configureEach {
   if (name == "checkApolloVersions") {
     enabled = false
+  }
+}
+
+// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+intellijPlatform {
+  pluginConfiguration {
+    id.set(properties("pluginId"))
+    name.set(properties("pluginName"))
+    version.set(project.version.toString())
+    ideaVersion {
+      sinceBuild = properties("pluginSinceBuild")
+      untilBuild = properties("pluginUntilBuild")
+    }
+    // Extract the <!-- Plugin description --> section from README.md and provide it to the plugin's manifest
+    description.set(
+        projectDir.resolve("README.md").readText().lines().run {
+          val start = "<!-- Plugin description -->"
+          val end = "<!-- Plugin description end -->"
+
+          if (!containsAll(listOf(start, end))) {
+            throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+          }
+          subList(indexOf(start) + 1, indexOf(end))
+        }.joinToString("\n").run { markdownToHTML(this) }
+    )
+    changeNotes.set(
+        if (isSnapshotBuild()) {
+          "Weekly snapshot builds contain the latest changes from the <code>main</code> branch."
+        } else {
+          "See the <a href=\"https://github.com/apollographql/apollo-kotlin/releases/tag/v${project.version}\">release notes</a>."
+        }
+    )
+  }
+
+  signing {
+    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+    privateKey.set(System.getenv("PRIVATE_KEY"))
+    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+  }
+
+  publishing {
+    token.set(System.getenv("PUBLISH_TOKEN"))
+    if (isSnapshotBuild()) {
+      // Read more: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html#specifying-a-release-channel
+      channels.set(listOf("snapshots"))
+    }
+  }
+
+  verifyPlugin {
+    ides {
+      recommended()
+    }
   }
 }
