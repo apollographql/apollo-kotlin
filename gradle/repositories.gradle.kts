@@ -29,14 +29,24 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         includeModule("com.gradle", "gradle-enterprise-gradle-plugin")
 
-        // For org.jetbrains.intellij
-        includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
-        includeModule("org.jetbrains.intellij.plugins", "gradle-intellij-plugin")
+        // For org.jetbrains.intellij.platform
         includeModule("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext", "gradle-idea-ext")
 
         // For org.jetbrains.changelog
         includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
         includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
+      }
+    }
+
+    exclusiveContent {
+      // TODO Currently, org.jetbrains.intellij.platform is only available in the snapshots repository.
+      // It will be available at the gradlePluginPortal when stable.
+      forRepository {
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+      }
+      filter {
+        // For org.jetbrains.intellij.platform
+        includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
       }
     }
   }

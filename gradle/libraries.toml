@@ -113,7 +113,7 @@ http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
 http4k-core = { module = "org.http4k:http4k-core" }
 http4k-server-undertow = { module = "org.http4k:http4k-server-undertow" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
-intellij-plugin = "org.jetbrains.intellij.plugins:gradle-intellij-plugin:1.16.0"
+intellij-platform-plugin = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin:2.0.0-SNAPSHOT"
 intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0.0"
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

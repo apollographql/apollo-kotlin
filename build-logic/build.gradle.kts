@@ -31,7 +31,7 @@ dependencies {
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)
   implementation(libs.poet.kotlin)
-  implementation(libs.intellij.plugin)
+  implementation(libs.intellij.platform.plugin)
   implementation(libs.intellij.changelog)
   implementation(libs.androidx.lint.gradle.plugin)
 
