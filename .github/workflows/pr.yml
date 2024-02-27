@@ -105,7 +105,7 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
 
-      # Setup Java 11 environment for the next steps
+      # Setup Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
         with:
@@ -124,7 +124,7 @@ jobs:
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=pluginVerifierHomeDir::~/.pluginVerifier"
 
-          ./gradlew :intellij-plugin:listProductsReleases # prepare list of IDEs for Plugin Verifier
+          ./gradlew :intellij-plugin:printProductsReleases # prepare list of IDEs for Plugin Verifier
 
       # Trigger code generation in test project, as the plugin's tests depend on it
       - name: Test project codegen
@@ -151,7 +151,7 @@ jobs:
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
-        run: ./gradlew :intellij-plugin:runPluginVerifier -Pplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
+        run: ./gradlew :intellij-plugin:verifyPlugin -Pplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
 
       # Collect Plugin Verifier Result
       - name: Collect Plugin Verifier Result
