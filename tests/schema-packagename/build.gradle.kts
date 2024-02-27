@@ -18,15 +18,5 @@ apollo {
       include("com/example/schema.graphqls")
     })
     packageNamesFromFilePaths()
-
-    // This is to force running without a worker. See https://github.com/gradle/gradle/issues/28147
-    operationIdGenerator.set(object: OperationIdGenerator {
-      override val version: String
-        get() = "v1"
-
-      override fun apply(operationDocument: String, operationName: String): String {
-        return operationName
-      }
-    })
   }
 }

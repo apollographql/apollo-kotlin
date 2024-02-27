@@ -2,7 +2,6 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.InputFile
 import com.apollographql.apollo3.compiler.LayoutFactory
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.writeTo
@@ -11,7 +10,6 @@ import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
 import com.apollographql.apollo3.compiler.toIrOptions
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFiles
@@ -20,6 +18,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
+import java.io.File
 
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
@@ -69,9 +68,9 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
       }
 
       workQueue.submit(GenerateSources::class.java) {
-        it.graphqlFiles.from(graphqlFiles)
-        it.schemaFiles.from(schemaFiles)
-        it.fallbackSchemaFiles.from(fallbackSchemaFiles)
+        it.graphqlFiles = graphqlFiles.isolate()
+        it.schemaFiles = schemaFiles.isolate()
+        it.fallbackSchemaFiles = fallbackSchemaFiles.isolate()
         it.codegenSchemaOptions.set(codegenSchemaOptionsFile)
         it.irOptions.set(irOptionsFile)
         it.codegenOptions.set(codegenOptionsFile)
@@ -85,7 +84,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
 private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
   override fun execute() {
     with(parameters) {
-      val schemaInputFiles = (schemaFiles.takeIf { it.files.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
+      val schemaInputFiles = (schemaFiles.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
       val executableInputFiles = graphqlFiles.toInputFiles()
       val plugin = apolloCompilerPlugin()
 
@@ -112,25 +111,12 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
 }
 
 private interface GenerateSourcesParameters : WorkParameters {
-  val graphqlFiles: ConfigurableFileCollection
-  val schemaFiles: ConfigurableFileCollection
-  val fallbackSchemaFiles: ConfigurableFileCollection
+  var graphqlFiles: List<Pair<String, File>>
+  var schemaFiles: List<Pair<String, File>>
+  var fallbackSchemaFiles: List<Pair<String, File>>
   val codegenSchemaOptions: RegularFileProperty
   val codegenOptions: RegularFileProperty
   val irOptions: RegularFileProperty
   val operationManifestFile: RegularFileProperty
   val outputDir: DirectoryProperty
-}
-
-
-fun FileCollection.toInputFiles(): List<InputFile> {
-  val inputFiles = mutableListOf<InputFile>()
-
-  asFileTree.visit {
-    if (it.file.isFile) {
-      inputFiles.add(InputFile(it.file, it.path))
-    }
-  }
-
-  return inputFiles
 }
