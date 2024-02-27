@@ -92,6 +92,12 @@ intellijPlatform {
       channels.set(listOf("snapshots"))
     }
   }
+
+  verifyPlugin {
+    ides {
+      recommended()
+    }
+  }
 }
 
 tasks {
@@ -155,9 +161,10 @@ tasks.test.configure {
 
 dependencies {
   intellijPlatform {
-    create(properties("platformType"), properties("platformVersion"))
+    create(type = properties("platformType"), version = properties("platformVersion"))
     bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    pluginVerifier()
   }
   implementation(project(":apollo-gradle-plugin-external"))
   implementation(project(":apollo-ast"))
