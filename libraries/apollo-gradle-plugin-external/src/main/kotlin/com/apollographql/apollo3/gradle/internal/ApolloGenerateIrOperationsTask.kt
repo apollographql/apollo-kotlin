@@ -11,7 +11,6 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -25,9 +24,6 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val graphqlFiles: ConfigurableFileCollection
-
-  @get:Internal
-  var sourceRoots: Set<String>? = null
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -44,9 +40,7 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
   fun taskAction() {
     val upstreamIrOperations = upstreamIrFiles.files.map { it.toIrOperations() }
 
-    val normalizedExecutableFiles = graphqlFiles.files.map {
-      com.apollographql.apollo3.compiler.InputFile(it, it.normalizedPath(sourceRoots!!))
-    }
+    val normalizedExecutableFiles = graphqlFiles.toInputFiles()
 
     ApolloCompiler.buildIrOperations(
         executableFiles = normalizedExecutableFiles,

@@ -1,0 +1,4 @@
+scalar Foo
+type Query {
+  foo: Foo
+}
