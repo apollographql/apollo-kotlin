@@ -759,7 +759,6 @@ abstract class DefaultApolloExtension(
         task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
       }
       task.graphqlFiles.from(service.graphqlSourceDirectorySet)
-      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamIrFiles.from(upstreamIrFiles)
       task.irOptionsFile.set(irOptionsTaskProvider.flatMap { it.irOptionsFile })
 
@@ -779,7 +778,6 @@ abstract class DefaultApolloExtension(
 
       task.schemaFiles.from(service.schemaFiles(project))
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
-      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.upstreamSchemaFiles.from(schemaConsumerConfiguration)
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile })
       task.codegenSchemaFile.set(BuildDirLayout.codegenSchema(project, service))
@@ -866,7 +864,6 @@ abstract class DefaultApolloExtension(
       configureBaseCodegenTask(project, task, optionsTaskProvider, service, classpath)
 
       task.graphqlFiles.from(service.graphqlSourceDirectorySet)
-      task.sourceRoots = service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet()
       task.schemaFiles.from(service.schemaFiles(project))
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.map { it.codegenSchemaOptionsFile.get() })
