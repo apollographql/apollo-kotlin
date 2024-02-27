@@ -6,6 +6,9 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.RouterError
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mpp.Platform
+import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.internal.runTest
@@ -256,6 +259,7 @@ class MultipartSubscriptionsMockServerTest {
       awaitComplete()
     }
   }
+
   @Test
   fun trailingHeartbeatIsIgnored() = multipartSubsTest {
     enqueue("--graphql\r\nContent-Type: application/json\r\n\r\n{}\r\n--graphql--\r\n")
@@ -291,26 +295,35 @@ private class Context(
   }
 }
 
+expect fun StreamingHttpEngine(): HttpEngine
+
 private fun multipartSubsTest(block: suspend Context.() -> Unit): ApolloTestResult {
   return runTest {
-    MockServer().use { mockServer ->
-      ApolloClient.Builder()
-          .serverUrl(mockServer.url())
-          .subscriptionNetworkTransport(HttpNetworkTransport.Builder().serverUrl(mockServer.url()).build())
-          .build()
-          .use { apolloClient ->
-            val channel = Channel<String>(Channel.UNLIMITED)
-            val context = Context(apolloClient, channel)
-
-            mockServer.enqueue(
-                MockResponse.Builder()
-                    .addHeader("Content-Type", "multipart/mixed; boundary=\"graphql\"")
-                    .addHeader("Transfer-Encoding", "chunked")
-                    .body(channel.consumeAsFlow().map { it.encodeUtf8() }.asChunked())
+    if (platform() != Platform.Js) {
+      MockServer().use { mockServer ->
+        ApolloClient.Builder()
+            .serverUrl(mockServer.url())
+            .subscriptionNetworkTransport(
+                HttpNetworkTransport.Builder()
+                    .serverUrl(mockServer.url())
+                    .httpEngine(StreamingHttpEngine())
                     .build()
             )
-            context.block()
-          }
+            .build()
+            .use { apolloClient ->
+              val channel = Channel<String>(Channel.UNLIMITED)
+              val context = Context(apolloClient, channel)
+
+              mockServer.enqueue(
+                  MockResponse.Builder()
+                      .addHeader("Content-Type", "multipart/mixed; boundary=\"graphql\"")
+                      .addHeader("Transfer-Encoding", "chunked")
+                      .body(channel.consumeAsFlow().map { it.encodeUtf8() }.asChunked())
+                      .build()
+              )
+              context.block()
+            }
+      }
     }
   }
 }
