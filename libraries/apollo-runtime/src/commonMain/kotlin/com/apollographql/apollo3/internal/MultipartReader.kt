@@ -18,7 +18,6 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import okio.Buffer
 import okio.BufferedSource
@@ -136,7 +135,13 @@ class MultipartReader constructor(
           continue@afterBoundaryLoop
         }
 
-        -1 -> throw DefaultApolloException("unexpected characters after boundary")
+        -1 -> {
+          if (source.exhausted()) {
+            throw DefaultApolloException("premature end of multipart body")
+          } else {
+            throw DefaultApolloException("unexpected characters after boundary")
+          }
+        }
       }
     }
 

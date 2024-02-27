@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.internal.readErrors
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.toApolloResponse
@@ -165,18 +166,26 @@ private constructor(
             while (reader.hasNext()) {
               when(reader.nextName()) {
                 "payload" -> {
-                  payloadResponse = reader.parseResponse(
-                      operation = operation,
-                      customScalarAdapters = customScalarAdapters,
-                      deferredFragmentIdentifiers = null
-                  )
+                  if (reader.peek() == JsonReader.Token.NULL) {
+                    reader.skipValue()
+                  } else {
+                    payloadResponse = reader.parseResponse(
+                        operation = operation,
+                        customScalarAdapters = customScalarAdapters,
+                        deferredFragmentIdentifiers = null
+                    )
+                  }
                 }
                 "errors" -> {
-                  errors = reader.readErrors()
+                  if (reader.peek() == JsonReader.Token.NULL) {
+                    reader.skipValue()
+                  } else {
+                    errors = reader.readErrors()
+                  }
                 }
                 else -> {
                   // Ignore unknown keys
-                  Unit
+                  reader.skipValue()
                 }
               }
             }

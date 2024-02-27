@@ -69,10 +69,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
-<<<<<<< HEAD
       <option name="CALL_PARAMETERS_WRAP" value="0" />
-=======
->>>>>>> faa0804773 (add more multipart tests)
       <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="false" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
