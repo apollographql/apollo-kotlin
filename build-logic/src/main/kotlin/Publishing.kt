@@ -182,7 +182,7 @@ private fun Project.configurePublishingInternal() {
           }
         }
 
-        else -> {
+        components.findByName("java") != null -> {
           /**
            * Kotlin JVM do not create publications (yet?). Do it ourselves.
            */
@@ -194,6 +194,11 @@ private fun Project.configurePublishingInternal() {
 
             artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
+        }
+        else -> {
+          /**
+           * apollo-kdoc
+           */
         }
       }
 
