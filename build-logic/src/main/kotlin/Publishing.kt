@@ -109,7 +109,7 @@ fun Project.configureDokkaAggregate() {
       }
   )
 
-  val olderVersions = listOf<String>()
+  val olderVersions = listOf("3.8.2")
   val kdocVersionTasks = olderVersions.map { version ->
     val versionString = version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
@@ -121,12 +121,12 @@ fun Project.configureDokkaAggregate() {
     }
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
-      from(configuration.map { zipTree(it) })
+      from(configuration.elements.map { it.map { zipTree(it) } })
       into(layout.buildDirectory.dir("kdoc-versions/$version"))
     }
   }
 
-  val downloadKDocVersions = tasks.register("dowloadKDocVersions") {
+  val downloadKDocVersions = tasks.register("downloadKDocVersions") {
     dependsOn(kdocVersionTasks)
     outputs.dir(layout.buildDirectory.dir("kdoc-versions/"))
     doLast {
@@ -141,7 +141,9 @@ fun Project.configureDokkaAggregate() {
     version.set(currentVersion)
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
+
   tasks.withType(DokkatooGenerateTask::class.java).configureEach {
+    dependsOn(downloadKDocVersions)
     /**
      * The Apollo docs website expect the contents to be in a `kdoc` subfolder
      * See https://github.com/apollographql/website-router/blob/389d6748c592ac88411ceb15c93965d2b800d9b3/_redirects#L105
