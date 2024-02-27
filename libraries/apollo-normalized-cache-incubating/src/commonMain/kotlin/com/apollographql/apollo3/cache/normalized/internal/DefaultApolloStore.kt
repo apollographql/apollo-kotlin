@@ -19,7 +19,6 @@ import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCacheWrapper
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCacheInternal
 import com.apollographql.apollo3.cache.normalized.api.toData
@@ -49,11 +48,7 @@ internal class DefaultApolloStore(
 
   // Keeping this as lazy to avoid accessing the disk at initialization which usually happens on the main thread
   private val cache: OptimisticNormalizedCache by lazy {
-    val normalizedCache = normalizedCacheFactory.create()
-    if (normalizedCache is OptimisticNormalizedCache) {
-      normalizedCache
-    } else
-      OptimisticNormalizedCacheWrapper(normalizedCache)
+    OptimisticNormalizedCache(normalizedCacheFactory.create())
   }
 
   override fun publish(keys: Set<String>) {
