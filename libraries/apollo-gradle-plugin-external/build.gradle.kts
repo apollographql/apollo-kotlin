@@ -41,6 +41,13 @@ gradlePlugin {
   }
 }
 
-gr8 {
-  removeGradleApiFromApi()
+// The java-gradle-plugin adds `gradleApi()` to the `api` implementation but it contains some JDK15 bytecode at
+// org/gradle/internal/impldep/META-INF/versions/15/org/bouncycastle/jcajce/provider/asymmetric/edec/SignatureSpi$EdDSA.class:
+// java.lang.IllegalArgumentException: Unsupported class file major version 59
+// So remove it
+val apiDependencies = project.configurations.getByName("api").dependencies
+apiDependencies.firstOrNull {
+  it is SelfResolvingDependency
+}.let {
+  apiDependencies.remove(it)
 }
