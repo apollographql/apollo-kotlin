@@ -56,7 +56,7 @@ interface NormalizedCache : ReadOnlyNormalizedCache {
    *
    * @param cacheKey of record to be removed
    * @param cascade remove referenced records if true
-   * @return `true` if a record with such key was successfully removed, `false` otherwise
+   * @return `true` if at least one record was successfully removed, `false` otherwise
    */
   fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean
 
