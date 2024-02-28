@@ -99,13 +99,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Introspecti
 	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
 }
 
-public final class com/apollographql/apollo3/gradle/api/KotlinProjectKt {
-	public static final fun getKotlinMultiplatformExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinMultiplatformExtension;
-	public static final fun getKotlinProjectExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
-	public static final fun getKotlinProjectExtensionOrThrow (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
-	public static final fun isKotlinMultiplatform (Lorg/gradle/api/Project;)Z
-}
-
 public abstract interface class com/apollographql/apollo3/gradle/api/RegisterOperationsConfig {
 	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;

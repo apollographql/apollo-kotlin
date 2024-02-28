@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory

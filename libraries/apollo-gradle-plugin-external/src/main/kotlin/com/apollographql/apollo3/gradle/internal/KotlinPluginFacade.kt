@@ -3,8 +3,6 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
