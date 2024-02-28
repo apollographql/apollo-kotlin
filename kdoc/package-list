@@ -17,6 +17,7 @@ module:apollo-api
 com.apollographql.apollo3.api
 com.apollographql.apollo3.api.http
 com.apollographql.apollo3.api.http.internal
+com.apollographql.apollo3.api.internal
 com.apollographql.apollo3.api.json
 com.apollographql.apollo3.exception
 module:apollo-api-java
