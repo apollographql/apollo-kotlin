@@ -114,23 +114,6 @@ tasks.test.configure {
   systemProperty("idea.home.path", mockJdkRoot.relativeTo(project.projectDir).path)
 }
 
-dependencies {
-  intellijPlatform {
-    create(type = properties("platformType"), version = properties("platformVersion"))
-    bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-    plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-    pluginVerifier()
-  }
-  implementation(project(":apollo-gradle-plugin-external"))
-  implementation(project(":apollo-ast"))
-  implementation(project(":apollo-tooling"))
-  implementation(project(":apollo-normalized-cache-sqlite"))
-  implementation(libs.sqlite.jdbc)
-  implementation(libs.apollo.runtime.published)
-  runtimeOnly(libs.slf4j.simple)
-  testImplementation(libs.google.testparameterinjector)
-}
-
 apollo {
   service("apolloDebugServer") {
     packageName.set("com.apollographql.ijplugin.apollodebugserver")
@@ -199,4 +182,22 @@ intellijPlatform {
       recommended()
     }
   }
+}
+
+dependencies {
+  intellijPlatform {
+    create(type = properties("platformType"), version = properties("platformVersion"))
+    bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    instrumentationTools()
+    pluginVerifier()
+  }
+  implementation(project(":apollo-gradle-plugin-external"))
+  implementation(project(":apollo-ast"))
+  implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-normalized-cache-sqlite"))
+  implementation(libs.sqlite.jdbc)
+  implementation(libs.apollo.runtime.published)
+  runtimeOnly(libs.slf4j.simple)
+  testImplementation(libs.google.testparameterinjector)
 }
