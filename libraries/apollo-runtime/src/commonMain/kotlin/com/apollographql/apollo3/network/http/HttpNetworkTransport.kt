@@ -3,6 +3,7 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -10,14 +11,15 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.internal.readErrors
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
+import com.apollographql.apollo3.exception.RouterError
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
@@ -26,12 +28,12 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import okio.use
 
 class HttpNetworkTransport
 private constructor(
@@ -108,7 +110,7 @@ private constructor(
           cause = throwable
       )
     }
-    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation,)
+    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation)
         .exception(apolloException)
         .isLast(true)
         .build()
@@ -157,52 +159,43 @@ private constructor(
     return multipartBodyFlow(httpResponse)
         .mapNotNull { part ->
           if (operation is Subscription) {
-            val kind = part.peek().jsonReader().use { reader ->
-              // detect what kind of payload we have
-              reader.beginObject()
-              if (!reader.hasNext()) {
-                return@use Kind.EMPTY
-              }
-              val name = reader.nextName()
-
-              return@use when (name) {
+            val reader = part.jsonReader()
+            var payloadResponse: ApolloResponse<D>? = null
+            var errors: List<Error>? = null
+            reader.beginObject()
+            while (reader.hasNext()) {
+              when(reader.nextName()) {
                 "payload" -> {
                   if (reader.peek() == JsonReader.Token.NULL) {
-                    Kind.OTHER
+                    reader.skipValue()
                   } else {
-                    Kind.PAYLOAD
+                    payloadResponse = reader.parseResponse(
+                        operation = operation,
+                        customScalarAdapters = customScalarAdapters,
+                        deferredFragmentIdentifiers = null
+                    )
                   }
                 }
-
-                else -> Kind.OTHER
+                "errors" -> {
+                  if (reader.peek() == JsonReader.Token.NULL) {
+                    reader.skipValue()
+                  } else {
+                    errors = reader.readErrors()
+                  }
+                }
+                else -> {
+                  // Ignore unknown keys
+                  reader.skipValue()
+                }
               }
             }
-            when (kind) {
-              Kind.EMPTY -> {
-                // nothing to do, maybe it's a ping
-                null
+            reader.endObject()
+            when {
+              errors != null -> {
+                errorResponse(operation, RouterError(errors))
               }
-
-              Kind.PAYLOAD -> {
-                // {"payload":{"data":{"aReviewWasAdded":{"id":11,"body":"A new review for Apollo Studio"}}}}
-                val reader = part.jsonReader()
-                // advance the reader
-                reader.beginObject()
-                reader.nextName()
-
-                reader.toApolloResponse(
-                    operation = operation,
-                    customScalarAdapters = customScalarAdapters,
-                    deferredFragmentIdentifiers = null
-                )
-              }
-
-              Kind.OTHER -> {
-                // We assume if there's something that is not a payload, it is an error.
-                // {"payload":null,"errors":[{"message":"cannot read message from websocket","extensions":{"code":"WEBSOCKET_MESSAGE_ERROR"}}]}
-                val response = part.jsonReader().readAny()
-                errorResponse(operation, SubscriptionOperationException(operation.name(), response))
-              }
+              payloadResponse != null -> payloadResponse
+              else -> null
             }
           } else {
             if (jsonMerger == null) {
@@ -221,6 +214,14 @@ private constructor(
                   deferredFragmentIdentifiers = deferredFragmentIds
               ).newBuilder().isLast(isLast).build()
             }
+          }
+        }.catch { throwable ->
+          if (throwable is ApolloException) {
+            emit(
+                ApolloResponse.Builder(operation = operation, requestUuid = uuid4())
+                    .exception(throwable)
+                    .build()
+            )
           }
         }
   }

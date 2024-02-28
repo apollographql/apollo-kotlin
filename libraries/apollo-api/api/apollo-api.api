@@ -989,6 +989,9 @@ public final class com/apollographql/apollo3/api/http/internal/UrlEncodeKt {
 	public static final fun urlEncode (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/api/internal/ResponseParserKt {
+}
+
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo3/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/json/JsonReader;
@@ -1280,6 +1283,11 @@ public final class com/apollographql/apollo3/exception/MissingValueException : c
 
 public final class com/apollographql/apollo3/exception/NoDataException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class com/apollographql/apollo3/exception/RouterError : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getErrors ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/exception/SubscriptionOperationException : com/apollographql/apollo3/exception/ApolloException {

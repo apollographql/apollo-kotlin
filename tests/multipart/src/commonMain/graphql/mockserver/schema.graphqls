@@ -4,6 +4,7 @@ type Query {
 
 type Subscription {
   counter: Counter
+  hello: String
 }
 
 type Counter {

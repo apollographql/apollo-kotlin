@@ -7,3 +7,7 @@ subscription CounterSubscription {
     count
   }
 }
+
+subscription Hello {
+  hello
+}

@@ -51,6 +51,16 @@ class SubscriptionOperationException(
     val payload: Any? = null,
 ) : ApolloException(message = "Operation error $operationName")
 
+/**
+ * The router sent one or several errors.
+ *
+ * This exception is not always terminal. Other responses may follow
+ *
+ * @param errors a list of errors returned by the router
+ */
+class RouterError(
+    val errors: List<Error>,
+) : ApolloException(message = "Router error(s) (first: '${errors.firstOrNull()?.message}')")
 
 /**
  * A WebSocket connection could not be established: e.g., expired token
