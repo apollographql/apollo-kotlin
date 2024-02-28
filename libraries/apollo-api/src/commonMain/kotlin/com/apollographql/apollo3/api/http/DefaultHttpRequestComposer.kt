@@ -62,6 +62,7 @@ class DefaultHttpRequestComposer(
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
+        @Suppress("DEPRECATION")
         val body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query)
         HttpRequest.Builder(
             method = HttpMethod.Post,
