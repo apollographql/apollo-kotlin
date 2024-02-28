@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DeferredFragmentIdentifier
@@ -139,6 +140,7 @@ private fun JsonReader.readErrorLocation(): Error.Location {
   return Error.Location(line, column)
 }
 
+@ApolloInternal
 fun JsonReader.readErrors(): List<Error> {
   if (peek() == JsonReader.Token.NULL) {
     nextNull()

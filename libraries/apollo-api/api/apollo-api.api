@@ -990,7 +990,6 @@ public final class com/apollographql/apollo3/api/http/internal/UrlEncodeKt {
 }
 
 public final class com/apollographql/apollo3/api/internal/ResponseParserKt {
-	public static final fun readErrors (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
