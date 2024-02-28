@@ -1,3 +1,8 @@
+/**
+ * Figure out a way to make it work with the new APIs.
+ */
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.internal
 
 import com.android.build.gradle.AppExtension
@@ -169,7 +174,7 @@ private val lazyRegisterJavaGeneratingTask: Method? = BaseVariant::class.java.de
 
 fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   check(variant is BaseVariant) {
-    "Apollo: variant must be an instance of an Android BaseVariant (found $variant)"
+    "Apollo: variant must be an instance of com.android.build.gradle.api.BaseVariant (found $variant)"
   }
 
   if (lazyRegisterJavaGeneratingTask != null) {
@@ -208,10 +213,10 @@ fun connectToAllAndroidVariants(project: Project, outputDir: Provider<Directory>
 }
 
 internal val BaseExtension.minSdk: Int?
-  get() = defaultConfig?.minSdkVersion?.apiLevel
+  get() = defaultConfig.minSdkVersion?.apiLevel
 
 internal val BaseExtension.targetSdk: Int?
-  get() = defaultConfig?.targetSdkVersion?.apiLevel
+  get() = defaultConfig.targetSdkVersion?.apiLevel
 
-internal val BaseExtension.pluginVersion: String
+internal val agpVersion: String
   get() = com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION

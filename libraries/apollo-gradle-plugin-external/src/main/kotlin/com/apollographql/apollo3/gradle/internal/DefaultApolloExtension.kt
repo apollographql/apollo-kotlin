@@ -9,16 +9,13 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.mergeWith
 import com.apollographql.apollo3.compiler.toIrOperations
-import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.SchemaConnection
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.api.androidExtension
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.Action
@@ -822,7 +819,7 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet("main")
       }
 
-      project.javaConvention != null -> {
+      project.javaExtension != null -> {
         connection.connectToJavaSourceSet("main")
       }
 

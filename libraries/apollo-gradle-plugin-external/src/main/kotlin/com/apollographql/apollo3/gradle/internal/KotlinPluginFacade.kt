@@ -81,6 +81,7 @@ fun createAllKotlinSourceSetServices(
 
     apolloExtension.service(name) { service ->
       action.execute(service)
+      @Suppress("DEPRECATION")
       check(!service.sourceFolder.isPresent) {
         "Apollo: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
       }

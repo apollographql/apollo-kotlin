@@ -50,16 +50,8 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
     val subgraph = subgraph.orNull
     val revision = revision.orNull
 
-    check(key != null) {
-      "please define key"
-    }
-
-    if (graph == null && key.startsWith("service:")) {
+    if (key.startsWith("service:")) {
       graph = key.split(":")[1]
-    }
-
-    check(graph != null) {
-      "please define graph"
     }
 
     check(schema != null) {

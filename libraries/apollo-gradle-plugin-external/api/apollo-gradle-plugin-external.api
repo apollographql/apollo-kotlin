@@ -1,18 +1,3 @@
-public final class com/apollographql/apollo3/gradle/api/AndroidProject {
-	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/AndroidProject;
-	public final fun onEachVariant (Lorg/gradle/api/Project;ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun onEachVariant$default (Lcom/apollographql/apollo3/gradle/api/AndroidProject;Lorg/gradle/api/Project;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
-public final class com/apollographql/apollo3/gradle/api/AndroidProjectKt {
-	public static final fun getAndroidExtension (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
-	public static final fun getAndroidExtensionOrThrow (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
-	public static final fun getApplicationVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-	public static final fun getLibraryVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-	public static final fun getTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-	public static final fun getUnitTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-}
-
 public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
 	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/ApolloAttributes;
 	public final fun getAPOLLO_SERVICE_ATTRIBUTE ()Lorg/gradle/api/attributes/Attribute;
@@ -112,11 +97,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Introspecti
 	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
-}
-
-public final class com/apollographql/apollo3/gradle/api/JavaProjectKt {
-	public static final fun getJavaConvention (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
-	public static final fun getJavaConventionOrThrow (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
 }
 
 public final class com/apollographql/apollo3/gradle/api/KotlinProjectKt {

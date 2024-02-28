@@ -88,6 +88,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
           |}
         """.trimMargin()
       }
+      @Suppress("DEPRECATION")
       RegisterOperations.registerOperations(
           key = key.get() ?: error("key is required to register operations"),
           graphID = graph.get() ?: error("graphID is required to register operations"),
