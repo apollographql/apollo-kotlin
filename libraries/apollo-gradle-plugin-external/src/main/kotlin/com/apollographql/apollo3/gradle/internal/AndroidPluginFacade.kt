@@ -168,5 +168,5 @@ internal val BaseExtension.targetSdk: Int?
  * BaseExtension is used as a receiver here to make sure we do not try to call this
  * code if AGP is not in the classpath
  */
-internal val BaseExtension.agpVersion: String
+internal val BaseExtension.pluginVersion: String
   get() = com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION
