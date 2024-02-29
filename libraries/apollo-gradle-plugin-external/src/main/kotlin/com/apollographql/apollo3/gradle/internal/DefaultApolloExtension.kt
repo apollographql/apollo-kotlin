@@ -957,7 +957,8 @@ abstract class DefaultApolloExtension(
 
   companion object {
     private const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.8"
+    // Keep in sync gradle-api-min
+    const val MIN_GRADLE_VERSION = "8.0"
 
     private const val USAGE_APOLLO_CODEGEN_METADATA = "apollo-codegen-metadata"
     private const val USAGE_APOLLO_UPSTREAM_IR = "apollo-upstream-ir"
