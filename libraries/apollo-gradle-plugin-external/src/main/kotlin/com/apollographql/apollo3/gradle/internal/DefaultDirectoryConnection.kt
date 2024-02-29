@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.api.javaConventionOrThrow
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
@@ -19,7 +17,7 @@ internal class DefaultDirectoryConnection(
   }
 
   override fun connectToJavaSourceSet(name: String) {
-    project.javaConventionOrThrow
+    project.javaExtensionOrThrow
         .sourceSets
         .getByName(name)
         .java

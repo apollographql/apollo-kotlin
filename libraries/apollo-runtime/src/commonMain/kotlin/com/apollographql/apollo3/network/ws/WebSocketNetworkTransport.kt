@@ -310,6 +310,7 @@ private constructor(
           } else {
             responsePayload to null
           }
+          @Suppress("DEPRECATION")
           val apolloResponse: ApolloResponse<D> = payload.jsonReader().toApolloResponse(
               operation = request.operation,
               requestUuid = request.requestUuid,

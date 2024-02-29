@@ -9,18 +9,12 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.mergeWith
 import com.apollographql.apollo3.compiler.toIrOperations
-import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.SchemaConnection
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.api.androidExtension
-import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo3.gradle.api.javaConvention
-import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -822,7 +816,7 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet("main")
       }
 
-      project.javaConvention != null -> {
+      project.javaExtension != null -> {
         connection.connectToJavaSourceSet("main")
       }
 
@@ -963,7 +957,8 @@ abstract class DefaultApolloExtension(
 
   companion object {
     private const val TASK_GROUP = "apollo"
-    const val MIN_GRADLE_VERSION = "6.8"
+    // Keep in sync gradle-api-min
+    const val MIN_GRADLE_VERSION = "8.0"
 
     private const val USAGE_APOLLO_CODEGEN_METADATA = "apollo-codegen-metadata"
     private const val USAGE_APOLLO_UPSTREAM_IR = "apollo-upstream-ir"

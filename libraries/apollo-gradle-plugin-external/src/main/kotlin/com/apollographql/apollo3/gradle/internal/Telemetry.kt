@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.gradle.api.androidExtension
 import org.gradle.api.Project
 
 internal fun getTelemetryData(project: Project, apolloExtension: DefaultApolloExtension) = DefaultTelemetryData(

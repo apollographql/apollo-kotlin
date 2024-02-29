@@ -140,6 +140,7 @@ private constructor(
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
+    @Suppress("DEPRECATION")
     val response = httpResponse.body!!.jsonReader().toApolloResponse(
         operation,
         customScalarAdapters = customScalarAdapters,
@@ -208,6 +209,7 @@ private constructor(
             if (jsonMerger!!.isEmptyPayload) {
               null
             } else {
+              @Suppress("DEPRECATION")
               merged.jsonReader().toApolloResponse(
                   operation = operation,
                   customScalarAdapters = customScalarAdapters,

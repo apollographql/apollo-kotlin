@@ -1,3 +1,13 @@
+/**
+ * TODO: Figure out a way to make it work with the new AGP 8.0.0 variant APIs.
+ * See https://issuetracker.google.com/issues/327399383
+ *
+ * When doing so it might interesting to refactor this code so that classes referencing possibly absent symbols are not loaded if not needed
+ * See https://chromium.googlesource.com/chromium/src/+/HEAD/build/android/docs/class_verification_failures.md for an Android link that does
+ * not apply here but gives a good description of the potential issue.
+ */
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.internal
 
 import com.android.build.gradle.AppExtension
@@ -8,8 +18,6 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.gradle.api.androidExtensionOrThrow
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -22,7 +30,7 @@ import java.lang.reflect.ParameterizedType
 private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
   val container = project.container(BaseVariant::class.java)
 
-  val extension = project.androidExtensionOrThrow
+  val extension: BaseExtension = project.androidExtensionOrThrow
   when (extension) {
     is LibraryExtension -> {
       extension.libraryVariants.configureEach { variant ->
@@ -117,7 +125,7 @@ private val lazyRegisterJavaGeneratingTask: Method? = BaseVariant::class.java.de
 
 fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   check(variant is BaseVariant) {
-    "Apollo: variant must be an instance of an Android BaseVariant (found $variant)"
+    "Apollo: variant must be an instance of com.android.build.gradle.api.BaseVariant (found $variant)"
   }
 
   if (lazyRegisterJavaGeneratingTask != null) {
@@ -156,10 +164,14 @@ fun connectToAllAndroidVariants(project: Project, outputDir: Provider<Directory>
 }
 
 internal val BaseExtension.minSdk: Int?
-  get() = defaultConfig?.minSdkVersion?.apiLevel
+  get() = defaultConfig.minSdkVersion?.apiLevel
 
 internal val BaseExtension.targetSdk: Int?
-  get() = defaultConfig?.targetSdkVersion?.apiLevel
+  get() = defaultConfig.targetSdkVersion?.apiLevel
 
+/**
+ * BaseExtension is used as a receiver here to make sure we do not try to call this
+ * code if AGP is not in the classpath
+ */
 internal val BaseExtension.pluginVersion: String
   get() = com.android.builder.model.Version.ANDROID_GRADLE_PLUGIN_VERSION

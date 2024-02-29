@@ -1,3 +1,6 @@
+// because of PackageNameGenerator and OperationOutputGenerator
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.CodegenSchema

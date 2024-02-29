@@ -8,6 +8,7 @@ import java.io.File
  * - executable files containing operations and fragments
  * - schema files containing type definitions or introspection json
  */
+@Suppress("DEPRECATION")
 @Deprecated("Use Apollo compiler plugins instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface PackageNameGenerator {

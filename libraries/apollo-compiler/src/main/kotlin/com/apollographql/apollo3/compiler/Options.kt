@@ -640,6 +640,7 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 }
 
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
+@Suppress("DEPRECATION")
 internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
 internal val defaultLogger = NoOpLogger
 internal const val defaultUseSemanticNaming = true
