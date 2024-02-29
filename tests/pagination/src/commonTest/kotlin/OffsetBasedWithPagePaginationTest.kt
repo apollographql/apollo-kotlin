@@ -11,7 +11,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCacheWrapper
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
 import pagination.offsetBasedWithPage.UsersQuery
@@ -235,7 +234,7 @@ class OffsetBasedWithPagePaginationTest {
 internal fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
   val dump = apolloStore.dump().filterKeys {
     // Ignore optimistic cache for comparison
-    it != OptimisticNormalizedCache::class && it != OptimisticNormalizedCacheWrapper::class
+    it != OptimisticNormalizedCache::class
   }
   if (dump.size < 2) return
   val caches = dump.values.toList()
