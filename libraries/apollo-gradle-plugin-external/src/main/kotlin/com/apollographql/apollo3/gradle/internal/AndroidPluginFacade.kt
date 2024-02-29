@@ -1,5 +1,10 @@
 /**
- * Figure out a way to make it work with the new APIs.
+ * TODO: Figure out a way to make it work with the new AGP 8.0.0 variant APIs.
+ * See https://issuetracker.google.com/issues/327399383
+ *
+ * When doing so it might interesting to refactor this code so that classes referencing possibly absent symbols are not loaded if not needed
+ * See https://chromium.googlesource.com/chromium/src/+/HEAD/build/android/docs/class_verification_failures.md for an Android link that does
+ * not apply here but gives a good description of the potential issue.
  */
 @file:Suppress("DEPRECATION")
 
