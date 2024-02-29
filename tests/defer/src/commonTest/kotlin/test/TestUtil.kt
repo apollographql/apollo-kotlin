@@ -1,12 +1,9 @@
 package test
 
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.network.http.HttpEngine
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-
-expect fun getStreamingHttpEngine(): HttpEngine
 
 internal fun assertResponseListEquals(expectedResponseList: List<ApolloResponse<*>>, actualResponseList: List<ApolloResponse<*>>) {
   assertContentEquals(expectedResponseList, actualResponseList) { expectedResponse, actualResponse ->

@@ -54,7 +54,7 @@ class DeferNormalizedCacheTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().httpEngine(getStreamingHttpEngine()).serverUrl(mockServer.url()).store(store).build()
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private fun tearDown() {

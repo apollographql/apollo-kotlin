@@ -13,7 +13,6 @@ import kotlin.test.AfterClass
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 class BenchmarksTest {

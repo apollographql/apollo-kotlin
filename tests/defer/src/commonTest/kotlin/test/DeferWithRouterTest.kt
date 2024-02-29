@@ -39,7 +39,6 @@ class DeferWithRouterTest {
 
   private fun setUp() {
     apolloClient = ApolloClient.Builder()
-        .httpEngine(getStreamingHttpEngine())
         .serverUrl("http://127.0.0.1:4000/")
         .build()
   }
