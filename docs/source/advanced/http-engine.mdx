@@ -14,7 +14,9 @@ You can use a different HTTP client with Apollo Kotlin by creating a custom clas
 
 ## The `HttpEngine` interface
 
-The [HttpEngine interface](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) defines two functions: `execute` and `dispose`. Here's an example implementation that also includes a couple of helper methods:
+The [HttpEngine interface](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html)
+defines two functions: `execute` and `close`. Here's an example implementation that also includes a couple of helper
+methods:
 
 ```kotlin
 class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
@@ -53,7 +55,7 @@ class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
     )
   }
 
-  override fun dispose() {
+  override fun close() {
     // Dispose any resources here
   }
 }
