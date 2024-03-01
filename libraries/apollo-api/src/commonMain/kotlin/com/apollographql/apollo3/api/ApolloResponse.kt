@@ -10,12 +10,18 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
- * Represents a GraphQL response. GraphQL responses can be partial responses, so it is valid to have both data != null and exception != null
+ * Represents a GraphQL response or an exception if no GraphQL response is received.
  *
- * Valid states are:
- * - data != null && exception == null: complete data with no error
- * - data == null && exception != null: no data, a network error or operation error happened
- * - data != null && exception != null: partial data with field errors
+ * - [data] contains the parsed data returned in the response
+ * - [errors] contains any GraphQL errors returned in the response
+ * - [exception] contains an exception if a GraphQL response wasn't received
+ *
+ * GraphQL responses can contain partial data, so it is possible to have both [data] != null and [errors] != null. An [ApolloResponse] may be in any of these states:
+ * - exception == null && data != null && errors == null: complete data with no errors
+ * - exception == null && data != null && errors != null: partial data with GraphQL errors
+ * - exception == null && data == null && errors != null: no data, only GraphQL errors
+ * - exception == null && data == null && errors == null: no data and no errors - while technically possible, this should not happen with a spec-compliant server
+ * - exception != null && data == null && errors == null: no GraphQL response was received due to a network error or otherwise
  */
 class ApolloResponse<D : Operation.Data>
 private constructor(
