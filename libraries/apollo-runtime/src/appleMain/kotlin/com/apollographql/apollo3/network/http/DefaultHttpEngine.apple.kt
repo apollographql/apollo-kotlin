@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -48,33 +47,25 @@ import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
 
-/**
- * An [HttpEngine] based on [NSURLSession] with the ability to stream data as it is received when using `Transfer-Encoding: Chunked`.
- * This is useful when using `@defer`.
- *
- * Note: this implementation only works when using the [new native memory manager](https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md)
- * as multiple threads mutate the internal state.
- *
- * That is why it is considered experimental and subject to change.
- *
- * Using the default [DefaultHttpEngine] will work when using `@defer`, but the payloads are buffered until the response is fully
- * received, thus losing the incremental nature of the response.
- */
-@ApolloExperimental
-class StreamingNSURLSessionHttpEngine(
+actual class DefaultHttpEngine(
     private val timeoutMillis: Long = 60_000,
+    private val nsUrlSessionConfiguration: NSURLSessionConfiguration,
 ) : HttpEngine {
+
+  actual constructor(timeoutMillis: Long) : this(
+      timeoutMillis = timeoutMillis,
+      nsUrlSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
+  )
 
   private val delegate = StreamingDataDelegate()
 
   private val nsUrlSession = NSURLSession.sessionWithConfiguration(
-      configuration = NSURLSessionConfiguration.defaultSessionConfiguration(),
+      configuration = nsUrlSessionConfiguration,
       delegate = delegate,
       delegateQueue = null
   )
 
-  @Suppress("UNCHECKED_CAST")
-  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
+  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
         URL = NSURL(string = request.url)
     ).apply {
@@ -145,7 +136,7 @@ class StreamingNSURLSessionHttpEngine(
     task.resume()
   }
 
-  override fun dispose() {
+  actual override fun dispose() {
   }
 }
 

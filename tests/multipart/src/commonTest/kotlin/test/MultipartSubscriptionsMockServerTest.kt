@@ -8,7 +8,6 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.internal.runTest
@@ -295,8 +294,6 @@ private class Context(
   }
 }
 
-expect fun StreamingHttpEngine(): HttpEngine
-
 private fun multipartSubsTest(block: suspend Context.() -> Unit): ApolloTestResult {
   return runTest {
     if (platform() != Platform.Js) {
@@ -306,7 +303,6 @@ private fun multipartSubsTest(block: suspend Context.() -> Unit): ApolloTestResu
             .subscriptionNetworkTransport(
                 HttpNetworkTransport.Builder()
                     .serverUrl(mockServer.url())
-                    .httpEngine(StreamingHttpEngine())
                     .build()
             )
             .build()
