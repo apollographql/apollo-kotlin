@@ -48,14 +48,25 @@ import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
 
-actual class DefaultHttpEngine(
-    private val timeoutMillis: Long = 60_000,
-    private val dataTaskFactory: DataTaskFactory,
-) : HttpEngine {
+actual class DefaultHttpEngine : HttpEngine {
+  constructor(
+      timeoutMillis: Long = 60_000,
+      dataTaskFactory: (delegate: NSURLSessionDataDelegateProtocol) -> DataTaskFactory,
+  ) {
+    this.timeoutMillis = timeoutMillis
+    this.dataTaskFactory = dataTaskFactory(delegate)
+  }
 
-  actual constructor(timeoutMillis: Long) : this(timeoutMillis, DefaultDataTaskFactory())
+  actual constructor(timeoutMillis: Long) {
+    this.timeoutMillis = timeoutMillis
+    this.dataTaskFactory = DefaultDataTaskFactory(delegate)
+  }
+
+  private val timeoutMillis: Long
+  private val dataTaskFactory: DataTaskFactory
 
   private val delegate = StreamingDataDelegate()
+
 
   actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
@@ -119,7 +130,7 @@ actual class DefaultHttpEngine(
       }
     }
 
-    val task = dataTaskFactory.dataTask(nsMutableURLRequest, delegate)
+    val task = dataTaskFactory.dataTask(nsMutableURLRequest)
     delegate.registerHandlerForTask(task, handler)
 
     continuation.invokeOnCancellation {
@@ -304,19 +315,18 @@ private class Pipe {
   }
 }
 
-fun interface DataTaskFactory {
-  fun dataTask(request: NSURLRequest, delegate: NSURLSessionDataDelegateProtocol): NSURLSessionDataTask
+interface DataTaskFactory {
+  fun dataTask(request: NSURLRequest): NSURLSessionDataTask
 }
 
-private class DefaultDataTaskFactory : DataTaskFactory {
-  private var nsUrlSession: NSURLSession? = null
+private class DefaultDataTaskFactory(delegate: NSURLSessionDataDelegateProtocol) : DataTaskFactory {
+  private val nsUrlSession = NSURLSession.sessionWithConfiguration(
+      configuration = NSURLSessionConfiguration.defaultSessionConfiguration(),
+      delegate = delegate,
+      delegateQueue = null
+  )
 
-  override fun dataTask(request: NSURLRequest, delegate: NSURLSessionDataDelegateProtocol): NSURLSessionDataTask {
-    if (nsUrlSession == null) nsUrlSession = NSURLSession.sessionWithConfiguration(
-        configuration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-        delegate = delegate,
-        delegateQueue = null
-    )
-    return nsUrlSession!!.dataTaskWithRequest(request)
+  override fun dataTask(request: NSURLRequest): NSURLSessionDataTask {
+    return nsUrlSession.dataTaskWithRequest(request)
   }
 }
