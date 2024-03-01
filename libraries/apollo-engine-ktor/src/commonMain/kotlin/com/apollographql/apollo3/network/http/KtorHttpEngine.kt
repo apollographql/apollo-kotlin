@@ -76,7 +76,7 @@ class KtorHttpEngine(
     }
   }
 
-  override fun dispose() {
+  override fun close() {
     if (!disposed) {
       client.close()
       disposed = true

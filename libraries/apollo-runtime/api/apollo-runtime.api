@@ -209,21 +209,12 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpIntercepto
 	public final fun getRequest ()Lcom/apollographql/apollo3/api/http/HttpRequest;
 }
 
-public final class com/apollographql/apollo3/network/http/DefaultHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
-	public static final field Companion Lcom/apollographql/apollo3/network/http/DefaultHttpEngine$Companion;
-	public fun <init> (J)V
-	public synthetic fun <init> (JILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (JJ)V
-	public fun <init> (Lokhttp3/Call$Factory;)V
-	public fun <init> (Lokhttp3/OkHttpClient;)V
-	public fun dispose ()V
-	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/network/http/DefaultHttpEngine$Companion {
-	public final fun execute (Lokhttp3/Call$Factory;Lokhttp3/Request;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun toApolloHttpResponse (Lokhttp3/Response;)Lcom/apollographql/apollo3/api/http/HttpResponse;
-	public final fun toOkHttpRequest (Lcom/apollographql/apollo3/api/http/HttpRequest;)Lokhttp3/Request;
+public final class com/apollographql/apollo3/network/http/DefaultHttpEngine {
+	public static final fun DefaultHttpEngine (J)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static final fun DefaultHttpEngine (JJ)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static final fun DefaultHttpEngine (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static final fun DefaultHttpEngine (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static synthetic fun DefaultHttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 }
 
 public final class com/apollographql/apollo3/network/http/HeadersInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
@@ -241,8 +232,9 @@ public final class com/apollographql/apollo3/network/http/HttpCall {
 	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpCall;
 }
 
-public abstract interface class com/apollographql/apollo3/network/http/HttpEngine {
-	public abstract fun dispose ()V
+public abstract interface class com/apollographql/apollo3/network/http/HttpEngine : java/io/Closeable {
+	public fun close ()V
+	public fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

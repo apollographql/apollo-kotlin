@@ -47,12 +47,19 @@ import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
 
-actual class DefaultHttpEngine(
-    private val timeoutMillis: Long = 60_000,
+actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = AppleHttpEngine(timeoutMillis)
+
+fun DefaultHttpEngine(
+    timeoutMillis: Long = 60_000,
+    nsUrlSessionConfiguration: NSURLSessionConfiguration,
+): HttpEngine = AppleHttpEngine(timeoutMillis, nsUrlSessionConfiguration)
+
+private class AppleHttpEngine(
+    private val timeoutMillis: Long,
     private val nsUrlSessionConfiguration: NSURLSessionConfiguration,
 ) : HttpEngine {
 
-  actual constructor(timeoutMillis: Long) : this(
+  constructor(timeoutMillis: Long) : this(
       timeoutMillis = timeoutMillis,
       nsUrlSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
   )
@@ -65,7 +72,7 @@ actual class DefaultHttpEngine(
       delegateQueue = null
   )
 
-  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
+  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
         URL = NSURL(string = request.url)
     ).apply {
@@ -136,7 +143,8 @@ actual class DefaultHttpEngine(
     task.resume()
   }
 
-  actual override fun dispose() {
+  override fun close() {
+    nsUrlSession.invalidateAndCancel()
   }
 }
 

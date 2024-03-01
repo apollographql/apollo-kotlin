@@ -7,34 +7,25 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.network.http.DefaultHttpEngine.Companion.execute
-import com.apollographql.apollo3.network.http.DefaultHttpEngine.Companion.toApolloHttpResponse
-import com.apollographql.apollo3.network.http.DefaultHttpEngine.Companion.toOkHttpRequest
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.testing.internal.runTest
-import okhttp3.OkHttpClient
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class MyHttpEngine: HttpEngine {
+internal class MyHttpEngine : HttpEngine {
+  private val wrappedHttpEngine = DefaultHttpEngine()
   val values = mutableListOf<String>()
 
-  private val okHttpClient = OkHttpClient()
-
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    val myExecutionContext  = request.executionContext[MyExecutionContext]?.also {
+    request.executionContext[MyExecutionContext]?.also {
       values.add(it.value)
     }
-    val taggedRequest = request
-        .toOkHttpRequest()
-        .newBuilder()
-        .tag(MyExecutionContext::class.java, myExecutionContext)
-        .build()
-    return okHttpClient.execute(taggedRequest).toApolloHttpResponse()
+    return wrappedHttpEngine.execute(request)
   }
 
-  override fun dispose() {
-
+  override fun close() {
+    wrappedHttpEngine.close()
   }
 }
 
@@ -69,8 +60,8 @@ class ExecutionContextTest {
   }
 }
 
-class MyExecutionContext(val value: String): ExecutionContext.Element {
-  companion object Key: ExecutionContext.Key<MyExecutionContext>
+class MyExecutionContext(val value: String) : ExecutionContext.Element {
+  companion object Key : ExecutionContext.Key<MyExecutionContext>
 
   override val key: ExecutionContext.Key<MyExecutionContext>
     get() = Key
