@@ -23,7 +23,6 @@ import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
-import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
 import platform.Foundation.NSURLSession
@@ -48,25 +47,23 @@ import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
 
-actual class DefaultHttpEngine : HttpEngine {
-  constructor(
-      timeoutMillis: Long = 60_000,
-      dataTaskFactory: (delegate: NSURLSessionDataDelegateProtocol) -> DataTaskFactory,
-  ) {
-    this.timeoutMillis = timeoutMillis
-    this.dataTaskFactory = dataTaskFactory(delegate)
-  }
+actual class DefaultHttpEngine(
+    private val timeoutMillis: Long = 60_000,
+    private val nsUrlSessionConfiguration: NSURLSessionConfiguration,
+) : HttpEngine {
 
-  actual constructor(timeoutMillis: Long) {
-    this.timeoutMillis = timeoutMillis
-    this.dataTaskFactory = DefaultDataTaskFactory(delegate)
-  }
-
-  private val timeoutMillis: Long
-  private val dataTaskFactory: DataTaskFactory
+  actual constructor(timeoutMillis: Long) : this(
+      timeoutMillis = timeoutMillis,
+      nsUrlSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
+  )
 
   private val delegate = StreamingDataDelegate()
 
+  private val nsUrlSession = NSURLSession.sessionWithConfiguration(
+      configuration = nsUrlSessionConfiguration,
+      delegate = delegate,
+      delegateQueue = null
+  )
 
   actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
@@ -130,7 +127,7 @@ actual class DefaultHttpEngine : HttpEngine {
       }
     }
 
-    val task = dataTaskFactory.dataTask(nsMutableURLRequest)
+    val task = nsUrlSession.dataTaskWithRequest(nsMutableURLRequest)
     delegate.registerHandlerForTask(task, handler)
 
     continuation.invokeOnCancellation {
@@ -312,21 +309,5 @@ private class Pipe {
       pthread_mutex_destroy(mutex.ptr)
       pthread_cond_destroy(cond.ptr)
     }
-  }
-}
-
-interface DataTaskFactory {
-  fun dataTask(request: NSURLRequest): NSURLSessionDataTask
-}
-
-private class DefaultDataTaskFactory(delegate: NSURLSessionDataDelegateProtocol) : DataTaskFactory {
-  private val nsUrlSession = NSURLSession.sessionWithConfiguration(
-      configuration = NSURLSessionConfiguration.defaultSessionConfiguration(),
-      delegate = delegate,
-      delegateQueue = null
-  )
-
-  override fun dataTask(request: NSURLRequest): NSURLSessionDataTask {
-    return nsUrlSession.dataTaskWithRequest(request)
   }
 }
