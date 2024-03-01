@@ -105,6 +105,8 @@ private class AppleHttpEngine(
     val httpDataSource = httpDataPipe.source.buffer()
 
     val handler = object : StreamingDataDelegate.Handler {
+      private var hasDispatchedHttpResponse = false
+
       override fun onResponse(response: NSHTTPURLResponse) {
         continuation.resumeWith(
             buildHttpResponse(
@@ -113,6 +115,7 @@ private class AppleHttpEngine(
                 error = null,
             )
         )
+        hasDispatchedHttpResponse = true
       }
 
       override fun onData(data: NSData) {
@@ -124,7 +127,9 @@ private class AppleHttpEngine(
 
       override fun onComplete(error: NSError?) {
         httpDataSink.close()
-        if (error != null) continuation.resumeWith(
+        // This can be called with an error before `onResponse` if there's an error like no connectivity.
+        // It if it called *after* `onResponse`, do not resume the continuation again.
+        if (error != null && !hasDispatchedHttpResponse) continuation.resumeWith(
             buildHttpResponse(
                 data = httpDataSource,
                 httpResponse = null,
