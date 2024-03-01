@@ -10,7 +10,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
- * Represents a GraphQL response.
+ * Represents a GraphQL response or an exception if no GraphQL response is received.
  *
  * - [data] contains the parsed data returned in the response
  * - [errors] contains any GraphQL errors returned in the response
