@@ -16,7 +16,7 @@ import kotlin.jvm.JvmName
  * - [errors] contains any GraphQL errors returned in the response
  * - [exception] contains an exception if a GraphQL response wasn't received
  *
- * GraphQL responses can be partial responses, so it is valid to have both [data] != null and [errors] != null. The valid states are:
+ * GraphQL responses can contain partial data, so it is possible to have both [data] != null and [errors] != null. An [ApolloResponse] may be in any of these states:
  * - exception == null && data != null && errors == null: complete data with no error
  * - exception == null && data != null && errors != null: partial data with field errors
  * - exception == null && data == null && errors != null: no data, only field errors
