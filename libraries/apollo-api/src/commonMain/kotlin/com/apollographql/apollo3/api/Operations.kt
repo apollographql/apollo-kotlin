@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
@@ -149,8 +148,6 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
 
 
 @ApolloExperimental
-@Deprecated("toApolloResponse() closes the JsonReader. Use parseResponse instead", ReplaceWith("parseResponse"))
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun <D : Operation.Data> JsonReader.toApolloResponse(
     operation: Operation<D>,
     requestUuid: Uuid? = null,
