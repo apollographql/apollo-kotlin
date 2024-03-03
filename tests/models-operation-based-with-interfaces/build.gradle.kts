@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -17,6 +19,7 @@ apollo {
   service("fixtures") {
     srcDir(file("../models-fixtures/graphql"))
     packageName.set("codegen.models")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
     generateFragmentImplementations.set(true)
 
@@ -26,6 +29,7 @@ apollo {
   service("animals") {
     srcDir(file("graphql"))
     flattenModels.set(false)
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
     codegenModels.set("experimental_operationBasedWithInterfaces")
     packageName.set("animals")
