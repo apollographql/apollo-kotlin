@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("java")
   id("com.apollographql.apollo3")
@@ -21,6 +23,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("apolloOptional")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -30,6 +33,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("javaOptional")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -39,6 +43,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("guavaOptional")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -48,6 +53,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("jetbrainsAnnotations")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -57,6 +63,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("androidAnnotations")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -66,6 +73,7 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("jsr305Annotations")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
