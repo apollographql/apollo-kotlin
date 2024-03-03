@@ -22,5 +22,7 @@ actual fun runTest(
     after: suspend CoroutineScope.() -> Unit,
     block: suspend CoroutineScope.() -> Unit,
 ): ApolloTestResult {
-  TODO()
+  return Promise.resolve(empty)
 }
+
+val empty: JsAny = js("({})")
