@@ -101,26 +101,40 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
   private suspend fun WebSocket.awaitConnection(): WebSocket = suspendCancellableCoroutine { continuation ->
     if (continuation.isCancelled) return@suspendCancellableCoroutine
 
-    val eventListener = { event: Event ->
-      when (event.type) {
-        "open" -> continuation.resume(this)
-        "error" -> {
-          continuation.resumeWithException(IllegalStateException(event.asString()))
+    var eventListener: ((Event) -> Unit)? = null
+    val removeEventListeners = {
+      removeEventListener("open", callback = eventListener)
+      removeEventListener("error", callback = eventListener)
+    }
+
+    eventListener = { event: Event ->
+      if (!continuation.isCancelled) {
+        when (event.type) {
+          "open" -> {
+            continuation.resume(this)
+            /**
+             * If the websocket fires an error after it has been connected we don't want to
+             * pick that up here because we've already resumed the coroutine.
+             */
+            removeEventListeners()
+          }
+          "error" -> {
+            continuation.resumeWithException(IllegalStateException(event.asString()))
+          }
         }
       }
     }
 
-    addEventListener("open", callback = eventListener)
-    addEventListener("error", callback = eventListener)
-
     continuation.invokeOnCancellation {
-      removeEventListener("open", callback = eventListener)
-      removeEventListener("error", callback = eventListener)
+      removeEventListeners()
 
       if (it != null) {
         this@awaitConnection.close()
       }
     }
+
+    addEventListener("open", callback = eventListener)
+    addEventListener("error", callback = eventListener)
   }
 
   private fun Event.asString(): String = buildString {

@@ -47,7 +47,7 @@ class GzipTest {
     }
 
     mockServer.close()
-    engine.dispose()
+    engine.close()
   }
 
   @Test
