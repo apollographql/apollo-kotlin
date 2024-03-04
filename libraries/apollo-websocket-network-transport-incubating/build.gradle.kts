@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
@@ -7,6 +5,7 @@ plugins {
 apolloLibrary(
     javaModuleName = "com.apollographql.apollo3.network.websocket",
     withLinux = false,
+    publish = false
 )
 
 kotlin {
