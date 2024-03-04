@@ -146,7 +146,11 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
   }
 }
 
-
+/**
+ * Parses the [JsonReader] into an [ApolloResponse]
+ *
+ * Warning: this closes the [JsonReader]. If you need to reuse it, use [parseResponse]
+ */
 @ApolloExperimental
 fun <D : Operation.Data> JsonReader.toApolloResponse(
     operation: Operation<D>,
