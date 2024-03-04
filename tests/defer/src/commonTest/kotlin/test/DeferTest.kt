@@ -3,8 +3,10 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.autoPersistedQueryInfo
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.enqueueStrings
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -17,6 +19,7 @@ import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import okio.ByteString.Companion.encodeUtf8
@@ -315,5 +318,70 @@ class DeferTest {
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonWithoutEmptyPayload)
     actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun deferWithApqFound() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .autoPersistedQueries()
+        .build()
+
+    val jsonList = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+    )
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
+    val finalResponse = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().last()
+    assertEquals(true, finalResponse.autoPersistedQueryInfo?.hit)
+    assertEquals(
+        WithFragmentSpreadsQuery.Data(
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)))),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)))),
+            )
+        ),
+        finalResponse.dataOrThrow()
+    )
+  }
+
+  @Test
+  fun deferWithApqNotFound() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .autoPersistedQueries()
+        .build()
+
+    mockServer.enqueueString("""{"errors":[{"message":"PersistedQueryNotFound"}]}""")
+    val jsonList = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+    )
+    mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
+    val finalResponse = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().last()
+    assertEquals(false, finalResponse.autoPersistedQueryInfo?.hit)
+    assertEquals(
+        WithFragmentSpreadsQuery.Data(
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)))),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)))),
+            )
+        ),
+        finalResponse.dataOrThrow()
+    )
   }
 }
