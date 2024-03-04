@@ -27,6 +27,10 @@ internal class WebSocketHolder(
   private var lock = reentrantLock()
 
   init {
+    // Make sure we do not busy loop 
+    check(idleTimeoutMillis > 0) {
+      "Apollo: 'idleTimeoutMillis' must be > 0"
+    }
     triggerCleanup(timeoutMillis = idleTimeoutMillis)
   }
 
