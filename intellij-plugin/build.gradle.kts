@@ -184,6 +184,7 @@ dependencies {
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
     pluginVerifier()
+    testFramework()
   }
   implementation(project(":apollo-gradle-plugin-external"))
   implementation(project(":apollo-ast"))
