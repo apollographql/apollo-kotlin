@@ -41,15 +41,20 @@ class ApolloNetworkException(
 /**
  * The server could not process a subscription and sent an error.
  *
- * This typically happens if there is a validation error. This is a terminal event.
+ * This typically happens if there is a validation error.
  *
  * @param operationName the name of the subscription that triggered the error.
  * @param payload the payload returned by the server.
  */
 class SubscriptionOperationException(
     operationName: String,
-    val payload: Any? = null,
+    val payload: Any?,
 ) : ApolloException(message = "Operation error $operationName")
+
+class SubscriptionConnectionException(
+    val payload: Any?,
+) : ApolloException(message = "Websocket error")
+
 
 /**
  * The router sent one or several errors.
