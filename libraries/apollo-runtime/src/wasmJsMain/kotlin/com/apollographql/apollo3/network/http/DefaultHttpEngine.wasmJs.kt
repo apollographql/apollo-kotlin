@@ -11,15 +11,10 @@ import org.w3c.fetch.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-/**
- * @param timeoutMillis The timeout interval to use when connecting or waiting for additional data.
- *
- * - on iOS (NSURLRequest), it is used to set `NSMutableURLRequest.setTimeoutInterval`
- * - on Android (OkHttp), it is used to set both `OkHttpClient.connectTimeout` and `OkHttpClient.readTimeout`
- * - on Js (Ktor), it is used to set both `HttpTimeoutCapabilityConfiguration.connectTimeoutMillis` and `HttpTimeoutCapabilityConfiguration.requestTimeoutMillis`
- */
-actual class DefaultHttpEngine actual constructor(timeoutMillis: Long) : HttpEngine {
-  actual override suspend fun execute(request: HttpRequest): HttpResponse {
+actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = WasmHttpEngine()
+
+private class WasmHttpEngine : HttpEngine {
+  override suspend fun execute(request: HttpRequest): HttpResponse {
     val controller = newAbortController()
     val init = makeJsObject<RequestInit>()
 
@@ -66,10 +61,9 @@ actual class DefaultHttpEngine actual constructor(timeoutMillis: Long) : HttpEng
           }
         }
         .build()
-
   }
 
-  actual override fun dispose() {
+  override fun close() {
   }
 }
 
@@ -78,7 +72,7 @@ private suspend fun JsAny.toBuffer(): Buffer {
   val buffer = Buffer()
   val reader = stream.getReader()
 
-  while(true) {
+  while (true) {
     try {
       val chunk = reader.readChunk() ?: break
       buffer.write(chunk.asByteArray())

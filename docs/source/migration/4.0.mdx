@@ -163,6 +163,10 @@ val call = client.query(MyQuery())
   .execute()
 ```
 
+### `HttpEngine` now implements `Closeable`
+
+`HttpEngine` now implements `Closeable` and has its `dispose` method renamed to `close`. If you have a custom `HttpEngine`, you need to implement `close` instead of `dispose`.
+
 ## Apollo Gradle Plugin
 
 ### Multi-module `dependsOn`

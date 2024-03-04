@@ -47,12 +47,19 @@ import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
 
-actual class DefaultHttpEngine(
-    private val timeoutMillis: Long = 60_000,
+actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = AppleHttpEngine(timeoutMillis)
+
+fun DefaultHttpEngine(
+    timeoutMillis: Long = 60_000,
+    nsUrlSessionConfiguration: NSURLSessionConfiguration,
+): HttpEngine = AppleHttpEngine(timeoutMillis, nsUrlSessionConfiguration)
+
+private class AppleHttpEngine(
+    private val timeoutMillis: Long,
     private val nsUrlSessionConfiguration: NSURLSessionConfiguration,
 ) : HttpEngine {
 
-  actual constructor(timeoutMillis: Long) : this(
+  constructor(timeoutMillis: Long) : this(
       timeoutMillis = timeoutMillis,
       nsUrlSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
   )
@@ -65,7 +72,7 @@ actual class DefaultHttpEngine(
       delegateQueue = null
   )
 
-  actual override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
+  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
         URL = NSURL(string = request.url)
     ).apply {
@@ -98,6 +105,8 @@ actual class DefaultHttpEngine(
     val httpDataSource = httpDataPipe.source.buffer()
 
     val handler = object : StreamingDataDelegate.Handler {
+      private var hasDispatchedHttpResponse = false
+
       override fun onResponse(response: NSHTTPURLResponse) {
         continuation.resumeWith(
             buildHttpResponse(
@@ -106,6 +115,7 @@ actual class DefaultHttpEngine(
                 error = null,
             )
         )
+        hasDispatchedHttpResponse = true
       }
 
       override fun onData(data: NSData) {
@@ -117,7 +127,9 @@ actual class DefaultHttpEngine(
 
       override fun onComplete(error: NSError?) {
         httpDataSink.close()
-        if (error != null) continuation.resumeWith(
+        // This can be called with an error before `onResponse` if there's an error like no connectivity.
+        // It if it called *after* `onResponse`, do not resume the continuation again.
+        if (error != null && !hasDispatchedHttpResponse) continuation.resumeWith(
             buildHttpResponse(
                 data = httpDataSource,
                 httpResponse = null,
@@ -136,7 +148,8 @@ actual class DefaultHttpEngine(
     task.resume()
   }
 
-  actual override fun dispose() {
+  override fun close() {
+    nsUrlSession.invalidateAndCancel()
   }
 }
 

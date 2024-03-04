@@ -1,3 +1,5 @@
+@file:JvmName("DefaultHttpEngine")
+
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -20,27 +22,35 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual class DefaultHttpEngine constructor(
+actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = JvmHttpEngine(timeoutMillis)
+
+fun DefaultHttpEngine(httpCallFactory: Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
+
+fun DefaultHttpEngine(okHttpClient: OkHttpClient): HttpEngine = JvmHttpEngine(okHttpClient)
+
+fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine = JvmHttpEngine(connectTimeoutMillis, readTimeoutMillis)
+
+private class JvmHttpEngine(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
 
-  actual constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
+  constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
-  constructor(connectTimeout: Long, readTimeout: Long) : this(
+  constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : this(
       OkHttpClient.Builder()
-          .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
-          .readTimeout(readTimeout, TimeUnit.MILLISECONDS)
+          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
           .build()
   )
 
-  actual override suspend fun execute(request: HttpRequest): HttpResponse {
+  override suspend fun execute(request: HttpRequest): HttpResponse {
     return httpCallFactory.execute(request.toOkHttpRequest()).toApolloHttpResponse()
   }
 
-  actual override fun dispose() {
+  override fun close() {
   }
 
   companion object {
