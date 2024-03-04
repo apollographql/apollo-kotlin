@@ -9,6 +9,7 @@ $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toInt/#/PointingToD
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toLong/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-long.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toShort/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-short.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toString/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[js]to-string.html
+$dokka.location:com.apollographql.apollo3.network.http//DefaultHttpEngine/#kotlin.Long#kotlin.Long/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/[jvm]-default-http-engine.html
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-annotations

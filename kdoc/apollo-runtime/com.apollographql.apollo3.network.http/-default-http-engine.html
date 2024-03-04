@@ -1,0 +1,90 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DefaultHttpEngine</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../images/apollo.svg">
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo3.network.http/-default-http-engine.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">4.0.0-beta.5-SNAPSHOT</div>
+  <div class="versions-dropdown-data"><a href="-default-http-engine.html">4.0.0-beta.5-SNAPSHOT</a><a href="../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+</div>
+</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-runtime/appleMain">apple</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-runtime/commonMain">common</button>
+                <button class="platform-tag platform-selector js-like" data-active="" data-filter=":apollo-runtime/jsMain">js</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-runtime/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector wasm-like" data-active="" data-filter=":apollo-runtime/wasmJsMain">wasmJs</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageids="apollo-runtime::com.apollographql.apollo3.network.http//DefaultHttpEngine/#kotlin.Long#[Error type: Unresolved type for NSURLSessionConfiguration]/PointingToDeclaration//973720226">
+  <div class="breadcrumbs"><a href="../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3.network.http</a><span class="delimiter">/</span><span class="current">DefaultHttpEngine</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Default</span><wbr><span>Http</span><wbr><span><span>Engine</span></span></h1>
+  </div>
+  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/appleMain" data-filterable-set=":apollo-runtime/appleMain" data-active="" data-toggle=":apollo-runtime/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain" data-toggle=":apollo-runtime/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":apollo-runtime/jsMain" data-filterable-set=":apollo-runtime/jsMain" data-toggle=":apollo-runtime/jsMain">js</button><button class="platform-bookmark" data-filterable-current=":apollo-runtime/jvmMain" data-filterable-set=":apollo-runtime/jvmMain" data-toggle=":apollo-runtime/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/appleMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter ">nsUrlSessionConfiguration<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../apollo-engine-ktor/com.apollographql.apollo3.network.http/-http-engine/index.html">HttpEngine</a></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-http-engine/index.html">HttpEngine</a></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>timeout</span><wbr><span><span>Millis</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The timeout interval to use when connecting or waiting for additional data.</p><ul><li><p class="paragraph">on iOS (NSURLRequest), it is used to set <code class="lang-kotlin">NSMutableURLRequest.setTimeoutInterval</code></p></li><li><p class="paragraph">on Android (OkHttp), it is used to set both <code class="lang-kotlin">OkHttpClient.connectTimeout</code> and <code class="lang-kotlin">OkHttpClient.readTimeout</code></p></li><li><p class="paragraph">on Js (Ktor), it is used to set both <code class="lang-kotlin">HttpTimeoutCapabilityConfiguration.connectTimeoutMillis</code> and <code class="lang-kotlin">HttpTimeoutCapabilityConfiguration.requestTimeoutMillis</code></p></li></ul></div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-runtime/jsMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-http-engine/index.html">HttpEngine</a></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-runtime/jvmMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpCallFactory<span class="token operator">: </span><span data-unresolved-link="okhttp3/Call.Factory///PointingToDeclaration/">Call.Factory</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">okHttpClient<span class="token operator">: </span><span data-unresolved-link="okhttp3/OkHttpClient///PointingToDeclaration/">OkHttpClient</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../apollo-engine-ktor/com.apollographql.apollo3.network.http/-http-engine/index.html">HttpEngine</a></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-default-http-engine.html"><span class="token function">DefaultHttpEngine</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-http-engine/index.html">HttpEngine</a></div></div>  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
