@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("com.apollographql.apollo3")
   id("java")
@@ -14,6 +16,7 @@ apollo {
   service("service") {
     packageName.set("model.builders")
     generateKotlinModels.set(false)
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 }

@@ -61,12 +61,3 @@ kotlin {
   }
 }
 
-tasks.register("iOSSimTest") {
-  dependsOn("iosSimTestBinaries")
-  doLast {
-    val binary = kotlin.targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosSim").binaries.getTest("DEBUG").outputFile
-    exec {
-      commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
-    }
-  }
-}

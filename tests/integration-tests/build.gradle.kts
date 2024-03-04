@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
@@ -46,7 +48,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
           service("${it.name}-$extra") {
             when (it.name) {
               "httpcache" -> {
-                generateOperationOutput.set(true)
+                operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
                 mapScalar("Date", "kotlinx.datetime.LocalDate")
               }
 

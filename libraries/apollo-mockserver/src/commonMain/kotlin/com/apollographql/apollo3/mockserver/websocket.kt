@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.map
 import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import okio.IOException
 
 internal suspend fun readFrames(reader: Reader, onMessage: (WebSocketMessage) -> Unit) {
   val currentMessage = Buffer()
@@ -19,6 +20,17 @@ internal suspend fun readFrames(reader: Reader, onMessage: (WebSocketMessage) ->
   }
 
   while (true) {
+    /**
+     * Check if the client closed the connection
+     */
+    if (reader.buffer.size == 0L) {
+      try {
+        reader.fillBuffer()
+      } catch (e: IOException) {
+        throw ConnectionClosed(e)
+      }
+    }
+
     require(2)
 
     var b = reader.buffer.readByte().toInt()

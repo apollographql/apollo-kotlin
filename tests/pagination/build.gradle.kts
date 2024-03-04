@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
@@ -35,21 +37,25 @@ apollo {
   service("pagination.offsetBasedWithArray") {
     packageName.set("pagination.offsetBasedWithArray")
     srcDir("src/commonMain/graphql/pagination/offsetBasedWithArray")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
   service("pagination.offsetBasedWithPage") {
     packageName.set("pagination.offsetBasedWithPage")
     srcDir("src/commonMain/graphql/pagination/offsetBasedWithPage")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
   service("pagination.cursorBased") {
     packageName.set("pagination.cursorBased")
     srcDir("src/commonMain/graphql/pagination/cursorBased")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
   service("pagination.connection") {
     packageName.set("pagination.connection")
     srcDir("src/commonMain/graphql/pagination/connection")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
 }

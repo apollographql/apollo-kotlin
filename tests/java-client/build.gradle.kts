@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("java")
   id("com.apollographql.apollo3")
@@ -19,6 +21,7 @@ apollo {
     schemaFiles.from(file("../sample-server/src/main/resources/schema.graphqls"))
     srcDir("src/main/graphql/main")
     packageName.set("javatest")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
@@ -29,25 +32,28 @@ apollo {
     mapScalarToJavaLong("Long")
     mapScalar("GeoPoint", "scalar.GeoPoint")
     packageName.set("scalars")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
   service("graphql-ws") {
     srcDir("src/main/graphql/graphql-ws")
     packageName.set("graphqlws")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
   service("appsync") {
     srcDir("src/main/graphql/appsync")
     packageName.set("appsync")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
 
   service("batching") {
     srcDir("src/main/graphql/batching")
     packageName.set("batching")
+    @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
-
 }

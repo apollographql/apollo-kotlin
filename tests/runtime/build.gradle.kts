@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -16,6 +18,7 @@ dependencies {
 
 apollo {
   service("service") {
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
     packageName.set("com.example")
     schemaFiles.from(file("../sample-server/src/main/resources/schema.graphqls"))

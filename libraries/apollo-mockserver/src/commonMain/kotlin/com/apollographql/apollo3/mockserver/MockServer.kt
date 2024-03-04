@@ -146,7 +146,6 @@ internal class MockServerImpl(
           }
 
           is ConnectionClosed -> {
-            println("Connection Closed (${e.message})")
             // Nothing, ignore those
           }
 
