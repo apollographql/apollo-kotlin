@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 
 plugins {

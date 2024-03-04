@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -16,6 +18,7 @@ apollo {
   service("service") {
     packageName.set("com.example")
     generateOptionalOperationVariables.set(false)
+    @OptIn(ApolloExperimental::class)
     generateInputBuilders.set(true)
   }
 }

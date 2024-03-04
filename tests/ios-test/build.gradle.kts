@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
@@ -29,6 +31,7 @@ kotlin {
 apollo {
   service("service") {
     packageName.set("ios.test")
+    @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
 }
