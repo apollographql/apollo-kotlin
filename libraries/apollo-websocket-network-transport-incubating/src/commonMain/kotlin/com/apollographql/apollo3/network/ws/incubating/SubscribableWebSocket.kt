@@ -256,7 +256,3 @@ private fun WebSocket.send(clientMessage: ClientMessage) {
     is DataClientMessage -> send(clientMessage.data)
   }
 }
-
-interface StateListener {
-  fun onConnectionLost(cause: ApolloException)
-}
