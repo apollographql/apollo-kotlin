@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws.incubating
 
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.CloseFrame
 import com.apollographql.apollo3.mockserver.DataMessage
 import com.apollographql.apollo3.mockserver.MockRequestBase
@@ -28,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 private data class Item(
     val message: WebSocketMessage? = null,
     val open: Boolean = false,
-    val throwable: Throwable? = null,
+    val exception: ApolloException? = null,
 )
 
 private class Listener(private val channel: Channel<Item>) : WebSocketListener {
@@ -44,8 +45,8 @@ private class Listener(private val channel: Channel<Item>) : WebSocketListener {
     channel.trySend(DataMessage(data))
   }
 
-  override fun onError(throwable: Throwable) {
-    channel.trySend(Item(throwable = throwable))
+  override fun onError(cause: ApolloException) {
+    channel.trySend(Item(exception = cause))
   }
 
   override fun onClosed(code: Int?, reason: String?) {
@@ -166,7 +167,7 @@ class WebSocketEngineTest {
         assertEquals(1002, code)
         assertEquals("Server Bye", reason)
       }
-    } else if (item.throwable != null) {
+    } else if (item.exception != null) {
       // Apple implementation calls onError instead on onClose
     }
 
