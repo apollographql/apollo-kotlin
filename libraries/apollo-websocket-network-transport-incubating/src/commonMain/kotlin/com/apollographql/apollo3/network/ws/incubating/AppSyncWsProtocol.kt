@@ -83,7 +83,7 @@ class AppSyncWsProtocol(
       "error" -> {
         val id = map["id"] as? String
         if (id != null) {
-          OperationErrorServerMessage(id, map["payload"])
+          OperationErrorServerMessage(id, map["payload"], true)
         } else {
           ParseErrorServerMessage("General error: $text")
         }
