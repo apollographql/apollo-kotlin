@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
 
-class SubscriptionWsProtocol private constructor(
+class SubscriptionWsProtocol(
     val connectionParams: suspend () -> Any?,
 ) : WsProtocol {
   override val name: String
