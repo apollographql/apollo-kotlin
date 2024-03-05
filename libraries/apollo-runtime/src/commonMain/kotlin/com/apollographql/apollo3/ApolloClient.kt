@@ -20,7 +20,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RetrySubscriptionsInterceptor
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -51,7 +51,6 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
-  val retrySubscriptions = builder.retrySubscriptions
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
@@ -59,6 +58,7 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
+  override val retryNetworkErrors: Boolean? = builder.retryNetworkErrors
 
   init {
     networkTransport = if (builder.networkTransport != null) {
@@ -252,8 +252,11 @@ private constructor(
 
     val allInterceptors = buildList{
       addAll(interceptors)
-      if (retrySubscriptions != false) {
-        add(RetrySubscriptionsInterceptor())
+      val retryNetworkErrors = apolloRequest.retryNetworkErrors
+          ?: retryNetworkErrors
+          ?: (request.operation is Subscription)
+      if (retryNetworkErrors) {
+        add(RetryOnErrorInterceptor)
       }
       add(networkInterceptor)
     }
@@ -303,6 +306,8 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
+    override var retryNetworkErrors: Boolean? = null
+      private set
 
     var networkTransport: NetworkTransport? = null
       private set
@@ -328,11 +333,9 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
-    var retrySubscriptions: Boolean? = null
-      private set
 
-    fun retrySubscriptions(retrySubscriptions: Boolean?): Builder = apply {
-      this.retrySubscriptions = retrySubscriptions
+    override fun retryNetworkErrors(retryNetworkErrors: Boolean?): Builder = apply {
+      this.retryNetworkErrors = retryNetworkErrors
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
@@ -632,6 +635,7 @@ private constructor(
           .webSocketReopenWhen(webSocketReopenWhen)
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
+          .retryNetworkErrors(retryNetworkErrors)
       return builder
     }
   }

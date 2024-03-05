@@ -3,7 +3,6 @@ package com.apollographql.apollo3.interceptor
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.benasher44.uuid.uuid4
@@ -14,13 +13,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
 import kotlin.math.pow
+import kotlin.time.Duration.Companion.seconds
 
-class RetrySubscriptionsInterceptor: ApolloInterceptor {
+object RetryOnErrorInterceptor: ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    if (request.operation !is Subscription) {
-      return chain.proceed(request)
-    }
-
     var first = true
     var attempt = 0
     return flow {
@@ -32,13 +28,15 @@ class RetrySubscriptionsInterceptor: ApolloInterceptor {
       }
       emitAll(chain.proceed(actualRequest))
     }.onEach {
-      attempt = 0
       if (it.exception != null && it.exception!!.isTerminalAndRecoverable()) {
         throw RetryException
+      } else {
+        attempt = 0
       }
     }.retryWhen { cause, _ ->
       attempt++
-      delay(2.0.pow(attempt).toLong())
+
+      delay(2.0.pow(attempt).seconds)
       cause is RetryException
     }
   }

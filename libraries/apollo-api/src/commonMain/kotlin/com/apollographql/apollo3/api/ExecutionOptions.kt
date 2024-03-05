@@ -45,6 +45,11 @@ interface ExecutionOptions {
    */
   val canBeBatched: Boolean?
 
+  /**
+   * Whether to enable retrying the request on network errors
+   */
+  val retryNetworkErrors: Boolean?
+
   companion object {
     /**
      * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
@@ -82,4 +87,6 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
+
+  fun retryNetworkErrors(retryNetworkErrors: Boolean?): T
 }

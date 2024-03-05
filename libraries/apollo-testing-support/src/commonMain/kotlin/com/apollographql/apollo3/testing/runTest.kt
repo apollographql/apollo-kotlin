@@ -14,9 +14,10 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
  */
 @ApolloExperimental
 fun mockServerTest(
+    skipDelays: Boolean = true,
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = com.apollographql.apollo3.testing.internal.runTest(true) {
+) = com.apollographql.apollo3.testing.internal.runTest(skipDelays) {
   val mockServer = MockServer()
 
   val apolloClient = ApolloClient.Builder()
