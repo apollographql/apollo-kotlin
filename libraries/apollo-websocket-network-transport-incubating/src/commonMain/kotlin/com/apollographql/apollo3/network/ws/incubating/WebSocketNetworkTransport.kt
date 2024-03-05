@@ -39,13 +39,13 @@ class WebSocketNetworkTransport private constructor(
 ) : NetworkTransport {
 
   private val holder = WebSocketHolder(
-      webSocketEngine,
-      serverUrl,
-      httpHeaders,
-      wsProtocol,
-      connectionAcknowledgeTimeoutMillis,
-      pingIntervalMillis,
-      idleTimeoutMillis
+      webSocketEngine = webSocketEngine,
+      serverUrl = serverUrl,
+      httpHeaders = httpHeaders,
+      wsProtocol = wsProtocol,
+      connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis,
+      pingIntervalMillis = pingIntervalMillis,
+      idleTimeoutMillis = idleTimeoutMillis
   )
 
   /**

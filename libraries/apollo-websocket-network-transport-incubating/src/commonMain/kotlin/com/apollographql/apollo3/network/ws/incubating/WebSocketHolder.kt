@@ -49,13 +49,13 @@ internal class WebSocketHolder(
     cleanupLocked()
     if (subscribableWebSocket == null) {
       subscribableWebSocket = SubscribableWebSocket(
-          webSocketEngine,
-          serverUrl,
-          httpHeaders,
-          dispatcher,
-          wsProtocol,
-          connectionAcknowledgeTimeoutMillis,
-          pingIntervalMillis,
+          webSocketEngine = webSocketEngine,
+          serverUrl = serverUrl,
+          httpHeaders = httpHeaders,
+          dispatcher = dispatcher,
+          wsProtocol = wsProtocol,
+          pingIntervalMillis = pingIntervalMillis,
+          connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis,
       )
     }
     // Mark active before startOperation to avoid a small race where cleanup() would be called after acquire() returns
