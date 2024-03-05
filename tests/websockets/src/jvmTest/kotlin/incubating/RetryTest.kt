@@ -15,7 +15,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import sample.server.TagSubscription
-import sample.server.TimeQuery
+import sample.server.ZeroQuery
 import kotlin.test.assertIs
 
 class RetryTest {
@@ -90,7 +90,7 @@ class RetryTest {
   fun queriesAreNotRetriedByDefault() = mockServerTest(skipDelays = false) {
     mockServer.enqueue(MockResponse.Builder().statusCode(500).build())
 
-    apolloClient.query(TimeQuery())
+    apolloClient.query(ZeroQuery())
         .toFlow()
         .test {
           assertIs<ApolloHttpException>(awaitItem().exception)

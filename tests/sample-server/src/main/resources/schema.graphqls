@@ -2,6 +2,7 @@ type Query {
   random: Int!
   zero: Int!
   secondsSinceEpoch: Float!
+  valueSharedWithSubscriptions: Int!
 }
 
 type Mutation {
@@ -27,6 +28,8 @@ type Subscription {
 
   "Returns the subscription state"
   state(intervalMillis: Int! = 1000): State
+
+  valueSharedWithSubscriptions: Int!
 }
 
 type State {

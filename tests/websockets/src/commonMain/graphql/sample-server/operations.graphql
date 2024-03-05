@@ -14,7 +14,15 @@ subscription OperationError {
   operationError
 }
 
-query TimeQuery {
+query ValueSharedWithSubscriptionsQuery {
+  valueSharedWithSubscriptions
+}
+
+subscription ValueSharedWithSubscriptionsSubscription {
+  valueSharedWithSubscriptions
+}
+
+query ZeroQuery {
   zero
 }
 

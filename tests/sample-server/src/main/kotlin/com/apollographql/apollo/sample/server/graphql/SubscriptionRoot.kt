@@ -60,6 +60,13 @@ class SubscriptionRoot(private val tag: String) {
       delay(intervalMillis.toLong())
     }
   }
+
+  fun valueSharedWithSubscriptions(): Flow<Int> = flow {
+    repeat(10) {
+      emit(it)
+      delay(100)
+    }
+  }
 }
 
 @GraphQLObject
