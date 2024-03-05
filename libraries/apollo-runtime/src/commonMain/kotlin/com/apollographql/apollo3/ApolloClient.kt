@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -58,6 +59,7 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
+  @ApolloExperimental
   override val retryNetworkErrors: Boolean? = builder.retryNetworkErrors
 
   init {
@@ -254,7 +256,7 @@ private constructor(
       addAll(interceptors)
       val retryNetworkErrors = apolloRequest.retryNetworkErrors
           ?: retryNetworkErrors
-          ?: (request.operation is Subscription)
+          ?: (request.operation is Subscription && subscriptionNetworkTransport::class.qualifiedName.orEmpty().startsWith("com.apollographql.apollo3.network.ws.incubating"))
       if (retryNetworkErrors) {
         add(RetryOnErrorInterceptor)
       }
@@ -306,6 +308,7 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
+    @ApolloExperimental
     override var retryNetworkErrors: Boolean? = null
       private set
 
@@ -334,6 +337,7 @@ private constructor(
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
 
+    @ApolloExperimental
     override fun retryNetworkErrors(retryNetworkErrors: Boolean?): Builder = apply {
       this.retryNetworkErrors = retryNetworkErrors
     }

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 
@@ -48,6 +49,7 @@ interface ExecutionOptions {
   /**
    * Whether to enable retrying the request on network errors
    */
+  @ApolloExperimental
   val retryNetworkErrors: Boolean?
 
   companion object {
@@ -88,5 +90,6 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
 
   fun canBeBatched(canBeBatched: Boolean?): T
 
+  @ApolloExperimental
   fun retryNetworkErrors(retryNetworkErrors: Boolean?): T
 }

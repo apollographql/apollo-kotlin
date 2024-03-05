@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -33,6 +34,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var canBeBatched: Boolean? = null
     private set
+  @ApolloExperimental
   override var retryNetworkErrors: Boolean? = null
     private set
 
@@ -89,6 +91,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
+  @ApolloExperimental
   override fun retryNetworkErrors(retryNetworkErrors: Boolean?): ApolloCall<D> = apply {
     this.retryNetworkErrors = retryNetworkErrors
   }

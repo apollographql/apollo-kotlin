@@ -20,6 +20,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    @ApolloExperimental
     override val retryNetworkErrors: Boolean?,
 ) : ExecutionOptions {
 
@@ -58,6 +59,7 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
+    @ApolloExperimental
     override var retryNetworkErrors: Boolean? = null
       private set
 
@@ -89,6 +91,7 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
+    @ApolloExperimental
     override fun retryNetworkErrors(retryNetworkErrors: Boolean?): Builder<D> = apply {
       this.retryNetworkErrors = retryNetworkErrors
     }
