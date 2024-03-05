@@ -154,7 +154,10 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
         group("native") {
           group("apple")
         }
-        withJvm()
+        group("jvmCommon") {
+          withJvm()
+          withAndroidTarget()
+        }
       }
     }
   }

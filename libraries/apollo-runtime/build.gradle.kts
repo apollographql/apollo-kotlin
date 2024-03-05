@@ -5,6 +5,7 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo3.runtime",
     withLinux = false,
+    androidOptions = AndroidOptions(withCompose = false)
 )
 
 kotlin {
@@ -34,7 +35,7 @@ kotlin {
       }
     }
 
-    findByName("jvmMain")?.apply {
+    findByName("jvmCommonMain")?.apply {
       dependencies {
         api(libs.okhttp)
       }
