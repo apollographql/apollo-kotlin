@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.ws.incubating
 
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -53,7 +54,7 @@ internal class JvmWebSocket(
 
   override fun onFailure(webSocket: PlatformWebSocket, t: Throwable, response: Response?) {
     if (disposed.compareAndSet(false, true)) {
-      listener.onError(t)
+      listener.onError(ApolloNetworkException(t.message, t))
       platformWebSocket.cancel()
     }
   }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.ws.incubating
 
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.exception.ApolloException
 import okio.Closeable
 
 interface WebSocketEngine: Closeable {
@@ -47,7 +48,7 @@ interface WebSocketListener {
   /**
    * An error happened, no more calls to the listener are made.
    */
-  fun onError(throwable: Throwable)
+  fun onError(cause: ApolloException)
 
   /**
    * The server sent a close frame, no more calls to the listener are made.

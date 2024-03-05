@@ -1290,9 +1290,13 @@ public final class com/apollographql/apollo3/exception/RouterError : com/apollog
 	public final fun getErrors ()Ljava/util/List;
 }
 
+public final class com/apollographql/apollo3/exception/SubscriptionConnectionException : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun getPayload ()Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo3/exception/SubscriptionOperationException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getPayload ()Ljava/lang/Object;
 }
 
