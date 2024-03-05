@@ -21,7 +21,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -61,6 +60,8 @@ private constructor(
   override val canBeBatched: Boolean? = builder.canBeBatched
   @ApolloExperimental
   override val retryNetworkErrors: Boolean? = builder.retryNetworkErrors
+  @ApolloExperimental
+  val retryNetworkErrorsInterceptor = builder.retryNetworkErrorsInterceptor
 
   init {
     networkTransport = if (builder.networkTransport != null) {
@@ -249,16 +250,16 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
           }
+          if (apolloRequest.retryNetworkErrors != null) {
+            retryNetworkErrors(apolloRequest.retryNetworkErrors)
+          }
         }
         .build()
 
     val allInterceptors = buildList{
       addAll(interceptors)
-      val retryNetworkErrors = apolloRequest.retryNetworkErrors
-          ?: retryNetworkErrors
-          ?: (request.operation is Subscription && subscriptionNetworkTransport::class.qualifiedName.orEmpty().startsWith("com.apollographql.apollo3.network.ws.incubating"))
-      if (retryNetworkErrors) {
-        add(RetryOnErrorInterceptor)
+      if (retryNetworkErrorsInterceptor != null) {
+        add(retryNetworkErrorsInterceptor)
       }
       add(networkInterceptor)
     }
@@ -336,6 +337,14 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
+    @ApolloExperimental
+    var retryNetworkErrorsInterceptor: ApolloInterceptor? = null
+      private set
+
+    @ApolloExperimental
+    fun retryNetworkErrorsInterceptor(retryNetworkErrorsInterceptor: ApolloInterceptor?): Builder = apply {
+      this.retryNetworkErrorsInterceptor = retryNetworkErrorsInterceptor
+    }
 
     @ApolloExperimental
     override fun retryNetworkErrors(retryNetworkErrors: Boolean?): Builder = apply {
@@ -640,6 +649,7 @@ private constructor(
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
           .retryNetworkErrors(retryNetworkErrors)
+          .retryNetworkErrorsInterceptor(retryNetworkErrorsInterceptor)
       return builder
     }
   }

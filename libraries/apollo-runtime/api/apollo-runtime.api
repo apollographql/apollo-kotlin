@@ -184,11 +184,6 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
 }
 
-public final class com/apollographql/apollo3/interceptor/RetryOnErrorInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
-	public static final field INSTANCE Lcom/apollographql/apollo3/interceptor/RetryOnErrorInterceptor;
-	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
-}
-
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;

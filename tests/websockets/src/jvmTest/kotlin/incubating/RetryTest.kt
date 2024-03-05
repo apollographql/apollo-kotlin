@@ -5,6 +5,7 @@ import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.network.ws.incubating.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
@@ -25,7 +26,7 @@ class RetryTest {
     var sampleServer = SampleServer(freePort, "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryNetworkErrors(true)
+        .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
@@ -61,7 +62,7 @@ class RetryTest {
     val sampleServer = SampleServer(freePort, "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryNetworkErrors(true)
+        .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
