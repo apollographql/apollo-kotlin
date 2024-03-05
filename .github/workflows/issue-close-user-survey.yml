@@ -12,7 +12,9 @@ jobs:
     if: github.repository == 'apollographql/apollo-kotlin'
 steps:
   - run: |
-      if (( $COMMENTS == 0 )); then
+      if [ "$STATE_REASON" != "completed" ]; then
+        echo "Issue was closed as not planned, skipping user survey."
+      elif (( $COMMENTS == 0 )); then
         echo "Issue with no comments, skipping user survey."
       else
         gh issue comment "$NUMBER" --body "$BODY"
@@ -21,6 +23,7 @@ steps:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
       NUMBER: ${{ github.event.issue.number }}
+      STATE_REASON: ${{ github.event.issue.state_reason }}
       COMMENTS: ${{ github.event.issue.comments }}
       AUTHOR: ${{ github.event.issue.author_association }}
       BODY: >
