@@ -7,7 +7,7 @@ interface WebSocketEngine: Closeable {
   /**
    * Creates a new [WebSocket].
    *
-   * The [WebSocket] is be garbage collected when not used anymore. Call [WebSocket.close] to close the websocket and release resources earlier.
+   * The [WebSocket] is garbage collected when not used anymore. Call [WebSocket.close] to close the websocket and release resources earlier.
    * You don't need to call [WebSocket.close] if:
    * - [WebSocketListener.onError] has been called
    * - [WebSocketListener.onClosed] has been called

@@ -47,7 +47,7 @@ internal class JsWebSocket(
           val d = JSON.stringify(data2)
           if (!disposed) {
             disposed = true
-            listener.onError(DefaultApolloException("The JS WebSocket implementation only support text messages (got $d)"))
+            listener.onError(DefaultApolloException("Apollo: unsupported message received ('$d')"))
             platformWebSocket?.close(CLOSE_GOING_AWAY.toShort(), "Unsupported message received")
           }
           Unit
