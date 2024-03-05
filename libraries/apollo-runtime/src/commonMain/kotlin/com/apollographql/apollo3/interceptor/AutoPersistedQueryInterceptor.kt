@@ -9,8 +9,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.map
 
 class AutoPersistedQueryInterceptor(
     private val httpMethodForHashedQueries: HttpMethod,
@@ -35,30 +36,33 @@ class AutoPersistedQueryInterceptor(
         .build()
 
     return flow {
-      var response = chain.proceed(request).single()
+      val responses = chain.proceed(request)
+      responses.collect { response ->
+        when {
+          isPersistedQueryNotFound(response.errors) -> {
+            val retryRequest = request
+                .newBuilder()
+                .httpMethod(if (isMutation) HttpMethod.Post else httpMethodForDocumentQueries)
+                .sendDocument(true)
+                .sendApqExtensions(true)
+                .build()
 
-      when {
-        isPersistedQueryNotFound(response.errors) -> {
-          val retryRequest = request
-              .newBuilder()
-              .httpMethod(if (isMutation) HttpMethod.Post else httpMethodForDocumentQueries)
-              .sendDocument(true)
-              .sendApqExtensions(true)
-              .build()
+            emitAll(chain.proceed(retryRequest).map { it.withAutoPersistedQueryInfo(false) })
+            return@collect
+          }
 
-          response = chain.proceed(retryRequest).single()
-          emit(response.withAutoPersistedQueryInfo(false))
-        }
-        isPersistedQueryNotSupported(response.errors) -> {
-          emit(
-              ApolloResponse.Builder(request.operation, request.requestUuid)
-                  .exception(AutoPersistedQueriesNotSupported())
-                  .build()
-          )
-          return@flow
-        }
-        else -> {
-          emit(response.withAutoPersistedQueryInfo(true))
+          isPersistedQueryNotSupported(response.errors) -> {
+            emit(
+                ApolloResponse.Builder(request.operation, request.requestUuid)
+                    .exception(AutoPersistedQueriesNotSupported())
+                    .build()
+            )
+            return@collect
+          }
+
+          else -> {
+            emit(response.withAutoPersistedQueryInfo(true))
+          }
         }
       }
     }
