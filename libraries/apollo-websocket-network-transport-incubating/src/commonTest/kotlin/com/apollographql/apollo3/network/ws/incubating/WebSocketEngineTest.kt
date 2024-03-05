@@ -107,8 +107,10 @@ class WebSocketEngineTest {
     val serverWriter = mockServer.enqueueWebSocket()
     val clientWriter = engine.newWebSocket(mockServer.url(), emptyList(), Listener(clientReader))
 
+    println("await client request")
     val serverReader = mockServer.awaitWebSocketRequest()
 
+    println("await open")
     clientReader.awaitOpen()
 
     Scope(clientReader, clientWriter, serverReader, serverWriter).block()
