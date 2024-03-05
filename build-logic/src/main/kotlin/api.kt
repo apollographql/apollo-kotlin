@@ -1,6 +1,12 @@
+
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
+import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
 
 fun Project.apolloLibrary(
     javaModuleName: String?,
@@ -82,4 +88,32 @@ fun Project.apolloTest(
         withWasm = false
     )
   }
+}
+
+fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
+  configureWasmCompatibleNode()
+  rootSetup(ciBuild)
+}
+
+/**
+ * See https://youtrack.jetbrains.com/issue/KT-63014
+ */
+private fun Project.configureWasmCompatibleNode() {
+  check(this == rootProject) {
+    "Must only be called in root project"
+  }
+  plugins.withType(NodeJsRootPlugin::class.java).configureEach {
+    extensions.getByType(NodeJsRootExtension::class.java).apply {
+      version = "21.0.0-v8-canary202309143a48826a08"
+      downloadBaseUrl = "https://nodejs.org/download/v8-canary"
+    }
+
+    tasks.withType(KotlinNpmInstallTask::class.java).configureEach {
+      args.add("--ignore-engines")
+    }
+  }
+}
+
+fun Project.apolloTestRoot() {
+  configureWasmCompatibleNode()
 }

@@ -168,4 +168,4 @@ tasks.register("rmbuild") {
   }
 }
 
-rootSetup(ciBuild)
+apolloRoot(ciBuild)

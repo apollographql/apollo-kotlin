@@ -105,6 +105,9 @@ fun Project.configureMpp(
     if (withWasm) {
       @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
+        /**
+         * See https://youtrack.jetbrains.com/issue/KT-63014
+         */
         nodejs()
       }
     }
