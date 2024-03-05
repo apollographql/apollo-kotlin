@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.network.ws.incubating.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import sample.server.CountSubscription
 import sample.server.OperationErrorSubscription
@@ -23,7 +23,7 @@ class SampleServerTest {
   private class Scope(val apolloClient: ApolloClient, val sampleServer: SampleServer, val coroutineScope: CoroutineScope)
 
   private fun test(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend Scope.() -> Unit) {
-    runBlocking {
+    runTest {
       SampleServer().use { sampleServer ->
         ApolloClient.Builder()
             .serverUrl(sampleServer.graphqlUrl())
@@ -35,7 +35,7 @@ class SampleServerTest {
                     .build()
             )
             .build().use { apolloClient ->
-              Scope(apolloClient, sampleServer, this@runBlocking).block()
+              Scope(apolloClient, sampleServer, this@runTest).block()
             }
       }
     }

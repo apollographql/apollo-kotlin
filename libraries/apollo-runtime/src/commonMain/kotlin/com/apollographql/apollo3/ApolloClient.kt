@@ -20,6 +20,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
+import com.apollographql.apollo3.interceptor.RetrySubscriptionsInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -50,6 +51,7 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
+  val retrySubscriptions = builder.retrySubscriptions
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
@@ -248,7 +250,14 @@ private constructor(
         }
         .build()
 
-    return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
+    val allInterceptors = buildList{
+      addAll(interceptors)
+      if (retrySubscriptions != false) {
+        add(RetrySubscriptionsInterceptor())
+      }
+      add(networkInterceptor)
+    }
+    return DefaultInterceptorChain(allInterceptors, 0)
         .proceed(request)
         .let {
           if (throwing) {
@@ -263,6 +272,10 @@ private constructor(
         }
   }
 
+  fun newBuilder(): Builder {
+    return builder.copy()
+  }
+
   /**
    * A Builder used to create instances of [ApolloClient]
    */
@@ -275,6 +288,21 @@ private constructor(
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
+
+    override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
+    override var httpMethod: HttpMethod? = null
+      private set
+    override var httpHeaders: List<HttpHeader>? = null
+      private set
+    override var sendApqExtensions: Boolean? = null
+      private set
+    override var sendDocument: Boolean? = null
+      private set
+    override var enableAutoPersistedQueries: Boolean? = null
+      private set
+    override var canBeBatched: Boolean? = null
+      private set
 
     var networkTransport: NetworkTransport? = null
       private set
@@ -300,20 +328,12 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
-    override var executionContext: ExecutionContext = ExecutionContext.Empty
+    var retrySubscriptions: Boolean? = null
       private set
-    override var httpMethod: HttpMethod? = null
-      private set
-    override var httpHeaders: List<HttpHeader>? = null
-      private set
-    override var sendApqExtensions: Boolean? = null
-      private set
-    override var sendDocument: Boolean? = null
-      private set
-    override var enableAutoPersistedQueries: Boolean? = null
-      private set
-    override var canBeBatched: Boolean? = null
-      private set
+
+    fun retrySubscriptions(retrySubscriptions: Boolean?): Builder = apply {
+      this.retrySubscriptions = retrySubscriptions
+    }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
@@ -614,10 +634,6 @@ private constructor(
           .wsProtocol(wsProtocolFactory)
       return builder
     }
-  }
-
-  fun newBuilder(): Builder {
-    return builder.copy()
   }
 
   companion object {

@@ -1,13 +1,13 @@
-subscription Count($to: Int!, $delayMillis: Int!)  {
-  count(to: $to, delayMillis: $delayMillis)
+subscription Count($to: Int!, $intervalMillis: Int!)  {
+  count(to: $to, intervalMillis: $intervalMillis)
 }
 
-subscription CountString($to: Int!, $delayMillis: Int!)  {
-  countString(to: $to, delayMillis: $delayMillis)
+subscription CountString($to: Int!, $intervalMillis: Int!)  {
+  countString(to: $to, intervalMillis: $intervalMillis)
 }
 
-subscription TimeSubscription  {
-  time
+subscription SecondsSinceEpochSubscription($intervalMillis: Int!)  {
+  secondsSinceEpoch(intervalMillis: $intervalMillis)
 }
 
 subscription OperationError {
@@ -15,7 +15,7 @@ subscription OperationError {
 }
 
 query TimeQuery {
-  time
+  zero
 }
 
 mutation CloseSocketMutation {
@@ -28,4 +28,11 @@ subscription CloseSocketSubscription {
 
 subscription GraphqlAccessError($after: Int!) {
   graphqlAccessError(after: $after)
+}
+
+subscription Tag($intervalMillis: Int!)  {
+  state(intervalMillis: $intervalMillis) {
+    tag
+    subscriptionId
+  }
 }

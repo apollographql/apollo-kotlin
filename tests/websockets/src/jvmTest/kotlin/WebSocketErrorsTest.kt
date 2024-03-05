@@ -18,7 +18,6 @@ import org.junit.BeforeClass
 import org.junit.Test
 import sample.server.CloseSocketMutation
 import sample.server.CountSubscription
-import sample.server.TimeSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
@@ -51,7 +50,7 @@ class WebSocketErrorsTest {
         )
         .build()
 
-    apolloClient.subscription(TimeSubscription())
+    apolloClient.subscription(CountSubscription(to = 100, intervalMillis = 100))
         .toFlow()
         .test {
           val error = awaitItem().exception
@@ -76,7 +75,7 @@ class WebSocketErrorsTest {
         )
         .build()
 
-    apolloClient.subscription(TimeSubscription())
+    apolloClient.subscription(CountSubscription(to = 100, intervalMillis = 100))
         .toFlow()
         .test {
           val error = awaitItem().exception

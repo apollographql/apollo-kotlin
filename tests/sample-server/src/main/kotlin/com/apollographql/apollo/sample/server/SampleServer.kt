@@ -1,5 +1,6 @@
 package com.apollographql.apollo.sample.server
 
+import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
@@ -52,7 +53,7 @@ import java.io.Closeable
 import java.time.Duration
 import org.http4k.routing.ws.bind as wsBind
 
-fun ExecutableSchema(): ExecutableSchema {
+fun ExecutableSchema(tag: String): ExecutableSchema {
   val schema = GraphQLHttpHandler::class.java.classLoader
       .getResourceAsStream("schema.graphqls")!!
       .source()
@@ -61,7 +62,7 @@ fun ExecutableSchema(): ExecutableSchema {
       .toGQLDocument()
       .toSchema()
 
-  return SampleserverExecutableSchemaBuilder(schema)
+  return SampleserverExecutableSchemaBuilder(schema, rootSubscriptionObject = { SubscriptionRoot(tag) })
       .build()
 }
 
@@ -129,7 +130,7 @@ class WebSocketRegistry : ExecutionContext.Element {
   companion object Key : ExecutionContext.Key<WebSocketRegistry>
 }
 
-class CurrentWebSocket(val ws: Websocket): ExecutionContext.Element {
+class CurrentWebSocket(val ws: Websocket) : ExecutionContext.Element {
 
   override val key: ExecutionContext.Key<CurrentWebSocket> = Key
 
@@ -208,8 +209,8 @@ private fun WebSocketMessage.toWsMessage(): WsMessage {
   }
 }
 
-fun AppHandler(): PolyHandler {
-  val executableSchema = ExecutableSchema()
+fun AppHandler(tag: String): PolyHandler {
+  val executableSchema = ExecutableSchema(tag)
   val forceClose = WebSocketRegistry()
   val ws = websockets("/subscriptions" wsBind ApolloWebsocketHandler(executableSchema, webSocketRegistry = forceClose))
 
@@ -231,11 +232,11 @@ fun AppHandler(): PolyHandler {
 }
 
 fun runServer() {
-  AppHandler().asServer(Jetty(8000)).start().block()
+  AppHandler("").asServer(Jetty(8000)).start().block()
 }
 
-class SampleServer(val port: Int = 0) : Closeable {
-  private val server = AppHandler().asServer(Jetty(port, stopMode = ServerConfig.StopMode.Graceful(Duration.ZERO)))
+class SampleServer(port: Int = 0, tag: String = "") : Closeable {
+  private val server = AppHandler(tag).asServer(Jetty(port, stopMode = ServerConfig.StopMode.Graceful(Duration.ZERO)))
 
   init {
     server.start()

@@ -17,8 +17,8 @@ import kotlinx.coroutines.withTimeout
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
+import sample.server.CountSubscription
 import sample.server.TimeQuery
-import sample.server.TimeSubscription
 import kotlin.test.assertEquals
 
 class CachedSubscriptionTest {
@@ -57,7 +57,7 @@ class CachedSubscriptionTest {
             .watch()
             // Ignore cache miss
             .filter { it.data != null }
-            .map { it.data!!.time }
+            .map { it.data!!.zero }
             .collect {
               channel.send(it)
               println("watcher received: $it")
@@ -67,10 +67,10 @@ class CachedSubscriptionTest {
       assertEquals(0, channel.receive())
 
       println("starting subscription")
-      apolloClient.subscription(TimeSubscription())
+      apolloClient.subscription(CountSubscription(to = 100, intervalMillis = 1000))
           .toFlow()
           .take(3)
-          .map { it.data!!.time }
+          .map { it.data!!.count }
           .collect {
             println("subscription received: $it")
           }

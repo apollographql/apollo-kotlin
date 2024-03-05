@@ -3,39 +3,40 @@ package com.apollographql.apollo.sample.server.graphql
 import com.apollographql.apollo.sample.server.CurrentWebSocket
 import com.apollographql.apollo3.annotations.GraphQLObject
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.execution.websocket.subscriptionId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.http4k.websocket.WsStatus
 
 @GraphQLObject(name = "Subscription")
-class SubscriptionRoot {
-  fun count(to: Int, delayMillis: Int): Flow<Int> = flow {
+class SubscriptionRoot(private val tag: String) {
+  fun count(to: Int, intervalMillis: Int): Flow<Int> = flow {
     repeat(to) {
       emit(it)
-      if (delayMillis > 0) {
-        delay(delayMillis.toLong())
+      if (intervalMillis > 0) {
+        delay(intervalMillis.toLong())
       }
     }
   }
 
-  fun countString(to: Int, delayMillis: Int): Flow<String> = flow {
+  fun countString(to: Int, intervalMillis: Int): Flow<String> = flow {
     repeat(to) {
       emit(it.toString())
-      if (delayMillis > 0) {
-        delay(delayMillis.toLong())
+      if (intervalMillis > 0) {
+        delay(intervalMillis.toLong())
       }
     }
   }
 
-  fun time(): Flow<Int> = flow {
-    repeat(100) {
-      emit(it)
-      delay(100)
+  fun secondsSinceEpoch(intervalMillis: Int): Flow<Double> = flow {
+    while (true) {
+      emit(System.currentTimeMillis().div(1000).toDouble())
+      delay(intervalMillis.toLong())
     }
   }
 
-  fun operationError(): Flow<String> = flow<String> {
+  fun operationError(): Flow<String> = flow {
     throw Exception("Woops")
   }
 
@@ -52,4 +53,17 @@ class SubscriptionRoot {
 
     emit("closed")
   }
+
+  fun state(executionContext: ExecutionContext, intervalMillis: Int): Flow<State> = flow {
+    while (true) {
+      emit(State(tag, executionContext.subscriptionId()))
+      delay(intervalMillis.toLong())
+    }
+  }
 }
+
+@GraphQLObject
+class State(
+    val tag: String,
+    val subscriptionId: String
+)

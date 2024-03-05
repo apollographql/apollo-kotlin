@@ -39,6 +39,15 @@ class ConnectionInitError(val payload: Optional<Any?> = Optional.absent()): Conn
 
 typealias ConnectionInitHandler = suspend (Any?) -> ConnectionInitResult
 
+private class CurrentSubscription(val id: String) : ExecutionContext.Element {
+
+  override val key: ExecutionContext.Key<CurrentSubscription> = Key
+
+  companion object Key : ExecutionContext.Key<CurrentSubscription>
+}
+
+fun ExecutionContext.subscriptionId(): String = get(CurrentSubscription)?.id ?: error("Apollo: not executing a subscription")
+
 class ApolloWebSocketHandler(
     private val executableSchema: ExecutableSchema,
     private val scope: CoroutineScope,
@@ -82,7 +91,7 @@ class ApolloWebSocketHandler(
           return
         }
 
-        val flow = executableSchema.executeSubscription(clientMessage.request, executionContext)
+        val flow = executableSchema.executeSubscription(clientMessage.request, executionContext + CurrentSubscription(clientMessage.id))
 
         val job = scope.launch {
           flow.collect {

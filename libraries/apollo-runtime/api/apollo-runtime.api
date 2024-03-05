@@ -47,6 +47,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
+	public final fun getRetrySubscriptions ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
@@ -93,6 +94,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun getHttpServerUrl ()Ljava/lang/String;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
+	public final fun getRetrySubscriptions ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
@@ -117,6 +119,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun retrySubscriptions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -180,6 +183,11 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 }
 
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
+}
+
+public final class com/apollographql/apollo3/interceptor/RetrySubscriptionsInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
+	public fun <init> ()V
+	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
