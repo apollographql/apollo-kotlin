@@ -34,22 +34,28 @@ private data class Item(
 
 private class Listener(private val channel: Channel<Item>) : WebSocketListener {
   override fun onOpen() {
+    println("onOpen")
     channel.trySend(Item(open = true))
   }
 
   override fun onMessage(text: String) {
+    println("onMessage: $text")
     channel.trySend(TextMessage(text))
   }
 
   override fun onMessage(data: ByteArray) {
+    println("onMessage data")
     channel.trySend(DataMessage(data))
   }
 
   override fun onError(cause: ApolloException) {
+    println("onError $cause")
+    cause.printStackTrace()
     channel.trySend(Item(exception = cause))
   }
 
   override fun onClosed(code: Int?, reason: String?) {
+    println("onClosed $code, $reason")
     channel.trySend(CloseFrame(code, reason))
   }
 }
