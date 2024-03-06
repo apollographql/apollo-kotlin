@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.takeWhile
@@ -16,11 +17,13 @@ internal interface PlatformNetworkMonitor: Closeable {
 
 internal expect fun platformNetworkMonitor(): PlatformNetworkMonitor?
 
+@ApolloExperimental
 interface NetworkMonitor: Closeable {
   val isOnline: Boolean
   suspend fun waitForNetwork()
 }
 
+@ApolloExperimental
 @JsName("createNetworkMonitor")
 fun NetworkMonitor(): NetworkMonitor? = platformNetworkMonitor()?.let { DefaultNetworkMonitor(it) }
 
