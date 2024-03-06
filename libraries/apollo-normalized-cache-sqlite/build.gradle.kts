@@ -2,14 +2,14 @@ plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
 
-apply(plugin = "com.android.library")
 apply(plugin = "app.cash.sqldelight")
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.cache.normalized.sql",
+    namespace = "com.apollographql.apollo3.cache.normalized.sql",
     withLinux = false,
     withJs = false, // https://github.com/cashapp/sqldelight/pull/1486
-    withWasm = false
+    withWasm = false,
+    androidOptions = AndroidOptions(withCompose = false)
 )
 
 configure<app.cash.sqldelight.gradle.SqlDelightExtension> {
@@ -68,15 +68,6 @@ kotlin {
         implementation(project(":apollo-testing-support"))
       }
     }
-  }
-}
-
-configure<com.android.build.gradle.LibraryExtension> {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
-  namespace = "com.apollographql.apollo3.cache.normalized.sql"
-
-  defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
   }
 }
 

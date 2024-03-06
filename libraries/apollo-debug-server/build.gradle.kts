@@ -5,17 +5,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("com.android.library")
   alias(libs.plugins.apollo.published)
   id("com.google.devtools.ksp")
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.debugserver",
+    namespace = "com.apollographql.apollo3.debugserver",
     withLinux = false,
     withApple = false,
     withJs = false,
-    withWasm = false
+    withWasm = false,
+    androidOptions = AndroidOptions(withCompose = false)
 )
 
 kotlin {
@@ -73,15 +73,6 @@ configurations.all {
   }
 }
 configurations.getByName(kotlin.sourceSets.getByName("commonMain").compileOnlyConfigurationName).extendsFrom(shadow)
-
-android {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
-  namespace = "com.apollographql.apollo3.debugserver"
-
-  defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
-  }
-}
 
 /**
  * KSP configuration

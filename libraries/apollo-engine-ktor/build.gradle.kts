@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.engine.ktor",
+    namespace = "com.apollographql.apollo3.engine.ktor",
     withLinux = false,
     withWasm = false
 )

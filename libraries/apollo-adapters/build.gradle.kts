@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.adapter",
+    namespace = "com.apollographql.apollo3.adapter",
     withLinux = false,
     withWasm = false
 )

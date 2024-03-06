@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.mockserver",
+    namespace = "com.apollographql.apollo3.mockserver",
     withLinux = false,
 )
 

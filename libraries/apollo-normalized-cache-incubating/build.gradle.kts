@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.cache.normalized",
+    namespace = "com.apollographql.apollo3.cache.normalized",
     withLinux = false,
 )
 

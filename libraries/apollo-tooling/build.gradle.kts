@@ -5,7 +5,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.tooling"
+    namespace = "com.apollographql.apollo3.tooling"
 )
 
 dependencies {
