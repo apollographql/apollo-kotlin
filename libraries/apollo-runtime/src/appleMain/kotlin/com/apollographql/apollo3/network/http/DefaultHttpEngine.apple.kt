@@ -248,6 +248,8 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
 
     // Cleanup
     handlers.remove(dataTask)
+
+    completionHandler(willCacheResponse)
   }
 
   fun registerHandlerForTask(task: NSURLSessionTask, handler: Handler) {
