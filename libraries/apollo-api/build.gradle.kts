@@ -15,12 +15,6 @@ kotlin {
         api(project(":apollo-annotations"))
       }
     }
-
-    findByName("commonTest")?.apply {
-      dependencies {
-        implementation(libs.kotlin.test.asProvider().get().toString())
-      }
-    }
   }
 }
 
