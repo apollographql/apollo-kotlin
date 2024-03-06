@@ -61,6 +61,7 @@ fun Project.apolloLibrary(
         withWasm = withWasm
     )
   }
+  addTestDependencies()
 
   tasks.withType(Jar::class.java).configureEach {
     manifest {
@@ -94,6 +95,7 @@ fun Project.apolloTest(
         withWasm = false
     )
   }
+  addTestDependencies()
 }
 
 fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {

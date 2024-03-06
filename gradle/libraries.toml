@@ -6,7 +6,7 @@ android-plugin = "8.2.1"
 android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test
 android-plugin-max = "8.2.1"
-android-sdkversion-compile = "33"
+android-sdkversion-compile = "34"
 android-sdkversion-compilebenchmark = "34"
 android-sdkversion-min = "16"
 android-sdkversion-compose-min = "21"

@@ -2,6 +2,7 @@
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
@@ -113,7 +114,6 @@ fun Project.configureMpp(
     }
 
     configureSourceSetGraph()
-    addTestDependencies()
   }
 }
 
@@ -163,10 +163,25 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   }
 }
 
-private fun KotlinMultiplatformExtension.addTestDependencies() {
-  sourceSets.getByName("commonTest") {
-    dependencies {
-      implementation(kotlin("test"))
+internal fun Project.addTestDependencies() {
+  kotlinExtensionOrNull?.apply {
+    when (this) {
+      is KotlinMultiplatformExtension -> {
+        sourceSets.getByName("commonTest") {
+          dependencies {
+            implementation(getCatalogLib("kotlin.test"))
+          }
+        }
+        sourceSets.findByName("androidInstrumentedTest")?.apply {
+          dependencies {
+            implementation(getCatalogLib("kotlin.test"))
+            implementation(getCatalogLib("android.test.runner"))
+          }
+        }
+      }
+      is KotlinJvmProjectExtension -> {
+        dependencies.add("testImplementation", getCatalogLib("kotlin.test"))
+      }
     }
   }
 }

@@ -39,25 +39,29 @@ internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonito
         attempt = 0
       }
     }.retryWhen { cause, _ ->
-      attempt++
-
-      if (networkMonitor != null && !networkMonitor.isOnline) {
-        networkMonitor.waitForNetwork()
+      if (cause is RetryException) {
+        attempt++
+        if (networkMonitor != null && !networkMonitor.isOnline) {
+          networkMonitor.waitForNetwork()
+        } else {
+          delay(2.0.pow(attempt).seconds)
+        }
+        true
       } else {
-        delay(2.0.pow(attempt).seconds)
+        // Not a RetryException, probably a programming error, pass it through
+        false
       }
-      cause is RetryException
     }
   }
 }
 
 private fun ApolloException.isTerminalAndRecoverable(): Boolean {
-  when (this) {
+  return when (this) {
     is SubscriptionOperationException -> {
-      // This often means a validation error on the subscription. It is unrecoverable
-      return false
+      // This means a validation error on the subscription. It is unrecoverable
+      false
     }
-    else -> return true
+    else -> true
   }
 }
 
