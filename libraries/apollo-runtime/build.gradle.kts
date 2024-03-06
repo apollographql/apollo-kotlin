@@ -41,6 +41,14 @@ kotlin {
       }
     }
 
+    findByName("androidMain")?.apply {
+      dependencies {
+        implementation(libs.androidx.startup.runtime)
+        implementation(libs.androidx.annotation)
+        implementation(libs.androidx.core)
+      }
+    }
+
     findByName("jsMain")?.apply {
       dependencies {
         api(libs.ktor.client.js)

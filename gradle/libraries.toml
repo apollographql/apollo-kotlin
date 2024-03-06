@@ -51,8 +51,9 @@ android-plugin-min = { group = "com.android.tools.build", name = "gradle", versi
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-activity = "androidx.activity:activity-ktx:1.7.2"
-androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.6.0" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.7.1" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
+androidx-core = "androidx.core:core-ktx:1.12.0"
 androidx-espresso-idlingresource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version = "3.5.1" }
 androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha01"
 androidx-lint-gradle-plugin = "com.android.lint:com.android.lint.gradle.plugin:8.2.2"

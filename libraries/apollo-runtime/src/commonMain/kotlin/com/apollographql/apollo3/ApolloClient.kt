@@ -22,6 +22,7 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
+import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -51,6 +52,8 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
+  private val networkMonitor: NetworkMonitor? = builder.networkMonitor ?: NetworkMonitor()
+
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
@@ -62,6 +65,13 @@ private constructor(
   override val retryOnError: Boolean? = builder.retryOnError
   @ApolloExperimental
   val retryOnErrorInterceptor = builder.retryOnErrorInterceptor
+
+  /**
+   * Used to keep the network monitor active
+   */
+  private val networkMonitorListener = object : NetworkMonitor.Listener {
+    override fun networkChanged(isOnline: Boolean) {}
+  }
 
   init {
     networkTransport = if (builder.networkTransport != null) {
@@ -151,6 +161,7 @@ private constructor(
         dispatcher,
         CoroutineScope(dispatcher)
     )
+    networkMonitor?.registerListener(networkMonitorListener)
   }
 
   /**
@@ -340,6 +351,14 @@ private constructor(
     @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
+    @ApolloExperimental
+    var networkMonitor: NetworkMonitor? = null
+      private set
+
+    @ApolloExperimental
+    fun networkMonitor(networkMonitor: NetworkMonitor?): Builder = apply {
+      this.networkMonitor = networkMonitor
+    }
 
     @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?): Builder = apply {
